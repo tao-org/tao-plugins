@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
-import java.util.concurrent.Executors;
-import java.util.logging.LogManager;
 
 /**
  * @author Cosmin Cara
@@ -26,28 +24,6 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery> {
             S2_URL = props.getProperty("s2.aws.search.url");
             L8_URL = props.getProperty("l8.aws.search.url");
             L8_PRE_URL = props.getProperty("l8.aws.pre.search.url");
-            Executors.newSingleThreadExecutor().submit(
-                    () -> {
-                        try {
-                            LogManager.getLogManager().getLogger("").info("Loading Sentinel-2 tiles extents");
-                            Sentinel2TileExtent.getInstance()
-                                    .read(AWSDataSource.class.getResourceAsStream("S2tilemap.dat"));
-                        } catch (Exception e) {
-                            e.printStackTrace();;
-                        }
-                        return null;
-                    });
-            Executors.newSingleThreadExecutor().submit(
-                    () -> {
-                        try {
-                            LogManager.getLogManager().getLogger("").info("Loading Landsat8 tiles extents");
-                            Landsat8TileExtent.getInstance()
-                                    .read(AWSDataSource.class.getResourceAsStream("L8tilemap.dat"));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    });
         } catch (IOException ignored) {
         }
     }

@@ -30,6 +30,16 @@
             <artifactId>tao-config</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ro.cs.tao</groupId>
+            <artifactId>tao-products-sentinels</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ro.cs.tao</groupId>
+            <artifactId>tao-products-landsat</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -49,7 +59,7 @@
                             <includeScope>runtime</includeScope>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
-                            <outputDirectory>../tao-core/tao-core-kit/target/tao-core-${project.version}/tao-core/lib</outputDirectory>
+                            <outputDirectory>../../tao-core/tao-core-kit/target/tao-core-${project.version}/tao-core/lib</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>

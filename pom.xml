@@ -19,6 +19,9 @@
         <module>tao-datasources-aws</module>
         <module>tao-datasources-peps</module>
         <module>tao-datasources-scihub</module>
+        <module>tao-datasources-usgs</module>
+        <module>tao-products-sentinels</module>
+        <module>tao-products-landsat</module>
     </modules>
 
     <properties>

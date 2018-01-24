@@ -4,7 +4,6 @@ import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.aws.AWSDataSource;
-import ro.cs.tao.datasource.remote.aws.LandsatProduct;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.messaging.Message;
@@ -12,6 +11,8 @@ import ro.cs.tao.messaging.Messaging;
 import ro.cs.tao.messaging.NotifiableComponent;
 import ro.cs.tao.messaging.ProgressNotifier;
 import ro.cs.tao.messaging.Topics;
+import ro.cs.tao.products.landsat.LandsatProduct;
+import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
 
@@ -79,7 +80,7 @@ public class AWSDataSourceTest {
             });
 
             final ProductFetchStrategy strategy = dataSource.getProductFetchStrategy(sensors[0]);
-            strategy.setProgressListener(new ProgressNotifier(null, dataSource, Topics.PROGRESS));
+            strategy.setProgressListener(new ProgressNotifier(SystemPrincipal.instance(), dataSource, Topics.PROGRESS));
 
             Messaging.subscribe(new NotifiableComponent() {
                 @Override

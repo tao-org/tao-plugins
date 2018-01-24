@@ -16,6 +16,7 @@ import ro.cs.tao.datasource.remote.peps.parameters.BooleanConverter;
 import ro.cs.tao.datasource.remote.peps.parameters.DateConverter;
 import ro.cs.tao.datasource.remote.peps.parameters.PolygonConverter;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
+import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
@@ -88,7 +89,7 @@ public class PepsDataQuery extends DataQuery {
 
             String queryUrl = this.source.getConnectionString() + collection.toString() + "/search.json?"
                     + URLEncodedUtils.format(queryParams, "UTF-8").replace("+", "%20");
-            try (CloseableHttpResponse response = NetUtils.openConnection(queryUrl, this.source.getCredentials())) {
+            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
                         JsonResponseParser<EOProduct> parser = new JsonResponseParser<EOProduct>(new PepsQueryResponseHandler()) {

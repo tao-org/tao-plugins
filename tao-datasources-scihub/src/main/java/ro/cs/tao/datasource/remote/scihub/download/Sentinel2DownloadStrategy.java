@@ -19,10 +19,10 @@
 package ro.cs.tao.datasource.remote.scihub.download;
 
 import ro.cs.tao.datasource.InterruptedException;
-import ro.cs.tao.datasource.remote.scihub.helpers.Sentinel2ProductHelper;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.utils.FileUtils;
 
 import java.io.IOException;
