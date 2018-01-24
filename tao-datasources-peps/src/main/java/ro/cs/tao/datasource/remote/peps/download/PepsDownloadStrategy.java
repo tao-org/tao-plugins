@@ -7,6 +7,7 @@ import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.peps.PepsDataSource;
 import ro.cs.tao.datasource.remote.peps.PepsMetadataResponseHandler;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
+import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtils;
@@ -43,7 +44,7 @@ public class PepsDownloadStrategy extends DownloadStrategy {
         String productName = product.getName();
         currentStep = "Metadata";
         ProductState productState;
-        try (CloseableHttpResponse response = NetUtils.openConnection(getMetadataUrl(product), this.credentials)) {
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, getMetadataUrl(product), this.credentials)) {
             switch (response.getStatusLine().getStatusCode()) {
                 case 200:
                     JsonResponseParser<Boolean> parser = new JsonResponseParser<>(new PepsMetadataResponseHandler());
@@ -92,6 +93,12 @@ public class PepsDownloadStrategy extends DownloadStrategy {
             location = location.substring(0, location.length() - 1);
         }
         return location.replace("/download", "");
+    }
+
+    @Override
+    public String getProductUrl(EOProduct descriptor) {
+        String location = super.getProductUrl(descriptor);
+        return location != null ? location + "/?issuerId=peps" : null;
     }
 
     private enum ProductState {

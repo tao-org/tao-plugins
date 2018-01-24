@@ -5,7 +5,6 @@ import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
-import ro.cs.tao.datasource.remote.aws.helpers.LandsatProductHelper;
 import ro.cs.tao.datasource.remote.aws.internal.AwsResult;
 import ro.cs.tao.datasource.remote.aws.internal.IntermediateParser;
 import ro.cs.tao.datasource.util.NetUtils;
@@ -14,6 +13,9 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.eodata.util.Conversions;
+import ro.cs.tao.products.landsat.Landsat8ProductHelper;
+import ro.cs.tao.products.landsat.Landsat8TileExtent;
+import ro.cs.tao.products.landsat.LandsatProduct;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -154,7 +156,7 @@ class Landsat8Query extends DataQuery {
                     for (String name : names) {
                         try {
                             if (preCollection || name.endsWith(productType.toString())) {
-                                LandsatProductHelper temporaryDescriptor = new LandsatProductHelper(name);
+                                Landsat8ProductHelper temporaryDescriptor = new Landsat8ProductHelper(name);
                                 Calendar productDate = temporaryDescriptor.getAcquisitionDate();
                                 if (startDate.before(productDate) && endDate.after(productDate)) {
                                     String jsonTile = tileUrl + name + DownloadStrategy.URL_SEPARATOR + name + "_MTL.json";
@@ -189,7 +191,7 @@ class Landsat8Query extends DataQuery {
                     for (String name : names) {
                         try {
                             if (preCollection || name.endsWith(productType.toString())) {
-                                LandsatProductHelper temporaryDescriptor = new LandsatProductHelper(name);
+                                Landsat8ProductHelper temporaryDescriptor = new Landsat8ProductHelper(name);
                                 Calendar productDate = temporaryDescriptor.getAcquisitionDate();
                                 if (startDate.before(productDate) && endDate.after(productDate)) {
                                     String jsonTile = tileUrl + name + DownloadStrategy.URL_SEPARATOR + name + "_MTL.json";
