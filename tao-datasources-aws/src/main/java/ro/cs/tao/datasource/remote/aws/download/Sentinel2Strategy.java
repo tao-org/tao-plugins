@@ -2,10 +2,10 @@ package ro.cs.tao.datasource.remote.aws.download;
 
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.aws.AWSDataSource;
-import ro.cs.tao.datasource.remote.aws.helpers.Sentinel2ProductHelper;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.utils.FileUtils;
 
 import javax.json.Json;
