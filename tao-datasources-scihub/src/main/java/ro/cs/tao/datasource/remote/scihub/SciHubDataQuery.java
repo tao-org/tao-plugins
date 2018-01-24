@@ -34,6 +34,7 @@ import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
 import ro.cs.tao.datasource.remote.scihub.json.SciHubJsonResponseHandler;
 import ro.cs.tao.datasource.remote.scihub.xml.SciHubXmlResponseHandler;
+import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
@@ -90,7 +91,7 @@ public class SciHubDataQuery extends DataQuery {
 
             String queryUrl = this.source.getConnectionString() + "?"
               + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
-            try (CloseableHttpResponse response = NetUtils.openConnection(queryUrl, this.source.getCredentials())) {
+            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
                         String rawResponse = EntityUtils.toString(response.getEntity());
@@ -143,7 +144,7 @@ public class SciHubDataQuery extends DataQuery {
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("filter", query));
             String queryUrl = countUrl + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
-            try (CloseableHttpResponse response = NetUtils.openConnection(queryUrl, this.source.getCredentials())) {
+            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
                         String rawResponse = EntityUtils.toString(response.getEntity());
