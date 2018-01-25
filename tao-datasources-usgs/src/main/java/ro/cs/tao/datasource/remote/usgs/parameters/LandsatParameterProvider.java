@@ -50,15 +50,15 @@ public class LandsatParameterProvider implements ParameterProvider {
     }
 
     @Override
-    public String[] getSupportedSensors() {
-        return sensors;
-    }
-
-    @Override
     public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() { return productFetchers; }
 
     @Override
     public Map<String, Map<String, ParameterDescriptor>> getSupportedParameters() {
         return parameters;
+    }
+
+    @Override
+    public String[] getSupportedSensors() {
+        return sensors;
     }
 }
