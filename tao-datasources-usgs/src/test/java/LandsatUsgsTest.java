@@ -5,6 +5,12 @@ import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.usgs.USGSDataSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.messaging.Message;
+import ro.cs.tao.messaging.Messaging;
+import ro.cs.tao.messaging.NotifiableComponent;
+import ro.cs.tao.messaging.ProgressNotifier;
+import ro.cs.tao.messaging.Topics;
+import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
 
@@ -66,7 +72,22 @@ public class LandsatUsgsTest {
             System.out.println("FOOTPRINT=" + r.getGeometry());
         });
         final ProductFetchStrategy fetchStrategy = dataSource.getProductFetchStrategy(sensors[0]);
-        final Path path = fetchStrategy.fetch(results.get(0));
+        fetchStrategy.setProgressListener(new ProgressNotifier(SystemPrincipal.instance(), dataSource, Topics.PROGRESS));
+
+        Messaging.subscribe(new NotifiableComponent() {
+            @Override
+            protected void onMessageReceived(Message message) {
+                System.out.println(message.getData());
+                message.setRead(true);
+            }
+        }, Topics.PROGRESS);
+
+        final Path path = fetchStrategy.fetch(results.get(1));
+        if (path != null) {
+            System.out.println("Product downloaded at " + path.toString());
+        } else {
+            System.out.println("Product not downloaded");
+        }
     }
     private static ServiceRegistry<DataSource> getServiceRegistry() {
         return ServiceRegistryManager.getInstance().getServiceRegistry(DataSource.class);

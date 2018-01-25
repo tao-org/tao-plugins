@@ -1,6 +1,5 @@
 package ro.cs.tao.datasource.remote.usgs;
 
-import ro.cs.tao.datasource.DataSourceCapability;
 import ro.cs.tao.datasource.remote.URLDataSource;
 import ro.cs.tao.datasource.remote.usgs.parameters.LandsatParameterProvider;
 
@@ -31,11 +30,6 @@ public class USGSDataSource extends URLDataSource<Landsat8Query> {
         setParameterProvider(new LandsatParameterProvider());
         this.alternateConnectionString = BASE_URL;
         this.properties = USGSDataSource.props;
-    }
-
-    @Override
-    public int getCapabilities() {
-        return DataSourceCapability.QUERY;
     }
 
     @Override
