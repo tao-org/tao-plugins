@@ -33,6 +33,9 @@ public class USGSDataSource extends URLDataSource<Landsat8Query> {
     }
 
     @Override
+    public String defaultName() { return "USGS"; }
+
+    @Override
     protected Landsat8Query createQueryImpl(String code) {
         return new Landsat8Query(this);
     }
