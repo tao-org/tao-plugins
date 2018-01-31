@@ -67,7 +67,9 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
 
     @Override
     public String getProductUrl(EOProduct descriptor) {
-        return odataArchivePath.replace(ODATA_UUID, descriptor.getId());
+        return descriptor.getLocation() == null ?
+                odataArchivePath.replace(ODATA_UUID, descriptor.getId()) :
+                descriptor.getLocation();
     }
 
     @Override
@@ -81,6 +83,9 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
         String productName = product.getName();
         currentStep = "Archive";
         Path rootPath = Paths.get(destination, productName + ".zip");
+        if (this.currentProduct == null) {
+            this.currentProduct = product;
+        }
         return downloadFile(getProductUrl(product), rootPath, NetUtils.getAuthToken());
     }
 
