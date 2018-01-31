@@ -22,6 +22,8 @@
         <module>tao-datasources-usgs</module>
         <module>tao-products-sentinels</module>
         <module>tao-products-landsat</module>
+        <module>tao-drmaa-slurm</module>
+        <module>tao-drmaa-torque</module>
     </modules>
 
     <properties>
