@@ -10,11 +10,11 @@ import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
-import ro.cs.tao.datasource.converters.RangeConverter;
+import ro.cs.tao.datasource.converters.RangeParameterConverter;
 import ro.cs.tao.datasource.param.QueryParameter;
-import ro.cs.tao.datasource.remote.peps.parameters.BooleanConverter;
-import ro.cs.tao.datasource.remote.peps.parameters.DateConverter;
-import ro.cs.tao.datasource.remote.peps.parameters.PolygonConverter;
+import ro.cs.tao.datasource.remote.peps.parameters.BooleanParameterConverter;
+import ro.cs.tao.datasource.remote.peps.parameters.DateParameterConverter;
+import ro.cs.tao.datasource.remote.peps.parameters.PolygonParameterConverter;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
@@ -35,10 +35,10 @@ public class PepsDataQuery extends DataQuery {
     private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
 
     static {
-        converterFactory.register(PolygonConverter.class, Polygon2D.class);
-        converterFactory.register(DateConverter.class, Date.class);
-        converterFactory.register(RangeConverter.class, Double.class);
-        converterFactory.register(BooleanConverter.class, Boolean.class);
+        converterFactory.register(PolygonParameterConverter.class, Polygon2D.class);
+        converterFactory.register(DateParameterConverter.class, Date.class);
+        converterFactory.register(RangeParameterConverter.class, Double.class);
+        converterFactory.register(BooleanParameterConverter.class, Boolean.class);
     }
 
     private PepsDataQuery() { super(); }
