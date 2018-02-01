@@ -34,9 +34,6 @@ package ro.cs.tao.execution.drmaa.torque;
 import org.ggf.drmaa.Session;
 import ro.cs.tao.execution.drmaa.AbstractSession;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
 /**
  * The AbstractSession class provides a DRMAA interface to Grid Engine.  This
  * interface is built on top of the DRMAA C binding using JNI.  In order to keep
@@ -53,21 +50,12 @@ import java.security.PrivilegedAction;
  * @version 1.0
  */
 
-public class TorqueSession extends AbstractSession {
+class TorqueSession extends AbstractSession {
 
-    static {
-        AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
-		        System.loadLibrary("drmaa-jni-torque");
-                return null;
-            }
-        });
-    }
-    
     /**
      * Creates a new instance of AbstractSession
      */
-    public TorqueSession() {
+    TorqueSession() {
         super();
     }
 }
