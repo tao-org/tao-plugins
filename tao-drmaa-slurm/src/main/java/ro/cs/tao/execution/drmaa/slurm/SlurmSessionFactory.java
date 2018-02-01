@@ -29,33 +29,37 @@
  *
  ************************************************************************/
 /*___INFO__MARK_END__*/
-package ro.cs.tao.execution.drmaa.torque;
+package ro.cs.tao.execution.drmaa.slurm;
 
 import org.ggf.drmaa.Session;
-import ro.cs.tao.execution.drmaa.AbstractSession;
+import org.ggf.drmaa.SessionFactory;
+import ro.cs.tao.execution.drmaa.AbstractSessionFactory;
 
 /**
- * The AbstractSession class provides a DRMAA interface to Grid Engine.  This
- * interface is built on top of the DRMAA C binding using JNI.  In order to keep
- * the native code as localized as possible, this class also provides native
- * DRMAA services to other classes, such as the DrmaaJobTemplate.
- *
- * <p>This class relies on the version 1.0 <i>drmaa</i> shared library.</p>
- *
- * @see Session
- * @see com.sun.grid.drmaa.impl.JobTemplateImpl
- * @see <a href="http://gridengine.sunsource.net/unbranded-source/browse/~checkout~/gridengine/doc/htmlman/manuals.html?content-type=text/html">Grid Engine Man Pages</a>
+ * This class is used to create a AbstractSession instance.  In order to use the
+ * Grid Engine binding, the $SGE_ROOT environment variable must be set, the
+ * $SGE_ROOT/lib/drmaa.jar file must in included in the CLASSPATH environment
+ * variable, and the $SGE_ROOT/lib/$ARCH directory must be included in the
+ * library path, e.g. LD_LIBRARY_PATH.
+ * @see SessionFactory
  * @author dan.templeton@sun.com
  * @since 0.5
  * @version 1.0
  */
-
-class TorqueSession extends AbstractSession {
+public class SlurmSessionFactory extends AbstractSessionFactory {
 
     /**
-     * Creates a new instance of AbstractSession
+     * Creates a new instance of AbstractSessionFactory.
      */
-    TorqueSession() {
+    public SlurmSessionFactory() {
         super();
     }
+
+    @Override
+    protected Session createSession() {
+        return new SlurmSession();
+    }
+
+    @Override
+    protected String getJniLibraryName() { return "libdrmaa-jni-slurm.so"; }
 }

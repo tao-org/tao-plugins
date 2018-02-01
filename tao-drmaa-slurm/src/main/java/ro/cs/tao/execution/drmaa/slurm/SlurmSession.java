@@ -29,10 +29,11 @@
  *
  ************************************************************************/
 /*___INFO__MARK_END__*/
-package ro.cs.tao.execution.drmaa.torque;
+package ro.cs.tao.execution.drmaa.slurm;
 
 import org.ggf.drmaa.Session;
 import ro.cs.tao.execution.drmaa.AbstractSession;
+import ro.cs.tao.execution.drmaa.DrmaaJobTemplate;
 
 /**
  * The AbstractSession class provides a DRMAA interface to Grid Engine.  This
@@ -43,19 +44,19 @@ import ro.cs.tao.execution.drmaa.AbstractSession;
  * <p>This class relies on the version 1.0 <i>drmaa</i> shared library.</p>
  *
  * @see Session
- * @see com.sun.grid.drmaa.impl.JobTemplateImpl
+ * @see DrmaaJobTemplate
  * @see <a href="http://gridengine.sunsource.net/unbranded-source/browse/~checkout~/gridengine/doc/htmlman/manuals.html?content-type=text/html">Grid Engine Man Pages</a>
  * @author dan.templeton@sun.com
  * @since 0.5
  * @version 1.0
  */
 
-class TorqueSession extends AbstractSession {
+class SlurmSession extends AbstractSession {
 
     /**
      * Creates a new instance of AbstractSession
      */
-    TorqueSession() {
+    SlurmSession() {
         super();
     }
 }
