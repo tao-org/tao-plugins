@@ -13,7 +13,7 @@ import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.datasource.remote.usgs.json.ResponseHandler;
-import ro.cs.tao.datasource.remote.usgs.parameters.USGSDateConverter;
+import ro.cs.tao.datasource.remote.usgs.parameters.USGSDateParameterConverter;
 import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
@@ -36,7 +36,7 @@ public class Landsat8Query extends DataQuery {
     private Logger logger;
 
     static {
-        converterFactory.register(USGSDateConverter.class, Date.class);
+        converterFactory.register(USGSDateParameterConverter.class, Date.class);
     }
 
     Landsat8Query(USGSDataSource source) {
