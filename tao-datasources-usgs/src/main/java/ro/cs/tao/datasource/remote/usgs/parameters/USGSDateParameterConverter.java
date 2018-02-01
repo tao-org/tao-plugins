@@ -1,7 +1,7 @@
 package ro.cs.tao.datasource.remote.usgs.parameters;
 
 import ro.cs.tao.datasource.converters.ConversionException;
-import ro.cs.tao.datasource.converters.DateConverter;
+import ro.cs.tao.datasource.converters.DateParameterConverter;
 import ro.cs.tao.datasource.param.QueryParameter;
 
 import java.time.LocalDateTime;
@@ -12,9 +12,9 @@ import java.util.Date;
 /**
  * @author Cosmin Cara
  */
-public class USGSDateConverter extends DateConverter {
+public class USGSDateParameterConverter extends DateParameterConverter {
 
-    public USGSDateConverter(QueryParameter parameter) {
+    public USGSDateParameterConverter(QueryParameter parameter) {
         super(parameter);
         this.dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     }

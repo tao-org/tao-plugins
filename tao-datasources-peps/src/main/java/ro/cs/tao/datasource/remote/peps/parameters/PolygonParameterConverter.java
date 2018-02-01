@@ -1,7 +1,7 @@
 package ro.cs.tao.datasource.remote.peps.parameters;
 
 import ro.cs.tao.datasource.converters.ConversionException;
-import ro.cs.tao.datasource.converters.DefaultConverter;
+import ro.cs.tao.datasource.converters.DefaultParameterConverter;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.eodata.Polygon2D;
 
@@ -10,9 +10,9 @@ import java.awt.geom.Rectangle2D;
 /**
  * @author Cosmin Cara
  */
-public class PolygonConverter extends DefaultConverter {
+public class PolygonParameterConverter extends DefaultParameterConverter {
 
-    public PolygonConverter(QueryParameter parameter) {
+    public PolygonParameterConverter(QueryParameter parameter) {
         super(parameter);
         if (!Polygon2D.class.equals(parameter.getType())) {
             throw new IllegalArgumentException("Incorrect parameter type");
