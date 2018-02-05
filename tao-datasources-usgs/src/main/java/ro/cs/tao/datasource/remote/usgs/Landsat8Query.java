@@ -22,7 +22,9 @@ import ro.cs.tao.products.landsat.Landsat8TileExtent;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -58,8 +60,17 @@ public class Landsat8Query extends DataQuery {
         }
         Set<String> pathRows = null;
         for (QueryParameter parameter : this.parameters.values()) {
-            if (Polygon2D.class.equals(parameter.getType())) {
-                Polygon2D footprint = (Polygon2D ) parameter.getValue();
+            final Class parameterType = parameter.getType();
+            final Object parameterValue = parameter.getValue();
+            if (parameterType.isArray() && String[].class.isAssignableFrom(parameterType)) {
+                // we have an array of rows and paths
+                if (parameterValue != null) {
+                    pathRows = new HashSet<>();
+                    Collections.addAll(pathRows, (String[]) parameterValue);
+                }
+            } else  if (Polygon2D.class.equals(parameterType) &&
+                    (pathRows == null || pathRows.size() == 0)) {
+                Polygon2D footprint = (Polygon2D ) parameterValue;
                 if (footprint != null) {
                     pathRows = Landsat8TileExtent.getInstance().intersectingTiles(footprint.getBounds2D());
                 }
