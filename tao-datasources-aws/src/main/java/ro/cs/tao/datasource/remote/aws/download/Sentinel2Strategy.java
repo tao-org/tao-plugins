@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 /**
  * @author Cosmin Cara
@@ -47,9 +46,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
     private String productsUrl;
     private String baseUrl;
 
-    private Set<String> filteredTiles;
     private boolean shouldFilterTiles;
-    private Pattern tileIdPattern;
 
     static {
         properties = new Properties();
@@ -82,20 +79,10 @@ public class Sentinel2Strategy extends DownloadStrategy {
         productsUrl = baseUrl + "products/";
     }
 
+    @Override
     public void setFilteredTiles(Set<String> tiles) {
-        this.filteredTiles = tiles;
-        if (shouldFilterTiles = (tiles != null && tiles.size() > 0)) {
-            StringBuilder text = new StringBuilder();
-            text.append("(?:.+)(");
-            int idx = 1, n = tiles.size();
-            for (String tile : tiles) {
-                text.append(tile);
-                if (idx++ < n)
-                    text.append("|");
-            }
-            text.append(")(?:.+)");
-            tileIdPattern = Pattern.compile(text.toString());
-        }
+        super.setFilteredTiles(tiles);
+        shouldFilterTiles = this.filteredTiles != null && this.filteredTiles.size() > 0;
     }
 
     @Override
