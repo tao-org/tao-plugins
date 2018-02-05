@@ -63,6 +63,11 @@ public class Landsat8Strategy extends DownloadStrategy {
         currentProduct = product;
         String productName = currentProduct.getName();
         Landsat8ProductHelper helper = new Landsat8ProductHelper(productName);
+        if (this.filteredTiles != null) {
+            if (!tileIdPattern.matcher(productName).matches()) {
+                return null;
+            }
+        }
         Path rootPath = FileUtils.ensureExists(Paths.get(destination, productName));
         url = getMetadataUrl(currentProduct);
         Path metadataFile = rootPath.resolve(productName + "_MTL.txt");
