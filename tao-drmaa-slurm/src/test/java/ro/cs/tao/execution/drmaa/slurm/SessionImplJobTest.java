@@ -38,16 +38,32 @@ package ro.cs.tao.execution.drmaa.slurm;/*___INFO__MARK_BEGIN__*/
 
 //package ro.cs.tao.execution.drmaa.slurm;
 
-import org.ggf.drmaa.*;
-import ro.cs.tao.execution.drmaa.utils.*;
+import org.ggf.drmaa.DrmaaException;
+import org.ggf.drmaa.ExitTimeoutException;
+import org.ggf.drmaa.InternalException;
+import org.ggf.drmaa.InvalidJobException;
+import org.ggf.drmaa.InvalidJobTemplateException;
+import org.ggf.drmaa.JobInfo;
+import org.ggf.drmaa.JobTemplate;
+import org.ggf.drmaa.NoActiveSessionException;
+import org.ggf.drmaa.Session;
+import org.ggf.drmaa.SessionFactory;
+import org.ggf.drmaa.SimpleJobTemplate;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  *
