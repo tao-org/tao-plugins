@@ -35,6 +35,9 @@ import org.ggf.drmaa.Session;
 import ro.cs.tao.execution.drmaa.AbstractSession;
 import ro.cs.tao.execution.drmaa.DrmaaJobTemplate;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 /**
  * The AbstractSession class provides a DRMAA interface to Grid Engine.  This
  * interface is built on top of the DRMAA C binding using JNI.  In order to keep
