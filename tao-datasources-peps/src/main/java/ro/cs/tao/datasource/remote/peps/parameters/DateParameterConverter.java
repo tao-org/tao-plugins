@@ -1,7 +1,7 @@
 package ro.cs.tao.datasource.remote.peps.parameters;
 
 import ro.cs.tao.datasource.converters.ConversionException;
-import ro.cs.tao.datasource.converters.DefaultConverter;
+import ro.cs.tao.datasource.converters.DefaultParameterConverter;
 import ro.cs.tao.datasource.param.QueryParameter;
 
 import java.time.LocalDateTime;
@@ -12,11 +12,11 @@ import java.util.Date;
 /**
  * @author Cosmin Cara
  */
-public class DateConverter extends DefaultConverter {
+public class DateParameterConverter extends DefaultParameterConverter {
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private final DateTimeFormatter dateFormat;
 
-    public DateConverter(QueryParameter parameter) {
+    public DateParameterConverter(QueryParameter parameter) {
         super(parameter);
         if (!Date.class.equals(parameter.getType())) {
             throw new IllegalArgumentException("Invalid parameter type");
