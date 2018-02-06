@@ -20,15 +20,15 @@
 package ro.cs.tao.datasource.remote.scihub;
 
 import ro.cs.tao.datasource.converters.ConversionException;
-import ro.cs.tao.datasource.converters.PolygonConverter;
+import ro.cs.tao.datasource.converters.PolygonParameterConverter;
 import ro.cs.tao.datasource.param.QueryParameter;
 
 /**
  * @author Cosmin Cara
  */
-public class SciHubPolygonConverter extends PolygonConverter {
+public class SciHubPolygonParameterConverter extends PolygonParameterConverter {
 
-    public SciHubPolygonConverter(QueryParameter parameter) {
+    public SciHubPolygonParameterConverter(QueryParameter parameter) {
         super(parameter);
     }
 

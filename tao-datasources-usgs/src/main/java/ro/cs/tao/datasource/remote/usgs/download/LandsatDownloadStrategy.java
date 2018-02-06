@@ -58,6 +58,11 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
     @Override
     public Path fetch(EOProduct product) throws IOException, InterruptedException {
         checkCancelled();
+        if (this.filteredTiles != null) {
+            if (!tileIdPattern.matcher(product.getName()).matches()) {
+                return null;
+            }
+        }
         doAuthenticate();
         checkCancelled();
         Path productFile;

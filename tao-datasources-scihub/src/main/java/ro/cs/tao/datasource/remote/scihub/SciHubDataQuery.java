@@ -27,7 +27,7 @@ import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
-import ro.cs.tao.datasource.converters.DateConverter;
+import ro.cs.tao.datasource.converters.DateParameterConverter;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
@@ -61,8 +61,8 @@ public class SciHubDataQuery extends DataQuery {
     private final Logger logger = Logger.getLogger(SciHubDataQuery.class.getSimpleName());
 
     static {
-        converterFactory.register(SciHubPolygonConverter.class, Polygon2D.class);
-        converterFactory.register(DateConverter.class, Date.class);
+        converterFactory.register(SciHubPolygonParameterConverter.class, Polygon2D.class);
+        converterFactory.register(DateParameterConverter.class, Date.class);
     }
 
     SciHubDataQuery(SciHubDataSource source, String sensorName) {

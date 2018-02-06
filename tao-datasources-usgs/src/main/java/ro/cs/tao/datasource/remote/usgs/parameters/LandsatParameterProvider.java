@@ -37,6 +37,7 @@ public class LandsatParameterProvider implements ParameterProvider {
                             put("cloud_to", new ParameterDescriptor("cloud_to", Double.class, 100.));
                             put("row", new ParameterDescriptor("row", Integer.class));
                             put("path", new ParameterDescriptor("path", Integer.class));
+                            put("row_path", new ParameterDescriptor("row_path", String[].class));
                         }});
                     }});
         }
