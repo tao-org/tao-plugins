@@ -43,7 +43,6 @@ import org.ggf.drmaa.JobInfo;
 import org.ggf.drmaa.JobTemplate;
 import org.ggf.drmaa.Session;
 import org.ggf.drmaa.SessionFactory;
-import org.ggf.drmaa.Settings;
 import org.junit.Test;
 
 import java.io.BufferedReader;

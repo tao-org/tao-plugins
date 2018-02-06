@@ -44,6 +44,7 @@ import org.ggf.drmaa.SessionFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+//import ro.cs.tao.execution.drmaa.utils;
 
 import java.util.Collections;
 
@@ -98,7 +99,7 @@ public class Issue2608Test {
         String job_id_1 = session.runJob(jt);
 
         /** let the job wait till the other wait job finished */
-        if (ro.cs.tao.execution.drmaa.torque.Util.isTorqueSession(session)) {
+        if (Util.isTorqueSession(session)) {
             jt.setNativeSpecification(" -W depend=afterok:" + job_id_1);
         } else {
             jt.setNativeSpecification(" -hold_jid " + job_id_1);
