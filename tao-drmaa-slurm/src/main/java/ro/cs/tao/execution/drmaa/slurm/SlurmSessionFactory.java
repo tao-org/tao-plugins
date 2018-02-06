@@ -51,6 +51,7 @@ public class SlurmSessionFactory extends AbstractSessionFactory {
     /**
      * Creates a new instance of AbstractSessionFactory.
      */
+
     public SlurmSessionFactory() {
         super();
     }

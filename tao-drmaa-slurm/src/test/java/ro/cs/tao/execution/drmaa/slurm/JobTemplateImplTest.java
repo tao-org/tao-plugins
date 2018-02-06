@@ -49,7 +49,6 @@ import org.ggf.drmaa.UnsupportedAttributeException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ro.cs.tao.execution.drmaa.AbstractSession;
 import ro.cs.tao.execution.drmaa.DrmaaJobTemplate;
 
 import java.util.Arrays;
@@ -119,7 +118,7 @@ public class JobTemplateImplTest {
     @Test
     public void testGetId() throws DrmaaException {
         System.out.println("testGetId");
-        AbstractSession session = (AbstractSession)this.session;
+        SlurmSession session = (SlurmSession)this.session;
         DrmaaJobTemplate jt = (DrmaaJobTemplate)this.jt;
         
         try {

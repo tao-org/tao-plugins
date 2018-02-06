@@ -1,4 +1,4 @@
-/*___INFO__MARK_BEGIN__*/
+package ro.cs.tao.execution.drmaa.slurm;/*___INFO__MARK_BEGIN__*/
 /*************************************************************************
  *
  *  The Contents of this file are made available subject to the terms of
@@ -36,35 +36,18 @@
  * Created on November 15, 2004, 10:41 AM
  */
 
-package ro.cs.tao.execution.drmaa.slurm;
+//package ro.cs.tao.execution.drmaa.slurm;
 
-import org.ggf.drmaa.DrmaaException;
-import org.ggf.drmaa.ExitTimeoutException;
-import org.ggf.drmaa.InternalException;
-import org.ggf.drmaa.InvalidJobException;
-import org.ggf.drmaa.InvalidJobTemplateException;
-import org.ggf.drmaa.JobInfo;
-import org.ggf.drmaa.JobTemplate;
-import org.ggf.drmaa.NoActiveSessionException;
-import org.ggf.drmaa.Session;
-import org.ggf.drmaa.SessionFactory;
-import org.ggf.drmaa.SimpleJobTemplate;
-import org.ggf.drmaa.Util;
+import org.ggf.drmaa.*;
+import ro.cs.tao.execution.drmaa.utils.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -95,7 +78,7 @@ public class SessionImplJobTest {
         session = null;
     }
     
-    /** Test of runJob method, of class com.sun.grid.drmaa.AbstractSession. */
+    /** Test of runJob method, of class com.sun.grid.drmaa.SessionImpl. */
     @Test
     public void testBadJobTemplate() {
         System.out.println("testBadJobTemplate");
@@ -128,7 +111,7 @@ public class SessionImplJobTest {
         }
     }
     
-    /** Test of runJob method, of class com.sun.grid.drmaa.AbstractSession. */
+    /** Test of runJob method, of class com.sun.grid.drmaa.SessionImpl. */
     @Test
     public void testBadRunJob() {
         System.out.println("testBadRunJob");
@@ -160,7 +143,7 @@ public class SessionImplJobTest {
         }
     }
     
-    /** Test of runBulkJobs method, of class com.sun.grid.drmaa.AbstractSession. */
+    /** Test of runBulkJobs method, of class com.sun.grid.drmaa.SessionImpl. */
     @Test
     public void testBadRunBulkJobs() {
         System.out.println("testBadRunBulkJobs");
@@ -263,7 +246,7 @@ public class SessionImplJobTest {
         }
     }
     
-    /** Test of wait method, of class com.sun.grid.drmaa.AbstractSession. */
+    /** Test of wait method, of class com.sun.grid.drmaa.SessionImpl. */
     @Test
     public void testBadWait() {
         System.out.println("testBadWait");
@@ -655,7 +638,7 @@ public class SessionImplJobTest {
         }
     }
     
-    /** Test of synchronize method, of class com.sun.grid.drmaa.AbstractSession. */
+    /** Test of synchronize method, of class com.sun.grid.drmaa.SessionImpl. */
     @Test
     public void testBadSynchronize() {
         System.out.println("testBadSynchronize");
@@ -1462,7 +1445,7 @@ public class SessionImplJobTest {
         }
     }
     
-    /** Test of getJobProgramStatus method, of class com.sun.grid.drmaa.AbstractSession. */
+    /** Test of getJobProgramStatus method, of class com.sun.grid.drmaa.SessionImpl. */
     @Test
     public void testBadGetJobProgramStatus() {
         System.out.println("testBadGetJobProgramStatus");
@@ -1517,7 +1500,7 @@ public class SessionImplJobTest {
         }
     }
     
-    /** Test of control method, of class com.sun.grid.drmaa.AbstractSession. */
+    /** Test of control method, of class com.sun.grid.drmaa.SessionImpl. */
     @Test
     public void testBadControl() {
         System.out.println("testBadControl");
