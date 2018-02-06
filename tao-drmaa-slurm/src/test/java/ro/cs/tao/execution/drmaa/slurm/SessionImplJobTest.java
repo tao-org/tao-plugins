@@ -39,7 +39,6 @@ package ro.cs.tao.execution.drmaa.slurm;/*___INFO__MARK_BEGIN__*/
 //package ro.cs.tao.execution.drmaa.slurm;
 
 import org.ggf.drmaa.*;
-import ro.cs.tao.execution.drmaa.utils.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
