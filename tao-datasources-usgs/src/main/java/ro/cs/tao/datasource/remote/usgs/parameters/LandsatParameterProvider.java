@@ -30,8 +30,8 @@ public class LandsatParameterProvider implements ParameterProvider {
                     new HashMap<String, Map<String, ParameterDescriptor>>() {{
                         put("Landsat8", new HashMap<String, ParameterDescriptor>() {{
                             put("satellite_name", new ParameterDescriptor("satellite_name", String.class, "landsat-8"));
-                            put("date_from", new ParameterDescriptor("date_from", Date.class));
-                            put("date_to", new ParameterDescriptor("date_to", Date.class));
+                            put("sensingStart", new ParameterDescriptor("date_from", Date.class));
+                            put("sensingEnd", new ParameterDescriptor("date_to", Date.class));
                             put("footprint", new ParameterDescriptor("footprint", Polygon2D.class));
                             put("cloud_from", new ParameterDescriptor("cloud_from", Double.class, 0.));
                             put("cloud_to", new ParameterDescriptor("cloud_to", Double.class, 100.));
