@@ -44,7 +44,6 @@ import org.ggf.drmaa.SessionFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-//import ro.cs.tao.execution.drmaa.utils;
 
 import java.util.Collections;
 
