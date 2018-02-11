@@ -12,6 +12,7 @@ import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.utils.FileUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
@@ -58,9 +61,15 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
     @Override
     public Path fetch(EOProduct product) throws IOException, InterruptedException {
         checkCancelled();
+        String tileId = "";
         if (this.filteredTiles != null) {
-            if (!tileIdPattern.matcher(product.getName()).matches()) {
+            Matcher matcher = tileIdPattern.matcher(product.getName());
+            if (!matcher.matches()) {
                 return null;
+            }
+            if (matcher.groupCount() == 1) {
+                // group(0) contains whole matched string and group(1) is actually the group we want
+                tileId = matcher.group(1);
             }
         }
         doAuthenticate();
@@ -75,6 +84,7 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
                 case 200:
                     markStart(product.getName());
                     Path archivePath = Paths.get(destination, product.getName() + ".tar.gz");
+                    FileUtils.ensureExists(Paths.get(destination));
                     Files.deleteIfExists(archivePath);
                     InputStream inputStream = response.getEntity().getContent();
                     SeekableByteChannel outputStream = null;
@@ -101,7 +111,10 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
                                                                   true);
                         if (productFile != null) {
                             try {
-                                product.setLocation(productFile.toString());
+                                product.setLocation(productFile.toUri().toString());
+                                product.addAttribute("tiles", new StringBuilder("{")
+                                        .append(tileId)
+                                        .append("}").toString());
                             } catch (URISyntaxException e) {
                                 logger.severe(e.getMessage());
                             }
