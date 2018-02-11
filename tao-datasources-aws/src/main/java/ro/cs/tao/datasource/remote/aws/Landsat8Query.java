@@ -170,7 +170,7 @@ class Landsat8Query extends DataQuery {
                                                                   clouds));
                                     } else {
                                         EOProduct product = parseProductJson(jsonTile);
-                                        if (this.limit < results.size()) {
+                                        if (this.limit > 0 && this.limit < results.size()) {
                                             break;
                                         }
                                         results.put(product.getName(), product);
@@ -205,7 +205,7 @@ class Landsat8Query extends DataQuery {
                                                                   clouds));
                                     } else {
                                         EOProduct product = parseProductJson(jsonTile);
-                                        if (this.limit < results.size()) {
+                                        if (this.limit > 0 && this.limit < results.size()) {
                                             break;
                                         }
                                         results.put(product.getName(), product);
