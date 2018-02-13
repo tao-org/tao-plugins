@@ -33,6 +33,7 @@ import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
 import ro.cs.tao.datasource.remote.scihub.json.SciHubJsonResponseHandler;
+import ro.cs.tao.datasource.remote.scihub.parameters.DoubleParameterConverter;
 import ro.cs.tao.datasource.remote.scihub.xml.SciHubXmlResponseHandler;
 import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
@@ -63,6 +64,7 @@ public class SciHubDataQuery extends DataQuery {
     static {
         converterFactory.register(SciHubPolygonParameterConverter.class, Polygon2D.class);
         converterFactory.register(DateParameterConverter.class, Date.class);
+        converterFactory.register(DoubleParameterConverter.class, Double.class);
     }
 
     SciHubDataQuery(SciHubDataSource source, String sensorName) {
