@@ -25,18 +25,15 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.utils.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
@@ -229,6 +226,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                     String count = String.valueOf(tileNames.size());
                     int tileCounter = 1;
                     ODataPath pathBuilder = new ODataPath();
+                    List<String> downloadedTiles = new ArrayList<>();
                     for (Map.Entry<String, String> entry : tileNames.entrySet()) {
                         long start = System.currentTimeMillis();
                         currentStep = "Tile " + String.valueOf(tileCounter++) + "/" + count;
@@ -292,6 +290,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                                     }
                                 }
                                 logger.fine(String.format("Tile download completed in %s", Utilities.formatTime(System.currentTimeMillis() - start)));
+                                downloadedTiles.add(granuleId);
                             } else {
                                 logger.warning(String.format("File %s was not downloaded", tileMetaFile.getFileName()));
                             }
@@ -308,12 +307,31 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                         Path dataStrip = FileUtils.ensureExists(dataStripFolder.resolve(dsFolder));
                         downloadFile(dataStripPath, dataStrip.resolve(dsFileName), NetUtils.getAuthToken());
                     }
+                    if (downloadedTiles.size() > 0) {
+                        product.addAttribute("tiles", new StringBuilder("{")
+                                .append(downloadedTiles.stream()
+                                        .map(tn -> getTileId(tn))
+                                        .collect(Collectors.joining(",")))
+                                .append("}").toString());
+                    }
                 } else {
-                    Files.deleteIfExists(metadataFile);
+                    //Files.deleteIfExists(metadataFile);
+                    // remove the entire directory
+                    Files.walk(rootPath)
+                            .sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .peek(System.out::println)
+                            .forEach(File::delete);
                     rootPath = null;
                     logger.warning(String.format("The product %s did not contain any tiles from the tile list", productName));
                 }
             } else {
+                // remove the entire directory
+                Files.walk(rootPath)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .peek(System.out::println)
+                        .forEach(File::delete);
                 logger.warning(String.format("The product %s was not found", productName));
                 rootPath = null;
             }
