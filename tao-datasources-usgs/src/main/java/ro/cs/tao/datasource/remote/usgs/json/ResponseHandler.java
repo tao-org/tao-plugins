@@ -30,13 +30,19 @@ public class ResponseHandler implements JSonResponseHandler<EOProduct> {
         JsonObject responseObj = jsonReader.readObject();
         JsonArray jsonArray = responseObj.getJsonArray("results");
         for (int i = 0; i < jsonArray.size(); i++) {
+            JsonObject result = jsonArray.getJsonObject(i);
+            // ignore products that are in the T2 or RT category
+            if (!"T1".equals(result.getString("COLLECTION_CATEGORY", ""))) {
+                continue;
+            }
             EOProduct currentProduct = new EOProduct();
             currentProduct.setFormatType(DataFormat.RASTER);
             currentProduct.setSensorType(SensorType.OPTICAL);
             currentProduct.setPixelType(PixelType.UINT16);
-            JsonObject result = jsonArray.getJsonObject(i);
             currentProduct.setName(result.getString("product_id"));
             currentProduct.setId(result.getString("scene_id"));
+            currentProduct.setProductType(result.getString("satellite_name"));
+
             try {
                 currentProduct.setAcquisitionDate(new SimpleDateFormat("yyyy-MM-dd").parse(result.getString("acquisitionDate")));
             } catch (Exception e) {

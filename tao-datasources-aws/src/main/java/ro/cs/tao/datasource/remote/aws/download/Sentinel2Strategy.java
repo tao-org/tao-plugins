@@ -12,23 +12,17 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
@@ -172,6 +166,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                     String dataStripId = null;
                     String count = String.valueOf(tileNames.size());
                     int tileCounter = 1;
+                    List<String> downloadedTiles = new ArrayList<>();
                     for (Map.Entry<String, String> entry : tileNames.entrySet()) {
                         currentStep = "Tile " + String.valueOf(tileCounter++) + "/" + count;
                         String tileUrl = entry.getValue();
@@ -219,6 +214,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                                 getLogger().warning(String.format("Download for %s failed [%s]", path, ex.getMessage()));
                             }
                         }
+                        downloadedTiles.add(tileName);
                         getLogger().fine(String.format("Trying to download %s", tileUrl + "/auxiliary/ECMWFT"));
                         downloadFile(tileUrl + "/auxiliary/ECMWFT", auxData.resolve(helper.getEcmWftFileName(tileName)));
                         if (dataStripId == null) {
@@ -247,17 +243,36 @@ public class Sentinel2Strategy extends DownloadStrategy {
                             }
                         }
                     }
+                    if (downloadedTiles.size() > 0) {
+                        product.addAttribute("tiles", new StringBuilder("{")
+                                .append(downloadedTiles.stream()
+                                        .map(tn -> getTileId(tn))
+                                        .collect(Collectors.joining(",")))
+                                .append("}").toString());
+                    }
                 } finally {
                     if (reader != null) reader.close();
                     if (inputStream != null) inputStream.close();
                     if (connection != null) connection.disconnect();
                 }
             } else {
-                Files.deleteIfExists(metadataFile);
+                //Files.deleteIfExists(metadataFile);
+                // remove the entire directory
+                Files.walk(rootPath)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .peek(System.out::println)
+                        .forEach(File::delete);
                 rootPath = null;
                 getLogger().warning(String.format("The product %s did not contain any tiles from the tile list", productName));
             }
         } else {
+            // remove the entire directory
+            Files.walk(rootPath)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .peek(System.out::println)
+                    .forEach(File::delete);
             getLogger().warning(String.format("Either the product %s was not found in the data bucket or the metadata file could not be downloaded", productName));
             rootPath = null;
         }
