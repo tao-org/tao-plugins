@@ -33,6 +33,7 @@ import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
 import ro.cs.tao.datasource.remote.scihub.json.SciHubJsonResponseHandler;
+import ro.cs.tao.datasource.remote.scihub.parameters.DoubleParameterConverter;
 import ro.cs.tao.datasource.remote.scihub.xml.SciHubXmlResponseHandler;
 import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
@@ -63,6 +64,7 @@ public class SciHubDataQuery extends DataQuery {
     static {
         converterFactory.register(SciHubPolygonParameterConverter.class, Polygon2D.class);
         converterFactory.register(DateParameterConverter.class, Date.class);
+        converterFactory.register(DoubleParameterConverter.class, Double.class);
     }
 
     SciHubDataQuery(SciHubDataSource source, String sensorName) {
@@ -74,13 +76,13 @@ public class SciHubDataQuery extends DataQuery {
     protected List<EOProduct> executeImpl() throws QueryException {
         List<EOProduct> results = new ArrayList<>();
         String query = buildQueryParameters();
-        if (this.limit <= 0) {
-            this.limit = DEFAULT_LIMIT;
-        }
+//        if (this.limit <= 0) {
+//            this.limit = DEFAULT_LIMIT;
+//        }
         if (this.pageSize <= 0) {
-            this.pageSize = Math.min(this.limit, DEFAULT_LIMIT);
+            this.pageSize = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, DEFAULT_LIMIT);
         }
-        int page = Math.max(this.pageNumber, 0);
+        int page = Math.max(this.pageNumber, 1);
         int retrieved = 0;
         do {
             List<EOProduct> tmpResults;
@@ -91,6 +93,7 @@ public class SciHubDataQuery extends DataQuery {
 
             String queryUrl = this.source.getConnectionString() + "?"
               + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+            logger.info("SciHub query: " + queryUrl);
             try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
@@ -126,9 +129,10 @@ public class SciHubDataQuery extends DataQuery {
             } catch (IOException ex) {
                 throw new QueryException(ex);
             }
-        } while (this.pageNumber <= 0 && (retrieved > 0 && results.size() == this.limit));
+        } while (this.pageNumber <= 0 && (retrieved > 0 &&
+                (this.limit > 0 ? results.size() == this.limit : true)));
         logger.info(String.format("Query returned %s products", results.size()));
-        if (results.size() > this.limit) {
+        if ((this.limit > 0) && (results.size() > this.limit)) {
             return results.subList(0, this.limit);
         } else {
             return results;
