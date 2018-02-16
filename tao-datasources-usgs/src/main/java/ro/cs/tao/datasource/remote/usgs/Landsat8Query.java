@@ -76,7 +76,7 @@ public class Landsat8Query extends DataQuery {
                 }
             } else {
                 try {
-                    params.add(new BasicNameValuePair(parameter.getName(),
+                    params.add(new BasicNameValuePair(supportedParams.get(parameter.getName()).getName(),
                                                       converterFactory.create(parameter).stringValue()));
                 } catch (ConversionException e) {
                     e.printStackTrace();
@@ -89,9 +89,10 @@ public class Landsat8Query extends DataQuery {
         if (this.pageNumber > 0) {
             params.add(new BasicNameValuePair("skip", String.valueOf(this.pageNumber)));
         }
-        if (this.limit > 0) {
-            params.add(new BasicNameValuePair("limit", String.valueOf(this.limit)));
-        }
+        //if (this.limit > 0) {
+        // Leave the limit to -1 otherwise the default limit is 1
+        params.add(new BasicNameValuePair("limit", String.valueOf(this.limit)));
+        //}
 
         String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8");
         if (pathRows != null && pathRows.size() > 0) {
