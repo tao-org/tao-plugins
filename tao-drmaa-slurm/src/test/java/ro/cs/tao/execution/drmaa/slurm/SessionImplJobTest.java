@@ -184,7 +184,7 @@ public class SessionImplJobTest {
             
             try {
                 session.runBulkJobs(jt, 1, -2, 1);
-                fail("Allowed invalid end id");
+                fail("Allowed in valid end id");
             } catch (IllegalArgumentException e) {
                 /* Don't care */
             }
