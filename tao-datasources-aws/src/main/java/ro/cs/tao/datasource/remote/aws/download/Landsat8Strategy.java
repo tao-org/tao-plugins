@@ -14,6 +14,7 @@ import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
 /**
  * @author Cosmin Cara
@@ -63,9 +64,15 @@ public class Landsat8Strategy extends DownloadStrategy {
         currentProduct = product;
         String productName = currentProduct.getName();
         Landsat8ProductHelper helper = new Landsat8ProductHelper(productName);
+        String tileId = "";
         if (this.filteredTiles != null) {
-            if (!tileIdPattern.matcher(productName).matches()) {
+            Matcher matcher = tileIdPattern.matcher(productName);
+            if (!matcher.matches()) {
                 return null;
+            }
+            if (matcher.groupCount() == 1) {
+                // group(0) contains whole matched string and group(1) is actually the group we want
+                tileId = matcher.group(1);
             }
         }
         Path rootPath = FileUtils.ensureExists(Paths.get(destination, productName));
@@ -98,6 +105,9 @@ public class Landsat8Strategy extends DownloadStrategy {
                     getLogger().warning(String.format("Download for %s failed [%s]", fileName, ex.getMessage()));
                 }
             }
+            product.addAttribute("tiles", new StringBuilder("{")
+                    .append(tileId)
+                    .append("}").toString());
         } else {
             getLogger().warning(
                     String.format("Either the product %s was not found or the metadata file could not be downloaded",
