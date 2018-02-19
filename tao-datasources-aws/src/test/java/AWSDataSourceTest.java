@@ -8,7 +8,7 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.messaging.Message;
 import ro.cs.tao.messaging.Messaging;
-import ro.cs.tao.messaging.NotifiableComponent;
+import ro.cs.tao.messaging.Notifiable;
 import ro.cs.tao.messaging.ProgressNotifier;
 import ro.cs.tao.messaging.Topics;
 import ro.cs.tao.products.landsat.LandsatProduct;
@@ -82,7 +82,7 @@ public class AWSDataSourceTest {
             final ProductFetchStrategy strategy = dataSource.getProductFetchStrategy(sensors[0]);
             strategy.setProgressListener(new ProgressNotifier(SystemPrincipal.instance(), dataSource, Topics.PROGRESS));
 
-            Messaging.subscribe(new NotifiableComponent() {
+            Messaging.subscribe(new Notifiable() {
                 @Override
                 protected void onMessageReceived(Message message) {
                     System.out.println(message.getData());
