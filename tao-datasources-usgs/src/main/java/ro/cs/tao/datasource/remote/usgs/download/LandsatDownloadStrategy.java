@@ -23,13 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.MissingResourceException;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
@@ -79,51 +74,58 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
             currentProduct = product;
             currentProductProgress = 0;
         }
-        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, getProductUrl(product), null)) {
-            switch (response.getStatusLine().getStatusCode()) {
+        String productUrl = getProductUrl(product);
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, productUrl, null)) {
+            int statusCode = response.getStatusLine().getStatusCode();
+            logger.fine(String.format("%s returned http code %s", productUrl, statusCode));
+            switch (statusCode) {
                 case 200:
-                    markStart(product.getName());
-                    Path archivePath = Paths.get(destination, product.getName() + ".tar.gz");
-                    FileUtils.ensureExists(Paths.get(destination));
-                    Files.deleteIfExists(archivePath);
-                    InputStream inputStream = response.getEntity().getContent();
-                    SeekableByteChannel outputStream = null;
-                    currentProduct.setApproximateSize(response.getEntity().getContentLength());
                     try {
-                        outputStream = Files.newByteChannel(archivePath, EnumSet.of(StandardOpenOption.CREATE,
-                                                                                 StandardOpenOption.APPEND,
-                                                                                 StandardOpenOption.WRITE));
-                        byte[] buffer = new byte[BUFFER_SIZE];
-                        int read;
-                        int totalRead = 0;
-                        logger.fine("Begin reading from input stream");
-                        while (!isCancelled() && (read = inputStream.read(buffer)) != -1) {
-                            outputStream.write(ByteBuffer.wrap(buffer, 0, read));
-                            totalRead += read;
-                            currentProductProgress = Math.min(1.0, currentProduct.getApproximateSize() > 0 ?
-                                    (double) totalRead / (double) currentProduct.getApproximateSize() : 0);
-                        }
-                        outputStream.close();
-                        logger.fine("End reading from input stream");
-                        checkCancelled();
-                        productFile = Zipper.decompressTarGz(archivePath,
-                                                                  Paths.get(archivePath.toString().replace(".tar.gz", "")),
-                                                                  true);
-                        if (productFile != null) {
-                            try {
-                                product.setLocation(productFile.toUri().toString());
-                                product.addAttribute("tiles", new StringBuilder("{")
-                                        .append(tileId)
-                                        .append("}").toString());
-                            } catch (URISyntaxException e) {
-                                logger.severe(e.getMessage());
+                        markStart(product.getName());
+                        Path archivePath = Paths.get(destination, product.getName() + ".tar.gz");
+                        FileUtils.ensureExists(Paths.get(destination));
+                        Files.deleteIfExists(archivePath);
+                        InputStream inputStream = response.getEntity().getContent();
+                        SeekableByteChannel outputStream = null;
+                        currentProduct.setApproximateSize(response.getEntity().getContentLength());
+                        try {
+                            outputStream = Files.newByteChannel(archivePath, EnumSet.of(StandardOpenOption.CREATE,
+                                    StandardOpenOption.APPEND,
+                                    StandardOpenOption.WRITE));
+                            byte[] buffer = new byte[BUFFER_SIZE];
+                            int read;
+                            int totalRead = 0;
+                            logger.fine("Begin reading from input stream");
+                            while (!isCancelled() && (read = inputStream.read(buffer)) != -1) {
+                                outputStream.write(ByteBuffer.wrap(buffer, 0, read));
+                                totalRead += read;
+                                currentProductProgress = Math.min(1.0, currentProduct.getApproximateSize() > 0 ?
+                                        (double) totalRead / (double) currentProduct.getApproximateSize() : 0);
                             }
+                            outputStream.close();
+                            logger.fine("End reading from input stream");
+                            checkCancelled();
+                            productFile = Zipper.decompressTarGz(archivePath,
+                                    Paths.get(archivePath.toString().replace(".tar.gz", "")),
+                                    true);
+                            if (productFile != null) {
+                                try {
+                                    product.setLocation(productFile.toUri().toString());
+                                    product.addAttribute("tiles", new StringBuilder("{")
+                                            .append(tileId)
+                                            .append("}").toString());
+                                } catch (URISyntaxException e) {
+                                    logger.severe(e.getMessage());
+                                }
+                            }
+                        } finally {
+                            if (outputStream != null && outputStream.isOpen()) outputStream.close();
+                            if (inputStream != null) inputStream.close();
                         }
+                        logger.fine(String.format("End download for %s", product.getLocation()));
                     } finally {
-                        if (outputStream != null && outputStream.isOpen()) outputStream.close();
-                        if (inputStream != null) inputStream.close();
+                        markEnd(product.getName());
                     }
-                    logger.fine(String.format("End download for %s", product.getLocation()));
                     break;
                 case 401:
                     throw new QueryException("The supplied credentials are invalid!");
@@ -131,8 +133,6 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
                     throw new QueryException(String.format("The request was not successful. Reason: %s",
                                                            response.getStatusLine().getReasonPhrase()));
             }
-        } finally {
-            markEnd(product.getName());
         }
         return productFile;
     }
