@@ -176,9 +176,9 @@ public class Sentinel2Strategy extends DownloadStrategy {
                         Path imgData = FileUtils.ensureExists(tileFolder.resolve(FOLDER_IMG_DATA));
                         Path qiData = FileUtils.ensureExists(tileFolder.resolve(FOLDER_QI_DATA));
                         String metadataName = helper.getGranuleMetadataFileName(tileName);
-                        getLogger().fine(String.format("Downloading tile metadata %s", tileFolder.resolve(metadataName)));
-                        downloadFile(tileUrl + "/metadata.xml", tileFolder.resolve(metadataName));
-                        List<String> tileMetadataLines = Files.readAllLines(metadataFile);
+                        Path tileMetadataPath = tileFolder.resolve(metadataName);
+                        getLogger().fine(String.format("Downloading tile metadata %s", tileMetadataPath));
+                        downloadFile(tileUrl + "/metadata.xml", tileMetadataPath);
                         for (String bandFileName : l1cBandFiles) {
                             try {
                                 String bandFileUrl = tileUrl + URL_SEPARATOR + bandFileName;
@@ -189,6 +189,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                                 getLogger().warning(String.format("Download for %s failed [%s]", bandFileName, ex.getMessage()));
                             }
                         }
+                        List<String> tileMetadataLines = Files.readAllLines(tileMetadataPath);
                         List<String> lines = Utilities.filter(tileMetadataLines, "<MASK_FILENAME");
                         for (String line : lines) {
                             line = line.trim();
