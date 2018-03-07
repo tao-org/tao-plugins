@@ -157,7 +157,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
     }
 
     @Override
-    public Path fetch(EOProduct product) throws IOException, InterruptedException {
+    protected Path fetchImpl(EOProduct product) throws IOException, InterruptedException {
         Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(product.getName());
         String tileId = helper.getTileIdentifier();
         if (tileId != null && this.filteredTiles != null && !this.filteredTiles.contains(tileId)) {
