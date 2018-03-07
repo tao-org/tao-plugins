@@ -15,13 +15,11 @@ import javax.json.JsonReader;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 /**
@@ -97,16 +95,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
     }
 
     @Override
-    public Path fetch(String productName) throws IOException {
-        return fetch(new EOProduct() {{ setName(productName); }});
-    }
-
-    @Override
-    public Path fetch(EOProduct product) throws IOException {
-        return downloadImpl(product);
-    }
-
-    private Path downloadImpl(EOProduct product) throws IOException {
+    protected Path fetchImpl(EOProduct product) throws IOException {
         Path rootPath = null;
         String url;
         currentProduct = product;

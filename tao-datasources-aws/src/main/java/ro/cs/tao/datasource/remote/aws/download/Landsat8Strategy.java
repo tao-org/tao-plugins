@@ -54,12 +54,7 @@ public class Landsat8Strategy extends DownloadStrategy {
     }
 
     @Override
-    public Path fetch(String productName) throws IOException {
-        return fetch(new EOProduct() {{ setName(productName); }});
-    }
-
-    @Override
-    public Path fetch(EOProduct product) throws IOException {
+    protected Path fetchImpl(EOProduct product) throws IOException {
         String url;
         currentProduct = product;
         String productName = currentProduct.getName();

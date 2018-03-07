@@ -39,7 +39,7 @@ public class PepsDownloadStrategy extends DownloadStrategy {
     }
 
     @Override
-    public Path fetch(EOProduct product) throws IOException {
+    protected Path fetchImpl(EOProduct product) throws IOException {
         FileUtils.ensureExists(Paths.get(destination));
         String productName = product.getName();
         currentStep = "Metadata";
