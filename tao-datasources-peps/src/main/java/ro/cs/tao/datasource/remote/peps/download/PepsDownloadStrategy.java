@@ -38,6 +38,14 @@ public class PepsDownloadStrategy extends DownloadStrategy {
         retries = Integer.parseInt(properties.getProperty("peps.wait.retries", "5"));
     }
 
+    private PepsDownloadStrategy(PepsDownloadStrategy other) {
+        super(other);
+        this.retries = other.retries;
+    }
+
+    @Override
+    public PepsDownloadStrategy clone() { return new PepsDownloadStrategy(this); }
+
     @Override
     protected Path fetchImpl(EOProduct product) throws IOException {
         FileUtils.ensureExists(Paths.get(destination));
