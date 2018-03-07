@@ -78,7 +78,7 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
     }
 
     @Override
-    public Path fetch(EOProduct product) throws IOException, InterruptedException {
+    protected Path fetchImpl(EOProduct product) throws IOException, InterruptedException {
         FileUtils.ensureExists(Paths.get(destination));
         String productName = product.getName();
         currentStep = "Archive";

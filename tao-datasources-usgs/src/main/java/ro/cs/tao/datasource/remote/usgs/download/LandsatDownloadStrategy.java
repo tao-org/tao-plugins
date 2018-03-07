@@ -54,7 +54,7 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
     }
 
     @Override
-    public Path fetch(EOProduct product) throws IOException, InterruptedException {
+    protected Path fetchImpl(EOProduct product) throws IOException, InterruptedException {
         checkCancelled();
         String tileId = "";
         if (this.filteredTiles != null) {
@@ -81,7 +81,7 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
             switch (statusCode) {
                 case 200:
                     try {
-                        markStart(product.getName());
+                        subActivityStart(product.getName());
                         Path archivePath = Paths.get(destination, product.getName() + ".tar.gz");
                         FileUtils.ensureExists(Paths.get(destination));
                         Files.deleteIfExists(archivePath);
@@ -124,7 +124,7 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
                         }
                         logger.fine(String.format("End download for %s", product.getLocation()));
                     } finally {
-                        markEnd(product.getName());
+                        subActivityEnd(product.getName());
                     }
                     break;
                 case 401:

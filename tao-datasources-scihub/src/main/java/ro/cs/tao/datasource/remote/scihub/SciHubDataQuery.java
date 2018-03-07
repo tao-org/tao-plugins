@@ -84,12 +84,13 @@ public class SciHubDataQuery extends DataQuery {
         }
         int page = Math.max(this.pageNumber, 1);
         int retrieved = 0;
-        do {
+        //do {
             List<EOProduct> tmpResults;
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("q", query));
+            params.add(new BasicNameValuePair("orderby", "beginposition asc"));
             params.add(new BasicNameValuePair("rows", String.valueOf(this.pageSize)));
-            params.add(new BasicNameValuePair("start", page > 0 ? String.valueOf((page - 1) * this.pageSize) : "0"));
+            params.add(new BasicNameValuePair("start", String.valueOf((page - 1) * this.pageSize)));
 
             String queryUrl = this.source.getConnectionString() + "?"
               + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
@@ -117,7 +118,7 @@ public class SciHubDataQuery extends DataQuery {
                                   .collect(Collectors.toList());
                             }
                             results.addAll(tmpResults);
-                            page++;
+                            //page++;
                         }
                         break;
                     case 401:
@@ -129,14 +130,14 @@ public class SciHubDataQuery extends DataQuery {
             } catch (IOException ex) {
                 throw new QueryException(ex);
             }
-        } while (this.pageNumber <= 0 && (retrieved > 0 &&
-                (this.limit > 0 ? results.size() == this.limit : true)));
+//        } while (this.pageNumber <= 0 && (retrieved > 0 &&
+//                (this.limit > 0 ? results.size() == this.limit : true)));
         logger.info(String.format("Query returned %s products", results.size()));
-        if ((this.limit > 0) && (results.size() > this.limit)) {
+        /*if ((this.limit > 0) && (results.size() > this.limit)) {
             return results.subList(0, this.limit);
-        } else {
+        } else {*/
             return results;
-        }
+        //}
     }
 
     @Override
