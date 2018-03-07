@@ -61,6 +61,7 @@ public class Landsat8Strategy extends DownloadStrategy {
     @Override
     public Path fetch(EOProduct product) throws IOException {
         String url;
+        checkCancelled();
         currentProduct = product;
         String productName = currentProduct.getName();
         Landsat8ProductHelper helper = new Landsat8ProductHelper(productName);
