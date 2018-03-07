@@ -48,6 +48,13 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
         super(targetFolder, properties);
     }
 
+    public LandsatDownloadStrategy(LandsatDownloadStrategy other) {
+        super(other);
+    }
+
+    @Override
+    public LandsatDownloadStrategy clone() { return new LandsatDownloadStrategy(this); }
+
     @Override
     protected String getMetadataUrl(EOProduct descriptor) {
         throw new RuntimeException("Metadata file not supported for this strategy");
