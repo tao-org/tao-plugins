@@ -131,6 +131,22 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
         odataMetadataPath = odp.root(odataProductPath).node(ODATA_XML_PLACEHOLDER).value();
     }
 
+    private Sentinel2DownloadStrategy(Sentinel2DownloadStrategy other) {
+        super(other);
+        if (other.filteredTiles != null) {
+            this.filteredTiles = new HashSet<>();
+            this.filteredTiles.addAll(other.filteredTiles);
+        }
+        this.odataMetadataPath = other.odataMetadataPath;
+        this.odataProductPath = other.odataProductPath;
+        this.odataTilePath = other.odataTilePath;
+        this.shouldFilterTiles = other.shouldFilterTiles;
+        this.tileIdPattern = other.tileIdPattern;
+    }
+
+    @Override
+    public Sentinel2DownloadStrategy clone() { return new Sentinel2DownloadStrategy(this); }
+
     public void setFilteredTiles(Set<String> tiles) {
         this.filteredTiles = tiles;
         if (shouldFilterTiles = (tiles != null && tiles.size() > 0)) {

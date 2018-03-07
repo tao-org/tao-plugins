@@ -71,6 +71,16 @@ public class Sentinel2Strategy extends DownloadStrategy {
         productsUrl = baseUrl + "products/";
     }
 
+    private Sentinel2Strategy(Sentinel2Strategy other) {
+        super(other);
+        this.productsUrl = other.productsUrl;
+        this.baseUrl = other.baseUrl;
+        this.shouldFilterTiles = other.shouldFilterTiles;
+    }
+
+    @Override
+    public Sentinel2Strategy clone() { return new Sentinel2Strategy(this); }
+
     @Override
     public void setFilteredTiles(Set<String> tiles) {
         super.setFilteredTiles(tiles);
