@@ -53,6 +53,14 @@ public class Landsat8Strategy extends DownloadStrategy {
             baseUrl += "/";
     }
 
+    private Landsat8Strategy(Landsat8Strategy other) {
+        super(other);
+        this.baseUrl = other.baseUrl;
+    }
+
+    @Override
+    public Landsat8Strategy clone() { return new Landsat8Strategy(this); }
+
     @Override
     protected Path fetchImpl(EOProduct product) throws IOException {
         String url;

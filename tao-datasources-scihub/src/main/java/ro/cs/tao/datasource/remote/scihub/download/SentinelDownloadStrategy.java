@@ -65,6 +65,15 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
         odataArchivePath = odp.root(scihubUrl + "/Products('${UUID}')").value();
     }
 
+    protected SentinelDownloadStrategy(SentinelDownloadStrategy other) {
+        super(other);
+        this.odataArchivePath = other.odataArchivePath;
+        this.oDataBasePath = other.oDataBasePath;
+    }
+
+    @Override
+    public SentinelDownloadStrategy clone() { return new SentinelDownloadStrategy(this); }
+
     @Override
     public String getProductUrl(EOProduct descriptor) {
         return descriptor.getLocation() == null ?
