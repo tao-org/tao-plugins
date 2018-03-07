@@ -109,6 +109,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
     private Path downloadImpl(EOProduct product) throws IOException {
         Path rootPath = null;
         String url;
+        checkCancelled();
         currentProduct = product;
         currentProductProgress = 0;
         FileUtils.ensureExists(Paths.get(destination));
