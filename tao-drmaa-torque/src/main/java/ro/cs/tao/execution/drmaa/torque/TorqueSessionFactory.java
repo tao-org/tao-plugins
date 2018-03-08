@@ -1,50 +1,25 @@
-/*___INFO__MARK_BEGIN__*/
-/*************************************************************************
+/*
+ * Copyright (C) 2017 CS ROMANIA
  *
- *  The Contents of this file are made available subject to the terms of
- *  the Sun Industry Standards Source License Version 1.2
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 3 of the License, or (at your option)
+ * any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
  *
- *  Sun Microsystems Inc., March, 2001
- *
- *
- *  Sun Industry Standards Source License Version 1.2
- *  =================================================
- *  The contents of this file are subject to the Sun Industry Standards
- *  Source License Version 1.2 (the "License"); You may not use this file
- *  except in compliance with the License. You may obtain a copy of the
- *  License at http://gridengine.sunsource.net/Gridengine_SISSL_license.html
- *
- *  Software provided under this License is provided on an "AS IS" basis,
- *  WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING,
- *  WITHOUT LIMITATION, WARRANTIES THAT THE SOFTWARE IS FREE OF DEFECTS,
- *  MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE, OR NON-INFRINGING.
- *  See the License for the specific provisions governing your rights and
- *  obligations concerning the Software.
- *
- *   The Initial Developer of the Original Code is: Sun Microsystems, Inc.
- *
- *   Copyright: 2001 by Sun Microsystems, Inc.
- *
- *   All Rights Reserved.
- *
- ************************************************************************/
-/*___INFO__MARK_END__*/
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, see http://www.gnu.org/licenses/
+ */
 package ro.cs.tao.execution.drmaa.torque;
 
 import org.ggf.drmaa.Session;
-import org.ggf.drmaa.SessionFactory;
 import ro.cs.tao.execution.drmaa.AbstractSessionFactory;
 
 /**
- * This class is used to create a AbstractSession instance.  In order to use the
- * Grid Engine binding, the $SGE_ROOT environment variable must be set, the
- * $SGE_ROOT/lib/drmaa.jar file must in included in the CLASSPATH environment
- * variable, and the $SGE_ROOT/lib/$ARCH directory must be included in the
- * library path, e.g. LD_LIBRARY_PATH.
- * @see SessionFactory
- * @author dan.templeton@sun.com
- * @since 0.5
- * @version 1.0
+ * @author Petre Bazavan
  */
 public class TorqueSessionFactory extends AbstractSessionFactory {
 
