@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 /**
@@ -129,7 +130,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
             List<String> allLines = Files.readAllLines(metadataFile);
             List<String> metaTileNames = Utilities.filter(allLines, "<Granule" + ("13".equals(helper.getVersion()) ? "s" : " "));
 
-            boolean hasTiles = updateMetadata(metadataFile, allLines);
+            boolean hasTiles = updateMetadata(metadataFile, allLines) != null;
             if (hasTiles) {
                 downloadFile(baseProductUrl + "inspire.xml", inspireFile);
                 downloadFile(baseProductUrl + "manifest.safe", manifestFile);
@@ -280,6 +281,63 @@ public class Sentinel2Strategy extends DownloadStrategy {
         return rootPath;
     }
 
+    @Override
+    protected Path link(EOProduct product) throws IOException {
+        String productName = product.getName();
+        String localArchiveRoot = getLocalArchiveRoot();
+        if (localArchiveRoot == null) {
+            throw new IllegalArgumentException("Local archive root not set");
+        }
+        Path productRepositoryPath = Paths.get(localArchiveRoot);
+        Path destinationPath = FileUtils.ensureExists(Paths.get(destination, productName + ".SAFE"));
+        Path productSourcePath = findProductPath(productRepositoryPath, product);
+        if (productSourcePath == null) {
+            logger.warning(String.format("%s not found locally", productName));
+            return null;
+        }
+        Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(productName);
+        Path metadataFile = destinationPath.resolve(helper.getMetadataFileName());
+        currentStep = "Metadata";
+        logger.fine(String.format("Copying metadata file %s", metadataFile));
+        copyFile(productSourcePath.resolve(metadataFile.getFileName()), metadataFile);
+        if (Files.exists(metadataFile)) {
+            List<String> allLines = Files.readAllLines(metadataFile);
+            Set<String> tileNames = updateMetadata(metadataFile, allLines);
+            if (tileNames != null) {
+                List<Path> folders = FileUtils.listFolders(productSourcePath);
+                final Path destPath = destinationPath;
+                folders.stream()
+                        .filter(folder -> !folder.toString().contains("GRANULE") ||
+                                "GRANULE".equals(folder.getName(folder.getNameCount() - 1).toString()) ||
+                                tileNames.stream().anyMatch(tn -> folder.toString().contains(tn)))
+                        .forEach(folder -> {
+                            try {
+                                FileUtils.ensureExists(destPath.resolve(productSourcePath.relativize(folder)));
+                                FileUtils.listFiles(folder)
+                                        .forEach(file -> {
+                                            try {
+                                                linkFile(file, destPath.resolve(productSourcePath.relativize(file)));
+                                            } catch (IOException e) {
+                                                logger.warning(e.getMessage());
+                                            }
+                                        });
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+            } else {
+                Files.deleteIfExists(metadataFile);
+                logger.warning(String.format("The product %s did not contain any tiles from the tile list", productName));
+                destinationPath = null;
+            }
+        } else {
+            logger.warning(String.format("Either the product %s was not found or the metadata file could not be downloaded",
+                    productName));
+            destinationPath = null;
+        }
+        return destinationPath;
+    }
+
     private Map<String, String> getTileNames(JsonObject productInfo, List<String> metaTileNames, String psdVersion) {
         Map<String, String> ret = new HashMap<>();
         JsonArray tiles = productInfo.getJsonArray("tiles");
@@ -308,28 +366,50 @@ public class Sentinel2Strategy extends DownloadStrategy {
         }
     }
 
-    private boolean updateMetadata(Path metaFile, List<String> originalLines) throws IOException {
-        boolean canProceed = true;
+    private Set<String> updateMetadata(Path metaFile, List<String> originalLines) throws IOException {
+        Set<String> extractedTileNames = null;
         if (shouldFilterTiles) {
             int tileCount = 0;
             List<String> lines = new ArrayList<>();
             for (int i = 0; i < originalLines.size(); i++) {
                 String line = originalLines.get(i);
-                if (line.contains("<Granule_List>")) {
-                    if (tileIdPattern.matcher(originalLines.get(i + 1)).matches()) {
-                        lines.addAll(originalLines.subList(i, i + 17));
-                        tileCount++;
+                boolean canProceed = line.contains("<Granule_List>") | line.contains("<Granule");
+                if (canProceed) {
+                    final String nextLine = originalLines.get(i + 1);
+                    if (nextLine.contains("<Granules")) {
+                        final Matcher matcher = tileIdPattern.matcher(nextLine);
+                        if (matcher.matches()) {
+                            if (extractedTileNames == null) {
+                                extractedTileNames = new HashSet<>();
+                            }
+                            extractedTileNames.add(matcher.group(1));
+                            lines.addAll(originalLines.subList(i, i + 17));
+                            tileCount++;
+                        }
+                        i += 16;
+                    } else if (line.contains("<Granule ")) {
+                        final Matcher matcher = tileIdPattern.matcher(line);
+                        if (matcher.matches()) {
+                            if (extractedTileNames == null) {
+                                extractedTileNames = new HashSet<>();
+                            }
+                            extractedTileNames.add(matcher.group(1));
+                            lines.addAll(originalLines.subList(i, i + 16));
+                            tileCount++;
+                        }
+                        i += 15;
+                    } else {
+                        lines.add(line);
                     }
-                    i += 16;
                 } else {
                     lines.add(line);
                 }
             }
-            if (canProceed = (tileCount > 0)) {
+            if (tileCount > 0) {
                 Files.write(metaFile, lines, StandardCharsets.UTF_8);
             }
         }
-        return canProceed;
+        return extractedTileNames;
     }
 
     private Logger getLogger() { return Logger.getLogger(Sentinel2Strategy.class.getSimpleName()); }
