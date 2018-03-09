@@ -48,6 +48,9 @@ public class Landsat8ProductHelper extends ProductHelper {
     }
 
     @Override
+    public Pattern getTilePattern() { return Pattern.compile("(?:.+)(\\d{6})(?:.+)"); }
+
+    @Override
     public String getVersion() {
         if (this.version == null) {
             this.version = this.oldFormat ? PRE_COLLECTION : COLLECTION_1;

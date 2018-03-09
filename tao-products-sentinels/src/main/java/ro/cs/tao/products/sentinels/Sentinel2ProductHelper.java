@@ -17,6 +17,8 @@ package ro.cs.tao.products.sentinels;
 
 import ro.cs.tao.datasource.remote.ProductHelper;
 
+import java.util.regex.Pattern;
+
 /**
  * @author Cosmin Cara
  */
@@ -43,13 +45,14 @@ public abstract class Sentinel2ProductHelper extends ProductHelper {
         super(name);
     }
 
-    public double getCloudsPercentage() {
-        return cloudsPercentage;
-    }
+    public double getCloudsPercentage() { return cloudsPercentage; }
 
     public void setCloudsPercentage(double cloudsPercentage) {
         this.cloudsPercentage = cloudsPercentage;
     }
+
+    @Override
+    public Pattern getTilePattern() { return Pattern.compile("(?:.+)(\\d{2}[A-Z]{3})(?:.+)"); }
 
     public abstract String getTileIdentifier();
 
