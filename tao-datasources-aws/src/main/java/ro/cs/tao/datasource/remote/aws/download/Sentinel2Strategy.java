@@ -22,6 +22,7 @@ import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.utils.FileUtils;
+import ro.cs.tao.utils.StringUtils;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -36,7 +37,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
@@ -145,7 +145,12 @@ public class Sentinel2Strategy extends DownloadStrategy {
             List<String> allLines = Files.readAllLines(metadataFile);
             List<String> metaTileNames = Utilities.filter(allLines, "<Granule" + ("13".equals(helper.getVersion()) ? "s" : " "));
 
-            boolean hasTiles = updateMetadata(metadataFile, allLines) != null;
+            Set<String> tileIds = updateMetadata(metadataFile, allLines);
+            boolean hasTiles = false;
+            if (tileIds != null) {
+                hasTiles = true;
+                currentProduct.addAttribute("tiles", StringUtils.join(tileIds, ","));
+            }
             if (hasTiles) {
                 downloadFile(baseProductUrl + "inspire.xml", inspireFile);
                 downloadFile(baseProductUrl + "manifest.safe", manifestFile);
@@ -261,11 +266,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                         }
                     }
                     if (downloadedTiles.size() > 0) {
-                        product.addAttribute("tiles", new StringBuilder("{")
-                                .append(downloadedTiles.stream()
-                                        .map(tn -> getTileId(tn))
-                                        .collect(Collectors.joining(",")))
-                                .append("}").toString());
+                        product.addAttribute("tiles", StringUtils.join(downloadedTiles, ","));
                     }
                 } finally {
                     if (reader != null) reader.close();
@@ -319,6 +320,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
             List<String> allLines = Files.readAllLines(metadataFile);
             Set<String> tileNames = updateMetadata(metadataFile, allLines);
             if (tileNames != null) {
+                currentProduct.addAttribute("tiles", StringUtils.join(tileNames, ","));
                 List<Path> folders = FileUtils.listFolders(productSourcePath);
                 final Path destPath = destinationPath;
                 folders.stream()

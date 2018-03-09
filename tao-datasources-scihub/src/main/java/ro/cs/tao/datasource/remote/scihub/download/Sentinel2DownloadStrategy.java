@@ -21,6 +21,7 @@ import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.utils.FileUtils;
+import ro.cs.tao.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +32,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
@@ -205,6 +205,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
             List<String> allLines = Files.readAllLines(metadataFile);
             Set<String> tileNames = updateMetadata(metadataFile, allLines);
             if (tileNames != null) {
+                currentProduct.addAttribute("tiles", StringUtils.join(tileNames, ","));
                 List<Path> folders = FileUtils.listFolders(productSourcePath);
                 final Path destPath = destinationPath;
                 folders.stream()
@@ -261,7 +262,12 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
             if (Files.exists(metadataFile)) {
                 List<String> allLines = Files.readAllLines(metadataFile);
                 List<String> metaTileNames = Utilities.filter(allLines, "<Granule" + ("13".equals(helper.getVersion()) ? "s" : " "));
-                boolean hasTiles = updateMetadata(metadataFile, allLines) != null;
+                Set<String> tileIds = updateMetadata(metadataFile, allLines);
+                boolean hasTiles = false;
+                if (tileIds != null) {
+                    hasTiles = true;
+                    currentProduct.addAttribute("tiles", StringUtils.join(tileIds, ","));
+                }
                 if (hasTiles) {
                     Path tilesFolder = FileUtils.ensureExists(rootPath.resolve(FOLDER_GRANULE));
                     FileUtils.ensureExists(rootPath.resolve(FOLDER_AUXDATA));
@@ -379,11 +385,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                         downloadFile(dataStripPath, dataStrip.resolve(dsFileName), NetUtils.getAuthToken());
                     }
                     if (downloadedTiles.size() > 0) {
-                        product.addAttribute("tiles", new StringBuilder("{")
-                                .append(downloadedTiles.stream()
-                                        .map(tn -> getTileId(tn))
-                                        .collect(Collectors.joining(",")))
-                                .append("}").toString());
+                        product.addAttribute("tiles", StringUtils.join(downloadedTiles, ","));
                     }
                 } else {
                     //Files.deleteIfExists(metadataFile);
