@@ -73,7 +73,6 @@
     <orderEntry type="library" name="Maven: net.bytebuddy:byte-buddy:1.6.14" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-spatial:5.2.13.Final" level="project" />
     <orderEntry type="library" name="Maven: org.geolatte:geolatte-geom:1.2.0" level="project" />
-    <orderEntry type="library" name="Maven: com.vladmihalcea:hibernate-types-52:1.2.0" level="project" />
     <orderEntry type="library" name="Maven: com.mchange:c3p0:0.9.5.2" level="project" />
     <orderEntry type="library" name="Maven: com.mchange:mchange-commons-java:0.2.11" level="project" />
     <orderEntry type="library" name="Maven: org.postgresql:postgresql:9.4.1212.jre7" level="project" />
