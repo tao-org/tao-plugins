@@ -33,6 +33,10 @@ public class Sentinel1ProductHelper extends ProductHelper {
     }
 
     @Override
+    public Pattern getTilePattern() { return null; }
+
+
+    @Override
     protected boolean verifyProductName(String name) {
         return S1Pattern.matcher(name).matches();
     }

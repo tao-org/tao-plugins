@@ -44,7 +44,6 @@ import java.util.regex.Matcher;
 public class Sentinel2Strategy extends DownloadStrategy {
     private static final Properties properties;
     private static final Set<String> l1cBandFiles;
-
     private static final String FOLDER_GRANULE = "GRANULE";
     private static final String FOLDER_AUXDATA = "AUX_DATA";
     private static final String FOLDER_DATASTRIP = "DATASTRIP";
@@ -424,6 +423,37 @@ public class Sentinel2Strategy extends DownloadStrategy {
             }
             if (tileCount > 0) {
                 Files.write(metaFile, lines, StandardCharsets.UTF_8);
+            }
+        } else {
+            if (tileIdPattern == null) {
+                Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(currentProduct.getName());
+                tileIdPattern = helper.getTilePattern();
+            }
+            for (int i = 0; i < originalLines.size(); i++) {
+                String line = originalLines.get(i);
+                boolean canProceed = line.contains("<Granule_List>") | line.contains("<Granule");
+                if (canProceed) {
+                    final String nextLine = originalLines.get(i + 1);
+                    if (nextLine.contains("<Granules")) {
+                        final Matcher matcher = tileIdPattern.matcher(nextLine);
+                        if (matcher.matches()) {
+                            if (extractedTileNames == null) {
+                                extractedTileNames = new HashSet<>();
+                            }
+                            extractedTileNames.add(matcher.group(1));
+                        }
+                        i += 16;
+                    } else if (line.contains("<Granule ")) {
+                        final Matcher matcher = tileIdPattern.matcher(line);
+                        if (matcher.matches()) {
+                            if (extractedTileNames == null) {
+                                extractedTileNames = new HashSet<>();
+                            }
+                            extractedTileNames.add(matcher.group(1));
+                        }
+                        i += 15;
+                    }
+                }
             }
         }
         return extractedTileNames;
