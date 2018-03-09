@@ -124,9 +124,7 @@ public class Landsat8Strategy extends DownloadStrategy {
                     getLogger().warning(String.format("Download for %s failed [%s]", fileName, ex.getMessage()));
                 }
             }
-            product.addAttribute("tiles", new StringBuilder("{")
-                    .append(tileId)
-                    .append("}").toString());
+            product.addAttribute("tiles",tileId);
         } else {
             getLogger().warning(
                     String.format("Either the product %s was not found or the metadata file could not be downloaded",

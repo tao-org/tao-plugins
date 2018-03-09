@@ -133,9 +133,7 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
                             if (productFile != null) {
                                 try {
                                     product.setLocation(productFile.toUri().toString());
-                                    product.addAttribute("tiles", new StringBuilder("{")
-                                            .append(tileId)
-                                            .append("}").toString());
+                                    product.addAttribute("tiles", tileId);
                                 } catch (URISyntaxException e) {
                                     logger.severe(e.getMessage());
                                 }
