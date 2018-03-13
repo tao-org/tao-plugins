@@ -24,6 +24,7 @@
         <module>tao-products-landsat</module>
         <module>tao-drmaa-slurm</module>
         <module>tao-drmaa-torque</module>
+        <module>tao-integration-geostorm</module>
     </modules>
 
     <properties>
