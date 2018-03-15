@@ -88,6 +88,9 @@ public class Landsat8ProductHelper extends ProductHelper {
     }
 
     @Override
+    public String getMetadataFileName() { return this.name + "_MTL.txt"; }
+
+    @Override
     public String getProductRelativePath() {
         StringBuilder buffer = new StringBuilder();
         if (!this.oldFormat) {

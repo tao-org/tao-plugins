@@ -134,6 +134,13 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
                                 try {
                                     product.setLocation(productFile.toUri().toString());
                                     product.addAttribute("tiles", tileId);
+                                    String metadataFile = product.getName() + "_MTL.txt";
+                                    try {
+                                        product.setEntryPoint(metadataFile);
+                                    } catch (URISyntaxException e) {
+                                        logger.severe(String.format("Invalid metadata file name [%s] for product [%s]",
+                                                                    metadataFile, product.getName()));
+                                    }
                                 } catch (URISyntaxException e) {
                                     logger.severe(e.getMessage());
                                 }
