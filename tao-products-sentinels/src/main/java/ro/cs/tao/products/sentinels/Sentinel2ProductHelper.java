@@ -56,8 +56,6 @@ public abstract class Sentinel2ProductHelper extends ProductHelper {
 
     public abstract String getTileIdentifier();
 
-    public abstract String getMetadataFileName();
-
     public abstract String getDatastripMetadataFileName(String datastripIdentifier);
 
     public abstract String getDatastripFolder(String datastripIdentifier);

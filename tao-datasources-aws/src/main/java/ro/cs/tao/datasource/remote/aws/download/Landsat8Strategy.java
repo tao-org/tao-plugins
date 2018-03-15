@@ -22,6 +22,7 @@ import ro.cs.tao.products.landsat.Landsat8ProductHelper;
 import ro.cs.tao.utils.FileUtils;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -97,6 +98,12 @@ public class Landsat8Strategy extends DownloadStrategy {
         Path rootPath = FileUtils.ensureExists(Paths.get(destination, productName));
         url = getMetadataUrl(currentProduct);
         Path metadataFile = rootPath.resolve(productName + "_MTL.txt");
+        try {
+            product.setEntryPoint(metadataFile.getFileName().toString());
+        } catch (URISyntaxException e) {
+            logger.severe(String.format("Invalid metadata file name [%s] for product [%s]",
+                                        metadataFile.getFileName().toString(), productName));
+        }
         currentStep = "Metadata";
         getLogger().fine(String.format("Downloading metadata file %s", metadataFile));
         metadataFile = downloadFile(url, metadataFile);
