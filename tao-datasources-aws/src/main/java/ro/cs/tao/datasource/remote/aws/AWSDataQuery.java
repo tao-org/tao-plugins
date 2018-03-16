@@ -129,6 +129,11 @@ public class AWSDataQuery extends DataQuery {
     }
 
     @Override
+    public long getCount() {
+        return innerQuery.getCount();
+    }
+
+    @Override
     public Map<String, ParameterDescriptor> getSupportedParameters() {
         return innerQuery.getSupportedParameters();
     }
