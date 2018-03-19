@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -88,7 +89,7 @@ public class Landsat8Strategy extends DownloadStrategy {
         if (this.filteredTiles != null) {
             Matcher matcher = tileIdPattern.matcher(productName);
             if (!matcher.matches()) {
-                return null;
+                throw new NoSuchElementException(String.format("The product %s did not contain any tiles from the tile list", product.getName()));
             }
             if (matcher.groupCount() == 1) {
                 // group(0) contains whole matched string and group(1) is actually the group we want
