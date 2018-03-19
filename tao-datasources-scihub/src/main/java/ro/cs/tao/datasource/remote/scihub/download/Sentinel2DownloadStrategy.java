@@ -405,6 +405,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                             .forEach(File::delete);
                     rootPath = null;
                     logger.warning(String.format("The product %s did not contain any tiles from the tile list", productName));
+                    throw new NoSuchElementException(String.format("The product %s did not contain any tiles from the tile list", productName));
                 }
             } else {
                 // remove the entire directory
