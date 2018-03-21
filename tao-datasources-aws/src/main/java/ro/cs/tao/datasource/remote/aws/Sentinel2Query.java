@@ -141,7 +141,7 @@ class Sentinel2Query extends DataQuery {
             int monthEnd = endDate.get(Calendar.MONTH) + 1;
             int dayEnd = endDate.get(Calendar.DAY_OF_MONTH);
             for (String tile : tiles) {
-                if (this.limit <= results.size()) {
+                if (this.limit > 0 && this.limit <= results.size()) {
                     break;
                 }
                 String utmCode = tile.substring(0, 2);
@@ -151,7 +151,7 @@ class Sentinel2Query extends DataQuery {
                         DownloadStrategy.URL_SEPARATOR + latBand + DownloadStrategy.URL_SEPARATOR +
                         square + DownloadStrategy.URL_SEPARATOR;
                 for (int year = yearStart; year <= yearEnd; year++) {
-                    if (this.limit <= results.size()) {
+                    if (this.limit > 0 && this.limit <= results.size()) {
                         break;
                     }
                     String yearUrl = tileUrl + String.valueOf(year) + DownloadStrategy.URL_SEPARATOR;
@@ -165,7 +165,7 @@ class Sentinel2Query extends DataQuery {
                         int monthS = year == yearStart ? monthStart : 1;
                         int monthE = year == yearEnd ? monthEnd : 12;
                         for (int month = monthS; month <= monthE; month++) {
-                            if (this.limit <= results.size()) {
+                            if (this.limit > 0 && this.limit <= results.size()) {
                                 break;
                             }
                             if (months.contains(month)) {
@@ -211,7 +211,7 @@ class Sentinel2Query extends DataQuery {
                                                         parseProductJson(jsonProduct, product);
                                                         if (relativeOrbit == 0 ||
                                                                 product.getName().contains("_R" + String.format("%03d", relativeOrbit))) {
-                                                            if (this.limit <= results.size()) {
+                                                            if (this.limit > 0 && this.limit <= results.size()) {
                                                                 break;
                                                             }
                                                             results.put(product.getName(), product);
@@ -316,7 +316,7 @@ class Sentinel2Query extends DataQuery {
             int monthEnd = endDate.get(Calendar.MONTH) + 1;
             int dayEnd = endDate.get(Calendar.DAY_OF_MONTH);
             for (String tile : tiles) {
-                if (this.limit <= results.size()) {
+                if (this.limit > 0 && this.limit <= results.size()) {
                     break;
                 }
                 String utmCode = tile.substring(0, 2);
@@ -326,7 +326,7 @@ class Sentinel2Query extends DataQuery {
                         DownloadStrategy.URL_SEPARATOR + latBand + DownloadStrategy.URL_SEPARATOR +
                         square + DownloadStrategy.URL_SEPARATOR;
                 for (int year = yearStart; year <= yearEnd; year++) {
-                    if (this.limit <= results.size()) {
+                    if (this.limit > 0 && this.limit <= results.size()) {
                         break;
                     }
                     String yearUrl = tileUrl + String.valueOf(year) + DownloadStrategy.URL_SEPARATOR;
@@ -340,7 +340,7 @@ class Sentinel2Query extends DataQuery {
                         int monthS = year == yearStart ? monthStart : 1;
                         int monthE = year == yearEnd ? monthEnd : 12;
                         for (int month = monthS; month <= monthE; month++) {
-                            if (this.limit <= results.size()) {
+                            if (this.limit > 0 && this.limit <= results.size()) {
                                 break;
                             }
                             if (months.contains(month)) {
