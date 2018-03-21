@@ -287,10 +287,10 @@ public class Sentinel2Strategy extends DownloadStrategy {
                 Files.walk(rootPath)
                         .sorted(Comparator.reverseOrder())
                         .map(Path::toFile)
-                        .peek(System.out::println)
+                        .peek(f -> logger.fine(f.toString()))
                         .forEach(File::delete);
                 rootPath = null;
-                getLogger().warning(String.format("The product %s did not contain any tiles from the tile list", productName));
+                logger.warning(String.format("The product %s did not contain any tiles from the tile list", productName));
                 throw new NoSuchElementException(String.format("The product %s did not contain any tiles from the tile list", productName));
             }
         } else {
