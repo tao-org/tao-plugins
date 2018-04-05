@@ -24,8 +24,12 @@ import java.util.regex.Pattern;
  */
 public class Sentinel1ProductHelper extends ProductHelper {
 
-    private static final Pattern S1Pattern =
+    static final Pattern S1Pattern =
             Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC_|GRDH|RAW_|OCN_)_([0-9A-Z]{4})_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
+
+    Sentinel1ProductHelper() { super(); }
+
+    Sentinel1ProductHelper(String productName) { super(productName); }
 
     @Override
     public String getProductRelativePath() {
@@ -35,6 +39,8 @@ public class Sentinel1ProductHelper extends ProductHelper {
     @Override
     public Pattern getTilePattern() { return null; }
 
+    @Override
+    public String getMetadataFileName() { return "manifest.safe"; }
 
     @Override
     protected boolean verifyProductName(String name) {

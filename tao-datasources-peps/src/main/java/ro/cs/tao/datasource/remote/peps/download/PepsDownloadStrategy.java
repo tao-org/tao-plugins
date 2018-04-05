@@ -19,15 +19,18 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
+import ro.cs.tao.datasource.remote.ProductHelper;
 import ro.cs.tao.datasource.remote.peps.PepsDataSource;
 import ro.cs.tao.datasource.remote.peps.PepsMetadataResponseHandler;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.products.sentinels.SentinelProductHelper;
 import ro.cs.tao.utils.FileUtils;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -105,6 +108,13 @@ public class PepsDownloadStrategy extends DownloadStrategy {
         }
         if (productFile != null) {
             FileUtils.unzip(productFile);
+            ProductHelper helper = SentinelProductHelper.create(productName);
+            try {
+                product.setEntryPoint(helper.getMetadataFileName());
+            } catch (URISyntaxException e) {
+                logger.severe(String.format("Invalid metadata file name [%s] for product [%s]",
+                                            helper.getMetadataFileName(), productName));
+            }
         }
         return productFile;
     }

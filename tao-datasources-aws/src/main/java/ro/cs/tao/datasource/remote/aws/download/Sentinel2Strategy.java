@@ -30,6 +30,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -133,7 +134,15 @@ public class Sentinel2Strategy extends DownloadStrategy {
         rootPath = FileUtils.ensureExists(Paths.get(destination, productName + ".SAFE"));
         String baseProductUrl = getProductUrl(product);
         url = getMetadataUrl(product);
-        Path metadataFile = rootPath.resolve(helper.getMetadataFileName());
+        String version = helper.getVersion();
+        String metadataFileName = helper.getMetadataFileName();
+        try {
+            product.setEntryPoint(metadataFileName);
+        } catch (URISyntaxException e) {
+            logger.severe(String.format("Invalid metadata file name [%s] for product [%s]",
+                                        metadataFileName, productName));
+        }
+        Path metadataFile = rootPath.resolve(metadataFileName);
         currentStep = "Metadata";
         getLogger().fine(String.format("Downloading metadata file %s", metadataFile));
         metadataFile = downloadFile(url, metadataFile);
@@ -142,7 +151,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
             Path manifestFile = metadataFile.resolveSibling("manifest.safe");
             Path previewFile = metadataFile.resolveSibling("preview.png");
             List<String> allLines = Files.readAllLines(metadataFile);
-            List<String> metaTileNames = Utilities.filter(allLines, "<Granule" + ("13".equals(helper.getVersion()) ? "s" : " "));
+            List<String> metaTileNames = Utilities.filter(allLines, "<Granule" + ("13".equals(version) ? "s" : " "));
 
             Set<String> tileIds = updateMetadata(metadataFile, allLines);
             boolean hasTiles = false;
@@ -158,7 +167,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                 // rep_info folder and contents
                 Path repFolder = FileUtils.ensureExists(rootPath.resolve("rep_info"));
                 Path schemaFile = repFolder.resolve("S2_User_Product_Level-1C_Metadata.xsd");
-                copyFromResources(String.format("S2_User_Product_Level-1C_Metadata%s.xsd", helper.getVersion()), schemaFile);
+                copyFromResources(String.format("S2_User_Product_Level-1C_Metadata%s.xsd", version), schemaFile);
                 // HTML folder and contents
                 Path htmlFolder = FileUtils.ensureExists(rootPath.resolve("HTML"));
                 copyFromResources("banner_1.png", htmlFolder);
@@ -182,7 +191,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                     reader = Json.createReader(inputStream);
                     getLogger().fine(String.format("Parsing json descriptor %s", productJsonUrl));
                     JsonObject obj = reader.readObject();
-                    final Map<String, String> tileNames = getTileNames(obj, metaTileNames, helper.getVersion());
+                    final Map<String, String> tileNames = getTileNames(obj, metaTileNames, version);
                     String dataStripId = null;
                     String count = String.valueOf(tileNames.size());
                     int tileCounter = 1;
@@ -218,7 +227,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                             String maskFileName = line.substring(firstTagCloseIdx, secondTagBeginIdx);
                             String remoteName;
                             Path path;
-                            if ("13".equals(helper.getVersion())) {
+                            if ("13".equals(version)) {
                                 String[] tokens = maskFileName.split(NAME_SEPARATOR);
                                 remoteName = tokens[2] + NAME_SEPARATOR + tokens[3] + NAME_SEPARATOR + tokens[9] + ".gml";
                                 path = qiData.resolve(maskFileName);
@@ -278,10 +287,11 @@ public class Sentinel2Strategy extends DownloadStrategy {
                 Files.walk(rootPath)
                         .sorted(Comparator.reverseOrder())
                         .map(Path::toFile)
-                        .peek(System.out::println)
+                        .peek(f -> logger.fine(f.toString()))
                         .forEach(File::delete);
                 rootPath = null;
-                getLogger().warning(String.format("The product %s did not contain any tiles from the tile list", productName));
+                logger.warning(String.format("The product %s did not contain any tiles from the tile list", productName));
+                throw new NoSuchElementException(String.format("The product %s did not contain any tiles from the tile list", productName));
             }
         } else {
             // remove the entire directory

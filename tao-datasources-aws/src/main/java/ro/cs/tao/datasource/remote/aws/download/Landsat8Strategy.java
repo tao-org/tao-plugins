@@ -22,10 +22,12 @@ import ro.cs.tao.products.landsat.Landsat8ProductHelper;
 import ro.cs.tao.utils.FileUtils;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -87,7 +89,7 @@ public class Landsat8Strategy extends DownloadStrategy {
         if (this.filteredTiles != null) {
             Matcher matcher = tileIdPattern.matcher(productName);
             if (!matcher.matches()) {
-                return null;
+                throw new NoSuchElementException(String.format("The product %s did not contain any tiles from the tile list", product.getName()));
             }
             if (matcher.groupCount() == 1) {
                 // group(0) contains whole matched string and group(1) is actually the group we want
@@ -97,6 +99,12 @@ public class Landsat8Strategy extends DownloadStrategy {
         Path rootPath = FileUtils.ensureExists(Paths.get(destination, productName));
         url = getMetadataUrl(currentProduct);
         Path metadataFile = rootPath.resolve(productName + "_MTL.txt");
+        try {
+            product.setEntryPoint(metadataFile.getFileName().toString());
+        } catch (URISyntaxException e) {
+            logger.severe(String.format("Invalid metadata file name [%s] for product [%s]",
+                                        metadataFile.getFileName().toString(), productName));
+        }
         currentStep = "Metadata";
         getLogger().fine(String.format("Downloading metadata file %s", metadataFile));
         metadataFile = downloadFile(url, metadataFile);
