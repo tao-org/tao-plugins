@@ -26,7 +26,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import ro.cs.tao.integration.geostorm.model.Resource;
+import ro.cs.tao.services.interfaces.GeostormService;
+import ro.cs.tao.services.model.geostormcatalog.Resource;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -35,6 +36,7 @@ import java.nio.charset.Charset;
 import java.security.cert.X509Certificate;
 import java.util.logging.Logger;
 
+
 /**
  * Geostorm client used for calling Geostorm services
  *
@@ -42,7 +44,7 @@ import java.util.logging.Logger;
  */
 @Component
 @PropertySource("classpath:geostorm.properties")
-public class GeostormClient {
+public class GeostormClient implements GeostormService {
 
     @Autowired
     private RestTemplate restTemplate;
@@ -78,6 +80,7 @@ public class GeostormClient {
         return result.getBody();
     }
 
+    @Override
     public String addResource(Resource resource) {
         trustSelfSignedSSL();
         ResponseEntity<String> result;
@@ -150,4 +153,5 @@ public class GeostormClient {
     public String getGeostormRestCatalogResourceEndpoint(){
         return geostormRestCatalogResourceEndpoint;
     }
+
 }

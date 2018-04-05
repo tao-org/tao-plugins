@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import ro.cs.tao.integration.geostorm.GeostormClient;
-import ro.cs.tao.integration.geostorm.model.Resource;
+import ro.cs.tao.services.model.geostormcatalog.Resource;
 
 import java.io.IOException;
 import java.io.StringReader;

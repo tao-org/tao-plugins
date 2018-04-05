@@ -23,9 +23,11 @@ import java.io.IOException;
 
 /**
  * Class resource mapped on Geostorm Resource (same fields names) used for REST operations purposes
+ * Deprecated, use instead ro.cs.tao.services.model.geostormcatalog.Resource
  *
  * @author Oana H.
  */
+@Deprecated
 public class Resource {
 
     /**
