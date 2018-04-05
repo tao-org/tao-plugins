@@ -25,6 +25,7 @@ import ro.cs.tao.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -247,6 +248,13 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
         String productName = product.getName();
         boolean isL1C = "Level-1C".equals(product.getAttributeValue("processinglevel"));
         Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(productName);
+        String metadataFileName = helper.getMetadataFileName();
+        try {
+            product.setEntryPoint(metadataFileName);
+        } catch (URISyntaxException e) {
+            logger.severe(String.format("Invalid metadata file name [%s] for product [%s]",
+                                        metadataFileName, productName));
+        }
         if ("13".equals(helper.getVersion())) {
             currentStep = "Archive";
             url = odataArchivePath.replace(ODATA_UUID, product.getId());
@@ -256,7 +264,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
         if (rootPath == null || !Files.exists(rootPath)) {
             rootPath = FileUtils.ensureExists(Paths.get(destination, productName + ".SAFE"));
             url = getMetadataUrl(product);
-            Path metadataFile = rootPath.resolve(helper.getMetadataFileName());
+            Path metadataFile = rootPath.resolve(metadataFileName);
             currentStep = "Metadata";
             downloadFile(url, metadataFile, NetUtils.getAuthToken());
             if (Files.exists(metadataFile)) {
@@ -397,6 +405,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                             .forEach(File::delete);
                     rootPath = null;
                     logger.warning(String.format("The product %s did not contain any tiles from the tile list", productName));
+                    throw new NoSuchElementException(String.format("The product %s did not contain any tiles from the tile list", productName));
                 }
             } else {
                 // remove the entire directory

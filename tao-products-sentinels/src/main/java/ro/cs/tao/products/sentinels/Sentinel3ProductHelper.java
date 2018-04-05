@@ -24,8 +24,12 @@ import java.util.regex.Pattern;
  */
 public class Sentinel3ProductHelper extends ProductHelper {
 
-    private static final Pattern S3Pattern =
+    static final Pattern S3Pattern =
             Pattern.compile("(S3[A-B])_(OL)_(\\d{1})_(EFR___)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{4})_(\\d{3})_(\\d{3})_(\\d{4})_(\\w{3})_(\\w{1})_(\\w{2})_(\\d{3})(?:.SAFE)?");
+
+    Sentinel3ProductHelper() { super(); }
+
+    Sentinel3ProductHelper(String productName) { super(productName); }
 
     @Override
     public String getProductRelativePath() {
@@ -34,6 +38,9 @@ public class Sentinel3ProductHelper extends ProductHelper {
 
     @Override
     public Pattern getTilePattern() { return null; }
+
+    @Override
+    public String getMetadataFileName() { return "xfdumanifest.xml"; }
 
     @Override
     protected boolean verifyProductName(String name) {

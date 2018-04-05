@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -50,7 +51,8 @@ import java.util.stream.Collectors;
  */
 class Sentinel2Query extends DataQuery {
     private static final String S2_SEARCH_URL_SUFFIX = "?delimiter=/&prefix=";
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final String dateFormatString = new SimpleDateFormat("yyyy-MM-dd").toPattern();
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final DateTimeFormatter fileDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private Logger logger = Logger.getLogger(Sentinel2Query.class.getSimpleName());
 
@@ -93,10 +95,10 @@ class Sentinel2Query extends DataQuery {
             currentParameter = this.parameters.get("beginPosition");
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
-                    sensingStart = currentParameter.getValueAsFormattedDate(dateFormat.toPattern());
+                    sensingStart = currentParameter.getValueAsFormattedDate(dateFormatString);
                 } else {
                     if (currentParameter.getMinValue() != null) {
-                        sensingStart = currentParameter.getMinValueAsFormattedDate(dateFormat.toPattern());
+                        sensingStart = currentParameter.getMinValueAsFormattedDate(dateFormatString);
                     } else {
                         sensingStart = todayDate.minusDays(30).format(fileDateFormat);
                     }
@@ -108,10 +110,10 @@ class Sentinel2Query extends DataQuery {
             currentParameter = this.parameters.get("endPosition");
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
-                    sensingEnd = currentParameter.getValueAsFormattedDate(dateFormat.toPattern());
+                    sensingEnd = currentParameter.getValueAsFormattedDate(dateFormatString);
                 } else {
                     if (currentParameter.getMaxValue() != null) {
-                        sensingEnd = currentParameter.getMaxValueAsFormattedDate(dateFormat.toPattern());
+                        sensingEnd = currentParameter.getMaxValueAsFormattedDate(dateFormatString);
                     } else {
                         sensingEnd = todayDate.format(fileDateFormat);
                     }
@@ -139,7 +141,7 @@ class Sentinel2Query extends DataQuery {
             int monthEnd = endDate.get(Calendar.MONTH) + 1;
             int dayEnd = endDate.get(Calendar.DAY_OF_MONTH);
             for (String tile : tiles) {
-                if (this.limit <= results.size()) {
+                if (this.limit > 0 && this.limit <= results.size()) {
                     break;
                 }
                 String utmCode = tile.substring(0, 2);
@@ -149,7 +151,7 @@ class Sentinel2Query extends DataQuery {
                         DownloadStrategy.URL_SEPARATOR + latBand + DownloadStrategy.URL_SEPARATOR +
                         square + DownloadStrategy.URL_SEPARATOR;
                 for (int year = yearStart; year <= yearEnd; year++) {
-                    if (this.limit <= results.size()) {
+                    if (this.limit > 0 && this.limit <= results.size()) {
                         break;
                     }
                     String yearUrl = tileUrl + String.valueOf(year) + DownloadStrategy.URL_SEPARATOR;
@@ -163,7 +165,7 @@ class Sentinel2Query extends DataQuery {
                         int monthS = year == yearStart ? monthStart : 1;
                         int monthE = year == yearEnd ? monthEnd : 12;
                         for (int month = monthS; month <= monthE; month++) {
-                            if (this.limit <= results.size()) {
+                            if (this.limit > 0 && this.limit <= results.size()) {
                                 break;
                             }
                             if (months.contains(month)) {
@@ -209,7 +211,7 @@ class Sentinel2Query extends DataQuery {
                                                         parseProductJson(jsonProduct, product);
                                                         if (relativeOrbit == 0 ||
                                                                 product.getName().contains("_R" + String.format("%03d", relativeOrbit))) {
-                                                            if (this.limit <= results.size()) {
+                                                            if (this.limit > 0 && this.limit <= results.size()) {
                                                                 break;
                                                             }
                                                             results.put(product.getName(), product);
@@ -230,6 +232,153 @@ class Sentinel2Query extends DataQuery {
         }
         logger.info(String.format("Query returned %s products", results.size()));
         return new ArrayList<>(results.values());
+    }
+
+    @Override
+    protected long getCountImpl() {
+        long count = 0;
+        QueryParameter currentParameter = this.parameters.get("platformName");
+        if (currentParameter == null) {
+            currentParameter = createParameter("platformName", String.class, "Sentinel-2");
+            this.parameters.put("platformName", currentParameter);
+        } else {
+            if (!"Sentinel-2".equals(currentParameter.getValueAsString())) {
+                throw new QueryException("Wrong [platformName] parameter");
+            }
+        }
+        Map<String, EOProduct> results = new LinkedHashMap<>();
+        try {
+            String sensingStart, sensingEnd;
+            double cloudFilter = 100.;
+            int relativeOrbit = 0;
+
+            Set<String> tiles = new HashSet<>();
+            currentParameter = this.parameters.get("tileId");
+            if (currentParameter != null) {
+                tiles.add(currentParameter.getValueAsString());
+            } else if ((currentParameter = this.parameters.get("footprint")) != null) {
+                Polygon2D aoi = (Polygon2D) currentParameter.getValue();
+                tiles.addAll(Sentinel2TileExtent.getInstance().intersectingTiles(aoi.getBounds2D()));
+            } else {
+                throw new QueryException("Either [tileId] or [footprint] have to be given.");
+            }
+
+            Calendar startDate = Calendar.getInstance();
+            Calendar endDate = Calendar.getInstance();
+            LocalDate todayDate = LocalDate.now();
+
+            currentParameter = this.parameters.get("beginPosition");
+            if (currentParameter != null) {
+                if (currentParameter.getValue() != null) {
+                        sensingStart = currentParameter.getValueAsFormattedDate(dateFormatString);
+                } else {
+                    if (currentParameter.getMinValue() != null) {
+                        sensingStart = currentParameter.getMinValueAsFormattedDate(dateFormatString);
+                    } else {
+                        sensingStart = todayDate.minusDays(30).format(fileDateFormat);
+                    }
+                }
+            } else {
+                sensingStart = todayDate.minusDays(30).format(fileDateFormat);
+            }
+            startDate.setTime(dateFormat.parse(sensingStart));
+            currentParameter = this.parameters.get("endPosition");
+            if (currentParameter != null) {
+                if (currentParameter.getValue() != null) {
+                    sensingEnd = currentParameter.getValueAsFormattedDate(dateFormatString);
+                } else {
+                    if (currentParameter.getMaxValue() != null) {
+                        sensingEnd = currentParameter.getMaxValueAsFormattedDate(dateFormatString);
+                    } else {
+                        sensingEnd = todayDate.format(fileDateFormat);
+                    }
+                }
+            } else {
+                sensingEnd = todayDate.format(fileDateFormat);
+            }
+            endDate.setTime(dateFormat.parse(sensingEnd));
+            //http://sentinel-s2-l1c.s3.amazonaws.com/?delimiter=/&prefix=tiles/15/R/TM/
+
+            currentParameter = this.parameters.get("cloudcoverpercentage");
+            if (currentParameter != null) {
+                cloudFilter = currentParameter.getValueAsDouble();
+            }
+
+            currentParameter = this.parameters.get("relativeOrbitNumber");
+            if (currentParameter != null) {
+                relativeOrbit = currentParameter.getValueAsInt();
+            }
+
+            int yearStart = startDate.get(Calendar.YEAR);
+            int monthStart = startDate.get(Calendar.MONTH) + 1;
+            int dayStart = startDate.get(Calendar.DAY_OF_MONTH);
+            int yearEnd = endDate.get(Calendar.YEAR);
+            int monthEnd = endDate.get(Calendar.MONTH) + 1;
+            int dayEnd = endDate.get(Calendar.DAY_OF_MONTH);
+            for (String tile : tiles) {
+                if (this.limit > 0 && this.limit <= results.size()) {
+                    break;
+                }
+                String utmCode = tile.substring(0, 2);
+                String latBand = tile.substring(2, 3);
+                String square = tile.substring(3, 5);
+                String tileUrl = this.source.getConnectionString() + utmCode +
+                        DownloadStrategy.URL_SEPARATOR + latBand + DownloadStrategy.URL_SEPARATOR +
+                        square + DownloadStrategy.URL_SEPARATOR;
+                for (int year = yearStart; year <= yearEnd; year++) {
+                    if (this.limit > 0 && this.limit <= results.size()) {
+                        break;
+                    }
+                    String yearUrl = tileUrl + String.valueOf(year) + DownloadStrategy.URL_SEPARATOR;
+                    AwsResult yearResult = IntermediateParser.parse(NetUtils.getResponseAsString(yearUrl));
+                    if (yearResult.getCommonPrefixes() != null) {
+                        Set<Integer> months = yearResult.getCommonPrefixes().stream()
+                                .map(p -> {
+                                    String tmp = p.replace(yearResult.getPrefix(), "");
+                                    return Integer.parseInt(tmp.substring(0, tmp.indexOf(yearResult.getDelimiter())));
+                                }).collect(Collectors.toSet());
+                        int monthS = year == yearStart ? monthStart : 1;
+                        int monthE = year == yearEnd ? monthEnd : 12;
+                        for (int month = monthS; month <= monthE; month++) {
+                            if (this.limit > 0 && this.limit <= results.size()) {
+                                break;
+                            }
+                            if (months.contains(month)) {
+                                String monthUrl = yearUrl + String.valueOf(month) + DownloadStrategy.URL_SEPARATOR;
+                                AwsResult monthResult = IntermediateParser.parse(NetUtils.getResponseAsString(monthUrl));
+                                if (monthResult.getCommonPrefixes() != null) {
+                                    Set<Integer> days = monthResult.getCommonPrefixes().stream()
+                                            .map(p -> {
+                                                String tmp = p.replace(monthResult.getPrefix(), "");
+                                                return Integer.parseInt(tmp.substring(0, tmp.indexOf(monthResult.getDelimiter())));
+                                            }).collect(Collectors.toSet());
+                                    int dayS = month == monthS ? dayStart : 1;
+                                    Calendar calendar = new Calendar.Builder().setDate(year, month + 1, 1).build();
+                                    calendar.add(Calendar.DAY_OF_MONTH, -1);
+                                    int dayE = month == monthE ? dayEnd : calendar.get(Calendar.DAY_OF_MONTH);
+                                    for (int day = dayS; day <= dayE; day++) {
+                                        if (days.contains(day)) {
+                                            String dayUrl = monthUrl + String.valueOf(day) + DownloadStrategy.URL_SEPARATOR;
+                                            AwsResult dayResult = IntermediateParser.parse(NetUtils.getResponseAsString(dayUrl));
+                                            if (dayResult.getCommonPrefixes() != null) {
+                                                count += dayResult.getCommonPrefixes().stream()
+                                                        .map(p -> {
+                                                            String tmp = p.replace(dayResult.getPrefix(), "");
+                                                            return Integer.parseInt(tmp.substring(0, tmp.indexOf(dayResult.getDelimiter())));
+                                                        }).count();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            logger.warning(ex.getMessage());
+        }
+        return count;
     }
 
     private void parseProductJson(String jsonUrl, EOProduct product) throws Exception {
