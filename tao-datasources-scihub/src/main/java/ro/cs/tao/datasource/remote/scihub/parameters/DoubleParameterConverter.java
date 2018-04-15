@@ -40,7 +40,15 @@ public class DoubleParameterConverter extends DefaultParameterConverter {
         builder.append("[").append(minValue).append(" TO ");
         Double maxValue = (Double) this.parameter.getMaxValue();
         if (maxValue == null) {
-            Double value = (Double) this.parameter.getValue();
+            Object objVal = this.parameter.getValue();
+            Double value = null;
+            if (objVal != null) {
+                if (objVal instanceof Double) {
+                    value = (Double) objVal;
+                } else {
+                    value = Double.parseDouble(objVal.toString());
+                }
+            }
             maxValue = value != null ? value : 100.;
         }
         builder.append(maxValue).append("]");
