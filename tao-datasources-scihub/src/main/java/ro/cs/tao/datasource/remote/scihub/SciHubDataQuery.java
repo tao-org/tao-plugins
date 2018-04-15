@@ -109,7 +109,7 @@ public class SciHubDataQuery extends DataQuery {
                             retrieved = tmpResults.size();
                             if ("Sentinel2".equals(this.sensorName) &&
                               this.parameters.containsKey("cloudcoverpercentage")) {
-                                final Double clouds = (Double) this.parameters.get("cloudcoverpercentage").getValue();
+                                final Double clouds = Double.parseDouble(this.parameters.get("cloudcoverpercentage").getValue().toString());
                                 tmpResults = tmpResults.stream()
                                   .filter(r -> Double.parseDouble(r.getAttributeValue(isXml ? "cloudcoverpercentage" : "Cloud Cover Percentage")) <= clouds)
                                   .collect(Collectors.toList());
