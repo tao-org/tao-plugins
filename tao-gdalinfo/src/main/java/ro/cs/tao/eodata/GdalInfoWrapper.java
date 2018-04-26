@@ -22,7 +22,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.ExecutorType;
-import ro.cs.tao.utils.executors.OutputConsumer;
+import ro.cs.tao.utils.executors.OutputAccumulator;
 import ro.cs.tao.utils.executors.ProcessExecutor;
 
 import javax.json.Json;
@@ -44,13 +44,13 @@ public class GdalInfoWrapper implements MetadataInspector {
     @Override
     public Metadata getMetadata(Path productPath) throws IOException {
         Executor executor = initialize(productPath);
-        Consumer consumer = new Consumer();
+        OutputAccumulator consumer = new OutputAccumulator();
         executor.setOutputConsumer(consumer);
         StringReader reader = null;
         Metadata metadata = null;
         try {
             if (executor.execute(false) == 0) {
-                String output = consumer.getOuptut();
+                String output = consumer.getOutput();
                 reader = new StringReader(output);
                 JsonReader jsonReader = Json.createReader(reader);
                 JsonObject root = jsonReader.readObject();
@@ -131,20 +131,5 @@ public class GdalInfoWrapper implements MetadataInspector {
         } catch (UnknownHostException e) {
             throw new IOException(e);
         }
-    }
-
-    private class Consumer implements OutputConsumer {
-        private final StringBuilder builder;
-
-        Consumer() {
-            this.builder = new StringBuilder();
-        }
-
-        @Override
-        public void consume(String message) {
-            this.builder.append(message);
-        }
-
-        public String getOuptut() { return this.builder.toString(); }
     }
 }
