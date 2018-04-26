@@ -26,6 +26,7 @@
         <module>tao-drmaa-slurm</module>
         <module>tao-drmaa-torque</module>
         <module>tao-integration-geostorm</module>
+        <module>tao-gdalinfo</module>
     </modules>
 
     <properties>
