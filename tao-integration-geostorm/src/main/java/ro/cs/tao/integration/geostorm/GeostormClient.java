@@ -74,8 +74,30 @@ public class GeostormClient implements EODataHandler<EOProduct> {
 
     @Override
     public List<EOProduct> handle(List<EOProduct> list) throws DataHandlingException {
-        //TODO: conversion from EOProduct to Resource
-        return null;
+
+        Resource geostormResource = null;
+
+        for (EOProduct product: list){
+            // conversion from EOProduct to Resource
+            geostormResource = new Resource();
+            geostormResource.setExecution_id(0);
+            geostormResource.setData_path(product.getLocation());
+            geostormResource.setData_type("input");
+            geostormResource.setName(product.getName());
+            geostormResource.setShort_description(product.getSensorType().toString() + " " + product.getName());
+            geostormResource.setEntry_point(product.getEntryPoint());
+            geostormResource.setResource_storage_type("process_result");
+            geostormResource.setRelease_date(product.getAcquisitionDate().toString());
+            //geostormResource.setCollection(product.getProductType()); // TODO see if there is a predefined collection in Geostorm with this name; if not, define it
+            geostormResource.setCollection("Sentinel_2"); // for test, this collection already exists
+            geostormResource.setWkb_geometry(product.getGeometry());
+            geostormResource.setCoord_sys(new Integer[Integer.parseInt(product.getCrs())]);
+
+            // save resource
+            addResource(geostormResource);
+        }
+
+        return list;
     }
 
     public String getResources() {
