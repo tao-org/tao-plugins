@@ -27,7 +27,6 @@ import java.io.IOException;
  *
  * @author Oana H.
  */
-@Deprecated
 public class Resource {
 
     /**
