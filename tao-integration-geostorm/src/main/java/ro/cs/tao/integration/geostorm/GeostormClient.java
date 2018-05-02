@@ -26,14 +26,17 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import ro.cs.tao.services.interfaces.GeostormService;
-import ro.cs.tao.services.model.geostormcatalog.Resource;
+import ro.cs.tao.eodata.DataHandlingException;
+import ro.cs.tao.eodata.EODataHandler;
+import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.integration.geostorm.model.Resource;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.nio.charset.Charset;
 import java.security.cert.X509Certificate;
+import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -44,7 +47,7 @@ import java.util.logging.Logger;
  */
 @Component
 @PropertySource("classpath:geostorm.properties")
-public class GeostormClient implements GeostormService {
+public class GeostormClient implements EODataHandler<EOProduct> {
 
     @Autowired
     private RestTemplate restTemplate;
@@ -63,6 +66,18 @@ public class GeostormClient implements GeostormService {
 
     private static final Logger logger = Logger.getLogger(GeostormClient.class.getName());
 
+    @Override
+    public Class<EOProduct> isIntendedFor() { return EOProduct.class; }
+
+    @Override
+    public int getPriority() { return 1; }
+
+    @Override
+    public List<EOProduct> handle(List<EOProduct> list) throws DataHandlingException {
+        //TODO: conversion from EOProduct to Resource
+        return null;
+    }
+
     public String getResources() {
         trustSelfSignedSSL();
         ResponseEntity<String> result;
@@ -80,7 +95,6 @@ public class GeostormClient implements GeostormService {
         return result.getBody();
     }
 
-    @Override
     public String addResource(Resource resource) {
         trustSelfSignedSSL();
         ResponseEntity<String> result;
