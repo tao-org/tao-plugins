@@ -93,7 +93,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
                 geostormResource.setData_path(product.getLocation());
                 geostormResource.setData_type(product.getSensorType() == SensorType.UNKNOWN ? "output" : "input");
                 geostormResource.setName(product.getName());
-                geostormResource.setManaged_resource_storage(true);
+                geostormResource.setManaged_resource_storage(false);
                 geostormResource.setShort_description(product.getSensorType().toString() + " " + product.getName());
                 String entryPoint = product.getEntryPoint();
                 if (entryPoint == null) {
