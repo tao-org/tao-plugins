@@ -20,7 +20,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.geotools.geojson.geom.GeometryJSON;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -60,18 +59,23 @@ public class GeostormClient implements EODataHandler<EOProduct> {
     private String geostormRestCatalogResourceEndpoint;
     private String geostormUsername;
     private String geostormPassword;
+    private final boolean enabled;
 
     public GeostormClient() {
         ConfigurationManager configManager = ConfigurationManager.getInstance();
-        geostormRestBaseURL = configManager.getValue("geostorm.rest.base.url");
-        geostormRestCatalogResourceEndpoint = configManager.getValue("geostorm.rest.catalog.resource.endpoint");
-        geostormUsername = configManager.getValue("geostorm.admin.username");
-        geostormPassword = configManager.getValue("geostorm.admin.password");
-        if (geostormRestBaseURL == null || geostormRestCatalogResourceEndpoint == null ||
-                geostormUsername == null || geostormPassword == null) {
-            throw new UnsupportedOperationException("Geostorm integration plugin not configured");
+        String enabledString = configManager.getValue("geostorm.integration.enabled", "false");
+        enabled = Boolean.parseBoolean(enabledString);
+        if (enabled) {
+            geostormRestBaseURL = configManager.getValue("geostorm.rest.base.url");
+            geostormRestCatalogResourceEndpoint = configManager.getValue("geostorm.rest.catalog.resource.endpoint");
+            geostormUsername = configManager.getValue("geostorm.admin.username");
+            geostormPassword = configManager.getValue("geostorm.admin.password");
+            restTemplate = new RestTemplate();
+            if (geostormRestBaseURL == null || geostormRestCatalogResourceEndpoint == null ||
+                    geostormUsername == null || geostormPassword == null) {
+                throw new UnsupportedOperationException("Geostorm integration plugin not configured");
+            }
         }
-        restTemplate = new RestTemplate();
     }
 
     @Override
@@ -82,46 +86,45 @@ public class GeostormClient implements EODataHandler<EOProduct> {
 
     @Override
     public List<EOProduct> handle(List<EOProduct> list) throws DataHandlingException {
+        if (this.enabled) {
+            Resource geostormResource;
+            for (EOProduct product : list) {
+                try {
+                    // conversion from EOProduct to Resource
+                    geostormResource = new Resource();
+                    geostormResource.setExecution_id(0);
+                    geostormResource.setData_path(product.getLocation());
+                    geostormResource.setData_type(product.getSensorType() == SensorType.UNKNOWN ? "output" : "input");
+                    geostormResource.setName(product.getName());
+                    geostormResource.setManaged_resource_storage(false);
+                    geostormResource.setShort_description(product.getSensorType().toString() + " " + product.getName());
+                    String entryPoint = product.getEntryPoint();
+                    if (entryPoint == null) {
+                        entryPoint = product.getLocation();
+                    }
+                    geostormResource.setEntry_point(entryPoint);
+                    geostormResource.setResource_storage_type("process_result");
+                    geostormResource.setRelease_date(dateFormatter.format(product.getAcquisitionDate()));
+                    //geostormResource.setCollection(product.getProductType()); // TODO see if there is a predefined collection in Geostorm with this name; if not, define it
+                    geostormResource.setCollection("Sentinel_2"); // for test, this collection already exists
+                    geostormResource.setWkb_geometry(convertWKTToGeoJson(product.getGeometry()));
+                    String crs = product.getCrs();
+                    if (crs.contains(":")) {
+                        crs = crs.substring(crs.indexOf(":") + 1);
+                    }
+                    geostormResource.setCoord_sys(new Integer[]{Integer.parseInt(crs)});
 
-        Resource geostormResource;
-
-        for (EOProduct product: list){
-            try {
-                // conversion from EOProduct to Resource
-                geostormResource = new Resource();
-                geostormResource.setExecution_id(0);
-                geostormResource.setData_path(product.getLocation());
-                geostormResource.setData_type(product.getSensorType() == SensorType.UNKNOWN ? "output" : "input");
-                geostormResource.setName(product.getName());
-                geostormResource.setManaged_resource_storage(false);
-                geostormResource.setShort_description(product.getSensorType().toString() + " " + product.getName());
-                String entryPoint = product.getEntryPoint();
-                if (entryPoint == null) {
-                    entryPoint = product.getLocation();
+                    // save resource
+                    addResource(geostormResource);
+                } catch (Exception ex) {
+                    logger.severe(ex.getMessage());
                 }
-                geostormResource.setEntry_point(entryPoint);
-                geostormResource.setResource_storage_type("process_result");
-                geostormResource.setRelease_date(dateFormatter.format(product.getAcquisitionDate()));
-                //geostormResource.setCollection(product.getProductType()); // TODO see if there is a predefined collection in Geostorm with this name; if not, define it
-                geostormResource.setCollection("Sentinel_2"); // for test, this collection already exists
-                geostormResource.setWkb_geometry(convertWKTToGeoJson(product.getGeometry()));
-                String crs = product.getCrs();
-                if (crs.contains(":")) {
-                    crs = crs.substring(crs.indexOf(":") + 1);
-                }
-                geostormResource.setCoord_sys(new Integer[] { Integer.parseInt(crs) });
-
-                // save resource
-                addResource(geostormResource);
-            } catch (Exception ex) {
-                logger.severe(ex.getMessage());
             }
         }
-
         return list;
     }
 
-    public String getResources() {
+    String getResources() {
         trustSelfSignedSSL();
         ResponseEntity<String> result;
         final HttpHeaders headers = createHeaders(geostormUsername, geostormPassword);
@@ -138,7 +141,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
         return result.getBody();
     }
 
-    public String addResource(Resource resource) {
+    String addResource(Resource resource) {
         trustSelfSignedSSL();
         ResponseEntity<String> result;
         final HttpHeaders headers = createHeaders(geostormUsername, geostormPassword);
@@ -164,9 +167,9 @@ public class GeostormClient implements EODataHandler<EOProduct> {
     private void prepareSSL() {
         System.setProperty("javax.net.ssl.trustStore", "*");
         System.setProperty("javax.net.ssl.trustStorePassword", "");
-  }
+    }
 
-    public static void trustSelfSignedSSL() {
+    static void trustSelfSignedSSL() {
         logger.entering(GeostormClient.class.getSimpleName(), "trustSelfSignedSSL");
         try {
             SSLContext ctx = SSLContext.getInstance("TLS");
@@ -196,19 +199,6 @@ public class GeostormClient implements EODataHandler<EOProduct> {
             String authHeader = "Basic " + new String(encodedAuth);
             set("Authorization", authHeader );
         }};
-    }
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
-
-    public String getGeostormRestBaseUrl(){
-        return geostormRestBaseURL;
-    }
-
-    public String getGeostormRestCatalogResourceEndpoint(){
-        return geostormRestCatalogResourceEndpoint;
     }
 
     private String convertWKTToGeoJson(String wkt) {
