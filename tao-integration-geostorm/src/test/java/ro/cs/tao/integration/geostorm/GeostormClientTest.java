@@ -14,7 +14,7 @@
  * with this program; if not, see http://www.gnu.org/licenses/
  */
 
-package ro.cs.tao.integration.geostorm.test;
+package ro.cs.tao.integration.geostorm;
 
 import com.vividsolutions.jts.geom.Polygon;
 import org.apache.commons.logging.Log;
@@ -27,7 +27,6 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import ro.cs.tao.integration.geostorm.GeostormClient;
 import ro.cs.tao.integration.geostorm.model.Resource;
 
 import java.io.IOException;
