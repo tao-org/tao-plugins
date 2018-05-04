@@ -16,6 +16,7 @@
 package ro.cs.tao.datasource.remote.aws.download;
 
 import ro.cs.tao.datasource.remote.DownloadStrategy;
+import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.aws.AWSDataSource;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.datasource.util.Utilities;
@@ -364,6 +365,49 @@ public class Sentinel2Strategy extends DownloadStrategy {
         return destinationPath;
     }
 
+    @Override
+    protected Path check(EOProduct product) throws IOException {
+        String productName = product.getName();
+        String localArchiveRoot = getLocalArchiveRoot();
+        if (localArchiveRoot == null) {
+            throw new IllegalArgumentException("Local archive root not set");
+        }
+        Path productRepositoryPath = Paths.get(localArchiveRoot);
+        Path destinationPath = null;
+        Path productSourcePath = findProductPath(productRepositoryPath, product);
+        if (productSourcePath == null) {
+            logger.warning(String.format("%s not found locally", productName));
+            return null;
+        }
+        Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(productName);
+        Path metadataFile = productSourcePath.resolve(helper.getMetadataFileName());
+        currentStep = "Metadata";
+        if (checkFile(productSourcePath.resolve(metadataFile.getFileName()))) {
+            List<String> allLines = Files.readAllLines(metadataFile);
+            Set<String> tileNames = updateMetadata(metadataFile, allLines);
+            if (tileNames != null) {
+                currentProduct.addAttribute("tiles", StringUtils.join(tileNames, ","));
+                List<Path> folders = FileUtils.listFolders(productSourcePath);
+                boolean checked = folders.stream()
+                                         .filter(folder -> !folder.toString().contains("GRANULE") ||
+                                                 "GRANULE".equals(folder.getName(folder.getNameCount() - 1).toString()) ||
+                                                 tileNames.stream().anyMatch(tn -> folder.toString().contains(tn)))
+                                         .allMatch(folder -> checkFile(folder) &&
+                                                             FileUtils.listFiles(folder).size() > 0);
+                if (checked)                            {
+                    destinationPath = productSourcePath;
+                }
+            } else {
+                Files.deleteIfExists(metadataFile);
+                logger.warning(String.format("The product %s did not contain any tiles from the tile list", productName));
+            }
+        } else {
+            logger.warning(String.format("Either the product %s was not found or the metadata file could not be downloaded",
+                                         productName));
+        }
+        return destinationPath;
+    }
+
     private Map<String, String> getTileNames(JsonObject productInfo, List<String> metaTileNames, String psdVersion) {
         Map<String, String> ret = new HashMap<>();
         JsonArray tiles = productInfo.getJsonArray("tiles");
@@ -394,7 +438,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
 
     private Set<String> updateMetadata(Path metaFile, List<String> originalLines) throws IOException {
         Set<String> extractedTileNames = null;
-        if (shouldFilterTiles) {
+        if (shouldFilterTiles && this.fetchMode != FetchMode.CHECK) {
             int tileCount = 0;
             List<String> lines = new ArrayList<>();
             for (int i = 0; i < originalLines.size(); i++) {
