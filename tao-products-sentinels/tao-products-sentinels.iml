@@ -12,6 +12,10 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="tao-data-model" />
+    <orderEntry type="module" module-name="tao-utils" />
+    <orderEntry type="library" name="Maven: com.jcraft:jsch:0.1.53" level="project" />
+    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.jna:jna:3.0.9" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:org.eclipse.persistence.core:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:org.eclipse.persistence.asm:2.7.0" level="project" />
@@ -28,7 +32,6 @@
     <orderEntry type="library" name="Maven: hsqldb:hsqldb:1.8.0.7" level="project" />
     <orderEntry type="library" name="Maven: org.apache.velocity:velocity:1.7" level="project" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.1" level="project" />
-    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.4" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.4" level="project" />
@@ -40,9 +43,6 @@
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="module" module-name="tao-data-sources" />
     <orderEntry type="module" module-name="tao-service-registry" />
-    <orderEntry type="module" module-name="tao-utils" />
-    <orderEntry type="library" name="Maven: com.jcraft:jsch:0.1.53" level="project" />
-    <orderEntry type="library" name="Maven: com.sun.jna:jna:3.0.9" level="project" />
     <orderEntry type="module" module-name="tao-notification" />
     <orderEntry type="library" name="Maven: io.projectreactor:reactor-bus:2.0.8.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.goldmansachs:gs-collections:5.1.0" level="project" />
