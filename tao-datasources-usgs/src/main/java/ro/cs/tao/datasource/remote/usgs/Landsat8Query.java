@@ -82,7 +82,8 @@ public class Landsat8Query extends DataQuery {
                     (pathRows == null || pathRows.size() == 0)) {
                 Polygon2D footprint = (Polygon2D ) parameterValue;
                 if (footprint != null) {
-                    pathRows = Landsat8TileExtent.getInstance().intersectingTiles(footprint.getBounds2D());
+                    //pathRows = Landsat8TileExtent.getInstance().intersectingTiles(footprint.getBounds2D());
+                    pathRows = Landsat8TileExtent.getInstance().intersectingTiles(footprint);
                 }
             } else {
                 try {
