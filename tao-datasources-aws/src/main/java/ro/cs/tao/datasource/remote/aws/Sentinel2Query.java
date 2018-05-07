@@ -89,7 +89,8 @@ class Sentinel2Query extends DataQuery {
                 } else {
                     pValue = Polygon2D.fromWKT(value.toString());
                 }
-                tiles.addAll(Sentinel2TileExtent.getInstance().intersectingTiles(pValue.getBounds2D()));
+                //tiles.addAll(Sentinel2TileExtent.getInstance().intersectingTiles(pValue.getBounds2D()));
+                tiles.addAll(Sentinel2TileExtent.getInstance().intersectingTiles(pValue));
             } else {
                 throw new QueryException("Either [tileId] or [footprint] have to be given.");
             }
