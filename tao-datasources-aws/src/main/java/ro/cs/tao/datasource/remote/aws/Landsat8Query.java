@@ -150,7 +150,8 @@ class Landsat8Query extends DataQuery {
                 if (aoi == null || aoi.getNumPoints() == 0) {
                     throw new QueryException("The provided [footprint] is empty");
                 }
-                tiles.addAll(Landsat8TileExtent.getInstance().intersectingTiles(aoi.getBounds2D()));
+                //tiles.addAll(Landsat8TileExtent.getInstance().intersectingTiles(aoi.getBounds2D()));
+                tiles.addAll(Landsat8TileExtent.getInstance().intersectingTiles(aoi));
             }
 
             for (String tile : tiles) {
