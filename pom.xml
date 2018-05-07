@@ -27,6 +27,7 @@
         <module>tao-drmaa-torque</module>
         <module>tao-integration-geostorm</module>
         <module>tao-gdalinfo</module>
+        <module>tao-snap-converter</module>
     </modules>
 
     <properties>
