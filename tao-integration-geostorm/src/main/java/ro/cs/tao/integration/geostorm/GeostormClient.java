@@ -22,19 +22,23 @@ import org.apache.commons.codec.binary.Base64;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.eodata.DataHandlingException;
 import ro.cs.tao.eodata.EODataHandler;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.integration.geostorm.model.RasterProduct;
 import ro.cs.tao.integration.geostorm.model.Resource;
 import ro.cs.tao.serialization.GeometryAdapter;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
@@ -57,6 +61,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
     private RestTemplate restTemplate;
     private String geostormRestBaseURL;
     private String geostormRestCatalogResourceEndpoint;
+    private String geostormRestRasterImportEndpoint;
     private String geostormUsername;
     private String geostormPassword;
     private final boolean enabled;
@@ -68,13 +73,33 @@ public class GeostormClient implements EODataHandler<EOProduct> {
         if (enabled) {
             geostormRestBaseURL = configManager.getValue("geostorm.rest.base.url");
             geostormRestCatalogResourceEndpoint = configManager.getValue("geostorm.rest.catalog.resource.endpoint");
+            geostormRestRasterImportEndpoint = configManager.getValue("geostorm.rest.raster.import.endpoint");
             geostormUsername = configManager.getValue("geostorm.admin.username");
             geostormPassword = configManager.getValue("geostorm.admin.password");
-            restTemplate = new RestTemplate();
+
             if (geostormRestBaseURL == null || geostormRestCatalogResourceEndpoint == null ||
+                    geostormRestRasterImportEndpoint == null ||
                     geostormUsername == null || geostormPassword == null) {
                 throw new UnsupportedOperationException("Geostorm integration plugin not configured");
             }
+
+            restTemplate = new RestTemplate();
+            restTemplate.setErrorHandler(new ResponseErrorHandler() {
+                @Override
+                public boolean hasError(ClientHttpResponse response) throws IOException {
+                    boolean hasError = false;
+                    int rawStatusCode = response.getRawStatusCode();
+                    if (rawStatusCode != 200){
+                        hasError = true;
+                    }
+                    return hasError;
+                }
+
+                @Override
+                public void handleError(ClientHttpResponse response) throws IOException {
+                    logger.warning(response.getRawStatusCode() + " " + response.getStatusText());
+                }
+            });
         }
     }
 
@@ -160,6 +185,29 @@ public class GeostormClient implements EODataHandler<EOProduct> {
             logger.fine("addResource result:" + new ObjectMapper().writeValueAsString(result));
         } catch (JsonProcessingException e) {
             logger.severe(String.format("addResource(): Result JSON exception '%s'", e.getMessage()));
+        }
+        return result.getBody();
+    }
+
+    String importRaster(RasterProduct rasterProduct) {
+        trustSelfSignedSSL();
+        ResponseEntity<String> result;
+        final HttpHeaders headers = createHeaders(geostormUsername, geostormPassword);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        final HttpEntity<RasterProduct> httpEntity = new HttpEntity<RasterProduct>(rasterProduct, headers);
+        final String url = geostormRestBaseURL + geostormRestRasterImportEndpoint;
+        logger.fine("URL = "+ url);
+        logger.fine("Headers = " + headers.toString());
+        try {
+            logger.fine("Body = " + new ObjectMapper().writeValueAsString(httpEntity));
+        } catch (JsonProcessingException e) {
+            logger.severe(String.format("importRaster(): Body JSON exception '%s'", e.getMessage()));
+        }
+        result = restTemplate.postForEntity(url, httpEntity, String.class );
+        try {
+            logger.fine("importRaster result:" + new ObjectMapper().writeValueAsString(result));
+        } catch (JsonProcessingException e) {
+            logger.severe(String.format("importRaster(): Result JSON exception '%s'", e.getMessage()));
         }
         return result.getBody();
     }

@@ -27,6 +27,7 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import ro.cs.tao.integration.geostorm.model.RasterProduct;
 import ro.cs.tao.integration.geostorm.model.Resource;
 
 import java.io.IOException;
@@ -109,5 +110,30 @@ public class GeostormClientTest {
         log.info("test getResources ...");
 
         log.info(geostormClient.getResources());
+    }
+
+    @Test
+    public void T_03_Raster_import()
+    {
+        log.info("test raster import....");
+
+        RasterProduct rasterProduct = new RasterProduct();
+
+        rasterProduct.setProduct_path("../var/www/file:/D:/img/24-1-output_otbcli_RigidTransformResample.tif");
+        rasterProduct.setOwner("CSRO");
+        rasterProduct.setCollection("Sentinel_2");
+        rasterProduct.setSite("No idea");
+        rasterProduct.setMosaic_name("Mosaic_S2");
+        rasterProduct.setEntry_point(new String[]{"file:///D:/img/24-1-output_otbcli_RigidTransformResample.tif"});
+        rasterProduct.setProduct_date("2018-05-07");
+        rasterProduct.setExtent("{\"type\": \"Polygon\",\n" +
+          "            \"coordinates\": [[[143.503571067188, 44.2259751275381],\n" +
+          "                             [143.462735477681, 43.2382731563042],\n" +
+          "                             [144.812631659451, 43.2012113546965],\n" +
+          "                             [144.875738946256, 44.1876215835231],\n" +
+          "                             [143.503571067188, 44.2259751275381]]]}");
+
+        rasterProduct.setOrganization("CS");
+        geostormClient.importRaster(rasterProduct);
     }
 }
