@@ -187,7 +187,10 @@ public class SciHubDataQuery extends DataQuery {
             if (idx > 0) {
                 query.append(" AND ");
             }
-            if (parameter.getType().isArray()) {
+            if (parameter.getName().equals("product")) {
+                query.append(parameter.getValueAsString());
+                break;
+            } else if (parameter.getType().isArray()) {
                 query.append("(");
                 Object value = parameter.getValue();
                 int length = Array.getLength(value);
