@@ -119,21 +119,22 @@ public class GeostormClientTest {
 
         RasterProduct rasterProduct = new RasterProduct();
 
-        rasterProduct.setProduct_path("../var/www/file:/D:/img/24-1-output_otbcli_RigidTransformResample.tif");
-        rasterProduct.setOwner("CSRO");
-        rasterProduct.setCollection("Sentinel_2");
+        rasterProduct.setProduct_path("/imgdata/S2A_MSIL1C_20180101T091351_N0206_R050_T35TLJ_20180101T113355.SAFE");
+        rasterProduct.setOwner("admin");
+        rasterProduct.setCollection("Sentinel_1");
         rasterProduct.setSite("No idea");
-        rasterProduct.setMosaic_name("Mosaic_S2");
-        rasterProduct.setEntry_point(new String[]{"file:///D:/img/24-1-output_otbcli_RigidTransformResample.tif"});
-        rasterProduct.setProduct_date("2018-05-07");
+        rasterProduct.setMosaic_name("Mosaic_S2A");
+        rasterProduct.setEntry_point(new String[]{"MTD_MSIL1C.xml"});
+        rasterProduct.setProduct_date("2018-05-15");
         rasterProduct.setExtent("{\"type\": \"Polygon\",\n" +
-          "            \"coordinates\": [[[143.503571067188, 44.2259751275381],\n" +
-          "                             [143.462735477681, 43.2382731563042],\n" +
-          "                             [144.812631659451, 43.2012113546965],\n" +
-          "                             [144.875738946256, 44.1876215835231],\n" +
-          "                             [143.503571067188, 44.2259751275381]]]}");
+          "            \"coordinates\": [[[60, 60],\n" +
+          "                             [60, 60],\n" +
+          "                             [60, 60],\n" +
+          "                             [60, 60],\n" +
+          "                             [60, 60]]]}");
 
         rasterProduct.setOrganization("CS");
+
         geostormClient.importRaster(rasterProduct);
     }
 }

@@ -59,7 +59,7 @@ public class RasterProduct {
     private String organization;
 
     // band_filter: optional product band filter and band order configuration eg [3, 2, 1], type list(int)
-    private Integer[] band_filter;
+    //private Integer[] band_filter;
 
     public RasterProduct() {
     }
@@ -141,11 +141,11 @@ public class RasterProduct {
         this.organization = organization;
     }
 
-    public Integer[] getBand_filter() {
+    /*public Integer[] getBand_filter() {
         return band_filter;
     }
 
     public void setBand_filter(Integer[] band_filter) {
         this.band_filter = band_filter;
-    }
+    }*/
 }
