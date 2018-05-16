@@ -196,16 +196,16 @@ public class GeostormClient implements EODataHandler<EOProduct> {
         headers.setContentType(MediaType.APPLICATION_JSON);
         final HttpEntity<RasterProduct> httpEntity = new HttpEntity<RasterProduct>(rasterProduct, headers);
         final String url = geostormRestBaseURL + geostormRestRasterImportEndpoint;
-        logger.fine("URL = "+ url);
-        logger.fine("Headers = " + headers.toString());
+        logger.info("URL = "+ url);
+        logger.info("Headers = " + headers.toString());
         try {
-            logger.fine("Body = " + new ObjectMapper().writeValueAsString(httpEntity));
+            logger.info("Body = " + new ObjectMapper().writeValueAsString(httpEntity));
         } catch (JsonProcessingException e) {
             logger.severe(String.format("importRaster(): Body JSON exception '%s'", e.getMessage()));
         }
         result = restTemplate.postForEntity(url, httpEntity, String.class );
         try {
-            logger.fine("importRaster result:" + new ObjectMapper().writeValueAsString(result));
+            logger.info("importRaster result:" + new ObjectMapper().writeValueAsString(result));
         } catch (JsonProcessingException e) {
             logger.severe(String.format("importRaster(): Result JSON exception '%s'", e.getMessage()));
         }
