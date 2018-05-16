@@ -16,8 +16,14 @@
 
 package ro.cs.tao.snap;
 
+import org.xml.sax.SAXException;
+import ro.cs.tao.component.ParameterDescriptor;
+import ro.cs.tao.component.ProcessingComponent;
+import ro.cs.tao.snap.xml.OperatorParser;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -44,20 +50,48 @@ public class DescriptorConverter {
         return null;
     }
     /**
-     * Converts a SNAP operator XML into a TAO workflow node
+     * Converts a SNAP operator XML into a TAO Processing Component
      *
      * @param operatorXml   The operator XML
      */
-    public static WorkflowNodeDescriptor fromXml(String operatorXml) {
-        return null;
+    public static ProcessingComponent fromXml(String operatorXml) throws IOException, SAXException, ParserConfigurationException {
+        return OperatorParser.parse(operatorXml);
+        /*WorkflowNodeDescriptor node = new WorkflowNodeDescriptor();
+        node.setName(processingComponent.getId().toUpperCase());
+        node.setxCoord(300);
+        node.setyCoord(500);
+        node.setComponentId(processingComponent.getId());
+        node.setComponentType(ComponentType.PROCESSING);
+        node.setCreated(LocalDateTime.now());
+        return node;*/
     }
     /**
-     * Converts a TAO workflow node which corresponds to a SNAP operator into the respective's operator SNAP XML
+     * Converts a TAO Processing Component which corresponds to a SNAP operator into the respective's operator SNAP XML
      *
-     * @param node  The TAO workflow node created from a SNAP operator
+     * @param component  The TAO processing component
      */
-    public static String toSnapXml(WorkflowNodeDescriptor node) {
-        return null;
+    public static String toSnapXml(ProcessingComponent component) {
+        if (component == null || component.getContainerId() == null
+                || !component.getContainerId().contains("snap") || !component.getContainerId().contains("SNAP")) {
+            return null;
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append("<node id=\"").append(component.getId()).append("\">\n");
+        builder.append("<operator>").append(component.getId()).append("</operator>\n");
+        builder.append("<sources>\n");
+        builder.append("</sources>\n");
+        builder.append("<parameters class=\"com.bc.ceres.binding.dom.XppDomElement\">\n");
+        List<ParameterDescriptor> parameters = component.getParameterDescriptors();
+        if (parameters != null) {
+            for (ParameterDescriptor parameter : parameters) {
+                builder.append("<").append(parameter.getId()).append(">")
+                        .append(parameter.getDataType().getSimpleName().toLowerCase())
+                        .append("</").append(parameter.getId()).append(">\n");
+            }
+        }
+        builder.append("</parameters>\n");
+        builder.append("</node>\n");
+        return builder.toString();
     }
 
 }

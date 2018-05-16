@@ -152,7 +152,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
             Path manifestFile = metadataFile.resolveSibling("manifest.safe");
             Path previewFile = metadataFile.resolveSibling("preview.png");
             List<String> allLines = Files.readAllLines(metadataFile);
-            List<String> metaTileNames = Utilities.filter(allLines, "<Granule" + ("13".equals(version) ? "s" : " "));
+            List<String> metaTileNames = Utilities.filter(allLines, "<Granule |<Granules ");
 
             Set<String> tileIds = updateMetadata(metadataFile, allLines);
             boolean hasTiles = false;
