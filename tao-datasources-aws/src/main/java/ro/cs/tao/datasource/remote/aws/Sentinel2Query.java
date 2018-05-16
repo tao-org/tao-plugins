@@ -427,16 +427,16 @@ class Sentinel2Query extends DataQuery {
                                 .getString("name"));
                 JsonArray coords = obj.getJsonObject("tileGeometry").getJsonArray("coordinates").getJsonArray(0);
                 Polygon2D polygon2D = new Polygon2D();
-                polygon2D.append(coords.getJsonArray(0).getInt(1),
-                                 coords.getJsonArray(0).getInt(0));
-                polygon2D.append(coords.getJsonArray(1).getInt(1),
-                                 coords.getJsonArray(1).getInt(0));
-                polygon2D.append(coords.getJsonArray(2).getInt(1),
-                                 coords.getJsonArray(2).getInt(0));
-                polygon2D.append(coords.getJsonArray(3).getInt(1),
-                                 coords.getJsonArray(3).getInt(0));
-                polygon2D.append(coords.getJsonArray(4).getInt(1),
-                                 coords.getJsonArray(4).getInt(0));
+                polygon2D.append(coords.getJsonArray(0).getJsonNumber(1).doubleValue(),
+                                 coords.getJsonArray(0).getJsonNumber(0).doubleValue());
+                polygon2D.append(coords.getJsonArray(1).getJsonNumber(1).doubleValue(),
+                                 coords.getJsonArray(1).getJsonNumber(0).doubleValue());
+                polygon2D.append(coords.getJsonArray(2).getJsonNumber(1).doubleValue(),
+                                 coords.getJsonArray(2).getJsonNumber(0).doubleValue());
+                polygon2D.append(coords.getJsonArray(3).getJsonNumber(1).doubleValue(),
+                                 coords.getJsonArray(3).getJsonNumber(0).doubleValue());
+                polygon2D.append(coords.getJsonArray(4).getJsonNumber(1).doubleValue(),
+                                 coords.getJsonArray(4).getJsonNumber(0).doubleValue());
                 product.setGeometry(polygon2D.toWKT());
             } catch (Exception e) {
                 e.printStackTrace();

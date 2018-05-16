@@ -76,8 +76,8 @@ public class GdalInfoWrapper implements MetadataInspector {
                     Polygon2D polygon2D = new Polygon2D();
                     JsonArray points = extentObject.getJsonArray("coordinates").getJsonArray(0);
                     for (int i = 0; i < points.size(); i++) {
-                        polygon2D.append(points.getJsonArray(0).getJsonNumber(0).doubleValue(),
-                                         points.getJsonArray(0).getJsonNumber(1).doubleValue());
+                        polygon2D.append(points.getJsonArray(i).getJsonNumber(0).doubleValue(),
+                                         points.getJsonArray(i).getJsonNumber(1).doubleValue());
                     }
                     metadata.setFootprint(polygon2D.toWKT());
                 }
