@@ -74,7 +74,7 @@ class Sentinel2Query extends DataQuery {
         Map<String, EOProduct> results = new LinkedHashMap<>();
         try {
             String sensingStart, sensingEnd;
-            double cloudFilter = 100.;
+            double cloudFilter = 100.01;
             int relativeOrbit = 0;
 
             Set<String> tiles = new HashSet<>();
@@ -256,7 +256,7 @@ class Sentinel2Query extends DataQuery {
         Map<String, EOProduct> results = new LinkedHashMap<>();
         try {
             String sensingStart, sensingEnd;
-            double cloudFilter = 100.;
+            double cloudFilter = 100.01;
             int relativeOrbit = 0;
 
             Set<String> tiles = new HashSet<>();
@@ -401,6 +401,10 @@ class Sentinel2Query extends DataQuery {
             product.setLocation(this.source.getConnectionString()
                                            .replace(S2_SEARCH_URL_SUFFIX + "tiles/", "") + obj.getString("path"));
             product.setAcquisitionDate(dateFormat.parse(obj.getString("timestamp")));
+            JsonObject tile = obj.getJsonArray("tiles").getJsonObject(0);
+            String utmCode = String.format("%02d", tile.getInt("utmZone")) +
+                    tile.getString("latitudeBand") + tile.getString("gridSquare");
+            product.addAttribute("utmCode", utmCode);
             product.setWidth(-1);
             product.setHeight(-1);
         } finally {
@@ -425,19 +429,21 @@ class Sentinel2Query extends DataQuery {
                                 .getJsonObject("crs")
                                 .getJsonObject("properties")
                                 .getString("name"));
-                JsonArray coords = obj.getJsonObject("tileGeometry").getJsonArray("coordinates").getJsonArray(0);
-                Polygon2D polygon2D = new Polygon2D();
-                polygon2D.append(coords.getJsonArray(0).getInt(1),
-                                 coords.getJsonArray(0).getInt(0));
-                polygon2D.append(coords.getJsonArray(1).getInt(1),
-                                 coords.getJsonArray(1).getInt(0));
-                polygon2D.append(coords.getJsonArray(2).getInt(1),
-                                 coords.getJsonArray(2).getInt(0));
-                polygon2D.append(coords.getJsonArray(3).getInt(1),
-                                 coords.getJsonArray(3).getInt(0));
-                polygon2D.append(coords.getJsonArray(4).getInt(1),
-                                 coords.getJsonArray(4).getInt(0));
-                product.setGeometry(polygon2D.toWKT());
+                //if (product.getGeometry() == null) {
+                    JsonArray coords = obj.getJsonObject("tileGeometry").getJsonArray("coordinates").getJsonArray(0);
+                    Polygon2D polygon2D = new Polygon2D();
+                    polygon2D.append(coords.getJsonArray(0).getJsonNumber(0).doubleValue(),
+                                     coords.getJsonArray(0).getJsonNumber(1).doubleValue());
+                    polygon2D.append(coords.getJsonArray(1).getJsonNumber(0).doubleValue(),
+                                     coords.getJsonArray(1).getJsonNumber(1).doubleValue());
+                    polygon2D.append(coords.getJsonArray(2).getJsonNumber(0).doubleValue(),
+                                     coords.getJsonArray(2).getJsonNumber(1).doubleValue());
+                    polygon2D.append(coords.getJsonArray(3).getJsonNumber(0).doubleValue(),
+                                     coords.getJsonArray(3).getJsonNumber(1).doubleValue());
+                    polygon2D.append(coords.getJsonArray(4).getJsonNumber(0).doubleValue(),
+                                     coords.getJsonArray(4).getJsonNumber(1).doubleValue());
+                    product.setGeometry(polygon2D.toWKT());
+                //}
             } catch (Exception e) {
                 e.printStackTrace();
             }
