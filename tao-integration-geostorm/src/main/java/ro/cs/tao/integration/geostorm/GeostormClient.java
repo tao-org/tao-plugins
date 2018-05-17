@@ -78,8 +78,8 @@ public class GeostormClient implements EODataHandler<EOProduct> {
             geostormPassword = configManager.getValue("geostorm.admin.password");
 
             if (geostormRestBaseURL == null || geostormRestCatalogResourceEndpoint == null ||
-                    geostormRestRasterImportEndpoint == null ||
-                    geostormUsername == null || geostormPassword == null) {
+              geostormRestRasterImportEndpoint == null ||
+              geostormUsername == null || geostormPassword == null) {
                 throw new UnsupportedOperationException("Geostorm integration plugin not configured");
             }
 
@@ -89,7 +89,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
                 public boolean hasError(ClientHttpResponse response) throws IOException {
                     boolean hasError = false;
                     int rawStatusCode = response.getRawStatusCode();
-                    if (rawStatusCode != 200){
+                    if (rawStatusCode != 200) {
                         hasError = true;
                     }
                     return hasError;
@@ -104,10 +104,14 @@ public class GeostormClient implements EODataHandler<EOProduct> {
     }
 
     @Override
-    public Class<EOProduct> isIntendedFor() { return EOProduct.class; }
+    public Class<EOProduct> isIntendedFor() {
+        return EOProduct.class;
+    }
 
     @Override
-    public int getPriority() { return 1; }
+    public int getPriority() {
+        return 1;
+    }
 
     @Override
     public List<EOProduct> handle(List<EOProduct> list) throws DataHandlingException {
@@ -177,10 +181,12 @@ public class GeostormClient implements EODataHandler<EOProduct> {
                 if (crs.contains(":")) {
                     crs = crs.substring(crs.indexOf(":") + 1);
                 }
-                geostormRaster.setOrganization("CS"); // TODO maybe this shoud be set on EOproduct also, or get it from the product owner
+                geostormRaster.setOrganization("CS"); // TODO maybe this should be set on EOProduct also, or get it from the product owner
 
                 // import raster
+                logger.info("raster import, product_path=" + geostormRaster.getProduct_path() + ", entry_point(s)=" + geostormRaster.getEntry_point());
                 importRaster(geostormRaster);
+
             } catch (Exception ex) {
                 logger.severe(ex.getMessage());
             }
@@ -194,7 +200,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
         headers.setContentType(MediaType.APPLICATION_JSON);
         final HttpEntity<String> httpEntity = new HttpEntity<String>(headers);
         final String url = geostormRestBaseURL + geostormRestCatalogResourceEndpoint;
-        logger.fine("URL = "+ url);
+        logger.fine("URL = " + url);
         result = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
         try {
             logger.info("getResources result: " + new ObjectMapper().writeValueAsString(result));
@@ -211,14 +217,14 @@ public class GeostormClient implements EODataHandler<EOProduct> {
         headers.setContentType(MediaType.APPLICATION_JSON);
         final HttpEntity<Resource> httpEntity = new HttpEntity<Resource>(resource, headers);
         final String url = geostormRestBaseURL + geostormRestCatalogResourceEndpoint;
-        logger.fine("URL = "+ url);
+        logger.fine("URL = " + url);
         logger.fine("Headers = " + headers.toString());
         try {
             logger.fine("Body = " + new ObjectMapper().writeValueAsString(httpEntity));
         } catch (JsonProcessingException e) {
             logger.severe(String.format("addResource(): Body JSON exception '%s'", e.getMessage()));
         }
-        result = restTemplate.postForEntity(url, httpEntity, String.class );
+        result = restTemplate.postForEntity(url, httpEntity, String.class);
         try {
             logger.fine("addResource result:" + new ObjectMapper().writeValueAsString(result));
         } catch (JsonProcessingException e) {
@@ -234,14 +240,14 @@ public class GeostormClient implements EODataHandler<EOProduct> {
         headers.setContentType(MediaType.APPLICATION_JSON);
         final HttpEntity<RasterProduct> httpEntity = new HttpEntity<RasterProduct>(rasterProduct, headers);
         final String url = geostormRestBaseURL + geostormRestRasterImportEndpoint;
-        logger.info("URL = "+ url);
+        logger.info("URL = " + url);
         logger.info("Headers = " + headers.toString());
         try {
             logger.info("Body = " + new ObjectMapper().writeValueAsString(httpEntity));
         } catch (JsonProcessingException e) {
             logger.severe(String.format("importRaster(): Body JSON exception '%s'", e.getMessage()));
         }
-        result = restTemplate.postForEntity(url, httpEntity, String.class );
+        result = restTemplate.postForEntity(url, httpEntity, String.class);
         try {
             logger.info("importRaster result:" + new ObjectMapper().writeValueAsString(result));
         } catch (JsonProcessingException e) {
@@ -263,15 +269,17 @@ public class GeostormClient implements EODataHandler<EOProduct> {
                 @Override
                 public void checkClientTrusted(X509Certificate[] xcs, String string) {
                 }
+
                 @Override
                 public void checkServerTrusted(X509Certificate[] xcs, String string) {
                 }
+
                 @Override
                 public X509Certificate[] getAcceptedIssuers() {
                     return null;
                 }
             };
-            ctx.init(null, new TrustManager[] { tm }, null);
+            ctx.init(null, new TrustManager[]{tm}, null);
             SSLContext.setDefault(ctx);
         } catch (Exception ex) {
             logger.severe(ex.getMessage());
@@ -283,7 +291,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
             String auth = username + ":" + password;
             byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
             String authHeader = "Basic " + new String(encodedAuth);
-            set("Authorization", authHeader );
+            set("Authorization", authHeader);
         }};
     }
 
