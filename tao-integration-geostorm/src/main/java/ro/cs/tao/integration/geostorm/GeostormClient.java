@@ -112,41 +112,79 @@ public class GeostormClient implements EODataHandler<EOProduct> {
     @Override
     public List<EOProduct> handle(List<EOProduct> list) throws DataHandlingException {
         if (this.enabled) {
-            Resource geostormResource;
-            for (EOProduct product : list) {
-                try {
-                    // conversion from EOProduct to Resource
-                    geostormResource = new Resource();
-                    geostormResource.setExecution_id(0);
-                    geostormResource.setData_path(product.getLocation());
-                    geostormResource.setData_type(product.getSensorType() == SensorType.UNKNOWN ? "output" : "input");
-                    geostormResource.setName(product.getName());
-                    geostormResource.setManaged_resource_storage(false);
-                    geostormResource.setShort_description(product.getSensorType().toString() + " " + product.getName());
-                    String entryPoint = product.getEntryPoint();
-                    if (entryPoint == null) {
-                        entryPoint = product.getLocation();
-                    }
-                    geostormResource.setEntry_point(entryPoint);
-                    geostormResource.setResource_storage_type("process_result");
-                    geostormResource.setRelease_date(dateFormatter.format(product.getAcquisitionDate()));
-                    //geostormResource.setCollection(product.getProductType()); // TODO see if there is a predefined collection in Geostorm with this name; if not, define it
-                    geostormResource.setCollection("Sentinel_2"); // for test, this collection already exists
-                    geostormResource.setWkb_geometry(convertWKTToGeoJson(product.getGeometry()));
-                    String crs = product.getCrs();
-                    if (crs.contains(":")) {
-                        crs = crs.substring(crs.indexOf(":") + 1);
-                    }
-                    geostormResource.setCoord_sys(new Integer[]{Integer.parseInt(crs)});
-
-                    // save resource
-                    addResource(geostormResource);
-                } catch (Exception ex) {
-                    logger.severe(ex.getMessage());
-                }
-            }
+            //importCatalogResources(list);
+            importRasters(list);
         }
         return list;
+    }
+
+    private void importCatalogResources(List<EOProduct> list) {
+        Resource geostormResource;
+        for (EOProduct product : list) {
+            try {
+                // conversion from EOProduct to Resource
+                geostormResource = new Resource();
+                geostormResource.setExecution_id(0);
+                geostormResource.setData_path(product.getLocation());
+                geostormResource.setData_type(product.getSensorType() == SensorType.UNKNOWN ? "output" : "input");
+                geostormResource.setName(product.getName());
+                geostormResource.setManaged_resource_storage(false);
+                geostormResource.setShort_description(product.getSensorType().toString() + " " + product.getName());
+                String entryPoint = product.getEntryPoint();
+                if (entryPoint == null) {
+                    entryPoint = product.getLocation();
+                }
+                geostormResource.setEntry_point(entryPoint);
+                geostormResource.setResource_storage_type("process_result");
+                geostormResource.setRelease_date(dateFormatter.format(product.getAcquisitionDate()));
+                //geostormResource.setCollection(product.getProductType()); // TODO see if there is a predefined collection in Geostorm with this name; if not, define it
+                geostormResource.setCollection("Sentinel_2"); // for test, this collection already exists
+                geostormResource.setWkb_geometry(convertWKTToGeoJson(product.getGeometry()));
+                String crs = product.getCrs();
+                if (crs.contains(":")) {
+                    crs = crs.substring(crs.indexOf(":") + 1);
+                }
+                geostormResource.setCoord_sys(new Integer[]{Integer.parseInt(crs)});
+
+                // save resource
+                addResource(geostormResource);
+            } catch (Exception ex) {
+                logger.severe(ex.getMessage());
+            }
+        }
+    }
+
+    private void importRasters(List<EOProduct> list) {
+        RasterProduct geostormRaster;
+        for (EOProduct product : list) {
+            try {
+                // conversion from EOProduct to RasterProduct
+                geostormRaster = new RasterProduct();
+                geostormRaster.setProduct_path(product.getLocation());
+                geostormRaster.setOwner(product.getUserName());
+                geostormRaster.setCollection(product.getProductType());
+                geostormRaster.setSite("No idea"); // TODO see where and how it's used
+                geostormRaster.setMosaic_name("Mosaic_" + product.getProductType()); // TODO see if name matters
+
+                String entryPoint = product.getEntryPoint();
+                if (entryPoint == null) {
+                    entryPoint = product.getLocation();
+                }
+                geostormRaster.setEntry_point(new String[]{entryPoint});
+                geostormRaster.setProduct_date(dateFormatter.format(product.getAcquisitionDate()));
+                geostormRaster.setExtent(convertWKTToGeoJson(product.getGeometry()));
+                String crs = product.getCrs();
+                if (crs.contains(":")) {
+                    crs = crs.substring(crs.indexOf(":") + 1);
+                }
+                geostormRaster.setOrganization("CS"); // TODO maybe this shoud be set on EOproduct also, or get it from the product owner
+
+                // import raster
+                importRaster(geostormRaster);
+            } catch (Exception ex) {
+                logger.severe(ex.getMessage());
+            }
+        }
     }
 
     String getResources() {
