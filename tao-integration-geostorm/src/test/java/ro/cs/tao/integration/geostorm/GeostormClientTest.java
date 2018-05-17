@@ -134,11 +134,11 @@ public class GeostormClientTest {
           "                             [60, 60]]]}");*/
 
         rasterProduct.setExtent("{\"type\": \"Polygon\",\n" +
-          "            \"coordinates\": [[[143.503571067188, 44.2259751275381],\n" +
-          "                             [143.462735477681, 43.2382731563042],\n" +
-          "                             [144.812631659451, 43.2012113546965],\n" +
-          "                             [144.875738946256, 44.1876215835231],\n" +
-          "                             [143.503571067188, 44.2259751275381]]]}");
+          "            \"coordinates\": [[[63.7454106, 2.1718301],\n" +
+          "                             [63.7719564, 2.9663673],\n" +
+          "                             [62.9776581, 2.9970139],\n" +
+          "                             [62.9513407, 2.1942589],\n" +
+          "                             [63.7454106, 2.1718301]]]}");
 
         rasterProduct.setOrganization("CS");
 
@@ -172,6 +172,61 @@ public class GeostormClientTest {
           "                             [144.812631659451, 43.2012113546965],\n" +
           "                             [144.875738946256, 44.1876215835231],\n" +
           "                             [143.503571067188, 44.2259751275381]]]}");
+
+        rasterProduct.setOrganization("CS");
+
+        geostormClient.importRaster(rasterProduct);
+    }
+
+    @Test
+    public void T_05_Raster_import()
+    {
+        log.info("test raster import TIFF ....");
+
+        RasterProduct rasterProduct = new RasterProduct();
+
+        rasterProduct.setProduct_path("/imgdata/8-output_snap-ndvi");
+        rasterProduct.setOwner("admin");
+        rasterProduct.setCollection("Sentinel_1");
+        rasterProduct.setSite("No idea");
+        rasterProduct.setMosaic_name("Mosaic_snap_ndvi");
+        rasterProduct.setEntry_point(new String[]{"8-output_snap-ndvi.tif"});
+        rasterProduct.setProduct_date("2018-05-16");
+
+        rasterProduct.setExtent("{\"type\": \"Polygon\",\n" +
+          "            \"coordinates\": [[[24.4959286, 44.2259642],\n" +
+          "                             [24.5367723, 43.2382626],\n" +
+          "                             [25.888683, 43.2593919],\n" +
+          "                             [25.8702373, 44.2478307],\n" +
+          "                             [24.4959286, 44.2259642]]]}");
+
+        rasterProduct.setOrganization("CS");
+
+        geostormClient.importRaster(rasterProduct);
+    }
+
+    @Test
+    public void T_06_Raster_import()
+    {
+        log.info("test raster import TIFF ....");
+
+        RasterProduct rasterProduct = new RasterProduct();
+
+        rasterProduct.setProduct_path("/imgdata/9-output_otbcli_RigidTransformResample");
+        rasterProduct.setOwner("admin");
+        rasterProduct.setCollection("Sentinel_1");
+        rasterProduct.setSite("No idea");
+        rasterProduct.setMosaic_name("Mosaic_otbcli");
+        rasterProduct.setEntry_point(new String[]{"9-output_otbcli_RigidTransformResample.tif"});
+        rasterProduct.setProduct_date("2018-05-16");
+
+        rasterProduct.setExtent("{\"type\": \"Polygon\",\n" +
+          "            \"coordinates\": [[[24.4959286, 44.2259642],\n" +
+          "                             [24.5367723, 43.2382626],\n" +
+          "                             [25.888683, 43.2593919],\n" +
+          "                             [25.8702373, 44.2478307],\n" +
+          "                             [24.4959286, 44.2259642]]]}");
+
 
         rasterProduct.setOrganization("CS");
 
