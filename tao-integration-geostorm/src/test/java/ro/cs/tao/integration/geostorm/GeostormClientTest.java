@@ -185,13 +185,13 @@ public class GeostormClientTest {
 
         RasterProduct rasterProduct = new RasterProduct();
 
-        rasterProduct.setProduct_path("/imgdata/8-output_snap-ndvi");
+        rasterProduct.setProduct_path("/imgdata/12-output_snap-ndvi");
         rasterProduct.setOwner("admin");
         rasterProduct.setCollection("Sentinel_1");
         rasterProduct.setSite("No idea");
-        rasterProduct.setMosaic_name("Mosaic_snap_ndvi");
+        rasterProduct.setMosaic_name("Mosaic_snap_ndvi_new");
         rasterProduct.setEntry_point(new String[]{"8-output_snap-ndvi.tif"});
-        rasterProduct.setProduct_date("2018-05-16");
+        rasterProduct.setProduct_date("2018-05-17");
 
         rasterProduct.setExtent("{\"type\": \"Polygon\",\n" +
           "            \"coordinates\": [[[24.4959286, 44.2259642],\n" +
@@ -212,13 +212,13 @@ public class GeostormClientTest {
 
         RasterProduct rasterProduct = new RasterProduct();
 
-        rasterProduct.setProduct_path("/imgdata/9-output_otbcli_RigidTransformResample");
+        rasterProduct.setProduct_path("/imgdata/13-output_otbcli_RigidTransformResample");
         rasterProduct.setOwner("admin");
         rasterProduct.setCollection("Sentinel_1");
         rasterProduct.setSite("No idea");
-        rasterProduct.setMosaic_name("Mosaic_otbcli");
+        rasterProduct.setMosaic_name("Mosaic_otbcli_new");
         rasterProduct.setEntry_point(new String[]{"9-output_otbcli_RigidTransformResample.tif"});
-        rasterProduct.setProduct_date("2018-05-16");
+        rasterProduct.setProduct_date("2018-05-17");
 
         rasterProduct.setExtent("{\"type\": \"Polygon\",\n" +
           "            \"coordinates\": [[[24.4959286, 44.2259642],\n" +

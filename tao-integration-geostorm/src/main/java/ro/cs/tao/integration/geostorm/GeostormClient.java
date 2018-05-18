@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.geotools.geojson.geom.GeometryJSON;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
@@ -33,6 +34,8 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.integration.geostorm.model.RasterProduct;
 import ro.cs.tao.integration.geostorm.model.Resource;
+import ro.cs.tao.persistence.PersistenceManager;
+import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.serialization.GeometryAdapter;
 
 import javax.net.ssl.SSLContext;
@@ -59,11 +62,16 @@ public class GeostormClient implements EODataHandler<EOProduct> {
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     private RestTemplate restTemplate;
+
+    @Autowired
+    private PersistenceManager persistenceMng;
+
     private String geostormRestBaseURL;
     private String geostormRestCatalogResourceEndpoint;
     private String geostormRestRasterImportEndpoint;
     private String geostormUsername;
     private String geostormPassword;
+
     private final boolean enabled;
 
     public GeostormClient() {
@@ -181,7 +189,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
                 if (crs.contains(":")) {
                     crs = crs.substring(crs.indexOf(":") + 1);
                 }
-                geostormRaster.setOrganization("CS"); // TODO maybe this should be set on EOProduct also, or get it from the product owner
+                geostormRaster.setOrganization(getUserOrganization(product.getUserName()));
 
                 // import raster
                 logger.info("raster import, product_path=" + geostormRaster.getProduct_path() + ", entry_point(s)=" + geostormRaster.getEntry_point());
@@ -193,7 +201,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
         }
     }
 
-    String getResources() {
+    public String getResources() {
         trustSelfSignedSSL();
         ResponseEntity<String> result;
         final HttpHeaders headers = createHeaders(geostormUsername, geostormPassword);
@@ -210,7 +218,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
         return result.getBody();
     }
 
-    String addResource(Resource resource) {
+    public String addResource(Resource resource) {
         trustSelfSignedSSL();
         ResponseEntity<String> result;
         final HttpHeaders headers = createHeaders(geostormUsername, geostormPassword);
@@ -233,7 +241,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
         return result.getBody();
     }
 
-    String importRaster(RasterProduct rasterProduct) {
+    public String importRaster(RasterProduct rasterProduct) {
         trustSelfSignedSSL();
         ResponseEntity<String> result;
         final HttpHeaders headers = createHeaders(geostormUsername, geostormPassword);
@@ -286,7 +294,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
         }
     }
 
-    HttpHeaders createHeaders(String username, String password) {
+    private HttpHeaders createHeaders(final String username, final String password) {
         return new HttpHeaders() {{
             String auth = username + ":" + password;
             byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
@@ -295,7 +303,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
         }};
     }
 
-    private String convertWKTToGeoJson(String wkt) {
+    private String convertWKTToGeoJson(final String wkt) {
         GeometryJSON geoJson = new GeometryJSON(8);
         GeometryAdapter adapter = new GeometryAdapter();
         try {
@@ -304,6 +312,16 @@ public class GeostormClient implements EODataHandler<EOProduct> {
             logger.warning(e.getMessage());
             return null;
         }
+    }
+
+    private String getUserOrganization(final String username) {
+        String organization = "";
+        try {
+            organization = persistenceMng.getUserOrganization(username);
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+        }
+        return organization;
     }
 
 }
