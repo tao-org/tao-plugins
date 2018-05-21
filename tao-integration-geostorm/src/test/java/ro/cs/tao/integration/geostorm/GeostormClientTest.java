@@ -232,4 +232,38 @@ public class GeostormClientTest {
 
         geostormClient.importRaster(rasterProduct);
     }
+
+    @Test
+    public void T_07_Raster_import()
+    {
+        log.info("test raster import TIFF ....");
+
+        RasterProduct rasterProduct = new RasterProduct();
+
+        rasterProduct.setProduct_path("/imgdata/1-2-output_snap-ndvi");
+        rasterProduct.setOwner("admin");
+        rasterProduct.setCollection("GeoTIFF");
+        rasterProduct.setSite("No idea");
+        rasterProduct.setMosaic_name("Mosaic_geotiff");
+        rasterProduct.setEntry_point(new String[]{"1-2-output_snap-ndvi.tif"});
+        rasterProduct.setProduct_date("2018-05-21");
+
+        rasterProduct.setExtent("{\"type\": \"Polygon\",\n" +
+          "            \"coordinates\": [[[24.4959286, 44.2259642],\n" +
+          "                             [24.5367723, 43.2382626],\n" +
+          "                             [25.888683, 43.2593919],\n" +
+          "                             [25.8702373, 44.2478307],\n" +
+          "                             [24.4959286, 44.2259642]]]}");
+
+
+        rasterProduct.setOrganization("CS");
+
+        if(geostormClient.canCreateCollectionMapFileIfNotExists(rasterProduct.getCollection())){
+            geostormClient.importRaster(rasterProduct);
+        }
+        else{
+            log.error("Cannot create collection map file " + rasterProduct.getCollection());
+        }
+
+    }
 }
