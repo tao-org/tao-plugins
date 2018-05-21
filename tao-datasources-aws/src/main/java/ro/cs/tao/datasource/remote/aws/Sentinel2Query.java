@@ -22,6 +22,7 @@ import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.aws.internal.AwsResult;
 import ro.cs.tao.datasource.remote.aws.internal.IntermediateParser;
+import ro.cs.tao.datasource.remote.aws.internal.ManifestSizeParser;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
@@ -34,8 +35,10 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
@@ -216,6 +219,9 @@ class Sentinel2Query extends DataQuery {
                                                                 DownloadStrategy.URL_SEPARATOR + "productInfo.json";
                                                         jsonProduct = jsonProduct.replace("?delimiter=/&prefix=", "");
                                                         parseProductJson(jsonProduct, product);
+                                                        String manifest = product.getLocation() +
+                                                                DownloadStrategy.URL_SEPARATOR + "manifest.safe";
+                                                        parseManifest(manifest, product);
                                                         if (relativeOrbit == 0 ||
                                                                 product.getName().contains("_R" + String.format("%03d", relativeOrbit))) {
                                                             if (this.limit > 0 && this.limit <= results.size()) {
@@ -411,6 +417,13 @@ class Sentinel2Query extends DataQuery {
             if (reader != null) {
                 reader.close();
             }
+        }
+    }
+
+    private void parseManifest(String manifestUrl, EOProduct product) throws Exception {
+        try (InputStream inputStream = new URI(manifestUrl).toURL().openStream()) {
+            long size = ManifestSizeParser.parse(new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining("\n")));
+            product.setApproximateSize(size);
         }
     }
 
