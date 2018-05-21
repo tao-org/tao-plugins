@@ -18,9 +18,9 @@ package ro.cs.tao.integration.geostorm;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jcraft.jsch.*;
 import org.apache.commons.codec.binary.Base64;
 import org.geotools.geojson.geom.GeometryJSON;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
@@ -34,23 +34,17 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.integration.geostorm.model.RasterProduct;
 import ro.cs.tao.integration.geostorm.model.Resource;
-import ro.cs.tao.persistence.PersistenceManager;
-import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.serialization.GeometryAdapter;
-import ro.cs.tao.utils.executors.ExecutionUnit;
-import ro.cs.tao.utils.executors.ExecutorType;
-import ro.cs.tao.utils.executors.SSHMode;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -68,8 +62,8 @@ public class GeostormClient implements EODataHandler<EOProduct> {
 
     private RestTemplate restTemplate;
 
-    @Autowired
-    private PersistenceManager persistenceMng;
+    //@Autowired
+    //private PersistenceManager persistenceMng;
 
     private String geostormRestBaseURL;
     private String geostormRestCatalogResourceEndpoint;
@@ -81,10 +75,8 @@ public class GeostormClient implements EODataHandler<EOProduct> {
     private String geostormCollectionMapfilesSample;
 
     private String geostormHostName;
-    private String geostormSSHConnectionUsername;
-    private String geostormSSHConnectionPassword;
     private String geostormStormConnectionUsername;
-    private String geostormStormConnectionPassword;
+    private String geostormSSHConnectionKey;
 
     private final boolean enabled;
 
@@ -101,18 +93,16 @@ public class GeostormClient implements EODataHandler<EOProduct> {
             geostormCollectionMapfilesPath = configManager.getValue("geostorm.raster.collection.mapfiles.path");
             geostormCollectionMapfilesSample = configManager.getValue("geostorm.raster.collection.mapfiles.sample");
             geostormHostName = configManager.getValue("geostorm.host.name");
-            geostormSSHConnectionUsername = configManager.getValue("geostorm.ssh.connection.username");
-            geostormSSHConnectionPassword = configManager.getValue("geostorm.ssh.connection.password");
             geostormStormConnectionUsername = configManager.getValue("geostorm.storm.connection.username");
-            geostormStormConnectionPassword = configManager.getValue("geostorm.storm.connection.password");
+            geostormSSHConnectionKey = configManager.getValue("geostorm.ssh.connection.private.key.file.path");
+
 
             if (geostormRestBaseURL == null || geostormRestCatalogResourceEndpoint == null ||
               geostormRestRasterImportEndpoint == null ||
               geostormUsername == null || geostormPassword == null ||
               geostormCollectionMapfilesPath == null || geostormCollectionMapfilesSample == null ||
               geostormHostName == null ||
-              geostormSSHConnectionUsername == null || geostormSSHConnectionPassword == null ||
-              geostormStormConnectionUsername == null || geostormStormConnectionPassword == null) {
+              geostormStormConnectionUsername == null || geostormSSHConnectionKey == null) {
                 throw new UnsupportedOperationException("Geostorm integration plugin not configured");
             }
 
@@ -347,45 +337,59 @@ public class GeostormClient implements EODataHandler<EOProduct> {
     }
 
     private String getUserOrganization(final String username) {
-        String organization = "";
+        /*String organization = "";
         try {
             organization = persistenceMng.getUserOrganization(username);
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
-        return organization;
+        return organization;*/
+        return "CSRO";
     }
 
-    private boolean canCreateCollectionMapFileIfNotExists(final String collectionName){
+    boolean canCreateCollectionMapFileIfNotExists(final String collectionName){
         // check first if the file already exists
-        File collectionMapFile = new File(geostormCollectionMapfilesPath + collectionName + ".map");
-        if(collectionMapFile.exists() && !collectionMapFile.isDirectory())
-        {
-            logger.info("Map file " + collectionName + " found in " + geostormCollectionMapfilesPath);
-            return true;
-        }
-        else{
-            // create it starting from sample
-            File source = new File(geostormCollectionMapfilesSample);
-            if (!source.exists() || source.isDirectory()) {
-                logger.warning("Cannot find sample mapfile");
-                return false;
-            }
-            else{
-                List<String> args = new ArrayList<>();
-                args.add("cp");
-                args.add(geostormCollectionMapfilesSample);
-                args.add(geostormCollectionMapfilesPath + collectionName + ".map");
-                final ExecutionUnit unit = new ExecutionUnit(ExecutorType.SSH2, geostormHostName, geostormStormConnectionUsername, geostormStormConnectionPassword, args, false, SSHMode.EXEC);
+        String collectionMapFile = geostormCollectionMapfilesPath + collectionName + ".map";
 
-                // check if the file was created
-                if(collectionMapFile.exists() && !collectionMapFile.isDirectory()){
-                    return true;
-                }
+        Session session = null;
+        Channel channel = null;
+
+        try {
+            String command = "cp " + geostormCollectionMapfilesSample + " " + collectionMapFile;
+
+            JSch jsch = new JSch();
+            jsch.addIdentity(geostormSSHConnectionKey);
+            System.out.println("identity added ");
+
+            session = jsch.getSession(geostormStormConnectionUsername, geostormHostName, 22);
+            session.setConfig("PreferredAuthentications", "publickey,keyboard-interactive,password");
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            session.setConfig(config);
+            System.out.println("session created.");
+
+            session.connect();
+            System.out.println("session connected.....");
+
+            channel = session.openChannel("exec");
+            ((ChannelExec) channel).setCommand(command);
+            ((ChannelExec) channel).setPty(false);
+            channel.connect();
+            channel.disconnect();
+            session.disconnect();
+
+            return true;
+
+        } catch (JSchException e) {
+            logger.log(Level.SEVERE, "Error during SSH command execution", e);
+            if (session != null && session.isConnected()){
+                session.disconnect();
+            }
+            if (channel != null && channel.isConnected()){
+                channel.disconnect();
             }
         }
 
         return false;
     }
-
 }
