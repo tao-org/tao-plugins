@@ -37,14 +37,19 @@ import ro.cs.tao.integration.geostorm.model.Resource;
 import ro.cs.tao.persistence.PersistenceManager;
 import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.serialization.GeometryAdapter;
+import ro.cs.tao.utils.executors.ExecutionUnit;
+import ro.cs.tao.utils.executors.ExecutorType;
+import ro.cs.tao.utils.executors.SSHMode;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -72,6 +77,15 @@ public class GeostormClient implements EODataHandler<EOProduct> {
     private String geostormUsername;
     private String geostormPassword;
 
+    private String geostormCollectionMapfilesPath;
+    private String geostormCollectionMapfilesSample;
+
+    private String geostormHostName;
+    private String geostormSSHConnectionUsername;
+    private String geostormSSHConnectionPassword;
+    private String geostormStormConnectionUsername;
+    private String geostormStormConnectionPassword;
+
     private final boolean enabled;
 
     public GeostormClient() {
@@ -84,10 +98,21 @@ public class GeostormClient implements EODataHandler<EOProduct> {
             geostormRestRasterImportEndpoint = configManager.getValue("geostorm.rest.raster.import.endpoint");
             geostormUsername = configManager.getValue("geostorm.admin.username");
             geostormPassword = configManager.getValue("geostorm.admin.password");
+            geostormCollectionMapfilesPath = configManager.getValue("geostorm.raster.collection.mapfiles.path");
+            geostormCollectionMapfilesSample = configManager.getValue("geostorm.raster.collection.mapfiles.sample");
+            geostormHostName = configManager.getValue("geostorm.host.name");
+            geostormSSHConnectionUsername = configManager.getValue("geostorm.ssh.connection.username");
+            geostormSSHConnectionPassword = configManager.getValue("geostorm.ssh.connection.password");
+            geostormStormConnectionUsername = configManager.getValue("geostorm.storm.connection.username");
+            geostormStormConnectionPassword = configManager.getValue("geostorm.storm.connection.password");
 
             if (geostormRestBaseURL == null || geostormRestCatalogResourceEndpoint == null ||
               geostormRestRasterImportEndpoint == null ||
-              geostormUsername == null || geostormPassword == null) {
+              geostormUsername == null || geostormPassword == null ||
+              geostormCollectionMapfilesPath == null || geostormCollectionMapfilesSample == null ||
+              geostormHostName == null ||
+              geostormSSHConnectionUsername == null || geostormSSHConnectionPassword == null ||
+              geostormStormConnectionUsername == null || geostormStormConnectionPassword == null) {
                 throw new UnsupportedOperationException("Geostorm integration plugin not configured");
             }
 
@@ -171,29 +196,36 @@ public class GeostormClient implements EODataHandler<EOProduct> {
         for (EOProduct product : list) {
             try {
                 // conversion from EOProduct to RasterProduct
-                geostormRaster = new RasterProduct();
-                geostormRaster.setProduct_path(product.getLocation());
-                geostormRaster.setOwner(product.getUserName());
-                geostormRaster.setCollection(product.getProductType());
-                geostormRaster.setSite("No idea"); // TODO see where and how it's used
-                geostormRaster.setMosaic_name("Mosaic_" + product.getProductType()); // TODO see if name matters
+                if (canCreateCollectionMapFileIfNotExists(product.getProductType())){
+                    logger.info("Starting to import " + product.getName());
 
-                String entryPoint = product.getEntryPoint();
-                if (entryPoint == null) {
-                    entryPoint = product.getLocation();
-                }
-                geostormRaster.setEntry_point(new String[]{entryPoint});
-                geostormRaster.setProduct_date(dateFormatter.format(product.getAcquisitionDate()));
-                geostormRaster.setExtent(convertWKTToGeoJson(product.getGeometry()));
-                String crs = product.getCrs();
-                if (crs.contains(":")) {
-                    crs = crs.substring(crs.indexOf(":") + 1);
-                }
-                geostormRaster.setOrganization(getUserOrganization(product.getUserName()));
+                    geostormRaster = new RasterProduct();
+                    geostormRaster.setProduct_path(product.getLocation());
+                    geostormRaster.setOwner(product.getUserName());
+                    geostormRaster.setCollection(product.getProductType());
+                    geostormRaster.setSite("No idea"); // TODO see where and how it's used
+                    geostormRaster.setMosaic_name("Mosaic_" + product.getProductType()); // TODO see if name matters
 
-                // import raster
-                logger.info("raster import, product_path=" + geostormRaster.getProduct_path() + ", entry_point(s)=" + geostormRaster.getEntry_point());
-                importRaster(geostormRaster);
+                    String entryPoint = product.getEntryPoint();
+                    if (entryPoint == null) {
+                        entryPoint = product.getLocation();
+                    }
+                    geostormRaster.setEntry_point(new String[]{entryPoint});
+                    geostormRaster.setProduct_date(dateFormatter.format(product.getAcquisitionDate()));
+                    geostormRaster.setExtent(convertWKTToGeoJson(product.getGeometry()));
+                    String crs = product.getCrs();
+                    if (crs.contains(":")) {
+                        crs = crs.substring(crs.indexOf(":") + 1);
+                    }
+                    geostormRaster.setOrganization(getUserOrganization(product.getUserName()));
+
+                    // import raster
+                    logger.info("raster import, product_path=" + geostormRaster.getProduct_path() + ", entry_point(s)=" + geostormRaster.getEntry_point());
+                    importRaster(geostormRaster);
+                }
+                else {
+                    logger.warning("Cannot manage collection map file for " + product.getName() + " of type " + product.getProductType());
+                }
 
             } catch (Exception ex) {
                 logger.severe(ex.getMessage());
@@ -322,6 +354,38 @@ public class GeostormClient implements EODataHandler<EOProduct> {
             e.printStackTrace();
         }
         return organization;
+    }
+
+    private boolean canCreateCollectionMapFileIfNotExists(final String collectionName){
+        // check first if the file already exists
+        File collectionMapFile = new File(geostormCollectionMapfilesPath + collectionName + ".map");
+        if(collectionMapFile.exists() && !collectionMapFile.isDirectory())
+        {
+            logger.info("Map file " + collectionName + " found in " + geostormCollectionMapfilesPath);
+            return true;
+        }
+        else{
+            // create it starting from sample
+            File source = new File(geostormCollectionMapfilesSample);
+            if (!source.exists() || source.isDirectory()) {
+                logger.warning("Cannot find sample mapfile");
+                return false;
+            }
+            else{
+                List<String> args = new ArrayList<>();
+                args.add("cp");
+                args.add(geostormCollectionMapfilesSample);
+                args.add(geostormCollectionMapfilesPath + collectionName + ".map");
+                final ExecutionUnit unit = new ExecutionUnit(ExecutorType.SSH2, geostormHostName, geostormStormConnectionUsername, geostormStormConnectionPassword, args, false, SSHMode.EXEC);
+
+                // check if the file was created
+                if(collectionMapFile.exists() && !collectionMapFile.isDirectory()){
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 }
