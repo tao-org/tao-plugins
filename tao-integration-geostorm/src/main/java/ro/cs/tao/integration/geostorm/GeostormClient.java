@@ -35,6 +35,7 @@ import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.integration.geostorm.model.RasterProduct;
 import ro.cs.tao.integration.geostorm.model.Resource;
 import ro.cs.tao.serialization.GeometryAdapter;
+import ro.cs.tao.utils.StringUtils;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -191,7 +192,14 @@ public class GeostormClient implements EODataHandler<EOProduct> {
 
                     geostormRaster = new RasterProduct();
                     geostormRaster.setProduct_path(product.getLocation());
-                    geostormRaster.setOwner(product.getUserName());
+
+                    // QUICK FIX
+                    if(StringUtils.isNullOrEmpty(product.getUserName())){
+                        geostormRaster.setOwner("admin");
+                    }
+                    else {
+                        geostormRaster.setOwner(product.getUserName());
+                    }
                     geostormRaster.setCollection(product.getProductType());
                     geostormRaster.setSite("No idea"); // TODO see where and how it's used
                     geostormRaster.setMosaic_name("Mosaic_" + product.getProductType()); // TODO see if name matters
