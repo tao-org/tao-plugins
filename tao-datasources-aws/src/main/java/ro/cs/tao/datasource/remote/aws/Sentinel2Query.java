@@ -420,10 +420,12 @@ class Sentinel2Query extends DataQuery {
         }
     }
 
-    private void parseManifest(String manifestUrl, EOProduct product) throws Exception {
+    private void parseManifest(String manifestUrl, EOProduct product) {
         try (InputStream inputStream = new URI(manifestUrl).toURL().openStream()) {
             long size = ManifestSizeParser.parse(new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining("\n")));
             product.setApproximateSize(size);
+        } catch (Exception ex) {
+            logger.warning(ex.getMessage());
         }
     }
 
