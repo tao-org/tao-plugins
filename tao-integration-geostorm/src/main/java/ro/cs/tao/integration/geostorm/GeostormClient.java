@@ -40,6 +40,7 @@ import ro.cs.tao.utils.StringUtils;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
@@ -200,15 +201,6 @@ public class GeostormClient implements EODataHandler<EOProduct> {
 
                     geostormRaster = new RasterProduct();
 
-                    logger.info("Product location : " + product.getLocation());
-                    String geostormPath = "";
-                    Path fullPath = Paths.get(new URI(product.getLocation()));
-                    Path rootPath = Paths.get(geostormRootPathRelative);
-                    geostormPath = rootPath.relativize(fullPath).toString();
-                    logger.info("Geostorm relative path : " + geostormPath);
-
-                    geostormRaster.setProduct_path(geostormPath);
-
                     /*// QUICK FIX
                     if(StringUtils.isNullOrEmpty(product.getUserName())){
                         geostormRaster.setOwner("admin");
@@ -217,6 +209,17 @@ public class GeostormClient implements EODataHandler<EOProduct> {
                         geostormRaster.setOwner(product.getUserName());
                     }*/
                     geostormRaster.setOwner("admin");
+
+                    logger.info("Product location : " + product.getLocation());
+                    String geostormPath = "";
+                    Path fullPath = Paths.get(new URI(product.getLocation()));
+                    String root = geostormRootPathRelative.endsWith(File.separator) ? geostormRootPathRelative +  geostormRaster.getOwner() :
+                      geostormRootPathRelative +  File.separator + geostormRaster.getOwner();
+                    Path rootPath = Paths.get(root);
+                    geostormPath = rootPath.relativize(fullPath).toString();
+                    logger.info("Geostorm relative path : " + geostormPath);
+
+                    geostormRaster.setProduct_path(geostormPath);
 
 
                     geostormRaster.setCollection(product.getProductType());
