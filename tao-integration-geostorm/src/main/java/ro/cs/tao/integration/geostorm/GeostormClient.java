@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -193,15 +194,18 @@ public class GeostormClient implements EODataHandler<EOProduct> {
                     geostormRaster = new RasterProduct();
                     geostormRaster.setProduct_path(product.getLocation());
 
-                    // QUICK FIX
+                    /*// QUICK FIX
                     if(StringUtils.isNullOrEmpty(product.getUserName())){
                         geostormRaster.setOwner("admin");
                     }
                     else {
                         geostormRaster.setOwner(product.getUserName());
-                    }
+                    }*/
+                    geostormRaster.setOwner("admin");
+
+
                     geostormRaster.setCollection(product.getProductType());
-                    geostormRaster.setSite("No idea"); // TODO see where and how it's used
+                    geostormRaster.setSite("Site"); // TODO see where and how it's used
                     geostormRaster.setMosaic_name("Mosaic_" + product.getProductType()); // TODO see if name matters
 
                     String entryPoint = product.getEntryPoint();
@@ -218,7 +222,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
                     geostormRaster.setOrganization(getUserOrganization(product.getUserName()));
 
                     // import raster
-                    logger.info("raster import, product_path=" + geostormRaster.getProduct_path() + ", entry_point(s)=" + geostormRaster.getEntry_point());
+                    logger.info("raster import, product_path=" + geostormRaster.getProduct_path() + ", entry_point(s)=" + Arrays.toString(geostormRaster.getEntry_point()));
                     importRaster(geostormRaster);
                 }
                 else {
@@ -367,17 +371,17 @@ public class GeostormClient implements EODataHandler<EOProduct> {
 
             JSch jsch = new JSch();
             jsch.addIdentity(geostormSSHConnectionKey);
-            System.out.println("identity added ");
+            //System.out.println("identity added ");
 
             session = jsch.getSession(geostormStormConnectionUsername, geostormHostName, 22);
             session.setConfig("PreferredAuthentications", "publickey,keyboard-interactive,password");
             java.util.Properties config = new java.util.Properties();
             config.put("StrictHostKeyChecking", "no");
             session.setConfig(config);
-            System.out.println("session created.");
+            //System.out.println("session created.");
 
             session.connect();
-            System.out.println("session connected.....");
+            //System.out.println("session connected.....");
 
             channel = session.openChannel("exec");
             ((ChannelExec) channel).setCommand(command);
