@@ -40,8 +40,12 @@ import ro.cs.tao.utils.StringUtils;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -80,6 +84,8 @@ public class GeostormClient implements EODataHandler<EOProduct> {
     private String geostormStormConnectionUsername;
     private String geostormSSHConnectionKey;
 
+    private String geostormRootPathRelative;
+
     private final boolean enabled;
 
     public GeostormClient() {
@@ -97,6 +103,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
             geostormHostName = configManager.getValue("geostorm.host.name");
             geostormStormConnectionUsername = configManager.getValue("geostorm.storm.connection.username");
             geostormSSHConnectionKey = configManager.getValue("geostorm.ssh.connection.private.key.file.path");
+            geostormRootPathRelative = configManager.getValue("geostorm.root.path.relative");
 
 
             if (geostormRestBaseURL == null || geostormRestCatalogResourceEndpoint == null ||
@@ -104,7 +111,8 @@ public class GeostormClient implements EODataHandler<EOProduct> {
               geostormUsername == null || geostormPassword == null ||
               geostormCollectionMapfilesPath == null || geostormCollectionMapfilesSample == null ||
               geostormHostName == null ||
-              geostormStormConnectionUsername == null || geostormSSHConnectionKey == null) {
+              geostormStormConnectionUsername == null || geostormSSHConnectionKey == null ||
+              geostormRootPathRelative == null) {
                 throw new UnsupportedOperationException("Geostorm integration plugin not configured");
             }
 
@@ -192,7 +200,6 @@ public class GeostormClient implements EODataHandler<EOProduct> {
                     logger.info("Starting to import " + product.getName());
 
                     geostormRaster = new RasterProduct();
-                    geostormRaster.setProduct_path(product.getLocation());
 
                     /*// QUICK FIX
                     if(StringUtils.isNullOrEmpty(product.getUserName())){
@@ -202,6 +209,17 @@ public class GeostormClient implements EODataHandler<EOProduct> {
                         geostormRaster.setOwner(product.getUserName());
                     }*/
                     geostormRaster.setOwner("admin");
+
+                    logger.info("Product location : " + product.getLocation());
+                    String geostormPath = "";
+                    Path fullPath = Paths.get(new URI(product.getLocation()));
+                    String root = geostormRootPathRelative.endsWith(File.separator) ? geostormRootPathRelative +  geostormRaster.getOwner() :
+                      geostormRootPathRelative +  File.separator + geostormRaster.getOwner();
+                    Path rootPath = Paths.get(root);
+                    geostormPath = rootPath.relativize(fullPath).toString();
+                    logger.info("Geostorm relative path : " + geostormPath);
+
+                    geostormRaster.setProduct_path(geostormPath);
 
 
                     geostormRaster.setCollection(product.getProductType());
