@@ -103,10 +103,10 @@ public class DatabaseQuery extends DataQuery {
                         } else {
                             if (!Polygon2D.class.equals(parameter.getType())) {
                                 query.append(parameter.getName()).append("=? ");
-                                values.add(new ParameterIndex(idx, idx, parameter.getValue()));
                             } else {
-                                query.append(" st_intersects(").append(parameter.getName()).append(", st_geomfromwkt(?)) ");
+                                query.append(" st_intersects(").append(parameter.getName()).append(", st_geomfromtext(?)) ");
                             }
+                            values.add(new ParameterIndex(idx, idx, parameter.getValue()));
                             idx += 1;
                         }
                     }
@@ -114,7 +114,7 @@ public class DatabaseQuery extends DataQuery {
                 final PreparedStatement statement = sqlConnection.prepareStatement(query.toString());
                 for (ParameterIndex paramIndex : values) {
                     for (int i = paramIndex.fromIndex; i <= paramIndex.toIndex; i++) {
-                        Object value = paramIndex.values[i];
+                        Object value = paramIndex.values[i - paramIndex.fromIndex];
                         Class clazz = value.getClass();
                         if (Byte.class.equals(clazz)) {
                             statement.setObject(i, value, Types.TINYINT);

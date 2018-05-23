@@ -88,7 +88,7 @@ public class DatabaseParameterProvider implements ParameterProvider {
                 }
             }
         }*/
-        return sensors.toArray(new String[sensors.size()]);
+        return sensors.toArray(new String[0]);
     }
 
     @Override
