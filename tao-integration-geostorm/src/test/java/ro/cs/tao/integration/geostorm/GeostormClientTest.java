@@ -32,6 +32,9 @@ import ro.cs.tao.integration.geostorm.model.Resource;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Tests for GeostormClient
@@ -266,4 +269,21 @@ public class GeostormClientTest {
         }
 
     }
+
+    /*@Test
+    public void test_path(){
+        try {
+            String geostormPath = "";
+            //Path fullPath = Paths.get(new URI("file:///data/S2B_MSIL1C_20180201T093219_N0206_R136_T34TFQ_20180201T113304.SAFE/"));
+            Path fullPath = Paths.get("/data/S2B_MSIL1C_20180201T093219_N0206_R136_T34TFQ_20180201T113304.SAFE/");
+            Path rootPath = Paths.get("/data");
+            Path relativePath = fullPath.relativize(rootPath);
+            Path relativePath2 = rootPath.relativize(fullPath);
+
+            System.out.println("Geostorm relative path : " + geostormPath);
+            log.info("Geostorm relative path : " + geostormPath);
+        } catch (Exception ex) {
+
+        }
+    }*/
 }
