@@ -21,13 +21,12 @@ import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.db.DatabaseSource;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.security.SessionStore;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.logging.Logger;
 
 public class DatabaseFetchStrategy implements ProductFetchStrategy {
     private final DatabaseSource source;
@@ -44,27 +43,18 @@ public class DatabaseFetchStrategy implements ProductFetchStrategy {
     @Override
     public Path fetch(EOProduct product) throws InterruptedException {
         Path productPath = null;
-        Connection sqlConnection = this.source.getConnection();
-        if (sqlConnection != null) {
-            try {
-                PreparedStatement statement =
-                        sqlConnection.prepareStatement("SELECT location FROM " + DatabaseSource.PRODUCTS_TABLE +
-                        " WHERE name = ?");
-                ResultSet resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    String fieldValue = resultSet.getString(0);
-                    if (fieldValue != null) {
-                        productPath = Paths.get(fieldValue);
-                    }
+        if (product != null && product.getLocation() != null) {
+            productPath = Paths.get(product.getLocation());
+            if (!productPath.isAbsolute()) {
+                productPath = SessionStore.currentContext().getWorkspace().resolve(productPath);
+                if (product.getEntryPoint() != null) {
+                    productPath = productPath.resolve(product.getEntryPoint());
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    sqlConnection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+            }
+            if (Files.notExists(productPath)) {
+                Logger.getLogger(DatabaseFetchStrategy.class.getName()).warning(String.format("Product '%s' not found",
+                                                                                              product.getName()));
+                productPath = null;
             }
         }
         return productPath;

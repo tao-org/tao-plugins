@@ -86,6 +86,11 @@ public class DatabaseSource extends AbstractDataSource<DatabaseQuery> {
     }
 
     @Override
+    public void setCredentials(String username, String password) {
+        // no-op
+    }
+
+    @Override
     protected DatabaseQuery createQueryImpl(String sensorName) {
         final ParameterProvider parameterProvider = getParameterProvider();
         if (parameterProvider == null) {
