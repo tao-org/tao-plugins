@@ -15,6 +15,10 @@
  */
 package ro.cs.tao.datasource.remote.scihub;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -72,25 +76,20 @@ public class SciHubDataQuery extends DataQuery {
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
         List<EOProduct> results = new ArrayList<>();
-        String query = buildQueryParameters();
-//        if (this.limit <= 0) {
-//            this.limit = DEFAULT_LIMIT;
-//        }
+        List<String> queries = buildQueriesParams();
         if (this.pageSize <= 0) {
             this.pageSize = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, DEFAULT_LIMIT);
         }
         int page = Math.max(this.pageNumber, 1);
-        int retrieved = 0;
-        //do {
-            List<EOProduct> tmpResults;
+        List<EOProduct> tmpResults;
+        for (String query : queries) {
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("q", query));
             params.add(new BasicNameValuePair("orderby", "beginposition asc"));
             params.add(new BasicNameValuePair("rows", String.valueOf(this.pageSize)));
             params.add(new BasicNameValuePair("start", String.valueOf((page - 1) * this.pageSize)));
 
-            String queryUrl = this.source.getConnectionString() + "?"
-              + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+            String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
             logger.info("SciHub query: " + queryUrl);
             try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                 switch (response.getStatusLine().getStatusCode()) {
@@ -106,51 +105,19 @@ public class SciHubDataQuery extends DataQuery {
                         }
                         tmpResults = parser.parse(rawResponse);
                         if (tmpResults != null) {
-                            retrieved = tmpResults.size();
                             if ("Sentinel2".equals(this.sensorName) &&
-                              this.parameters.containsKey("cloudcoverpercentage")) {
+                                    this.parameters.containsKey("cloudcoverpercentage")) {
                                 final Double clouds = Double.parseDouble(this.parameters.get("cloudcoverpercentage").getValue().toString());
                                 tmpResults = tmpResults.stream()
-                                  .filter(r -> Double.parseDouble(r.getAttributeValue(isXml ? "cloudcoverpercentage" : "Cloud Cover Percentage")) <= clouds)
-                                  .collect(Collectors.toList());
+                                        .filter(r -> Double.parseDouble(r.getAttributeValue(isXml ? "cloudcoverpercentage" : "Cloud Cover Percentage")) <= clouds)
+                                        .collect(Collectors.toList());
                             }
-                            results.addAll(tmpResults);
-                            //page++;
+                            for (EOProduct result : tmpResults) {
+                                if (!results.contains(result)) {
+                                    results.add(result);
+                                }
+                            }
                         }
-                        break;
-                    case 401:
-                        throw new QueryException("The supplied credentials are invalid!");
-                    default:
-                        throw new QueryException(String.format("The request was not successful. Reason: %s",
-                          response.getStatusLine().getReasonPhrase()));
-                }
-            } catch (IOException ex) {
-                throw new QueryException(ex);
-            }
-//        } while (this.pageNumber <= 0 && (retrieved > 0 &&
-//                (this.limit > 0 ? results.size() == this.limit : true)));
-        logger.info(String.format("Query returned %s products", results.size()));
-        /*if ((this.limit > 0) && (results.size() > this.limit)) {
-            return results.subList(0, this.limit);
-        } else {*/
-            return results;
-        //}
-    }
-
-    @Override
-    public long getCount() {
-        long count = -1;
-        String query = buildQueryParameters();
-        final String countUrl = this.source.getProperty("scihub.search.count.url");
-        if (countUrl != null) {
-            List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair("filter", query));
-            String queryUrl = countUrl + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
-            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
-                switch (response.getStatusLine().getStatusCode()) {
-                    case 200:
-                        String rawResponse = EntityUtils.toString(response.getEntity());
-                        count = Long.parseLong(rawResponse);
                         break;
                     case 401:
                         throw new QueryException("The supplied credentials are invalid!");
@@ -162,66 +129,138 @@ public class SciHubDataQuery extends DataQuery {
                 throw new QueryException(ex);
             }
         }
+        logger.info(String.format("Query returned %s products", results.size()));
+        return results;
+    }
+
+    @Override
+    public long getCount() {
+        long count = 0;
+        List<String> queries = buildQueriesParams();
+        final String countUrl = this.source.getProperty("scihub.search.count.url");
+        if (countUrl != null) {
+            for (String query : queries) {
+                List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair("filter", query));
+                String queryUrl = countUrl + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+                try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
+                    switch (response.getStatusLine().getStatusCode()) {
+                        case 200:
+                            String rawResponse = EntityUtils.toString(response.getEntity());
+                            count += Long.parseLong(rawResponse);
+                            break;
+                        case 401:
+                            throw new QueryException("The supplied credentials are invalid!");
+                        default:
+                            throw new QueryException(String.format("The request was not successful. Reason: %s",
+                                                                   response.getStatusLine().getReasonPhrase()));
+                    }
+                } catch (IOException ex) {
+                    throw new QueryException(ex);
+                }
+            }
+        }
         return count;
     }
 
     @Override
     public String defaultName() { return "SciHubQuery"; }
 
-    private String buildQueryParameters() {
-        StringBuilder query = new StringBuilder();
+    private List<String> buildQueriesParams() {
+        List<String> queries = new ArrayList<>();
         int idx = 0;
         if (!this.parameters.containsKey("platformName")) {
             addParameter("platformName", this.sensorName);
         }
-        for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
-            QueryParameter parameter = entry.getValue();
-            if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
-                throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
-            }
-            if (parameter.isOptional() &
-                    ((!parameter.isInterval() & parameter.getValue() == null) |
-                            (parameter.isInterval() & parameter.getMinValue() == null & parameter.getMaxValue() == null))) {
-                continue;
-            }
-            if (idx > 0) {
-                query.append(" AND ");
-            }
-            if (parameter.getName().equals("product")) {
-                query.append(parameter.getValueAsString());
-                break;
-            } else if (parameter.getType().isArray()) {
-                query.append("(");
-                Object value = parameter.getValue();
-                int length = Array.getLength(value);
-                for (int i = 0; i < length; i++) {
-                    query.append(Array.get(value, i).toString());
-                    if (i < length - 1) {
-                        query.append(" OR ");
+        String[] footprints = new String[1];
+        if (this.parameters.containsKey("footprint")) {
+            String wkt = this.parameters.get("footprint").getValueAsString();
+            footprints = splitMultiPolygon(wkt);
+        }
+        StringBuilder query = new StringBuilder();
+        for (String footprint : footprints) {
+            for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
+                QueryParameter parameter = entry.getValue();
+                if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
+                    throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
+                }
+                if (parameter.isOptional() &
+                        ((!parameter.isInterval() & parameter.getValue() == null) |
+                                (parameter.isInterval() & parameter.getMinValue() == null & parameter.getMaxValue() == null))) {
+                    continue;
+                }
+                if (idx > 0) {
+                    query.append(" AND ");
+                }
+                if (parameter.getName().equals("product")) {
+                    query.append(parameter.getValueAsString());
+                    break;
+                } else if (parameter.getName().equals("footprint")) {
+                    query.append(entry.getKey()).append(":");
+                    try {
+                        QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
+                                                                                   "footprint",
+                                                                                   Polygon2D.fromWKT(footprint));
+                        query.append(converterFactory.create(fakeParam).stringValue());
+                    } catch (ConversionException e) {
+                        throw new QueryException(e.getMessage());
+                    }
+                } else if (parameter.getType().isArray()) {
+                    query.append("(");
+                    Object value = parameter.getValue();
+                    int length = Array.getLength(value);
+                    for (int i = 0; i < length; i++) {
+                        query.append(Array.get(value, i).toString());
+                        if (i < length - 1) {
+                            query.append(" OR ");
+                        }
+                    }
+                    if (length > 1) {
+                        query = new StringBuilder(query.substring(0, query.length() - 4));
+                    }
+                    query.append(")");
+                } else if (Date.class.equals(parameter.getType())) {
+                    query.append(entry.getKey()).append(":[");
+                    try {
+                        query.append(converterFactory.create(parameter).stringValue());
+                    } catch (ConversionException e) {
+                        throw new QueryException(e.getMessage());
+                    }
+                    query.append("]");
+                } else {
+                    query.append(entry.getKey()).append(":");
+                    try {
+                        query.append(converterFactory.create(parameter).stringValue());
+                    } catch (ConversionException e) {
+                        throw new QueryException(e.getMessage());
                     }
                 }
-                if (length > 1) {
-                    query = new StringBuilder(query.substring(0, query.length() - 4));
-                }
-                query.append(")");
-            } else if (Date.class.equals(parameter.getType())) {
-                query.append(entry.getKey()).append(":[");
-                try {
-                    query.append(converterFactory.create(parameter).stringValue());
-                } catch (ConversionException e) {
-                    throw new QueryException(e.getMessage());
-                }
-                query.append("]");
-            } else {
-                query.append(entry.getKey()).append(":");
-                try {
-                    query.append(converterFactory.create(parameter).stringValue());
-                } catch (ConversionException e) {
-                    throw new QueryException(e.getMessage());
-                }
+                idx++;
             }
-            idx++;
+            queries.add(query.toString());
+            query.setLength(0);
         }
-        return query.toString();
+        return queries;
+    }
+
+    private String[] splitMultiPolygon(String wkt) {
+        String[] polygons = null;
+        try {
+            WKTReader reader = new WKTReader();
+            Geometry geometry = reader.read(wkt);
+            if (geometry instanceof MultiPolygon) {
+                MultiPolygon mPolygon = (MultiPolygon) geometry;
+                int n = mPolygon.getNumGeometries();
+                polygons = new String[n];
+                for (int i = 0; i < n; i++) {
+                    polygons[i] = mPolygon.getGeometryN(i).toText();
+                }
+            } else {
+                polygons = new String[] { wkt };
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return polygons;
     }
 }

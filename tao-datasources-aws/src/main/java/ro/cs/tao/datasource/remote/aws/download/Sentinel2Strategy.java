@@ -39,6 +39,8 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
@@ -275,7 +277,13 @@ public class Sentinel2Strategy extends DownloadStrategy {
                         }
                     }
                     if (downloadedTiles.size() > 0) {
-                        product.addAttribute("tiles", StringUtils.join(downloadedTiles, ","));
+                        final Pattern tilePattern = helper.getTilePattern();
+                        product.addAttribute("tiles", StringUtils.join(downloadedTiles.stream().map(t -> {
+                            Matcher matcher = tilePattern.matcher(t);
+                            //noinspection ResultOfMethodCallIgnored
+                            matcher.matches();
+                            return matcher.group(1);
+                        }).collect(Collectors.toList()), ","));
                     }
                 } finally {
                     if (reader != null) reader.close();
@@ -330,7 +338,14 @@ public class Sentinel2Strategy extends DownloadStrategy {
             List<String> allLines = Files.readAllLines(metadataFile);
             Set<String> tileNames = updateMetadata(metadataFile, allLines);
             if (tileNames != null) {
-                currentProduct.addAttribute("tiles", StringUtils.join(tileNames, ","));
+                final Pattern tilePattern = helper.getTilePattern();
+                currentProduct.addAttribute("tiles", StringUtils.join(tileNames.stream().map(t -> {
+                    Matcher matcher = tilePattern.matcher(t);
+                    //noinspection ResultOfMethodCallIgnored
+                    matcher.matches();
+                    return matcher.group(1);
+                }).collect(Collectors.toList()), ","));
+                //currentProduct.addAttribute("tiles", StringUtils.join(tileNames, ","));
                 List<Path> folders = FileUtils.listFolders(productSourcePath);
                 final Path destPath = destinationPath;
                 folders.stream()
@@ -386,7 +401,14 @@ public class Sentinel2Strategy extends DownloadStrategy {
             List<String> allLines = Files.readAllLines(metadataFile);
             Set<String> tileNames = updateMetadata(metadataFile, allLines);
             if (tileNames != null) {
-                currentProduct.addAttribute("tiles", StringUtils.join(tileNames, ","));
+                final Pattern tilePattern = helper.getTilePattern();
+                currentProduct.addAttribute("tiles", StringUtils.join(tileNames.stream().map(t -> {
+                    Matcher matcher = tilePattern.matcher(t);
+                    //noinspection ResultOfMethodCallIgnored
+                    matcher.matches();
+                    return matcher.group(1);
+                }).collect(Collectors.toList()), ","));
+                //currentProduct.addAttribute("tiles", StringUtils.join(tileNames, ","));
                 List<Path> folders = FileUtils.listFolders(productSourcePath);
                 boolean checked = folders.stream()
                                          .filter(folder -> !folder.toString().contains("GRANULE") ||
