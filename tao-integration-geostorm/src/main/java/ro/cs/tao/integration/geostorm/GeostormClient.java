@@ -103,7 +103,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
             geostormHostName = configManager.getValue("geostorm.host.name");
             geostormStormConnectionUsername = configManager.getValue("geostorm.storm.connection.username");
             geostormSSHConnectionKey = configManager.getValue("geostorm.ssh.connection.private.key.file.path");
-            geostormRootPathRelative = configManager.getValue("geostorm.root.path.relative");
+            geostormRootPathRelative = configManager.getValue("geostorm.data.root.path.relative");
 
 
             if (geostormRestBaseURL == null || geostormRestCatalogResourceEndpoint == null ||
