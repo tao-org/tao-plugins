@@ -21,6 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jcraft.jsch.*;
 import org.apache.commons.codec.binary.Base64;
 import org.geotools.geojson.geom.GeometryJSON;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
@@ -34,8 +36,9 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.integration.geostorm.model.RasterProduct;
 import ro.cs.tao.integration.geostorm.model.Resource;
+import ro.cs.tao.persistence.PersistenceManager;
+import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.serialization.GeometryAdapter;
-import ro.cs.tao.utils.StringUtils;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -61,6 +64,7 @@ import java.util.logging.Logger;
  */
 @Component
 @PropertySource("classpath:geostorm.properties")
+@ImportResource({"classpath*:tao-persistence-context.xml"})
 public class GeostormClient implements EODataHandler<EOProduct> {
 
     private static final Logger logger = Logger.getLogger(GeostormClient.class.getName());
@@ -68,8 +72,8 @@ public class GeostormClient implements EODataHandler<EOProduct> {
 
     private RestTemplate restTemplate;
 
-    //@Autowired
-    //private PersistenceManager persistenceMng;
+    @Autowired
+    private PersistenceManager persistenceMng;
 
     private String geostormRestBaseURL;
     private String geostormRestCatalogResourceEndpoint;
@@ -196,7 +200,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
         for (EOProduct product : list) {
             try {
                 // conversion from EOProduct to RasterProduct
-                if (canCreateCollectionMapFileIfNotExists(product.getProductType())){
+                if (canCreateCollectionMapFileIfNotExists(product.getProductType())) {
                     logger.info("Starting to import " + product.getName());
 
                     geostormRaster = new RasterProduct();
@@ -213,8 +217,8 @@ public class GeostormClient implements EODataHandler<EOProduct> {
                     logger.info("Product location : " + product.getLocation());
                     String geostormPath = "";
                     Path fullPath = Paths.get(new URI(product.getLocation()));
-                    String root = geostormRootPathRelative.endsWith(File.separator) ? geostormRootPathRelative +  geostormRaster.getOwner() :
-                      geostormRootPathRelative +  File.separator + geostormRaster.getOwner();
+                    String root = geostormRootPathRelative.endsWith(File.separator) ? geostormRootPathRelative + geostormRaster.getOwner() :
+                      geostormRootPathRelative + File.separator + geostormRaster.getOwner();
                     Path rootPath = Paths.get(root);
                     geostormPath = rootPath.relativize(fullPath).toString();
                     logger.info("Geostorm relative path : " + geostormPath);
@@ -242,8 +246,7 @@ public class GeostormClient implements EODataHandler<EOProduct> {
                     // import raster
                     logger.info("raster import, product_path=" + geostormRaster.getProduct_path() + ", entry_point(s)=" + Arrays.toString(geostormRaster.getEntry_point()));
                     importRaster(geostormRaster);
-                }
-                else {
+                } else {
                     logger.warning("Cannot manage collection map file for " + product.getName() + " of type " + product.getProductType());
                 }
 
@@ -367,17 +370,16 @@ public class GeostormClient implements EODataHandler<EOProduct> {
     }
 
     private String getUserOrganization(final String username) {
-        /*String organization = "";
+        String organization = "Unknown";
         try {
             organization = persistenceMng.getUserOrganization(username);
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
-        return organization;*/
-        return "CSRO";
+        return organization;
     }
 
-    boolean canCreateCollectionMapFileIfNotExists(final String collectionName){
+    boolean canCreateCollectionMapFileIfNotExists(final String collectionName) {
         // check first if the file already exists
         String collectionMapFile = geostormCollectionMapfilesPath + collectionName + ".map";
 
@@ -389,17 +391,14 @@ public class GeostormClient implements EODataHandler<EOProduct> {
 
             JSch jsch = new JSch();
             jsch.addIdentity(geostormSSHConnectionKey);
-            //System.out.println("identity added ");
 
             session = jsch.getSession(geostormStormConnectionUsername, geostormHostName, 22);
             session.setConfig("PreferredAuthentications", "publickey,keyboard-interactive,password");
             java.util.Properties config = new java.util.Properties();
             config.put("StrictHostKeyChecking", "no");
             session.setConfig(config);
-            //System.out.println("session created.");
 
             session.connect();
-            //System.out.println("session connected.....");
 
             channel = session.openChannel("exec");
             ((ChannelExec) channel).setCommand(command);
@@ -412,10 +411,10 @@ public class GeostormClient implements EODataHandler<EOProduct> {
 
         } catch (JSchException e) {
             logger.log(Level.SEVERE, "Error during SSH command execution", e);
-            if (session != null && session.isConnected()){
+            if (session != null && session.isConnected()) {
                 session.disconnect();
             }
-            if (channel != null && channel.isConnected()){
+            if (channel != null && channel.isConnected()) {
                 channel.disconnect();
             }
         }
