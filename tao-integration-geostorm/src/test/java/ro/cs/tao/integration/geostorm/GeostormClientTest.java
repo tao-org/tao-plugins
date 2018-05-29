@@ -32,9 +32,6 @@ import ro.cs.tao.integration.geostorm.model.Resource;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URI;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * Tests for GeostormClient
@@ -129,13 +126,6 @@ public class GeostormClientTest {
         rasterProduct.setMosaic_name("Mosaic_S2A");
         rasterProduct.setEntry_point(new String[]{"MTD_MSIL1C.xml"});
         rasterProduct.setProduct_date("2018-05-16");
-        /*rasterProduct.setExtent("{\"type\": \"Polygon\",\n" +
-          "            \"coordinates\": [[[60, 60],\n" +
-          "                             [60, 60],\n" +
-          "                             [60, 60],\n" +
-          "                             [60, 60],\n" +
-          "                             [60, 60]]]}");*/
-
         rasterProduct.setExtent("{\"type\": \"Polygon\",\n" +
           "            \"coordinates\": [[[63.7454106, 2.1718301],\n" +
           "                             [63.7719564, 2.9663673],\n" +
@@ -162,13 +152,6 @@ public class GeostormClientTest {
         rasterProduct.setMosaic_name("Mosaic_snap_ndvi");
         rasterProduct.setEntry_point(new String[]{"2-output_snap-ndvi.tif"});
         rasterProduct.setProduct_date("2018-05-16");
-        /*rasterProduct.setExtent("{\"type\": \"Polygon\",\n" +
-          "            \"coordinates\": [[[60, 60],\n" +
-          "                             [60, 60],\n" +
-          "                             [60, 60],\n" +
-          "                             [60, 60],\n" +
-          "                             [60, 60]]]}");*/
-
         rasterProduct.setExtent("{\"type\": \"Polygon\",\n" +
           "            \"coordinates\": [[[143.503571067188, 44.2259751275381],\n" +
           "                             [143.462735477681, 43.2382731563042],\n" +
@@ -267,23 +250,6 @@ public class GeostormClientTest {
         else{
             log.error("Cannot create collection map file " + rasterProduct.getCollection());
         }
-
     }
 
-    /*@Test
-    public void test_path(){
-        try {
-            String geostormPath = "";
-            //Path fullPath = Paths.get(new URI("file:///data/S2B_MSIL1C_20180201T093219_N0206_R136_T34TFQ_20180201T113304.SAFE/"));
-            Path fullPath = Paths.get("/data/S2B_MSIL1C_20180201T093219_N0206_R136_T34TFQ_20180201T113304.SAFE/");
-            Path rootPath = Paths.get("/data");
-            Path relativePath = fullPath.relativize(rootPath);
-            Path relativePath2 = rootPath.relativize(fullPath);
-
-            System.out.println("Geostorm relative path : " + geostormPath);
-            log.info("Geostorm relative path : " + geostormPath);
-        } catch (Exception ex) {
-
-        }
-    }*/
 }
