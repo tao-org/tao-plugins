@@ -174,7 +174,7 @@ public class SciHubDataQuery extends DataQuery {
         }
         String[] footprints = new String[1];
         if (this.parameters.containsKey("footprint")) {
-            String wkt = this.parameters.get("footprint").getValueAsString();
+            String wkt = ((Polygon2D) this.parameters.get("footprint").getValue()).toWKT();
             footprints = splitMultiPolygon(wkt);
         }
         StringBuilder query = new StringBuilder();
