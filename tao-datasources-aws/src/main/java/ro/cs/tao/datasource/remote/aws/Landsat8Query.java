@@ -229,6 +229,7 @@ class Landsat8Query extends DataQuery {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             logger.warning(e.getMessage());
         }
         logger.info(String.format("Query returned %s products", results.size()));
