@@ -432,9 +432,10 @@ public class Sentinel2Strategy extends DownloadStrategy {
         for (JsonObject result : tiles.getValuesAs(JsonObject.class)) {
             String tilePath = result.getString("path");
             String[] tokens = tilePath.split(URL_SEPARATOR);
-            String tileId = "T" + tokens[1] + tokens[2] + tokens[3];
+            String simpleTileId = tokens[1] + tokens[2] + tokens[3];
+            String tileId = "T" + simpleTileId;
             String tileName = Utilities.find(metaTileNames, tileId, psdVersion);
-            if (tileIds.contains(tileName)) {
+            if (tileIds.contains(simpleTileId)) {
                 ret.put(tileName, baseUrl + tilePath);
             }
         }
