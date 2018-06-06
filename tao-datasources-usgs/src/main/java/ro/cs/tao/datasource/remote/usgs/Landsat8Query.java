@@ -94,26 +94,30 @@ public class Landsat8Query extends DataQuery {
                 }
             }
         }
-        if (this.pageSize > 0) {
-            params.add(new BasicNameValuePair("page", String.valueOf(this.pageSize)));
-        }
+//        if (this.pageSize > 0) {
+//            params.add(new BasicNameValuePair("page", String.valueOf(this.pageSize)));
+//        }
+//        if (this.pageNumber > 0) {
+//            params.add(new BasicNameValuePair("skip", String.valueOf(this.pageNumber)));
+//        }
+//        if (this.limit > 0) {
+//            params.add(new BasicNameValuePair("limit", String.valueOf(this.limit)));
+//        }
         if (this.pageNumber > 0) {
-            params.add(new BasicNameValuePair("skip", String.valueOf(this.pageNumber)));
+            params.add(new BasicNameValuePair("page", String.valueOf(this.pageNumber)));
         }
-        //if (this.limit > 0) {
-        // Leave the limit to -1 otherwise the default limit is 1
-        params.add(new BasicNameValuePair("limit", String.valueOf(this.limit)));
-        //}
+        if (this.pageSize > 0) {
+            params.add(new BasicNameValuePair("limit", String.valueOf(this.pageSize)));
+        }
 
         String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8");
         if (pathRows != null && pathRows.size() > 0) {
             pathRows.forEach(pr -> {
                 int path = Integer.parseInt(pr.substring(0, 3));
                 int row = Integer.parseInt(pr.substring(3));
-                try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET,
-                                                                              queryUrl + String.format("&path=%s&row=%s",
-                                                                                                       path, row),
-                                                                              null)) {
+                String prdQueryUrl = queryUrl + String.format("&path=%s&row=%s",path, row);
+                logger.fine(String.format("Executing query for product : %s", prdQueryUrl));
+                try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, prdQueryUrl,null)) {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
                             String body = EntityUtils.toString(response.getEntity());
@@ -151,4 +155,6 @@ public class Landsat8Query extends DataQuery {
         logger.info(String.format("Query returned %s products", results.size()));
         return results;
     }
+
+
 }
