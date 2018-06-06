@@ -26,7 +26,9 @@ import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
+import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
+import ro.cs.tao.datasource.remote.usgs.json.CountResponseHandler;
 import ro.cs.tao.datasource.remote.usgs.json.ResponseHandler;
 import ro.cs.tao.datasource.remote.usgs.parameters.USGSDateParameterConverter;
 import ro.cs.tao.datasource.util.HttpMethod;
@@ -63,11 +65,27 @@ public class Landsat8Query extends DataQuery {
 
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
-        List<EOProduct> results = new ArrayList<>();
-        List<NameValuePair> params = new ArrayList<>();
-        if (!this.parameters.containsKey("satellite_name")) {
-            addParameter("satellite_name", this.supportedParams.get("satellite_name").getDefaultValue());
+        Set<String> pathRows = getPathRows();
+        String queryUrl = buildQueryUrl(this.pageNumber, this.pageSize);
+        List<EOProduct> results = executeQuery(queryUrl, pathRows, ResponseHandler.class);
+        logger.info(String.format("Query returned %s products", results.size()));
+        return results;
+    }
+
+    @Override
+    protected long getCountImpl() {
+        Set<String> pathRows = getPathRows();
+        String queryUrl = buildQueryUrl(1, 1);
+        List<Integer> results = executeQuery(queryUrl, pathRows, CountResponseHandler.class);
+        if (results.size() > 0) {
+            // TODO: This should be updated somehow else as it erroneously returns the maximum all the time
+            // TODO: while this is not true for the total number of products
+            return Collections.max(results);
         }
+        return -1;
+    }
+
+    private Set<String> getPathRows() {
         Set<String> pathRows = null;
         for (QueryParameter parameter : this.parameters.values()) {
             final Class parameterType = parameter.getType();
@@ -85,10 +103,24 @@ public class Landsat8Query extends DataQuery {
                     //pathRows = Landsat8TileExtent.getInstance().intersectingTiles(footprint.getBounds2D());
                     pathRows = Landsat8TileExtent.getInstance().intersectingTiles(footprint);
                 }
-            } else {
+            }
+        }
+        return pathRows;
+    }
+
+    private String buildQueryUrl(int pgNumber, int pgSize) {
+        List<NameValuePair> params = new ArrayList<>();
+        if (!this.parameters.containsKey("satellite_name")) {
+            addParameter("satellite_name", this.supportedParams.get("satellite_name").getDefaultValue());
+        }
+        Set<String> pathRows = null;
+        for (QueryParameter parameter : this.parameters.values()) {
+            final Class parameterType = parameter.getType();
+            final Object parameterValue = parameter.getValue();
+            if (!(parameterType.isArray() && String[].class.isAssignableFrom(parameterType)) && !(Polygon2D.class.equals(parameterType))) {
                 try {
                     params.add(new BasicNameValuePair(supportedParams.get(parameter.getName()).getName(),
-                                                      converterFactory.create(parameter).stringValue()));
+                            converterFactory.create(parameter).stringValue()));
                 } catch (ConversionException e) {
                     e.printStackTrace();
                 }
@@ -103,14 +135,18 @@ public class Landsat8Query extends DataQuery {
 //        if (this.limit > 0) {
 //            params.add(new BasicNameValuePair("limit", String.valueOf(this.limit)));
 //        }
-        if (this.pageNumber > 0) {
-            params.add(new BasicNameValuePair("page", String.valueOf(this.pageNumber)));
+        if (pgNumber > 0) {
+            params.add(new BasicNameValuePair("page", String.valueOf(pgNumber)));
         }
-        if (this.pageSize > 0) {
-            params.add(new BasicNameValuePair("limit", String.valueOf(this.pageSize)));
+        if (pgSize > 0) {
+            params.add(new BasicNameValuePair("limit", String.valueOf(pgSize)));
         }
 
-        String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8");
+        return this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8");
+    }
+
+    private <T, S extends JSonResponseHandler>  List<T> executeQuery(String queryUrl, Set<String> pathRows, Class<S> responseHandlerCls) {
+        List<T> results = new ArrayList<>();
         if (pathRows != null && pathRows.size() > 0) {
             pathRows.forEach(pr -> {
                 int path = Integer.parseInt(pr.substring(0, 3));
@@ -121,16 +157,16 @@ public class Landsat8Query extends DataQuery {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
                             String body = EntityUtils.toString(response.getEntity());
-                            ResponseParser<EOProduct> parser = new JsonResponseParser<>(new ResponseHandler());
+                            ResponseParser<T> parser = new JsonResponseParser<>(responseHandlerCls.newInstance());
                             results.addAll(parser.parse(body));
                             break;
                         case 401:
                             throw new QueryException("The supplied credentials are invalid!");
                         default:
                             throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                                                   response.getStatusLine().getReasonPhrase()));
+                                    response.getStatusLine().getReasonPhrase()));
                     }
-                } catch (IOException ex) {
+                } catch (IOException | InstantiationException | IllegalAccessException ex) {
                     throw new QueryException(ex);
                 }
             });
@@ -139,22 +175,21 @@ public class Landsat8Query extends DataQuery {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
                         String body = EntityUtils.toString(response.getEntity());
-                        ResponseParser<EOProduct> parser = new JsonResponseParser<>(new ResponseHandler());
+                        ResponseParser<T> parser = new JsonResponseParser<>(responseHandlerCls.newInstance());
                         results.addAll(parser.parse(body));
                         break;
                     case 401:
                         throw new QueryException("The supplied credentials are invalid!");
                     default:
                         throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                                               response.getStatusLine().getReasonPhrase()));
+                                response.getStatusLine().getReasonPhrase()));
                 }
-            } catch (IOException ex) {
+            } catch (IOException | InstantiationException | IllegalAccessException ex) {
                 throw new QueryException(ex);
             }
         }
         logger.info(String.format("Query returned %s products", results.size()));
         return results;
+
     }
-
-
 }
