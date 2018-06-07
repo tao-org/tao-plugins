@@ -29,6 +29,7 @@
         <module>tao-gdalinfo</module>
         <module>tao-snap-converter</module>
         <module>tao-datasources-fedeo</module>
+        <module>tao-ldap</module>
     </modules>
 
     <properties>
