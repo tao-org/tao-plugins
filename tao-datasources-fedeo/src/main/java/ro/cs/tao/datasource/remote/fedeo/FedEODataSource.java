@@ -17,14 +17,35 @@
 package ro.cs.tao.datasource.remote.fedeo;
 
 import ro.cs.tao.datasource.remote.URLDataSource;
+import ro.cs.tao.datasource.remote.fedeo.parameters.FedEOParameterProvider;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Properties;
 
 public class FedEODataSource extends URLDataSource<FedEODataQuery> {
 
-    public FedEODataSource(String connectionString) throws URISyntaxException {
-        super(connectionString);
+    private static String URL;
+
+    static {
+        Properties props = new Properties();
+        try {
+            props.load(FedEODataSource.class.getResourceAsStream("fedeo.properties"));
+            URL = props.getProperty("fedeo.search.url");
+            if (!URL.endsWith("/")) {
+                URL += "/";
+            }
+        } catch (IOException ignored) {
+        }
     }
+
+    public FedEODataSource() throws URISyntaxException {
+        super(URL);
+        setParameterProvider(new FedEOParameterProvider(URL + "description.xml"));
+    }
+
+    @Override
+    public String defaultName() { return "FedEO"; }
 
     @Override
     protected FedEODataQuery createQueryImpl(String code) {
