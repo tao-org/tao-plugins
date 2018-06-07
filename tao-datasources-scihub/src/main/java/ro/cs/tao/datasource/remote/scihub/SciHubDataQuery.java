@@ -168,17 +168,17 @@ public class SciHubDataQuery extends DataQuery {
 
     private List<String> buildQueriesParams() {
         List<String> queries = new ArrayList<>();
-        int idx = 0;
         if (!this.parameters.containsKey("platformName")) {
             addParameter("platformName", this.sensorName);
         }
         String[] footprints = new String[1];
         if (this.parameters.containsKey("footprint")) {
-            String wkt = this.parameters.get("footprint").getValueAsString();
+            String wkt = ((Polygon2D) this.parameters.get("footprint").getValue()).toWKT();
             footprints = splitMultiPolygon(wkt);
         }
         StringBuilder query = new StringBuilder();
         for (String footprint : footprints) {
+            int idx = 0;
             for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
                 QueryParameter parameter = entry.getValue();
                 if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
