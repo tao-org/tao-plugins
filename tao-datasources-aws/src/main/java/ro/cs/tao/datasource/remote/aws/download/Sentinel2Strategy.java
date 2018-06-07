@@ -157,12 +157,8 @@ public class Sentinel2Strategy extends DownloadStrategy {
             List<String> metaTileNames = Utilities.filter(allLines, "<Granule |<Granules ");
 
             Set<String> tileIds = updateMetadata(metadataFile, allLines);
-            boolean hasTiles = false;
             if (tileIds != null) {
-                hasTiles = true;
                 currentProduct.addAttribute("tiles", StringUtils.join(tileIds, ","));
-            }
-            if (hasTiles) {
                 downloadFile(baseProductUrl + "inspire.xml", inspireFile);
                 downloadFile(baseProductUrl + "manifest.safe", manifestFile);
                 downloadFile(baseProductUrl + "preview.png", previewFile);
@@ -194,7 +190,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                     reader = Json.createReader(inputStream);
                     getLogger().fine(String.format("Parsing json descriptor %s", productJsonUrl));
                     JsonObject obj = reader.readObject();
-                    final Map<String, String> tileNames = getTileNames(obj, metaTileNames, version);
+                    final Map<String, String> tileNames = getTileNames(obj, metaTileNames, version, tileIds);
                     String dataStripId = null;
                     String count = String.valueOf(tileNames.size());
                     int tileCounter = 1;
@@ -430,15 +426,18 @@ public class Sentinel2Strategy extends DownloadStrategy {
         return destinationPath;
     }
 
-    private Map<String, String> getTileNames(JsonObject productInfo, List<String> metaTileNames, String psdVersion) {
+    private Map<String, String> getTileNames(JsonObject productInfo, List<String> metaTileNames, String psdVersion, Set<String> tileIds) {
         Map<String, String> ret = new HashMap<>();
         JsonArray tiles = productInfo.getJsonArray("tiles");
         for (JsonObject result : tiles.getValuesAs(JsonObject.class)) {
             String tilePath = result.getString("path");
             String[] tokens = tilePath.split(URL_SEPARATOR);
-            String tileId = "T" + tokens[1] + tokens[2] + tokens[3];
+            String simpleTileId = tokens[1] + tokens[2] + tokens[3];
+            String tileId = "T" + simpleTileId;
             String tileName = Utilities.find(metaTileNames, tileId, psdVersion);
-            ret.put(tileName, baseUrl + tilePath);
+            if (tileIds.contains(simpleTileId)) {
+                ret.put(tileName, baseUrl + tilePath);
+            }
         }
         return ret;
     }
