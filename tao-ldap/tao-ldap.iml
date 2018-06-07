@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-service-api:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-data-model:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-utils:1.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="tao-service-api" />
+    <orderEntry type="module" module-name="tao-data-model" />
+    <orderEntry type="module" module-name="tao-utils" />
     <orderEntry type="library" name="Maven: com.jcraft:jsch:0.1.53" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Maven: com.sun.jna:jna:3.0.9" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-config:1.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="tao-config" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:org.eclipse.persistence.core:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:org.eclipse.persistence.asm:2.7.0" level="project" />
@@ -42,9 +41,9 @@
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.21.0-GA" level="project" />
     <orderEntry type="library" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-data-sources:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-service-registry:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-notification:1.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="tao-data-sources" />
+    <orderEntry type="module" module-name="tao-service-registry" />
+    <orderEntry type="module" module-name="tao-notification" />
     <orderEntry type="library" name="Maven: io.projectreactor:reactor-bus:2.0.8.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.goldmansachs:gs-collections:5.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.goldmansachs:gs-collections-api:5.1.0" level="project" />
@@ -56,10 +55,10 @@
     <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-compress:1.9" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-orchestration:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-topology:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-spring-bridge:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-persistence:1.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="tao-orchestration" />
+    <orderEntry type="module" module-name="tao-topology" />
+    <orderEntry type="module" module-name="tao-spring-bridge" />
+    <orderEntry type="module" module-name="tao-persistence" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context:4.3.11.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aop:4.3.11.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-expression:4.3.11.RELEASE" level="project" />
@@ -89,9 +88,9 @@
     <orderEntry type="library" name="Maven: org.postgresql:postgresql:9.4.1212.jre7" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.6" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.5" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-execution:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-execution-model:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-drmaa-api:1.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="tao-execution" />
+    <orderEntry type="module" module-name="tao-execution-model" />
+    <orderEntry type="module" module-name="tao-drmaa-api" />
     <orderEntry type="library" name="Maven: org.geotools:gt-geojson:13.0" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-main:13.0" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-api:13.0" level="project" />
