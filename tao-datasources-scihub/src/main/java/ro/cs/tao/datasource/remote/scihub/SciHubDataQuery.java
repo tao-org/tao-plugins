@@ -40,6 +40,7 @@ import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -81,52 +82,57 @@ public class SciHubDataQuery extends DataQuery {
             this.pageSize = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, DEFAULT_LIMIT);
         }
         int page = Math.max(this.pageNumber, 1);
+        long count = this.limit > 0 ? this.limit : this.pageNumber > 0 ? this.pageSize : getCount();
+        long actualCount = 0;
         List<EOProduct> tmpResults;
         for (String query : queries) {
-            List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair("q", query));
-            params.add(new BasicNameValuePair("orderby", "beginposition asc"));
-            params.add(new BasicNameValuePair("rows", String.valueOf(this.pageSize)));
-            params.add(new BasicNameValuePair("start", String.valueOf((page - 1) * this.pageSize)));
-
-            String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
-            logger.info("SciHub query: " + queryUrl);
-            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
-                switch (response.getStatusLine().getStatusCode()) {
-                    case 200:
-                        String rawResponse = EntityUtils.toString(response.getEntity());
-                        ResponseParser<EOProduct> parser;
-                        boolean isXml = rawResponse.startsWith("<?xml");
-                        if (isXml) {
-                            parser = new XmlResponseParser<>();
-                            ((XmlResponseParser) parser).setHandler(new SciHubXmlResponseHandler("entry"));
-                        } else {
-                            parser = new JsonResponseParser<>(new SciHubJsonResponseHandler());
-                        }
-                        tmpResults = parser.parse(rawResponse);
-                        if (tmpResults != null) {
-                            if ("Sentinel2".equals(this.sensorName) &&
-                                    this.parameters.containsKey("cloudcoverpercentage")) {
-                                final Double clouds = Double.parseDouble(this.parameters.get("cloudcoverpercentage").getValue().toString());
-                                tmpResults = tmpResults.stream()
-                                        .filter(r -> Double.parseDouble(r.getAttributeValue(isXml ? "cloudcoverpercentage" : "Cloud Cover Percentage")) <= clouds)
-                                        .collect(Collectors.toList());
+            boolean canContinue = true;
+            for (long i = page; actualCount < count && canContinue; i++) {
+                List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair("q", query));
+                params.add(new BasicNameValuePair("orderby", "beginposition asc"));
+                params.add(new BasicNameValuePair("rows", String.valueOf(pageSize)));
+                params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize + 1)));
+                String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+                try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
+                    switch (response.getStatusLine().getStatusCode()) {
+                        case 200:
+                            String rawResponse = EntityUtils.toString(response.getEntity());
+                            ResponseParser<EOProduct> parser;
+                            boolean isXml = rawResponse.startsWith("<?xml");
+                            if (isXml) {
+                                parser = new XmlResponseParser<>();
+                                ((XmlResponseParser) parser).setHandler(new SciHubXmlResponseHandler("entry"));
+                            } else {
+                                parser = new JsonResponseParser<>(new SciHubJsonResponseHandler());
                             }
-                            for (EOProduct result : tmpResults) {
-                                if (!results.contains(result)) {
-                                    results.add(result);
+                            tmpResults = parser.parse(rawResponse);
+                            canContinue = tmpResults != null && tmpResults.size() > 0;
+                            if (tmpResults != null) {
+                                actualCount += tmpResults.size();
+                                if ("Sentinel2".equals(this.sensorName) &&
+                                        this.parameters.containsKey("cloudcoverpercentage")) {
+                                    final Double clouds = Double.parseDouble(this.parameters.get("cloudcoverpercentage").getValue().toString());
+                                    tmpResults = tmpResults.stream()
+                                            .filter(r -> Double.parseDouble(r.getAttributeValue(isXml ? "cloudcoverpercentage" : "Cloud Cover Percentage")) <= clouds)
+                                            .collect(Collectors.toList());
+                                }
+                                for (EOProduct result : tmpResults) {
+                                    if (!results.contains(result)) {
+                                        results.add(result);
+                                    }
                                 }
                             }
-                        }
-                        break;
-                    case 401:
-                        throw new QueryException("The supplied credentials are invalid!");
-                    default:
-                        throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                                               response.getStatusLine().getReasonPhrase()));
+                            break;
+                        case 401:
+                            throw new QueryException("The supplied credentials are invalid!");
+                        default:
+                            throw new QueryException(String.format("The request was not successful. Reason: %s",
+                                                                   response.getStatusLine().getReasonPhrase()));
+                    }
+                } catch (IOException ex) {
+                    throw new QueryException(ex);
                 }
-            } catch (IOException ex) {
-                throw new QueryException(ex);
             }
         }
         logger.info(String.format("Query returned %s products", results.size()));
@@ -241,6 +247,10 @@ public class SciHubDataQuery extends DataQuery {
                 idx++;
             }
             queries.add(query.toString());
+            logger.info(String.format("%s\t%s\t%s",
+                                      Sentinel2TileExtent.getInstance().intersectingTiles(Polygon2D.fromWKT(footprint)),
+                                      footprint,
+                                      query.toString()));
             query.setLength(0);
         }
         return queries;
