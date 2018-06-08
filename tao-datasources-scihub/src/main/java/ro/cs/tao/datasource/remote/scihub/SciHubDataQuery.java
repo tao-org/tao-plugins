@@ -137,17 +137,20 @@ public class SciHubDataQuery extends DataQuery {
     public long getCount() {
         long count = 0;
         List<String> queries = buildQueriesParams();
+        final int size = queries.size();
         final String countUrl = this.source.getProperty("scihub.search.count.url");
         if (countUrl != null) {
-            for (String query : queries) {
+            for (int i = 0; i < size; i++) {
                 List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("filter", query));
+                params.add(new BasicNameValuePair("filter", queries.get(i)));
                 String queryUrl = countUrl + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
                             String rawResponse = EntityUtils.toString(response.getEntity());
-                            count += Long.parseLong(rawResponse);
+                            long qCount = Long.parseLong(rawResponse);
+                            //logger.info(String.format("Query %s of %s [%s]: %s", i + 1, size, qCount, queryUrl));
+                            count += qCount;
                             break;
                         case 401:
                             throw new QueryException("The supplied credentials are invalid!");
@@ -169,7 +172,7 @@ public class SciHubDataQuery extends DataQuery {
     private List<String> buildQueriesParams() {
         List<String> queries = new ArrayList<>();
         if (!this.parameters.containsKey("platformName")) {
-            addParameter("platformName", this.sensorName);
+            addParameter("platformName", this.supportedParams.get("platformName").getDefaultValue());
         }
         String[] footprints = new String[1];
         if (this.parameters.containsKey("footprint")) {
