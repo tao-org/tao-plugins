@@ -46,7 +46,7 @@ public class SciHubJsonResponseHandler implements JSonResponseHandler<EOProduct>
                 product.setName(r.getIdentifier());
                 product.setId(r.getUuid());
                 product.setFormatType(DataFormat.RASTER);
-                product.setSensorType(SensorType.OPTICAL);
+                product.setSensorType(r.getProductType().equals("Sentinel1") ? SensorType.RADAR : SensorType.OPTICAL);
                 product.setPixelType(PixelType.UINT16);
                 product.setWidth(-1);
                 product.setHeight(-1);
