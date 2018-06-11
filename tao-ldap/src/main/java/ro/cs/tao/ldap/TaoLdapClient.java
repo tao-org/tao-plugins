@@ -43,7 +43,7 @@ public class TaoLdapClient {
     public TaoLdapClient() {
         // read LDAP settings from configuration
         ConfigurationManager configManager = ConfigurationManager.getInstance();
-        initialContextFactory = configManager.getValue("com.sun.jndi.ldap.LdapCtxFactory");
+        initialContextFactory = configManager.getValue("ldap.context.initial.context.factory");
         providerUrl = configManager.getValue("ldap.context.provider.url");
         securityAuthentication = configManager.getValue("ldap.context.security.authentication");
     }
@@ -64,7 +64,7 @@ public class TaoLdapClient {
 
         } catch (AuthenticationException e) {
             logger.info("Invalid login credentials!");
-            logger.log(Level.WARNING, e.getMessage(), e);
+            logger.log(Level.FINE, e.getMessage(), e);
             return false;
 
         } catch (NamingException e) {
