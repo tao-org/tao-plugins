@@ -26,6 +26,7 @@ import ro.cs.tao.security.SessionStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 public class DatabaseFetchStrategy implements ProductFetchStrategy {
@@ -33,6 +34,11 @@ public class DatabaseFetchStrategy implements ProductFetchStrategy {
 
     public DatabaseFetchStrategy(DatabaseSource source) {
         this.source = source;
+    }
+
+    @Override
+    public void addProperties(Properties properties) {
+        //No-op
     }
 
     @Override
