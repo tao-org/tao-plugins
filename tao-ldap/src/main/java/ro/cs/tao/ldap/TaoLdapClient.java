@@ -59,16 +59,16 @@ public class TaoLdapClient {
 
         try {
             DirContext ctx = new InitialDirContext(ldapEnv);
-            logger.info("Login successful for user " + username);
+            logger.fine("Login successful for user " + username);
             return true;
 
         } catch (AuthenticationException e) {
-            logger.info("Invalid login credentials!");
-            logger.log(Level.FINE, e.getMessage(), e);
+            logger.fine("Invalid login credentials!");
+            logger.log(Level.FINE, e.getMessage());
             return false;
 
         } catch (NamingException e) {
-            logger.log(Level.SEVERE, e.getMessage() ,e);
+            logger.log(Level.SEVERE, e.getMessage());
             return false;
         }
     }

@@ -49,7 +49,7 @@ public class GdalInfoWrapper implements MetadataInspector {
         StringReader reader = null;
         Metadata metadata = null;
         try {
-            if (executor.execute(false) == 0) {
+            if (executor.execute(true) == 0) {
                 String output = consumer.getOutput();
                 reader = new StringReader(output);
                 JsonReader jsonReader = Json.createReader(reader);
