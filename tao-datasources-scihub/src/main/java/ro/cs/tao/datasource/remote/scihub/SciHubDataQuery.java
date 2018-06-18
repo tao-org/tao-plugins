@@ -248,8 +248,8 @@ public class SciHubDataQuery extends DataQuery {
             }
             queries.add(query.toString());
             logger.info(String.format("%s\t%s\t%s",
-                                      Sentinel2TileExtent.getInstance().intersectingTiles(Polygon2D.fromWKT(footprint)),
-                                      footprint,
+                                      footprint != null ? Sentinel2TileExtent.getInstance().intersectingTiles(Polygon2D.fromWKT(footprint)) : "n/a",
+                                      footprint != null ? footprint : "n/a",
                                       query.toString()));
             query.setLength(0);
         }
