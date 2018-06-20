@@ -49,7 +49,7 @@ public class Sentinel1ProductHelper extends ProductHelper {
 
     @Override
     public String getSensingDate() {
-        return getTokens(S1Pattern, this.name, null)[7];
+        return getTokens(S1Pattern, this.name, null)[7].substring(0, 8);
     }
 
     @Override
