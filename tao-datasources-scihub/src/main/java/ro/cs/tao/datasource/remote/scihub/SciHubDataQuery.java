@@ -94,6 +94,7 @@ public class SciHubDataQuery extends DataQuery {
                 params.add(new BasicNameValuePair("rows", String.valueOf(pageSize)));
                 params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize + 1)));
                 String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+                logger.info(String.format("Executing query: %s", queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
