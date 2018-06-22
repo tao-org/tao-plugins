@@ -58,6 +58,7 @@ public class AWSParameterProvider implements ParameterProvider {
                         put("sensingEnd", new ParameterDescriptor("sensingEnd", Date.class));
                         put("path", new ParameterDescriptor("path", String.class));
                         put("row", new ParameterDescriptor("row", String.class));
+                        put("row_path", new ParameterDescriptor("row_path", String.class));
                         put("footprint",  new ParameterDescriptor("footprint", Polygon2D.class));
                         put("cloudcoverpercentage", new ParameterDescriptor("cloudcoverpercentage", Double.class, 100.));
                         put("productType", new ParameterDescriptor("productType", String.class));
