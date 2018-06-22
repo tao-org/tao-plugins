@@ -42,6 +42,7 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -182,7 +183,17 @@ public class SciHubDataQuery extends DataQuery {
             addParameter("platformName", this.supportedParams.get("platformName").getDefaultValue());
         }
         String[] footprints = new String[1];
-        if (this.parameters.containsKey("footprint")) {
+        if (this.parameters.containsKey("tileId")) {
+            Rectangle2D rectangle2D = Sentinel2TileExtent.getInstance()
+                                               .getTileExtent(this.parameters.get("tileId").getValueAsString());
+            Polygon2D polygon = new Polygon2D();
+            polygon.append(rectangle2D.getMinX(), rectangle2D.getMinY());
+            polygon.append(rectangle2D.getMaxX(), rectangle2D.getMinY());
+            polygon.append(rectangle2D.getMaxX(), rectangle2D.getMaxY());
+            polygon.append(rectangle2D.getMinX(), rectangle2D.getMaxY());
+            polygon.append(rectangle2D.getMinX(), rectangle2D.getMinY());
+            footprints[0] = polygon.toWKT();
+        } else if (this.parameters.containsKey("footprint")) {
             String wkt = ((Polygon2D) this.parameters.get("footprint").getValue()).toWKT();
             footprints = splitMultiPolygon(wkt);
         }
