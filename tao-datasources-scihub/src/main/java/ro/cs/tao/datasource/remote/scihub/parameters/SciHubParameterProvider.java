@@ -63,6 +63,7 @@ public final class SciHubParameterProvider implements ParameterProvider {
                             put("cloudcoverpercentage", new ParameterDescriptor("cloudcoverpercentage", Double.class, 100.));
                             put("relativeOrbitNumber", new ParameterDescriptor("relativeOrbitNumber", Short.class));
                             put("product", new ParameterDescriptor("product", String.class, null, false));
+                            put("tileId", new ParameterDescriptor("tileId", String.class));
                         }});
                     }});
         }

@@ -128,32 +128,36 @@ class Landsat8Query extends DataQuery {
             }
 
             Set<String> tiles = new HashSet<>();
-            currentParameter = this.parameters.get("path");
+            currentParameter = this.parameters.get("row_path");
             if (currentParameter != null) {
-                String path = currentParameter.getValueAsString();
-                currentParameter = this.parameters.get("row");
-                if (currentParameter == null) {
-                    throw new QueryException("Parameter [row] expected when [path] is set");
-                }
-                String row = currentParameter.getValueAsString();
-                tiles.add(path + row);
+                tiles.add(currentParameter.getValueAsString());
             } else {
-                currentParameter = this.parameters.get("row");
+                currentParameter = this.parameters.get("path");
                 if (currentParameter != null) {
-                    throw new QueryException("Parameter [path] expected when [row] is set");
+                    String path = currentParameter.getValueAsString();
+                    currentParameter = this.parameters.get("row");
+                    if (currentParameter == null) {
+                        throw new QueryException("Parameter [row] expected when [path] is set");
+                    }
+                    String row = currentParameter.getValueAsString();
+                    tiles.add(path + row);
+                } else {
+                    currentParameter = this.parameters.get("row");
+                    if (currentParameter != null) {
+                        throw new QueryException("Parameter [path] expected when [row] is set");
+                    }
+                    currentParameter = this.parameters.get("footprint");
+                    if (currentParameter == null) {
+                        throw new QueryException("Either [footprint] or ([path] and [row]) should be provided");
+                    }
+                    Polygon2D aoi = (Polygon2D) currentParameter.getValue();
+                    if (aoi == null || aoi.getNumPoints() == 0) {
+                        throw new QueryException("The provided [footprint] is empty");
+                    }
+                    //tiles.addAll(Landsat8TileExtent.getInstance().intersectingTiles(aoi.getBounds2D()));
+                    tiles.addAll(Landsat8TileExtent.getInstance().intersectingTiles(aoi));
                 }
-                currentParameter = this.parameters.get("footprint");
-                if (currentParameter == null) {
-                    throw new QueryException("Either [footprint] or ([path] and [row]) should be provided");
-                }
-                Polygon2D aoi = (Polygon2D) currentParameter.getValue();
-                if (aoi == null || aoi.getNumPoints() == 0) {
-                    throw new QueryException("The provided [footprint] is empty");
-                }
-                //tiles.addAll(Landsat8TileExtent.getInstance().intersectingTiles(aoi.getBounds2D()));
-                tiles.addAll(Landsat8TileExtent.getInstance().intersectingTiles(aoi));
             }
-
             for (String tile : tiles) {
                 String path = tile.substring(0, 3);
                 String row = tile.substring(3, 6);
