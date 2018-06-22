@@ -30,6 +30,7 @@
         <module>tao-snap-converter</module>
         <module>tao-datasources-fedeo</module>
         <module>tao-ldap</module>
+        <module>tao-quicklook</module>
     </modules>
 
     <properties>
