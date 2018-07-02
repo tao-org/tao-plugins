@@ -63,6 +63,7 @@ public class Sentinel1ProductHelper extends ProductHelper {
     @Override
     public String getMetadataFileName() { return "manifest.safe"; }
 
+    @Override
     public String getOrbit() {
         String[] tokens = getTokens(S1Pattern, this.name, null);
         int absOrbit = Integer.parseInt(tokens[9]);

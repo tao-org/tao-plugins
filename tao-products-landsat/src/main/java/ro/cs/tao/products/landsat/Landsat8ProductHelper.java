@@ -125,6 +125,9 @@ public class Landsat8ProductHelper extends ProductHelper {
     }
 
     @Override
+    public String getOrbit() { return "-1"; }
+
+    @Override
     protected boolean verifyProductName(String name) {
         this.oldFormat = preCollectionNamePattern.matcher(name).matches();
         return this.oldFormat || collection1NamePattern.matcher(name).matches();
