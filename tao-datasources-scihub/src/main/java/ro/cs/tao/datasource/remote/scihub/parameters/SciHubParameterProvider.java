@@ -19,6 +19,7 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.ParameterDescriptor;
 import ro.cs.tao.datasource.param.ParameterProvider;
+import ro.cs.tao.datasource.remote.scihub.download.Sentinel1DownloadStrategy;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel2DownloadStrategy;
 import ro.cs.tao.datasource.remote.scihub.download.SentinelDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
@@ -71,7 +72,7 @@ public final class SciHubParameterProvider implements ParameterProvider {
             final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
             productFetchers = Collections.unmodifiableMap(
                     new HashMap<String, ProductFetchStrategy>() {{
-                        put("Sentinel1", new SentinelDownloadStrategy(targetFolder));
+                        put("Sentinel1", new Sentinel1DownloadStrategy(targetFolder));
                         put("Sentinel2", new Sentinel2DownloadStrategy(targetFolder));
                     }});
         }
