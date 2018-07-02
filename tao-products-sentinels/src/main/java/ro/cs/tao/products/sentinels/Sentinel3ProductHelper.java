@@ -43,7 +43,11 @@ public class Sentinel3ProductHelper extends ProductHelper {
     public String getMetadataFileName() { return "xfdumanifest.xml"; }
 
     @Override
+    public String getOrbit() { return "-1"; }
+
+    @Override
     protected boolean verifyProductName(String name) {
         return S3Pattern.matcher(name).matches();
     }
+
 }
