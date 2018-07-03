@@ -31,8 +31,8 @@ import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.eodata.DataHandlingException;
-import ro.cs.tao.eodata.EODataHandler;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.eodata.OutputDataHandler;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.integration.geostorm.model.RasterProduct;
 import ro.cs.tao.integration.geostorm.model.Resource;
@@ -65,7 +65,7 @@ import java.util.logging.Logger;
 @Component
 @PropertySource("classpath:geostorm.properties")
 @ImportResource({"classpath*:tao-persistence-context.xml"})
-public class GeostormClient implements EODataHandler<EOProduct> {
+public class GeostormClient implements OutputDataHandler<EOProduct> {
 
     private static final Logger logger = Logger.getLogger(GeostormClient.class.getName());
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
