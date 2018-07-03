@@ -17,8 +17,8 @@
 package ro.cs.tao.eodata.quicklook;
 
 import ro.cs.tao.eodata.DataHandlingException;
-import ro.cs.tao.eodata.EODataHandler;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.eodata.OutputDataHandler;
 import ro.cs.tao.utils.FileUtils;
 import ro.cs.tao.utils.executors.DebugOutputConsumer;
 import ro.cs.tao.utils.executors.Executor;
@@ -37,7 +37,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-public class QuicklookGenerator implements EODataHandler<EOProduct> {
+/**
+ * Specialization of an output data handler to try to generate quicklooks for EOProducts.
+ *
+ * @author Cosmin Cara
+ */
+public class QuicklookGenerator implements OutputDataHandler<EOProduct> {
     private static final Set<String> extensions = new HashSet<String>() {{
         add(".tif"); add(".tiff"); add(".nc"); add(".png"); add(".jpg"); add(".bmp");
     }};
