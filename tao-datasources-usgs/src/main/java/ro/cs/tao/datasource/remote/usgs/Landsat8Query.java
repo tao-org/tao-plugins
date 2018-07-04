@@ -36,6 +36,7 @@ import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
+import ro.cs.tao.utils.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -94,13 +95,16 @@ public class Landsat8Query extends DataQuery {
                 // we have an array of rows and paths
                 if (parameterValue != null) {
                     pathRows = new HashSet<>();
-                    Collections.addAll(pathRows, (String[]) parameterValue);
+                    if (parameterValue instanceof String[]) {
+                        Collections.addAll(pathRows, (String[]) parameterValue);
+                    } else {
+                        Collections.addAll(pathRows, StringUtils.fromJsonArray(parameterValue.toString()));
+                    }
                 }
             } else  if (Polygon2D.class.equals(parameterType) &&
                     (pathRows == null || pathRows.size() == 0)) {
                 Polygon2D footprint = (Polygon2D ) parameterValue;
                 if (footprint != null) {
-                    //pathRows = Landsat8TileExtent.getInstance().intersectingTiles(footprint.getBounds2D());
                     pathRows = Landsat8TileExtent.getInstance().intersectingTiles(footprint);
                 }
             }
