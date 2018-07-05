@@ -25,10 +25,7 @@ import ro.cs.tao.utils.executors.ExecutorType;
 import ro.cs.tao.utils.executors.OutputAccumulator;
 import ro.cs.tao.utils.executors.ProcessExecutor;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import javax.json.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.InetAddress;
@@ -43,7 +40,10 @@ public class GdalInfoWrapper implements MetadataInspector {
 
     @Override
     public Metadata getMetadata(Path productPath) throws IOException {
-        Executor executor = initialize(productPath);
+        if (productPath == null) {
+            return null;
+        }
+        Executor executor = initialize(productPath.toAbsolutePath().toString());
         OutputAccumulator consumer = new OutputAccumulator();
         executor.setOutputConsumer(consumer);
         StringReader reader = null;
@@ -57,14 +57,45 @@ public class GdalInfoWrapper implements MetadataInspector {
                 metadata = new Metadata();
                 metadata.setEntryPoint(productPath.toUri());
                 metadata.setProductType(root.getString("driverLongName"));
+                boolean isNetCDF = "Network Common Data Format".equals(metadata.getProductType());
+                if (isNetCDF) {
+                    // NetCDF requires running gdalinfo twice
+                    // Reference: http://www.gdal.org/frmt_netcdf.html
+                    JsonObject jsonObject = root.getJsonObject("metadata");
+                    jsonObject = jsonObject.getJsonObject("SUBDATASETS");
+                    if (jsonObject != null) {
+                        JsonValue subDataSet = jsonObject.values().stream()
+                                .filter(jv -> jv.toString().contains("NETCDF:"))
+                                .findFirst().orElse(null);
+                        if (subDataSet != null) {
+                            executor = initialize(subDataSet.toString());
+                            consumer = new OutputAccumulator();
+                            executor.setOutputConsumer(consumer);
+                            reader.close();
+                            if (executor.execute(true) != 0) {
+                                return null;
+                            } else {
+                                output = consumer.getOutput();
+                                reader = new StringReader(output);
+                                jsonReader = Json.createReader(reader);
+                                root = jsonReader.readObject();
+                            }
+                        }
+                    }
+                }
                 JsonArray sizeArray = root.getJsonArray("size");
-                if (sizeArray != null) {
+                if (sizeArray != null && sizeArray.size() > 1) {
                     metadata.setWidth(sizeArray.getInt(0));
                     metadata.setHeight(sizeArray.getInt(1));
                 }
-                JsonObject crsObject = root.getJsonObject("coordinateSystem");
+                JsonObject crsObject;
+                if (isNetCDF) {
+                    crsObject = root.getJsonObject("metadata").getJsonObject("GEOLOCATION");
+                } else {
+                    crsObject = root.getJsonObject("coordinateSystem");
+                }
                 if (crsObject != null) {
-                    CoordinateReferenceSystem crs = CRS.parseWKT(crsObject.getString("wkt"));
+                    CoordinateReferenceSystem crs = CRS.parseWKT(isNetCDF ? crsObject.getString("SRS") : crsObject.getString("wkt"));
                     if (crs != null && crs.getIdentifiers() != null && crs.getIdentifiers().size() > 0) {
                         ReferenceIdentifier identifier = crs.getIdentifiers().stream()
                                 .findFirst().get();
@@ -79,7 +110,29 @@ public class GdalInfoWrapper implements MetadataInspector {
                         polygon2D.append(points.getJsonArray(i).getJsonNumber(0).doubleValue(),
                                          points.getJsonArray(i).getJsonNumber(1).doubleValue());
                     }
-                    metadata.setFootprint(polygon2D.toWKT());
+                    metadata.setFootprint(polygon2D.toWKT(8));
+                } else {
+                    extentObject = root.getJsonObject("cornerCoordinates");
+                    if (extentObject != null) {
+                        Polygon2D polygon2D = new Polygon2D();
+                        JsonArray ul = extentObject.getJsonArray("upperLeft");
+                        if (ul != null) {
+                            polygon2D.append(ul.getJsonNumber(0).doubleValue(),
+                                             ul.getJsonNumber(1).doubleValue());
+                            JsonArray point = extentObject.getJsonArray("lowerLeft");
+                            polygon2D.append(point.getJsonNumber(0).doubleValue(),
+                                             point.getJsonNumber(1).doubleValue());
+                            point = extentObject.getJsonArray("lowerRight");
+                            polygon2D.append(point.getJsonNumber(0).doubleValue(),
+                                             point.getJsonNumber(1).doubleValue());
+                            point = extentObject.getJsonArray("upperRight");
+                            polygon2D.append(point.getJsonNumber(0).doubleValue(),
+                                             point.getJsonNumber(1).doubleValue());
+                            polygon2D.append(ul.getJsonNumber(0).doubleValue(),
+                                             ul.getJsonNumber(1).doubleValue());
+                            metadata.setFootprint(polygon2D.toWKT(8));
+                        }
+                    }
                 }
                 JsonArray bandsArray = root.getJsonArray("bands");
                 String type = bandsArray.getJsonObject(0).getString("type");
@@ -119,11 +172,11 @@ public class GdalInfoWrapper implements MetadataInspector {
         return metadata;
     }
 
-    private Executor initialize(Path productPath) throws IOException {
+    private Executor initialize(String productPath) throws IOException {
         List<String> args = new ArrayList<>();
         args.add("gdalinfo");
         args.add("-json");
-        args.add(productPath.toAbsolutePath().toString());
+        args.add(productPath);
         try {
             return ProcessExecutor.create(ExecutorType.PROCESS,
                                                        InetAddress.getLocalHost().getHostName(),
