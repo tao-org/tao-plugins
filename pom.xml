@@ -35,6 +35,7 @@
 
     <properties>
         <tao.version>1-0.SNAPSHOT</tao.version>
+        <geotools.version>19.1</geotools.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- maven -->
         <maven.compiler.data>1.8</maven.compiler.data>
@@ -72,9 +73,10 @@
             <url>${osgeoUrl}</url>
         </repository>-->
         <repository>
-            <id>osgeo_original</id>
+            <id>OSGeo Boundless</id>
             <name>Open Source Geospatial Foundation Repository</name>
-            <url>http://download.osgeo.org/webdav/geotools/</url>
+            <!--<url>http://download.osgeo.org/webdav/geotools/</url>-->
+            <url>http://repo.boundlessgeo.com/main/</url>
         </repository>
         <repository>
             <id>hibernatespatial</id>
