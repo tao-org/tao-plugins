@@ -16,22 +16,15 @@
 package ro.cs.tao.datasource.remote.scihub.download;
 
 import ro.cs.tao.datasource.InterruptedException;
-import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.ProductHelper;
-import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
-import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.Sentinel1ProductHelper;
-import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
-import ro.cs.tao.utils.FileUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Properties;
 
 /**
  * @author Cosmin Cara
@@ -53,8 +46,8 @@ public class Sentinel1DownloadStrategy extends SentinelDownloadStrategy {
     protected Path fetchImpl(EOProduct product) throws IOException, InterruptedException {
         Path archivePath = super.fetchImpl(product);
         Path productFile = Zipper.decompressZip(archivePath,
-                Paths.get(archivePath.toString().replace(".zip", "")),
-                true);
+                //Paths.get(archivePath.toString().replace(".zip", "")),
+                archivePath.getParent(), true);
         if (productFile != null) {
             try {
                 product.setLocation(productFile.toUri().toString());
