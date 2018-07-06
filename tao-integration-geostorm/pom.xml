@@ -59,7 +59,7 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geojson</artifactId>
-            <version>13.0</version>
+            <version>${geotools.version}</version>
         </dependency>
 
         <!-- Spring -->
