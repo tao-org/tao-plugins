@@ -25,6 +25,7 @@ import ro.cs.tao.products.sentinels.SentinelProductHelper;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author Cosmin Cara
@@ -45,11 +46,12 @@ public class Sentinel1DownloadStrategy extends SentinelDownloadStrategy {
     @Override
     protected Path fetchImpl(EOProduct product) throws IOException, InterruptedException {
         Path archivePath = super.fetchImpl(product);
-        Path productFile = Zipper.decompressZip(archivePath,
-                //Paths.get(archivePath.toString().replace(".zip", "")),
-                archivePath.getParent(), true);
+        Path productFile = Zipper.decompressZip(archivePath, archivePath.getParent(), true);
         if (productFile != null) {
             try {
+                if (!productFile.toString().contains(product.getName())) {
+                    productFile = Paths.get(archivePath.toString().replace(".zip", ".SAFE"));
+                }
                 product.setLocation(productFile.toUri().toString());
                 ProductHelper helper = SentinelProductHelper.create(product.getName());
                 if (helper instanceof Sentinel1ProductHelper) {
