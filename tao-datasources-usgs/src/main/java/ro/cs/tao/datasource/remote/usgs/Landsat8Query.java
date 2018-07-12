@@ -68,9 +68,7 @@ public class Landsat8Query extends DataQuery {
     protected List<EOProduct> executeImpl() throws QueryException {
         Set<String> pathRows = getPathRows();
         String queryUrl = buildQueryUrl(this.pageNumber, this.pageSize);
-        List<EOProduct> results = executeQuery(queryUrl, pathRows, ResponseHandler.class);
-        logger.info(String.format("Query returned %s products", results.size()));
-        return results;
+        return executeQuery(queryUrl, pathRows, ResponseHandler.class);
     }
 
     @Override
@@ -79,11 +77,9 @@ public class Landsat8Query extends DataQuery {
         String queryUrl = buildQueryUrl(1, 1);
         List<Integer> results = executeQuery(queryUrl, pathRows, CountResponseHandler.class);
         if (results.size() > 0) {
-            // TODO: This should be updated somehow else as it erroneously returns the maximum all the time
-            // TODO: while this is not true for the total number of products
-            return Collections.max(results);
+            return results.stream().mapToLong(Integer::longValue).sum();
         }
-        return -1;
+        return 0;
     }
 
     private Set<String> getPathRows() {
