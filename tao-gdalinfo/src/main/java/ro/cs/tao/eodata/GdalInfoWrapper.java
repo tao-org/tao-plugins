@@ -20,10 +20,8 @@ import org.geotools.referencing.CRS;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import ro.cs.tao.eodata.enums.PixelType;
-import ro.cs.tao.utils.executors.Executor;
-import ro.cs.tao.utils.executors.ExecutorType;
-import ro.cs.tao.utils.executors.OutputAccumulator;
-import ro.cs.tao.utils.executors.ProcessExecutor;
+import ro.cs.tao.security.SessionStore;
+import ro.cs.tao.utils.executors.*;
 
 import javax.json.*;
 import java.io.IOException;
@@ -31,10 +29,19 @@ import java.io.StringReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GdalInfoWrapper implements MetadataInspector {
+    private static final String[] dockerTest = new String[] { "docker" };
+    private static final String[] gdalOnPathCmd = new String[] {
+            "gdalinfo", "-json", "$FULL_PATH"
+    };
+    private static final String[] gdalOnDocker = new String[] {
+            "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt", "geodata/gdal", "gdalinfo", "-json", "/mnt/$FILE"
+    };
+    private static Boolean canUseDocker = null;
 
     public GdalInfoWrapper() { }
 
@@ -43,11 +50,22 @@ public class GdalInfoWrapper implements MetadataInspector {
         if (productPath == null) {
             return null;
         }
-        Executor executor = initialize(productPath.toAbsolutePath().toString());
+        Executor executor;
+        if (canUseDocker == null) {
+            Path testPath = SessionStore.currentContext().getWorkspace();
+            executor = initialize(testPath, dockerTest);
+            executor.setOutputConsumer(new DebugOutputConsumer());
+            try {
+                canUseDocker = executor.execute(false) == 0;
+            } catch (Exception e) {
+                canUseDocker = Boolean.FALSE;
+            }
+        }
+        executor = initialize(productPath.toAbsolutePath(), canUseDocker ? gdalOnDocker : gdalOnPathCmd);
         OutputAccumulator consumer = new OutputAccumulator();
         executor.setOutputConsumer(consumer);
         StringReader reader = null;
-        Metadata metadata = null;
+        Metadata metadata;
         try {
             if (executor.execute(true) == 0) {
                 String output = consumer.getOutput();
@@ -69,7 +87,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                                 .filter(jv -> jv.toString().contains("NETCDF:"))
                                 .findFirst().orElse(null);
                         if (subDataSet != null) {
-                            executor = initialize(subDataSet.toString());
+                            executor = initialize(Paths.get(subDataSet.toString()), gdalOnDocker);
                             consumer = new OutputAccumulator();
                             executor.setOutputConsumer(consumer);
                             reader.close();
@@ -185,6 +203,8 @@ public class GdalInfoWrapper implements MetadataInspector {
                             break;
                     }
                 }
+            } else {
+                throw new IOException(consumer.getOutput());
             }
         } catch (Exception e) {
             throw new IOException(e);
@@ -196,15 +216,17 @@ public class GdalInfoWrapper implements MetadataInspector {
         return metadata;
     }
 
-    private Executor initialize(String productPath) throws IOException {
-        List<String> args = new ArrayList<>();
-        args.add("gdalinfo");
-        args.add("-json");
-        args.add(productPath);
+    private Executor initialize(Path path, String[] args) throws IOException {
+        List<String> arguments = new ArrayList<>();
+        for (String arg : args) {
+            arguments.add(arg.replace("$FULL_PATH", path.toString())
+                              .replace("$FOLDER", path.getParent().toString())
+                              .replace("$FILE", path.getFileName().toString()));
+        }
         try {
             return ProcessExecutor.create(ExecutorType.PROCESS,
                                                        InetAddress.getLocalHost().getHostName(),
-                                                       args);
+                                          arguments);
         } catch (UnknownHostException e) {
             throw new IOException(e);
         }
