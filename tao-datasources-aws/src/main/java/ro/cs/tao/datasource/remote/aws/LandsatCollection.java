@@ -20,5 +20,5 @@ package ro.cs.tao.datasource.remote.aws;
  */
 public enum LandsatCollection {
     PRE_COLLECTION,
-    COLLECTION_1;
+    COLLECTION_1
 }

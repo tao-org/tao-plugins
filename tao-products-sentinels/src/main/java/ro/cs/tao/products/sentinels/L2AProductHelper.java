@@ -38,7 +38,7 @@ public class L2AProductHelper extends Sentinel2ProductHelper {
     @Override
     public String getVersion() {
         if (this.version == null) {
-            this.version = PSD_14;;
+            this.version = PSD_14;
         }
         return this.version;
     }

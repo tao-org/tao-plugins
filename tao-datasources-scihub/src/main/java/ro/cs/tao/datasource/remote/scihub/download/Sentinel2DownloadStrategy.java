@@ -282,7 +282,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                     Path dataStripFolder = FileUtils.ensureExists(rootPath.resolve(FOLDER_DATASTRIP));
                     Map<String, String> tileNames = new HashMap<>();
                     String dataStripId = null;
-                    String skippedTiles = "";
+                    StringBuilder skippedTiles = new StringBuilder();
                     for (String tileName : metaTileNames) {
                         String tileId;
                         if (isL1C) {
@@ -302,11 +302,11 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                                     .replace(ODATA_PRODUCT_NAME, productName)
                                     .replace("${tile}", granule));
                         } else {
-                            skippedTiles += tileId + " ";
+                            skippedTiles.append(tileId).append(" ");
                         }
                     }
-                    if (skippedTiles.trim().length() > 0) {
-                        logger.fine(String.format("Skipped tiles: %s", skippedTiles));
+                    if (skippedTiles.toString().trim().length() > 0) {
+                        logger.fine(String.format("Skipped tiles: %s", skippedTiles.toString()));
                     }
                     String count = String.valueOf(tileNames.size());
                     int tileCounter = 1;
