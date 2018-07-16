@@ -259,11 +259,9 @@ class Sentinel2Query extends DataQuery {
                 throw new QueryException("Wrong [platformName] parameter");
             }
         }
-        Map<String, EOProduct> results = new LinkedHashMap<>();
+
         try {
             String sensingStart, sensingEnd;
-            double cloudFilter = 100.01;
-            int relativeOrbit = 0;
 
             Set<String> tiles = new HashSet<>();
             currentParameter = this.parameters.get("tileId");
@@ -312,7 +310,7 @@ class Sentinel2Query extends DataQuery {
             endDate.setTime(dateFormat.parse(sensingEnd));
             //http://sentinel-s2-l1c.s3.amazonaws.com/?delimiter=/&prefix=tiles/15/R/TM/
 
-            currentParameter = this.parameters.get("cloudcoverpercentage");
+            /*currentParameter = this.parameters.get("cloudcoverpercentage");
             if (currentParameter != null) {
                 cloudFilter = currentParameter.getValueAsDouble();
             }
@@ -320,7 +318,7 @@ class Sentinel2Query extends DataQuery {
             currentParameter = this.parameters.get("relativeOrbitNumber");
             if (currentParameter != null) {
                 relativeOrbit = currentParameter.getValueAsInt();
-            }
+            }*/
 
             int yearStart = startDate.get(Calendar.YEAR);
             int monthStart = startDate.get(Calendar.MONTH) + 1;
@@ -329,7 +327,7 @@ class Sentinel2Query extends DataQuery {
             int monthEnd = endDate.get(Calendar.MONTH) + 1;
             int dayEnd = endDate.get(Calendar.DAY_OF_MONTH);
             for (String tile : tiles) {
-                if (this.limit > 0 && this.limit <= results.size()) {
+                if (this.limit > 0 && this.limit <= count) {
                     break;
                 }
                 String utmCode = tile.substring(0, 2);
@@ -339,7 +337,7 @@ class Sentinel2Query extends DataQuery {
                         DownloadStrategy.URL_SEPARATOR + latBand + DownloadStrategy.URL_SEPARATOR +
                         square + DownloadStrategy.URL_SEPARATOR;
                 for (int year = yearStart; year <= yearEnd; year++) {
-                    if (this.limit > 0 && this.limit <= results.size()) {
+                    if (this.limit > 0 && this.limit <= count) {
                         break;
                     }
                     String yearUrl = tileUrl + String.valueOf(year) + DownloadStrategy.URL_SEPARATOR;
@@ -353,7 +351,7 @@ class Sentinel2Query extends DataQuery {
                         int monthS = year == yearStart ? monthStart : 1;
                         int monthE = year == yearEnd ? monthEnd : 12;
                         for (int month = monthS; month <= monthE; month++) {
-                            if (this.limit > 0 && this.limit <= results.size()) {
+                            if (this.limit > 0 && this.limit <= count) {
                                 break;
                             }
                             if (months.contains(month)) {
@@ -395,9 +393,7 @@ class Sentinel2Query extends DataQuery {
     }
 
     private void parseProductJson(String jsonUrl, EOProduct product) throws Exception {
-        JsonReader reader = null;
-        try (InputStream inputStream = new URI(jsonUrl).toURL().openStream()) {
-            reader = Json.createReader(inputStream);
+        try (JsonReader reader = Json.createReader(new URI(jsonUrl).toURL().openStream())) {
             JsonObject obj = reader.readObject();
             product.setFormatType(DataFormat.RASTER);
             product.setSensorType(SensorType.OPTICAL);
@@ -405,7 +401,7 @@ class Sentinel2Query extends DataQuery {
             product.setName(obj.getString("name"));
             product.setId(obj.getString("id"));
             product.setLocation(this.source.getConnectionString()
-                                           .replace(S2_SEARCH_URL_SUFFIX + "tiles/", "") + obj.getString("path"));
+                                        .replace(S2_SEARCH_URL_SUFFIX + "tiles/", "") + obj.getString("path"));
             product.setAcquisitionDate(dateFormat.parse(obj.getString("timestamp")));
             JsonObject tile = obj.getJsonArray("tiles").getJsonObject(0);
             String utmCode = String.format("%02d", tile.getInt("utmZone")) +
@@ -413,10 +409,6 @@ class Sentinel2Query extends DataQuery {
             product.addAttribute("utmCode", utmCode);
             product.setWidth(-1);
             product.setHeight(-1);
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
         }
     }
 

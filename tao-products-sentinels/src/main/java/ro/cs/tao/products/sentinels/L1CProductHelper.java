@@ -49,7 +49,7 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
     @Override
     public String getVersion() {
         if (this.version == null) {
-            this.version = this.oldFormat ? PSD_13 : PSD_14;;
+            this.version = this.oldFormat ? PSD_13 : PSD_14;
         }
         return this.version;
     }
@@ -193,7 +193,7 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
             try {
                 Date date1 = dateFormat.parse(productTokens[7].substring(1, productTokens[7].length()));
                 Calendar cal1 = Calendar.getInstance();
-                cal1.setTime(date1);;
+                cal1.setTime(date1);
                 cal1.set(cal1.get(Calendar.YEAR), cal1.get(Calendar.MONTH), cal1.get(Calendar.DAY_OF_MONTH),
                          cal1.get(Calendar.HOUR_OF_DAY), 0, 0);
                 dateStart = dateFormat.format(cal1.getTime());

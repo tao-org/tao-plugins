@@ -137,6 +137,6 @@ public class PepsDownloadStrategy extends DownloadStrategy {
     private enum ProductState {
         AVAILABLE,
         ON_TAPE,
-        ERROR;
+        ERROR
     }
 }
