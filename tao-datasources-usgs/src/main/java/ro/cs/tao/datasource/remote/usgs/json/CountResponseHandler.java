@@ -17,17 +17,10 @@ package ro.cs.tao.datasource.remote.usgs.json;
 
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
-import ro.cs.tao.eodata.EOProduct;
-import ro.cs.tao.eodata.Polygon2D;
-import ro.cs.tao.eodata.enums.DataFormat;
-import ro.cs.tao.eodata.enums.PixelType;
-import ro.cs.tao.eodata.enums.SensorType;
 
 import javax.json.*;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,12 +34,24 @@ public class CountResponseHandler implements JSonResponseHandler<Integer> {
         final JsonReader jsonReader = Json.createReader(new StringReader(content));
         JsonObject responseObj = jsonReader.readObject();
         JsonObject jsonObj = responseObj.getJsonObject("meta");
+        int found = 0;
         if (jsonObj != null) {
             JsonNumber jsonNumber = jsonObj.getJsonNumber("found");
             if (jsonNumber != null) {
-                results.add(jsonNumber.intValue());
+                found = jsonNumber.intValue();
             }
         }
+        if (found > 0) {
+            JsonArray jsonArray = responseObj.getJsonArray("results");
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JsonObject result = jsonArray.getJsonObject(i);
+                // ignore products that are in the T2 or RT category
+                if (!"T1".equals(result.getString("COLLECTION_CATEGORY", ""))) {
+                    found--;
+                }
+            }
+        }
+        results.add(found);
         return results;
     }
 }
