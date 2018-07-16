@@ -94,12 +94,12 @@ public class AWSDataQuery extends DataQuery {
     }
 
     @Override
-    public <V> QueryParameter createParameter(String name, Class<V> type, V value) {
+    public <V> QueryParameter<V> createParameter(String name, Class<V> type, V value) {
         return innerQuery.createParameter(name, type, value);
     }
 
     @Override
-    public <V> QueryParameter createParameter(String name, Class<V> type, V value, boolean optional) {
+    public <V> QueryParameter<V> createParameter(String name, Class<V> type, V value, boolean optional) {
         return innerQuery.createParameter(name, type, value, optional);
     }
 

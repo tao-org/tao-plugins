@@ -56,7 +56,7 @@ public class IntermediateParser {
         }
 
         @Override
-        public void startDocument() throws SAXException {
+        public void startDocument() {
             try {
                 result = new AwsResult();
                 buffer = new StringBuilder();
@@ -71,12 +71,12 @@ public class IntermediateParser {
         }
 
         @Override
-        public void characters(char[] ch, int start, int length) throws SAXException {
+        public void characters(char[] ch, int start, int length) {
             buffer.append(new String(ch, start, length).replace("\n", ""));
         }
 
         @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+        public void startElement(String uri, String localName, String qName, Attributes attributes) {
             if (qName.indexOf(":") > 0) {
                 qName = qName.substring(qName.indexOf(":") + 1);
             }
@@ -87,7 +87,7 @@ public class IntermediateParser {
         }
 
         @Override
-        public void endElement(String uri, String localName, String qName) throws SAXException {
+        public void endElement(String uri, String localName, String qName) {
             if (qName.indexOf(":") > 0) {
                 qName = qName.substring(qName.indexOf(":") + 1);
             }
@@ -119,7 +119,7 @@ public class IntermediateParser {
         }
 
         @Override
-        public void error(SAXParseException e) throws SAXException {
+        public void error(SAXParseException e) {
             String error = e.getMessage();
             if (!error.contains("no grammar found")) {
                 e.printStackTrace();
