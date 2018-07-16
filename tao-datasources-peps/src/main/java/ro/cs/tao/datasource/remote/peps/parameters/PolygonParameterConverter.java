@@ -15,7 +15,6 @@
  */
 package ro.cs.tao.datasource.remote.peps.parameters;
 
-import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.DefaultParameterConverter;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.eodata.Polygon2D;
@@ -23,6 +22,8 @@ import ro.cs.tao.eodata.Polygon2D;
 import java.awt.geom.Rectangle2D;
 
 /**
+ * Parameter converter for {@link Polygon2D} objects.
+ *
  * @author Cosmin Cara
  */
 public class PolygonParameterConverter extends DefaultParameterConverter {
@@ -35,7 +36,7 @@ public class PolygonParameterConverter extends DefaultParameterConverter {
     }
 
     @Override
-    public String stringValue() throws ConversionException {
+    public String stringValue() {
         Polygon2D polygon2D = (Polygon2D) this.parameter.getValue();
         if (polygon2D != null && polygon2D.getNumPoints() > 0) {
             Rectangle2D bounds2D = polygon2D.getBounds2D();

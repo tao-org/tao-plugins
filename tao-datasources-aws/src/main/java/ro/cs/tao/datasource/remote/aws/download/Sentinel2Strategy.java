@@ -152,7 +152,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
         if (metadataFile != null && Files.exists(metadataFile)) {
             Path inspireFile = metadataFile.resolveSibling("INSPIRE.xml");
             Path manifestFile = metadataFile.resolveSibling("manifest.safe");
-            Path previewFile = metadataFile.resolveSibling("preview.png");
+            //Path previewFile = metadataFile.resolveSibling("preview.png");
             List<String> allLines = Files.readAllLines(metadataFile);
             List<String> metaTileNames = Utilities.filter(allLines, "<Granule |<Granules ");
 
@@ -161,7 +161,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                 currentProduct.addAttribute("tiles", StringUtils.join(tileIds, ","));
                 downloadFile(baseProductUrl + "inspire.xml", inspireFile);
                 downloadFile(baseProductUrl + "manifest.safe", manifestFile);
-                downloadFile(baseProductUrl + "preview.png", previewFile);
+                //downloadFile(baseProductUrl + "preview.png", previewFile);
 
                 // rep_info folder and contents
                 Path repFolder = FileUtils.ensureExists(rootPath.resolve("rep_info"));
