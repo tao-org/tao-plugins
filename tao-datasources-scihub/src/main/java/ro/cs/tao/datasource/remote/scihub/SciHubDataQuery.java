@@ -83,12 +83,15 @@ public class SciHubDataQuery extends DataQuery {
             this.pageSize = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, DEFAULT_LIMIT);
         }
         int page = Math.max(this.pageNumber, 1);
-        long count = this.limit > 0 ? this.limit : this.pageNumber > 0 ? this.pageSize : getCount();
+        long count = this.limit > 0 ? this.limit :
+                        this.pageNumber > 0 ? this.pageSize :
+                        getCount();
         long actualCount = 0;
         List<EOProduct> tmpResults;
+        final int queriesNo = queries.size();
         for (String query : queries) {
             boolean canContinue = true;
-            for (long i = page; actualCount < count && canContinue; i++) {
+            for (long i = page; actualCount < count * queriesNo && canContinue; i++) {
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("q", query));
                 params.add(new BasicNameValuePair("orderby", "beginposition asc"));
@@ -109,7 +112,7 @@ public class SciHubDataQuery extends DataQuery {
                                 parser = new JsonResponseParser<>(new SciHubJsonResponseHandler());
                             }
                             tmpResults = parser.parse(rawResponse);
-                            canContinue = tmpResults != null && tmpResults.size() > 0;
+                            canContinue = tmpResults != null && tmpResults.size() > 0 && count != this.pageSize;
                             if (tmpResults != null) {
                                 actualCount += tmpResults.size();
                                 if ("Sentinel2".equals(this.sensorName) &&
