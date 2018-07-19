@@ -21,6 +21,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 import ro.cs.tao.component.*;
+import ro.cs.tao.component.enums.ParameterType;
 import ro.cs.tao.eodata.enums.DataFormat;
 
 import java.util.ArrayList;
