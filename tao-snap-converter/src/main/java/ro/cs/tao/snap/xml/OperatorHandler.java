@@ -105,16 +105,16 @@ public class OperatorHandler extends DefaultHandler {
                     DataDescriptor sourceData = new DataDescriptor();
                     sourceData.setFormatType(DataFormat.RASTER);
                     singleSource.setDataDescriptor(sourceData);
-                    this.result.setSourceCardinality(1);
+                    singleSource.setCardinality(1);
                     this.result.addSource(singleSource);
                     break;
                 case "sourceProducts":
-                    this.result.setSourceCardinality(0);
                     SourceDescriptor multiSources = new SourceDescriptor();
                     multiSources.setId(UUID.randomUUID().toString());
                     multiSources.setName("S" + qName);
                     sourceData = new DataDescriptor();
                     sourceData.setFormatType(DataFormat.RASTER);
+                    multiSources.setCardinality(0);
                     multiSources.setDataDescriptor(sourceData);
                     this.result.addSource(multiSources);
                     break;
