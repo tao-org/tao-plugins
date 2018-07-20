@@ -15,6 +15,7 @@
  */
 package ro.cs.tao.datasource.db;
 
+import ro.cs.tao.EnumUtils;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
@@ -145,7 +146,7 @@ public class DatabaseQuery extends DataQuery {
                     product.setName(resultSet.getString(2));
                     int typeId = resultSet.getInt(3);
                     if (typeId != 0) {
-                        product.setFormatType(DataFormat.getEnumConstantByValue(typeId));
+                        product.setFormatType(EnumUtils.getEnumConstantByValue(DataFormat.class, typeId));
                     }
                     String geometry = resultSet.getString(4);
                     if (geometry != null) {
@@ -166,12 +167,12 @@ public class DatabaseQuery extends DataQuery {
                     }
                     int sensorTypeId = resultSet.getInt(8);
                     if (sensorTypeId != 0) {
-                        product.setSensorType(SensorType.getEnumConstantByValue(sensorTypeId));
+                        product.setSensorType(EnumUtils.getEnumConstantByValue(SensorType.class, sensorTypeId));
                     }
                     product.setAcquisitionDate(resultSet.getDate(9));
                     int pixelTypeId = resultSet.getInt(10);
                     if (pixelTypeId != 0) {
-                        product.setPixelType(PixelType.getEnumConstantByValue(pixelTypeId));
+                        product.setPixelType(EnumUtils.getEnumConstantByValue(PixelType.class, pixelTypeId));
                     }
                     product.setProductType(resultSet.getString(11));
                     product.setWidth(resultSet.getInt(12));
