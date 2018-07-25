@@ -190,7 +190,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                     reader = Json.createReader(inputStream);
                     getLogger().fine(String.format("Parsing json descriptor %s", productJsonUrl));
                     JsonObject obj = reader.readObject();
-                    final Map<String, String> tileNames = getTileNames(obj, metaTileNames, version, tileIds);
+                    final Map<String, String> tileNames = getTileNames(obj, baseUrl, metaTileNames, version, tileIds);
                     String dataStripId = null;
                     String count = String.valueOf(tileNames.size());
                     int tileCounter = 1;
@@ -311,7 +311,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
         return rootPath;
     }
 
-    @Override
+    /*@Override
     protected Path link(EOProduct product) throws IOException {
         String productName = product.getName();
         String localArchiveRoot = getLocalArchiveRoot();
@@ -374,6 +374,195 @@ public class Sentinel2Strategy extends DownloadStrategy {
             destinationPath = null;
         }
         return destinationPath;
+    }*/
+
+    @Override
+    protected Path link(EOProduct product) throws IOException {
+        Path rootPath;
+        String url;
+        checkCancelled();
+        currentProduct = product;
+        currentProductProgress = 0;
+        String productName = product.getName();
+        String localArchiveRoot = getLocalArchiveRoot();
+        if (localArchiveRoot == null) {
+            throw new IllegalArgumentException("Local archive root not set");
+        }
+        Path productRepositoryPath = Paths.get(localArchiveRoot);
+        Path destinationPath = FileUtils.ensureExists(Paths.get(destination, productName + ".SAFE"));
+        Path productSourcePath = findProductPath(productRepositoryPath, product);
+        if (productSourcePath == null) {
+            logger.warning(String.format("%s not found locally", productName));
+            return null;
+        }
+        Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(productName);
+        Path destMetaFile = destinationPath.resolve(helper.getMetadataFileName());
+        currentStep = "Metadata";
+        logger.fine(String.format("Copying metadata file %s", destMetaFile));
+        copyFile(productSourcePath.resolve("metadata.xml"), destMetaFile);
+        String version = helper.getVersion();
+        try {
+            product.setEntryPoint(helper.getMetadataFileName());
+        } catch (URISyntaxException e) {
+            logger.severe(String.format("Invalid metadata file name [%s] for product [%s]",
+                                        destMetaFile, productName));
+        }
+        if (Files.exists(destMetaFile)) {
+            Path destInspireFile = destMetaFile.resolveSibling("INSPIRE.xml");
+            Path destManifestFile = destMetaFile.resolveSibling("manifest.safe");
+            //Path previewFile = metadataFile.resolveSibling("preview.png");
+            List<String> allLines = Files.readAllLines(destMetaFile);
+            List<String> metaTileNames = Utilities.filter(allLines, "<Granule |<Granules ");
+
+            Set<String> tileIds = updateMetadata(destMetaFile, allLines);
+            if (tileIds != null) {
+                currentProduct.addAttribute("tiles", StringUtils.join(tileIds, ","));
+                linkFile(productSourcePath.resolve("inspire.xml"), destInspireFile);
+                //downloadFile(baseProductUrl + "inspire.xml", inspireFile);
+                linkFile(productSourcePath.resolve("manifest.safe"), destManifestFile);
+                //downloadFile(baseProductUrl + "manifest.safe", manifestFile);
+
+                // rep_info folder and contents
+                Path repFolder = FileUtils.ensureExists(destinationPath.resolve("rep_info"));
+                Path schemaFile = repFolder.resolve("S2_User_Product_Level-1C_Metadata.xsd");
+                copyFromResources(String.format("S2_User_Product_Level-1C_Metadata%s.xsd", version), schemaFile);
+                // HTML folder and contents
+                Path htmlFolder = FileUtils.ensureExists(destinationPath.resolve("HTML"));
+                copyFromResources("banner_1.png", htmlFolder);
+                copyFromResources("banner_2.png", htmlFolder);
+                copyFromResources("banner_3.png", htmlFolder);
+                copyFromResources("star_bg.jpg", htmlFolder);
+                copyFromResources("UserProduct_index.html", htmlFolder);
+                copyFromResources("UserProduct_index.xsl", htmlFolder);
+
+                Path tilesFolder = FileUtils.ensureExists(destinationPath.resolve(FOLDER_GRANULE));
+                FileUtils.ensureExists(destinationPath.resolve(FOLDER_AUXDATA));
+                Path dataStripFolder = FileUtils.ensureExists(destinationPath.resolve(FOLDER_DATASTRIP));
+                Path productJson = productSourcePath.resolve("productInfo.json");
+                JsonReader reader = null;
+                try {
+                    getLogger().fine(String.format("Reading json product descriptor %s", productJson));
+                    reader = Json.createReader(Files.newInputStream(productJson));
+                    getLogger().fine(String.format("Parsing json descriptor %s", productJson));
+                    JsonObject obj = reader.readObject();
+                    final Map<String, String> tileNames = getTileNames(obj,
+                                                                       productRepositoryPath.getParent().toString(),
+                                                                       metaTileNames, version, tileIds);
+                    String dataStripId = null;
+                    String count = String.valueOf(tileNames.size());
+                    int tileCounter = 1;
+                    List<String> downloadedTiles = new ArrayList<>();
+                    for (Map.Entry<String, String> entry : tileNames.entrySet()) {
+                        currentStep = "Tile " + String.valueOf(tileCounter++) + "/" + count;
+                        Path tileUrl = Paths.get(entry.getValue());
+                        String tileName = entry.getKey();
+                        Path tileFolder = FileUtils.ensureExists(tilesFolder.resolve(tileName));
+                        Path auxData = FileUtils.ensureExists(tileFolder.resolve(FOLDER_AUXDATA));
+                        Path imgData = FileUtils.ensureExists(tileFolder.resolve(FOLDER_IMG_DATA));
+                        Path qiData = FileUtils.ensureExists(tileFolder.resolve(FOLDER_QI_DATA));
+                        String metadataName = helper.getGranuleMetadataFileName(tileName);
+                        Path tileMetadataPath = tileFolder.resolve(metadataName);
+                        getLogger().fine(String.format("Linking tile metadata %s", tileMetadataPath));
+                        linkFile(tileUrl.resolve("metadata.xml"), tileMetadataPath);
+                        //downloadFile(tileUrl + "/metadata.xml", tileMetadataPath);
+                        for (String bandFileName : l1cBandFiles) {
+                            try {
+                                Path bandFileUrl = tileUrl.resolve(bandFileName);
+                                Path path = imgData.resolve(helper.getBandFileName(tileName, bandFileName));
+                                getLogger().fine(String.format("Linking band raster %s from %s", path, bandFileName));
+                                linkFile(bandFileUrl, path);
+                                //downloadFile(bandFileUrl, path);
+                            } catch (IOException ex) {
+                                getLogger().warning(String.format("Linkage for %s failed [%s]", bandFileName, ex.getMessage()));
+                            }
+                        }
+                        List<String> tileMetadataLines = Files.readAllLines(tileMetadataPath);
+                        List<String> lines = Utilities.filter(tileMetadataLines, "<MASK_FILENAME");
+                        for (String line : lines) {
+                            line = line.trim();
+                            int firstTagCloseIdx = line.indexOf(">") + 1;
+                            int secondTagBeginIdx = line.indexOf("<", firstTagCloseIdx);
+                            String maskFileName = line.substring(firstTagCloseIdx, secondTagBeginIdx);
+                            String remoteName;
+                            Path path;
+                            if ("13".equals(version)) {
+                                String[] tokens = maskFileName.split(NAME_SEPARATOR);
+                                remoteName = tokens[2] + NAME_SEPARATOR + tokens[3] + NAME_SEPARATOR + tokens[9] + ".gml";
+                                path = qiData.resolve(maskFileName);
+                            } else {
+                                remoteName = maskFileName.substring(maskFileName.lastIndexOf(URL_SEPARATOR) + 1);
+                                path = destinationPath.resolve(maskFileName);
+                            }
+
+                            try {
+                                Path fileUrl = tileUrl.resolve("qi").resolve(remoteName);
+                                getLogger().fine(String.format("Linking file %s from %s", path, fileUrl));
+                                linkFile(fileUrl, path);
+                                //downloadFile(fileUrl, path);
+                            } catch (IOException ex) {
+                                getLogger().warning(String.format("Linkage for %s failed [%s]", path, ex.getMessage()));
+                            }
+                        }
+                        downloadedTiles.add(tileName);
+                        getLogger().fine(String.format("Trying to link %s", tileUrl.resolve("auxiliary/ECMWFT")));
+                        linkFile(tileUrl.resolve("auxiliary/ECMWFT"), auxData.resolve(helper.getEcmWftFileName(tileName)));
+                        //downloadFile(tileUrl + "/auxiliary/ECMWFT", auxData.resolve(helper.getEcmWftFileName(tileName)));
+                        if (dataStripId == null) {
+                            Path tileJson = tileUrl.resolve("tileInfo.json");
+                            JsonReader tiReader = null;
+                            try {
+                                getLogger().fine(String.format("Reading json tile descriptor %s", tileJson));
+                                tiReader = Json.createReader(Files.newInputStream(tileJson));
+                                getLogger().fine(String.format("Parsing json tile descriptor %s", tileJson));
+                                JsonObject tileObj = tiReader.readObject();
+                                dataStripId = tileObj.getJsonObject("datastrip").getString("id");
+                                String dataStripPath = tileObj.getJsonObject("datastrip").getString("path") + "/metadata.xml";
+                                Path dataStrip = FileUtils.ensureExists(dataStripFolder.resolve(helper.getDatastripFolder(dataStripId)));
+                                String dataStripFile = helper.getDatastripMetadataFileName(dataStripId);
+                                FileUtils.ensureExists(dataStrip.resolve(FOLDER_QI_DATA));
+                                getLogger().fine(String.format("Linking %s", productRepositoryPath.getParent().resolve(dataStripPath)));
+                                linkFile(productRepositoryPath.getParent().resolve(dataStripPath), dataStrip.resolve(dataStripFile));
+                                //downloadFile(baseUrl + dataStripPath, dataStrip.resolve(dataStripFile));
+                            } finally {
+                                if (tiReader != null) tiReader.close();
+                            }
+                        }
+                    }
+                    if (downloadedTiles.size() > 0) {
+                        final Pattern tilePattern = helper.getTilePattern();
+                        product.addAttribute("tiles", StringUtils.join(downloadedTiles.stream().map(t -> {
+                            Matcher matcher = tilePattern.matcher(t);
+                            //noinspection ResultOfMethodCallIgnored
+                            matcher.matches();
+                            return matcher.group(1);
+                        }).collect(Collectors.toList()), ","));
+                    }
+                } finally {
+                    if (reader != null) reader.close();
+                }
+            } else {
+                //Files.deleteIfExists(metadataFile);
+                // remove the entire directory
+                Files.walk(destinationPath)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .peek(f -> logger.fine(f.toString()))
+                        .forEach(File::delete);
+                rootPath = null;
+                logger.warning(String.format("The product %s did not contain any tiles from the tile list", productName));
+                throw new NoSuchElementException(String.format("The product %s did not contain any tiles from the tile list", productName));
+            }
+        } else {
+            // remove the entire directory
+            Files.walk(destinationPath)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .peek(System.out::println)
+                    .forEach(File::delete);
+            getLogger().warning(String.format("Either the product %s was not found in the data bucket or the metadata file could not be downloaded", productName));
+            rootPath = null;
+        }
+        return destinationPath;
     }
 
     @Override
@@ -426,7 +615,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
         return destinationPath;
     }
 
-    private Map<String, String> getTileNames(JsonObject productInfo, List<String> metaTileNames, String psdVersion, Set<String> tileIds) {
+    private Map<String, String> getTileNames(JsonObject productInfo, String basePath, List<String> metaTileNames, String psdVersion, Set<String> tileIds) {
         Map<String, String> ret = new HashMap<>();
         JsonArray tiles = productInfo.getJsonArray("tiles");
         for (JsonObject result : tiles.getValuesAs(JsonObject.class)) {
@@ -436,7 +625,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
             String tileId = "T" + simpleTileId;
             String tileName = Utilities.find(metaTileNames, tileId, psdVersion);
             if (tileIds.contains(simpleTileId)) {
-                ret.put(tileName, baseUrl + tilePath);
+                ret.put(tileName, basePath + (!basePath.endsWith("/") ? "/" : "") + tilePath);
             }
         }
         return ret;
