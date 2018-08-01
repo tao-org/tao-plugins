@@ -84,9 +84,9 @@ public class DescriptorConverter {
         List<ParameterDescriptor> parameters = component.getParameterDescriptors();
         if (parameters != null) {
             for (ParameterDescriptor parameter : parameters) {
-                builder.append("<").append(parameter.getId()).append(">")
+                builder.append("<").append(parameter.getName()).append(">")
                         .append(parameter.getDataType().getSimpleName().toLowerCase())
-                        .append("</").append(parameter.getId()).append(">\n");
+                        .append("</").append(parameter.getName()).append(">\n");
             }
         }
         builder.append("</parameters>\n");
