@@ -1,0 +1,34 @@
+[
+  {
+    "id": "7a318f84-a4c1-4867-9b5f-b9f0e77bfd8c",
+    "name": "PythonScript",
+    "label": "Python Script",
+    "version": "2.7.15",
+    "description": "Template for Python scripting components",
+    "authors": "TAO Team",
+    "copyright": "(C) CS ROMANIA",
+    "nodeAffinity": "Any",
+    "sources": [],
+    "targets": [      {
+        "id": "72451fde-455a-4d37-a154-7d3be5079c09",
+        "parentId": "PythonScript",
+        "name": "out",
+        "cardinality": 1,
+        "dataDescriptor": {
+          "formatType": "RASTER",
+          "location": "output_python_script.tif"
+        }
+      }
+    ],
+    "containerId": "10c453c1-0cc4-49a1-a65a-6482f43115c1",
+    "fileLocation": "python",
+    "workingDirectory": ".",
+    "templateType": "VELOCITY",
+    "variables": [],
+    "multiThread": true,
+    "visibility": "SYSTEM",
+    "active": true,
+    "parameterDescriptors": [],
+    "templatecontents": ""
+  }
+]
