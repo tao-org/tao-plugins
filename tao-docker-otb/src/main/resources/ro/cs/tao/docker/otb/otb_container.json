@@ -1,0 +1,444 @@
+{
+	"id": "690d6747-7b76-4290-bb5d-87d775b5d23a",
+	"name": "OTB-6.4.0",
+	"tag": "OTB 6.4.0 Container",
+	"applicationPath": null,
+	"applications": [
+		{
+			"path": "otbcli_Aggregate",
+			"name": "Aggregate"
+		},
+		{
+			"path": "otbcli_BandMath",
+			"name": "BandMath"
+		},
+		{
+			"path": "otbcli_BandMathX",
+			"name": "BandMathX"
+		},
+		{
+			"path": "otbcli_BinaryMorphologicalOperation",
+			"name": "BinaryMorphologicalOperation"
+		},
+		{
+			"path": "otbcli_BlockMatching",
+			"name": "BlockMatching"
+		},
+		{
+			"path": "otbcli_BundleToPerfectSensor",
+			"name": "BundleToPerfectSensor"
+		},
+		{
+			"path": "otbcli_ClassificationMapRegularization",
+			"name": "ClassificationMapRegularization"
+		},
+		{
+			"path": "otbcli_ColorMapping",
+			"name": "ColorMapping"
+		},
+		{
+			"path": "otbcli_CompareImages",
+			"name": "CompareImages"
+		},
+		{
+			"path": "otbcli_ComputeConfusionMatrix",
+			"name": "ComputeConfusionMatrix"
+		},
+		{
+			"path": "otbcli_ComputeImagesStatistics",
+			"name": "ComputeImagesStatistics"
+		},
+		{
+			"path": "otbcli_ComputeModulusAndPhase",
+			"name": "ComputeModulusAndPhase"
+		},
+		{
+			"path": "otbcli_ComputeOGRLayersFeaturesStatistics",
+			"name": "ComputeOGRLayersFeaturesStatistics"
+		},
+		{
+			"path": "otbcli_ComputePolylineFeatureFromImage",
+			"name": "ComputePolylineFeatureFromImage"
+		},
+		{
+			"path": "otbcli_ConcatenateImages",
+			"name": "ConcatenateImages"
+		},
+		{
+			"path": "otbcli_ConcatenateVectorData",
+			"name": "ConcatenateVectorData"
+		},
+		{
+			"path": "otbcli_ConnectedComponentSegmentation",
+			"name": "ConnectedComponentSegmentation"
+		},
+		{
+			"path": "otbcli_ContrastEnhancement",
+			"name": "ContrastEnhancement"
+		},
+		{
+			"path": "otbcli_Convert",
+			"name": "Convert"
+		},
+		{
+			"path": "otbcli_ConvertCartoToGeoPoint",
+			"name": "ConvertCartoToGeoPoint"
+		},
+		{
+			"path": "otbcli_ConvertSensorToGeoPoint",
+			"name": "ConvertSensorToGeoPoint"
+		},
+		{
+			"path": "otbcli_DEMConvert",
+			"name": "DEMConvert"
+		},
+		{
+			"path": "otbcli_Despeckle",
+			"name": "Despeckle"
+		},
+		{
+			"path": "otbcli_DimensionalityReduction",
+			"name": "DimensionalityReduction"
+		},
+		{
+			"path": "otbcli_DisparityMapToElevationMap",
+			"name": "DisparityMapToElevationMap"
+		},
+		{
+			"path": "otbcli_DomainTransform",
+			"name": "DomainTransform"
+		},
+		{
+			"path": "otbcli_DownloadSRTMTiles",
+			"name": "DownloadSRTMTiles"
+		},
+		{
+			"path": "otbcli_DSFuzzyModelEstimation",
+			"name": "DSFuzzyModelEstimation"
+		},
+		{
+			"path": "otbcli_DynamicConvert",
+			"name": "DynamicConvert"
+		},
+		{
+			"path": "otbcli_EdgeExtraction",
+			"name": "EdgeExtraction"
+		},
+		{
+			"path": "otbcli_ExtractROI",
+			"name": "ExtractROI"
+		},
+		{
+			"path": "otbcli_FineRegistration",
+			"name": "FineRegistration"
+		},
+		{
+			"path": "otbcli_FusionOfClassifications",
+			"name": "FusionOfClassifications"
+		},
+		{
+			"path": "otbcli_GeneratePlyFile",
+			"name": "GeneratePlyFile"
+		},
+		{
+			"path": "otbcli_GenerateRPCSensorModel",
+			"name": "GenerateRPCSensorModel"
+		},
+		{
+			"path": "otbcli_GenericRegionMerging",
+			"name": "GenericRegionMerging"
+		},
+		{
+			"path": "otbcli_GrayScaleMorphologicalOperation",
+			"name": "GrayScaleMorphologicalOperation"
+		},
+		{
+			"path": "otbcli_GridBasedImageResampling",
+			"name": "GridBasedImageResampling"
+		},
+		{
+			"path": "otbcli_HaralickTextureExtraction",
+			"name": "HaralickTextureExtraction"
+		},
+		{
+			"path": "otbcli_HomologousPointsExtraction",
+			"name": "HomologousPointsExtraction"
+		},
+		{
+			"path": "otbcli_HooverCompareSegmentation",
+			"name": "HooverCompareSegmentation"
+		},
+		{
+			"path": "otbcli_HyperspectralUnmixing",
+			"name": "HyperspectralUnmixing"
+		},
+		{
+			"path": "otbcli_ImageClassifier",
+			"name": "ImageClassifier"
+		},
+		{
+			"path": "otbcli_ImageEnvelope",
+			"name": "ImageEnvelope"
+		},
+		{
+			"path": "otbcli_ImageTimeSeriesGapFilling",
+			"name": "ImageTimeSeriesGapFilling"
+		},
+		{
+			"path": "otbcli_KMeansClassification",
+			"name": "KMeansClassification"
+		},
+		{
+			"path": "otbcli_LargeScaleMeanShift",
+			"name": "LargeScaleMeanShift"
+		},
+		{
+			"path": "otbcli_LineSegmentDetection",
+			"name": "LineSegmentDetection"
+		},
+		{
+			"path": "otbcli_LocalStatisticExtraction",
+			"name": "LocalStatisticExtraction"
+		},
+		{
+			"path": "otbcli_LSMSSegmentation",
+			"name": "LSMSSegmentation"
+		},
+		{
+			"path": "otbcli_LSMSSmallRegionsMerging",
+			"name": "LSMSSmallRegionsMerging"
+		},
+		{
+			"path": "otbcli_LSMSVectorization",
+			"name": "LSMSVectorization"
+		},
+		{
+			"path": "otbcli_ManageNoData",
+			"name": "ManageNoData"
+		},
+		{
+			"path": "otbcli_MeanShiftSmoothing",
+			"name": "MeanShiftSmoothing"
+		},
+		{
+			"path": "otbcli_MorphologicalClassification",
+			"name": "MorphologicalClassification"
+		},
+		{
+			"path": "otbcli_MorphologicalMultiScaleDecomposition",
+			"name": "MorphologicalMultiScaleDecomposition"
+		},
+		{
+			"path": "otbcli_MorphologicalProfilesAnalysis",
+			"name": "MorphologicalProfilesAnalysis"
+		},
+		{
+			"path": "otbcli_Mosaic",
+			"name": "Mosaic"
+		},
+		{
+			"path": "otbcli_MultiImageSamplingRate",
+			"name": "MultiImageSamplingRate"
+		},
+		{
+			"path": "otbcli_MultiResolutionPyramid",
+			"name": "MultiResolutionPyramid"
+		},
+		{
+			"path": "otbcli_MultivariateAlterationDetector",
+			"name": "MultivariateAlterationDetector"
+		},
+		{
+			"path": "otbcli_ObjectsRadiometricStatistics",
+			"name": "ObjectsRadiometricStatistics"
+		},
+		{
+			"path": "otbcli_ObtainUTMZoneFromGeoPoint",
+			"name": "ObtainUTMZoneFromGeoPoint"
+		},
+		{
+			"path": "otbcli_OGRLayerClassifier",
+			"name": "OGRLayerClassifier"
+		},
+		{
+			"path": "otbcli_OpticalCalibration",
+			"name": "OpticalCalibration"
+		},
+		{
+			"path": "otbcli_OrthoRectification",
+			"name": "OrthoRectification"
+		},
+		{
+			"path": "otbcli_OSMDownloader",
+			"name": "OSMDownloader"
+		},
+		{
+			"path": "otbcli_Pansharpening",
+			"name": "Pansharpening"
+		},
+		{
+			"path": "otbcli_PixelValue",
+			"name": "PixelValue"
+		},
+		{
+			"path": "otbcli_PolygonClassStatistics",
+			"name": "PolygonClassStatistics"
+		},
+		{
+			"path": "otbcli_PredictGMMApp",
+			"name": "PredictGMMApp"
+		},
+		{
+			"path": "otbcli_PredictRegression",
+			"name": "PredictRegression"
+		},
+		{
+			"path": "otbcli_Quicklook",
+			"name": "Quicklook"
+		},
+		{
+			"path": "otbcli_RadiometricIndices",
+			"name": "RadiometricIndices"
+		},
+		{
+			"path": "otbcli_Rasterization",
+			"name": "Rasterization"
+		},
+		{
+			"path": "otbcli_ReadImageInfo",
+			"name": "ReadImageInfo"
+		},
+		{
+			"path": "otbcli_RefineSensorModel",
+			"name": "RefineSensorModel"
+		},
+		{
+			"path": "otbcli_Rescale",
+			"name": "Rescale"
+		},
+		{
+			"path": "otbcli_RigidTransformResample",
+			"name": "RigidTransformResample"
+		},
+		{
+			"path": "otbcli_SampleAugmentation",
+			"name": "SampleAugmentation"
+		},
+		{
+			"path": "otbcli_SampleExtraction",
+			"name": "SampleExtraction"
+		},
+		{
+			"path": "otbcli_SampleSelection",
+			"name": "SampleSelection"
+		},
+		{
+			"path": "otbcli_SARCalibration",
+			"name": "SARCalibration"
+		},
+		{
+			"path": "otbcli_SARDeburst",
+			"name": "SARDeburst"
+		},
+		{
+			"path": "otbcli_SARDecompositions",
+			"name": "SARDecompositions"
+		},
+		{
+			"path": "otbcli_SARPolarMatrixConvert",
+			"name": "SARPolarMatrixConvert"
+		},
+		{
+			"path": "otbcli_SARPolarSynth",
+			"name": "SARPolarSynth"
+		},
+		{
+			"path": "otbcli_Segmentation",
+			"name": "Segmentation"
+		},
+		{
+			"path": "otbcli_SFSTextureExtraction",
+			"name": "SFSTextureExtraction"
+		},
+		{
+			"path": "otbcli_Smoothing",
+			"name": "Smoothing"
+		},
+		{
+			"path": "otbcli_SOMClassification",
+			"name": "SOMClassification"
+		},
+		{
+			"path": "otbcli_SplitImage",
+			"name": "SplitImage"
+		},
+		{
+			"path": "otbcli_StereoFramework",
+			"name": "StereoFramework"
+		},
+		{
+			"path": "otbcli_StereoRectificationGridGenerator",
+			"name": "StereoRectificationGridGenerator"
+		},
+		{
+			"path": "otbcli_Superimpose",
+			"name": "Superimpose"
+		},
+		{
+			"path": "otbcli_TileFusion",
+			"name": "TileFusion"
+		},
+		{
+			"path": "otbcli_TrainGMMApp",
+			"name": "TrainGMMApp"
+		},
+		{
+			"path": "otbcli_TrainGMMSelectionApp",
+			"name": "TrainGMMSelectionApp"
+		},
+		{
+			"path": "otbcli_TrainImagesClassifier",
+			"name": "TrainImagesClassifier"
+		},
+		{
+			"path": "otbcli_TrainRegression",
+			"name": "TrainRegression"
+		},
+		{
+			"path": "otbcli_TrainVectorClassifier",
+			"name": "TrainVectorClassifier"
+		},
+		{
+			"path": "otbcli_VectorClassifier",
+			"name": "VectorClassifier"
+		},
+		{
+			"path": "otbcli_VectorDataDSValidation",
+			"name": "VectorDataDSValidation"
+		},
+		{
+			"path": "otbcli_VectorDataExtractROI",
+			"name": "VectorDataExtractROI"
+		},
+		{
+			"path": "otbcli_VectorDataReprojection",
+			"name": "VectorDataReprojection"
+		},
+		{
+			"path": "otbcli_VectorDataSetField",
+			"name": "VectorDataSetField"
+		},
+		{
+			"path": "otbcli_VectorDataTransform",
+			"name": "VectorDataTransform"
+		},
+		{
+			"path": "otbcli_VertexComponentAnalysis",
+			"name": "VertexComponentAnalysis"
+		},
+		{
+			"path": "gdal_translate.exe",
+			"name": "GDALTranslate"
+		}
+	]
+}
