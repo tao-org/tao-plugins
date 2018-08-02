@@ -33,6 +33,7 @@
         <module>tao-quicklook</module>
         <module>tao-docker-snap</module>
         <module>tao-docker-otb</module>
+        <module>tao-docker-python</module>
     </modules>
 
     <properties>
