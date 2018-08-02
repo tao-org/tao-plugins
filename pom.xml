@@ -31,6 +31,8 @@
         <module>tao-datasources-fedeo</module>
         <module>tao-ldap</module>
         <module>tao-quicklook</module>
+        <module>tao-docker-snap</module>
+        <module>tao-docker-otb</module>
     </modules>
 
     <properties>
