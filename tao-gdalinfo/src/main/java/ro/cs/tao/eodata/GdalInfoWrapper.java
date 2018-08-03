@@ -20,21 +20,25 @@ import org.geotools.referencing.CRS;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import ro.cs.tao.eodata.enums.PixelType;
-import ro.cs.tao.security.SessionStore;
-import ro.cs.tao.utils.executors.*;
+import ro.cs.tao.utils.Platform;
+import ro.cs.tao.utils.executors.Executor;
+import ro.cs.tao.utils.executors.ExecutorType;
+import ro.cs.tao.utils.executors.OutputAccumulator;
+import ro.cs.tao.utils.executors.ProcessExecutor;
 
 import javax.json.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GdalInfoWrapper implements MetadataInspector {
-    private static final String[] dockerTest = new String[] { "docker" };
     private static final String[] gdalOnPathCmd = new String[] {
             "gdalinfo", "-json", "$FULL_PATH"
     };
@@ -52,13 +56,17 @@ public class GdalInfoWrapper implements MetadataInspector {
         }
         Executor executor;
         if (canUseDocker == null) {
-            Path testPath = SessionStore.currentContext().getWorkspace();
-            executor = initialize(testPath, dockerTest);
-            executor.setOutputConsumer(new DebugOutputConsumer());
-            try {
-                canUseDocker = executor.execute(false) == 0;
-            } catch (Exception e) {
-                canUseDocker = Boolean.FALSE;
+            String systemPath = System.getenv("Path");
+            String[] paths = systemPath.split(File.pathSeparator);
+            Path currentPath = null;
+            canUseDocker = false;
+            for (String path : paths) {
+                currentPath = Paths.get(path)
+                                    .resolve(Platform.getCurrentPlatform().getId().equals(Platform.ID.win) ? "docker.exe" : "docker");
+                if (Files.exists(currentPath)) {
+                    canUseDocker = true;
+                    break;
+                }
             }
         }
         executor = initialize(productPath.toAbsolutePath(), canUseDocker ? gdalOnDocker : gdalOnPathCmd);
