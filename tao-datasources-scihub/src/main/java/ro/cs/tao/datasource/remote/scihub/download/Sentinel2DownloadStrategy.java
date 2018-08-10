@@ -33,6 +33,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
@@ -349,7 +350,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                                         }
                                     }
                                 }
-                                List<String> lines = Utilities.filter(Files.readAllLines(metadataFile),
+                                List<String> lines = Utilities.filter(Files.readAllLines(tileMetaFile),
                                                                       "<MASK_FILENAME");
                                 for (String line : lines) {
                                     line = line.trim();
@@ -393,7 +394,13 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                         downloadFile(dataStripPath, dataStrip.resolve(dsFileName), NetUtils.getAuthToken());
                     }
                     if (downloadedTiles.size() > 0) {
-                        product.addAttribute("tiles", StringUtils.join(downloadedTiles, ","));
+                        final Pattern tilePattern = helper.getTilePattern();
+                        product.addAttribute("tiles", StringUtils.join(downloadedTiles.stream().map(t -> {
+                            Matcher matcher = tilePattern.matcher(t);
+                            //noinspection ResultOfMethodCallIgnored
+                            matcher.matches();
+                            return matcher.group(1);
+                        }).collect(Collectors.toList()), ","));
                     }
                 } else {
                     //Files.deleteIfExists(metadataFile);
