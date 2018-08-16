@@ -85,6 +85,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                 metadata.setProductType(root.getString("driverLongName"));
                 boolean isNetCDF = "Network Common Data Format".equals(metadata.getProductType());
                 boolean isSentinel1 = "Sentinel-1 SAR SAFE Product".equals(metadata.getProductType());
+                boolean isSentinel2 = "Sentinel 2".equals(metadata.getProductType());
                 if (isNetCDF) {
                     // NetCDF requires running gdalinfo twice
                     // Reference: http://www.gdal.org/frmt_netcdf.html
@@ -120,11 +121,14 @@ public class GdalInfoWrapper implements MetadataInspector {
                     crsObject = root.getJsonObject("metadata").getJsonObject("GEOLOCATION");
                 } else if (isSentinel1) {
                     crsObject = root.getJsonObject("gcps").getJsonObject("coordinateSystem");
+                } else if (isSentinel2) {
+                    crsObject = root.getJsonObject("metadata").getJsonObject("SUBDATASETS");
                 } else {
                     crsObject = root.getJsonObject("coordinateSystem");
                 }
                 if (crsObject != null) {
-                    CoordinateReferenceSystem crs = CRS.parseWKT(isNetCDF ? crsObject.getString("SRS") : crsObject.getString("wkt"));
+                    CoordinateReferenceSystem crs = isSentinel2 ? CRS.decode(crsObject.getString("SUBDATASET_1_NAME").substring(crsObject.getString("SUBDATASET_1_NAME").lastIndexOf(":") + 1).replace("_", ":")) :
+                                                                  CRS.parseWKT(isNetCDF ? crsObject.getString("SRS") : crsObject.getString("wkt"));
                     if (crs != null && crs.getIdentifiers() != null && crs.getIdentifiers().size() > 0) {
                         ReferenceIdentifier identifier = crs.getIdentifiers().stream()
                                 .findFirst().get();
@@ -160,6 +164,9 @@ public class GdalInfoWrapper implements MetadataInspector {
                                          ul.getJsonNumber("y").doubleValue());
                         metadata.setFootprint(polygon2D.toWKT(8));
                     }
+                } else if (isSentinel2) {
+                    String wkt = root.getJsonObject("metadata").getJsonObject("").getString("FOOTPRINT");
+                    metadata.setFootprint(wkt);
                 } else {
                     extentObject = root.getJsonObject("cornerCoordinates");
                     if (extentObject != null) {
@@ -184,7 +191,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                     }
                 }
                 JsonArray bandsArray = root.getJsonArray("bands");
-                String type = bandsArray.getJsonObject(0).getString("type");
+                String type = bandsArray.size() > 0 ? bandsArray.getJsonObject(0).getString("type") : null;
                 if (type != null) {
                     switch (type.toLowerCase()) {
                         case "byte":
@@ -210,6 +217,8 @@ public class GdalInfoWrapper implements MetadataInspector {
                             metadata.setPixelType(PixelType.FLOAT64);
                             break;
                     }
+                } else if (isSentinel2) {
+                    metadata.setPixelType(PixelType.UINT16);
                 }
             } else {
                 throw new IOException(consumer.getOutput());
