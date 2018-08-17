@@ -39,7 +39,7 @@
     <properties>
         <tao.version>1-0.SNAPSHOT</tao.version>
         <geotools.version>19.1</geotools.version>
-        <spring.version>4.3.0.RELEASE</spring.version>
+        <spring.version>4.3.11.RELEASE</spring.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- maven -->
         <maven.compiler.data>1.8</maven.compiler.data>
