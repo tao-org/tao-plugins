@@ -19,7 +19,6 @@ package ro.cs.tao.eodata;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import ro.cs.tao.eodata.enums.PixelType;
-import ro.cs.tao.products.sentinels.L1CProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.utils.FileUtils;
 
@@ -61,7 +60,7 @@ public class Sentinel2MetadataInspector implements MetadataInspector {
         String metadataFileName = helper.getMetadataFileName();
         metadata.setEntryPoint(productFolderPath.resolve(metadataFileName).toUri());
         metadata.setPixelType(PixelType.UINT16);
-        metadata.setProductType(helper instanceof L1CProductHelper ? "S2MSIL1C" : "S2MSIL2A");
+        metadata.setProductType("Sentinel2");
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
         metadata.setSize(FileUtils.folderSize(productFolderPath));
         if (builder != null) {
