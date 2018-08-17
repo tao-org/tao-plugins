@@ -24,8 +24,8 @@ import java.util.regex.Pattern;
  */
 public abstract class Sentinel2ProductHelper extends ProductHelper {
 
-    static final String PSD_13 = "13";
-    static final String PSD_14 = "14";
+    public static final String PSD_13 = "13";
+    public static final String PSD_14 = "14";
 
     protected double cloudsPercentage;
 
