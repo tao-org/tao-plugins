@@ -69,6 +69,10 @@ public class GdalInfoWrapper implements MetadataInspector {
                 }
             }
         }
+        try {
+            return new Sentinel2MetadataInspector().getMetadata(productPath);
+        } catch (Exception ignored) {
+        }
         executor = initialize(productPath.toAbsolutePath(), canUseDocker ? gdalOnDocker : gdalOnPathCmd);
         OutputAccumulator consumer = new OutputAccumulator();
         executor.setOutputConsumer(consumer);
