@@ -16,6 +16,7 @@
 
 package ro.cs.tao.docker.otb;
 
+import org.apache.commons.lang3.SystemUtils;
 import ro.cs.tao.component.ParameterDescriptor;
 import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.SourceDescriptor;
@@ -27,7 +28,6 @@ import ro.cs.tao.persistence.PersistenceManager;
 import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
-import ro.cs.tao.utils.Platform;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -45,7 +45,7 @@ public class OTBImageInstaller extends BaseImageInstaller {
 
     @Override
     protected String getPathInSystem() {
-        Path path = findInPath(Platform.getCurrentPlatform().getId().equals(Platform.ID.win) ?
+        Path path = findInPath(SystemUtils.IS_OS_WINDOWS ?
                                        "otbcli_BandMath.bat" : "otbcli_BandMath");
         return path != null ? path.getParent().toString() : null;
     }
@@ -57,7 +57,6 @@ public class OTBImageInstaller extends BaseImageInstaller {
         try {
             otbContainer = persistenceManager.getContainerById(containerId);
         } catch (PersistenceException ignored) { }
-        boolean isWin = Platform.getCurrentPlatform().getId().equals(Platform.ID.win);
         if (otbContainer == null) {
             logger.fine(String.format("Container %s not registered in database", getContainerName()));
             try {
@@ -67,7 +66,7 @@ public class OTBImageInstaller extends BaseImageInstaller {
                 otbContainer.setTag(getContainerName());
                 otbContainer.setApplicationPath(path);
                 otbContainer.getApplications().forEach(app -> {
-                    String appPath = app.getPath() + (isWin && (winExtensions.stream()
+                    String appPath = app.getPath() + (SystemUtils.IS_OS_WINDOWS && (winExtensions.stream()
                                         .noneMatch(e -> getPathInContainer().toLowerCase().endsWith(e))) ? ".bat" : "");
                     app.setName(app.getName());
                     app.setPath(appPath);

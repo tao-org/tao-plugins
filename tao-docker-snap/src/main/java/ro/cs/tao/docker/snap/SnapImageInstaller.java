@@ -16,6 +16,7 @@
 
 package ro.cs.tao.docker.snap;
 
+import org.apache.commons.lang3.SystemUtils;
 import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.SourceDescriptor;
 import ro.cs.tao.component.TargetDescriptor;
@@ -25,7 +26,6 @@ import ro.cs.tao.persistence.PersistenceManager;
 import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
-import ro.cs.tao.utils.Platform;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -44,7 +44,7 @@ public class SnapImageInstaller extends BaseImageInstaller {
 
     @Override
     protected String getPathInSystem() {
-        Path path = findInPath(Platform.getCurrentPlatform().getId().equals(Platform.ID.win) ? "gpt.exe" : "gpt");
+        Path path = findInPath(SystemUtils.IS_OS_WINDOWS ? "gpt.exe" : "gpt");
         return path != null ? path.getParent().toString() : null;
     }
 
@@ -55,7 +55,6 @@ public class SnapImageInstaller extends BaseImageInstaller {
         try {
             snapContainer = persistenceManager.getContainerById(containerId);
         } catch (PersistenceException ignored) { }
-        boolean isWin = Platform.getCurrentPlatform().getId().equals(Platform.ID.win);
         if (snapContainer == null) {
             logger.fine(String.format("Container %s not registered in database", getContainerName()));
             try {
@@ -68,7 +67,7 @@ public class SnapImageInstaller extends BaseImageInstaller {
                     if (a.getPath() == null) {
                         a.setPath("gpt");
                     }
-                    if (isWin && !a.getPath().endsWith(".exe")) {
+                    if (SystemUtils.IS_OS_WINDOWS && !a.getPath().endsWith(".exe")) {
                         a.setPath(a.getPath() + ".exe");
                     }
                     a.setParallelFlagTemplate("-q <integer>");
