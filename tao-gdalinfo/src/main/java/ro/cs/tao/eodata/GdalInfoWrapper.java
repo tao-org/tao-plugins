@@ -16,11 +16,11 @@
 
 package ro.cs.tao.eodata;
 
+import org.apache.commons.lang.SystemUtils;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import ro.cs.tao.eodata.enums.PixelType;
-import ro.cs.tao.utils.Platform;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.ExecutorType;
 import ro.cs.tao.utils.executors.OutputAccumulator;
@@ -62,7 +62,7 @@ public class GdalInfoWrapper implements MetadataInspector {
             canUseDocker = false;
             for (String path : paths) {
                 currentPath = Paths.get(path)
-                                    .resolve(Platform.getCurrentPlatform().getId().equals(Platform.ID.win) ? "docker.exe" : "docker");
+                                    .resolve(SystemUtils.IS_OS_WINDOWS ? "docker.exe" : "docker");
                 if (Files.exists(currentPath)) {
                     canUseDocker = true;
                     break;
