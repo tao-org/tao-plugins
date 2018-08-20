@@ -59,6 +59,7 @@ public class OTBImageInstaller extends BaseImageInstaller {
         } catch (PersistenceException ignored) { }
         boolean isWin = Platform.getCurrentPlatform().getId().equals(Platform.ID.win);
         if (otbContainer == null) {
+            logger.fine(String.format("Container %s not registered in database", getContainerName()));
             try {
                 otbContainer = readContainerDescriptor("otb_container.json");
                 otbContainer.setId(containerId);
@@ -81,76 +82,68 @@ public class OTBImageInstaller extends BaseImageInstaller {
                 ProcessingComponent[] components = readComponentDescriptors("otb_applications.json");
                 List<Application> containerApplications = otbContainer.getApplications();
                 for (ProcessingComponent component : components) {
-                    current = component;
-                    component.setContainerId(otbContainer.getId());
-                    component.setLabel(component.getId());
-                    component.setComponentType(ProcessingComponentType.EXECUTABLE);
-                    component.setFileLocation(containerApplications.stream().filter(a -> a.getName().equals(component.getId())).findFirst().get().getPath());
-                    List<ParameterDescriptor> parameterDescriptors = component.getParameterDescriptors();
-                    if (parameterDescriptors != null) {
-                        parameterDescriptors.forEach(p -> {
-                            if (p.getName() == null) {
-                                p.setName(p.getId());
-                                p.setId(UUID.randomUUID().toString());
-                            }
-                            String[] valueSet = p.getValueSet();
-                            if (valueSet != null && valueSet.length > 0) {
-                                p.setDefaultValue(valueSet[0]);
-                            }
-                        });
-                    }
-                    List<SourceDescriptor> sources = component.getSources();
-                    if (sources != null) {
-                        sources.forEach(s -> s.setId(UUID.randomUUID().toString()));
-                    }
-                    List<TargetDescriptor> targets = component.getTargets();
-                    if (targets != null) {
-                        targets.forEach(t -> t.setId(UUID.randomUUID().toString()));
-                    }
-                    String template = component.getTemplateContents();
-                    int i = 0;
-                    while (i < template.length()) {
-                        Character ch = template.charAt(i);
-                        if (ch == '$' && template.charAt(i - 1) != '\n') {
-                            template = template.substring(0, i) + "\n" + template.substring(i);
+                    try {
+                        current = component;
+                        component.setContainerId(otbContainer.getId());
+                        component.setLabel(component.getId());
+                        component.setComponentType(ProcessingComponentType.EXECUTABLE);
+                        component.setFileLocation(containerApplications.stream().filter(a -> a.getName().equals(component.getId())).findFirst().get().getPath());
+                        List<ParameterDescriptor> parameterDescriptors = component.getParameterDescriptors();
+                        if (parameterDescriptors != null) {
+                            parameterDescriptors.forEach(p -> {
+                                if (p.getName() == null) {
+                                    p.setName(p.getId());
+                                    p.setId(UUID.randomUUID().toString());
+                                }
+                                String[] valueSet = p.getValueSet();
+                                if (valueSet != null && valueSet.length > 0) {
+                                    p.setDefaultValue(valueSet[0]);
+                                }
+                            });
                         }
-                        i++;
-                    }
-                    String[] tokens = template.split("\n");
-                    for (int j = 0; j < tokens.length; j++) {
-                        final int idx = j;
-                        if ((targets != null && targets.stream().anyMatch(t -> t.getName().equals(tokens[idx].substring(1)))) ||
-                                (sources != null && sources.stream().anyMatch(s -> s.getName().equals(tokens[idx].substring(1))))) {
-                            tokens[j + 1] = tokens[j].replace('-', '$');
-                            j++;
+                        List<SourceDescriptor> sources = component.getSources();
+                        if (sources != null) {
+                            sources.forEach(s -> s.setId(UUID.randomUUID().toString()));
                         }
+                        List<TargetDescriptor> targets = component.getTargets();
+                        if (targets != null) {
+                            targets.forEach(t -> t.setId(UUID.randomUUID().toString()));
+                        }
+                        String template = component.getTemplateContents();
+                        int i = 0;
+                        while (i < template.length()) {
+                            Character ch = template.charAt(i);
+                            if (ch == '$' && template.charAt(i - 1) != '\n') {
+                                template = template.substring(0, i) + "\n" + template.substring(i);
+                            }
+                            i++;
+                        }
+                        String[] tokens = template.split("\n");
+                        for (int j = 0; j < tokens.length; j++) {
+                            final int idx = j;
+                            if ((targets != null && targets.stream().anyMatch(t -> t.getName().equals(tokens[idx].substring(1)))) ||
+                                    (sources != null && sources.stream().anyMatch(s -> s.getName().equals(tokens[idx].substring(1))))) {
+                                tokens[j + 1] = tokens[j].replace('-', '$');
+                                j++;
+                            }
+                        }
+                        component.setTemplateContents(String.join("\n", tokens));
+                        component.setComponentType(ProcessingComponentType.EXECUTABLE);
+                        component.setOwner(SystemPrincipal.instance().getName());
+                        persistenceManager.saveProcessingComponent(component);
+                    } catch (Exception inner) {
+                        logger.severe(String.format("Faulty component: %s. Error: %s",
+                                                    current != null ? current.getId() : "n/a",
+                                                    inner.getMessage()));
                     }
-                    component.setTemplateContents(String.join("\n", tokens));
-                    component.setComponentType(ProcessingComponentType.EXECUTABLE);
-                    component.setOwner(SystemPrincipal.instance().getName());
-                    persistenceManager.saveProcessingComponent(component);
                 }
-            } catch (Exception e) {
-                logger.severe(String.format("Faulty component: %s. Error: %s",
-                                            current != null ? current.getId() : "n/a",
-                                            e.getMessage()));
+            } catch (Exception outer) {
+                logger.severe(String.format("Error occured while registering container applications: %s",
+                                            outer.getMessage()));
             }
+            logger.info(String.format("Registration complete for container %s", getContainerName()));
         } else {
-            /*otbContainer.setId(containerId);
-            otbContainer.setName(containerName);
-            otbContainer.setTag(containerName);
-            otbContainer.setApplicationPath(path);
-            otbContainer.getApplications().forEach(app -> {
-                String appPath = app.getName() + (isWin && (winExtensions.stream()
-                        .noneMatch(e -> getPathInContainer().toLowerCase().endsWith(e))) ? ".bat" : "");
-                app.setPath(appPath);
-            });
-            try {
-                otbContainer = persistenceManager.updateContainer(otbContainer);
-            } catch (Exception e) {
-                logger.severe(e.getMessage());
-            }*/
-            logger.info(String.format("Container %s already registered", getContainerName()));
+            logger.fine(String.format("Container %s already registered", getContainerName()));
         }
         return otbContainer;
     }
