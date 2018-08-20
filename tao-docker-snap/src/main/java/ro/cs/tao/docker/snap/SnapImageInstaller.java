@@ -57,6 +57,7 @@ public class SnapImageInstaller extends BaseImageInstaller {
         } catch (PersistenceException ignored) { }
         boolean isWin = Platform.getCurrentPlatform().getId().equals(Platform.ID.win);
         if (snapContainer == null) {
+            logger.fine(String.format("Container %s not registered in database", getContainerName()));
             try {
                 snapContainer = readContainerDescriptor("snap_container.json");
                 snapContainer.setId(containerId);
@@ -76,60 +77,50 @@ public class SnapImageInstaller extends BaseImageInstaller {
                 snapContainer = persistenceManager.saveContainer(snapContainer);
                 ProcessingComponent[] components = readComponentDescriptors("snap_operators.json");
                 for (ProcessingComponent component : components) {
-                    component.setContainerId(snapContainer.getId());
-                    component.setComponentType(ProcessingComponentType.EXECUTABLE);
-                    component.setOwner(SystemPrincipal.instance().getName());
-                    component.getParameterDescriptors().forEach(p -> {
-                        if (p.getName() == null) {
-                            p.setName(p.getId());
-                            p.setId(UUID.randomUUID().toString());
-                        }
-                        String[] valueSet = p.getValueSet();
-                        if (valueSet != null && valueSet.length > 0) {
-                            p.setDefaultValue(valueSet[0]);
-                        }
-                    });
-                    List<SourceDescriptor> sources = component.getSources();
-                    if (sources != null) {
-                        sources.forEach(s -> {
-                            if (s.getId() == null || s.getId().isEmpty()) {
-                                s.setId(UUID.randomUUID().toString());
+                    try {
+                        component.setContainerId(snapContainer.getId());
+                        component.setComponentType(ProcessingComponentType.EXECUTABLE);
+                        component.setOwner(SystemPrincipal.instance().getName());
+                        component.getParameterDescriptors().forEach(p -> {
+                            if (p.getName() == null) {
+                                p.setName(p.getId());
+                                p.setId(UUID.randomUUID().toString());
+                            }
+                            String[] valueSet = p.getValueSet();
+                            if (valueSet != null && valueSet.length > 0) {
+                                p.setDefaultValue(valueSet[0]);
                             }
                         });
+                        List<SourceDescriptor> sources = component.getSources();
+                        if (sources != null) {
+                            sources.forEach(s -> {
+                                if (s.getId() == null || s.getId().isEmpty()) {
+                                    s.setId(UUID.randomUUID().toString());
+                                }
+                            });
+                        }
+                        List<TargetDescriptor> targets = component.getTargets();
+                        if (targets != null) {
+                            targets.forEach(t -> {
+                                if (t.getId() == null || t.getId().isEmpty()) {
+                                    t.setId(UUID.randomUUID().toString());
+                                }
+                            });
+                        }
+                        persistenceManager.saveProcessingComponent(component);
+                    } catch (Exception inner) {
+                        logger.severe(String.format("Faulty component: %s. Error: %s",
+                                                    component != null ? component.getId() : "n/a",
+                                                    inner.getMessage()));
                     }
-                    List<TargetDescriptor> targets = component.getTargets();
-                    if (targets != null) {
-                        targets.forEach(t -> {
-                            if (t.getId() == null || t.getId().isEmpty()) {
-                                t.setId(UUID.randomUUID().toString());
-                            }
-                        });
-                    }
-                    persistenceManager.saveProcessingComponent(component);
                 }
-            } catch (Exception e) {
-                logger.severe(e.getMessage());
+            } catch (Exception outer) {
+                logger.severe(String.format("Error occured while registering container applications: %s",
+                                            outer.getMessage()));
             }
+            logger.info(String.format("Registration complete for container %s", getContainerName()));
         } else {
-            /*try {
-                snapContainer.setId(containerId);
-                snapContainer.setName(containerName);
-                snapContainer.setTag(containerName);
-                snapContainer.setApplicationPath(path);
-                snapContainer.getApplications().forEach(a -> {
-                    if (a.getPath() == null) {
-                        a.setPath("gpt");
-                    }
-                    if (isWin && !a.getPath().endsWith(".exe")) {
-                        a.setPath(a.getPath() + ".exe");
-                    }
-                    a.setParallelFlagTemplate("-q <integer>");
-                });
-                snapContainer = persistenceManager.updateContainer(snapContainer);
-            } catch (Exception e) {
-                logger.severe(e.getMessage());
-            }*/
-            logger.info(String.format("Container %s already registered", getContainerName()));
+            logger.fine(String.format("Container %s already registered", getContainerName()));
         }
         return snapContainer;
     }
