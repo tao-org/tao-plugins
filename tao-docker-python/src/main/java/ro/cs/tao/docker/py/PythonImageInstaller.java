@@ -16,6 +16,7 @@
 
 package ro.cs.tao.docker.py;
 
+import org.apache.commons.lang3.SystemUtils;
 import ro.cs.tao.component.ParameterDescriptor;
 import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.SourceDescriptor;
@@ -26,7 +27,6 @@ import ro.cs.tao.persistence.PersistenceManager;
 import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
-import ro.cs.tao.utils.Platform;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -44,7 +44,7 @@ public class PythonImageInstaller extends BaseImageInstaller {
 
     @Override
     protected String getPathInSystem() {
-        Path path = findInPath(Platform.getCurrentPlatform().getId().equals(Platform.ID.win) ? "python.exe" : "python");
+        Path path = findInPath(SystemUtils.IS_OS_WINDOWS ? "python.exe" : "python");
         return path != null ? path.getParent().toString() : null;
     }
 
@@ -55,7 +55,6 @@ public class PythonImageInstaller extends BaseImageInstaller {
         try {
             container = persistenceManager.getContainerById(containerId);
         } catch (PersistenceException ignored) { }
-        boolean isWin = Platform.getCurrentPlatform().getId().equals(Platform.ID.win);
         if (container == null) {
             try {
                 container = readContainerDescriptor("python_container.json");
