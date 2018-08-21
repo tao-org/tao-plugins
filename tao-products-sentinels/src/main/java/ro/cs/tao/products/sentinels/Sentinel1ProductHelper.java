@@ -45,7 +45,7 @@ public class Sentinel1ProductHelper extends ProductHelper {
 
     Sentinel1ProductHelper() { super(); }
 
-    Sentinel1ProductHelper(String productName) { super(productName); }
+    public Sentinel1ProductHelper(String productName) { super(productName); }
 
     @Override
     public String getSensingDate() {
