@@ -14,39 +14,46 @@
  * with this program; if not, see http://www.gnu.org/licenses/
  */
 
-package ro.cs.tao.eodata;
+package ro.cs.tao.products.sentinels;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.PixelType;
-import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
+import ro.cs.tao.eodata.metadata.DecodeStatus;
+import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
 import ro.cs.tao.utils.FileUtils;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.LongStream;
 
-public class Sentinel2MetadataInspector implements MetadataInspector {
+/**
+ * Simple metadata inspector for Sentinel-2 products
+ */
+public class Sentinel2MetadataInspector extends XmlMetadataInspector {
 
-    private static DocumentBuilder builder;
+    public Sentinel2MetadataInspector() { super(); }
 
-    static {
+    @Override
+    public DecodeStatus decodeQualification(Path productPath) {
+        if (!Files.exists(productPath)) {
+            return DecodeStatus.UNABLE;
+        }
+        Path productFolderPath = Files.isRegularFile(productPath) ?  productPath.getParent() : productPath;
         try {
-            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            Sentinel2ProductHelper.createHelper(productFolderPath.getFileName().toString());
+            return DecodeStatus.INTENDED;
+        } catch (Exception e) {
+            return DecodeStatus.UNABLE;
         }
     }
-    public Sentinel2MetadataInspector() { }
 
     @Override
     public Metadata getMetadata(Path productPath) throws IOException {
@@ -58,7 +65,7 @@ public class Sentinel2MetadataInspector implements MetadataInspector {
         Metadata metadata = new Metadata();
 
         String metadataFileName = helper.getMetadataFileName();
-        metadata.setEntryPoint(productFolderPath.resolve(metadataFileName).toUri());
+        metadata.setEntryPoint(metadataFileName);
         metadata.setPixelType(PixelType.UINT16);
         metadata.setProductType("Sentinel2");
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
@@ -71,9 +78,9 @@ public class Sentinel2MetadataInspector implements MetadataInspector {
                 if (points != null) {
                     String[] coords = points.trim().split(" ");
                     Polygon2D polygon2D = new Polygon2D();
-                    for (int i = 0; i < coords.length; i += 2) {
-                        polygon2D.append(Double.parseDouble(coords[i]),
-                                         Double.parseDouble(coords[i + 1]));
+                    for (String coord : coords) {
+                        polygon2D.append(Double.parseDouble(coord.substring(0, coord.indexOf(','))),
+                                         Double.parseDouble(coord.substring(coord.indexOf(',') + 1)));
                     }
                     metadata.setFootprint(polygon2D.toWKT(8));
                 }
@@ -112,47 +119,5 @@ public class Sentinel2MetadataInspector implements MetadataInspector {
             }
         }
         return metadata;
-    }
-
-    private String getValue(String tagName, Element element) {
-        NodeList list = element.getElementsByTagName(tagName);
-        if (list != null && list.getLength() > 0) {
-            NodeList subList = list.item(0).getChildNodes();
-            if (subList != null && subList.getLength() > 0) {
-                return subList.item(0).getNodeValue();
-            }
-        }
-        return null;
-    }
-
-    private List<String> getValues(String tagName, Element element) {
-        List<String> values = null;
-        NodeList list = element.getElementsByTagName(tagName);
-        if (list != null && list.getLength() > 0) {
-            values = new ArrayList<>();
-            final int length = list.getLength();
-            for (int i = 0; i < length; i++) {
-                values.add(list.item(i).getNodeValue());
-            }
-        }
-        return values;
-    }
-
-    private List<String> getAttributeValues(String tagName, String attrName, Element element) {
-        List<String> values = null;
-        NodeList list = element.getElementsByTagName(tagName);
-        if (list != null && list.getLength() > 0) {
-            values = new ArrayList<>();
-            final int length = list.getLength();
-            for (int i = 0; i < length; i++) {
-                Node node = list.item(i);
-                NamedNodeMap attributes = node.getAttributes();
-                Node item = attributes.getNamedItem(attrName);
-                if (item != null) {
-                    values.add(item.getNodeValue());
-                }
-            }
-        }
-        return values;
     }
 }
