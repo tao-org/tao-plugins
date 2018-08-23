@@ -25,6 +25,9 @@ import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
 import ro.cs.tao.utils.FileUtils;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,41 +69,40 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
         metadata.setProductType("Sentinel1");
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
         metadata.setSize(FileUtils.folderSize(productFolderPath));
-        if (builder != null) {
-            try (InputStream inputStream = Files.newInputStream(productFolderPath.resolve(metadataFileName))) {
-                Document document = builder.parse(inputStream);
-                Element root = document.getDocumentElement();
-                String points = getValue("coordinates", root);
-                if (points != null) {
-                    String[] coords = points.trim().split(" ");
-                    Polygon2D polygon2D = new Polygon2D();
-                    for (String coord : coords) {
-                        polygon2D.append(Double.parseDouble(coord.substring(0, coord.indexOf(','))),
-                                         Double.parseDouble(coord.substring(coord.indexOf(',') + 1)));
-                    }
-                    polygon2D.append(Double.parseDouble(coords[0].substring(0, coords[0].indexOf(','))),
-                                     Double.parseDouble(coords[0].substring(coords[0].indexOf(',') + 1)));
-                    metadata.setFootprint(polygon2D.toWKT(6));
+        try (InputStream inputStream = Files.newInputStream(productFolderPath.resolve(metadataFileName))) {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document document = builder.parse(inputStream);
+            Element root = document.getDocumentElement();
+            String points = getValue("coordinates", root);
+            if (points != null) {
+                String[] coords = points.trim().split(" ");
+                Polygon2D polygon2D = new Polygon2D();
+                for (String coord : coords) {
+                    polygon2D.append(Double.parseDouble(coord.substring(0, coord.indexOf(','))),
+                                     Double.parseDouble(coord.substring(coord.indexOf(',') + 1)));
                 }
-                metadata.setCrs("EPSG:4326");
-                File[] annotations = FileUtils.listFilesWithExtension(productFolderPath.resolve("annotation").toFile(), ".xml");
-                if (annotations != null) {
-                    for (File annotation : annotations) {
-                        try (InputStream gis = Files.newInputStream(annotation.toPath())) {
-                            Document gDoc = builder.parse(gis);
-                            Element gRoot = gDoc.getDocumentElement();
-                            if (metadata.getPixelType() == null) {
-                                metadata.setPixelType("16 bit Signed Integer".equals(getValue("outputPixels", gRoot)) ?
-                                                        PixelType.INT16 : PixelType.UINT16);
-                            }
-                            metadata.setWidth(Math.max(metadata.getWidth(), Integer.parseInt(getValue("numberOfSamples", gRoot))));
-                            metadata.setHeight(Math.max(metadata.getHeight(), Integer.parseInt(getValue("numberOfLines", gRoot))));
-                        }
-                    }
-                }
-            } catch (SAXException e) {
-                e.printStackTrace();
+                polygon2D.append(Double.parseDouble(coords[0].substring(0, coords[0].indexOf(','))),
+                                 Double.parseDouble(coords[0].substring(coords[0].indexOf(',') + 1)));
+                metadata.setFootprint(polygon2D.toWKT(6));
             }
+            metadata.setCrs("EPSG:4326");
+            File[] annotations = FileUtils.listFilesWithExtension(productFolderPath.resolve("annotation").toFile(), ".xml");
+            if (annotations != null) {
+                for (File annotation : annotations) {
+                    try (InputStream gis = Files.newInputStream(annotation.toPath())) {
+                        Document gDoc = builder.parse(gis);
+                        Element gRoot = gDoc.getDocumentElement();
+                        if (metadata.getPixelType() == null) {
+                            metadata.setPixelType("16 bit Signed Integer".equals(getValue("outputPixels", gRoot)) ?
+                                                    PixelType.INT16 : PixelType.UINT16);
+                        }
+                        metadata.setWidth(Math.max(metadata.getWidth(), Integer.parseInt(getValue("numberOfSamples", gRoot))));
+                        metadata.setHeight(Math.max(metadata.getHeight(), Integer.parseInt(getValue("numberOfLines", gRoot))));
+                    }
+                }
+            }
+        } catch (ParserConfigurationException | SAXException e) {
+            e.printStackTrace();
         }
         return metadata;
     }
