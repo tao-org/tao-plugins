@@ -65,15 +65,20 @@ public class GdalInfoWrapper implements MetadataInspector {
         Executor executor;
         if (canUseDocker == null) {
             String systemPath = System.getenv("Path");
-            String[] paths = systemPath.split(File.pathSeparator);
-            Path currentPath = null;
+            if (systemPath == null) {
+                systemPath = System.getenv("PATH");
+            }
             canUseDocker = false;
-            for (String path : paths) {
-                currentPath = Paths.get(path)
-                                    .resolve(SystemUtils.IS_OS_WINDOWS ? "docker.exe" : "docker");
-                if (Files.exists(currentPath)) {
-                    canUseDocker = true;
-                    break;
+            if (systemPath != null) {
+                String[] paths = systemPath.split(File.pathSeparator);
+                Path currentPath;
+                for (String path : paths) {
+                    currentPath = Paths.get(path)
+                            .resolve(SystemUtils.IS_OS_WINDOWS ? "docker.exe" : "docker");
+                    if (Files.exists(currentPath)) {
+                        canUseDocker = true;
+                        break;
+                    }
                 }
             }
         }
