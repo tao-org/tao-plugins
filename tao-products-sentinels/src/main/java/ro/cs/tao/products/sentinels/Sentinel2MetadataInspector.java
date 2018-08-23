@@ -25,6 +25,9 @@ import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
 import ro.cs.tao.utils.FileUtils;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -70,53 +73,52 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
         metadata.setProductType("Sentinel2");
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
         metadata.setSize(FileUtils.folderSize(productFolderPath));
-        if (builder != null) {
-            try (InputStream inputStream = Files.newInputStream(productFolderPath.resolve(metadataFileName))) {
-                Document document = builder.parse(inputStream);
-                Element root = document.getDocumentElement();
-                String points = getValue("EXT_POS_LIST", root);
-                if (points != null) {
-                    String[] coords = points.trim().split(" ");
-                    Polygon2D polygon2D = new Polygon2D();
-                    for (String coord : coords) {
-                        polygon2D.append(Double.parseDouble(coord.substring(0, coord.indexOf(','))),
-                                         Double.parseDouble(coord.substring(coord.indexOf(',') + 1)));
-                    }
-                    metadata.setFootprint(polygon2D.toWKT(8));
+        try (InputStream inputStream = Files.newInputStream(productFolderPath.resolve(metadataFileName))) {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document document = builder.parse(inputStream);
+            Element root = document.getDocumentElement();
+            String points = getValue("EXT_POS_LIST", root);
+            if (points != null) {
+                String[] coords = points.trim().split(" ");
+                Polygon2D polygon2D = new Polygon2D();
+                for (String coord : coords) {
+                    polygon2D.append(Double.parseDouble(coord.substring(0, coord.indexOf(','))),
+                                     Double.parseDouble(coord.substring(coord.indexOf(',') + 1)));
                 }
-                metadata.setCrs("EPSG:4326");
-                if (Sentinel2ProductHelper.PSD_14.equals(helper.getVersion())) {
-                    metadata.setWidth(10980);
-                    metadata.setHeight(10980);
-                } else {
-                    List<String> granuleList = getAttributeValues("Granules", "granuleIdentifier", root);
-                    if (granuleList == null) {
-                        granuleList = getAttributeValues("Granule", "granuleIdentifier", root);
-                    }
-                    if (granuleList != null) {
-                        for (String gId : granuleList) {
-                            String granuleMetadataFileName = helper.getGranuleMetadataFileName(gId);
-                            Path granuleMetadataFile = productFolderPath.resolve("GRANULE")
-                                                                        .resolve(gId)
-                                                                        .resolve(granuleMetadataFileName);
-                            try (InputStream gis = Files.newInputStream(granuleMetadataFile)) {
-                                Document gDoc = builder.parse(gis);
-                                Element gRoot = gDoc.getDocumentElement();
-                                List<String> ulx = getValues("ULX", gRoot);
-                                List<String> uly = getValues("ULY", gRoot);
-                                if (ulx != null && uly != null) {
-                                    LongStream ulxStm = ulx.stream().mapToLong(Long::parseLong);
-                                    LongStream ulyStm = uly.stream().mapToLong(Long::parseLong);
-                                    metadata.setWidth((int) ((ulxStm.max().orElse(0) - ulxStm.min().orElse(0)) / 10) + 10980);
-                                    metadata.setHeight((int) ((ulyStm.max().orElse(0) - ulyStm.min().orElse(0)) / 10) + 10980);
-                                }
+                metadata.setFootprint(polygon2D.toWKT(8));
+            }
+            metadata.setCrs("EPSG:4326");
+            if (Sentinel2ProductHelper.PSD_14.equals(helper.getVersion())) {
+                metadata.setWidth(10980);
+                metadata.setHeight(10980);
+            } else {
+                List<String> granuleList = getAttributeValues("Granules", "granuleIdentifier", root);
+                if (granuleList == null) {
+                    granuleList = getAttributeValues("Granule", "granuleIdentifier", root);
+                }
+                if (granuleList != null) {
+                    for (String gId : granuleList) {
+                        String granuleMetadataFileName = helper.getGranuleMetadataFileName(gId);
+                        Path granuleMetadataFile = productFolderPath.resolve("GRANULE")
+                                                                    .resolve(gId)
+                                                                    .resolve(granuleMetadataFileName);
+                        try (InputStream gis = Files.newInputStream(granuleMetadataFile)) {
+                            Document gDoc = builder.parse(gis);
+                            Element gRoot = gDoc.getDocumentElement();
+                            List<String> ulx = getValues("ULX", gRoot);
+                            List<String> uly = getValues("ULY", gRoot);
+                            if (ulx != null && uly != null) {
+                                LongStream ulxStm = ulx.stream().mapToLong(Long::parseLong);
+                                LongStream ulyStm = uly.stream().mapToLong(Long::parseLong);
+                                metadata.setWidth((int) ((ulxStm.max().orElse(0) - ulxStm.min().orElse(0)) / 10) + 10980);
+                                metadata.setHeight((int) ((ulyStm.max().orElse(0) - ulyStm.min().orElse(0)) / 10) + 10980);
                             }
                         }
                     }
                 }
-            } catch (SAXException e) {
-                e.printStackTrace();
             }
+        } catch (ParserConfigurationException | SAXException e) {
+            e.printStackTrace();
         }
         return metadata;
     }
