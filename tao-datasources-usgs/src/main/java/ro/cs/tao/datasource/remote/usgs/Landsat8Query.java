@@ -40,7 +40,6 @@ import ro.cs.tao.utils.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * @author Cosmin Cara
@@ -48,7 +47,6 @@ import java.util.logging.Logger;
 public class Landsat8Query extends DataQuery {
 
     private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
-    private Logger logger;
 
     static {
         converterFactory.register(USGSDateParameterConverter.class, Date.class);
@@ -56,7 +54,6 @@ public class Landsat8Query extends DataQuery {
 
     Landsat8Query(USGSDataSource source) {
         super(source, "Landsat8");
-        this.logger = Logger.getLogger(Landsat8Query.class.getSimpleName());
     }
 
     @Override

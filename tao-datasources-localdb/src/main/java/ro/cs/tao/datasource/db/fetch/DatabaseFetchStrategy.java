@@ -17,6 +17,7 @@
 package ro.cs.tao.datasource.db.fetch;
 
 import org.apache.http.auth.UsernamePasswordCredentials;
+import ro.cs.tao.ProgressListener;
 import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.db.DatabaseSource;
@@ -31,6 +32,7 @@ import java.util.logging.Logger;
 
 public class DatabaseFetchStrategy implements ProductFetchStrategy {
     private final DatabaseSource source;
+    private ProgressListener progressListener;
 
     public DatabaseFetchStrategy(DatabaseSource source) {
         this.source = source;
@@ -47,9 +49,15 @@ public class DatabaseFetchStrategy implements ProductFetchStrategy {
     }
 
     @Override
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
+
+    @Override
     public Path fetch(EOProduct product) throws InterruptedException {
         Path productPath = null;
         if (product != null && product.getLocation() != null) {
+            this.progressListener.started(product.getName());
             productPath = Paths.get(product.getLocation());
             if (!productPath.isAbsolute()) {
                 productPath = SessionStore.currentContext().getWorkspace().resolve(productPath);
@@ -68,6 +76,8 @@ public class DatabaseFetchStrategy implements ProductFetchStrategy {
 
     @Override
     public DatabaseFetchStrategy clone() {
-        return new DatabaseFetchStrategy(this.source);
+        DatabaseFetchStrategy cloned = new DatabaseFetchStrategy(this.source);
+        cloned.setProgressListener(this.progressListener);
+        return cloned;
     }
 }

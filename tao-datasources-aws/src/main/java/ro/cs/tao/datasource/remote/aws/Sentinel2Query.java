@@ -46,7 +46,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -57,7 +56,6 @@ class Sentinel2Query extends DataQuery {
     private static final String dateFormatString = new SimpleDateFormat("yyyy-MM-dd").toPattern();
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final DateTimeFormatter fileDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private Logger logger = Logger.getLogger(Sentinel2Query.class.getSimpleName());
 
     Sentinel2Query(DataSource source) {
         super(source, "Sentinel2");

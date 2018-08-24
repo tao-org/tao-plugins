@@ -49,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -62,7 +61,6 @@ public class SciHubDataQuery extends DataQuery {
     private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
 
     private final String sensorName;
-    private final Logger logger = Logger.getLogger(SciHubDataQuery.class.getSimpleName());
 
     static {
         converterFactory.register(SciHubPolygonParameterConverter.class, Polygon2D.class);
