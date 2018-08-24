@@ -30,7 +30,6 @@ import ro.cs.tao.products.sentinels.SentinelProductHelper;
 import ro.cs.tao.utils.FileUtils;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -109,12 +108,7 @@ public class PepsDownloadStrategy extends DownloadStrategy {
         if (productFile != null) {
             FileUtils.unzip(productFile);
             ProductHelper helper = SentinelProductHelper.create(productName);
-            try {
-                product.setEntryPoint(helper.getMetadataFileName());
-            } catch (URISyntaxException e) {
-                logger.severe(String.format("Invalid metadata file name [%s] for product [%s]",
-                                            helper.getMetadataFileName(), productName));
-            }
+            product.setEntryPoint(helper.getMetadataFileName());
         }
         return productFile;
     }

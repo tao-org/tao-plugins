@@ -25,7 +25,6 @@ import ro.cs.tao.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -250,12 +249,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
         boolean isL1C = "Level-1C".equals(product.getAttributeValue("processinglevel"));
         Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(productName);
         String metadataFileName = helper.getMetadataFileName();
-        try {
-            product.setEntryPoint(metadataFileName);
-        } catch (URISyntaxException e) {
-            logger.severe(String.format("Invalid metadata file name [%s] for product [%s]",
-                                        metadataFileName, productName));
-        }
+        product.setEntryPoint(metadataFileName);
         if ("13".equals(helper.getVersion())) {
             currentStep = "Archive";
             url = odataArchivePath.replace(ODATA_UUID, product.getId());

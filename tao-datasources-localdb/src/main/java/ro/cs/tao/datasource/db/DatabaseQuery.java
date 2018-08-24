@@ -165,6 +165,7 @@ public class DatabaseQuery extends DataQuery {
                     } catch (URISyntaxException e) {
                         logger.warning(e.getMessage());
                     }
+                    product.setEntryPoint(resultSet.getString(7));
                     int sensorTypeId = resultSet.getInt(8);
                     if (sensorTypeId != 0) {
                         product.setSensorType(EnumUtils.getEnumConstantByValue(SensorType.class, sensorTypeId));
