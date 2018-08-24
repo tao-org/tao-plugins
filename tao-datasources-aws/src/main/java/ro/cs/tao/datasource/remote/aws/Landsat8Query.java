@@ -43,7 +43,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -53,8 +52,6 @@ class Landsat8Query extends DataQuery {
     private static final String L8_SEARCH_URL_SUFFIX = "?delimiter=/&prefix=";
     private static final DateTimeFormatter fileDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-    private final Logger logger = Logger.getLogger(Landsat8Query.class.getSimpleName());
 
     Landsat8Query(DataSource source) {
         super(source, "Landsat8");

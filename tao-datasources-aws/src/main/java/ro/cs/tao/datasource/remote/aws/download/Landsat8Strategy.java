@@ -22,7 +22,6 @@ import ro.cs.tao.products.landsat.Landsat8ProductHelper;
 import ro.cs.tao.utils.FileUtils;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,7 +29,6 @@ import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
 /**
@@ -99,14 +97,9 @@ public class Landsat8Strategy extends DownloadStrategy {
         Path rootPath = FileUtils.ensureExists(Paths.get(destination, productName));
         url = getMetadataUrl(currentProduct);
         Path metadataFile = rootPath.resolve(productName + "_MTL.txt");
-        try {
-            product.setEntryPoint(metadataFile.getFileName().toString());
-        } catch (URISyntaxException e) {
-            logger.severe(String.format("Invalid metadata file name [%s] for product [%s]",
-                                        metadataFile.getFileName().toString(), productName));
-        }
+        product.setEntryPoint(metadataFile.getFileName().toString());
         currentStep = "Metadata";
-        getLogger().fine(String.format("Downloading metadata file %s", metadataFile));
+        logger.fine(String.format("Downloading metadata file %s", metadataFile));
         metadataFile = downloadFile(url, metadataFile);
         if (metadataFile != null && Files.exists(metadataFile)) {
             for (String suffix : bandFiles) {
@@ -115,10 +108,10 @@ public class Landsat8Strategy extends DownloadStrategy {
                 try {
                     String bandFileUrl = getProductUrl(currentProduct) + URL_SEPARATOR + bandFileName;
                     Path path = rootPath.resolve(bandFileName);
-                    getLogger().fine(String.format("Downloading band raster %s from %s", path, bandFileUrl));
+                    logger.fine(String.format("Downloading band raster %s from %s", path, bandFileUrl));
                     downloadFile(bandFileUrl, path);
                 } catch (IOException ex) {
-                    getLogger().warning(String.format("Download for %s failed [%s]", bandFileName, ex.getMessage()));
+                    logger.warning(String.format("Download for %s failed [%s]", bandFileName, ex.getMessage()));
                 }
             }
             if ("coll".equals(helper.getVersion())) {
@@ -126,15 +119,15 @@ public class Landsat8Strategy extends DownloadStrategy {
                 try {
                     String fileUrl = getProductUrl(currentProduct) + URL_SEPARATOR + fileName;
                     Path path = rootPath.resolve(fileName);
-                    getLogger().fine(String.format("Downloading band raster %s from %s", path, fileUrl));
+                    logger.fine(String.format("Downloading band raster %s from %s", path, fileUrl));
                     downloadFile(fileUrl, path);
                 } catch (IOException ex) {
-                    getLogger().warning(String.format("Download for %s failed [%s]", fileName, ex.getMessage()));
+                    logger.warning(String.format("Download for %s failed [%s]", fileName, ex.getMessage()));
                 }
             }
             product.addAttribute("tiles",tileId);
         } else {
-            getLogger().warning(
+            logger.warning(
                     String.format("Either the product %s was not found or the metadata file could not be downloaded",
                                   productName));
             rootPath = null;
@@ -155,6 +148,4 @@ public class Landsat8Strategy extends DownloadStrategy {
     protected String getMetadataUrl(EOProduct descriptor) {
         return getProductUrl(descriptor) + DownloadStrategy.URL_SEPARATOR + descriptor.getName() + "_MTL.txt";
     }
-
-    private Logger getLogger() { return Logger.getLogger(Sentinel2Strategy.class.getSimpleName()); }
 }
