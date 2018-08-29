@@ -35,6 +35,7 @@ import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
 import ro.cs.tao.datasource.remote.scihub.json.SciHubJsonResponseHandler;
 import ro.cs.tao.datasource.remote.scihub.parameters.DoubleParameterConverter;
+import ro.cs.tao.datasource.remote.scihub.xml.SciHubXmlCountResponseHandler;
 import ro.cs.tao.datasource.remote.scihub.xml.SciHubXmlResponseHandler;
 import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
@@ -91,12 +92,18 @@ public class SciHubDataQuery extends DataQuery {
             boolean canContinue = true;
             for (long i = page; actualCount < count * queriesNo && canContinue; i++) {
                 List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("q", query));
+                if (this.source.getConnectionString().contains("dhus")) {
+                    params.add(new BasicNameValuePair("limit", String.valueOf(pageSize)));
+                    params.add(new BasicNameValuePair("offset", String.valueOf((i - 1) * pageSize + 1)));
+                    params.add(new BasicNameValuePair("filter", query));
+                } else {
+                    params.add(new BasicNameValuePair("rows", String.valueOf(pageSize)));
+                    params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize + 1)));
+                    params.add(new BasicNameValuePair("q", query));
+                }
                 params.add(new BasicNameValuePair("orderby", "beginposition asc"));
-                params.add(new BasicNameValuePair("rows", String.valueOf(pageSize)));
-                params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize + 1)));
                 String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
-                logger.info(String.format("Executing query: %s", queryUrl));
+                logger.fine(String.format("Executing query: %s", queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
@@ -149,17 +156,27 @@ public class SciHubDataQuery extends DataQuery {
         final int size = queries.size();
         final String countUrl = this.source.getProperty("scihub.search.count.url");
         if (countUrl != null) {
-            for (int i = 0; i < size; i++) {
+            for (String query : queries) {
                 List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("filter", queries.get(i)));
+                if (countUrl.contains("dhus")) {
+                    params.add(new BasicNameValuePair("limit", "1"));
+                    params.add(new BasicNameValuePair("offset", "0"));
+                    params.add(new BasicNameValuePair("filter", query));
+                } else {
+                    params.add(new BasicNameValuePair("rows", "1"));
+                    params.add(new BasicNameValuePair("start", "0"));
+                    params.add(new BasicNameValuePair("q", query));
+                }
                 String queryUrl = countUrl + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+                logger.fine(String.format("Executing query: %s", queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
                             String rawResponse = EntityUtils.toString(response.getEntity());
-                            long qCount = Long.parseLong(rawResponse);
-                            //logger.info(String.format("Query %s of %s [%s]: %s", i + 1, size, qCount, queryUrl));
-                            count += qCount;
+                            ResponseParser<Long> parser = new XmlResponseParser<>();
+                            ((XmlResponseParser) parser).setHandler(new SciHubXmlCountResponseHandler("totalResults"));
+                            List<Long> result = parser.parse(rawResponse);
+                            count += result.size() > 0 ? result.get(0) : 0;
                             break;
                         case 401:
                             throw new QueryException("The supplied credentials are invalid!");
