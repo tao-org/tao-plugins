@@ -81,9 +81,9 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
             if (points != null) {
                 String[] coords = points.trim().split(" ");
                 Polygon2D polygon2D = new Polygon2D();
-                for (String coord : coords) {
-                    polygon2D.append(Double.parseDouble(coord.substring(0, coord.indexOf(','))),
-                                     Double.parseDouble(coord.substring(coord.indexOf(',') + 1)));
+                for (int i = 0; i < coords.length; i += 2) {
+                    polygon2D.append(Double.parseDouble(coords[i]),
+                                     Double.parseDouble(coords[i + 1]));
                 }
                 metadata.setFootprint(polygon2D.toWKT(8));
             }

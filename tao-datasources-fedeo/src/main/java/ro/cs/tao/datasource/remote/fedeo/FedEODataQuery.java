@@ -28,5 +28,5 @@ public class FedEODataQuery extends DataQuery {
     }
 
     @Override
-    public String defaultName() { return "FedEO Query"; }
+    public String defaultId() { return "FedEO Query"; }
 }

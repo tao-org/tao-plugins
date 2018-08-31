@@ -45,7 +45,7 @@ public class PepsDataSource extends URLDataSource<PepsDataQuery> {
     }
 
     @Override
-    public String defaultName() { return "PEPS"; }
+    public String defaultId() { return "PEPS"; }
 
     @Override
     public void setCredentials(String username, String password) {

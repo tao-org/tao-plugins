@@ -78,7 +78,7 @@ public class DatabaseSource extends AbstractDataSource<DatabaseQuery> {
     }
 
     @Override
-    public String defaultName() { return "Local Database"; }
+    public String defaultId() { return "Local Database"; }
 
     @Override
     public DatabaseSource clone() throws CloneNotSupportedException {
