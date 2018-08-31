@@ -23,7 +23,6 @@ import ro.cs.tao.component.TargetDescriptor;
 import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.persistence.PersistenceManager;
-import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
 
@@ -49,78 +48,81 @@ public class SnapImageInstaller extends BaseImageInstaller {
     }
 
     @Override
-    protected Container initializeContainer(String containerId, String path) {
+    protected Container initializeContainer(Container container, String path) {
         PersistenceManager persistenceManager = getPersistenceManager();
         Container snapContainer = null;
+        //snapContainer = persistenceManager.getContainerById(containerId);
+        //if (snapContainer == null) {
+        logger.fine(String.format("Container %s not registered in database", getContainerName()));
         try {
-            snapContainer = persistenceManager.getContainerById(containerId);
-        } catch (PersistenceException ignored) { }
-        if (snapContainer == null) {
-            logger.fine(String.format("Container %s not registered in database", getContainerName()));
-            try {
-                snapContainer = readContainerDescriptor("snap_container.json");
-                snapContainer.setId(containerId);
-                snapContainer.setName(getContainerName());
-                snapContainer.setTag(getContainerName());
-                snapContainer.setApplicationPath(path);
-                snapContainer.getApplications().forEach(a -> {
-                    if (a.getPath() == null) {
-                        a.setPath("gpt");
-                    }
-                    if (SystemUtils.IS_OS_WINDOWS && !a.getPath().endsWith(".exe")) {
-                        a.setPath(a.getPath() + ".exe");
-                    }
-                    a.setParallelFlagTemplate("-q <integer>");
-                });
-                snapContainer.setLogo(readContainerLogo("snap_logo.png"));
-                snapContainer = persistenceManager.saveContainer(snapContainer);
-                ProcessingComponent[] components = readComponentDescriptors("snap_operators.json");
-                for (ProcessingComponent component : components) {
-                    try {
-                        component.setContainerId(snapContainer.getId());
-                        component.setComponentType(ProcessingComponentType.EXECUTABLE);
-                        component.setOwner(SystemPrincipal.instance().getName());
-                        component.getParameterDescriptors().forEach(p -> {
-                            if (p.getName() == null) {
-                                p.setName(p.getId());
-                                p.setId(UUID.randomUUID().toString());
-                            }
-                            String[] valueSet = p.getValueSet();
-                            if (valueSet != null && valueSet.length > 0) {
-                                p.setDefaultValue(valueSet[0]);
+            snapContainer = readContainerDescriptor("snap_container.json");
+            snapContainer.setId(container.getId());
+            snapContainer.setName(container.getName());
+            snapContainer.setTag(container.getTag());
+            snapContainer.setApplicationPath(path);
+            snapContainer.getApplications().forEach(a -> {
+                if (a.getPath() == null) {
+                    a.setPath("gpt");
+                }
+                if (SystemUtils.IS_OS_WINDOWS && !a.getPath().endsWith(".exe")) {
+                    a.setPath(a.getPath() + ".exe");
+                }
+                a.setParallelFlagTemplate("-q <integer>");
+            });
+            snapContainer.setLogo(readContainerLogo("snap_logo.png"));
+            snapContainer = persistenceManager.saveContainer(snapContainer);
+            ProcessingComponent[] components = readComponentDescriptors("snap_operators.json");
+            for (ProcessingComponent component : components) {
+                try {
+                    component.setContainerId(snapContainer.getId());
+                    component.setComponentType(ProcessingComponentType.EXECUTABLE);
+                    component.setOwner(SystemPrincipal.instance().getName());
+                    component.getParameterDescriptors().forEach(p -> {
+                        if (p.getName() == null) {
+                            p.setName(p.getId());
+                            p.setId(UUID.randomUUID().toString());
+                        }
+                        String[] valueSet = p.getValueSet();
+                        if (valueSet != null && valueSet.length == 1 &&
+                                ("null".equals(valueSet[0]) || valueSet[0].isEmpty())) {
+                            p.setValueSet(null);
+                        }
+                        if (valueSet != null && valueSet.length > 0 &&
+                                ("null".equals(valueSet[0]) || valueSet[0].isEmpty())) {
+                            p.setDefaultValue(valueSet[0]);
+                        }
+                    });
+                    List<SourceDescriptor> sources = component.getSources();
+                    if (sources != null) {
+                        sources.forEach(s -> {
+                            if (s.getId() == null || s.getId().isEmpty()) {
+                                s.setId(UUID.randomUUID().toString());
                             }
                         });
-                        List<SourceDescriptor> sources = component.getSources();
-                        if (sources != null) {
-                            sources.forEach(s -> {
-                                if (s.getId() == null || s.getId().isEmpty()) {
-                                    s.setId(UUID.randomUUID().toString());
-                                }
-                            });
-                        }
-                        List<TargetDescriptor> targets = component.getTargets();
-                        if (targets != null) {
-                            targets.forEach(t -> {
-                                if (t.getId() == null || t.getId().isEmpty()) {
-                                    t.setId(UUID.randomUUID().toString());
-                                }
-                            });
-                        }
-                        persistenceManager.saveProcessingComponent(component);
-                    } catch (Exception inner) {
-                        logger.severe(String.format("Faulty component: %s. Error: %s",
-                                                    component != null ? component.getId() : "n/a",
-                                                    inner.getMessage()));
                     }
+                    List<TargetDescriptor> targets = component.getTargets();
+                    if (targets != null) {
+                        targets.forEach(t -> {
+                            if (t.getId() == null || t.getId().isEmpty()) {
+                                t.setId(UUID.randomUUID().toString());
+                            }
+                        });
+                    }
+                    persistenceManager.saveProcessingComponent(component);
+                } catch (Exception inner) {
+                    logger.severe(String.format("Faulty component: %s. Error: %s",
+                                                component != null ? component.getId() : "n/a",
+                                                inner.getMessage()));
                 }
-            } catch (Exception outer) {
-                logger.severe(String.format("Error occured while registering container applications: %s",
-                                            outer.getMessage()));
             }
-            logger.info(String.format("Registration complete for container %s", getContainerName()));
-        } else {
-            logger.fine(String.format("Container %s already registered", getContainerName()));
+        } catch (Exception outer) {
+            logger.severe(String.format("Error occured while registering container applications: %s",
+                                        outer.getMessage()));
         }
+        logger.info(String.format("Registration complete for container %s", getContainerName()));
+//        } else {
+//            logger.fine(String.format("Container %s already registered", getContainerName()));
+//        }
         return snapContainer;
     }
 }

@@ -159,9 +159,7 @@ public class AWSDataQuery extends DataQuery {
     }
 
     @Override
-    public String defaultName() {
-        return "AWSQuery";
-    }
+    public String defaultId() { return "AWSQuery"; }
 
     @Override
     public AWSDataQuery clone() throws CloneNotSupportedException {

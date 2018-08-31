@@ -189,7 +189,7 @@ public class DatabaseQuery extends DataQuery {
     }
 
     @Override
-    public String defaultName() {
+    public String defaultId() {
         return "DatabaseQuery";
     }
 

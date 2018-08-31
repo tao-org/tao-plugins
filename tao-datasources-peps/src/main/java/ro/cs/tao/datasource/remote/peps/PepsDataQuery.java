@@ -145,7 +145,7 @@ public class PepsDataQuery extends DataQuery {
     }
 
     @Override
-    public String defaultName() {
+    public String defaultId() {
         return "PepsQuery";
     }
 

@@ -25,7 +25,6 @@ import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.docker.Application;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.persistence.PersistenceManager;
-import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
 
@@ -51,99 +50,102 @@ public class OTBImageInstaller extends BaseImageInstaller {
     }
 
     @Override
-    protected Container initializeContainer(String containerId, String path) {
+    protected Container initializeContainer(Container container, String path) {
         PersistenceManager persistenceManager = getPersistenceManager();
+        //otbContainer = persistenceManager.getContainerById(containerId);
+        //if (otbContainer == null) {
         Container otbContainer = null;
+        logger.fine(String.format("Container %s not registered in database", getContainerName()));
         try {
-            otbContainer = persistenceManager.getContainerById(containerId);
-        } catch (PersistenceException ignored) { }
-        if (otbContainer == null) {
-            logger.fine(String.format("Container %s not registered in database", getContainerName()));
-            try {
-                otbContainer = readContainerDescriptor("otb_container.json");
-                otbContainer.setId(containerId);
-                otbContainer.setName(getContainerName());
-                otbContainer.setTag(getContainerName());
-                otbContainer.setApplicationPath(path);
-                otbContainer.getApplications().forEach(app -> {
-                    String appPath = app.getPath() + (SystemUtils.IS_OS_WINDOWS && (winExtensions.stream()
-                                        .noneMatch(e -> getPathInContainer().toLowerCase().endsWith(e))) ? ".bat" : "");
-                    app.setName(app.getName());
-                    app.setPath(appPath);
-                });
-                otbContainer.setLogo(readContainerLogo("otb_logo.png"));
-                otbContainer = persistenceManager.saveContainer(otbContainer);
-            } catch (Exception e) {
-                logger.severe(e.getMessage());
-            }
-            ProcessingComponent current = null;
-            try {
-                ProcessingComponent[] components = readComponentDescriptors("otb_applications.json");
-                List<Application> containerApplications = otbContainer.getApplications();
-                for (ProcessingComponent component : components) {
-                    try {
-                        current = component;
-                        component.setContainerId(otbContainer.getId());
-                        component.setLabel(component.getId());
-                        component.setComponentType(ProcessingComponentType.EXECUTABLE);
-                        component.setFileLocation(containerApplications.stream().filter(a -> a.getName().equals(component.getId())).findFirst().get().getPath());
-                        List<ParameterDescriptor> parameterDescriptors = component.getParameterDescriptors();
-                        if (parameterDescriptors != null) {
-                            parameterDescriptors.forEach(p -> {
-                                if (p.getName() == null) {
-                                    p.setName(p.getId());
-                                    p.setId(UUID.randomUUID().toString());
-                                }
-                                String[] valueSet = p.getValueSet();
-                                if (valueSet != null && valueSet.length > 0) {
-                                    p.setDefaultValue(valueSet[0]);
-                                }
-                            });
-                        }
-                        List<SourceDescriptor> sources = component.getSources();
-                        if (sources != null) {
-                            sources.forEach(s -> s.setId(UUID.randomUUID().toString()));
-                        }
-                        List<TargetDescriptor> targets = component.getTargets();
-                        if (targets != null) {
-                            targets.forEach(t -> t.setId(UUID.randomUUID().toString()));
-                        }
-                        String template = component.getTemplateContents();
-                        int i = 0;
-                        while (i < template.length()) {
-                            Character ch = template.charAt(i);
-                            if (ch == '$' && template.charAt(i - 1) != '\n') {
-                                template = template.substring(0, i) + "\n" + template.substring(i);
-                            }
-                            i++;
-                        }
-                        String[] tokens = template.split("\n");
-                        for (int j = 0; j < tokens.length; j++) {
-                            final int idx = j;
-                            if ((targets != null && targets.stream().anyMatch(t -> t.getName().equals(tokens[idx].substring(1)))) ||
-                                    (sources != null && sources.stream().anyMatch(s -> s.getName().equals(tokens[idx].substring(1))))) {
-                                tokens[j + 1] = tokens[j].replace('-', '$');
-                                j++;
-                            }
-                        }
-                        component.setTemplateContents(String.join("\n", tokens));
-                        component.setComponentType(ProcessingComponentType.EXECUTABLE);
-                        component.setOwner(SystemPrincipal.instance().getName());
-                        persistenceManager.saveProcessingComponent(component);
-                    } catch (Exception inner) {
-                        logger.severe(String.format("Faulty component: %s. Error: %s",
-                                                    current != null ? current.getId() : "n/a",
-                                                    inner.getMessage()));
-                    }
-                }
-            } catch (Exception outer) {
-                logger.severe(String.format("Error occured while registering container applications: %s",
-                                            outer.getMessage()));
-            }
-            logger.info(String.format("Registration complete for container %s", getContainerName()));
-        } else {
-            logger.fine(String.format("Container %s already registered", getContainerName()));
+            otbContainer = readContainerDescriptor("otb_container.json");
+            otbContainer.setId(container.getId());
+            otbContainer.setName(container.getName());
+            otbContainer.setTag(container.getTag());
+            otbContainer.setApplicationPath(path);
+            otbContainer.getApplications().forEach(app -> {
+                String appPath = app.getPath() + (SystemUtils.IS_OS_WINDOWS && (winExtensions.stream()
+                                    .noneMatch(e -> getPathInContainer().toLowerCase().endsWith(e))) ? ".bat" : "");
+                app.setName(app.getName());
+                app.setPath(appPath);
+            });
+            otbContainer.setLogo(readContainerLogo("otb_logo.png"));
+            otbContainer = persistenceManager.saveContainer(otbContainer);
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
         }
+        ProcessingComponent current = null;
+        try {
+            ProcessingComponent[] components = readComponentDescriptors("otb_applications.json");
+            List<Application> containerApplications = otbContainer.getApplications();
+            for (ProcessingComponent component : components) {
+                try {
+                    current = component;
+                    component.setContainerId(otbContainer.getId());
+                    component.setLabel(component.getId());
+                    component.setComponentType(ProcessingComponentType.EXECUTABLE);
+                    component.setFileLocation(containerApplications.stream().filter(a -> a.getName().equals(component.getId())).findFirst().get().getPath());
+                    List<ParameterDescriptor> parameterDescriptors = component.getParameterDescriptors();
+                    if (parameterDescriptors != null) {
+                        parameterDescriptors.forEach(p -> {
+                            if (p.getName() == null) {
+                                p.setName(p.getId());
+                                p.setId(UUID.randomUUID().toString());
+                            }
+                            String[] valueSet = p.getValueSet();
+                            if (valueSet != null && valueSet.length == 1 &&
+                                    ("null".equals(valueSet[0]) || valueSet[0].isEmpty())) {
+                                p.setValueSet(null);
+                            }
+                            if (valueSet != null && valueSet.length > 0 &&
+                                    ("null".equals(valueSet[0]) || valueSet[0].isEmpty())) {
+                                p.setDefaultValue(valueSet[0]);
+                            }
+                        });
+                    }
+                    List<SourceDescriptor> sources = component.getSources();
+                    if (sources != null) {
+                        sources.forEach(s -> s.setId(UUID.randomUUID().toString()));
+                    }
+                    List<TargetDescriptor> targets = component.getTargets();
+                    if (targets != null) {
+                        targets.forEach(t -> t.setId(UUID.randomUUID().toString()));
+                    }
+                    String template = component.getTemplateContents();
+                    int i = 0;
+                    while (i < template.length()) {
+                        Character ch = template.charAt(i);
+                        if (ch == '$' && template.charAt(i - 1) != '\n') {
+                            template = template.substring(0, i) + "\n" + template.substring(i);
+                        }
+                        i++;
+                    }
+                    String[] tokens = template.split("\n");
+                    for (int j = 0; j < tokens.length; j++) {
+                        final int idx = j;
+                        if ((targets != null && targets.stream().anyMatch(t -> t.getName().equals(tokens[idx].substring(1)))) ||
+                                (sources != null && sources.stream().anyMatch(s -> s.getName().equals(tokens[idx].substring(1))))) {
+                            tokens[j + 1] = tokens[j].replace('-', '$');
+                            j++;
+                        }
+                    }
+                    component.setTemplateContents(String.join("\n", tokens));
+                    component.setComponentType(ProcessingComponentType.EXECUTABLE);
+                    component.setOwner(SystemPrincipal.instance().getName());
+                    persistenceManager.saveProcessingComponent(component);
+                } catch (Exception inner) {
+                    logger.severe(String.format("Faulty component: %s. Error: %s",
+                                                current != null ? current.getId() : "n/a",
+                                                inner.getMessage()));
+                }
+            }
+        } catch (Exception outer) {
+            logger.severe(String.format("Error occured while registering container applications: %s",
+                                        outer.getMessage()));
+        }
+        logger.info(String.format("Registration complete for container %s", getContainerName()));
+//        } else {
+//            logger.fine(String.format("Container %s already registered", getContainerName()));
+//        }
         return otbContainer;
     }
 }

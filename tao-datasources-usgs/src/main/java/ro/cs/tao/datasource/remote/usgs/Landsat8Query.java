@@ -57,7 +57,7 @@ public class Landsat8Query extends DataQuery {
     }
 
     @Override
-    public String defaultName() {
+    public String defaultId() {
         return "USGSLandsat8Query";
     }
 
