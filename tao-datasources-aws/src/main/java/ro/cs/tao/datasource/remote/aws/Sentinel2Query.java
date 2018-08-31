@@ -461,8 +461,6 @@ class Sentinel2Query extends DataQuery {
     }
 
     @Override
-    public String defaultName() {
-        return "Sentinel2AWSQuery";
-    }
+    public String defaultId() { return "Sentinel2AWSQuery"; }
 
 }

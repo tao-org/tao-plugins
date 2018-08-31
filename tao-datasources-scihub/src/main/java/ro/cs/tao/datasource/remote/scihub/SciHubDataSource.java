@@ -47,7 +47,7 @@ public class SciHubDataSource extends URLDataSource<SciHubDataQuery> {
     }
 
     @Override
-    public String defaultName() { return "Scientific Data Hub"; }
+    public String defaultId() { return "Scientific Data Hub"; }
 
     @Override
     public boolean ping() {

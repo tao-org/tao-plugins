@@ -288,22 +288,15 @@ class Landsat8Query extends DataQuery {
     }
 
     private double getTileCloudPercentage(String jsonUrl) throws IOException, URISyntaxException {
-        JsonReader reader = null;
-        try (InputStream inputStream = new URI(jsonUrl).toURL().openStream()) {
-            reader = Json.createReader(inputStream);
+        try (InputStream inputStream = new URI(jsonUrl).toURL().openStream();
+             JsonReader reader = Json.createReader(inputStream)) {
             JsonObject obj = reader.readObject();
             return obj.getJsonObject("L1_METADATA_FILE")
                     .getJsonObject("IMAGE_ATTRIBUTES")
                     .getJsonNumber("CLOUD_COVER").doubleValue();
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
         }
     }
 
     @Override
-    public String defaultName() {
-        return "LandsatAWSQuery";
-    }
+    public String defaultId() { return "LandsatAWSQuery"; }
 }

@@ -24,7 +24,6 @@ import ro.cs.tao.component.TargetDescriptor;
 import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.persistence.PersistenceManager;
-import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
 
@@ -49,66 +48,59 @@ public class PythonImageInstaller extends BaseImageInstaller {
     }
 
     @Override
-    protected Container initializeContainer(String containerId, String path) {
+    protected Container initializeContainer(Container container, String path) {
         PersistenceManager persistenceManager = getPersistenceManager();
-        Container container = null;
+        Container pyContainer = null;
         try {
-            container = persistenceManager.getContainerById(containerId);
-        } catch (PersistenceException ignored) { }
-        if (container == null) {
-            try {
-                container = readContainerDescriptor("python_container.json");
-                container.setId(containerId);
-                container.setName(getContainerName());
-                container.setTag(getContainerName());
-                container.setApplicationPath(path);
-                container.setLogo(readContainerLogo("python_logo.png"));
-                container = persistenceManager.saveContainer(container);
-                ProcessingComponent[] components = readComponentDescriptors("python_applications.json");
-                for (ProcessingComponent component : components) {
-                    if (component.getId() == null || component.getId().isEmpty()) {
-                        component.setId(UUID.randomUUID().toString());
-                    }
-                    component.setContainerId(container.getId());
-                    component.setComponentType(ProcessingComponentType.SCRIPT);
-                    component.setOwner(SystemPrincipal.instance().getName());
-                    List<ParameterDescriptor> parameterDescriptors = component.getParameterDescriptors();
-                    if (parameterDescriptors != null) {
-                        parameterDescriptors.forEach(p -> {
-                            if (p.getName() == null) {
-                                p.setName(p.getId());
-                                p.setId(UUID.randomUUID().toString());
-                            }
-                            String[] valueSet = p.getValueSet();
-                            if (valueSet != null && valueSet.length > 0) {
-                                p.setDefaultValue(valueSet[0]);
-                            }
-                        });
-                    }
-                    List<SourceDescriptor> sources = component.getSources();
-                    if (sources != null) {
-                        sources.forEach(s -> {
-                            if (s.getId() == null || s.getId().isEmpty()) {
-                                s.setId(UUID.randomUUID().toString());
-                            }
-                        });
-                    }
-                    List<TargetDescriptor> targets = component.getTargets();
-                    if (targets != null) {
-                        targets.forEach(t -> {
-                            if (t.getId() == null || t.getId().isEmpty()) {
-                                t.setId(UUID.randomUUID().toString());
-                            }
-                        });
-                    }
-                    persistenceManager.saveProcessingComponent(component);
+            pyContainer = readContainerDescriptor("python_container.json");
+            pyContainer.setId(container.getId());
+            pyContainer.setName(container.getName());
+            pyContainer.setTag(container.getTag());
+            pyContainer.setApplicationPath(path);
+            pyContainer.setLogo(readContainerLogo("python_logo.png"));
+            pyContainer = persistenceManager.saveContainer(pyContainer);
+            ProcessingComponent[] components = readComponentDescriptors("python_applications.json");
+            for (ProcessingComponent component : components) {
+                if (component.getId() == null || component.getId().isEmpty()) {
+                    component.setId(UUID.randomUUID().toString());
                 }
-            } catch (Exception e) {
-                logger.severe(e.getMessage());
+                component.setContainerId(pyContainer.getId());
+                component.setComponentType(ProcessingComponentType.SCRIPT);
+                component.setOwner(SystemPrincipal.instance().getName());
+                List<ParameterDescriptor> parameterDescriptors = component.getParameterDescriptors();
+                if (parameterDescriptors != null) {
+                    parameterDescriptors.forEach(p -> {
+                        if (p.getName() == null) {
+                            p.setName(p.getId());
+                            p.setId(UUID.randomUUID().toString());
+                        }
+                        String[] valueSet = p.getValueSet();
+                        if (valueSet != null && valueSet.length > 0) {
+                            p.setDefaultValue(valueSet[0]);
+                        }
+                    });
+                }
+                List<SourceDescriptor> sources = component.getSources();
+                if (sources != null) {
+                    sources.forEach(s -> {
+                        if (s.getId() == null || s.getId().isEmpty()) {
+                            s.setId(UUID.randomUUID().toString());
+                        }
+                    });
+                }
+                List<TargetDescriptor> targets = component.getTargets();
+                if (targets != null) {
+                    targets.forEach(t -> {
+                        if (t.getId() == null || t.getId().isEmpty()) {
+                            t.setId(UUID.randomUUID().toString());
+                        }
+                    });
+                }
+                persistenceManager.saveProcessingComponent(component);
             }
-        } else {
-            logger.info(String.format("Container %s already registered", getContainerName()));
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
         }
-        return container;
+        return pyContainer;
     }
 }

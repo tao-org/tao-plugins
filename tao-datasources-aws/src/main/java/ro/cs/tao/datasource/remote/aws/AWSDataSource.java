@@ -59,7 +59,7 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery> {
     }
 
     @Override
-    public String defaultName() { return "Amazon Web Services"; }
+    public String defaultId() { return "Amazon Web Services"; }
 
     @Override
     protected AWSDataQuery createQueryImpl(String sensorName) {
