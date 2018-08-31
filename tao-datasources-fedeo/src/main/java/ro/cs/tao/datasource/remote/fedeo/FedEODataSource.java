@@ -45,7 +45,7 @@ public class FedEODataSource extends URLDataSource<FedEODataQuery> {
     }
 
     @Override
-    public String defaultName() { return "FedEO"; }
+    public String defaultId() { return "FedEO"; }
 
     @Override
     protected FedEODataQuery createQueryImpl(String code) {

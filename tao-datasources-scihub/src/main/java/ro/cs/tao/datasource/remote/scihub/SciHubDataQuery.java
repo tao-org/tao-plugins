@@ -193,7 +193,7 @@ public class SciHubDataQuery extends DataQuery {
     }
 
     @Override
-    public String defaultName() { return "SciHubQuery"; }
+    public String defaultId() { return "SciHubQuery"; }
 
     private List<String> buildQueriesParams() {
         List<String> queries = new ArrayList<>();
