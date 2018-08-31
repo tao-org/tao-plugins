@@ -19,6 +19,7 @@ import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.products.sentinels.L1CProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.utils.FileUtils;
 import ro.cs.tao.utils.StringUtils;
@@ -246,9 +247,10 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
         String url;
         FileUtils.ensureExists(Paths.get(destination));
         String productName = product.getName();
-        boolean isL1C = "Level-1C".equals(product.getAttributeValue("processinglevel"));
+        //boolean isL1C = "Level-1C".equals(product.getAttributeValue("processinglevel"));
         Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(productName);
         String metadataFileName = helper.getMetadataFileName();
+        boolean isL1C = helper instanceof L1CProductHelper;
         product.setEntryPoint(metadataFileName);
         if ("13".equals(helper.getVersion())) {
             currentStep = "Archive";
