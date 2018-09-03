@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
+ * Data source that connects to the local TAO database.
+ *
  * @author Cosmin Cara
  */
 public class DatabaseSource extends AbstractDataSource<DatabaseQuery> {
