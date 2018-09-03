@@ -52,6 +52,11 @@
 
     <repositories>
         <repository>
+            <id>tao-core</id>
+            <name>TAO Core</name>
+            <url>https://github.com/tao-org/tao-core/tree/repository</url>
+        </repository>
+        <repository>
             <id>maven-public</id>
             <name>Maven public</name>
             <url>${mavenPublicUrl}/</url>
