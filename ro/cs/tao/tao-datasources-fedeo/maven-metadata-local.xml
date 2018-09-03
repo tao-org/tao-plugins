@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>ro.cs.tao</groupId>
+  <artifactId>tao-datasources-fedeo</artifactId>
+  <versioning>
+    <versions>
+      <version>1.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20180903140224</lastUpdated>
+  </versioning>
+</metadata>
