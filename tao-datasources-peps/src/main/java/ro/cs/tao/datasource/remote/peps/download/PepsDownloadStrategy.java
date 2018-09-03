@@ -27,7 +27,7 @@ import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
-import ro.cs.tao.utils.FileUtils;
+import ro.cs.tao.utils.FileUtilities;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -65,7 +65,7 @@ public class PepsDownloadStrategy extends DownloadStrategy {
 
     @Override
     protected Path fetchImpl(EOProduct product) throws IOException {
-        FileUtils.ensureExists(Paths.get(destination));
+        FileUtilities.ensureExists(Paths.get(destination));
         String productName = product.getName();
         currentStep = "Metadata";
         ProductState productState;
@@ -106,7 +106,7 @@ public class PepsDownloadStrategy extends DownloadStrategy {
                 break;
         }
         if (productFile != null) {
-            FileUtils.unzip(productFile);
+            FileUtilities.unzip(productFile);
             ProductHelper helper = SentinelProductHelper.create(productName);
             product.setEntryPoint(helper.getMetadataFileName());
         }
