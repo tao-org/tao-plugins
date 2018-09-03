@@ -47,7 +47,7 @@ public class DatabaseParameterProvider implements ParameterProvider {
                 new HashMap<String, Map<String, ParameterDescriptor>>() {{
                     for (String sensor : sensors) {
                         put(sensor, new HashMap<String, ParameterDescriptor>() {{
-                            put("name", new ParameterDescriptor("name", String.class, false));
+                            put("name", new ParameterDescriptor("name", String[].class, false));
                             put("type_id", new ParameterDescriptor("type_id", DataFormat.class, false));
                             put("geometry", new ParameterDescriptor("geometry", Polygon2D.class, false));
                             put("coordinate_reference_system", new ParameterDescriptor("coordinate_reference_system", String.class, false));
