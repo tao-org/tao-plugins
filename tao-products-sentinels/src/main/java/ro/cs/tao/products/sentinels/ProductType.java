@@ -20,7 +20,8 @@ package ro.cs.tao.products.sentinels;
  */
 public enum ProductType {
     L1C("S2MSI1C"),
-    L2A("S2MSI2Ap");
+    L2Ap("S2MSI2Ap"),
+    L2A("S2MSI2A");
 
     private String value;
     ProductType(String value) { this.value = value; }

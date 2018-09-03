@@ -30,6 +30,11 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+/**
+ * Database fetch strategy.
+ *
+ * @author Cosmin Cara
+ */
 public class DatabaseFetchStrategy implements ProductFetchStrategy {
     private final DatabaseSource source;
     private ProgressListener progressListener;

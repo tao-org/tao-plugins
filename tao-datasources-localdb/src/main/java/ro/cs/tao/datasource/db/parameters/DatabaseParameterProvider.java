@@ -30,6 +30,8 @@ import ro.cs.tao.spi.ServiceRegistryManager;
 import java.util.*;
 
 /**
+ * Parameter provider implementation for local database.
+ *
  * @author Cosmin Cara
  */
 public class DatabaseParameterProvider implements ParameterProvider {
