@@ -20,7 +20,7 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.MetadataInspector;
-import ro.cs.tao.utils.FileUtils;
+import ro.cs.tao.utils.FileUtilities;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -59,7 +59,7 @@ public class Landsat8MetadataInspector implements MetadataInspector {
         metadata.setPixelType(PixelType.UINT16);
         metadata.setProductType("Landsat8");
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
-        metadata.setSize(FileUtils.folderSize(productFolderPath));
+        metadata.setSize(FileUtilities.folderSize(productFolderPath));
         metadata.setCrs("EPSG:4326");
         double[] currentPoint = new double[2];
         double[] firstPoint = null;

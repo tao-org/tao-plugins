@@ -20,7 +20,7 @@ import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
-import ro.cs.tao.utils.FileUtils;
+import ro.cs.tao.utils.FileUtilities;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -84,7 +84,7 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
 
     @Override
     protected Path fetchImpl(EOProduct product) throws IOException, InterruptedException {
-        FileUtils.ensureExists(Paths.get(destination));
+        FileUtilities.ensureExists(Paths.get(destination));
         String productName = product.getName();
         currentStep = "Archive";
         Path rootPath = Paths.get(destination, productName + ".zip");

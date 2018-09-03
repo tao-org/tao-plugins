@@ -36,7 +36,7 @@ import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
-import ro.cs.tao.utils.StringUtils;
+import ro.cs.tao.utils.StringUtilities;
 
 import java.io.IOException;
 import java.util.*;
@@ -91,7 +91,7 @@ public class Landsat8Query extends DataQuery {
                     if (parameterValue instanceof String[]) {
                         Collections.addAll(pathRows, (String[]) parameterValue);
                     } else {
-                        Collections.addAll(pathRows, StringUtils.fromJsonArray(parameterValue.toString()));
+                        Collections.addAll(pathRows, StringUtilities.fromJsonArray(parameterValue.toString()));
                     }
                 }
             } else  if (Polygon2D.class.equals(parameterType) &&

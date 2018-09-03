@@ -19,7 +19,7 @@ package ro.cs.tao.eodata.quicklook;
 import ro.cs.tao.eodata.DataHandlingException;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.OutputDataHandler;
-import ro.cs.tao.utils.FileUtils;
+import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.DebugOutputConsumer;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.ExecutorType;
@@ -76,7 +76,7 @@ public class QuicklookGenerator implements OutputDataHandler<EOProduct> {
     }
 
     private Executor initialize(Path productPath) throws IOException {
-        String extension = FileUtils.getExtension(productPath.toFile());
+        String extension = FileUtilities.getExtension(productPath);
         if (!extensions.contains(extension.toLowerCase())) {
             return null;
         }
