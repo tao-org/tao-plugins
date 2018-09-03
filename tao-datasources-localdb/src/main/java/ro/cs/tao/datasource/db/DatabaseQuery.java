@@ -38,6 +38,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
+ * Database query implementation.
+ *
  * @author Cosmin Cara
  */
 public class DatabaseQuery extends DataQuery {
