@@ -21,8 +21,7 @@ import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.L1CProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
-import ro.cs.tao.utils.FileUtils;
-import ro.cs.tao.utils.StringUtils;
+import ro.cs.tao.utils.FileUtilities;
 
 import java.io.File;
 import java.io.IOException;
@@ -192,7 +191,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
             throw new IllegalArgumentException("Local archive root not set");
         }
         Path productRepositoryPath = Paths.get(localArchiveRoot);
-        Path destinationPath = FileUtils.ensureExists(Paths.get(destination, productName + ".SAFE"));
+        Path destinationPath = FileUtilities.ensureExists(Paths.get(destination, productName + ".SAFE"));
         Path productSourcePath = findProductPath(productRepositoryPath, product);
         if (productSourcePath == null) {
             logger.warning(String.format("%s not found locally", productName));
@@ -207,8 +206,8 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
             List<String> allLines = Files.readAllLines(metadataFile);
             Set<String> tileNames = updateMetadata(metadataFile, allLines);
             if (tileNames != null) {
-                currentProduct.addAttribute("tiles", StringUtils.join(tileNames, ","));
-                List<Path> folders = FileUtils.listFolders(productSourcePath);
+                currentProduct.addAttribute("tiles", String.join(",", tileNames));
+                List<Path> folders = FileUtilities.listFolders(productSourcePath);
                 final Path destPath = destinationPath;
                 folders.stream()
                         .filter(folder -> !folder.toString().contains("GRANULE") ||
@@ -216,8 +215,8 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                                 tileNames.stream().anyMatch(tn -> folder.toString().contains(tn)))
                         .forEach(folder -> {
                             try {
-                                FileUtils.ensureExists(destPath.resolve(productSourcePath.relativize(folder)));
-                                FileUtils.listFiles(folder)
+                                FileUtilities.ensureExists(destPath.resolve(productSourcePath.relativize(folder)));
+                                FileUtilities.listFiles(folder)
                                         .forEach(file -> {
                                             try {
                                                 linkFile(file, destPath.resolve(productSourcePath.relativize(file)));
@@ -245,7 +244,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
     private Path downloadImpl(EOProduct product) throws IOException, InterruptedException {
         Path rootPath = null;
         String url;
-        FileUtils.ensureExists(Paths.get(destination));
+        FileUtilities.ensureExists(Paths.get(destination));
         String productName = product.getName();
         //boolean isL1C = "Level-1C".equals(product.getAttributeValue("processinglevel"));
         Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(productName);
@@ -259,7 +258,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
             rootPath = downloadFile(url, rootPath, NetUtils.getAuthToken());
         }
         if (rootPath == null || !Files.exists(rootPath)) {
-            rootPath = FileUtils.ensureExists(Paths.get(destination, productName + ".SAFE"));
+            rootPath = FileUtilities.ensureExists(Paths.get(destination, productName + ".SAFE"));
             url = getMetadataUrl(product);
             Path metadataFile = rootPath.resolve(metadataFileName);
             currentStep = "Metadata";
@@ -271,12 +270,12 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                 boolean hasTiles = false;
                 if (tileIds != null) {
                     hasTiles = true;
-                    currentProduct.addAttribute("tiles", StringUtils.join(tileIds, ","));
+                    currentProduct.addAttribute("tiles", String.join(",", tileIds));
                 }
                 if (hasTiles) {
-                    Path tilesFolder = FileUtils.ensureExists(rootPath.resolve(FOLDER_GRANULE));
-                    FileUtils.ensureExists(rootPath.resolve(FOLDER_AUXDATA));
-                    Path dataStripFolder = FileUtils.ensureExists(rootPath.resolve(FOLDER_DATASTRIP));
+                    Path tilesFolder = FileUtilities.ensureExists(rootPath.resolve(FOLDER_GRANULE));
+                    FileUtilities.ensureExists(rootPath.resolve(FOLDER_AUXDATA));
+                    Path dataStripFolder = FileUtilities.ensureExists(rootPath.resolve(FOLDER_DATASTRIP));
                     Map<String, String> tileNames = new HashMap<>();
                     String dataStripId = null;
                     StringBuilder skippedTiles = new StringBuilder();
@@ -315,10 +314,10 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                         String tileUrl = entry.getValue();
                         String granuleId = entry.getKey();
                         String tileName = helper.getGranuleFolder(dataStripId, granuleId);
-                        Path tileFolder = FileUtils.ensureExists(tilesFolder.resolve(tileName));
-                        Path auxData = FileUtils.ensureExists(tileFolder.resolve(FOLDER_AUXDATA));
-                        Path imgData = FileUtils.ensureExists(tileFolder.resolve(FOLDER_IMG_DATA));
-                        Path qiData = FileUtils.ensureExists(tileFolder.resolve(FOLDER_QI_DATA));
+                        Path tileFolder = FileUtilities.ensureExists(tilesFolder.resolve(tileName));
+                        Path auxData = FileUtilities.ensureExists(tileFolder.resolve(FOLDER_AUXDATA));
+                        Path imgData = FileUtilities.ensureExists(tileFolder.resolve(FOLDER_IMG_DATA));
+                        Path qiData = FileUtilities.ensureExists(tileFolder.resolve(FOLDER_QI_DATA));
                         String metadataName = helper.getGranuleMetadataFileName(granuleId);
                         Path tileMetaFile = downloadFile(pathBuilder.root(tileUrl).node(metadataName).value(), tileFolder.resolve(metadataName), NetUtils.getAuthToken());
                         if (tileMetaFile != null) {
@@ -334,7 +333,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                                     }
                                 } else {
                                     for (Map.Entry<String, Set<String>> resEntry : l2aBandFiles.entrySet()) {
-                                        Path imgDataRes = FileUtils.ensureExists(imgData.resolve(resEntry.getKey()));
+                                        Path imgDataRes = FileUtilities.ensureExists(imgData.resolve(resEntry.getKey()));
                                         for (String bandFileName : resEntry.getValue()) {
                                             downloadFile(pathBuilder.root(tileUrl)
                                                                  .node(FOLDER_IMG_DATA)
@@ -386,17 +385,17 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                                 .node(FOLDER_DATASTRIP).node(dsFolder)
                                 .node(dsFileName)
                                 .value();
-                        Path dataStrip = FileUtils.ensureExists(dataStripFolder.resolve(dsFolder));
+                        Path dataStrip = FileUtilities.ensureExists(dataStripFolder.resolve(dsFolder));
                         downloadFile(dataStripPath, dataStrip.resolve(dsFileName), NetUtils.getAuthToken());
                     }
                     if (downloadedTiles.size() > 0) {
                         final Pattern tilePattern = helper.getTilePattern();
-                        product.addAttribute("tiles", StringUtils.join(downloadedTiles.stream().map(t -> {
+                        product.addAttribute("tiles", String.join(",", downloadedTiles.stream().map(t -> {
                             Matcher matcher = tilePattern.matcher(t);
                             //noinspection ResultOfMethodCallIgnored
                             matcher.matches();
                             return matcher.group(1);
-                        }).collect(Collectors.toList()), ","));
+                        }).collect(Collectors.toList())));
                     }
                 } else {
                     //Files.deleteIfExists(metadataFile);
