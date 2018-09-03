@@ -27,7 +27,7 @@ import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
-import ro.cs.tao.utils.FileUtils;
+import ro.cs.tao.utils.FileUtilities;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -105,7 +105,7 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
                     try {
                         subActivityStart(product.getName());
                         Path archivePath = Paths.get(destination, product.getName() + ".tar.gz");
-                        FileUtils.ensureExists(Paths.get(destination));
+                        FileUtilities.ensureExists(Paths.get(destination));
                         Files.deleteIfExists(archivePath);
                         InputStream inputStream = response.getEntity().getContent();
                         SeekableByteChannel outputStream = null;

@@ -23,18 +23,18 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
-import ro.cs.tao.utils.FileUtils;
+import ro.cs.tao.utils.FileUtilities;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * Simple metadata inspector for Sentinel-1 products
@@ -68,7 +68,7 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
         metadata.setEntryPoint(metadataFileName);
         metadata.setProductType("Sentinel1");
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
-        metadata.setSize(FileUtils.folderSize(productFolderPath));
+        metadata.setSize(FileUtilities.folderSize(productFolderPath));
         try (InputStream inputStream = Files.newInputStream(productFolderPath.resolve(metadataFileName))) {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = builder.parse(inputStream);
@@ -86,10 +86,10 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
                 metadata.setFootprint(polygon2D.toWKT(6));
             }
             metadata.setCrs("EPSG:4326");
-            File[] annotations = FileUtils.listFilesWithExtension(productFolderPath.resolve("annotation").toFile(), ".xml");
+            List<Path> annotations = FileUtilities.listFilesWithExtension(productFolderPath.resolve("annotation"), ".xml");
             if (annotations != null) {
-                for (File annotation : annotations) {
-                    try (InputStream gis = Files.newInputStream(annotation.toPath())) {
+                for (Path annotation : annotations) {
+                    try (InputStream gis = Files.newInputStream(annotation)) {
                         Document gDoc = builder.parse(gis);
                         Element gRoot = gDoc.getDocumentElement();
                         if (metadata.getPixelType() == null) {

@@ -23,7 +23,7 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
-import ro.cs.tao.utils.FileUtils;
+import ro.cs.tao.utils.FileUtilities;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -72,7 +72,7 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
         metadata.setPixelType(PixelType.UINT16);
         metadata.setProductType("Sentinel2");
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
-        metadata.setSize(FileUtils.folderSize(productFolderPath));
+        metadata.setSize(FileUtilities.folderSize(productFolderPath));
         try (InputStream inputStream = Files.newInputStream(productFolderPath.resolve(metadataFileName))) {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = builder.parse(inputStream);
