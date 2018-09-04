@@ -52,10 +52,7 @@ public class OTBImageInstaller extends BaseImageInstaller {
     @Override
     protected Container initializeContainer(Container container, String path) {
         PersistenceManager persistenceManager = getPersistenceManager();
-        //otbContainer = persistenceManager.getContainerById(containerId);
-        //if (otbContainer == null) {
         Container otbContainer = null;
-        logger.fine(String.format("Container %s not registered in database", getContainerName()));
         try {
             otbContainer = readContainerDescriptor("otb_container.json");
             otbContainer.setId(container.getId());
@@ -142,10 +139,6 @@ public class OTBImageInstaller extends BaseImageInstaller {
             logger.severe(String.format("Error occured while registering container applications: %s",
                                         outer.getMessage()));
         }
-        logger.info(String.format("Registration complete for container %s", getContainerName()));
-//        } else {
-//            logger.fine(String.format("Container %s already registered", getContainerName()));
-//        }
         return otbContainer;
     }
 }
