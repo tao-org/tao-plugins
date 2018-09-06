@@ -10,8 +10,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-data-model:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: ro.cs.tao:tao-utils:1.0-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="tao-data-model" />
     <orderEntry type="module" module-name="tao-utils" />
     <orderEntry type="library" name="Maven: com.jcraft:jsch:0.1.53" level="project" />
