@@ -19,6 +19,7 @@ package ro.cs.tao.eodata.quicklook;
 import ro.cs.tao.eodata.DataHandlingException;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.OutputDataHandler;
+import ro.cs.tao.utils.DockerHelper;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.DebugOutputConsumer;
 import ro.cs.tao.utils.executors.Executor;
@@ -46,6 +47,13 @@ public class QuicklookGenerator implements OutputDataHandler<EOProduct> {
     private static final Set<String> extensions = new HashSet<String>() {{
         add(".tif"); add(".tiff"); add(".nc"); add(".png"); add(".jpg"); add(".bmp");
     }};
+    private static final String[] gdalOnPathCmd = new String[] {
+            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "10%", "10%", "-b", "1", "$FULL_PATH", "$FULL_PATH.png"
+    };
+    private static final String[] gdalOnDocker = new String[] {
+            "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt", "geodata/gdal",
+            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "10%", "10%", "-b", "1", "/mnt/$FILE", "/mnt/$FILE.png"
+    };
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     @Override
@@ -60,7 +68,7 @@ public class QuicklookGenerator implements OutputDataHandler<EOProduct> {
         for (EOProduct product : list) {
             try {
                 Path productPath = Paths.get(URI.create(product.getLocation())).resolve(product.getEntryPoint());
-                Executor executor = initialize(productPath);
+                Executor executor = initialize(productPath, DockerHelper.isDockerFound() ? gdalOnDocker : gdalOnPathCmd);
                 if (executor != null) {
                     executor.setOutputConsumer(consumer);
                     executor.execute(false);
@@ -75,30 +83,21 @@ public class QuicklookGenerator implements OutputDataHandler<EOProduct> {
         return list;
     }
 
-    private Executor initialize(Path productPath) throws IOException {
+    private Executor initialize(Path productPath, String[] args) throws IOException {
         String extension = FileUtilities.getExtension(productPath);
         if (!extensions.contains(extension.toLowerCase())) {
             return null;
         }
-        List<String> args = new ArrayList<>();
-        args.add("gdal_translate");
-        args.add("-of");
-        args.add("PNG");
-        args.add("-ot");
-        args.add("Byte");
-        args.add("-scale");
-        args.add("-outsize");
-        args.add("10%");
-        args.add("10%");
-        args.add("-b");
-        args.add("1");
-        args.add(productPath.toAbsolutePath().toString());
-        Path quicklookPath = Paths.get(productPath.toString() + ".png");
-        args.add(quicklookPath.toString());
+        List<String> arguments = new ArrayList<>();
+        for (String arg : args) {
+            arguments.add(arg.replace("$FULL_PATH", productPath.toString())
+                              .replace("$FOLDER", productPath.getParent().toString())
+                              .replace("$FILE", productPath.getFileName().toString()));
+        }
         try {
             return ProcessExecutor.create(ExecutorType.PROCESS,
                                           InetAddress.getLocalHost().getHostName(),
-                                          args);
+                                          arguments);
         } catch (UnknownHostException e) {
             throw new IOException(e);
         }
