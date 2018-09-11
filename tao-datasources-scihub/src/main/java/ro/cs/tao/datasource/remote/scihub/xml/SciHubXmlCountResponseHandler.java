@@ -34,7 +34,11 @@ public class SciHubXmlCountResponseHandler extends XmlResponseHandler<Long> {
     protected void handleEndElement(String qName) {
         if (this.recordElement.equals(qName)) {
             final String elementValue = buffer.toString();
-            this.current = Long.parseLong(elementValue);
+            try {
+                this.current = Long.parseLong(elementValue);
+            } catch (NumberFormatException nfe) {
+                this.current = 0L;
+            }
         }
     }
 }
