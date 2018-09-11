@@ -16,8 +16,8 @@
 
 package ro.cs.tao.integration.geostorm.model;
 
-import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.geojson.geom.GeometryJSON;
+import org.locationtech.jts.geom.Geometry;
 
 import java.io.IOException;
 
