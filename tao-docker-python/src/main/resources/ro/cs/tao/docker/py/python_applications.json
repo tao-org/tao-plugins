@@ -1,7 +1,6 @@
 [
   {
-    "id": "7a318f84-a4c1-4867-9b5f-b9f0e77bfd8c",
-    "name": "PythonScript",
+    "id": "PythonScript",
     "label": "Python Script",
     "version": "2.7.15",
     "description": "Template for Python scripting components",

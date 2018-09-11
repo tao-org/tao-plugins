@@ -16,7 +16,6 @@
 
 package ro.cs.tao.eodata;
 
-import org.apache.commons.lang.SystemUtils;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -24,13 +23,13 @@ import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel2MetadataInspector;
+import ro.cs.tao.utils.DockerHelper;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.ExecutorType;
 import ro.cs.tao.utils.executors.OutputAccumulator;
 import ro.cs.tao.utils.executors.ProcessExecutor;
 
 import javax.json.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.InetAddress;
@@ -48,7 +47,6 @@ public class GdalInfoWrapper implements MetadataInspector {
     private static final String[] gdalOnDocker = new String[] {
             "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt", "geodata/gdal", "gdalinfo", "-json", "/mnt/$FILE"
     };
-    private static Boolean canUseDocker = null;
 
     public GdalInfoWrapper() { }
 
@@ -63,30 +61,11 @@ public class GdalInfoWrapper implements MetadataInspector {
             return null;
         }
         Executor executor;
-        if (canUseDocker == null) {
-            String systemPath = System.getenv("Path");
-            if (systemPath == null) {
-                systemPath = System.getenv("PATH");
-            }
-            canUseDocker = false;
-            if (systemPath != null) {
-                String[] paths = systemPath.split(File.pathSeparator);
-                Path currentPath;
-                for (String path : paths) {
-                    currentPath = Paths.get(path)
-                            .resolve(SystemUtils.IS_OS_WINDOWS ? "docker.exe" : "docker");
-                    if (Files.exists(currentPath)) {
-                        canUseDocker = true;
-                        break;
-                    }
-                }
-            }
-        }
         try {
             return new Sentinel2MetadataInspector().getMetadata(productPath);
         } catch (Exception ignored) {
         }
-        executor = initialize(productPath.toAbsolutePath(), canUseDocker ? gdalOnDocker : gdalOnPathCmd);
+        executor = initialize(productPath.toAbsolutePath(), DockerHelper.isDockerFound() ? gdalOnDocker : gdalOnPathCmd);
         OutputAccumulator consumer = new OutputAccumulator();
         executor.setOutputConsumer(consumer);
         StringReader reader = null;
