@@ -474,6 +474,11 @@ public class Sentinel2Strategy extends DownloadStrategy {
     }
 
     @Override
+    protected Path link(EOProduct product, Path sourceRoot, Path targetRoot) throws IOException {
+        return link(product);
+    }
+
+    @Override
     protected Path check(EOProduct product) throws IOException {
         String productName = product.getName();
         String localArchiveRoot = getLocalArchiveRoot();
