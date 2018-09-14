@@ -31,8 +31,8 @@ import java.util.regex.Pattern;
  */
 public class L1CProductHelper extends Sentinel2ProductHelper {
 
-    static final Pattern ProductV13 = Pattern.compile("(S2[A-B])_(OPER)_(PRD)_(MSIL1C)_(PDMC)_(\\d{8}T\\d{6})_(R\\d{3})_(V\\d{8}T\\d{6})_(\\d{8}T\\d{6})(?:.SAFE)?");
-    static final Pattern ProductV14 = Pattern.compile("(S2[A-B])_(MSIL1C)_(\\d{8}T\\d{6})_(N\\d{4})_(R\\d{3})_(T\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
+    static final Pattern ProductV13 = Pattern.compile("(S2[A-B])_(OPER)_(PRD)_(MSIL1C)_(PDMC)_(\\d{8}T\\d{6})_R(\\d{3})_V(\\d{8}T\\d{6})_(\\d{8}T\\d{6})(?:.SAFE)?");
+    static final Pattern ProductV14 = Pattern.compile("(S2[A-B])_(MSIL1C)_(\\d{8}T\\d{6})_(N\\d{4})_R(\\d{3})_(T\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
     private static final Pattern TileV13 = Pattern.compile("(S2[A-B])_(OPER)_(MSI)_(L1C)_(TL)_(\\w{3})__(\\d{8}T\\d{6})_(A\\d{6})_(T\\d{2}\\w{3})_(N\\d{2}.\\d{2})");
 
     private boolean oldFormat;
@@ -56,29 +56,30 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
 
     @Override
     public String getOrbit() {
-        return this.oldFormat ?
-                getTokens(ProductV13, this.name, null)[6] :
-                getTokens(ProductV14, this.name, null)[4];
+        return this.oldFormat ? getTokens(ProductV13)[6] : getTokens(ProductV14)[4];
     }
 
     @Override
     public String getSensingDate() {
-        return this.oldFormat ?
-                getTokens(ProductV13, this.name, null)[7] :
-                getTokens(ProductV14, this.name, null)[2];
+        return this.oldFormat ? getTokens(ProductV13)[7] : getTokens(ProductV14)[2];
+    }
+
+    @Override
+    public String getProcessingDate() {
+        return this.oldFormat ? getTokens(ProductV13)[5] : getTokens(ProductV14)[6];
     }
 
     @Override
     public String getProductRelativePath() {
         String year, day, month;
         if (this.oldFormat) {
-            String[] tokens = getTokens(ProductV13, this.name, null);
+            String[] tokens = getTokens(ProductV13);
             String dateToken = tokens[7];
             year = dateToken.substring(1, 5);
             month = String.valueOf(Integer.parseInt(dateToken.substring(5, 7)));
             day = String.valueOf(Integer.parseInt(dateToken.substring(7, 9)));
         } else {
-            String[] tokens = getTokens(ProductV14, this.name, null);
+            String[] tokens = getTokens(ProductV14);
             String dateToken = tokens[2];
             year = dateToken.substring(0, 4);
             month = String.valueOf(Integer.parseInt(dateToken.substring(4, 6)));
@@ -94,7 +95,7 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
     public String getTileIdentifier() {
         String tileId = null;
         if (!this.oldFormat) {
-            tileId = getTokens(ProductV14, this.name, null)[5];
+            tileId = getTokens(ProductV14)[5];
             tileId = tileId.substring(1);
         }
         return tileId;
