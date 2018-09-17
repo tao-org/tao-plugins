@@ -18,9 +18,8 @@ package ro.cs.tao.products.landsat;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.ProductHelper;
 
-import java.time.LocalDate;
-import java.time.Year;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -101,6 +100,26 @@ public class Landsat8ProductHelper extends ProductHelper {
         buffer.append(getRow()).append(DownloadStrategy.URL_SEPARATOR);
         buffer.append(this.name).append(DownloadStrategy.URL_SEPARATOR);
         return buffer.toString();
+    }
+
+    @Override
+    public String getSensingDate() {
+        LocalDate localDate;
+        Matcher matcher;
+        if (this.oldFormat) {
+            matcher = preCollectionNamePattern.matcher(name);
+            //noinspection ResultOfMethodCallIgnored
+            matcher.matches();
+            localDate = Year.of(Integer.parseInt(matcher.group(3))).atDay(Integer.parseInt(matcher.group(4)));
+        } else {
+            matcher = collection1NamePattern.matcher(name);
+            //noinspection ResultOfMethodCallIgnored
+            matcher.matches();
+            localDate = LocalDate.parse(matcher.group(3)
+                                                + "-" + matcher.group(4)
+                                                + "-" + matcher.group(5));
+        }
+        return LocalDateTime.of(localDate, LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
     }
 
     public Calendar getAcquisitionDate() {
