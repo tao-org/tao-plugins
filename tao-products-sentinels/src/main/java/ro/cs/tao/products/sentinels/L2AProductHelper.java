@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  */
 public class L2AProductHelper extends Sentinel2ProductHelper {
 
-    static final Pattern ProductV14 = Pattern.compile("(S2[A-B])_(MSIL1C|MSIL2A)_(\\d{8}T\\d{6})_(N\\d{4})_(R\\d{3})_(T\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
+    static final Pattern ProductV14 = Pattern.compile("(S2[A-B])_(MSIL1C|MSIL2A)_(\\d{8}T\\d{6})_(N\\d{4})_R(\\d{3})_(T\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
 
     L2AProductHelper() {
         super();
@@ -44,10 +44,15 @@ public class L2AProductHelper extends Sentinel2ProductHelper {
     }
 
     @Override
+    public String getProcessingDate() {
+        return getTokens(ProductV14)[6];
+    }
+
+    @Override
     public String getProductRelativePath() {
         String year, day, month;
 
-        String[] tokens = getTokens(ProductV14, this.name, null);
+        String[] tokens = getTokens(ProductV14);
         String dateToken = tokens[2];
         year = dateToken.substring(0, 4);
         month = String.valueOf(Integer.parseInt(dateToken.substring(4, 6)));
@@ -61,7 +66,7 @@ public class L2AProductHelper extends Sentinel2ProductHelper {
 
     @Override
     public String getTileIdentifier() {
-        return getTokens(ProductV14, this.name, null)[5];
+        return getTokens(ProductV14)[5];
     }
 
     @Override
@@ -107,7 +112,7 @@ public class L2AProductHelper extends Sentinel2ProductHelper {
 
     @Override
     public String getOrbit() {
-        return getTokens(ProductV14, this.name, null)[4];
+        return getTokens(ProductV14)[4];
     }
 
     @Override
