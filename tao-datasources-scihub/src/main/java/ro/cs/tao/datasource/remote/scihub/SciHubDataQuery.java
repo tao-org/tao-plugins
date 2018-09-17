@@ -42,10 +42,13 @@ import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
+import ro.cs.tao.products.sentinels.SentinelProductHelper;
 
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,6 +62,7 @@ public class SciHubDataQuery extends DataQuery {
 
     private static final String PATTERN_DATE = "NOW";
     private static final String PATTERN_OFFSET_DATE = PATTERN_DATE + "-%sDAY";
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
     private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
 
     private final String sensorName;
@@ -104,6 +108,7 @@ public class SciHubDataQuery extends DataQuery {
                 params.add(new BasicNameValuePair("orderby", "beginposition asc"));
                 String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 logger.fine(String.format("Executing query: %s", queryUrl));
+                final boolean isS2 = "Sentinel2".equals(this.sensorName);
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
@@ -120,8 +125,7 @@ public class SciHubDataQuery extends DataQuery {
                             canContinue = tmpResults != null && tmpResults.size() > 0 && count != this.pageSize;
                             if (tmpResults != null) {
                                 actualCount += tmpResults.size();
-                                if ("Sentinel2".equals(this.sensorName) &&
-                                        this.parameters.containsKey("cloudcoverpercentage")) {
+                                if (isS2 && this.parameters.containsKey("cloudcoverpercentage")) {
                                     final Double clouds = Double.parseDouble(this.parameters.get("cloudcoverpercentage").getValue().toString());
                                     tmpResults = tmpResults.stream()
                                             .filter(r -> Double.parseDouble(r.getAttributeValue(isXml ? "cloudcoverpercentage" : "Cloud Cover Percentage")) <= clouds)
@@ -129,6 +133,14 @@ public class SciHubDataQuery extends DataQuery {
                                 }
                                 for (EOProduct result : tmpResults) {
                                     if (!results.contains(result)) {
+                                        if (isS2) {
+                                            String dateString = SentinelProductHelper.create(result.getName()).getProcessingDate();
+                                            if (dateString != null) {
+                                                try {
+                                                    result.setProcessingDate(dateFormat.parse(dateString));
+                                                } catch (java.text.ParseException ignored) { }
+                                            }
+                                        }
                                         results.add(result);
                                     }
                                 }

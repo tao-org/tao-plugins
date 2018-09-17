@@ -30,6 +30,7 @@ import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
+import ro.cs.tao.products.sentinels.SentinelProductHelper;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -56,6 +57,7 @@ class Sentinel2Query extends DataQuery {
     private static final String dateFormatString = new SimpleDateFormat("yyyy-MM-dd").toPattern();
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final DateTimeFormatter fileDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateFormat nameDateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 
     Sentinel2Query(DataSource source) {
         super(source, "Sentinel2");
@@ -224,6 +226,11 @@ class Sentinel2Query extends DataQuery {
                                                                 product.getName().contains("_R" + String.format("%03d", relativeOrbit))) {
                                                             if (this.limit > 0 && this.limit <= results.size()) {
                                                                 break;
+                                                            }
+                                                            String processingDate = SentinelProductHelper.create(product.getName())
+                                                                                        .getProcessingDate();
+                                                            if (processingDate != null) {
+                                                                product.setProcessingDate(nameDateFormat.parse(processingDate));
                                                             }
                                                             results.put(product.getName(), product);
                                                         }
