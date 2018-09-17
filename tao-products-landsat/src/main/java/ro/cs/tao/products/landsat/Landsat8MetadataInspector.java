@@ -60,11 +60,11 @@ public class Landsat8MetadataInspector implements MetadataInspector {
         metadata.setProductType("Landsat8");
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
         metadata.setSize(FileUtilities.folderSize(productFolderPath));
-        metadata.setCrs("EPSG:4326");
         double[] currentPoint = new double[2];
         double[] firstPoint = null;
         Polygon2D polygon2D = new Polygon2D();
-        for (String line : Files.readAllLines(productFolderPath)) {
+        String utmZone = null;
+        for (String line : Files.readAllLines(productPath.resolve(helper.getMetadataFileName()))) {
             if (line.contains("CORNER")) {
                 if (line.contains("LAT")) {
                     currentPoint[1] = Double.parseDouble(line.substring(line.indexOf("=") + 1).trim());
@@ -82,10 +82,16 @@ public class Landsat8MetadataInspector implements MetadataInspector {
             if (line.contains("PANCHROMATIC_SAMPLES")) {
                 metadata.setWidth(Integer.parseInt(line.substring(line.indexOf("=") + 1).trim()));
             }
+            if (line.contains("UTM_ZONE")) {
+                utmZone = line.substring(line.indexOf("=") + 1).trim();
+            }
         }
         if (firstPoint != null) {
             polygon2D.append(firstPoint[0], firstPoint[1]);
             metadata.setFootprint(polygon2D.toWKT(5));
+            if (utmZone != null) {
+                metadata.setCrs("EPSG:32" + (firstPoint[1] > 0 ? "6" : "7") + utmZone);
+            }
         }
         return metadata;
     }
