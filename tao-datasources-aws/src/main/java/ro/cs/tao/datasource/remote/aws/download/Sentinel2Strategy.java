@@ -333,9 +333,9 @@ public class Sentinel2Strategy extends DownloadStrategy {
             Set<String> tileIds = updateMetadata(destMetaFile, allLines);
             if (tileIds != null) {
                 currentProduct.addAttribute("tiles", String.join(",", tileIds));
-                linkFile(productSourcePath.resolve("inspire.xml"), destInspireFile);
+                FileUtilities.linkFile(productSourcePath.resolve("inspire.xml"), destInspireFile);
                 //downloadFile(baseProductUrl + "inspire.xml", inspireFile);
-                linkFile(productSourcePath.resolve("manifest.safe"), destManifestFile);
+                FileUtilities.linkFile(productSourcePath.resolve("manifest.safe"), destManifestFile);
                 //downloadFile(baseProductUrl + "manifest.safe", manifestFile);
 
                 // rep_info folder and contents
@@ -379,14 +379,14 @@ public class Sentinel2Strategy extends DownloadStrategy {
                         String metadataName = helper.getGranuleMetadataFileName(tileName);
                         Path tileMetadataPath = tileFolder.resolve(metadataName);
                         logger.fine(String.format("Linking tile metadata %s", tileMetadataPath));
-                        linkFile(tileUrl.resolve("metadata.xml"), tileMetadataPath);
+                        FileUtilities.linkFile(tileUrl.resolve("metadata.xml"), tileMetadataPath);
                         //downloadFile(tileUrl + "/metadata.xml", tileMetadataPath);
                         for (String bandFileName : l1cBandFiles) {
                             try {
                                 Path bandFileUrl = tileUrl.resolve(bandFileName);
                                 Path path = imgData.resolve(helper.getBandFileName(tileName, bandFileName));
                                 logger.fine(String.format("Linking band raster %s from %s", path, bandFileName));
-                                linkFile(bandFileUrl, path);
+                                FileUtilities.linkFile(bandFileUrl, path);
                                 //downloadFile(bandFileUrl, path);
                             } catch (IOException ex) {
                                 logger.warning(String.format("Linkage for %s failed [%s]", bandFileName, ex.getMessage()));
@@ -413,7 +413,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                             try {
                                 Path fileUrl = tileUrl.resolve("qi").resolve(remoteName);
                                 logger.fine(String.format("Linking file %s from %s", path, fileUrl));
-                                linkFile(fileUrl, path);
+                                FileUtilities.linkFile(fileUrl, path);
                                 //downloadFile(fileUrl, path);
                             } catch (IOException ex) {
                                 logger.warning(String.format("Linkage for %s failed [%s]", path, ex.getMessage()));
@@ -421,7 +421,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                         }
                         downloadedTiles.add(tileName);
                         logger.fine(String.format("Trying to link %s", tileUrl.resolve("auxiliary/ECMWFT")));
-                        linkFile(tileUrl.resolve("auxiliary/ECMWFT"), auxData.resolve(helper.getEcmWftFileName(tileName)));
+                        FileUtilities.linkFile(tileUrl.resolve("auxiliary/ECMWFT"), auxData.resolve(helper.getEcmWftFileName(tileName)));
                         //downloadFile(tileUrl + "/auxiliary/ECMWFT", auxData.resolve(helper.getEcmWftFileName(tileName)));
                         if (dataStripId == null) {
                             Path tileJson = tileUrl.resolve("tileInfo.json");
@@ -437,7 +437,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                                 String dataStripFile = helper.getDatastripMetadataFileName(dataStripId);
                                 FileUtilities.ensureExists(dataStrip.resolve(FOLDER_QI_DATA));
                                 logger.fine(String.format("Linking %s", productRepositoryPath.getParent().resolve(dataStripPath)));
-                                linkFile(productRepositoryPath.getParent().resolve(dataStripPath), dataStrip.resolve(dataStripFile));
+                                FileUtilities.linkFile(productRepositoryPath.getParent().resolve(dataStripPath), dataStrip.resolve(dataStripFile));
                                 //downloadFile(baseUrl + dataStripPath, dataStrip.resolve(dataStripFile));
                             } finally {
                                 if (tiReader != null) tiReader.close();
