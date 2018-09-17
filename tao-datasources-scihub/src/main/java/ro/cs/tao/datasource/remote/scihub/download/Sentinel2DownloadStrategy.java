@@ -207,7 +207,12 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
             Set<String> tileNames = updateMetadata(metadataFile, allLines);
             if (tileNames != null) {
                 currentProduct.addAttribute("tiles", String.join(",", tileNames));
-                List<Path> folders = FileUtilities.listFolders(productSourcePath);
+                FileUtilities.link(productSourcePath, destinationPath,
+                                   folder -> !folder.toString().contains("GRANULE") ||
+                                          "GRANULE".equals(folder.getName(folder.getNameCount() - 1).toString()) ||
+                                          tileNames.stream().anyMatch(tn -> folder.toString().contains(tn)),
+                                   null);
+                /*List<Path> folders = FileUtilities.listFolders(productSourcePath);
                 final Path destPath = destinationPath;
                 folders.stream()
                         .filter(folder -> !folder.toString().contains("GRANULE") ||
@@ -227,7 +232,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                        });
+                        });*/
             } else {
                 Files.deleteIfExists(metadataFile);
                 logger.warning(String.format("The product %s did not contain any tiles from the tile list", productName));
