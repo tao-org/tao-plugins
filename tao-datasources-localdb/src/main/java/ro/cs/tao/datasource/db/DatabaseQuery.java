@@ -114,6 +114,12 @@ public class DatabaseQuery extends DataQuery {
                         }
                     }
                 }
+                if (this.pageNumber > 0 && this.pageSize > 0) {
+                    query.append(" OFFSET ").append((this.pageNumber - 1) * this.pageSize);
+                }
+                if (this.limit > 0) {
+                    query.append(" LIMIT ").append(this.limit);
+                }
                 final PreparedStatement statement = sqlConnection.prepareStatement(query.toString());
                 for (ParameterIndex paramIndex : values) {
                     for (int i = paramIndex.fromIndex; i <= paramIndex.toIndex; i++) {
