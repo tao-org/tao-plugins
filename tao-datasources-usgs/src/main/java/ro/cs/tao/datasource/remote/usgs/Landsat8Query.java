@@ -168,6 +168,7 @@ public class Landsat8Query extends DataQuery {
                 }
             });
         } else {
+            logger.fine("Executing query " + queryUrl);
             try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, null)) {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
