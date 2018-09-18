@@ -36,9 +36,9 @@ public class USGSDateParameterConverter extends DateParameterConverter {
 
     @Override
     public String stringValue() throws ConversionException {
-        if ("sensingStart".equals(parameter.getName())) {
+        if (parameter.isInterval() && "sensingStart".equals(parameter.getName())) {
             return parameter.getMinValueAsFormattedDate(DATE_FORMAT);
-        } else if ("sensingEnd".equals(parameter.getName())) {
+        } else if (parameter.isInterval() && "sensingEnd".equals(parameter.getName())) {
             return parameter.getMaxValueAsFormattedDate(DATE_FORMAT);
         }
         Date minValue = (Date) parameter.getValue();
