@@ -76,17 +76,15 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
         if (coordLine != null) {
             String points = coordLine.substring(coordLine.indexOf("<gml:coordinates>") + 17,
                                                 coordLine.indexOf("</gml:coordinates>"));
-            if (points != null) {
-                String[] coords = points.trim().split(" ");
-                Polygon2D polygon2D = new Polygon2D();
-                for (String coord : coords) {
-                    polygon2D.append(Double.parseDouble(coord.substring(coord.indexOf(',') + 1)),
-                                     Double.parseDouble(coord.substring(0, coord.indexOf(','))));
-                }
-                polygon2D.append(Double.parseDouble(coords[0].substring(coords[0].indexOf(',') + 1)),
-                                 Double.parseDouble(coords[0].substring(0, coords[0].indexOf(','))));
-                metadata.setFootprint(polygon2D.toWKT(8));
+            String[] coords = points.trim().split(" ");
+            Polygon2D polygon2D = new Polygon2D();
+            for (String coord : coords) {
+                polygon2D.append(Double.parseDouble(coord.substring(coord.indexOf(',') + 1)),
+                                 Double.parseDouble(coord.substring(0, coord.indexOf(','))));
             }
+            polygon2D.append(Double.parseDouble(coords[0].substring(coords[0].indexOf(',') + 1)),
+                             Double.parseDouble(coords[0].substring(0, coords[0].indexOf(','))));
+            metadata.setFootprint(polygon2D.toWKT(8));
         }
         metadata.setCrs("EPSG:4326");
         List<Path> annotations = FileUtilities.listFilesWithExtension(productFolderPath.resolve("annotation"), ".xml");
