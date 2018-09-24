@@ -17,7 +17,7 @@ package ro.cs.tao.datasource.remote.aws.parameters;
 
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
-import ro.cs.tao.datasource.param.ParameterDescriptor;
+import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.aws.LandsatCollection;
 import ro.cs.tao.datasource.remote.aws.download.Landsat8Strategy;
@@ -35,34 +35,34 @@ import java.util.Map;
 public class AWSParameterProvider implements ParameterProvider {
 
     private static final String[] sensors;
-    private static final Map<String, Map<String, ParameterDescriptor>> parameters;
+    private static final Map<String, Map<String, DataSourceParameter>> parameters;
     private static final Map<String, ProductFetchStrategy> productFetchers;
 
     static {
         sensors = new String[] { "Sentinel2", "Landsat8" };
         parameters = Collections.unmodifiableMap(
-                new HashMap<String, Map<String, ParameterDescriptor>>() {{
-                    put("Sentinel2", new HashMap<String, ParameterDescriptor>() {{
-                        put("platformName", new ParameterDescriptor("platformName", String.class, "Sentinel-2", true));
-                        put("beginPosition",  new ParameterDescriptor("beginPosition", Date.class));
-                        put("endPosition",  new ParameterDescriptor("endPosition", Date.class));
-                        put("tileId", new ParameterDescriptor("tileId", String.class));
-                        put("footprint",  new ParameterDescriptor("footprint", Polygon2D.class));
-                        put("productType",  new ParameterDescriptor("productType", String.class));
-                        put("cloudcoverpercentage",  new ParameterDescriptor("cloudcoverpercentage", Double.class, 100.));
-                        put("relativeOrbitNumber",  new ParameterDescriptor("relativeOrbitNumber", Short.class));
+                new HashMap<String, Map<String, DataSourceParameter>>() {{
+                    put("Sentinel2", new HashMap<String, DataSourceParameter>() {{
+                        put("platformName", new DataSourceParameter("platformName", String.class, "Sentinel-2", true));
+                        put("beginPosition",  new DataSourceParameter("beginPosition", Date.class));
+                        put("endPosition",  new DataSourceParameter("endPosition", Date.class));
+                        put("tileId", new DataSourceParameter("tileId", String.class));
+                        put("footprint",  new DataSourceParameter("footprint", Polygon2D.class));
+                        put("productType",  new DataSourceParameter("productType", String.class));
+                        put("cloudcoverpercentage",  new DataSourceParameter("cloudcoverpercentage", Double.class, 100.));
+                        put("relativeOrbitNumber",  new DataSourceParameter("relativeOrbitNumber", Short.class));
                     }});
-                    put("Landsat8", new HashMap<String, ParameterDescriptor>() {{
-                        put("platformName", new ParameterDescriptor("platformName", String.class, "Landsat-8", true));
-                        put("sensingStart", new ParameterDescriptor("sensingStart", Date.class));
-                        put("sensingEnd", new ParameterDescriptor("sensingEnd", Date.class));
-                        put("path", new ParameterDescriptor("path", String.class));
-                        put("row", new ParameterDescriptor("row", String.class));
-                        put("row_path", new ParameterDescriptor("row_path", String.class));
-                        put("footprint",  new ParameterDescriptor("footprint", Polygon2D.class));
-                        put("cloudcoverpercentage", new ParameterDescriptor("cloudcoverpercentage", Double.class, 100.));
-                        put("productType", new ParameterDescriptor("productType", String.class));
-                        put("collection", new ParameterDescriptor("collection", String.class, LandsatCollection.COLLECTION_1.toString()));
+                    put("Landsat8", new HashMap<String, DataSourceParameter>() {{
+                        put("platformName", new DataSourceParameter("platformName", String.class, "Landsat-8", true));
+                        put("sensingStart", new DataSourceParameter("sensingStart", Date.class));
+                        put("sensingEnd", new DataSourceParameter("sensingEnd", Date.class));
+                        put("path", new DataSourceParameter("path", String.class));
+                        put("row", new DataSourceParameter("row", String.class));
+                        put("row_path", new DataSourceParameter("row_path", String.class));
+                        put("footprint",  new DataSourceParameter("footprint", Polygon2D.class));
+                        put("cloudcoverpercentage", new DataSourceParameter("cloudcoverpercentage", Double.class, 100.));
+                        put("productType", new DataSourceParameter("productType", String.class));
+                        put("collection", new DataSourceParameter("collection", String.class, LandsatCollection.COLLECTION_1.toString()));
                     }});
                 }});
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
@@ -74,7 +74,7 @@ public class AWSParameterProvider implements ParameterProvider {
     }
 
     @Override
-    public Map<String, Map<String, ParameterDescriptor>> getSupportedParameters() {
+    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
         return parameters;
     }
 

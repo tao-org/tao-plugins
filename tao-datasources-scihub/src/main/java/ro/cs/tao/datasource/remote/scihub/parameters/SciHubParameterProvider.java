@@ -17,7 +17,7 @@ package ro.cs.tao.datasource.remote.scihub.parameters;
 
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
-import ro.cs.tao.datasource.param.ParameterDescriptor;
+import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel1DownloadStrategy;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel2DownloadStrategy;
@@ -34,7 +34,7 @@ import java.util.Map;
 public final class SciHubParameterProvider implements ParameterProvider {
 
     private static String[] sensors;
-    private static Map<String, Map<String, ParameterDescriptor>> parameters;
+    private static Map<String, Map<String, DataSourceParameter>> parameters;
     private static Map<String, ProductFetchStrategy> productFetchers;
 
     public SciHubParameterProvider() {
@@ -43,27 +43,27 @@ public final class SciHubParameterProvider implements ParameterProvider {
         }
         if (parameters == null) {
             parameters = Collections.unmodifiableMap(
-                    new HashMap<String, Map<String, ParameterDescriptor>>() {{
-                        put("Sentinel1", new HashMap<String, ParameterDescriptor>() {{
-                            put("platformName", new ParameterDescriptor("platformName", String.class, "Sentinel-1"));
-                            put("beginPosition", new ParameterDescriptor("beginPosition", Date.class));
-                            put("endPosition", new ParameterDescriptor("endPosition", Date.class));
-                            put("footprint", new ParameterDescriptor("footprint", Polygon2D.class));
-                            put("productType", new ParameterDescriptor("productType", String.class, "SLC"));
-                            put("polarisationMode", new ParameterDescriptor("polarisationMode", String.class));
-                            put("sensorOperationalMode", new ParameterDescriptor("sensorOperationalMode", String.class));
-                            put("relativeOrbitNumber", new ParameterDescriptor("relativeOrbitNumber", String.class));
+                    new HashMap<String, Map<String, DataSourceParameter>>() {{
+                        put("Sentinel1", new HashMap<String, DataSourceParameter>() {{
+                            put("platformName", new DataSourceParameter("platformName", String.class, "Sentinel-1"));
+                            put("beginPosition", new DataSourceParameter("beginPosition", Date.class));
+                            put("endPosition", new DataSourceParameter("endPosition", Date.class));
+                            put("footprint", new DataSourceParameter("footprint", Polygon2D.class));
+                            put("productType", new DataSourceParameter("productType", String.class, "SLC"));
+                            put("polarisationMode", new DataSourceParameter("polarisationMode", String.class));
+                            put("sensorOperationalMode", new DataSourceParameter("sensorOperationalMode", String.class));
+                            put("relativeOrbitNumber", new DataSourceParameter("relativeOrbitNumber", String.class));
                         }});
-                        put("Sentinel2", new HashMap<String, ParameterDescriptor>() {{
-                            put("platformName", new ParameterDescriptor("platformName", String.class, "Sentinel-2"));
-                            put("beginPosition", new ParameterDescriptor("beginPosition", Date.class));
-                            put("endPosition", new ParameterDescriptor("endPosition", Date.class));
-                            put("footprint", new ParameterDescriptor("footprint", Polygon2D.class));
-                            put("productType", new ParameterDescriptor("productType", String.class, "S2MSI1C"));
-                            put("cloudcoverpercentage", new ParameterDescriptor("cloudcoverpercentage", Double.class, 100.));
-                            put("relativeOrbitNumber", new ParameterDescriptor("relativeOrbitNumber", Short.class));
-                            put("product", new ParameterDescriptor("product", String.class, null, false));
-                            put("tileId", new ParameterDescriptor("tileId", String.class));
+                        put("Sentinel2", new HashMap<String, DataSourceParameter>() {{
+                            put("platformName", new DataSourceParameter("platformName", String.class, "Sentinel-2"));
+                            put("beginPosition", new DataSourceParameter("beginPosition", Date.class));
+                            put("endPosition", new DataSourceParameter("endPosition", Date.class));
+                            put("footprint", new DataSourceParameter("footprint", Polygon2D.class));
+                            put("productType", new DataSourceParameter("productType", String.class, "S2MSI1C"));
+                            put("cloudcoverpercentage", new DataSourceParameter("cloudcoverpercentage", Double.class, 100.));
+                            put("relativeOrbitNumber", new DataSourceParameter("relativeOrbitNumber", Short.class));
+                            put("product", new DataSourceParameter("product", String.class, null, false));
+                            put("tileId", new DataSourceParameter("tileId", String.class));
                         }});
                     }});
         }
@@ -86,7 +86,7 @@ public final class SciHubParameterProvider implements ParameterProvider {
     public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() { return productFetchers; }
 
     @Override
-    public Map<String, Map<String, ParameterDescriptor>> getSupportedParameters() {
+    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
         return parameters;
     }
 }
