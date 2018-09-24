@@ -69,40 +69,41 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
         metadata.setProductType("Sentinel1");
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
         metadata.setSize(FileUtilities.folderSize(productFolderPath));
-        try (InputStream inputStream = Files.newInputStream(productFolderPath.resolve(metadataFileName))) {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = builder.parse(inputStream);
-            Element root = document.getDocumentElement();
-            String points = getValue("coordinates", root);
-            if (points != null) {
-                String[] coords = points.trim().split(" ");
-                Polygon2D polygon2D = new Polygon2D();
-                for (String coord : coords) {
-                    polygon2D.append(Double.parseDouble(coord.substring(0, coord.indexOf(','))),
-                                     Double.parseDouble(coord.substring(coord.indexOf(',') + 1)));
-                }
-                polygon2D.append(Double.parseDouble(coords[0].substring(0, coords[0].indexOf(','))),
-                                 Double.parseDouble(coords[0].substring(coords[0].indexOf(',') + 1)));
-                metadata.setFootprint(polygon2D.toWKT(6));
+        //try (InputStream inputStream = Files.newInputStream(productFolderPath.resolve(metadataFileName))) {
+        String coordLine = Files.lines(productFolderPath.resolve(metadataFileName))
+                                .filter(l -> l.contains("<gml:coordinates>"))
+                                .findFirst().orElse(null);
+        if (coordLine != null) {
+            String points = coordLine.substring(coordLine.indexOf("<gml:coordinates>") + 17,
+                                                coordLine.indexOf("</gml:coordinates>"));
+            String[] coords = points.trim().split(" ");
+            Polygon2D polygon2D = new Polygon2D();
+            for (String coord : coords) {
+                polygon2D.append(Double.parseDouble(coord.substring(coord.indexOf(',') + 1)),
+                                 Double.parseDouble(coord.substring(0, coord.indexOf(','))));
             }
-            metadata.setCrs("EPSG:4326");
-            List<Path> annotations = FileUtilities.listFilesWithExtension(productFolderPath.resolve("annotation"), ".xml");
-            if (annotations != null) {
-                for (Path annotation : annotations) {
-                    try (InputStream gis = Files.newInputStream(annotation)) {
-                        Document gDoc = builder.parse(gis);
-                        Element gRoot = gDoc.getDocumentElement();
-                        if (metadata.getPixelType() == null) {
-                            metadata.setPixelType("16 bit Signed Integer".equals(getValue("outputPixels", gRoot)) ?
-                                                    PixelType.INT16 : PixelType.UINT16);
-                        }
-                        metadata.setWidth(Math.max(metadata.getWidth(), Integer.parseInt(getValue("numberOfSamples", gRoot))));
-                        metadata.setHeight(Math.max(metadata.getHeight(), Integer.parseInt(getValue("numberOfLines", gRoot))));
+            polygon2D.append(Double.parseDouble(coords[0].substring(coords[0].indexOf(',') + 1)),
+                             Double.parseDouble(coords[0].substring(0, coords[0].indexOf(','))));
+            metadata.setFootprint(polygon2D.toWKT(8));
+        }
+        metadata.setCrs("EPSG:4326");
+        List<Path> annotations = FileUtilities.listFilesWithExtension(productFolderPath.resolve("annotation"), ".xml");
+        if (annotations != null) {
+            for (Path annotation : annotations) {
+                try (InputStream gis = Files.newInputStream(annotation)) {
+                    DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                    Document gDoc = builder.parse(gis);
+                    Element gRoot = gDoc.getDocumentElement();
+                    if (metadata.getPixelType() == null) {
+                        metadata.setPixelType("16 bit Signed Integer".equals(getValue("outputPixels", gRoot)) ?
+                                                PixelType.INT16 : PixelType.UINT16);
                     }
+                    metadata.setWidth(Math.max(metadata.getWidth(), Integer.parseInt(getValue("numberOfSamples", gRoot))));
+                    metadata.setHeight(Math.max(metadata.getHeight(), Integer.parseInt(getValue("numberOfLines", gRoot))));
+                } catch (ParserConfigurationException | SAXException e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (ParserConfigurationException | SAXException e) {
-            e.printStackTrace();
         }
         return metadata;
     }
