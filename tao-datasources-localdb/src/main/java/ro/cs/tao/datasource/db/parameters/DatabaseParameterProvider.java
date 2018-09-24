@@ -19,7 +19,7 @@ import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.db.DatabaseSource;
 import ro.cs.tao.datasource.db.fetch.DatabaseFetchStrategy;
-import ro.cs.tao.datasource.param.ParameterDescriptor;
+import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
@@ -43,19 +43,19 @@ public class DatabaseParameterProvider implements ParameterProvider {
     }
 
     @Override
-    public Map<String, Map<String, ParameterDescriptor>> getSupportedParameters() {
+    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
         String[] sensors = getSupportedSensors();
         return Collections.unmodifiableMap(
-                new HashMap<String, Map<String, ParameterDescriptor>>() {{
+                new HashMap<String, Map<String, DataSourceParameter>>() {{
                     for (String sensor : sensors) {
-                        put(sensor, new HashMap<String, ParameterDescriptor>() {{
-                            put("name", new ParameterDescriptor("name", String[].class, false));
-                            put("type_id", new ParameterDescriptor("type_id", DataFormat.class, false));
-                            put("geometry", new ParameterDescriptor("geometry", Polygon2D.class, false));
-                            put("coordinate_reference_system", new ParameterDescriptor("coordinate_reference_system", String.class, false));
-                            put("sensor_type_id", new ParameterDescriptor("sensor_type_id", SensorType.class, false));
-                            put("acquisition_date", new ParameterDescriptor("acquisition_date", Date.class, false));
-                            put("product_type", new ParameterDescriptor("product_type", String.class, sensor));
+                        put(sensor, new HashMap<String, DataSourceParameter>() {{
+                            put("name", new DataSourceParameter("name", String[].class, false));
+                            put("type_id", new DataSourceParameter("type_id", DataFormat.class, false));
+                            put("geometry", new DataSourceParameter("geometry", Polygon2D.class, false));
+                            put("coordinate_reference_system", new DataSourceParameter("coordinate_reference_system", String.class, false));
+                            put("sensor_type_id", new DataSourceParameter("sensor_type_id", SensorType.class, false));
+                            put("acquisition_date", new DataSourceParameter("acquisition_date", Date.class, false));
+                            put("product_type", new DataSourceParameter("product_type", String.class, sensor));
                         }});
                     }
                 }});

@@ -17,7 +17,7 @@ package ro.cs.tao.datasource.remote.usgs.parameters;
 
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
-import ro.cs.tao.datasource.param.ParameterDescriptor;
+import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.usgs.download.LandsatDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
@@ -33,7 +33,7 @@ import java.util.Map;
 public class LandsatParameterProvider implements ParameterProvider {
 
     private static String[] sensors;
-    private static Map<String, Map<String, ParameterDescriptor>> parameters;
+    private static Map<String, Map<String, DataSourceParameter>> parameters;
     private static Map<String, ProductFetchStrategy> productFetchers;
 
     public LandsatParameterProvider() {
@@ -42,17 +42,17 @@ public class LandsatParameterProvider implements ParameterProvider {
         }
         if (parameters == null) {
             parameters = Collections.unmodifiableMap(
-                    new HashMap<String, Map<String, ParameterDescriptor>>() {{
-                        put("Landsat8", new HashMap<String, ParameterDescriptor>() {{
-                            put("satellite_name", new ParameterDescriptor("satellite_name", String.class, "landsat-8"));
-                            put("sensingStart", new ParameterDescriptor("date_from", Date.class));
-                            put("sensingEnd", new ParameterDescriptor("date_to", Date.class));
-                            put("footprint", new ParameterDescriptor("footprint", Polygon2D.class));
-                            put("cloud_from", new ParameterDescriptor("cloud_from", Double.class, 0.));
-                            put("cloud_to", new ParameterDescriptor("cloud_to", Double.class, 100.));
-                            put("row", new ParameterDescriptor("row", Integer.class));
-                            put("path", new ParameterDescriptor("path", Integer.class));
-                            put("row_path", new ParameterDescriptor("row_path", String[].class));
+                    new HashMap<String, Map<String, DataSourceParameter>>() {{
+                        put("Landsat8", new HashMap<String, DataSourceParameter>() {{
+                            put("satellite_name", new DataSourceParameter("satellite_name", String.class, "landsat-8"));
+                            put("sensingStart", new DataSourceParameter("date_from", Date.class));
+                            put("sensingEnd", new DataSourceParameter("date_to", Date.class));
+                            put("footprint", new DataSourceParameter("footprint", Polygon2D.class));
+                            put("cloud_from", new DataSourceParameter("cloud_from", Double.class, 0.));
+                            put("cloud_to", new DataSourceParameter("cloud_to", Double.class, 100.));
+                            put("row", new DataSourceParameter("row", Integer.class));
+                            put("path", new DataSourceParameter("path", Integer.class));
+                            put("row_path", new DataSourceParameter("row_path", String[].class));
                         }});
                     }});
         }
@@ -69,7 +69,7 @@ public class LandsatParameterProvider implements ParameterProvider {
     public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() { return productFetchers; }
 
     @Override
-    public Map<String, Map<String, ParameterDescriptor>> getSupportedParameters() {
+    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
         return parameters;
     }
 
