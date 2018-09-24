@@ -18,7 +18,7 @@ package ro.cs.tao.datasource.remote.aws;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
-import ro.cs.tao.datasource.param.ParameterDescriptor;
+import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.eodata.EOProduct;
 
@@ -134,7 +134,7 @@ public class AWSDataQuery extends DataQuery {
     }
 
     @Override
-    public Map<String, ParameterDescriptor> getSupportedParameters() {
+    public Map<String, DataSourceParameter> getSupportedParameters() {
         return innerQuery.getSupportedParameters();
     }
 
