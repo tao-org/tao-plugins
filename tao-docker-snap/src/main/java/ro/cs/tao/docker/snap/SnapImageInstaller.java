@@ -105,6 +105,7 @@ public class SnapImageInstaller extends BaseImageInstaller {
                             }
                         });
                     }
+                    component.addTags(getOrCreateTag(container.getName()).getText());
                     persistenceManager.saveProcessingComponent(component);
                 } catch (Exception inner) {
                     logger.severe(String.format("Faulty component: %s. Error: %s",
