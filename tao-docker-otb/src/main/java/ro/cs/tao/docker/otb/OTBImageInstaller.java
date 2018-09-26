@@ -128,6 +128,7 @@ public class OTBImageInstaller extends BaseImageInstaller {
                     component.setTemplateContents(String.join("\n", tokens));
                     component.setComponentType(ProcessingComponentType.EXECUTABLE);
                     component.setOwner(SystemPrincipal.instance().getName());
+                    component.addTags(getOrCreateTag(container.getName()).getText());
                     persistenceManager.saveProcessingComponent(component);
                 } catch (Exception inner) {
                     logger.severe(String.format("Faulty component: %s. Error: %s",
