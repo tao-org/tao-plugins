@@ -13,8 +13,8 @@ RUN yum -y install epel-release && \
      yum -y install curl bzip2 file which gd libxslt libxml2 python-devel python-pip gcc gcc-c++ git && \
      yum -y clean all
 
-
-RUN     pip install lxml matplotlib numpy scipy scikit-image numexpr
+RUN pip install -U pip
+RUN pip install lxml matplotlib numpy scipy scikit-image numexpr
 
 RUN curl -L https://www.orfeo-toolbox.org/packages/archives/OTB-${OTB_VERSION}-Linux64.run -o OTB-${OTB_VERSION}-Linux64.run && \
      chmod +x OTB-${OTB_VERSION}-Linux64.run && \
