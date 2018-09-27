@@ -23,7 +23,7 @@ RUN yum -y install epel-release; yum -y update && yum -y install \
         git \
         && yum -y clean all
 #RUN echo pip stage
-#RUN pip install -U pip
+RUN pip install -U pip
 RUN pip install lxml \
         matplotlib \
         numpy \
