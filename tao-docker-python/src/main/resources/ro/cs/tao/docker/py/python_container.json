@@ -6,7 +6,8 @@
   "applications": [
     {
       "path": "python",
-      "name": "sample.py"
+      "name": "sample.py",
+      "memoryRequirements": 2048
     }
   ]
 }

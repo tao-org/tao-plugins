@@ -6,532 +6,710 @@
 	"applications": [
 		{
 			"path": "gpt",
-			"name": "Aatsr.SST"
+			"name": "Aatsr.SST",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "AATSR.Ungrid"
+			"name": "AATSR.Ungrid",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "AdaptiveThresholding"
+			"name": "AdaptiveThresholding",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "AddElevation"
+			"name": "AddElevation",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "AddLandCover"
+			"name": "AddLandCover",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "AerosolRetrieval.S2.Master"
+			"name": "AerosolRetrieval.S2.Master",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "ALOS-Deskewing"
+			"name": "ALOS-Deskewing",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Apply-Orbit-File"
+			"name": "Apply-Orbit-File",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Arc.SST"
-		},		{
+			"name": "Arc.SST",
+			"memoryRequirements": 8192
+		},
+		{
 			"path": "gpt",
-			"name": "ArviOp"
-		},		{
+			"name": "ArviOp",
+			"memoryRequirements": 8192
+		},
+		{
 			"path": "gpt",
-			"name": "AzimuthFilter"
+			"name": "AzimuthFilter",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Back-Geocoding"
+			"name": "Back-Geocoding",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "BandMaths"
+			"name": "BandMaths",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "BandMerge"
+			"name": "BandMerge",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "BandSelect"
+			"name": "BandSelect",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Bi2Op"
+			"name": "Bi2Op",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Binning"
+			"name": "Binning",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "BiOp"
+			"name": "BiOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "BiophysicalOp"
+			"name": "BiophysicalOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "c2rcc.landsat8"
+			"name": "c2rcc.landsat8",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "c2rcc.meris"
+			"name": "c2rcc.meris",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "c2rcc.meris4"
+			"name": "c2rcc.meris4",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "c2rcc.modis"
+			"name": "c2rcc.modis",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "c2rcc.msi"
+			"name": "c2rcc.msi",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "c2rcc.olci"
+			"name": "c2rcc.olci",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "c2rcc.seawifs"
+			"name": "c2rcc.seawifs",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "c2rcc.viirs"
+			"name": "c2rcc.viirs",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Calibration"
+			"name": "Calibration",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "CCICloudShadow"
+			"name": "CCICloudShadow",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Change-Detection"
+			"name": "Change-Detection",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "CiOp"
+			"name": "CiOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "CloudProb"
+			"name": "CloudProb",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Coherence"
+			"name": "Coherence",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Collocate"
+			"name": "Collocate",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Convert-Datatype"
+			"name": "Convert-Datatype",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "CreateStack"
+			"name": "CreateStack",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Cross-Correlation"
+			"name": "Cross-Correlation",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "CrossResampling"
+			"name": "CrossResampling",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "DeburstWSS"
+			"name": "DeburstWSS",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "DEM-Assisted-Coregistration"
+			"name": "DEM-Assisted-Coregistration",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Double-Difference-Interferogram"
+			"name": "Double-Difference-Interferogram",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "DviOp"
+			"name": "DviOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "EAP-Phase-Correction"
+			"name": "EAP-Phase-Correction",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Ellipsoid-Correction-GG"
+			"name": "Ellipsoid-Correction-GG",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Ellipsoid-Correction-RD"
+			"name": "Ellipsoid-Correction-RD",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "EMClusterAnalysis"
+			"name": "EMClusterAnalysis",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Enhanced-Spectral-Diversity"
+			"name": "Enhanced-Spectral-Diversity",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Fill-DEM-Hole"
+			"name": "Fill-DEM-Hole",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Find-Image-Pair"
+			"name": "Find-Image-Pair",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "FlhMci"
+			"name": "FlhMci",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Flip"
+			"name": "Flip",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "FUB.Water"
+			"name": "FUB.Water",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "FuClassification"
+			"name": "FuClassification",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "GemiOp"
+			"name": "GemiOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "GenericRegionMergingOp"
+			"name": "GenericRegionMergingOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "GLCM"
+			"name": "GLCM",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "GndviOp"
+			"name": "GndviOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "GoldsteinPhaseFiltering"
+			"name": "GoldsteinPhaseFiltering",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "GRD-Post"
+			"name": "GRD-Post",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Idepix.Envisat.Meris"
+			"name": "Idepix.Envisat.Meris",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Idepix.Landsat8.OLI"
+			"name": "Idepix.Landsat8.OLI",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Idepix.OrbView2.Seawifs"
+			"name": "Idepix.OrbView2.Seawifs",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Idepix.Probav.Vegetation"
+			"name": "Idepix.Probav.Vegetation",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Idepix.Sentinel2"
+			"name": "Idepix.Sentinel2",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Idepix.Sentinel3.Olci"
+			"name": "Idepix.Sentinel3.Olci",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Idepix.Sentinel3.OlciSlstr"
+			"name": "Idepix.Sentinel3.OlciSlstr",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Idepix.SuomiNpp.Viirs"
+			"name": "Idepix.SuomiNpp.Viirs",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Idepix.TerraAqua.Modis"
+			"name": "Idepix.TerraAqua.Modis",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Image-Filter"
+			"name": "Image-Filter",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Import-Vector"
+			"name": "Import-Vector",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "IntegerInterferogram"
+			"name": "IntegerInterferogram",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Interferogram"
+			"name": "Interferogram",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "IpviOp"
+			"name": "IpviOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "IreciOp"
+			"name": "IreciOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "KDTree-KNN-Classifier"
+			"name": "KDTree-KNN-Classifier",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "KMeansClusterAnalysis"
+			"name": "KMeansClusterAnalysis",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "KNN-Classifier"
+			"name": "KNN-Classifier",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Land-Cover-Mask"
+			"name": "Land-Cover-Mask",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Land-Sea-Mask"
+			"name": "Land-Sea-Mask",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "LandWaterMask"
+			"name": "LandWaterMask",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "LinearToFromdB"
+			"name": "LinearToFromdB",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Maximum-Likelihood-Classifier"
+			"name": "Maximum-Likelihood-Classifier",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "McariOp"
+			"name": "McariOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Mci.s2"
+			"name": "Mci.s2",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Merge"
+			"name": "Merge",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Meris.CorrectRadiometry"
+			"name": "Meris.CorrectRadiometry",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Meris.N1Patcher"
+			"name": "Meris.N1Patcher",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Minimum-Distance-Classifier"
+			"name": "Minimum-Distance-Classifier",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "MndwiOp"
+			"name": "MndwiOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Mosaic"
+			"name": "Mosaic",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "MphChl"
+			"name": "MphChl",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Msavi2Op"
+			"name": "Msavi2Op",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "MsaviOp"
+			"name": "MsaviOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "MtciOp"
+			"name": "MtciOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Multi-size Mosaic"
+			"name": "Multi-size Mosaic",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Multi-Temporal-Speckle-Filter"
+			"name": "Multi-Temporal-Speckle-Filter",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Multilook"
+			"name": "Multilook",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Ndi45Op"
+			"name": "Ndi45Op",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "NdpiOp"
+			"name": "NdpiOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "NdtiOp"
+			"name": "NdtiOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "NdviOp"
+			"name": "NdviOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Ndwi2Op"
+			"name": "Ndwi2Op",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "NdwiOp"
+			"name": "NdwiOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Object-Discrimination"
+			"name": "Object-Discrimination",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Offset-Tracking"
+			"name": "Offset-Tracking",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Oil-Spill-Clustering"
+			"name": "Oil-Spill-Clustering",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Oil-Spill-Detection"
+			"name": "Oil-Spill-Detection",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Oversample"
+			"name": "Oversample",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "OWTClassification"
+			"name": "OWTClassification",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "PCA"
+			"name": "PCA",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "PduStitching"
+			"name": "PduStitching",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "PhaseFilter"
+			"name": "PhaseFilter",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "PhaseToDisplacement"
+			"name": "PhaseToDisplacement",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "PhaseToElevation"
+			"name": "PhaseToElevation",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "PhaseToHeight"
+			"name": "PhaseToHeight",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "PixEx"
+			"name": "PixEx",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Principle-Components"
+			"name": "Principle-Components",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "ProductSet-Reader"
+			"name": "ProductSet-Reader",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "PssraOp"
+			"name": "PssraOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "PviOp"
+			"name": "PviOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Rad2Refl"
+			"name": "Rad2Refl",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Random-Forest-Classifier"
+			"name": "Random-Forest-Classifier",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "RangeFilter"
+			"name": "RangeFilter",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "RayleighCorrection"
+			"name": "RayleighCorrection",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Read"
+			"name": "Read",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "ReflectanceToRadianceOp"
+			"name": "ReflectanceToRadianceOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "ReipOp"
+			"name": "ReipOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Remove-GRD-Border-Noise"
+			"name": "Remove-GRD-Border-Noise",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "RemoveAntennaPattern"
+			"name": "RemoveAntennaPattern",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "ReplaceMetadata"
+			"name": "ReplaceMetadata",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Reproject"
+			"name": "Reproject",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Resample"
+			"name": "Resample",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "RiOp"
+			"name": "RiOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "RviOp"
+			"name": "RviOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "S2.WaterVapour"
+			"name": "S2.WaterVapour",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "S2repOp"
+			"name": "S2repOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "S2Resampling"
+			"name": "S2Resampling",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "SAR-Mosaic"
+			"name": "SAR-Mosaic",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "SAR-Simulation"
+			"name": "SAR-Simulation",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "SARSim-Terrain-Correction"
+			"name": "SARSim-Terrain-Correction",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "SaviOp"
+			"name": "SaviOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "SetNoDataValue"
+			"name": "SetNoDataValue",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "SliceAssembly"
+			"name": "SliceAssembly",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "SmacOp"
+			"name": "SmacOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "SnaphuExport"
+			"name": "SnaphuExport",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "SnaphuImport"
+			"name": "SnaphuImport",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Speckle-Divergence"
+			"name": "Speckle-Divergence",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Speckle-Filter"
+			"name": "Speckle-Filter",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "SRGR"
+			"name": "SRGR",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Stack-Averaging"
+			"name": "Stack-Averaging",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Stack-Split"
+			"name": "Stack-Split",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "StampsExport"
+			"name": "StampsExport",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "StatisticsOp"
+			"name": "StatisticsOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "SubGraph"
+			"name": "SubGraph",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Subset"
+			"name": "Subset",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "TemporalPercentile"
+			"name": "TemporalPercentile",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Terrain-Correction"
+			"name": "Terrain-Correction",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Terrain-Flattening"
+			"name": "Terrain-Flattening",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Terrain-Mask"
+			"name": "Terrain-Mask",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "ThermalNoiseRemoval"
+			"name": "ThermalNoiseRemoval",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Three-passDInSAR"
+			"name": "Three-passDInSAR",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "TileWriter"
+			"name": "TileWriter",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "TndviOp"
+			"name": "TndviOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "ToolAdapterOp"
+			"name": "ToolAdapterOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "TopoPhaseRemoval"
+			"name": "TopoPhaseRemoval",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "TOPSAR-Deburst"
+			"name": "TOPSAR-Deburst",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "TOPSAR-Merge"
+			"name": "TOPSAR-Merge",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "TOPSAR-Split"
+			"name": "TOPSAR-Split",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "TsaviOp"
+			"name": "TsaviOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Undersample"
+			"name": "Undersample",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Unmix"
+			"name": "Unmix",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Update-Geo-Reference"
+			"name": "Update-Geo-Reference",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Warp"
+			"name": "Warp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "WdviOp"
+			"name": "WdviOp",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Wind-Field-Estimation"
+			"name": "Wind-Field-Estimation",
+			"memoryRequirements": 8192
 		},		{
 			"path": "gpt",
-			"name": "Write"
+			"name": "Write",
+			"memoryRequirements": 8192
 		}
 	]
 }
