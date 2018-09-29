@@ -10,7 +10,7 @@ import java.util.Date;
 public class Sentinel1ProductPathBuilder extends DefaultProductPathBuilder {
 
     public Sentinel1ProductPathBuilder(Path repositoryPath, String localPathFormat) {
-        super(repositoryPath, localPathFormat);
+        super(repositoryPath, localPathFormat, null);
     }
 
     @Override
