@@ -16,7 +16,6 @@
 package ro.cs.tao.datasource.remote.scihub.download;
 
 import ro.cs.tao.datasource.InterruptedException;
-import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.ProductHelper;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
@@ -25,10 +24,8 @@ import ro.cs.tao.products.sentinels.SentinelProductHelper;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
 
 /**
  * @author Cosmin Cara
@@ -45,39 +42,6 @@ public class Sentinel1DownloadStrategy extends SentinelDownloadStrategy {
 
     @Override
     public Sentinel1DownloadStrategy clone() { return new Sentinel1DownloadStrategy(this); }
-
-    @Override
-    protected Path findProductPath(Path root, EOProduct product) {
-        // Products are assumed to be organized according to the pattern defined in tao.properties
-        Date date = product.getAcquisitionDate();
-        final String format = this.props.getProperty(DownloadStrategy.LOCAL_PATH_FORMAT, "yyyy/MM/dd");
-        final String productName = product.getAttributeValue("filename") != null ?
-                product.getAttributeValue("filename") : product.getName();
-        Path productFolderPath = dateToPath(root, date, format);
-        Path fullProductPath = productFolderPath.resolve(productName);
-        if (!Files.exists(fullProductPath)) {
-            // Maybe it's an archived product in the sensing date folder
-            fullProductPath = productFolderPath.resolve(productName.replace(".SAFE", "").concat(".zip"));
-            if (!Files.exists(fullProductPath)) {
-                // maybe products are grouped by processing date
-                date = product.getProcessingDate();
-                if (date != null) {
-                    productFolderPath = dateToPath(root, date, format);
-                    fullProductPath = productFolderPath.resolve(productName);
-                    if (!Files.exists(fullProductPath)) {
-                        //Maybe it's an archived product in the processing date folder
-                        fullProductPath = productFolderPath.resolve(productName.replace(".SAFE", "").concat(".zip"));
-                        if (!Files.exists(fullProductPath)) {
-                            fullProductPath = null;
-                        }
-                    }
-                } else {
-                    fullProductPath = null;
-                }
-            }
-        }
-        return fullProductPath;
-    }
 
     @Override
     protected Path fetchImpl(EOProduct product) throws IOException, InterruptedException {
