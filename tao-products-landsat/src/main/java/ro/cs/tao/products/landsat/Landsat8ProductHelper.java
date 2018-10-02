@@ -64,7 +64,7 @@ public class Landsat8ProductHelper extends ProductHelper {
         return this.productType;
     }
 
-    String getRow() {
+    public String getRow() {
         if (this.row == null && this.nameTokens != null) {
             this.row = nameTokens[1];
         }
