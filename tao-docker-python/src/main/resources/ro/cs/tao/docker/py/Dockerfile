@@ -20,7 +20,7 @@ RUN pip install lxml \
                 numexpr
 
 WORKDIR /opt
-ADD . /opt
+#ADD . /opt
 
-CMD ["/bin/sh","python","test1.py"]
+#CMD ["/bin/sh","python","test1.py"]
 
