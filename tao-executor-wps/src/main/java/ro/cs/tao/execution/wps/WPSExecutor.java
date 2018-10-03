@@ -93,6 +93,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
         if(!isInitialized) {
             return;
         }
+
         //TODO: Not yet implemented in GeoTools-WPS
         /*WebProcessingService wps = new WebProcessingService(new URL(wpsComponent.getRemoteAddress()));
         GetExecutionStatusRequest execRequest = wps.createGetExecutionStatusRequest();
