@@ -20,6 +20,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.eodata.enums.OrbitDirection;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
@@ -69,7 +70,6 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
         metadata.setProductType("Sentinel1");
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
         metadata.setSize(FileUtilities.folderSize(productFolderPath));
-        //try (InputStream inputStream = Files.newInputStream(productFolderPath.resolve(metadataFileName))) {
         String coordLine = Files.lines(productFolderPath.resolve(metadataFileName))
                                 .filter(l -> l.contains("<gml:coordinates>"))
                                 .findFirst().orElse(null);
@@ -85,6 +85,13 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
             polygon2D.append(Double.parseDouble(coords[0].substring(coords[0].indexOf(',') + 1)),
                              Double.parseDouble(coords[0].substring(0, coords[0].indexOf(','))));
             metadata.setFootprint(polygon2D.toWKT(8));
+        }
+        String orbitLine = Files.lines(productFolderPath.resolve(metadataFileName))
+                                .filter(l -> l.contains("<s1:pass>"))
+                                .findFirst().orElse(null);
+        if (orbitLine != null) {
+            metadata.setOrbitDirection(OrbitDirection.valueOf(orbitLine.substring(orbitLine.indexOf("<s1:pass>") + 9,
+                                                                                  orbitLine.indexOf("</s1:pass>"))));
         }
         metadata.setCrs("EPSG:4326");
         List<Path> annotations = FileUtilities.listFilesWithExtension(productFolderPath.resolve("annotation"), ".xml");
