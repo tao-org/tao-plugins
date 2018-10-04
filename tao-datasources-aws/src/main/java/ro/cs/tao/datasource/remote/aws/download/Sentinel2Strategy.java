@@ -129,7 +129,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
         String url;
         checkCancelled();
         currentProduct = product;
-        currentProductProgress = 0;
+        currentProductProgress = new ProductProgress(0, false);
         FileUtilities.ensureExists(Paths.get(destination));
         String productName = product.getName();
         Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(productName);
@@ -303,7 +303,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
         String url;
         checkCancelled();
         currentProduct = product;
-        currentProductProgress = 0;
+        currentProductProgress = new ProductProgress(0, false);
         String productName = product.getName();
         String localArchiveRoot = getLocalArchiveRoot();
         if (localArchiveRoot == null) {
