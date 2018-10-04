@@ -22,6 +22,7 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.products.landsat.Landsat8ProductHelper;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -80,6 +81,8 @@ public class ResponseHandler implements JSonResponseHandler<EOProduct> {
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
+            Landsat8ProductHelper helper = new Landsat8ProductHelper(currentProduct.getName());
+            currentProduct.addAttribute("tiles", helper.getPath() + helper.getRow());
             results.add(currentProduct);
         }
         return results;
