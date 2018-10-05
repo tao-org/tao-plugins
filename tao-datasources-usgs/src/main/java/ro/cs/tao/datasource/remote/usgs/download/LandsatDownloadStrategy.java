@@ -94,7 +94,6 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
         Path productFile;
         if (currentProduct == null) {
             currentProduct = product;
-            currentProductProgress = 0;
         }
         String productUrl = getProductUrl(product);
         try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, productUrl, null)) {
@@ -110,6 +109,7 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
                         InputStream inputStream = response.getEntity().getContent();
                         SeekableByteChannel outputStream = null;
                         currentProduct.setApproximateSize(response.getEntity().getContentLength());
+                        currentProductProgress = new ProductProgress(currentProduct.getApproximateSize(), false);
                         try {
                             outputStream = Files.newByteChannel(archivePath, EnumSet.of(StandardOpenOption.CREATE,
                                     StandardOpenOption.APPEND,
@@ -121,8 +121,7 @@ public class LandsatDownloadStrategy extends DownloadStrategy {
                             while (!isCancelled() && (read = inputStream.read(buffer)) != -1) {
                                 outputStream.write(ByteBuffer.wrap(buffer, 0, read));
                                 totalRead += read;
-                                currentProductProgress = Math.min(1.0, currentProduct.getApproximateSize() > 0 ?
-                                        (double) totalRead / (double) currentProduct.getApproximateSize() : 0);
+                                currentProductProgress.add(totalRead);
                             }
                             outputStream.close();
                             logger.fine("End reading from input stream");
