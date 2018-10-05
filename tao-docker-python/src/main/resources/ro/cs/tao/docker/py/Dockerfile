@@ -1,33 +1,26 @@
-FROM centos:centos7
+FROM ubuntu:18.04
 
-LABEL maintainer="tao@c-s.ro" \
-       description="Prepare an python 2.7 environment with common used scientifique library."
 
-# The versions of stuff
-ENV PYTHON_VERSION 2.7.15
-
-WORKDIR /opt/
-
-RUN yum -y install epel-release; yum -y update && yum -y install \
+RUN apt update && apt -y upgrade && apt autoremove -y
+RUN apt -y install wget \
         curl \
-        bzip2 \
-        file \
-        which \
-        gd \
-        libxslt \
-        libxml2 \
-        python-devel \
-        python-pip \
-        gcc \
-        gcc-c++ \
-        git \
-        && yum -y clean all
-#RUN echo pip stage
-RUN pip install -U pip
+        zip \
+        vim \
+        python \
+        python-pip
+#RUN pip install numpy \
+#                scipy \
+#                matplotlib \
+#                pandas
 RUN pip install lxml \
-        matplotlib \
-        numpy \
-        scipy \
-        scikit-image \
-        numexpr
-        #pip install gdal==2.2.1
+                matplotlib \
+                numpy \
+                scipy \
+                scikit-image \
+                numexpr
+
+WORKDIR /opt
+#ADD . /opt
+
+#CMD ["/bin/sh","python","test1.py"]
+
