@@ -22,10 +22,7 @@ import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.usgs.download.LandsatDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Cosmin Cara
@@ -43,7 +40,7 @@ public class LandsatParameterProvider implements ParameterProvider {
         if (parameters == null) {
             parameters = Collections.unmodifiableMap(
                     new HashMap<String, Map<String, DataSourceParameter>>() {{
-                        put("Landsat8", new HashMap<String, DataSourceParameter>() {{
+                        put("Landsat8", new LinkedHashMap<String, DataSourceParameter>() {{
                             put("satellite_name", new DataSourceParameter("satellite_name", String.class, "landsat-8"));
                             put("sensingStart", new DataSourceParameter("date_from", Date.class));
                             put("sensingEnd", new DataSourceParameter("date_to", Date.class));

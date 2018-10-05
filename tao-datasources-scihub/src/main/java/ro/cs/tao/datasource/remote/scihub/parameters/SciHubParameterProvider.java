@@ -23,10 +23,7 @@ import ro.cs.tao.datasource.remote.scihub.download.Sentinel1DownloadStrategy;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel2DownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Cosmin Cara
@@ -44,7 +41,7 @@ public final class SciHubParameterProvider implements ParameterProvider {
         if (parameters == null) {
             parameters = Collections.unmodifiableMap(
                     new HashMap<String, Map<String, DataSourceParameter>>() {{
-                        put("Sentinel1", new HashMap<String, DataSourceParameter>() {{
+                        put("Sentinel1", new LinkedHashMap<String, DataSourceParameter>() {{
                             put("platformName", new DataSourceParameter("platformName", String.class, "Sentinel-1"));
                             put("beginPosition", new DataSourceParameter("beginPosition", Date.class));
                             put("endPosition", new DataSourceParameter("endPosition", Date.class));
@@ -54,7 +51,7 @@ public final class SciHubParameterProvider implements ParameterProvider {
                             put("sensorOperationalMode", new DataSourceParameter("sensorOperationalMode", String.class));
                             put("relativeOrbitNumber", new DataSourceParameter("relativeOrbitNumber", String.class));
                         }});
-                        put("Sentinel2", new HashMap<String, DataSourceParameter>() {{
+                        put("Sentinel2", new LinkedHashMap<String, DataSourceParameter>() {{
                             put("platformName", new DataSourceParameter("platformName", String.class, "Sentinel-2"));
                             put("beginPosition", new DataSourceParameter("beginPosition", Date.class));
                             put("endPosition", new DataSourceParameter("endPosition", Date.class));

@@ -23,10 +23,7 @@ import ro.cs.tao.datasource.remote.peps.Collection;
 import ro.cs.tao.datasource.remote.peps.download.PepsDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Cosmin Cara
@@ -41,7 +38,7 @@ public class PepsParameterProvider implements ParameterProvider {
         sensors = new String[] { "Sentinel1", "Sentinel2" };
         parameters = Collections.unmodifiableMap(
                 new HashMap<String, Map<String, DataSourceParameter>>() {{
-                    put("Sentinel1", new HashMap<String, DataSourceParameter>() {{
+                    put("Sentinel1", new LinkedHashMap<String, DataSourceParameter>() {{
                         put("collection", new DataSourceParameter("collection", String.class, Collection.S1.toString(), true));
                         put("platform", new DataSourceParameter("platform", String.class));
                         put("instrument", new DataSourceParameter("instrument", String.class));
@@ -57,7 +54,7 @@ public class PepsParameterProvider implements ParameterProvider {
                         put("box",  new DataSourceParameter("box", Polygon2D.class, true));
                         put("polarisation",  new DataSourceParameter("polarisation", String.class));
                     }});
-                    put("Sentinel2", new HashMap<String, DataSourceParameter>() {{
+                    put("Sentinel2", new LinkedHashMap<String, DataSourceParameter>() {{
                         put("collection", new DataSourceParameter("collection", String.class, true));
                         put("platform", new DataSourceParameter("platform", String.class));
                         put("instrument", new DataSourceParameter("instrument", String.class));

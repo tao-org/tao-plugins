@@ -24,10 +24,7 @@ import ro.cs.tao.datasource.remote.aws.download.Landsat8Strategy;
 import ro.cs.tao.datasource.remote.aws.download.Sentinel2Strategy;
 import ro.cs.tao.eodata.Polygon2D;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Cosmin Cara
@@ -42,7 +39,7 @@ public class AWSParameterProvider implements ParameterProvider {
         sensors = new String[] { "Sentinel2", "Landsat8" };
         parameters = Collections.unmodifiableMap(
                 new HashMap<String, Map<String, DataSourceParameter>>() {{
-                    put("Sentinel2", new HashMap<String, DataSourceParameter>() {{
+                    put("Sentinel2", new LinkedHashMap<String, DataSourceParameter>() {{
                         put("platformName", new DataSourceParameter("platformName", String.class, "Sentinel-2", true));
                         put("beginPosition",  new DataSourceParameter("beginPosition", Date.class));
                         put("endPosition",  new DataSourceParameter("endPosition", Date.class));
@@ -52,7 +49,7 @@ public class AWSParameterProvider implements ParameterProvider {
                         put("cloudcoverpercentage",  new DataSourceParameter("cloudcoverpercentage", Double.class, 100.));
                         put("relativeOrbitNumber",  new DataSourceParameter("relativeOrbitNumber", Short.class));
                     }});
-                    put("Landsat8", new HashMap<String, DataSourceParameter>() {{
+                    put("Landsat8", new LinkedHashMap<String, DataSourceParameter>() {{
                         put("platformName", new DataSourceParameter("platformName", String.class, "Landsat-8", true));
                         put("sensingStart", new DataSourceParameter("sensingStart", Date.class));
                         put("sensingEnd", new DataSourceParameter("sensingEnd", Date.class));
