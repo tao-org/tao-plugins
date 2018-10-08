@@ -37,7 +37,7 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-wps</artifactId>
-            <version>21-SNAPSHOT</version>
+            <version>${geotools.version}</version>
         </dependency>
     </dependencies>
 
