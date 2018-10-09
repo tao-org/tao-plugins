@@ -24,6 +24,7 @@ import ro.cs.tao.datasource.db.DatabaseSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.security.SessionStore;
 
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -63,16 +64,16 @@ public class DatabaseFetchStrategy implements ProductFetchStrategy {
         Path productPath = null;
         if (product != null && product.getLocation() != null) {
             this.progressListener.started(product.getName());
-            productPath = Paths.get(product.getLocation());
+            productPath = Paths.get(URI.create(product.getLocation()));
             if (!productPath.isAbsolute()) {
                 productPath = SessionStore.currentContext().getWorkspace().resolve(productPath);
                 if (product.getEntryPoint() != null) {
                     productPath = productPath.resolve(product.getEntryPoint());
                 }
             }
-            if (Files.notExists(productPath)) {
+            if (!Files.exists(productPath.toAbsolutePath())) {
                 Logger.getLogger(DatabaseFetchStrategy.class.getName()).warning(String.format("Product '%s' not found",
-                                                                                              product.getName()));
+                                                                                              productPath.toAbsolutePath()));
                 productPath = null;
             }
         }
