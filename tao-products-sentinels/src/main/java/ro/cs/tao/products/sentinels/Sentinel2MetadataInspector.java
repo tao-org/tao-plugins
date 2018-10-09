@@ -21,6 +21,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.PixelType;
+import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
 import ro.cs.tao.utils.FileUtilities;
@@ -70,6 +71,7 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
         String metadataFileName = helper.getMetadataFileName();
         metadata.setEntryPoint(metadataFileName);
         metadata.setPixelType(PixelType.UINT16);
+        metadata.setSensorType(SensorType.OPTICAL);
         metadata.setProductType("Sentinel2");
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
         metadata.setSize(FileUtilities.folderSize(productFolderPath));
