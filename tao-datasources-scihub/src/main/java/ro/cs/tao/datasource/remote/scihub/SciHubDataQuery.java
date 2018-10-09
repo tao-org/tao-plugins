@@ -289,7 +289,7 @@ public class SciHubDataQuery extends DataQuery {
                 idx++;
             }
             queries.add(query.toString());
-            logger.info(String.format("%s\t%s\t%s",
+            logger.fine(String.format("%s\t%s\t%s",
                                       footprint != null ? Sentinel2TileExtent.getInstance().intersectingTiles(Polygon2D.fromWKT(footprint)) : "n/a",
                                       footprint != null ? footprint : "n/a",
                                       query.toString()));
