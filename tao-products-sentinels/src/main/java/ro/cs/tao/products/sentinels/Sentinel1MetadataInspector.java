@@ -22,6 +22,7 @@ import org.xml.sax.SAXException;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.OrbitDirection;
 import ro.cs.tao.eodata.enums.PixelType;
+import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
 import ro.cs.tao.utils.FileUtilities;
@@ -68,6 +69,7 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
         String metadataFileName = helper.getMetadataFileName();
         metadata.setEntryPoint(metadataFileName);
         metadata.setProductType("Sentinel1");
+        metadata.setSensorType(SensorType.RADAR);
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
         metadata.setSize(FileUtilities.folderSize(productFolderPath));
         String coordLine = Files.lines(productFolderPath.resolve(metadataFileName))
