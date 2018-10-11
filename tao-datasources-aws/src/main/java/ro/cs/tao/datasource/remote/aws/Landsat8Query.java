@@ -156,6 +156,9 @@ class Landsat8Query extends DataQuery {
                 }
             }
             for (String tile : tiles) {
+                if (tile == null || tile.length() != 6) {
+                    throw new QueryException(String.format("Invalid tile: %s. Landsat-8 tils have the format PPPRRR.", tile));
+                }
                 String path = tile.substring(0, 3);
                 String row = tile.substring(3, 6);
                 String tileUrl = alternateUrl + path + DownloadStrategy.URL_SEPARATOR + row + DownloadStrategy.URL_SEPARATOR;

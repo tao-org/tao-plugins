@@ -48,7 +48,7 @@ public class DatabaseParameterProvider implements ParameterProvider {
         return Collections.unmodifiableMap(
                 new HashMap<String, Map<String, DataSourceParameter>>() {{
                     for (String sensor : sensors) {
-                        put(sensor, new HashMap<String, DataSourceParameter>() {{
+                        put(sensor, new LinkedHashMap<String, DataSourceParameter>() {{
                             put("name", new DataSourceParameter("name", String[].class, false));
                             put("type_id", new DataSourceParameter("type_id", DataFormat.class, false));
                             put("geometry", new DataSourceParameter("geometry", Polygon2D.class, false));
