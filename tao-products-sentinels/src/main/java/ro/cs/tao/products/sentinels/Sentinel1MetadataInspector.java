@@ -73,30 +73,34 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
         metadata.setSensorType(SensorType.RADAR);
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
         metadata.setSize(FileUtilities.folderSize(productFolderPath));
-        String coordLine;
-        try(Stream<String> lines = Files.lines(productFolderPath.resolve(metadataFileName))) {
-            coordLine = lines.filter(l -> l.contains("<gml:coordinates>")).findFirst().orElse(null);
-        }
-        if (coordLine != null) {
-            String points = coordLine.substring(coordLine.indexOf("<gml:coordinates>") + 17,
-                                                coordLine.indexOf("</gml:coordinates>"));
-            String[] coords = points.trim().split(" ");
-            Polygon2D polygon2D = new Polygon2D();
-            for (String coord : coords) {
-                polygon2D.append(Double.parseDouble(coord.substring(coord.indexOf(',') + 1)),
-                                 Double.parseDouble(coord.substring(0, coord.indexOf(','))));
-            }
-            polygon2D.append(Double.parseDouble(coords[0].substring(coords[0].indexOf(',') + 1)),
-                             Double.parseDouble(coords[0].substring(0, coords[0].indexOf(','))));
-            metadata.setFootprint(polygon2D.toWKT(8));
-        }
-        String orbitLine;
         try (Stream<String> lines = Files.lines(productFolderPath.resolve(metadataFileName))) {
-            orbitLine = lines.filter(l -> l.contains("<s1:pass>")).findFirst().orElse(null);
-        }
-        if (orbitLine != null) {
-            metadata.setOrbitDirection(OrbitDirection.valueOf(orbitLine.substring(orbitLine.indexOf("<s1:pass>") + 9,
-                                                                                  orbitLine.indexOf("</s1:pass>"))));
+            final BooleanWrapper infoInNextLine = new BooleanWrapper();
+            lines.forEach(line -> {
+                if (line.contains("<gml:coordinates>")) {
+                    String points = line.substring(line.indexOf("<gml:coordinates>") + 17,
+                                                   line.indexOf("</gml:coordinates>"));
+                    String[] coords = points.trim().split(" ");
+                    Polygon2D polygon2D = new Polygon2D();
+                    for (String coord : coords) {
+                        polygon2D.append(Double.parseDouble(coord.substring(coord.indexOf(',') + 1)),
+                                         Double.parseDouble(coord.substring(0, coord.indexOf(','))));
+                    }
+                    polygon2D.append(Double.parseDouble(coords[0].substring(coords[0].indexOf(',') + 1)),
+                                     Double.parseDouble(coords[0].substring(0, coords[0].indexOf(','))));
+                    metadata.setFootprint(polygon2D.toWKT(8));
+                } else if (line.contains("<s1:pass>")) {
+                    metadata.setOrbitDirection(OrbitDirection.valueOf(line.substring(line.indexOf("<s1:pass>") + 9,
+                                                                                     line.indexOf("</s1:pass>"))));
+                } else if (line.contains("href=\"./measurement/")) {
+                    infoInNextLine.value = true;
+                } else if (infoInNextLine.value) {
+                    if (line.contains("<checksum")) {
+                        metadata.addControlSum(line.substring(line.indexOf("<checksum checksumName=\"MD5\">") + 29,
+                                                              line.indexOf("</checksum>")));
+                    }
+                    infoInNextLine.value = false;
+                }
+            });
         }
         metadata.setCrs("EPSG:4326");
         List<Path> annotations = FileUtilities.listFilesWithExtension(productFolderPath.resolve("annotation"), ".xml");
@@ -118,5 +122,9 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
             }
         }
         return metadata;
+    }
+
+    private class BooleanWrapper {
+        private boolean value = false;
     }
 }
