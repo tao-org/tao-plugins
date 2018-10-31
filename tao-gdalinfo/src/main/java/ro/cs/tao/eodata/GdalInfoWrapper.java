@@ -19,6 +19,7 @@ package ro.cs.tao.eodata;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.MetadataInspector;
@@ -41,11 +42,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GdalInfoWrapper implements MetadataInspector {
+    private static final String GDAL_DOCKER_IMAGE = ConfigurationManager.getInstance().getValue("docker.gdal.image",
+                                                                                                "geodata/gdal");
     private static final String[] gdalOnPathCmd = new String[] {
             "gdalinfo", "-json", "$FULL_PATH"
     };
     private static final String[] gdalOnDocker = new String[] {
-            "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt", "geodata/gdal", "gdalinfo", "-json", "/mnt/$FILE"
+            "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt", GDAL_DOCKER_IMAGE, "gdalinfo", "-json", "/mnt/$FILE"
     };
 
     public GdalInfoWrapper() { }
