@@ -29,5 +29,46 @@
     "active": true,
     "parameterDescriptors": [],
     "templatecontents": ""
+  },
+  {
+    "id": "python-sqrt",
+    "label": "PySquare",
+    "version": "2.7.15",
+    "description": "Python script for square rooting raster pixels",
+    "authors": "TAO Team",
+    "copyright": "(C) CS ROMANIA",
+    "nodeAffinity": "Any",
+    "sources": [
+      {
+        "id": null,
+        "parentId": "python-sqrt",
+        "name": "in",
+        "cardinality": 1,
+        "dataDescriptor": {
+          "formatType": "RASTER"
+        }
+      }
+    ],
+    "targets": [      {
+      "id": null,
+      "parentId": "python-sqrt",
+      "name": "out",
+      "cardinality": 1,
+      "dataDescriptor": {
+        "formatType": "RASTER",
+        "location": "output_python_sqrt.tif"
+      }
+    }
+    ],
+    "containerId": "10c453c1-0cc4-49a1-a65a-6482f43115c1",
+    "fileLocation": "python",
+    "workingDirectory": ".",
+    "templateType": "VELOCITY",
+    "variables": [],
+    "multiThread": false,
+    "visibility": "SYSTEM",
+    "active": true,
+    "parameterDescriptors": [],
+    "templatecontents": "from osgeo import gdal\nfrom osgeo.gdalnumeric import *\nfrom osgeo.gdalconst import *\n\nfileName = \"$in\"\noutFile = \"$out\"\nds = gdal.Open(fileName, GA_ReadOnly )\nband = ds.GetRasterBand(1)\ndata = BandReadAsArray(band)\ndataOut = numpy.sqrt(data*data)\ndriver = gdal.GetDriverByName(\"GTiff\")\ndsOut = driver.Create(outFile, ds.RasterXSize, ds.RasterYSize, 1, band.DataType)\nCopyDatasetInfo(ds,dsOut)\nbandOut=dsOut.GetRasterBand(1)\nBandWriteArray(bandOut, dataOut)\nband = None\nds = None\nbandOut = None\ndsOut = None\n"
   }
 ]

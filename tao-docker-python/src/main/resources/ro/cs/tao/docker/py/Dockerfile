@@ -1,26 +1,56 @@
 FROM ubuntu:18.04
 
 
-RUN apt update && apt -y upgrade && apt autoremove -y
-RUN apt -y install wget \
-        curl \
-        zip \
-        vim \
+ENV GDAL_VERSION=2.2.1
+ENV GDAL_VERSION_PYTHON=2.2.1
+
+RUN apt-get update && \
+    apt-get -y install \
+        wget \
+        libcurl4-openssl-dev \
+        build-essential \
+        libpq-dev \
+        ogdi-bin \
+        libogdi3.2-dev \
+        libjasper-runtime \
+        libjasper-dev \
+        libjasper1 \
+        libgeos-dev \
+        libproj-dev \
+        libpoppler-dev \
+        libsqlite3-dev \
+        libspatialite-dev \
         python \
-        python-pip
-#RUN pip install numpy \
-#                scipy \
-#                matplotlib \
-#                pandas
-RUN pip install lxml \
-                matplotlib \
-                numpy \
-                scipy \
-                scikit-image \
-                numexpr
+        python-pip \
+        python-dev \
+        python-numpy-dev
 
-WORKDIR /opt
-#ADD . /opt
 
-#CMD ["/bin/sh","python","test1.py"]
+RUN wget http://download.osgeo.org/gdal/$GDAL_VERSION/gdal-${GDAL_VERSION}.tar.gz -O /tmp/gdal-${GDAL_VERSION}.tar.gz && \
+    tar -x -f /tmp/gdal-${GDAL_VERSION}.tar.gz -C /tmp
+
+RUN cd /tmp/gdal-${GDAL_VERSION} && \
+    ./configure \
+        --prefix=/usr \
+        --with-python \
+        --with-geos \
+        --with-sfcgal \
+        --with-libtiff=internal \
+        --with-geotiff=internal \
+        --with-jpeg=internal \
+        --with-jpeg12=internal \
+        --with-png \
+        --with-expat \
+        --with-libkml \
+        --with-openjpeg \
+        --with-pg \
+        --with-curl \
+        --with-spatialite && \
+    make -j $(nproc) && make install
+
+RUN rm /tmp/gdal-${GDAL_VERSION} -rf
+
+# RUN pip install GDAL==${GDAL_VERSION_PYTHON}
+
+#CMD ["python2"]
 
