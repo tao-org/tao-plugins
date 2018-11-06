@@ -23,6 +23,8 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.MetadataInspector;
+import ro.cs.tao.products.landsat.Landsat8MetadataInspector;
+import ro.cs.tao.products.sentinels.Sentinel1MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel2MetadataInspector;
 import ro.cs.tao.utils.DockerHelper;
 import ro.cs.tao.utils.executors.Executor;
@@ -66,7 +68,18 @@ public class GdalInfoWrapper implements MetadataInspector {
         Executor executor;
         try {
             return new Sentinel2MetadataInspector().getMetadata(productPath);
-        } catch (Exception ignored) {
+        } catch (Exception notS2) {
+            try {
+                return new Sentinel1MetadataInspector().getMetadata(productPath);
+            } catch (Exception notS1) {
+                try {
+                    return new Landsat8MetadataInspector().getMetadata(productPath);
+                } catch (Exception ignored) {}
+            }
+        }
+        if (Files.isDirectory(productPath)) {
+            // gdalinfo would work only on files
+            return null;
         }
         executor = initialize(productPath.toAbsolutePath(), DockerHelper.isDockerFound() ? gdalOnDocker : gdalOnPathCmd);
         OutputAccumulator consumer = new OutputAccumulator();
