@@ -46,6 +46,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>ro.cs.tao</groupId>
+            <artifactId>tao-products-landsat</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-metadata</artifactId>
             <version>${geotools.version}</version>
