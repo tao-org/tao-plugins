@@ -201,7 +201,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
         Path metadataFile = destinationPath.resolve(helper.getMetadataFileName());
         currentStep = "Metadata";
         logger.fine(String.format("Copying metadata file %s", metadataFile));
-        copyFile(productSourcePath.resolve(metadataFile.getFileName()), metadataFile);
+        FileUtilities.ensurePermissions(copyFile(productSourcePath.resolve(metadataFile.getFileName()), metadataFile));
         if (Files.exists(metadataFile)) {
             List<String> allLines = Files.readAllLines(metadataFile);
             Set<String> tileNames = updateMetadata(metadataFile, allLines);
@@ -430,6 +430,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
 
     private Set<String> updateMetadata(Path metaFile, List<String> originalLines) throws IOException {
         Set<String> extractedTileNames = null;
+        Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(currentProduct.getName());
         if (shouldFilterTiles) {
             int tileCount = 0;
             List<String> lines = new ArrayList<>();
@@ -467,12 +468,11 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                     lines.add(line);
                 }
             }
-            if (tileCount > 0) {
+            if (tileCount > 0 && !Sentinel2ProductHelper.PSD_14.equals(helper.getVersion())) {
                 Files.write(metaFile, lines, StandardCharsets.UTF_8);
             }
         } else {
             if (tileIdPattern == null) {
-                Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(currentProduct.getName());
                 tileIdPattern = helper.getTilePattern();
             }
             for (int i = 0; i < originalLines.size(); i++) {
