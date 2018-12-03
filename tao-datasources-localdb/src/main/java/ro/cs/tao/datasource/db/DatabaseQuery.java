@@ -16,6 +16,7 @@
 package ro.cs.tao.datasource.db;
 
 import ro.cs.tao.EnumUtils;
+import ro.cs.tao.TaoEnum;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
@@ -94,12 +95,12 @@ public class DatabaseQuery extends DataQuery {
                             arrayValue[i] = Array.get(value, i);
                         }
                         query.append(") ");
-                        values.add(new ParameterIndex(idx, idx + length - 1, arrayValue));
+                        values.add(new ParameterIndex(idx, idx + length - 1, parameter.getType(), arrayValue));
                         idx += length;
                     } else {
                         if (parameter.isInterval()) {
                             query.append(parameter.getName()).append(" BETWEEN ? AND ?");
-                            values.add(new ParameterIndex(idx, idx + 1,
+                            values.add(new ParameterIndex(idx, idx + 1, parameter.getType(),
                                                           parameter.getMinValue(),
                                                           parameter.getMaxValue()));
                             idx += 2;
@@ -109,7 +110,7 @@ public class DatabaseQuery extends DataQuery {
                             } else {
                                 query.append(" st_intersects(").append(parameter.getName()).append(", st_geomfromtext(?)) ");
                             }
-                            values.add(new ParameterIndex(idx, idx, parameter.getValue()));
+                            values.add(new ParameterIndex(idx, idx, parameter.getType(), parameter.getValue()));
                             idx += 1;
                         }
                     }
@@ -125,7 +126,10 @@ public class DatabaseQuery extends DataQuery {
                     for (int i = paramIndex.fromIndex; i <= paramIndex.toIndex; i++) {
                         Object value = paramIndex.values[i - paramIndex.fromIndex];
                         Class clazz = value.getClass();
-                        if (Byte.class.equals(clazz)) {
+                        if (paramIndex.paramClass.isEnum()) {
+                            // Enum values come as String, therefore we need to extract the integer value
+                            statement.setObject(i, ((TaoEnum) Enum.valueOf(paramIndex.paramClass, value.toString())).value(), Types.INTEGER);
+                        } else if (Byte.class.equals(clazz)) {
                             statement.setObject(i, value, Types.TINYINT);
                         } else if (Short.class.equals(clazz)) {
                             statement.setObject(i, value, Types.SMALLINT);
@@ -202,11 +206,13 @@ public class DatabaseQuery extends DataQuery {
     }
 
     private class ParameterIndex {
+        Class paramClass;
         Object[] values;
         int fromIndex;
         int toIndex;
 
-        ParameterIndex(int fromIndex, int toIndex, Object... values) {
+        ParameterIndex(int fromIndex, int toIndex, Class paramClass, Object... values) {
+            this.paramClass = paramClass;
             this.values = values;
             this.fromIndex = fromIndex;
             this.toIndex = toIndex;
