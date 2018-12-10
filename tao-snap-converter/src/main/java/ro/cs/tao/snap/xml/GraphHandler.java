@@ -60,7 +60,6 @@ public class GraphHandler extends AbstractHandler<WorkflowDescriptor> {
                 case "source":
                     String refId = attributes.getValue("refid");
                     if (refId != null && !refId.startsWith("$")) {
-                        //WorkflowNodeDescriptor parent = nodeMap.get(refId);
                         links.add(new String[] { refId, currentNode.getName() });
                     }
                     break;
@@ -94,13 +93,18 @@ public class GraphHandler extends AbstractHandler<WorkflowDescriptor> {
                     }
                     break;
                 case "node":
-                    currentNode = this.workflowService.addNode(this.result.getId(), currentNode);
-                    nodeMap.put(currentNode.getName(), currentNode);
+                    if (!currentNode.getComponentId().equals("Write")) {
+                        // Write operator doesn't get converted
+                        currentNode = this.workflowService.addNode(this.result.getId(), currentNode);
+                        nodeMap.put(currentNode.getName(), currentNode);
+                    }
                     currentNode = null;
                     break;
                 case "operator":
-                    currentNode.setComponentId("snap-" + value.toLowerCase());
-                    currentNode.setComponentType(ComponentType.PROCESSING);
+                    if (value != null) {
+                        currentNode.setComponentId("snap-" + value.toLowerCase());
+                        currentNode.setComponentType(ComponentType.PROCESSING);
+                    }
                     break;
                 case "parameters":
                     this.currentNode.setCustomValues(this.currentParameters);
