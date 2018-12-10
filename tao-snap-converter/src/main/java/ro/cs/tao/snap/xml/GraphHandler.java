@@ -25,8 +25,9 @@ public class GraphHandler extends AbstractHandler<WorkflowDescriptor> {
     private List<ParameterValue> currentParameters;
     private Map<String, WorkflowNodeDescriptor> nodeMap = new HashMap<>();
     private List<String[]> links = new ArrayList<>();
+    boolean ignoreSection;
 
-    public GraphHandler(PersistenceManager persistenceManager, WorkflowService workflowService) {
+    GraphHandler(PersistenceManager persistenceManager, WorkflowService workflowService) {
         super(persistenceManager, workflowService);
     }
 
@@ -63,6 +64,9 @@ public class GraphHandler extends AbstractHandler<WorkflowDescriptor> {
                         links.add(new String[] { refId, currentNode.getName() });
                     }
                     break;
+                case "applicationData":
+                    ignoreSection = true;
+                    break;
             }
         } catch (PersistenceException pex) {
             throw new SAXException(pex);
@@ -93,25 +97,31 @@ public class GraphHandler extends AbstractHandler<WorkflowDescriptor> {
                     }
                     break;
                 case "node":
-                    if (!currentNode.getComponentId().equals("Write")) {
-                        // Write operator doesn't get converted
+                    if (!ignoreSection) {
                         currentNode = this.workflowService.addNode(this.result.getId(), currentNode);
                         nodeMap.put(currentNode.getName(), currentNode);
+                        currentNode = null;
                     }
-                    currentNode = null;
                     break;
                 case "operator":
-                    if (value != null) {
+                    if (!ignoreSection && value != null) {
                         currentNode.setComponentId("snap-" + value.toLowerCase());
                         currentNode.setComponentType(ComponentType.PROCESSING);
                     }
                     break;
                 case "parameters":
-                    this.currentNode.setCustomValues(this.currentParameters);
-                    this.currentParameters = null;
+                    if (!ignoreSection) {
+                        this.currentNode.setCustomValues(this.currentParameters);
+                        this.currentParameters = null;
+                    }
+                    break;
+                case "applicationData":
+                    ignoreSection = false;
                     break;
                 default: // must be a parameter tag
-                    this.currentParameters.add(new ParameterValue(qName, value));
+                    if (!ignoreSection) {
+                        this.currentParameters.add(new ParameterValue(qName, value));
+                    }
                     break;
             }
         } catch (PersistenceException pex) {
