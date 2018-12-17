@@ -22,10 +22,12 @@ import java.util.Map;
 
 public class GraphHandler extends AbstractHandler<WorkflowDescriptor> {
     private WorkflowNodeDescriptor currentNode;
-    private List<ParameterValue> currentParameters = new ArrayList<>();
+    private List<ParameterValue> currentParameters;
     private Map<String, WorkflowNodeDescriptor> nodeMap = new HashMap<>();
+    private List<String[]> links = new ArrayList<>();
+    boolean ignoreSection;
 
-    public GraphHandler(PersistenceManager persistenceManager, WorkflowService workflowService) {
+    GraphHandler(PersistenceManager persistenceManager, WorkflowService workflowService) {
         super(persistenceManager, workflowService);
     }
 
@@ -52,27 +54,18 @@ public class GraphHandler extends AbstractHandler<WorkflowDescriptor> {
                     this.currentNode = new WorkflowNodeDescriptor();
                     this.currentNode.setName(attributes.getValue("id"));
                     break;
+                case "parameters":
+                    this.currentParameters = new ArrayList<>();
+                    break;
                 case "sourceProduct":
                 case "source":
                     String refId = attributes.getValue("refid");
                     if (refId != null && !refId.startsWith("$")) {
-                        List<ProcessingComponent> components = persistenceManager.getProcessingComponentByLabel(refId);
-                        if (components == null || components.size() != 1) {
-                            throw new PersistenceException(String.format("Multiple components found with label '%s'",
-                                                                         refId));
-                        }
-                        ProcessingComponent sourceComponent = components.get(0);
-                        components = persistenceManager.getProcessingComponentByLabel(currentNode.getComponentId());
-                        if (components == null || components.size() != 1) {
-                            throw new PersistenceException(String.format("Multiple components found with label '%s'",
-                                                                         currentNode.getComponentId()));
-                        }
-                        ProcessingComponent currentComponent = components.get(0);
-                        currentNode = workflowService.addLink(nodeMap.get(refId).getId(),
-                                                              sourceComponent.getTargets().get(0).getId(),
-                                                              currentNode.getId(),
-                                                              currentComponent.getSources().get(0).getId());
+                        links.add(new String[] { refId, currentNode.getName() });
                     }
+                    break;
+                case "applicationData":
+                    ignoreSection = true;
                     break;
             }
         } catch (PersistenceException pex) {
@@ -82,35 +75,57 @@ public class GraphHandler extends AbstractHandler<WorkflowDescriptor> {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
+        String value = null;
         if (buffer.length() > 0 && buffer.charAt(0) != '\n') {
-            String value = buffer.toString();
-            try {
-                switch (qName) {
-                    case "graph":
-                    case "version":
-                    case "source":
-                    case "sources":
-                    case "sourceProduct":
-                        break;
-                    case "node":
+            value = buffer.toString();
+        }
+        try {
+            switch (qName) {
+                case "version":
+                case "source":
+                case "sources":
+                case "sourceProduct":
+                    break;
+                case "graph":
+                    for (String[] pair : links) {
+                        ProcessingComponent sourceComponent = persistenceManager.getProcessingComponentById(nodeMap.get(pair[0]).getComponentId());
+                        ProcessingComponent targetComponent = persistenceManager.getProcessingComponentById(nodeMap.get(pair[1]).getComponentId());
+                        currentNode = workflowService.addLink(nodeMap.get(pair[0]).getId(),
+                                                              sourceComponent.getTargets().get(0).getId(),
+                                                              nodeMap.get(pair[1]).getId(),
+                                                              targetComponent.getSources().get(0).getId());
+                    }
+                    break;
+                case "node":
+                    if (!ignoreSection) {
                         currentNode = this.workflowService.addNode(this.result.getId(), currentNode);
-                        nodeMap.put(currentNode.getComponentId(), currentNode);
+                        nodeMap.put(currentNode.getName(), currentNode);
                         currentNode = null;
-                        break;
-                    case "operator":
-                        currentNode.setComponentId(value);
+                    }
+                    break;
+                case "operator":
+                    if (!ignoreSection && value != null) {
+                        currentNode.setComponentId("snap-" + value.toLowerCase());
                         currentNode.setComponentType(ComponentType.PROCESSING);
-                        break;
-                    case "parameters":
-                        this.result.setCustomValues(this.currentParameters);
-                        break;
-                    default: // must be a parameter tag
+                    }
+                    break;
+                case "parameters":
+                    if (!ignoreSection) {
+                        this.currentNode.setCustomValues(this.currentParameters);
+                        this.currentParameters = null;
+                    }
+                    break;
+                case "applicationData":
+                    ignoreSection = false;
+                    break;
+                default: // must be a parameter tag
+                    if (!ignoreSection) {
                         this.currentParameters.add(new ParameterValue(qName, value));
-                        break;
-                }
-            } catch (PersistenceException pex) {
-                throw new SAXException(pex);
+                    }
+                    break;
             }
+        } catch (PersistenceException pex) {
+            throw new SAXException(pex);
         }
     }
 
