@@ -212,17 +212,34 @@ public class SciHubDataQuery extends DataQuery {
         if (!this.parameters.containsKey("platformName")) {
             addParameter("platformName", this.supportedParams.get("platformName").getDefaultValue());
         }
-        String[] footprints = new String[1];
+        String[] footprints = new String[0];
         if (this.parameters.containsKey("tileId")) {
-            Rectangle2D rectangle2D = Sentinel2TileExtent.getInstance()
-                                               .getTileExtent(this.parameters.get("tileId").getValueAsString());
-            Polygon2D polygon = new Polygon2D();
-            polygon.append(rectangle2D.getMinX(), rectangle2D.getMinY());
-            polygon.append(rectangle2D.getMaxX(), rectangle2D.getMinY());
-            polygon.append(rectangle2D.getMaxX(), rectangle2D.getMaxY());
-            polygon.append(rectangle2D.getMinX(), rectangle2D.getMaxY());
-            polygon.append(rectangle2D.getMinX(), rectangle2D.getMinY());
-            footprints[0] = polygon.toWKT();
+            QueryParameter tileParameter = this.parameters.get("tileId");
+            String value = tileParameter.getValueAsString();
+            Rectangle2D rectangle2D;
+            if (value.startsWith("[") && value.endsWith("]")) {
+                String[] values = value.substring(1, value.length() - 1).split(",");
+                footprints = new String[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    rectangle2D = Sentinel2TileExtent.getInstance().getTileExtent(value);
+                    Polygon2D polygon = new Polygon2D();
+                    polygon.append(rectangle2D.getMinX(), rectangle2D.getMinY());
+                    polygon.append(rectangle2D.getMaxX(), rectangle2D.getMinY());
+                    polygon.append(rectangle2D.getMaxX(), rectangle2D.getMaxY());
+                    polygon.append(rectangle2D.getMinX(), rectangle2D.getMaxY());
+                    polygon.append(rectangle2D.getMinX(), rectangle2D.getMinY());
+                    footprints[i] = polygon.toWKT();
+                }
+            } else {
+                rectangle2D = Sentinel2TileExtent.getInstance().getTileExtent(value);
+                Polygon2D polygon = new Polygon2D();
+                polygon.append(rectangle2D.getMinX(), rectangle2D.getMinY());
+                polygon.append(rectangle2D.getMaxX(), rectangle2D.getMinY());
+                polygon.append(rectangle2D.getMaxX(), rectangle2D.getMaxY());
+                polygon.append(rectangle2D.getMinX(), rectangle2D.getMaxY());
+                polygon.append(rectangle2D.getMinX(), rectangle2D.getMinY());
+                footprints = new String[] { polygon.toWKT() };
+            }
         } else if (this.parameters.containsKey("footprint")) {
             String wkt = ((Polygon2D) this.parameters.get("footprint").getValue()).toWKT();
             footprints = splitMultiPolygon(wkt);
@@ -255,6 +272,21 @@ public class SciHubDataQuery extends DataQuery {
                         query.append(converterFactory.create(fakeParam).stringValue());
                     } catch (ConversionException e) {
                         throw new QueryException(e.getMessage());
+                    }
+                } else if (parameter.getName().equals("tileId")) {
+                    String value = parameter.getValueAsString();
+                    if (value.startsWith("[") && value.endsWith("]")) {
+                        String[] values = value.substring(1, value.length() - 1).split(",");
+                        query.append("(");
+                        for (int i = 0; i < values.length; i++) {
+                            query.append("filename:*").append(values[i]).append("*");
+                            if (i < values.length - 1) {
+                                query.append(" OR ");
+                            }
+                        }
+                        query.append(")");
+                    } else {
+                        query.append("filename:*").append(value).append("*");
                     }
                 } else if (parameter.getType().isArray()) {
                     query.append("(");
