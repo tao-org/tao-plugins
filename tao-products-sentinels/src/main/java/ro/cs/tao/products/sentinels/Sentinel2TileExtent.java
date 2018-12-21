@@ -23,6 +23,10 @@ import java.io.IOException;
 import java.util.logging.LogManager;
 
 /**
+ * Map of Sentinel-2 tiles (granules) extents.
+ * The initial map was created from the official KML found at
+ * https://sentinel.esa.int/documents/247904/1955685/S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.kml
+ *
  * @author Cosmin Cara
  */
 public class Sentinel2TileExtent extends TileExtent {
@@ -34,10 +38,17 @@ public class Sentinel2TileExtent extends TileExtent {
         try {
             LogManager.getLogManager().getLogger("").info("Loading Sentinel-2 tiles extents");
             instance.read(Sentinel2TileExtent.class.getResourceAsStream("S2tilemap.dat"));
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    /*public static void main(String[] args) throws IOException {
+        Path path = Paths.get("W:\\S2tilemap.dat");
+        instance.fromKmlFile("W:\\Data\\S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.kml");
+        instance.write(path);
+        System.exit(0);
+    }*/
 
     public static Sentinel2TileExtent getInstance() {
         return instance;
@@ -62,11 +73,21 @@ public class Sentinel2TileExtent extends TileExtent {
                     if (inElement && !line.trim().startsWith("<")) {
                         String[] tokens = line.trim().split(" ");
                         Polygon2D polygon = new Polygon2D();
+                        String[] coords = null;
+                        int count = 1;
                         for (String point : tokens) {
-                            String[] coords = point.split(",");
-                            polygon.append(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
+                            coords = point.split(",");
+                            if (count < 5 || count == tokens.length) {
+                                polygon.append(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
+                            }
+                            count++;
                         }
-                        tiles.put(tileCode, polygon.getBounds2D());
+                        if (coords != null && tokens.length < 5) {
+                            for (int i = 0; i < 5 - tokens.length; i++) {
+                                polygon.append(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
+                            }
+                        }
+                        tiles.put(tileCode, polygon.toPath2D());
                         inElement = false;
                     }
                 }
@@ -76,4 +97,7 @@ public class Sentinel2TileExtent extends TileExtent {
                 bufferedReader.close();
         }
     }
+
+    @Override
+    protected int tileCodeSize() { return 5; }
 }
