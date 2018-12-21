@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.util.logging.LogManager;
 
 /**
- * Map of Landsat8 tile extents. The initial map can be created from the official wrt_descending.shp converted to KML.
+ * Map of Landsat8 tile extents.
+ * The initial map was created from the official KML found at
+ * http://landsat.usgs.gov/sites/default/files/documents/WRS-2_bound_world.kml.
  *
  * @author Cosmin Cara
  */
@@ -39,6 +41,13 @@ public class Landsat8TileExtent extends TileExtent {
             e.printStackTrace();
         }
     }
+
+    /*public static void main(String[] args) throws IOException {
+        Path path = Paths.get("W:\\L8tilemap.dat");
+        instance.fromKmlFile("W:\\Data\\WRS-2_bound_world.kml");
+        instance.write(path);
+        System.exit(0);
+    }*/
 
     public static Landsat8TileExtent getInstance() {
         return instance;
@@ -56,14 +65,13 @@ public class Landsat8TileExtent extends TileExtent {
                 if (line.contains("<Placemark>")) {
                     inElement = true;
                 } else {
-                    if (inElement && line.contains("name=\"PATH\"")) {
-                        int i = line.indexOf("name=\"PATH\"");
-                        path = line.substring(i + 12, line.indexOf("</"));
+                    if (inElement && line.contains("<name>")) {
+                        int start = line.indexOf("<name>") + 6;
+                        int mid = line.indexOf("_", start);
+                        int end = line.indexOf("<", mid);
+                        path = line.substring(start, mid);
                         path = ("000" + path).substring(path.length());
-                    }
-                    if (inElement && line.contains("name=\"ROW\"")) {
-                        int i = line.indexOf("name=\"ROW\"");
-                        row = line.substring(i + 11, line.indexOf("</"));
+                        row = line.substring(mid + 1, end);
                         row = ("000" + row).substring(row.length());
                     }
                     if (inElement && !line.trim().startsWith("<")) {
@@ -73,7 +81,7 @@ public class Landsat8TileExtent extends TileExtent {
                             String[] coords = point.split(",");
                             polygon.append(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
                         }
-                        tiles.put(path + row, polygon.getBounds2D());
+                        tiles.put(path + row, polygon.toPath2D());
                         inElement = false;
                     }
                 }
@@ -83,4 +91,7 @@ public class Landsat8TileExtent extends TileExtent {
                 bufferedReader.close();
         }
     }
+
+    @Override
+    protected int tileCodeSize() { return 6; }
 }
