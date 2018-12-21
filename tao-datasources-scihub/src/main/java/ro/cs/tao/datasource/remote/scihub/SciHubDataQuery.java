@@ -44,7 +44,6 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
 
-import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
@@ -215,32 +214,31 @@ public class SciHubDataQuery extends DataQuery {
         String[] footprints = new String[0];
         if (this.parameters.containsKey("tileId")) {
             QueryParameter tileParameter = this.parameters.get("tileId");
-            String value = tileParameter.getValueAsString();
-            Rectangle2D rectangle2D;
-            if (value.startsWith("[") && value.endsWith("]")) {
-                String[] values = value.substring(1, value.length() - 1).split(",");
-                footprints = new String[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    rectangle2D = Sentinel2TileExtent.getInstance().getTileExtent(value);
-                    Polygon2D polygon = new Polygon2D();
-                    polygon.append(rectangle2D.getMinX(), rectangle2D.getMinY());
-                    polygon.append(rectangle2D.getMaxX(), rectangle2D.getMinY());
-                    polygon.append(rectangle2D.getMaxX(), rectangle2D.getMaxY());
-                    polygon.append(rectangle2D.getMinX(), rectangle2D.getMaxY());
-                    polygon.append(rectangle2D.getMinX(), rectangle2D.getMinY());
-                    footprints[i] = polygon.toWKT();
+            Object value = tileParameter.getValue();
+            if (value != null) {
+                if (value.getClass().isArray()) {
+                    footprints = new String[Array.getLength(value)];
+                    for (int i = 0; i < footprints.length; i++) {
+                        Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(Array.get(value, i).toString()));
+                        footprints[i] = polygon.toWKT();
+                    }
+                } else {
+                    String strVal = tileParameter.getValueAsString();
+                    if (strVal.startsWith("[") && strVal.endsWith("]")) {
+                        String[] values = strVal.substring(1, strVal.length() - 1).split(",");
+                        footprints = new String[values.length];
+                        for (int i = 0; i < values.length; i++) {
+                            Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(strVal));
+                            footprints[i] = polygon.toWKT();
+                        }
+                    } else {
+                        Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(strVal));
+                        footprints = new String[]{polygon.toWKT()};
+                    }
                 }
-            } else {
-                rectangle2D = Sentinel2TileExtent.getInstance().getTileExtent(value);
-                Polygon2D polygon = new Polygon2D();
-                polygon.append(rectangle2D.getMinX(), rectangle2D.getMinY());
-                polygon.append(rectangle2D.getMaxX(), rectangle2D.getMinY());
-                polygon.append(rectangle2D.getMaxX(), rectangle2D.getMaxY());
-                polygon.append(rectangle2D.getMinX(), rectangle2D.getMaxY());
-                polygon.append(rectangle2D.getMinX(), rectangle2D.getMinY());
-                footprints = new String[] { polygon.toWKT() };
             }
-        } else if (this.parameters.containsKey("footprint")) {
+        }
+        if (this.parameters.containsKey("footprint")) {
             String wkt = ((Polygon2D) this.parameters.get("footprint").getValue()).toWKT();
             footprints = splitMultiPolygon(wkt);
         }
@@ -321,10 +319,6 @@ public class SciHubDataQuery extends DataQuery {
                 idx++;
             }
             queries.add(query.toString());
-            logger.fine(String.format("%s\t%s\t%s",
-                                      footprint != null ? Sentinel2TileExtent.getInstance().intersectingTiles(Polygon2D.fromWKT(footprint)) : "n/a",
-                                      footprint != null ? footprint : "n/a",
-                                      query.toString()));
             query.setLength(0);
         }
         return queries;
