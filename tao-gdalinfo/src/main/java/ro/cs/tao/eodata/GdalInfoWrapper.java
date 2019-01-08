@@ -44,14 +44,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GdalInfoWrapper implements MetadataInspector {
-    private static final String GDAL_DOCKER_IMAGE = ConfigurationManager.getInstance().getValue("docker.gdal.image",
-                                                                                                "geodata/gdal");
-    private static final String[] gdalOnPathCmd = new String[] {
-            "gdalinfo", "-json", "$FULL_PATH"
-    };
-    private static final String[] gdalOnDocker = new String[] {
-            "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt", GDAL_DOCKER_IMAGE, "gdalinfo", "-json", "/mnt/$FILE"
-    };
+    private static final String gdalDockerImage;
+    private static final boolean useDocker;
+    private static final String[] gdalOnPathCmd;
+    private static final String[] gdalOnDocker;
+
+    static {
+        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+        gdalDockerImage = configurationManager.getValue("docker.gdal.image", "geodata/gdal");
+        useDocker = Boolean.parseBoolean(configurationManager.getValue("plugins.use.docker", "false"));
+        gdalOnPathCmd = new String[] {
+                "gdalinfo", "-json", "$FULL_PATH"
+        };
+        gdalOnDocker = new String[] {
+                "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt", gdalDockerImage, "gdalinfo", "-json", "/mnt/$FILE"
+        };
+    }
 
     public GdalInfoWrapper() { }
 
@@ -81,7 +89,8 @@ public class GdalInfoWrapper implements MetadataInspector {
             // gdalinfo would work only on files
             return null;
         }
-        executor = initialize(productPath.toAbsolutePath(), DockerHelper.isDockerFound() ? gdalOnDocker : gdalOnPathCmd);
+        executor = initialize(productPath.toAbsolutePath(),
+                              useDocker && DockerHelper.isDockerFound() ? gdalOnDocker : gdalOnPathCmd);
         OutputAccumulator consumer = new OutputAccumulator();
         executor.setOutputConsumer(consumer);
         StringReader reader = null;
