@@ -35,6 +35,7 @@
         <module>tao-docker-otb</module>
         <module>tao-docker-python</module>
         <module>tao-executor-wps</module>
+        <module>tao-datasources-creodias</module>
     </modules>
 
     <properties>
