@@ -22,7 +22,7 @@ public class Download {
     @JsonProperty("mimeType")
     private String mimeType;
     @JsonProperty("size")
-    private Integer size;
+    private Long size;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -57,16 +57,16 @@ public class Download {
     }
 
     @JsonProperty("size")
-    public Integer getSize() {
+    public Long getSize() {
         return size;
     }
 
     @JsonProperty("size")
-    public void setSize(Integer size) {
+    public void setSize(Long size) {
         this.size = size;
     }
 
-    public Download withSize(Integer size) {
+    public Download withSize(Long size) {
         this.size = size;
         return this;
     }

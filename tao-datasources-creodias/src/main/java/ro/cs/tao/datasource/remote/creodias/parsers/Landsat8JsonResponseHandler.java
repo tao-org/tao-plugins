@@ -52,6 +52,7 @@ public class Landsat8JsonResponseHandler implements JSonResponseHandler<EOProduc
                     product.setLocation(result.getProductIdentifier());
                     product.setAcquisitionDate(new DateAdapter().unmarshal(result.getStartDate()));
                     product.addAttribute("cloudcoverpercentage", String.valueOf(result.getCloudCover()));
+                    products.add(product);
                 } catch (Exception ex) {
                     logger.warning("Error parsing JSON: " + ex.getMessage());
                 }
