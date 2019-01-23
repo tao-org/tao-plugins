@@ -38,8 +38,8 @@
 
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
-import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.param.QueryParameter;
+import ro.cs.tao.datasource.remote.creodias.landsat8.CreoDIASLandsat8DataSource;
 import ro.cs.tao.datasource.remote.creodias.sentinel1.CreoDIASSentinel1DataSource;
 import ro.cs.tao.datasource.remote.creodias.sentinel2.CreoDIASSentinel2DataSource;
 import ro.cs.tao.eodata.EOProduct;
@@ -61,42 +61,56 @@ import java.util.logging.Logger;
  */
 public class CreoDiasDataSourceTest {
 
+    private static final QueryParameter<Date> begin;
+    private static final QueryParameter<Date> end;
+    private static final QueryParameter<Polygon2D> aoi;
+    private static final int pageSize;
+    private static final int maxResults;
+    private static final String rowTemplate;
+
+    static {
+        begin = new QueryParameter<>(Date.class, "startDate");
+        begin.setValue(Date.from(LocalDateTime.of(2018, 9, 1, 0, 0, 0, 0)
+                                         .atZone(ZoneId.systemDefault())
+                                         .toInstant()));
+        end = new QueryParameter<>(Date.class, "completionDate");
+        end.setValue(Date.from(LocalDateTime.of(2018, 9, 30, 0, 0, 0, 0)
+                                       .atZone(ZoneId.systemDefault())
+                                       .toInstant()));
+        Polygon2D footprint = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684,24.83885442747927 43.8379609098684," +
+                                                        "24.83885442747927 44.795645304033826,22.8042573604346 44.795645304033826," +
+                                                        "22.8042573604346 43.8379609098684))");
+        aoi = new QueryParameter<>(Polygon2D.class, "geometry");
+        aoi.setValue(footprint);
+        pageSize = 10;
+        maxResults = 20;
+        rowTemplate = "ID=%s, NAME=%s, LOCATION=%s";
+    }
+
     public static void main(String[] args) {
-        //SciHub_Sentinel1_Test();
         Sentinel2_Count_Test();
         Sentinel2_Test();
+        Sentinel1_Count_Test();
+        Sentinel1_Test();
+        Landsat8_Count_Test();
+        Landsat8_Test();
     }
 
     public static void Sentinel2_Count_Test() {
         try {
             Logger logger = LogManager.getLogManager().getLogger("");
             for (Handler handler : logger.getHandlers()) {
-                handler.setLevel(Level.INFO);
+                handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
             DataSource dataSource = new CreoDIASSentinel2DataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[0]);
-            QueryParameter<Date> begin = query.createParameter("startDate", Date.class);
-            begin.setValue(Date.from(LocalDateTime.of(2016, 2, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
             query.addParameter(begin);
-            QueryParameter<Date> end = query.createParameter("completionDate", Date.class);
-            end.setValue(Date.from(LocalDateTime.of(2017, 2, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
             query.addParameter(end);
-            Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
-                                                      "24.83885442747927 43.8379609098684," +
-                                                      "24.83885442747927 44.795645304033826," +
-                                                      "22.8042573604346 44.795645304033826," +
-                                                      "22.8042573604346 43.8379609098684))");
-
-            query.addParameter("geometry", aoi);
-            query.addParameter("cloudCover", 100);
-            System.out.println(String.format("Query returned %s",query.getCount()));
+            query.addParameter(aoi);
+            System.out.println(String.format("Sentinel2 query returned %s", query.getCount()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -106,94 +120,107 @@ public class CreoDiasDataSourceTest {
         try {
             Logger logger = LogManager.getLogManager().getLogger("");
             for (Handler handler : logger.getHandlers()) {
-                handler.setLevel(Level.INFO);
+                handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
             DataSource dataSource = new CreoDIASSentinel2DataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[0]);
-            QueryParameter<Date> begin = query.createParameter("startDate", Date.class);
-            begin.setValue(Date.from(LocalDateTime.of(2016, 2, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
             query.addParameter(begin);
-            QueryParameter<Date> end = query.createParameter("completionDate", Date.class);
-            begin.setValue(Date.from(LocalDateTime.of(2017, 2, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
             query.addParameter(end);
-            Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
-                                                      "24.83885442747927 43.8379609098684," +
-                                                      "24.83885442747927 44.795645304033826," +
-                                                      "22.8042573604346 44.795645304033826," +
-                                                      "22.8042573604346 43.8379609098684))");
-
-            query.addParameter("geometry", aoi);
-
-            query.addParameter("cloudCover", 100);
-            query.setPageSize(50);
-            query.setMaxResults(83);
+            query.addParameter(aoi);
             List<EOProduct> results = query.execute();
             results.forEach(r -> {
-                System.out.println("ID=" + r.getId());
-                System.out.println("NAME=" + r.getName());
-                System.out.println("LOCATION=" + r.getLocation());
-                System.out.println("FOOTPRINT=" + r.getGeometry());
-                System.out.println("Attributes ->");
-//                Arrays.stream(r.getAttributes())
-//                        .forEach(a -> System.out.println("\tName='" + a.getName() +
-//                                                                 "', value='" + a.getValue() + "'"));
-                r.getAttributes()
-                        .forEach(a -> System.out.println("\tName='" + a.getName() +
-                                                                 "', value='" + a.getValue() + "'"));
+                System.out.println(String.format(rowTemplate, r.getId(), r.getName(), r.getLocation()));
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void SciHub_Sentinel1_Test() {
+    public static void Sentinel1_Count_Test() {
         try {
             Logger logger = LogManager.getLogManager().getLogger("");
             for (Handler handler : logger.getHandlers()) {
-                handler.setLevel(Level.INFO);
+                handler.setLevel(Level.FINEST);
             }
-            DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel1DataSource.class.getName());
+            //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
+            DataSource dataSource = new CreoDIASSentinel1DataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[0]);
-            query.addParameter("platform", "Sentinel1");
-            QueryParameter begin = query.createParameter("startDate", Date.class);
-            begin.setValue(Date.from(LocalDateTime.of(2017, 5, 30, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
-            QueryParameter end = query.createParameter("completionDate", Date.class);
-            begin.setValue(Date.from(LocalDateTime.of(2017, 6, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
             query.addParameter(begin);
-            query.addParameter("polarisationMode", "VV");
-            query.addParameter("sensorOperationalMode", "IW");
-            query.addParameter("productType", "SLC");
-            query.setPageSize(50);
-            query.setMaxResults(83);
+            query.addParameter(end);
+            query.addParameter(aoi);
+            System.out.println(String.format("Sentinel1 query returned %s", query.getCount()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void Sentinel1_Test() {
+        try {
+            Logger logger = LogManager.getLogManager().getLogger("");
+            for (Handler handler : logger.getHandlers()) {
+                handler.setLevel(Level.FINEST);
+            }
+            //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel1DataSource.class.getName());
+            DataSource dataSource = new CreoDIASSentinel1DataSource();
+            String[] sensors = dataSource.getSupportedSensors();
+
+            DataQuery query = dataSource.createQuery(sensors[0]);
+            query.addParameter(begin);
+            query.addParameter(end);
+            query.addParameter(aoi);
             List<EOProduct> results = query.execute();
-            //downloader.download(results);
             results.forEach(r -> {
-                System.out.println("ID=" + r.getId());
-                System.out.println("NAME=" + r.getName());
-                System.out.println("LOCATION=" + r.getLocation());
-                System.out.println("FOOTPRINT=" + r.getGeometry());
-                System.out.println("Attributes ->");
-//                Arrays.stream(r.getAttributes())
-//                        .forEach(a -> System.out.println("\tName='" + a.getName() +
-//                                                                 "', value='" + a.getValue() + "'"));
-                r.getAttributes().stream()
-                  .forEach(a -> System.out.println("\tName='" + a.getName() +
-                    "', value='" + a.getValue() + "'"));
+                System.out.println(String.format(rowTemplate, r.getId(), r.getName(), r.getLocation()));
             });
-        } catch (QueryException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void Landsat8_Count_Test() {
+        try {
+            Logger logger = LogManager.getLogManager().getLogger("");
+            for (Handler handler : logger.getHandlers()) {
+                handler.setLevel(Level.FINEST);
+            }
+            //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
+            DataSource dataSource = new CreoDIASLandsat8DataSource();
+            String[] sensors = dataSource.getSupportedSensors();
+
+            DataQuery query = dataSource.createQuery(sensors[0]);
+            query.addParameter(begin);
+            query.addParameter(end);
+            query.addParameter(aoi);
+            System.out.println(String.format("Landsat8 query returned %s", query.getCount()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void Landsat8_Test() {
+        try {
+            Logger logger = LogManager.getLogManager().getLogger("");
+            for (Handler handler : logger.getHandlers()) {
+                handler.setLevel(Level.FINEST);
+            }
+            //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel1DataSource.class.getName());
+            DataSource dataSource = new CreoDIASLandsat8DataSource();
+            String[] sensors = dataSource.getSupportedSensors();
+
+            DataQuery query = dataSource.createQuery(sensors[0]);
+            query.addParameter(begin);
+            query.addParameter(end);
+            query.addParameter(aoi);
+            List<EOProduct> results = query.execute();
+            results.forEach(r -> {
+                System.out.println(String.format(rowTemplate, r.getId(), r.getName(), r.getLocation()));
+            });
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -201,4 +228,5 @@ public class CreoDiasDataSourceTest {
     private static ServiceRegistry<DataSource> getDatasourceRegistry() {
         return ServiceRegistryManager.getInstance().getServiceRegistry(DataSource.class);
     }
+
 }

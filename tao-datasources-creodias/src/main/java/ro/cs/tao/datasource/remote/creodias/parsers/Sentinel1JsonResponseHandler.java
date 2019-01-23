@@ -55,7 +55,7 @@ public class Sentinel1JsonResponseHandler implements JSonResponseHandler<EOProdu
                     product.addAttribute("orbitdirection",
                                          ("ascending".equals(result.getOrbitDirection()) ?
                                                  OrbitDirection.ASCENDING : OrbitDirection.DESCENDING).name());
-
+                    products.add(product);
                 } catch (Exception ex) {
                     logger.warning("Error parsing JSON: " + ex.getMessage());
                 }

@@ -102,7 +102,7 @@ public abstract class CreoDIASDataQuery extends DataQuery {
     }
 
     @Override
-    public long getCount() {
+    protected long getCountImpl() {
         long count = 0;
         List<List<BasicNameValuePair>> queries = buildQueriesParams();
         final int size = queries.size();

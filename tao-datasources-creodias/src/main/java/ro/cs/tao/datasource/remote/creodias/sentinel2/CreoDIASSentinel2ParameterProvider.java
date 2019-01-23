@@ -26,7 +26,7 @@ public class CreoDIASSentinel2ParameterProvider implements ParameterProvider {
                         put("startDate",  new DataSourceParameter("startDate", Date.class, true));
                         put("completionDate",  new DataSourceParameter("completionDate", Date.class));
                         put("geometry",  new DataSourceParameter("geometry", Polygon2D.class, true));
-                        put("cloudCover", new DataSourceParameter("cloudCover", Short.class, 100));
+                        put("cloudCover", new DataSourceParameter("cloudCover", Short.class));
                     }});
                 }});
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
