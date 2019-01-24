@@ -13,6 +13,7 @@ import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.creodias.parsers.DateParameterConverter;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
@@ -143,8 +144,8 @@ public abstract class CreoDIASDataQuery extends DataQuery {
     private List<List<BasicNameValuePair>> buildQueriesParams() {
         List<List<BasicNameValuePair>> queries = new ArrayList<>();
         String[] footprints = new String[0];
-        if (this.parameters.containsKey("tileId")) {
-            QueryParameter tileParameter = this.parameters.get("tileId");
+        if (this.parameters.containsKey(CommonParameterNames.TILE)) {
+            QueryParameter tileParameter = this.parameters.get("CommonParameterNames.TILE");
             Object value = tileParameter.getValue();
             if (value != null) {
                 if (value.getClass().isArray()) {
@@ -169,8 +170,8 @@ public abstract class CreoDIASDataQuery extends DataQuery {
                 }
             }
         }
-        if (this.parameters.containsKey("geometry")) {
-            String wkt = ((Polygon2D) this.parameters.get("geometry").getValue()).toWKT();
+        if (this.parameters.containsKey(CommonParameterNames.FOOTPRINT)) {
+            String wkt = ((Polygon2D) this.parameters.get(CommonParameterNames.FOOTPRINT).getValue()).toWKT();
             footprints = splitMultiPolygon(wkt);
         }
         List<BasicNameValuePair> query = new ArrayList<>();
@@ -186,59 +187,48 @@ public abstract class CreoDIASDataQuery extends DataQuery {
                                 (parameter.isInterval() & parameter.getMinValue() == null & parameter.getMaxValue() == null))) {
                     continue;
                 }
-                if (parameter.getName().equals("product")) {
-                    query.add(new BasicNameValuePair("productIdentifier", parameter.getValueAsString()));
-                    break;
-                } else if (parameter.getName().equals("geometry")) {
-                    try {
-                        QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
-                                                                                   "geometry",
-                                                                                   Polygon2D.fromWKT(footprint));
-                        query.add(new BasicNameValuePair(entry.getKey(), converterFactory.create(fakeParam).stringValue()));
-                    } catch (ConversionException e) {
-                        throw new QueryException(e.getMessage());
-                    }
-                } /*else if (parameter.getName().equals("tileId")) {
-                    String value = parameter.getValueAsString();
-                    if (value.startsWith("[") && value.endsWith("]")) {
-                        String[] values = value.substring(1, value.length() - 1).split(",");
-                        query.append("(");
-                        for (int i = 0; i < values.length; i++) {
-                            query.append("filename:*").append(values[i]).append("*");
-                            if (i < values.length - 1) {
-                                query.append(" OR ");
+                switch (parameter.getName()) {
+                    case CommonParameterNames.PRODUCT:
+                        query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.FOOTPRINT), parameter.getValueAsString()));
+                        break;
+                    case CommonParameterNames.FOOTPRINT:
+                        try {
+                            QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
+                                                                                       CommonParameterNames.FOOTPRINT,
+                                                                                       Polygon2D.fromWKT(footprint));
+                            query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), converterFactory.create(fakeParam).stringValue()));
+                        } catch (ConversionException e) {
+                            throw new QueryException(e.getMessage());
+                        }
+                        break;
+                    default:
+                        if (parameter.getType().isArray()) {
+                            StringBuilder builder = new StringBuilder();
+                            Object value = parameter.getValue();
+                            int length = Array.getLength(value);
+                            for (int i = 0; i < length; i++) {
+                                builder.append(Array.get(value, i).toString());
+                                if (i < length - 1) {
+                                    builder.append(",");
+                                }
+                            }
+                            if (length > 1) {
+                                builder.setLength(builder.length() - 1);
+                            }
+                            query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), builder.toString()));
+                        } else if (Date.class.equals(parameter.getType())) {
+                            try {
+                                query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), converterFactory.create(parameter).stringValue()));
+                            } catch (ConversionException e) {
+                                throw new QueryException(e.getMessage());
+                            }
+                        } else {
+                            try {
+                                query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), converterFactory.create(parameter).stringValue()));
+                            } catch (ConversionException e) {
+                                throw new QueryException(e.getMessage());
                             }
                         }
-                        query.append(")");
-                    } else {
-                        query.append("filename:*").append(value).append("*");
-                    }
-                }*/ else if (parameter.getType().isArray()) {
-                    StringBuilder builder = new StringBuilder();
-                    Object value = parameter.getValue();
-                    int length = Array.getLength(value);
-                    for (int i = 0; i < length; i++) {
-                        builder.append(Array.get(value, i).toString());
-                        if (i < length - 1) {
-                            builder.append(",");
-                        }
-                    }
-                    if (length > 1) {
-                        builder.setLength(builder.length() - 1);
-                    }
-                    query.add(new BasicNameValuePair(entry.getKey(), builder.toString()));
-                } else if (Date.class.equals(parameter.getType())) {
-                    try {
-                        query.add(new BasicNameValuePair(entry.getKey(), converterFactory.create(parameter).stringValue()));
-                    } catch (ConversionException e) {
-                        throw new QueryException(e.getMessage());
-                    }
-                } else {
-                    try {
-                        query.add(new BasicNameValuePair(entry.getKey(), converterFactory.create(parameter).stringValue()));
-                    } catch (ConversionException e) {
-                        throw new QueryException(e.getMessage());
-                    }
                 }
                 idx++;
             }

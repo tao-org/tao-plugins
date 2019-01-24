@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
-package ro.cs.tao.datasource.remote.scihub;
+package ro.cs.tao.datasource.remote.scihub.parameters;
 
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.PolygonParameterConverter;

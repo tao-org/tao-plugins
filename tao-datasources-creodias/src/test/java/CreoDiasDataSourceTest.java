@@ -38,6 +38,7 @@
 
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.creodias.landsat8.CreoDIASLandsat8DataSource;
 import ro.cs.tao.datasource.remote.creodias.sentinel1.CreoDIASSentinel1DataSource;
@@ -69,18 +70,18 @@ public class CreoDiasDataSourceTest {
     private static final String rowTemplate;
 
     static {
-        begin = new QueryParameter<>(Date.class, "startDate");
+        begin = new QueryParameter<>(Date.class, CommonParameterNames.START_DATE);
         begin.setValue(Date.from(LocalDateTime.of(2018, 9, 1, 0, 0, 0, 0)
                                          .atZone(ZoneId.systemDefault())
                                          .toInstant()));
-        end = new QueryParameter<>(Date.class, "completionDate");
+        end = new QueryParameter<>(Date.class, CommonParameterNames.END_DATE);
         end.setValue(Date.from(LocalDateTime.of(2018, 9, 30, 0, 0, 0, 0)
                                        .atZone(ZoneId.systemDefault())
                                        .toInstant()));
         Polygon2D footprint = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684,24.83885442747927 43.8379609098684," +
                                                         "24.83885442747927 44.795645304033826,22.8042573604346 44.795645304033826," +
                                                         "22.8042573604346 43.8379609098684))");
-        aoi = new QueryParameter<>(Polygon2D.class, "geometry");
+        aoi = new QueryParameter<>(Polygon2D.class, CommonParameterNames.FOOTPRINT);
         aoi.setValue(footprint);
         pageSize = 10;
         maxResults = 20;
