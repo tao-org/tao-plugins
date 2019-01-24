@@ -17,6 +17,7 @@ package ro.cs.tao.datasource.remote.usgs.parameters;
 
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.DateParameterConverter;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 
 import java.time.LocalDateTime;
@@ -36,9 +37,9 @@ public class USGSDateParameterConverter extends DateParameterConverter {
 
     @Override
     public String stringValue() throws ConversionException {
-        if (parameter.isInterval() && "sensingStart".equals(parameter.getName())) {
+        if (parameter.isInterval() && CommonParameterNames.START_DATE.equals(parameter.getName())) {
             return parameter.getMinValueAsFormattedDate(DATE_FORMAT);
-        } else if (parameter.isInterval() && "sensingEnd".equals(parameter.getName())) {
+        } else if (parameter.isInterval() && CommonParameterNames.END_DATE.equals(parameter.getName())) {
             return parameter.getMaxValueAsFormattedDate(DATE_FORMAT);
         }
         Date minValue = (Date) parameter.getValue();

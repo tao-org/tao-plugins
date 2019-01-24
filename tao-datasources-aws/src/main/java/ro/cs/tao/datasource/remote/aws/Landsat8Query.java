@@ -18,6 +18,7 @@ package ro.cs.tao.datasource.remote.aws;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.aws.internal.AwsResult;
@@ -59,13 +60,13 @@ class Landsat8Query extends DataQuery {
 
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
-        QueryParameter currentParameter = this.parameters.get("platformName");
+        QueryParameter currentParameter = this.parameters.get(CommonParameterNames.PLATFORM);
         if (currentParameter == null) {
-            currentParameter = createParameter("platformName", String.class, "Landsat-8");
-            this.parameters.put("platformName", currentParameter);
+            currentParameter = createParameter(CommonParameterNames.PLATFORM, String.class, "Landsat-8");
+            this.parameters.put(CommonParameterNames.PLATFORM, currentParameter);
         } else {
             if (!"Landsat-8".equals(currentParameter.getValueAsString())) {
-                throw new QueryException("Wrong [platformName] parameter");
+                throw new QueryException(String.format("Wrong [%s] parameter", CommonParameterNames.PLATFORM));
             }
         }
         String baseUrl = this.source.getConnectionString();
@@ -89,7 +90,7 @@ class Landsat8Query extends DataQuery {
 
             //http://sentinel-s2-l1c.s3.amazonaws.com/?delimiter=/&prefix=c1/L8/
             Calendar startDate = Calendar.getInstance();
-            currentParameter = this.parameters.get("sensingStart");
+            currentParameter = this.parameters.get(CommonParameterNames.START_DATE);
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
                     sensingStart = currentParameter.getValueAsFormattedDate(dateFormat.toPattern());
@@ -99,7 +100,7 @@ class Landsat8Query extends DataQuery {
             } else {
                 sensingStart = todayDate.minusDays(30).format(fileDateFormat);
             }
-            currentParameter = this.parameters.get("sensingEnd");
+            currentParameter = this.parameters.get(CommonParameterNames.END_DATE);
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
                     sensingEnd = currentParameter.getValueAsFormattedDate(dateFormat.toPattern());
@@ -112,20 +113,20 @@ class Landsat8Query extends DataQuery {
             startDate.setTime(dateFormat.parse(sensingStart));
             Calendar endDate = Calendar.getInstance();
             endDate.setTime(dateFormat.parse(sensingEnd));
-            currentParameter = this.parameters.get("productType");
+            currentParameter = this.parameters.get(CommonParameterNames.PRODUCT_TYPE);
             if (currentParameter != null) {
                 productType = Enum.valueOf(LandsatProduct.class, currentParameter.getValueAsString());
             } else {
                 productType = LandsatProduct.T1;
             }
 
-            currentParameter = this.parameters.get("cloudcoverpercentage");
+            currentParameter = this.parameters.get(CommonParameterNames.CLOUD_COVER);
             if (currentParameter != null) {
                 cloudFilter = currentParameter.getValueAsDouble();
             }
 
             Set<String> tiles = new HashSet<>();
-            currentParameter = this.parameters.get("row_path");
+            currentParameter = this.parameters.get(CommonParameterNames.TILE);
             if (currentParameter != null) {
                 tiles.add(currentParameter.getValueAsString());
             } else {
@@ -143,21 +144,22 @@ class Landsat8Query extends DataQuery {
                     if (currentParameter != null) {
                         throw new QueryException("Parameter [path] expected when [row] is set");
                     }
-                    currentParameter = this.parameters.get("footprint");
+                    currentParameter = this.parameters.get(CommonParameterNames.FOOTPRINT);
                     if (currentParameter == null) {
-                        throw new QueryException("Either [footprint] or ([path] and [row]) should be provided");
+                        throw new QueryException(String.format("Either [%s] or ([path] and [row]) should be provided",
+                                                 CommonParameterNames.FOOTPRINT));
                     }
                     Polygon2D aoi = (Polygon2D) currentParameter.getValue();
                     if (aoi == null || aoi.getNumPoints() == 0) {
-                        throw new QueryException("The provided [footprint] is empty");
+                        throw new QueryException(String.format("The provided [%s] is empty", CommonParameterNames.FOOTPRINT));
                     }
-                    //tiles.addAll(Landsat8TileExtent.getInstance().intersectingTiles(aoi.getBounds2D()));
                     tiles.addAll(Landsat8TileExtent.getInstance().intersectingTiles(aoi));
                 }
             }
             for (String tile : tiles) {
                 if (tile == null || tile.length() != 6) {
-                    throw new QueryException(String.format("Invalid tile: %s. Landsat-8 tils have the format PPPRRR.", tile));
+                    throw new QueryException(String.format("Invalid tile: %s. Landsat-8 tiles have the format PPPRRR.",
+                                                           tile));
                 }
                 String path = tile.substring(0, 3);
                 String row = tile.substring(3, 6);
@@ -241,10 +243,9 @@ class Landsat8Query extends DataQuery {
     }
 
     private EOProduct parseProductJson(String jsonUrl) throws Exception {
-        JsonReader reader = null;
         EOProduct product;
-        try (InputStream inputStream = new URI(jsonUrl).toURL().openStream()) {
-            reader = Json.createReader(inputStream);
+        try (InputStream inputStream = new URI(jsonUrl).toURL().openStream();
+             JsonReader reader = Json.createReader(inputStream)) {
             JsonObject rootObject = reader.readObject().getJsonObject("L1_METADATA_FILE");
             JsonObject obj = rootObject.getJsonObject("METADATA_FILE_INFO");
             product = new EOProduct();
@@ -282,10 +283,6 @@ class Landsat8Query extends DataQuery {
             rootObject.keySet()
                     .forEach(k -> rootObject.getJsonObject(k)
                         .forEach((key, value) -> product.addAttribute(key, value.toString())));
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
         }
         return product;
     }

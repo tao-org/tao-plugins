@@ -26,6 +26,7 @@ import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
 import ro.cs.tao.datasource.converters.RangeParameterConverter;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.peps.parameters.BooleanParameterConverter;
 import ro.cs.tao.datasource.remote.peps.parameters.DateParameterConverter;
@@ -79,7 +80,7 @@ public class PepsDataQuery extends DataQuery {
             }
             try {
                 if (!"collection".equals(parameter.getName())) {
-                    params.add(new BasicNameValuePair(parameter.getName(),
+                    params.add(new BasicNameValuePair(getRemoteName(parameter.getName()),
                                                       converterFactory.create(parameter).stringValue()));
                 } else {
                     collection = Enum.valueOf(Collection.class, parameter.getValueAsString());
@@ -116,11 +117,11 @@ public class PepsDataQuery extends DataQuery {
                         tmpResults = parser.parse(EntityUtils.toString(response.getEntity()));
                         if (tmpResults != null) {
                             retrieved = tmpResults.size();
-                            if ("Sentinel2".equals(this.parameters.get("platform").getValue()) &&
-                                    this.parameters.containsKey("cloudCover")) {
-                                final Double clouds = (Double) this.parameters.get("cloudCover").getValue();
+                            if ("Sentinel2".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue()) &&
+                                    this.parameters.containsKey(CommonParameterNames.CLOUD_COVER)) {
+                                final Double clouds = (Double) this.parameters.get(CommonParameterNames.CLOUD_COVER).getValue();
                                 tmpResults = tmpResults.stream()
-                                        .filter(r -> Double.parseDouble(r.getAttributeValue("cloudCover")) <= clouds)
+                                        .filter(r -> Double.parseDouble(r.getAttributeValue(CommonParameterNames.CLOUD_COVER)) <= clouds)
                                         .collect(Collectors.toList());
                             }
                             results.addAll(tmpResults);
