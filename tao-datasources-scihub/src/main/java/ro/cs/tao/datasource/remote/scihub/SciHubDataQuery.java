@@ -29,12 +29,14 @@ import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
 import ro.cs.tao.datasource.converters.DateParameterConverter;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
 import ro.cs.tao.datasource.remote.scihub.json.SciHubJsonResponseHandler;
 import ro.cs.tao.datasource.remote.scihub.parameters.DoubleParameterConverter;
+import ro.cs.tao.datasource.remote.scihub.parameters.SciHubPolygonParameterConverter;
 import ro.cs.tao.datasource.remote.scihub.xml.SciHubXmlCountResponseHandler;
 import ro.cs.tao.datasource.remote.scihub.xml.SciHubXmlResponseHandler;
 import ro.cs.tao.datasource.util.HttpMethod;
@@ -60,7 +62,6 @@ import java.util.stream.Collectors;
 public class SciHubDataQuery extends DataQuery {
 
     private static final String PATTERN_DATE = "NOW";
-    private static final String PATTERN_OFFSET_DATE = PATTERN_DATE + "-%sDAY";
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
     private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
 
@@ -124,8 +125,8 @@ public class SciHubDataQuery extends DataQuery {
                             canContinue = tmpResults != null && tmpResults.size() > 0 && count != this.pageSize;
                             if (tmpResults != null) {
                                 actualCount += tmpResults.size();
-                                if (isS2 && this.parameters.containsKey("cloudcoverpercentage")) {
-                                    final Double clouds = Double.parseDouble(this.parameters.get("cloudcoverpercentage").getValue().toString());
+                                if (isS2 && this.parameters.containsKey(CommonParameterNames.CLOUD_COVER)) {
+                                    final Double clouds = Double.parseDouble(this.parameters.get(CommonParameterNames.CLOUD_COVER).getValue().toString());
                                     tmpResults = tmpResults.stream()
                                             .filter(r -> Double.parseDouble(r.getAttributeValue(isXml ? "cloudcoverpercentage" : "Cloud Cover Percentage")) <= clouds)
                                             .collect(Collectors.toList());
@@ -208,12 +209,12 @@ public class SciHubDataQuery extends DataQuery {
 
     private List<String> buildQueriesParams() {
         List<String> queries = new ArrayList<>();
-        if (!this.parameters.containsKey("platformName")) {
-            addParameter("platformName", this.supportedParams.get("platformName").getDefaultValue());
+        if (!this.parameters.containsKey(CommonParameterNames.PLATFORM)) {
+            addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }
         String[] footprints = new String[0];
-        if (this.parameters.containsKey("tileId")) {
-            QueryParameter tileParameter = this.parameters.get("tileId");
+        if (this.parameters.containsKey(CommonParameterNames.TILE)) {
+            QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
             Object value = tileParameter.getValue();
             if (value != null) {
                 if (value.getClass().isArray()) {
@@ -238,8 +239,8 @@ public class SciHubDataQuery extends DataQuery {
                 }
             }
         }
-        if (this.parameters.containsKey("footprint")) {
-            String wkt = ((Polygon2D) this.parameters.get("footprint").getValue()).toWKT();
+        if (this.parameters.containsKey(CommonParameterNames.FOOTPRINT)) {
+            String wkt = ((Polygon2D) this.parameters.get(CommonParameterNames.FOOTPRINT).getValue()).toWKT();
             footprints = splitMultiPolygon(wkt);
         }
         StringBuilder query = new StringBuilder();
@@ -258,63 +259,69 @@ public class SciHubDataQuery extends DataQuery {
                 if (idx > 0) {
                     query.append(" AND ");
                 }
-                if (parameter.getName().equals("product")) {
-                    query.append(parameter.getValueAsString());
-                    break;
-                } else if (parameter.getName().equals("footprint")) {
-                    query.append(entry.getKey()).append(":");
-                    try {
-                        QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
-                                                                                   "footprint",
-                                                                                   Polygon2D.fromWKT(footprint));
-                        query.append(converterFactory.create(fakeParam).stringValue());
-                    } catch (ConversionException e) {
-                        throw new QueryException(e.getMessage());
-                    }
-                } else if (parameter.getName().equals("tileId")) {
-                    String value = parameter.getValueAsString();
-                    if (value.startsWith("[") && value.endsWith("]")) {
-                        String[] values = value.substring(1, value.length() - 1).split(",");
-                        query.append("(");
-                        for (int i = 0; i < values.length; i++) {
-                            query.append("filename:*").append(values[i]).append("*");
-                            if (i < values.length - 1) {
-                                query.append(" OR ");
+                switch (parameter.getName()) {
+                    case CommonParameterNames.PRODUCT:
+                        query.append(parameter.getValueAsString());
+                        break;
+                    case CommonParameterNames.FOOTPRINT:
+                        query.append(getRemoteName(entry.getKey())).append(":");
+                        try {
+                            QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
+                                                                                       "footprint",
+                                                                                       Polygon2D.fromWKT(footprint));
+                            query.append(converterFactory.create(fakeParam).stringValue());
+                        } catch (ConversionException e) {
+                            throw new QueryException(e.getMessage());
+                        }
+                        break;
+                    case CommonParameterNames.TILE:
+                        String value = parameter.getValueAsString();
+                        if (value.startsWith("[") && value.endsWith("]")) {
+                            String[] values = value.substring(1, value.length() - 1).split(",");
+                            query.append("(");
+                            for (int i = 0; i < values.length; i++) {
+                                query.append("filename:*").append(values[i]).append("*");
+                                if (i < values.length - 1) {
+                                    query.append(" OR ");
+                                }
+                            }
+                            query.append(")");
+                        } else {
+                            query.append("filename:*").append(value).append("*");
+                        }
+                        break;
+                    default:
+                        if (parameter.getType().isArray()) {
+                            query.append("(");
+                            Object values = parameter.getValue();
+                            int length = Array.getLength(values);
+                            for (int i = 0; i < length; i++) {
+                                query.append(Array.get(values, i).toString());
+                                if (i < length - 1) {
+                                    query.append(" OR ");
+                                }
+                            }
+                            if (length > 1) {
+                                query = new StringBuilder(query.substring(0, query.length() - 4));
+                            }
+                            query.append(")");
+                        } else if (Date.class.equals(parameter.getType())) {
+                            query.append(getRemoteName(entry.getKey())).append(":[");
+                            try {
+                                query.append(converterFactory.create(parameter).stringValue());
+                            } catch (ConversionException e) {
+                                throw new QueryException(e.getMessage());
+                            }
+                            query.append("]");
+                        } else {
+                            query.append(getRemoteName(entry.getKey())).append(":");
+                            try {
+                                query.append(converterFactory.create(parameter).stringValue());
+                            } catch (ConversionException e) {
+                                throw new QueryException(e.getMessage());
                             }
                         }
-                        query.append(")");
-                    } else {
-                        query.append("filename:*").append(value).append("*");
-                    }
-                } else if (parameter.getType().isArray()) {
-                    query.append("(");
-                    Object value = parameter.getValue();
-                    int length = Array.getLength(value);
-                    for (int i = 0; i < length; i++) {
-                        query.append(Array.get(value, i).toString());
-                        if (i < length - 1) {
-                            query.append(" OR ");
-                        }
-                    }
-                    if (length > 1) {
-                        query = new StringBuilder(query.substring(0, query.length() - 4));
-                    }
-                    query.append(")");
-                } else if (Date.class.equals(parameter.getType())) {
-                    query.append(entry.getKey()).append(":[");
-                    try {
-                        query.append(converterFactory.create(parameter).stringValue());
-                    } catch (ConversionException e) {
-                        throw new QueryException(e.getMessage());
-                    }
-                    query.append("]");
-                } else {
-                    query.append(entry.getKey()).append(":");
-                    try {
-                        query.append(converterFactory.create(parameter).stringValue());
-                    } catch (ConversionException e) {
-                        throw new QueryException(e.getMessage());
-                    }
+                        break;
                 }
                 idx++;
             }

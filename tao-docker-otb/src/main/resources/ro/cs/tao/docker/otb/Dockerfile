@@ -15,7 +15,7 @@ RUN     apt -y install curl bzip2 file libx11-6 libxext6 libxau6 libxxf86vm1 lib
 RUN     apt -y install python-pip
 RUN     pip install lxml matplotlib numpy scipy scikit-image numexpr
 
-RUN curl -L https://www.orfeo-toolbox.org/packages/archives/OTB-${OTB_VERSION}-Linux64.run -o OTB-${OTB_VERSION}-Linux64.run && \
+RUN curl -L https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-${OTB_VERSION}-Linux64.run -o OTB-${OTB_VERSION}-Linux64.run && \
      chmod +x OTB-${OTB_VERSION}-Linux64.run && \
      ./OTB-${OTB_VERSION}-Linux64.run --target /opt/OTB-${OTB_VERSION}-Linux64 && \
      rm -f OTB-${OTB_VERSION}-Linux64.run && \

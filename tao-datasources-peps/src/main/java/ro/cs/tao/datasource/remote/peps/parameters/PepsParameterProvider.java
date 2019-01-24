@@ -17,7 +17,9 @@ package ro.cs.tao.datasource.remote.peps.parameters;
 
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
+import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.peps.Collection;
 import ro.cs.tao.datasource.remote.peps.download.PepsDownloadStrategy;
@@ -31,45 +33,74 @@ import java.util.*;
 public class PepsParameterProvider implements ParameterProvider {
 
     private static final String[] sensors;
-    private static final Map<String, Map<String, DataSourceParameter>> parameters;
+    private static final Map<String, Map<ParameterName, DataSourceParameter>> parameters;
     private static final Map<String, ProductFetchStrategy> productFetchers;
 
     static {
         sensors = new String[] { "Sentinel1", "Sentinel2" };
         parameters = Collections.unmodifiableMap(
-                new HashMap<String, Map<String, DataSourceParameter>>() {{
-                    put("Sentinel1", new LinkedHashMap<String, DataSourceParameter>() {{
-                        put("collection", new DataSourceParameter("collection", String.class, Collection.S1.toString(), true));
-                        put("platform", new DataSourceParameter("platform", String.class));
-                        put("instrument", new DataSourceParameter("instrument", String.class));
-                        put("processingLevel",  new DataSourceParameter("processingLevel", String.class));
-                        put("productType",  new DataSourceParameter("productType", String.class));
-                        put("sensorMode",  new DataSourceParameter("sensorMode", String.class));
-                        put("orbitDirection",  new DataSourceParameter("orbitDirection", String.class));
-                        put("orbit",  new DataSourceParameter("orbit", Short.class));
-                        put("relativeOrbitNumber",  new DataSourceParameter("relativeOrbitNumber", Short.class));
-                        put("isNrt",  new DataSourceParameter("isNrt", Boolean.class));
-                        put("startDate",  new DataSourceParameter("startDate", Date.class, true));
-                        put("completionDate",  new DataSourceParameter("completionDate", Date.class));
-                        put("box",  new DataSourceParameter("box", Polygon2D.class, true));
-                        put("polarisation",  new DataSourceParameter("polarisation", String.class));
+                new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
+                    put("Sentinel1", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
+                        put(ParameterName.create("collection", "collection", "Collection"),
+                            new DataSourceParameter("collection", String.class, Collection.S1.toString(), true));
+                        put(ParameterName.create(CommonParameterNames.PLATFORM, "platform", "Satellite"),
+                            new DataSourceParameter("platform", String.class));
+                        put(ParameterName.create("instrument", "instrument", "Instrument"),
+                            new DataSourceParameter("instrument", String.class));
+                        put(ParameterName.create("processingLevel", "processingLevel", "Processing Level"),
+                            new DataSourceParameter("processingLevel", String.class));
+                        put(ParameterName.create(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type"),
+                            new DataSourceParameter("productType", String.class));
+                        put(ParameterName.create("sensorMode", "sensorMode", "Sensor Mode"),
+                            new DataSourceParameter("sensorMode", String.class));
+                        put(ParameterName.create("orbitDirection", "orbitDirection", "Orbit Direction"),
+                            new DataSourceParameter("orbitDirection", String.class));
+                        put(ParameterName.create("orbit", "orbit", "Absolute Orbit"),
+                            new DataSourceParameter("orbit", Short.class));
+                        put(ParameterName.create(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit"),
+                            new DataSourceParameter("relativeOrbitNumber", Short.class));
+                        put(ParameterName.create("isNrt", "isNrt", "NRT Product"),
+                            new DataSourceParameter("isNrt", Boolean.class));
+                        put(ParameterName.create(CommonParameterNames.START_DATE, "startDate", "Start Date"),
+                            new DataSourceParameter("startDate", Date.class, true));
+                        put(ParameterName.create(CommonParameterNames.END_DATE, "completionDate", "End Date"),
+                            new DataSourceParameter("completionDate", Date.class));
+                        put(ParameterName.create(CommonParameterNames.FOOTPRINT, "box", "Area of Interest"),
+                            new DataSourceParameter("box", Polygon2D.class, true));
+                        put(ParameterName.create(CommonParameterNames.POLARISATION, "polarisation", "Polarisation"),
+                            new DataSourceParameter("polarisation", String.class));
                     }});
-                    put("Sentinel2", new LinkedHashMap<String, DataSourceParameter>() {{
-                        put("collection", new DataSourceParameter("collection", String.class, true));
-                        put("platform", new DataSourceParameter("platform", String.class));
-                        put("instrument", new DataSourceParameter("instrument", String.class));
-                        put("processingLevel",  new DataSourceParameter("processingLevel", String.class));
-                        put("productType",  new DataSourceParameter("productType", String.class));
-                        put("sensorMode",  new DataSourceParameter("sensorMode", String.class));
-                        put("orbitDirection",  new DataSourceParameter("orbitDirection", String.class));
-                        put("orbit",  new DataSourceParameter("orbit", Short.class));
-                        put("relativeOrbitNumber",  new DataSourceParameter("relativeOrbitNumber", Short.class));
-                        put("isNrt",  new DataSourceParameter("isNrt", Boolean.class));
-                        put("startDate",  new DataSourceParameter("startDate", Date.class, true));
-                        put("completionDate",  new DataSourceParameter("completionDate", Date.class));
-                        put("box",  new DataSourceParameter("box", Polygon2D.class));
-                        put("cloudCover",  new DataSourceParameter("cloudCover", Double.class));
-                        put("tileid", new DataSourceParameter("tileid", String.class));
+                    put("Sentinel2", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
+                        put(ParameterName.create("collection", "collection", "Collection"),
+                            new DataSourceParameter("collection", String.class, true));
+                        put(ParameterName.create(CommonParameterNames.PLATFORM, "platform", "Satellite"),
+                            new DataSourceParameter("platform", String.class));
+                        put(ParameterName.create("instrument", "instrument", "Instrument"),
+                            new DataSourceParameter("instrument", String.class));
+                        put(ParameterName.create("processingLevel", "processingLevel", "Processing Level"),
+                            new DataSourceParameter("processingLevel", String.class));
+                        put(ParameterName.create(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type"),
+                            new DataSourceParameter("productType", String.class));
+                        put(ParameterName.create("sensorMode", "sensorMode", "Sensor Mode"),
+                            new DataSourceParameter("sensorMode", String.class));
+                        put(ParameterName.create("orbitDirection", "orbitDirection", "Orbit Direction"),
+                            new DataSourceParameter("orbitDirection", String.class));
+                        put(ParameterName.create("orbit", "orbit", "Absolute Orbit"),
+                            new DataSourceParameter("orbit", Short.class));
+                        put(ParameterName.create(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit"),
+                            new DataSourceParameter("relativeOrbitNumber", Short.class));
+                        put(ParameterName.create("isNrt", "isNrt", "NRT Product"),
+                            new DataSourceParameter("isNrt", Boolean.class));
+                        put(ParameterName.create(CommonParameterNames.START_DATE, "startDate", "Start Date"),
+                            new DataSourceParameter("startDate", Date.class, true));
+                        put(ParameterName.create(CommonParameterNames.END_DATE, "completionDate", "End Date"),
+                            new DataSourceParameter("completionDate", Date.class));
+                        put(ParameterName.create(CommonParameterNames.FOOTPRINT, "box", "Area of Interest"),
+                            new DataSourceParameter("box", Polygon2D.class));
+                        put(ParameterName.create(CommonParameterNames.CLOUD_COVER, "cloudCover", "Cloud Cover"),
+                            new DataSourceParameter("cloudCover", Double.class));
+                        put(ParameterName.create(CommonParameterNames.TILE, "tileid", "UTM Tile"),
+                            new DataSourceParameter("tileid", String.class));
                     }});
                 }});
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
@@ -81,7 +112,7 @@ public class PepsParameterProvider implements ParameterProvider {
     }
 
     @Override
-    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
+    public Map<String, Map<ParameterName, DataSourceParameter>> getSupportedParameters() {
         return parameters;
     }
 

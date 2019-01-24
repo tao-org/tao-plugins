@@ -32,6 +32,7 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
     private static final double MEGABYTE = 1024.0 * 1024.0;
     private static final double GIGABYTE = MEGABYTE * 1024.0;
     private String identifiedElement;
+    private String secondaryAttributeValue;
 
     public SciHubXmlResponseHandler(String recordElementName) {
         super(EOProduct.class, recordElementName);
@@ -53,6 +54,9 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 case "int":
                 case "link":
                     this.identifiedElement = attributeValue;
+                    if (attributes.getLength() > 1) {
+                        this.secondaryAttributeValue = attributes.getValue(1);
+                    }
                     break;
                 default:
                     break;
@@ -126,9 +130,14 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 }
                 break;
             case "link":
-                if (this.current != null && this.current.getLocation() == null) {
+                if (this.current != null) {
                     try {
-                        this.current.setLocation(this.identifiedElement);
+                        if (this.current.getLocation() == null) {
+                                this.current.setLocation(this.identifiedElement);
+                        } else if ("icon".equals(this.identifiedElement)) {
+                            this.current.setQuicklookLocation(this.secondaryAttributeValue);
+                            this.secondaryAttributeValue = null;
+                        }
                     } catch (URISyntaxException e) {
                         logger.warning(e.getMessage());
                     }

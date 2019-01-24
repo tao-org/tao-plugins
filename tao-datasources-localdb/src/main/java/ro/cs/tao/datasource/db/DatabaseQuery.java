@@ -83,7 +83,7 @@ public class DatabaseQuery extends DataQuery {
                         query.append(" AND ");
                     }
                     if (parameter.getType().isArray()) {
-                        query.append(parameter.getName()).append(" IN (");
+                        query.append(getRemoteName(parameter.getName())).append(" IN (");
                         Object value = parameter.getValue();
                         int length = Array.getLength(value);
                         Object[] arrayValue = new Object[length];
@@ -99,16 +99,16 @@ public class DatabaseQuery extends DataQuery {
                         idx += length;
                     } else {
                         if (parameter.isInterval()) {
-                            query.append(parameter.getName()).append(" BETWEEN ? AND ?");
+                            query.append(getRemoteName(parameter.getName())).append(" BETWEEN ? AND ?");
                             values.add(new ParameterIndex(idx, idx + 1, parameter.getType(),
                                                           parameter.getMinValue(),
                                                           parameter.getMaxValue()));
                             idx += 2;
                         } else {
                             if (!Polygon2D.class.equals(parameter.getType())) {
-                                query.append(parameter.getName()).append("=? ");
+                                query.append(getRemoteName(parameter.getName())).append("=? ");
                             } else {
-                                query.append(" st_intersects(").append(parameter.getName()).append(", st_geomfromtext(?)) ");
+                                query.append(" st_intersects(").append(getRemoteName(parameter.getName())).append(", st_geomfromtext(?)) ");
                             }
                             values.add(new ParameterIndex(idx, idx, parameter.getType(), parameter.getValue()));
                             idx += 1;

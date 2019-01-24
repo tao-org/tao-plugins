@@ -24,6 +24,7 @@ import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
@@ -107,31 +108,20 @@ public class Landsat8Query extends DataQuery {
 
     private String buildQueryUrl(int pgNumber, int pgSize) {
         List<NameValuePair> params = new ArrayList<>();
-        if (!this.parameters.containsKey("satellite_name")) {
-            addParameter("satellite_name", this.supportedParams.get("satellite_name").getDefaultValue());
+        if (!this.parameters.containsKey(CommonParameterNames.PLATFORM)) {
+            addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }
-        Set<String> pathRows = null;
         for (QueryParameter parameter : this.parameters.values()) {
             final Class parameterType = parameter.getType();
-            final Object parameterValue = parameter.getValue();
             if (!(parameterType.isArray() && String[].class.isAssignableFrom(parameterType)) && !(Polygon2D.class.equals(parameterType))) {
                 try {
-                    params.add(new BasicNameValuePair(supportedParams.get(parameter.getName()).getName(),
-                            converterFactory.create(parameter).stringValue()));
+                    params.add(new BasicNameValuePair(getRemoteName(parameter.getName()),
+                                                      converterFactory.create(parameter).stringValue()));
                 } catch (ConversionException e) {
                     e.printStackTrace();
                 }
             }
         }
-//        if (this.pageSize > 0) {
-//            params.add(new BasicNameValuePair("page", String.valueOf(this.pageSize)));
-//        }
-//        if (this.pageNumber > 0) {
-//            params.add(new BasicNameValuePair("skip", String.valueOf(this.pageNumber)));
-//        }
-//        if (this.limit > 0) {
-//            params.add(new BasicNameValuePair("limit", String.valueOf(this.limit)));
-//        }
         if (pgNumber > 0) {
             params.add(new BasicNameValuePair("page", String.valueOf(pgNumber)));
         }
@@ -148,7 +138,7 @@ public class Landsat8Query extends DataQuery {
             pathRows.forEach(pr -> {
                 int path = Integer.parseInt(pr.substring(0, 3));
                 int row = Integer.parseInt(pr.substring(3));
-                String prdQueryUrl = queryUrl + String.format("&path=%s&row=%s",path, row);
+                String prdQueryUrl = queryUrl + String.format("&path=%s&row=%s", path, row);
                 logger.fine(String.format("Executing query for product : %s", prdQueryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, prdQueryUrl,null)) {
                     switch (response.getStatusLine().getStatusCode()) {

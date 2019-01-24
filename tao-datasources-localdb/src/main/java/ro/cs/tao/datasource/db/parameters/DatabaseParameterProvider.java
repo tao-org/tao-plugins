@@ -19,7 +19,9 @@ import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.db.DatabaseSource;
 import ro.cs.tao.datasource.db.fetch.DatabaseFetchStrategy;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
+import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
@@ -43,19 +45,26 @@ public class DatabaseParameterProvider implements ParameterProvider {
     }
 
     @Override
-    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
+    public Map<String, Map<ParameterName, DataSourceParameter>> getSupportedParameters() {
         String[] sensors = getSupportedSensors();
         return Collections.unmodifiableMap(
-                new HashMap<String, Map<String, DataSourceParameter>>() {{
+                new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
                     for (String sensor : sensors) {
-                        put(sensor, new LinkedHashMap<String, DataSourceParameter>() {{
-                            put("name", new DataSourceParameter("name", String[].class, false));
-                            put("type_id", new DataSourceParameter("type_id", DataFormat.class, false));
-                            put("geometry", new DataSourceParameter("geometry", Polygon2D.class, false));
-                            put("coordinate_reference_system", new DataSourceParameter("coordinate_reference_system", String.class, false));
-                            put("sensor_type_id", new DataSourceParameter("sensor_type_id", SensorType.class, false));
-                            put("acquisition_date", new DataSourceParameter("acquisition_date", Date.class, false));
-                            put("product_type", new DataSourceParameter("product_type", String.class, sensor));
+                        put(sensor, new LinkedHashMap<ParameterName, DataSourceParameter>() {{
+                            put(ParameterName.create(CommonParameterNames.PRODUCT, "name", "Product Name"),
+                                new DataSourceParameter("name", String[].class, false));
+                            put(ParameterName.create("productFormat", "type_id", "Product Format"),
+                                new DataSourceParameter("type_id", DataFormat.class, false));
+                            put(ParameterName.create(CommonParameterNames.FOOTPRINT, "geometry", "Region of Interest"),
+                                new DataSourceParameter("geometry", Polygon2D.class, false));
+                            put(ParameterName.create("crs", "coordinate_reference_system", "CRS"),
+                                new DataSourceParameter("coordinate_reference_system", String.class, false));
+                            put(ParameterName.create("sensorType", "sensor_type_id", "Sensor Type"),
+                                new DataSourceParameter("sensor_type_id", SensorType.class, false));
+                            put(ParameterName.create(CommonParameterNames.START_DATE, "acquisition_date", "Acquisition Date"),
+                                new DataSourceParameter("acquisition_date", Date.class, false));
+                            put(ParameterName.create(CommonParameterNames.PRODUCT_TYPE, "product_type", "Satellite"),
+                                new DataSourceParameter("product_type", String.class, sensor));
                         }});
                     }
                 }});
