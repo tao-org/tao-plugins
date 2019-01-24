@@ -58,7 +58,7 @@ public final class SciHubParameterProvider implements ParameterProvider {
                                 new DataSourceParameter("polarisationMode", String.class));
                             put(ParameterName.create("sensorOperationalMode", "sensorOperationalMode", "Operational Mode"),
                                 new DataSourceParameter("sensorOperationalMode", String.class));
-                            put(ParameterName.create(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit"),
+                            put(ParameterName.create(CommonParameterNames.TILE, "relativeOrbitNumber", "Relative Orbit"),
                                 new DataSourceParameter("relativeOrbitNumber", String.class));
                         }});
                         put("Sentinel2", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
