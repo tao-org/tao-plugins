@@ -18,6 +18,7 @@ package ro.cs.tao.datasource.remote.aws;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.aws.internal.AwsResult;
@@ -65,13 +66,13 @@ class Sentinel2Query extends DataQuery {
 
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
-        QueryParameter currentParameter = this.parameters.get("platformName");
+        QueryParameter currentParameter = this.parameters.get(CommonParameterNames.PLATFORM);
         if (currentParameter == null) {
-            currentParameter = createParameter("platformName", String.class, "Sentinel-2");
-            this.parameters.put("platformName", currentParameter);
+            currentParameter = createParameter(CommonParameterNames.PLATFORM, String.class, "Sentinel-2");
+            this.parameters.put(CommonParameterNames.PLATFORM, currentParameter);
         } else {
             if (!"Sentinel-2".equals(currentParameter.getValueAsString())) {
-                throw new QueryException("Wrong [platformName] parameter");
+                throw new QueryException(String.format("Wrong [%s] parameter", CommonParameterNames.PLATFORM));
             }
         }
         Map<String, EOProduct> results = new LinkedHashMap<>();
@@ -81,10 +82,10 @@ class Sentinel2Query extends DataQuery {
             int relativeOrbit = 0;
 
             Set<String> tiles = new HashSet<>();
-            currentParameter = this.parameters.get("tileId");
+            currentParameter = this.parameters.get(CommonParameterNames.TILE);
             if (currentParameter != null) {
                 tiles.add(currentParameter.getValueAsString());
-            } else if ((currentParameter = this.parameters.get("footprint")) != null) {
+            } else if ((currentParameter = this.parameters.get(CommonParameterNames.FOOTPRINT)) != null) {
                 Object value = currentParameter.getValue();
                 Polygon2D pValue;
                 if (value instanceof Polygon2D) {
@@ -92,17 +93,17 @@ class Sentinel2Query extends DataQuery {
                 } else {
                     pValue = Polygon2D.fromWKT(value.toString());
                 }
-                //tiles.addAll(Sentinel2TileExtent.getInstance().intersectingTiles(pValue.getBounds2D()));
                 tiles.addAll(Sentinel2TileExtent.getInstance().intersectingTiles(pValue));
             } else {
-                throw new QueryException("Either [tileId] or [footprint] have to be given.");
+                throw new QueryException(String.format("Either [%s] or [%s] have to be given.",
+                                                       CommonParameterNames.TILE, CommonParameterNames.FOOTPRINT));
             }
 
             Calendar startDate = Calendar.getInstance();
             Calendar endDate = Calendar.getInstance();
             LocalDate todayDate = LocalDate.now();
 
-            currentParameter = this.parameters.get("beginPosition");
+            currentParameter = this.parameters.get(CommonParameterNames.START_DATE);
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
                     sensingStart = currentParameter.getValueAsFormattedDate(dateFormatString);
@@ -117,7 +118,7 @@ class Sentinel2Query extends DataQuery {
                 sensingStart = todayDate.minusDays(30).format(fileDateFormat);
             }
             startDate.setTime(dateFormat.parse(sensingStart));
-            currentParameter = this.parameters.get("endPosition");
+            currentParameter = this.parameters.get(CommonParameterNames.END_DATE);
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
                     sensingEnd = currentParameter.getValueAsFormattedDate(dateFormatString);
@@ -134,12 +135,12 @@ class Sentinel2Query extends DataQuery {
             endDate.setTime(dateFormat.parse(sensingEnd));
             //http://sentinel-s2-l1c.s3.amazonaws.com/?delimiter=/&prefix=tiles/15/R/TM/
 
-            currentParameter = this.parameters.get("cloudcoverpercentage");
+            currentParameter = this.parameters.get(CommonParameterNames.CLOUD_COVER);
             if (currentParameter != null) {
                 cloudFilter = currentParameter.getValueAsDouble();
             }
 
-            currentParameter = this.parameters.get("relativeOrbitNumber");
+            currentParameter = this.parameters.get(CommonParameterNames.RELATIVE_ORBIT);
             if (currentParameter != null) {
                 relativeOrbit = currentParameter.getValueAsInt();
             }
@@ -255,13 +256,13 @@ class Sentinel2Query extends DataQuery {
     @Override
     protected long getCountImpl() {
         long count = 0;
-        QueryParameter currentParameter = this.parameters.get("platformName");
+        QueryParameter currentParameter = this.parameters.get(CommonParameterNames.PLATFORM);
         if (currentParameter == null) {
-            currentParameter = createParameter("platformName", String.class, "Sentinel-2");
-            this.parameters.put("platformName", currentParameter);
+            currentParameter = createParameter(CommonParameterNames.PLATFORM, String.class, "Sentinel-2");
+            this.parameters.put(CommonParameterNames.PLATFORM, currentParameter);
         } else {
             if (!"Sentinel-2".equals(currentParameter.getValueAsString())) {
-                throw new QueryException("Wrong [platformName] parameter");
+                throw new QueryException(String.format("Wrong [%s] parameter", CommonParameterNames.PLATFORM));
             }
         }
 
@@ -269,21 +270,22 @@ class Sentinel2Query extends DataQuery {
             String sensingStart, sensingEnd;
 
             Set<String> tiles = new HashSet<>();
-            currentParameter = this.parameters.get("tileId");
+            currentParameter = this.parameters.get(CommonParameterNames.TILE);
             if (currentParameter != null) {
                 tiles.add(currentParameter.getValueAsString());
-            } else if ((currentParameter = this.parameters.get("footprint")) != null) {
+            } else if ((currentParameter = this.parameters.get(CommonParameterNames.FOOTPRINT)) != null) {
                 Polygon2D aoi = (Polygon2D) currentParameter.getValue();
                 tiles.addAll(Sentinel2TileExtent.getInstance().intersectingTiles(aoi.getBounds2D()));
             } else {
-                throw new QueryException("Either [tileId] or [footprint] have to be given.");
+                throw new QueryException(String.format("Either [%s] or [%s] have to be given.",
+                                         CommonParameterNames.TILE, CommonParameterNames.FOOTPRINT));
             }
 
             Calendar startDate = Calendar.getInstance();
             Calendar endDate = Calendar.getInstance();
             LocalDate todayDate = LocalDate.now();
 
-            currentParameter = this.parameters.get("beginPosition");
+            currentParameter = this.parameters.get(CommonParameterNames.START_DATE);
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
                         sensingStart = currentParameter.getValueAsFormattedDate(dateFormatString);
@@ -298,7 +300,7 @@ class Sentinel2Query extends DataQuery {
                 sensingStart = todayDate.minusDays(30).format(fileDateFormat);
             }
             startDate.setTime(dateFormat.parse(sensingStart));
-            currentParameter = this.parameters.get("endPosition");
+            currentParameter = this.parameters.get(CommonParameterNames.END_DATE);
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
                     sensingEnd = currentParameter.getValueAsFormattedDate(dateFormatString);
