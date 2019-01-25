@@ -163,6 +163,9 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
     }
 
     @Override
+    protected boolean adjustProductLength() { return false; }
+
+    @Override
     protected String getMetadataUrl(EOProduct product) {
         final Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(product.getName());
         String metadataFile = helper.getMetadataFileName();
