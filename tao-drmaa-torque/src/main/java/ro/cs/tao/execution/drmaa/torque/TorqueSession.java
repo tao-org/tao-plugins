@@ -29,4 +29,7 @@ class TorqueSession extends AbstractSession {
     TorqueSession() {
         super();
     }
+
+    @Override
+    public String serviceName() { return "Torque"; }
 }
