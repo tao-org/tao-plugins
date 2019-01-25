@@ -29,4 +29,7 @@ class SlurmSession extends AbstractSession {
     SlurmSession() {
         super();
     }
+
+    @Override
+    public String serviceName() { return "SLURM"; }
 }
