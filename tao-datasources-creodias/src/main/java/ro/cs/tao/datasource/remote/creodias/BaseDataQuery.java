@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public abstract class CreoDIASDataQuery extends DataQuery {
+public abstract class BaseDataQuery extends DataQuery {
 
     private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
 
@@ -40,7 +40,7 @@ public abstract class CreoDIASDataQuery extends DataQuery {
         converterFactory.register(DateParameterConverter.class, Date.class);
     }
 
-    protected CreoDIASDataQuery(CreoDIASDataSource source, String sensorName) {
+    protected BaseDataQuery(BaseDataSource source, String sensorName) {
         super(source, sensorName);
         this.sensorName = sensorName;
     }

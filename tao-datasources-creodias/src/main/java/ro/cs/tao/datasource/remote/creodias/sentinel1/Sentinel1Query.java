@@ -1,14 +1,14 @@
 package ro.cs.tao.datasource.remote.creodias.sentinel1;
 
-import ro.cs.tao.datasource.remote.creodias.CreoDIASDataQuery;
-import ro.cs.tao.datasource.remote.creodias.CreoDIASDataSource;
+import ro.cs.tao.datasource.remote.creodias.BaseDataQuery;
+import ro.cs.tao.datasource.remote.creodias.BaseDataSource;
 import ro.cs.tao.datasource.remote.creodias.parsers.Sentinel1JsonResponseHandler;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.eodata.EOProduct;
 
-public class CreoDIASSentinel1Query extends CreoDIASDataQuery {
+public class Sentinel1Query extends BaseDataQuery {
 
-    public CreoDIASSentinel1Query(CreoDIASDataSource source) {
+    public Sentinel1Query(BaseDataSource source) {
         super(source, "Sentinel1");
     }
 
