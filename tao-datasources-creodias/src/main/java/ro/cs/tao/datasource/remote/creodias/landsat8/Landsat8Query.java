@@ -1,14 +1,14 @@
 package ro.cs.tao.datasource.remote.creodias.landsat8;
 
-import ro.cs.tao.datasource.remote.creodias.CreoDIASDataQuery;
-import ro.cs.tao.datasource.remote.creodias.CreoDIASDataSource;
+import ro.cs.tao.datasource.remote.creodias.BaseDataQuery;
+import ro.cs.tao.datasource.remote.creodias.BaseDataSource;
 import ro.cs.tao.datasource.remote.creodias.parsers.Landsat8JsonResponseHandler;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.eodata.EOProduct;
 
-public class CreoDIASLandsat8Query extends CreoDIASDataQuery {
+public class Landsat8Query extends BaseDataQuery {
 
-    public CreoDIASLandsat8Query(CreoDIASDataSource source) {
+    public Landsat8Query(BaseDataSource source) {
         super(source, "Landsat8");
     }
 

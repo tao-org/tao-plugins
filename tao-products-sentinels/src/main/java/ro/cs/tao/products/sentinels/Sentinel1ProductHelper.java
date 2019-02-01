@@ -85,6 +85,10 @@ public class Sentinel1ProductHelper extends ProductHelper {
         return Enum.valueOf(Resolution.class, getTokens(S1Pattern, this.name, null)[3]);
     }
 
+    public SensorMode getSensorMode() {
+        return Enum.valueOf(SensorMode.class, getTokens(S1Pattern, this.name, null)[1]);
+    }
+
     @Override
     protected boolean verifyProductName(String name) {
         return S1Pattern.matcher(name).matches();
@@ -100,5 +104,9 @@ public class Sentinel1ProductHelper extends ProductHelper {
 
     public enum Resolution {
         F, H, M, NA
+    }
+
+    public enum SensorMode {
+        EW, IW, SM, WV
     }
 }
