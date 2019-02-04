@@ -16,13 +16,15 @@
     <name>TAO Plugin Extensions</name>
 
     <modules>
+		<module>tao-products-sentinels</module>
+        <module>tao-products-landsat</module>
         <module>tao-datasources-aws</module>
         <module>tao-datasources-peps</module>
         <module>tao-datasources-scihub</module>
         <module>tao-datasources-usgs</module>
         <module>tao-datasources-localdb</module>
-        <module>tao-products-sentinels</module>
-        <module>tao-products-landsat</module>
+        <module>tao-datasources-creodias</module>
+		<module>tao-datasources-mundi</module>
         <module>tao-drmaa-slurm</module>
         <module>tao-drmaa-torque</module>
         <module>tao-integration-geostorm</module>
@@ -35,7 +37,7 @@
         <module>tao-docker-otb</module>
         <module>tao-docker-python</module>
         <module>tao-executor-wps</module>
-    </modules>
+	</modules>
 
     <properties>
         <tao.version>1-0.SNAPSHOT</tao.version>
