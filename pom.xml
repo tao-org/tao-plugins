@@ -36,6 +36,7 @@
         <module>tao-docker-python</module>
         <module>tao-executor-wps</module>
         <module>tao-datasources-creodias</module>
+        <module>tao-datasources-mundi</module>
     </modules>
 
     <properties>
