@@ -1,0 +1,103 @@
+package ro.cs.tao.datasource.remote.mundi.parsers;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import ro.cs.tao.datasource.remote.ProductHelper;
+import ro.cs.tao.eodata.EOProduct;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+
+abstract class XmlResponseHandler<H extends ProductHelper>
+        extends ro.cs.tao.datasource.remote.result.xml.XmlResponseHandler<EOProduct> {
+    private String identifiedElement;
+    H helper;
+
+    XmlResponseHandler(String recordElementName) {
+        super(EOProduct.class, recordElementName);
+    }
+
+    @Override
+    public void endElement(String uri, String localName, String qName) throws SAXException {
+        if (this.recordElement.equals(qName)) {
+            if (this.current != null && this.current.getId() == null) {
+                this.current.setId(this.current.getName());
+            }
+        }
+        super.endElement(uri, localName, qName);
+    }
+
+    @Override
+    protected void handleStartElement(String qName, Attributes attributes) {
+        if (this.recordElement.equals(qName)) {
+            initRecord();
+        } else if ("content".equals(qName)) {
+            this.identifiedElement = attributes.getValue("url");
+        } else if ("link".equals(qName)) {
+            String value = attributes.getValue("rel");
+            if ("enclosure".equals(value)) {
+                this.identifiedElement = attributes.getValue("href");
+            }
+        }
+    }
+
+    @Override
+    protected void handleEndElement(String qName) {
+        if (this.current != null) {
+            final String elementValue = buffer.toString();
+            try {
+                switch (qName) {
+                    case "content":
+                        if (this.current.getId() == null) {
+                            int idx1 = this.identifiedElement.indexOf("'");
+                            if (idx1 > 0) {
+                                int idx2 = this.identifiedElement.indexOf("'", idx1 + 1);
+                                if (idx2 > 0) {
+                                    this.current.setId(this.identifiedElement.substring(idx1 + 1, idx2));
+                                }
+                            }
+                            if (this.current.getLocation() == null) {
+                                this.current.setLocation(computeLocation());
+                            }
+                        }
+                        break;
+                    case "identifier":
+                        this.current.setName(elementValue);
+                        this.helper = createHelper(elementValue);
+                        break;
+                    case "processingDate":
+                        try {
+                            this.current.setAcquisitionDate(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(elementValue));
+                        } catch (Exception e) {
+                            logger.warning(e.getMessage());
+                        }
+                        break;
+                    case "category":
+                        if ("QUICKLOOK".equals(elementValue)) {
+                            this.current.setQuicklookLocation(this.identifiedElement);
+                        }
+                        break;
+                    case "link":
+                        if (this.identifiedElement != null) {
+                            URI uri = new URI(this.identifiedElement);
+                            this.current.setLocation(uri.getPath().substring(1));
+                        }
+                    default:
+                        handleAdditionalElements(qName, elementValue);
+                        break;
+                }
+            } catch (URISyntaxException e) {
+                logger.warning(e.getMessage());
+            }
+        }
+    }
+
+    protected abstract void initRecord();
+
+    protected abstract H createHelper(String productName);
+
+    protected abstract String computeLocation();
+
+    protected abstract void handleAdditionalElements(String qName, String text);
+}
