@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>ro.cs.tao</groupId>
-  <artifactId>tao-datasources-peps</artifactId>
+  <artifactId>tao-datasources-mundi</artifactId>
   <versioning>
     <versions>
       <version>1.0-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20190204173953</lastUpdated>
+    <lastUpdated>20190204174216</lastUpdated>
   </versioning>
 </metadata>
