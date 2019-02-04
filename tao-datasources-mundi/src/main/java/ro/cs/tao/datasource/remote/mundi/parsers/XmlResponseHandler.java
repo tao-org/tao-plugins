@@ -5,6 +5,7 @@ import org.xml.sax.SAXException;
 import ro.cs.tao.datasource.remote.ProductHelper;
 import ro.cs.tao.eodata.EOProduct;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 
@@ -33,6 +34,11 @@ abstract class XmlResponseHandler<H extends ProductHelper>
             initRecord();
         } else if ("content".equals(qName)) {
             this.identifiedElement = attributes.getValue("url");
+        } else if ("link".equals(qName)) {
+            String value = attributes.getValue("rel");
+            if ("enclosure".equals(value)) {
+                this.identifiedElement = attributes.getValue("href");
+            }
         }
     }
 
@@ -51,7 +57,9 @@ abstract class XmlResponseHandler<H extends ProductHelper>
                                     this.current.setId(this.identifiedElement.substring(idx1 + 1, idx2));
                                 }
                             }
-                            this.current.setLocation(computeLocation());
+                            if (this.current.getLocation() == null) {
+                                this.current.setLocation(computeLocation());
+                            }
                         }
                         break;
                     case "identifier":
@@ -70,6 +78,11 @@ abstract class XmlResponseHandler<H extends ProductHelper>
                             this.current.setQuicklookLocation(this.identifiedElement);
                         }
                         break;
+                    case "link":
+                        if (this.identifiedElement != null) {
+                            URI uri = new URI(this.identifiedElement);
+                            this.current.setLocation(uri.getPath().substring(1));
+                        }
                     default:
                         handleAdditionalElements(qName, elementValue);
                         break;
