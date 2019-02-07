@@ -6,6 +6,7 @@ import ro.cs.tao.eodata.EOProduct;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.Properties;
 
 public class DownloadStrategy extends SimpleArchiveDownloadStrategy {
@@ -13,6 +14,10 @@ public class DownloadStrategy extends SimpleArchiveDownloadStrategy {
     public DownloadStrategy(String targetFolder, Properties properties) {
         super(targetFolder, properties);
         this.fetchMode = FetchMode.OVERWRITE;
+    }
+
+    private DownloadStrategy(DownloadStrategy other) {
+        super(other);
     }
 
     @Override
@@ -24,5 +29,15 @@ public class DownloadStrategy extends SimpleArchiveDownloadStrategy {
         } catch (URISyntaxException ignored) {
         }
         return location != null ? location.toString() : null;
+    }
+
+    @Override
+    public SimpleArchiveDownloadStrategy clone() {
+        return new DownloadStrategy(this);
+    }
+
+    @Override
+    protected Path computeTarget(Path archivePath) {
+        return archivePath.getParent();
     }
 }
