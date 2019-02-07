@@ -25,8 +25,13 @@ public abstract class BaseDataSource extends URLDataSource<BaseDataQuery> {
 
     public BaseDataSource() throws URISyntaxException {
         super("");
-        this.connectionString = normalizedURL();
+        this.connectionString = properties.getProperty(urlPropertyName());
         this.remoteUrl = new URI(this.connectionString);
+    }
+
+    @Override
+    public void setCredentials(String username, String password) {
+        //super.setCredentials(username, password);
     }
 
     @Override
@@ -54,12 +59,4 @@ public abstract class BaseDataSource extends URLDataSource<BaseDataQuery> {
     }
 
     public abstract String urlPropertyName();
-
-    private String normalizedURL() {
-        String url = properties.getProperty(urlPropertyName());
-        if (!url.endsWith("/")) {
-            url.concat("/");
-        }
-        return url;
-    }
 }
