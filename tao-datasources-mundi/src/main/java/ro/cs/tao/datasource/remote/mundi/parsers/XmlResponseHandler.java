@@ -86,18 +86,20 @@ abstract class XmlResponseHandler<H extends ProductHelper>
                         }
                         break;
                     case "polygon":
-                        if (this.identifiedElement != null && !this.identifiedElement.isEmpty()) {
-                            String[] points = this.identifiedElement.split(" ");
-                            Polygon2D polygon2D = new Polygon2D();
-                            for (int i = 0; i < points.length; i += 2) {
-                                polygon2D.append(Double.parseDouble(points[i + 1]),
-                                                 Double.parseDouble(points[i]));
+                        if (!elementValue.isEmpty()) {
+                            String[] points = elementValue.split(" ");
+                            if (points.length >= 5) {
+                                Polygon2D polygon2D = new Polygon2D();
+                                for (int i = 0; i < points.length; i += 2) {
+                                    polygon2D.append(Double.parseDouble(points[i + 1]),
+                                                     Double.parseDouble(points[i]));
+                                }
+                                this.current.setGeometry(polygon2D.toWKT(8));
                             }
-                            this.current.setGeometry(polygon2D.toWKT(8));
                         }
                         break;
                     case "orbitDirection":
-                        this.current.addAttribute("orbitdirection", this.identifiedElement);
+                        this.current.addAttribute("orbitdirection", elementValue);
                         break;
                     default:
                         handleAdditionalElements(qName, elementValue);
