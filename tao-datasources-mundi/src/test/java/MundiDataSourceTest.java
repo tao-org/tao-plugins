@@ -48,6 +48,7 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
 
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -89,12 +90,12 @@ public class MundiDataSourceTest {
     }
 
     public static void main(String[] args) {
-        Sentinel2_Count_Test();
+        /*Sentinel2_Count_Test();
         Sentinel2_Test();
-        Sentinel1_Count_Test();
+        Sentinel1_Count_Test();*/
         Sentinel1_Test();
-        Landsat8_Count_Test();
-        Landsat8_Test();
+        /*Landsat8_Count_Test();
+        Landsat8_Test();*/
     }
 
     public static void Sentinel2_Count_Test() {
@@ -178,6 +179,7 @@ public class MundiDataSourceTest {
             results.forEach(r -> {
                 System.out.println(String.format(rowTemplate, r.getId(), r.getName(), r.getLocation()));
             });
+            Path path = dataSource.getProductFetchStrategy(sensors[0]).fetch(results.get(0));
         } catch (Exception e) {
             e.printStackTrace();
         }
