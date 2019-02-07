@@ -96,6 +96,9 @@ abstract class XmlResponseHandler<H extends ProductHelper>
                             this.current.setGeometry(polygon2D.toWKT(8));
                         }
                         break;
+                    case "orbitDirection":
+                        this.current.addAttribute("orbitdirection", this.identifiedElement);
+                        break;
                     default:
                         handleAdditionalElements(qName, elementValue);
                         break;
