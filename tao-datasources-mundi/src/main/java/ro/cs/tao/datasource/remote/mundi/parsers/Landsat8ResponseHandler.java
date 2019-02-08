@@ -22,6 +22,7 @@ public class Landsat8ResponseHandler extends XmlResponseHandler<Landsat8ProductH
         this.current.setPixelType(PixelType.UINT16);
         this.current.setWidth(-1);
         this.current.setHeight(-1);
+        this.current.setProductType("Landsat8");
     }
 
     @Override

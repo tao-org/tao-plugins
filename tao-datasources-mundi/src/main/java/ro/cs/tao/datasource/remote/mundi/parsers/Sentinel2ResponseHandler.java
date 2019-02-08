@@ -22,6 +22,7 @@ public class Sentinel2ResponseHandler extends XmlResponseHandler<Sentinel2Produc
         this.current.setPixelType(PixelType.UINT16);
         this.current.setWidth(-1);
         this.current.setHeight(-1);
+        this.current.setProductType("Sentinel2");
     }
 
     @Override

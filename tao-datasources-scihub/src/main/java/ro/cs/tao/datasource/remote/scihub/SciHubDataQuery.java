@@ -234,7 +234,12 @@ public class SciHubDataQuery extends DataQuery {
                         }
                     } else {
                         Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(strVal));
-                        footprints = new String[]{polygon.toWKT()};
+                        if (polygon != null) {
+                            footprints = new String[]{polygon.toWKT()};
+                        } else {
+                            logger.warning(String.format("No extent found for tile '%s'. Maybe it is not a Sentinel-2 product",
+                                                         strVal));
+                        }
                     }
                 }
             }
