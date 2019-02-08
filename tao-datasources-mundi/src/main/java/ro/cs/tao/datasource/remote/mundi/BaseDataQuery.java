@@ -163,7 +163,9 @@ public abstract class BaseDataQuery extends DataQuery {
                         }
                     } else {
                         Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(strVal));
-                        footprints = new String[]{polygon.toWKT()};
+                        if (polygon != null) {
+                            footprints = new String[]{polygon.toWKT()};
+                        }
                     }
                 }
             }
@@ -195,6 +197,32 @@ public abstract class BaseDataQuery extends DataQuery {
                                                                                        CommonParameterNames.FOOTPRINT,
                                                                                        Polygon2D.fromWKT(footprint));
                             query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), converterFactory.create(fakeParam).stringValue()));
+                        } catch (ConversionException e) {
+                            throw new QueryException(e.getMessage());
+                        }
+                        break;
+                    case CommonParameterNames.START_DATE:
+                        try {
+                            if (parameter.isInterval()) {
+                                parameter.setValue(parameter.getMinValue());
+                                parameter.setMinValue(null);
+                                parameter.setMaxValue(null);
+                            }
+                            query.add(new BasicNameValuePair(getRemoteName(entry.getKey()),
+                                                             converterFactory.create(parameter).stringValue()));
+                        } catch (ConversionException e) {
+                            throw new QueryException(e.getMessage());
+                        }
+                        break;
+                    case CommonParameterNames.END_DATE:
+                        try {
+                            if (parameter.isInterval()) {
+                                parameter.setValue(parameter.getMaxValue());
+                                parameter.setMinValue(null);
+                                parameter.setMaxValue(null);
+                            }
+                            query.add(new BasicNameValuePair(getRemoteName(entry.getKey()),
+                                                             converterFactory.create(parameter).stringValue()));
                         } catch (ConversionException e) {
                             throw new QueryException(e.getMessage());
                         }

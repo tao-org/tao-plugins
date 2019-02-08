@@ -4,6 +4,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import ro.cs.tao.datasource.remote.ProductHelper;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.eodata.Polygon2D;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -83,6 +84,23 @@ abstract class XmlResponseHandler<H extends ProductHelper>
                             URI uri = new URI(this.identifiedElement);
                             this.current.setLocation(uri.getPath().substring(1));
                         }
+                        break;
+                    case "polygon":
+                        if (!elementValue.isEmpty()) {
+                            String[] points = elementValue.split(" ");
+                            if (points.length >= 5) {
+                                Polygon2D polygon2D = new Polygon2D();
+                                for (int i = 0; i < points.length; i += 2) {
+                                    polygon2D.append(Double.parseDouble(points[i + 1]),
+                                                     Double.parseDouble(points[i]));
+                                }
+                                this.current.setGeometry(polygon2D.toWKT(8));
+                            }
+                        }
+                        break;
+                    case "orbitDirection":
+                        this.current.addAttribute("orbitdirection", elementValue);
+                        break;
                     default:
                         handleAdditionalElements(qName, elementValue);
                         break;

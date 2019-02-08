@@ -6,7 +6,7 @@ import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
-import ro.cs.tao.datasource.remote.NoDownloadStrategy;
+import ro.cs.tao.datasource.remote.mundi.DownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
 
 import java.util.*;
@@ -34,8 +34,8 @@ public class Sentinel1ParameterProvider implements ParameterProvider {
                         put(ParameterName.create("orbitDirection", "orbitDirection", "Orbit Direction"),
                             new DataSourceParameter("orbitDirection", String.class, null, false,
                                                     "ASCENDING", "DESCENDING"));
-                        put(ParameterName.create(CommonParameterNames.RELATIVE_ORBIT, "orbitNumber", "Relative Orbit"),
-                            new DataSourceParameter("orbit", Short.class));
+                        put(ParameterName.create(CommonParameterNames.TILE, "orbitNumber", "Relative Orbit"),
+                            new DataSourceParameter("orbitNumber", Short.class));
                         put(ParameterName.create(CommonParameterNames.START_DATE, "timeStart", "Start Date"),
                             new DataSourceParameter("timeStart", Date.class, true));
                         put(ParameterName.create(CommonParameterNames.END_DATE, "timeEnd", "End Date"),
@@ -50,7 +50,8 @@ public class Sentinel1ParameterProvider implements ParameterProvider {
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
-                    put("Sentinel1", new NoDownloadStrategy(targetFolder, new Properties()));
+                    //put("Sentinel1", new NoDownloadStrategy(targetFolder, new Properties()));
+                    put("Sentinel1", new DownloadStrategy(targetFolder, new Properties()));
                 }});
     }
 
