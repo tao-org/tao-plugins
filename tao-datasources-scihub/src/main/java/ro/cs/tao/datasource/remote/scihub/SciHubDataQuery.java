@@ -234,7 +234,9 @@ public class SciHubDataQuery extends DataQuery {
                         }
                     } else {
                         Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(strVal));
-                        footprints = new String[]{polygon.toWKT()};
+                        if (polygon != null) {
+                            footprints = new String[]{polygon.toWKT()};
+                        }
                     }
                 }
             }
