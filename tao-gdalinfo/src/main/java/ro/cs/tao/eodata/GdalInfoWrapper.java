@@ -211,35 +211,52 @@ public class GdalInfoWrapper implements MetadataInspector {
                     }
                 }
                 JsonArray bandsArray = root.getJsonArray("bands");
-                String type = bandsArray.size() > 0 ? bandsArray.getJsonObject(0).getString("type") : null;
-                if (type != null) {
-                    switch (type.toLowerCase()) {
-                        case "byte":
-                            metadata.setPixelType(PixelType.UINT8);
-                            break;
-                        case "uint16":
-                        case "cint16":
-                            metadata.setPixelType(PixelType.UINT16);
-                            break;
-                        case "int16":
-                            metadata.setPixelType(PixelType.INT16);
-                            break;
-                        case "uint32":
-                            metadata.setPixelType(PixelType.UINT32);
-                            break;
-                        case "int32":
-                            metadata.setPixelType(PixelType.INT32);
-                            break;
-                        case "float32":
-                            metadata.setPixelType(PixelType.FLOAT32);
-                            break;
-                        case "float64":
-                            metadata.setPixelType(PixelType.FLOAT64);
-                            break;
+                JsonObject jsonObject = bandsArray.size() > 0 ? bandsArray.getJsonObject(0) : null;
+                if (jsonObject != null) {
+                    String type = jsonObject.getString("type");
+                    if (type != null) {
+                        switch (type.toLowerCase()) {
+                            case "byte":
+                                metadata.setPixelType(PixelType.UINT8);
+                                break;
+                            case "uint16":
+                            case "cint16":
+                                metadata.setPixelType(PixelType.UINT16);
+                                break;
+                            case "int16":
+                                metadata.setPixelType(PixelType.INT16);
+                                break;
+                            case "uint32":
+                                metadata.setPixelType(PixelType.UINT32);
+                                break;
+                            case "int32":
+                                metadata.setPixelType(PixelType.INT32);
+                                break;
+                            case "float32":
+                                metadata.setPixelType(PixelType.FLOAT32);
+                                break;
+                            case "float64":
+                                metadata.setPixelType(PixelType.FLOAT64);
+                                break;
+                        }
                     }
-                } /*else if (isSentinel2) {
-                    metadata.setPixelType(PixelType.UINT16);
-                }*/
+                    JsonNumber value = jsonObject.getJsonNumber("min");
+                    if (value != null) {
+                        metadata.addStatistic("min", value.doubleValue());
+                    }
+                    value = jsonObject.getJsonNumber("max");
+                    if (value != null) {
+                        metadata.addStatistic("max", value.doubleValue());
+                    }
+                    value = jsonObject.getJsonNumber("mean");
+                    if (value != null) {
+                        metadata.addStatistic("mean", value.doubleValue());
+                    }
+                    value = jsonObject.getJsonNumber("stdDev");
+                    if (value != null) {
+                        metadata.addStatistic("stdDev", value.doubleValue());
+                    }
+                }
             } else {
                 throw new IOException(consumer.getOutput());
             }
