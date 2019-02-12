@@ -54,10 +54,10 @@ public class GdalInfoWrapper implements MetadataInspector {
         gdalDockerImage = configurationManager.getValue("docker.gdal.image", "geodata/gdal");
         useDocker = Boolean.parseBoolean(configurationManager.getValue("plugins.use.docker", "false"));
         gdalOnPathCmd = new String[] {
-                "gdalinfo", "-json", "$FULL_PATH"
+                "gdalinfo", "-stats", "-json", "$FULL_PATH"
         };
         gdalOnDocker = new String[] {
-                "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt", gdalDockerImage, "gdalinfo", "-json", "/mnt/$FILE"
+                "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt", gdalDockerImage, "gdalinfo", "-stats","-json", "/mnt/$FILE"
         };
     }
 
@@ -103,6 +103,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                 JsonObject root = jsonReader.readObject();
                 metadata = new Metadata();
                 metadata.setEntryPoint(productPath.getFileName().toString());
+                metadata.setSize(Files.size(productPath));
                 metadata.setProductType(root.getString("driverLongName"));
                 boolean isNetCDF = "Network Common Data Format".equals(metadata.getProductType());
                 //boolean isSentinel1 = "Sentinel-1 SAR SAFE Product".equals(metadata.getProductType());
@@ -240,11 +241,11 @@ public class GdalInfoWrapper implements MetadataInspector {
                                 break;
                         }
                     }
-                    JsonNumber value = jsonObject.getJsonNumber("min");
+                    JsonNumber value = jsonObject.getJsonNumber("minimum");
                     if (value != null) {
                         metadata.addStatistic("min", value.doubleValue());
                     }
-                    value = jsonObject.getJsonNumber("max");
+                    value = jsonObject.getJsonNumber("maximum");
                     if (value != null) {
                         metadata.addStatistic("max", value.doubleValue());
                     }
