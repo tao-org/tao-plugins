@@ -54,10 +54,10 @@ public class GdalInfoWrapper implements MetadataInspector {
         gdalDockerImage = configurationManager.getValue("docker.gdal.image", "geodata/gdal");
         useDocker = Boolean.parseBoolean(configurationManager.getValue("plugins.use.docker", "false"));
         gdalOnPathCmd = new String[] {
-                "gdalinfo", "-json", "$FULL_PATH"
+                "gdalinfo", "-stats", "-json", "$FULL_PATH"
         };
         gdalOnDocker = new String[] {
-                "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt", gdalDockerImage, "gdalinfo", "-json", "/mnt/$FILE"
+                "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt", gdalDockerImage, "gdalinfo", "-stats","-json", "/mnt/$FILE"
         };
     }
 
@@ -103,6 +103,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                 JsonObject root = jsonReader.readObject();
                 metadata = new Metadata();
                 metadata.setEntryPoint(productPath.getFileName().toString());
+                metadata.setSize(Files.size(productPath));
                 metadata.setProductType(root.getString("driverLongName"));
                 boolean isNetCDF = "Network Common Data Format".equals(metadata.getProductType());
                 //boolean isSentinel1 = "Sentinel-1 SAR SAFE Product".equals(metadata.getProductType());
@@ -211,35 +212,52 @@ public class GdalInfoWrapper implements MetadataInspector {
                     }
                 }
                 JsonArray bandsArray = root.getJsonArray("bands");
-                String type = bandsArray.size() > 0 ? bandsArray.getJsonObject(0).getString("type") : null;
-                if (type != null) {
-                    switch (type.toLowerCase()) {
-                        case "byte":
-                            metadata.setPixelType(PixelType.UINT8);
-                            break;
-                        case "uint16":
-                        case "cint16":
-                            metadata.setPixelType(PixelType.UINT16);
-                            break;
-                        case "int16":
-                            metadata.setPixelType(PixelType.INT16);
-                            break;
-                        case "uint32":
-                            metadata.setPixelType(PixelType.UINT32);
-                            break;
-                        case "int32":
-                            metadata.setPixelType(PixelType.INT32);
-                            break;
-                        case "float32":
-                            metadata.setPixelType(PixelType.FLOAT32);
-                            break;
-                        case "float64":
-                            metadata.setPixelType(PixelType.FLOAT64);
-                            break;
+                JsonObject jsonObject = bandsArray.size() > 0 ? bandsArray.getJsonObject(0) : null;
+                if (jsonObject != null) {
+                    String type = jsonObject.getString("type");
+                    if (type != null) {
+                        switch (type.toLowerCase()) {
+                            case "byte":
+                                metadata.setPixelType(PixelType.UINT8);
+                                break;
+                            case "uint16":
+                            case "cint16":
+                                metadata.setPixelType(PixelType.UINT16);
+                                break;
+                            case "int16":
+                                metadata.setPixelType(PixelType.INT16);
+                                break;
+                            case "uint32":
+                                metadata.setPixelType(PixelType.UINT32);
+                                break;
+                            case "int32":
+                                metadata.setPixelType(PixelType.INT32);
+                                break;
+                            case "float32":
+                                metadata.setPixelType(PixelType.FLOAT32);
+                                break;
+                            case "float64":
+                                metadata.setPixelType(PixelType.FLOAT64);
+                                break;
+                        }
                     }
-                } /*else if (isSentinel2) {
-                    metadata.setPixelType(PixelType.UINT16);
-                }*/
+                    JsonNumber value = jsonObject.getJsonNumber("minimum");
+                    if (value != null) {
+                        metadata.addStatistic("min", value.doubleValue());
+                    }
+                    value = jsonObject.getJsonNumber("maximum");
+                    if (value != null) {
+                        metadata.addStatistic("max", value.doubleValue());
+                    }
+                    value = jsonObject.getJsonNumber("mean");
+                    if (value != null) {
+                        metadata.addStatistic("mean", value.doubleValue());
+                    }
+                    value = jsonObject.getJsonNumber("stdDev");
+                    if (value != null) {
+                        metadata.addStatistic("stdDev", value.doubleValue());
+                    }
+                }
             } else {
                 throw new IOException(consumer.getOutput());
             }
