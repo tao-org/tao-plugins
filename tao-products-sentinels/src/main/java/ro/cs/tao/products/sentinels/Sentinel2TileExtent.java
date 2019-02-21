@@ -45,7 +45,7 @@ public class Sentinel2TileExtent extends TileExtent {
 
     /*public static void main(String[] args) throws IOException {
         Path path = Paths.get("W:\\S2tilemap.dat");
-        instance.fromKmlFile("W:\\Data\\S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.kml");
+        instance.fromKmlFile("D:\\Data\\S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.kml");
         instance.write(path);
         System.exit(0);
     }*/
@@ -77,16 +77,16 @@ public class Sentinel2TileExtent extends TileExtent {
                         int count = 1;
                         for (String point : tokens) {
                             coords = point.split(",");
-                            if (count < 5 || count == tokens.length) {
+                            //if (count < 5 || count == tokens.length) {
                                 polygon.append(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
-                            }
-                            count++;
+                            //}
+                            //count++;
                         }
-                        if (coords != null && tokens.length < 5) {
+                        /*if (coords != null && tokens.length < 5) {
                             for (int i = 0; i < 5 - tokens.length; i++) {
                                 polygon.append(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
                             }
-                        }
+                        }*/
                         tiles.put(tileCode, polygon.toPath2D());
                         inElement = false;
                     }
