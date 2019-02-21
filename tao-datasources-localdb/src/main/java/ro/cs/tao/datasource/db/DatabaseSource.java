@@ -35,8 +35,8 @@ import java.util.logging.Logger;
  * @author Cosmin Cara
  */
 public class DatabaseSource extends AbstractDataSource<DatabaseQuery> {
-    public static final String PRODUCTS_TABLE = "tao.raster_data_product";
-    public static final String PRODUCT_PARAMS_TABLE = "tao.data_product_attributes";
+    public static final String PRODUCTS_TABLE = "product.raster_data_product";
+    public static final String PRODUCT_PARAMS_TABLE = "product.data_product_attributes";
     private final String dbUser;
     private final String dbPass;
     private final Logger logger;
