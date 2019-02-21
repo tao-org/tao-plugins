@@ -44,7 +44,7 @@ public class Landsat8TileExtent extends TileExtent {
 
     /*public static void main(String[] args) throws IOException {
         Path path = Paths.get("W:\\L8tilemap.dat");
-        instance.fromKmlFile("W:\\Data\\WRS-2_bound_world.kml");
+        instance.fromKmlFile("D:\\Data\\WRS-2_bound_world.kml");
         instance.write(path);
         System.exit(0);
     }*/
