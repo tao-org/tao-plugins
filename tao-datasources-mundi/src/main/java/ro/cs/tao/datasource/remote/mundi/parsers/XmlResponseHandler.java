@@ -101,6 +101,9 @@ abstract class XmlResponseHandler<H extends ProductHelper>
                     case "orbitDirection":
                         this.current.addAttribute("orbitdirection", elementValue);
                         break;
+                    case "productDatapackSize":
+                        this.current.setApproximateSize((long) Double.parseDouble(elementValue));
+                        break;
                     default:
                         handleAdditionalElements(qName, elementValue);
                         break;
