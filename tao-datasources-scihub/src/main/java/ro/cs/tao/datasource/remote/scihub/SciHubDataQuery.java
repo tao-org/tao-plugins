@@ -213,7 +213,8 @@ public class SciHubDataQuery extends DataQuery {
             addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }
         String[] footprints = new String[0];
-        if (this.parameters.containsKey(CommonParameterNames.TILE)) {
+        if (this.parameters.containsKey(CommonParameterNames.TILE) &&
+                !"Sentinel1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue())) {
             QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
             Object value = tileParameter.getValue();
             if (value != null) {
