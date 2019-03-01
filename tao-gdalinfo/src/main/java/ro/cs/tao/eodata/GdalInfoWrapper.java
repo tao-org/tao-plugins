@@ -98,6 +98,14 @@ public class GdalInfoWrapper implements MetadataInspector {
         try {
             if (executor.execute(true) == 0) {
                 String output = consumer.getOutput();
+                // It may happen gdalinfo not to have write permissions on the location.
+                // In this case, remove the first line from the output
+                String warnMsg = String.format("Warning 1: Unable to save auxiliary information in %s.aux.xml.",
+                                               productPath);
+                if (output.startsWith(warnMsg)) {
+                    output = output.replace(warnMsg, "");
+                }
+                output = output.replaceAll("\r?\n","");
                 reader = new StringReader(output);
                 JsonReader jsonReader = Json.createReader(reader);
                 JsonObject root = jsonReader.readObject();
