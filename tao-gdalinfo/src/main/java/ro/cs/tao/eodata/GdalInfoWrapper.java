@@ -46,6 +46,7 @@ import java.util.List;
 public class GdalInfoWrapper implements MetadataInspector {
     private static final String gdalDockerImage;
     private static final boolean useDocker;
+    private static final boolean extractHistogram;
     private static final String[] gdalOnPathCmd;
     private static final String[] gdalOnDocker;
 
@@ -53,12 +54,25 @@ public class GdalInfoWrapper implements MetadataInspector {
         ConfigurationManager configurationManager = ConfigurationManager.getInstance();
         gdalDockerImage = configurationManager.getValue("docker.gdal.image", "geodata/gdal");
         useDocker = Boolean.parseBoolean(configurationManager.getValue("plugins.use.docker", "false"));
-        gdalOnPathCmd = new String[] {
-                "gdalinfo", "-stats", "-json", "$FULL_PATH"
-        };
-        gdalOnDocker = new String[] {
-                "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt", gdalDockerImage, "gdalinfo", "-stats","-json", "/mnt/$FILE"
-        };
+        extractHistogram = Boolean.parseBoolean(configurationManager.getValue("extract.histogram", "false"));
+        List<String> args = new ArrayList<>();
+        args.add("gdalinfo");
+        args.add("-stats");
+        if (extractHistogram) {
+            args.add("-hist");
+        }
+        args.add("-json");
+        args.add("$FULL_PATH");
+        gdalOnPathCmd = args.toArray(new String[0]);
+        args.set(args.size() - 1, "/mnt/$FILE");
+        args.add(0, gdalDockerImage);
+        args.add(0, "$FOLDER:/mnt");
+        args.add(0, "-v");
+        args.add(0, "--rm");
+        args.add(0, "-t");
+        args.add(0, "run");
+        args.add(0, "docker");
+        gdalOnDocker = args.toArray(new String[0]);
     }
 
     public GdalInfoWrapper() { }
@@ -264,6 +278,16 @@ public class GdalInfoWrapper implements MetadataInspector {
                     value = jsonObject.getJsonNumber("stdDev");
                     if (value != null) {
                         metadata.addStatistic("stdDev", value.doubleValue());
+                    }
+                    JsonObject histJson = jsonObject.getJsonObject("histogram");
+                    if (histJson != null) {
+                        int count = histJson.getInt("count");
+                        int[] bins = new int[count];
+                        JsonArray buckets = histJson.getJsonArray("buckets");
+                        for (int i = 0; i < count; i++) {
+                            bins[i] = buckets.getJsonNumber(i).intValue();
+                        }
+                        metadata.setHistogram(bins);
                     }
                 }
             } else {
