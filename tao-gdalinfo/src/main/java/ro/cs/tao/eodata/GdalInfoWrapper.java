@@ -128,8 +128,6 @@ public class GdalInfoWrapper implements MetadataInspector {
                 metadata.setSize(Files.size(productPath));
                 metadata.setProductType(root.getString("driverLongName"));
                 boolean isNetCDF = "Network Common Data Format".equals(metadata.getProductType());
-                //boolean isSentinel1 = "Sentinel-1 SAR SAFE Product".equals(metadata.getProductType());
-                //boolean isSentinel2 = "Sentinel 2".equals(metadata.getProductType());
                 if (isNetCDF) {
                     // NetCDF requires running gdalinfo twice
                     // Reference: http://www.gdal.org/frmt_netcdf.html
@@ -163,11 +161,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                 JsonObject crsObject;
                 if (isNetCDF) {
                     crsObject = root.getJsonObject("metadata").getJsonObject("GEOLOCATION");
-                } /*else if (isSentinel1) {
-                    crsObject = root.getJsonObject("gcps").getJsonObject("coordinateSystem");
-                } else if (isSentinel2) {
-                    crsObject = root.getJsonObject("metadata").getJsonObject("SUBDATASETS");
-                } */else {
+                } else {
                     crsObject = root.getJsonObject("coordinateSystem");
                 }
                 if (crsObject != null) {
@@ -187,30 +181,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                                          points.getJsonArray(i).getJsonNumber(1).doubleValue());
                     }
                     metadata.setFootprint(polygon2D.toWKT(8));
-                } /*else if (isSentinel1) {
-                    JsonArray gcpList = root.getJsonObject("gcps").getJsonArray("gcpList");
-                    if (gcpList != null) {
-                        Polygon2D polygon2D = new Polygon2D();
-                        JsonObject ul = gcpList.getJsonObject(0);
-                        polygon2D.append(ul.getJsonNumber("x").doubleValue(),
-                                         ul.getJsonNumber("y").doubleValue());
-                        JsonObject point = gcpList.getJsonObject(20);
-                        polygon2D.append(point.getJsonNumber("x").doubleValue(),
-                                         point.getJsonNumber("y").doubleValue());
-                        point = gcpList.getJsonObject(189);
-                        polygon2D.append(point.getJsonNumber("x").doubleValue(),
-                                         point.getJsonNumber("y").doubleValue());
-                        point = gcpList.getJsonObject(209);
-                        polygon2D.append(point.getJsonNumber("x").doubleValue(),
-                                         point.getJsonNumber("y").doubleValue());
-                        polygon2D.append(ul.getJsonNumber("x").doubleValue(),
-                                         ul.getJsonNumber("y").doubleValue());
-                        metadata.setFootprint(polygon2D.toWKT(8));
-                    }
-                } else if (isSentinel2) {
-                    String wkt = root.getJsonObject("metadata").getJsonObject("").getString("FOOTPRINT");
-                    metadata.setFootprint(wkt);
-                }*/ else {
+                } else {
                     extentObject = root.getJsonObject("cornerCoordinates");
                     if (extentObject != null) {
                         Polygon2D polygon2D = new Polygon2D();
