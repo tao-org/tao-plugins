@@ -116,6 +116,10 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
                     }
                     metadata.setWidth(Math.max(metadata.getWidth(), Integer.parseInt(getValue("numberOfSamples", gRoot))));
                     metadata.setHeight(Math.max(metadata.getHeight(), Integer.parseInt(getValue("numberOfLines", gRoot))));
+                    String value = getAttributeValue("burstList", "count", gRoot);
+                    if (value != null) {
+                        metadata.addAttribute(annotation.getFileName().toString().substring(4, 7), value);
+                    }
                 } catch (ParserConfigurationException | SAXException e) {
                     e.printStackTrace();
                 }
