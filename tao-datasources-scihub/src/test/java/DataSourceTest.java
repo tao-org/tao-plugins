@@ -39,9 +39,9 @@
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
-import ro.cs.tao.datasource.remote.scihub.download.SentinelDownloadStrategy;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
@@ -62,11 +62,12 @@ import java.util.logging.Logger;
 public class DataSourceTest {
 
     public static void main(String[] args) {
-        //SciHub_Sentinel1_Test();
+        SciHub_Sentinel1_Test();
         SciHub_Sentinel2_Count_Test();
+        SciHub_Sentinel2_Test();
     }
 
-    public static void SciHub_Sentinel2_Count_Test() {
+    private static void SciHub_Sentinel2_Count_Test() {
         try {
             Logger logger = LogManager.getLogManager().getLogger("");
             for (Handler handler : logger.getHandlers()) {
@@ -77,8 +78,8 @@ public class DataSourceTest {
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[1]);
-            query.addParameter("platformName", "Sentinel-2");
-            QueryParameter<Date> begin = query.createParameter("beginPosition", Date.class);
+            query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
+            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
             begin.setMinValue(Date.from(LocalDateTime.of(2016, 2, 1, 0, 0, 0, 0)
                                                 .atZone(ZoneId.systemDefault())
                                                 .toInstant()));
@@ -92,16 +93,16 @@ public class DataSourceTest {
                                                       "22.8042573604346 44.795645304033826," +
                                                       "22.8042573604346 43.8379609098684))");
 
-            query.addParameter("footprint", aoi);
+            query.addParameter(CommonParameterNames.FOOTPRINT, aoi);
 
-            query.addParameter("cloudcoverpercentage", 100.);
+            query.addParameter(CommonParameterNames.CLOUD_COVER, 100.);
             System.out.println(String.format("Query returned %s",query.getCount()));
         } catch (QueryException e) {
             e.printStackTrace();
         }
     }
 
-    public static void SciHub_Sentinel2_Test() {
+    private static void SciHub_Sentinel2_Test() {
         try {
             Logger logger = LogManager.getLogManager().getLogger("");
             for (Handler handler : logger.getHandlers()) {
@@ -112,12 +113,12 @@ public class DataSourceTest {
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[1]);
-            query.addParameter("platformName", "Sentinel-2");
-            QueryParameter begin = query.createParameter("beginPosition", Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(2016, 2, 1, 0, 0, 0, 0)
+            query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
+            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
+            begin.setMinValue(Date.from(LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0)
                                                 .atZone(ZoneId.systemDefault())
                                                 .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(2017, 2, 1, 0, 0, 0, 0)
+            begin.setMaxValue(Date.from(LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0)
                                                 .atZone(ZoneId.systemDefault())
                                                 .toInstant()));
             query.addParameter(begin);
@@ -127,9 +128,9 @@ public class DataSourceTest {
                                                       "22.8042573604346 44.795645304033826," +
                                                       "22.8042573604346 43.8379609098684))");
 
-            query.addParameter("footprint", aoi);
+            query.addParameter(CommonParameterNames.FOOTPRINT, aoi);
 
-            query.addParameter("cloudcoverpercentage", 100.);
+            query.addParameter(CommonParameterNames.CLOUD_COVER, 100.);
             query.setPageSize(50);
             query.setMaxResults(83);
             List<EOProduct> results = query.execute();
@@ -139,10 +140,7 @@ public class DataSourceTest {
                 System.out.println("LOCATION=" + r.getLocation());
                 System.out.println("FOOTPRINT=" + r.getGeometry());
                 System.out.println("Attributes ->");
-//                Arrays.stream(r.getAttributes())
-//                        .forEach(a -> System.out.println("\tName='" + a.getName() +
-//                                                                 "', value='" + a.getValue() + "'"));
-                r.getAttributes().stream()
+                r.getAttributes()
                         .forEach(a -> System.out.println("\tName='" + a.getName() +
                                                                  "', value='" + a.getValue() + "'"));
             });
@@ -151,7 +149,7 @@ public class DataSourceTest {
         }
     }
 
-    public static void SciHub_Sentinel1_Test() {
+    private static void SciHub_Sentinel1_Test() {
         try {
             Logger logger = LogManager.getLogManager().getLogger("");
             for (Handler handler : logger.getHandlers()) {
@@ -163,8 +161,8 @@ public class DataSourceTest {
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[0]);
-            query.addParameter("platformName", "Sentinel-1");
-            QueryParameter begin = query.createParameter("beginPosition", Date.class);
+            query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-1");
+            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
             begin.setMinValue(Date.from(LocalDateTime.of(2017, 5, 30, 0, 0, 0, 0)
                                                 .atZone(ZoneId.systemDefault())
                                                 .toInstant()));
@@ -172,12 +170,12 @@ public class DataSourceTest {
                                                 .atZone(ZoneId.systemDefault())
                                                 .toInstant()));
             query.addParameter(begin);
-            query.addParameter("polarisationMode", "VV");
+            query.addParameter(CommonParameterNames.POLARISATION, "VV");
             query.addParameter("sensorOperationalMode", "IW");
-            query.addParameter("productType", "SLC");
+            query.addParameter(CommonParameterNames.PRODUCT_TYPE, "SLC");
             query.setPageSize(50);
             query.setMaxResults(83);
-            SentinelDownloadStrategy downloader = new SentinelDownloadStrategy("E:\\NewFormat");
+            //SentinelDownloadStrategy downloader = new SentinelDownloadStrategy("E:\\NewFormat");
             List<EOProduct> results = query.execute();
             //downloader.download(results);
             results.forEach(r -> {
@@ -186,10 +184,7 @@ public class DataSourceTest {
                 System.out.println("LOCATION=" + r.getLocation());
                 System.out.println("FOOTPRINT=" + r.getGeometry());
                 System.out.println("Attributes ->");
-//                Arrays.stream(r.getAttributes())
-//                        .forEach(a -> System.out.println("\tName='" + a.getName() +
-//                                                                 "', value='" + a.getValue() + "'"));
-                r.getAttributes().stream()
+                r.getAttributes()
                   .forEach(a -> System.out.println("\tName='" + a.getName() +
                     "', value='" + a.getValue() + "'"));
             });

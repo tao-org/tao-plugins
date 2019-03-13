@@ -46,6 +46,7 @@ import java.util.List;
 public class GdalInfoWrapper implements MetadataInspector {
     private static final String gdalDockerImage;
     private static final boolean useDocker;
+    private static final boolean extractHistogram;
     private static final String[] gdalOnPathCmd;
     private static final String[] gdalOnDocker;
 
@@ -53,12 +54,25 @@ public class GdalInfoWrapper implements MetadataInspector {
         ConfigurationManager configurationManager = ConfigurationManager.getInstance();
         gdalDockerImage = configurationManager.getValue("docker.gdal.image", "geodata/gdal");
         useDocker = Boolean.parseBoolean(configurationManager.getValue("plugins.use.docker", "false"));
-        gdalOnPathCmd = new String[] {
-                "gdalinfo", "-stats", "-json", "$FULL_PATH"
-        };
-        gdalOnDocker = new String[] {
-                "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt", gdalDockerImage, "gdalinfo", "-stats","-json", "/mnt/$FILE"
-        };
+        extractHistogram = Boolean.parseBoolean(configurationManager.getValue("extract.histogram", "false"));
+        List<String> args = new ArrayList<>();
+        args.add("gdalinfo");
+        args.add("-stats");
+        if (extractHistogram) {
+            args.add("-hist");
+        }
+        args.add("-json");
+        args.add("$FULL_PATH");
+        gdalOnPathCmd = args.toArray(new String[0]);
+        args.set(args.size() - 1, "/mnt/$FILE");
+        args.add(0, gdalDockerImage);
+        args.add(0, "$FOLDER:/mnt");
+        args.add(0, "-v");
+        args.add(0, "--rm");
+        args.add(0, "-t");
+        args.add(0, "run");
+        args.add(0, "docker");
+        gdalOnDocker = args.toArray(new String[0]);
     }
 
     public GdalInfoWrapper() { }
@@ -98,6 +112,14 @@ public class GdalInfoWrapper implements MetadataInspector {
         try {
             if (executor.execute(true) == 0) {
                 String output = consumer.getOutput();
+                // It may happen gdalinfo not to have write permissions on the location.
+                // In this case, remove the first line from the output
+                String warnMsg = String.format("Warning 1: Unable to save auxiliary information in %s.aux.xml.",
+                                               productPath);
+                if (output.startsWith(warnMsg)) {
+                    output = output.replace(warnMsg, "");
+                }
+                output = output.replaceAll("\r?\n","");
                 reader = new StringReader(output);
                 JsonReader jsonReader = Json.createReader(reader);
                 JsonObject root = jsonReader.readObject();
@@ -106,8 +128,6 @@ public class GdalInfoWrapper implements MetadataInspector {
                 metadata.setSize(Files.size(productPath));
                 metadata.setProductType(root.getString("driverLongName"));
                 boolean isNetCDF = "Network Common Data Format".equals(metadata.getProductType());
-                //boolean isSentinel1 = "Sentinel-1 SAR SAFE Product".equals(metadata.getProductType());
-                //boolean isSentinel2 = "Sentinel 2".equals(metadata.getProductType());
                 if (isNetCDF) {
                     // NetCDF requires running gdalinfo twice
                     // Reference: http://www.gdal.org/frmt_netcdf.html
@@ -141,11 +161,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                 JsonObject crsObject;
                 if (isNetCDF) {
                     crsObject = root.getJsonObject("metadata").getJsonObject("GEOLOCATION");
-                } /*else if (isSentinel1) {
-                    crsObject = root.getJsonObject("gcps").getJsonObject("coordinateSystem");
-                } else if (isSentinel2) {
-                    crsObject = root.getJsonObject("metadata").getJsonObject("SUBDATASETS");
-                } */else {
+                } else {
                     crsObject = root.getJsonObject("coordinateSystem");
                 }
                 if (crsObject != null) {
@@ -165,30 +181,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                                          points.getJsonArray(i).getJsonNumber(1).doubleValue());
                     }
                     metadata.setFootprint(polygon2D.toWKT(8));
-                } /*else if (isSentinel1) {
-                    JsonArray gcpList = root.getJsonObject("gcps").getJsonArray("gcpList");
-                    if (gcpList != null) {
-                        Polygon2D polygon2D = new Polygon2D();
-                        JsonObject ul = gcpList.getJsonObject(0);
-                        polygon2D.append(ul.getJsonNumber("x").doubleValue(),
-                                         ul.getJsonNumber("y").doubleValue());
-                        JsonObject point = gcpList.getJsonObject(20);
-                        polygon2D.append(point.getJsonNumber("x").doubleValue(),
-                                         point.getJsonNumber("y").doubleValue());
-                        point = gcpList.getJsonObject(189);
-                        polygon2D.append(point.getJsonNumber("x").doubleValue(),
-                                         point.getJsonNumber("y").doubleValue());
-                        point = gcpList.getJsonObject(209);
-                        polygon2D.append(point.getJsonNumber("x").doubleValue(),
-                                         point.getJsonNumber("y").doubleValue());
-                        polygon2D.append(ul.getJsonNumber("x").doubleValue(),
-                                         ul.getJsonNumber("y").doubleValue());
-                        metadata.setFootprint(polygon2D.toWKT(8));
-                    }
-                } else if (isSentinel2) {
-                    String wkt = root.getJsonObject("metadata").getJsonObject("").getString("FOOTPRINT");
-                    metadata.setFootprint(wkt);
-                }*/ else {
+                } else {
                     extentObject = root.getJsonObject("cornerCoordinates");
                     if (extentObject != null) {
                         Polygon2D polygon2D = new Polygon2D();
@@ -256,6 +249,16 @@ public class GdalInfoWrapper implements MetadataInspector {
                     value = jsonObject.getJsonNumber("stdDev");
                     if (value != null) {
                         metadata.addStatistic("stdDev", value.doubleValue());
+                    }
+                    JsonObject histJson = jsonObject.getJsonObject("histogram");
+                    if (histJson != null) {
+                        int count = histJson.getInt("count");
+                        int[] bins = new int[count];
+                        JsonArray buckets = histJson.getJsonArray("buckets");
+                        for (int i = 0; i < count; i++) {
+                            bins[i] = buckets.getJsonNumber(i).intValue();
+                        }
+                        metadata.setHistogram(bins);
                     }
                 }
             } else {
