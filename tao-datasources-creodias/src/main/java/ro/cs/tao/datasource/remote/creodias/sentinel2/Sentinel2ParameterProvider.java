@@ -8,6 +8,7 @@ import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.NoDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.utils.Tuple;
 
 import java.util.*;
 
@@ -22,24 +23,23 @@ public class Sentinel2ParameterProvider implements ParameterProvider {
         parameters = Collections.unmodifiableMap(
                 new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
                     put("Sentinel2", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                        put(ParameterName.create("processingLevel", "processingLevel", "Processing Level"),
-                            new DataSourceParameter("processingLevel", String.class, "LEVEL1C", false,
-                                                    "LEVEL1C", "LEVEL2A", "LEVEL2AP", "LEVELL1C", "LEVELL2A"));
-                        put(ParameterName.create(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type"),
-                            new DataSourceParameter("productType", String.class, "L1C", false,
-                                                    "L1C", "L2A", "N0204"));
-                        put(ParameterName.create(CommonParameterNames.RELATIVE_ORBIT, "orbitNumber", "Relative Orbit"),
-                            new DataSourceParameter("orbit", Short.class));
-                        put(ParameterName.create(CommonParameterNames.START_DATE, "startDate", "Start Date"),
-                            new DataSourceParameter("startDate", Date.class, true));
-                        put(ParameterName.create(CommonParameterNames.END_DATE, "completionDate", "End Date"),
-                            new DataSourceParameter("completionDate", Date.class));
-                        put(ParameterName.create(CommonParameterNames.FOOTPRINT, "geometry", "Area of Interest"),
-                            new DataSourceParameter("geometry", Polygon2D.class, true));
-                        put(ParameterName.create(CommonParameterNames.CLOUD_COVER, "cloudCover", "Cloud Cover"),
-                            new DataSourceParameter("cloudCover", Short.class));
-                        put(ParameterName.create(CommonParameterNames.PRODUCT, "productIdentifier", "Product Name"),
-                            new DataSourceParameter("productIdentifier", String.class));
+                        Tuple<ParameterName, DataSourceParameter> parameter =
+                                ParameterProvider.createParameter("processingLevel", "processingLevel", "Processing Level", String.class, "LEVEL1C", false, "LEVEL1C", "LEVEL2A", "LEVEL2AP", "LEVELL1C", "LEVELL2A");
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type", String.class, "L1C", false, "L1C", "L2A", "N0204");
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.RELATIVE_ORBIT, "orbitNumber", "Relative Orbit", Short.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "startDate", "Start Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "completionDate", "End Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "geometry", "Area of Interest", Polygon2D.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.CLOUD_COVER, "cloudCover", "Cloud Cover", Short.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT, "productIdentifier", "Product Name", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
                 }});
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");

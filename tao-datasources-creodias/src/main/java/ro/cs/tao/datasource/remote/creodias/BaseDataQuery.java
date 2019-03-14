@@ -145,7 +145,7 @@ public abstract class BaseDataQuery extends DataQuery {
         List<List<BasicNameValuePair>> queries = new ArrayList<>();
         String[] footprints = new String[0];
         if (this.parameters.containsKey(CommonParameterNames.TILE)) {
-            QueryParameter tileParameter = this.parameters.get("CommonParameterNames.TILE");
+            QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
             Object value = tileParameter.getValue();
             if (value != null) {
                 if (value.getClass().isArray()) {

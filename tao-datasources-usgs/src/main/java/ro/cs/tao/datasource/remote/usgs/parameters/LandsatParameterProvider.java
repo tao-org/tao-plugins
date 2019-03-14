@@ -23,6 +23,7 @@ import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.usgs.download.LandsatDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.utils.Tuple;
 
 import java.util.*;
 
@@ -43,24 +44,25 @@ public class LandsatParameterProvider implements ParameterProvider {
             parameters = Collections.unmodifiableMap(
                     new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
                         put("Landsat8", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                            put(ParameterName.create(CommonParameterNames.PLATFORM, "satellite_name", "Satellite"),
-                                                     new DataSourceParameter("satellite_name", String.class, "landsat-8"));
-                            put(ParameterName.create(CommonParameterNames.START_DATE, "date_from", "Start Date"),
-                                new DataSourceParameter("date_from", Date.class));
-                            put(ParameterName.create(CommonParameterNames.END_DATE, "date_to", "End Date"),
-                                new DataSourceParameter("date_to", Date.class));
-                            put(ParameterName.create(CommonParameterNames.FOOTPRINT, "footprint", "Area of Interest"),
-                                new DataSourceParameter("footprint", Polygon2D.class));
-                            put(ParameterName.create("minClouds", "cloud_from", "Minimum Cloud Cover"),
-                                new DataSourceParameter("cloud_from", Double.class, 0.));
-                            put(ParameterName.create("maxClouds", "cloud_to", "Maximum Cloud Cover"),
-                                new DataSourceParameter("cloud_to", Double.class, 100.));
-                            put(ParameterName.create("row", "row", "Row"),
-                                new DataSourceParameter("row", Integer.class));
-                            put(ParameterName.create("path", "path", "Path"),
-                                new DataSourceParameter("path", Integer.class));
-                            put(ParameterName.create(CommonParameterNames.TILE, "row_path", "Row and Path"),
-                                new DataSourceParameter("row_path", String[].class));
+                            Tuple<ParameterName, DataSourceParameter> parameter =
+                                    ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "satellite_name", "Satellite", String.class, "landsat-8");
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "date_from", "Start Date", Date.class);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "date_to", "End Date", Date.class);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "footprint", "Area of Interest", Polygon2D.class);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter("minClouds", "cloud_from", "Minimum Cloud Cover", Double.class, 0.);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter("maxClouds", "cloud_to", "Maximum Cloud Cover", Double.class, 100.);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter("row", "row", "Row", Integer.class);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter("path", "path", "Path", Integer.class);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter(CommonParameterNames.TILE, "row_path", "Row and Path", String[].class);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
                         }});
                     }});
         }

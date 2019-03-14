@@ -24,6 +24,7 @@ import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel1DownloadStrategy;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel2DownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.utils.Tuple;
 
 import java.util.*;
 
@@ -36,61 +37,57 @@ public final class SciHubParameterProvider implements ParameterProvider {
     private static Map<String, Map<ParameterName, DataSourceParameter>> parameters;
     private static Map<String, ProductFetchStrategy> productFetchers;
 
-    public SciHubParameterProvider() {
-        if (sensors == null) {
-            sensors = new String[] { "Sentinel1", "Sentinel2" };
-        }
-        if (parameters == null) {
-            parameters = Collections.unmodifiableMap(
-                    new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
-                        put("Sentinel1", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                            put(ParameterName.create(CommonParameterNames.PLATFORM, "platformName", "Satellite"),
-                                new DataSourceParameter("platformName", String.class, "Sentinel-1"));
-                            put(ParameterName.create(CommonParameterNames.START_DATE, "beginPosition", "Start Date"),
-                                new DataSourceParameter("beginPosition", Date.class));
-                            put(ParameterName.create(CommonParameterNames.END_DATE, "endPosition", "End Date"),
-                                new DataSourceParameter("endPosition", Date.class));
-                            put(ParameterName.create(CommonParameterNames.FOOTPRINT, "footprint", "Area of Interest"),
-                                new DataSourceParameter("footprint", Polygon2D.class));
-                            put(ParameterName.create(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type"),
-                                new DataSourceParameter("productType", String.class, "SLC"));
-                            put(ParameterName.create(CommonParameterNames.POLARISATION, "polarisationMode", "Polarisation"),
-                                new DataSourceParameter("polarisationMode", String.class));
-                            put(ParameterName.create("sensorOperationalMode", "sensorOperationalMode", "Operational Mode"),
-                                new DataSourceParameter("sensorOperationalMode", String.class));
-                            put(ParameterName.create(CommonParameterNames.TILE, "relativeOrbitNumber", "Relative Orbit"),
-                                new DataSourceParameter("relativeOrbitNumber", String.class));
-                        }});
-                        put("Sentinel2", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                            put(ParameterName.create(CommonParameterNames.PLATFORM, "platformName", "Satellite"),
-                                new DataSourceParameter("platformName", String.class, "Sentinel-2"));
-                            put(ParameterName.create(CommonParameterNames.START_DATE, "beginPosition", "Start Date"),
-                                new DataSourceParameter("beginPosition", Date.class));
-                            put(ParameterName.create(CommonParameterNames.END_DATE, "endPosition", "End Date"),
-                                new DataSourceParameter("endPosition", Date.class));
-                            put(ParameterName.create(CommonParameterNames.FOOTPRINT, "footprint", "Area of Interest"),
-                                new DataSourceParameter("footprint", Polygon2D.class));
-                            put(ParameterName.create(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type"),
-                                new DataSourceParameter("productType", String.class, "S2MSI1C"));
-                            put(ParameterName.create(CommonParameterNames.CLOUD_COVER, "cloudcoverpercentage", "Cloud Cover"),
-                                new DataSourceParameter("cloudcoverpercentage", Double.class));
-                            put(ParameterName.create(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit"),
-                                new DataSourceParameter("relativeOrbitNumber", String.class));
-                            put(ParameterName.create(CommonParameterNames.PRODUCT, "product", "Product Name"),
-                                new DataSourceParameter("product", String.class, null, false));
-                            put(ParameterName.create(CommonParameterNames.TILE, "tileId", "UTM Tile"),
-                                new DataSourceParameter("tileId", String.class));
-                        }});
+    static {
+        sensors = new String[] { "Sentinel1", "Sentinel2" };
+        parameters = Collections.unmodifiableMap(
+                new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
+                    put("Sentinel1", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
+                        Tuple<ParameterName, DataSourceParameter> parameter =
+                                ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "platformName", "Satellite", String.class, "Sentinel-1");
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "beginPosition", "Start Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "endPosition", "End Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "footprint", "Area of Interest", Polygon2D.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type", String.class, "SLC");
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.POLARISATION, "polarisationMode", "Polarisation", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("sensorOperationalMode", "sensorOperationalMode", "Operational Mode", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.TILE, "relativeOrbitNumber", "Relative Orbit", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
-        }
-        if (productFetchers == null) {
-            final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
-            productFetchers = Collections.unmodifiableMap(
-                    new HashMap<String, ProductFetchStrategy>() {{
-                        put("Sentinel1", new Sentinel1DownloadStrategy(targetFolder));
-                        put("Sentinel2", new Sentinel2DownloadStrategy(targetFolder));
+                    put("Sentinel2", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
+                        Tuple<ParameterName, DataSourceParameter> parameter =
+                                ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "platformName", "Satellite", String.class, "Sentinel-2");
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "beginPosition", "Start Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "endPosition", "End Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "footprint", "Area of Interest", Polygon2D.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type", String.class, "S2MSI1C");
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.CLOUD_COVER, "cloudcoverpercentage", "Cloud Cover", Double.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT, "product", "Product Name", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.TILE, "tileId", "UTM Tile", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
-        }
+                }});
+        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
+        productFetchers = Collections.unmodifiableMap(
+                new HashMap<String, ProductFetchStrategy>() {{
+                    put("Sentinel1", new Sentinel1DownloadStrategy(targetFolder));
+                    put("Sentinel2", new Sentinel2DownloadStrategy(targetFolder));
+                }});
     }
 
     @Override

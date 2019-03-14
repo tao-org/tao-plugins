@@ -8,6 +8,7 @@ import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.NoDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.utils.Tuple;
 
 import java.util.*;
 
@@ -22,27 +23,25 @@ public class Sentinel1ParameterProvider implements ParameterProvider {
         parameters = Collections.unmodifiableMap(
                 new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
                     put("Sentinel1", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                        put(ParameterName.create("processingLevel", "processingLevel", "Processing Level"),
-                            new DataSourceParameter("processingLevel", String.class, "LEVEL1", false,
-                                                    "LEVEL0", "LEVEL1", "LEVEL2"));
-                        put(ParameterName.create(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type"),
-                            new DataSourceParameter("productType", String.class, "SLC", false,
-                                                    "GRD", "OCN", "RAW", "SLC"));
-                        put(ParameterName.create("sensorMode", "sensorMode", "Sensor Mode"),
-                            new DataSourceParameter("sensorMode", String.class, "IW", false,
-                                                    "EW", "IW", "SM", "WV"));
-                        put(ParameterName.create("orbitDirection", "orbitDirection", "Orbit Direction"),
-                            new DataSourceParameter("orbitDirection", String.class));
-                        put(ParameterName.create(CommonParameterNames.RELATIVE_ORBIT, "orbitNumber", "Relative Orbit"),
-                            new DataSourceParameter("orbit", Short.class));
-                        put(ParameterName.create(CommonParameterNames.START_DATE, "startDate", "Start Date"),
-                            new DataSourceParameter("startDate", Date.class, true));
-                        put(ParameterName.create(CommonParameterNames.END_DATE, "completionDate", "End Date"),
-                            new DataSourceParameter("completionDate", Date.class));
-                        put(ParameterName.create(CommonParameterNames.FOOTPRINT, "geometry", "Area of Interest"),
-                            new DataSourceParameter("geometry", Polygon2D.class, true));
-                        put(ParameterName.create(CommonParameterNames.POLARISATION, "polarisation", "Polarisation"),
-                            new DataSourceParameter("polarisation", String.class));
+                        Tuple<ParameterName, DataSourceParameter> parameter =
+                                ParameterProvider.createParameter("processingLevel", "processingLevel", "Processing Level", String.class, "LEVEL1", false, "LEVEL0", "LEVEL1", "LEVEL2");
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type", String.class, "SLC", false, "GRD", "OCN", "RAW", "SLC");
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("sensorMode", "sensorMode", "Sensor Mode", String.class, "IW", false, "EW", "IW", "SM", "WV");
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("orbitDirection", "orbitDirection", "Orbit Direction", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.RELATIVE_ORBIT, "orbitNumber", "Relative Orbit", Short.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "startDate", "Start Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "completionDate", "End Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "geometry", "Area of Interest", Polygon2D.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.POLARISATION, "polarisation", "Polarisation", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
                 }});
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
