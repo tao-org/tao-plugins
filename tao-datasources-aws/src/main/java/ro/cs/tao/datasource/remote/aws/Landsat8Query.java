@@ -163,7 +163,7 @@ class Landsat8Query extends DataQuery {
                 }
                 String path = tile.substring(0, 3);
                 String row = tile.substring(3, 6);
-                String tileUrl = alternateUrl + path + DownloadStrategy.URL_SEPARATOR + row + DownloadStrategy.URL_SEPARATOR;
+                String tileUrl = (preCollection ? alternateUrl : baseUrl) + path + DownloadStrategy.URL_SEPARATOR + row + DownloadStrategy.URL_SEPARATOR;
                 final AwsResult preCollectionResult = IntermediateParser.parse(NetUtils.getResponseAsString(tileUrl));
                 if (preCollectionResult.getCommonPrefixes() != null) {
                     Set<String> names = preCollectionResult.getCommonPrefixes().stream()
