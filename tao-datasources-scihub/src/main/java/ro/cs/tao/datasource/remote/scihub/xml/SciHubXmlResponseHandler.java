@@ -78,6 +78,12 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                     switch (this.identifiedElement) {
                         case "identifier":
                             this.current.setName(elementValue);
+                            if (elementValue.startsWith("S1"))
+                                this.current.setSensorType(SensorType.RADAR);
+                            else if (elementValue.startsWith("S2"))
+                                this.current.setSensorType(SensorType.OPTICAL);
+                            else if (elementValue.startsWith("S3"))
+                                this.current.setSensorType(SensorType.ATMOSPHERIC);
                             break;
                         case "footprint":
                             this.current.setGeometry(elementValue);
