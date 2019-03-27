@@ -26,10 +26,8 @@ import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class BaseDataQuery extends DataQuery {
 
@@ -97,6 +95,30 @@ public abstract class BaseDataQuery extends DataQuery {
             }
         }
         logger.info(String.format("Query returned %s products", results.size()));
+        results.sort(Comparator.comparing(EOProduct::getAcquisitionDate));
+        final Date start;
+        if (this.parameters.containsKey(CommonParameterNames.START_DATE)) {
+            start = (Date) this.parameters.get(CommonParameterNames.START_DATE).getValue();
+        } else {
+            start = null;
+        }
+        final Date end;
+        if (this.parameters.containsKey(CommonParameterNames.END_DATE)) {
+            end = (Date) this.parameters.get(CommonParameterNames.END_DATE).getValue();
+        } else {
+            end = null;
+        }
+        results = results.stream()
+                         .filter(p -> {
+                             boolean ret = true;
+                             if (start != null) {
+                                 ret = start.before(p.getAcquisitionDate());
+                             }
+                             if (end != null) {
+                                 ret &= end.after(p.getAcquisitionDate());
+                             }
+                             return ret;
+                         }).collect(Collectors.toList());
         return results;
     }
 
@@ -139,36 +161,42 @@ public abstract class BaseDataQuery extends DataQuery {
 
     protected abstract ro.cs.tao.datasource.remote.result.xml.XmlResponseHandler<EOProduct> responseHandler(String countElement);
 
+    protected String[] getFootprintsFromTileParameter() {
+        String[] footprints = null;
+        QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
+        Object value = tileParameter.getValue();
+        if (value != null) {
+            if (value.getClass().isArray()) {
+                footprints = new String[Array.getLength(value)];
+                for (int i = 0; i < footprints.length; i++) {
+                    Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(Array.get(value, i).toString()));
+                    footprints[i] = polygon.toWKT();
+                }
+            } else {
+                String strVal = tileParameter.getValueAsString();
+                if (strVal.startsWith("[") && strVal.endsWith("]")) {
+                    String[] values = strVal.substring(1, strVal.length() - 1).split(",");
+                    footprints = new String[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(strVal));
+                        footprints[i] = polygon.toWKT();
+                    }
+                } else {
+                    Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(strVal));
+                    if (polygon != null) {
+                        footprints = new String[]{polygon.toWKT()};
+                    }
+                }
+            }
+        }
+        return footprints;
+    }
+
     private List<List<BasicNameValuePair>> buildQueriesParams() {
         List<List<BasicNameValuePair>> queries = new ArrayList<>();
         String[] footprints = new String[0];
         if (this.parameters.containsKey(CommonParameterNames.TILE)) {
-            QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
-            Object value = tileParameter.getValue();
-            if (value != null) {
-                if (value.getClass().isArray()) {
-                    footprints = new String[Array.getLength(value)];
-                    for (int i = 0; i < footprints.length; i++) {
-                        Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(Array.get(value, i).toString()));
-                        footprints[i] = polygon.toWKT();
-                    }
-                } else {
-                    String strVal = tileParameter.getValueAsString();
-                    if (strVal.startsWith("[") && strVal.endsWith("]")) {
-                        String[] values = strVal.substring(1, strVal.length() - 1).split(",");
-                        footprints = new String[values.length];
-                        for (int i = 0; i < values.length; i++) {
-                            Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(strVal));
-                            footprints[i] = polygon.toWKT();
-                        }
-                    } else {
-                        Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(strVal));
-                        if (polygon != null) {
-                            footprints = new String[]{polygon.toWKT()};
-                        }
-                    }
-                }
-            }
+            footprints = getFootprintsFromTileParameter();
         }
         if (this.parameters.containsKey(CommonParameterNames.FOOTPRINT)) {
             String wkt = ((Polygon2D) this.parameters.get(CommonParameterNames.FOOTPRINT).getValue()).toWKT();
@@ -189,17 +217,13 @@ public abstract class BaseDataQuery extends DataQuery {
                 }
                 switch (parameter.getName()) {
                     case CommonParameterNames.PRODUCT:
-                        query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.FOOTPRINT), parameter.getValueAsString()));
+                        query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.PRODUCT), parameter.getValueAsString()));
                         break;
                     case CommonParameterNames.FOOTPRINT:
-                        try {
-                            QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
-                                                                                       CommonParameterNames.FOOTPRINT,
-                                                                                       Polygon2D.fromWKT(footprint));
-                            query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), converterFactory.create(fakeParam).stringValue()));
-                        } catch (ConversionException e) {
-                            throw new QueryException(e.getMessage());
-                        }
+                        query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.FOOTPRINT), footprint));
+                        break;
+                    case CommonParameterNames.TILE:
+                        query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.TILE), "*" + parameter.getValueAsString() + "*"));
                         break;
                     case CommonParameterNames.START_DATE:
                         try {
