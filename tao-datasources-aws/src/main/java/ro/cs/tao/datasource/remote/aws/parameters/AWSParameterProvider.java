@@ -25,6 +25,7 @@ import ro.cs.tao.datasource.remote.aws.LandsatCollection;
 import ro.cs.tao.datasource.remote.aws.download.Landsat8Strategy;
 import ro.cs.tao.datasource.remote.aws.download.Sentinel2Strategy;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.utils.Tuple;
 
 import java.util.*;
 
@@ -42,44 +43,46 @@ public class AWSParameterProvider implements ParameterProvider {
         parameters = Collections.unmodifiableMap(
                 new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
                     put("Sentinel2", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                        put(ParameterName.create(CommonParameterNames.PLATFORM, "platformName", "Satellite"),
-                            new DataSourceParameter("platformName", String.class, "Sentinel-2", true));
-                        put(ParameterName.create(CommonParameterNames.START_DATE, "beginPosition", "Start Date"),
-                            new DataSourceParameter("beginPosition", Date.class));
-                        put(ParameterName.create(CommonParameterNames.END_DATE, "endPosition", "End Date"),
-                            new DataSourceParameter("endPosition", Date.class));
-                        put(ParameterName.create(CommonParameterNames.TILE, "tileId", "UTM Tile"),
-                            new DataSourceParameter("tileId", String.class));
-                        put(ParameterName.create(CommonParameterNames.FOOTPRINT, "footprint", "Area of Interest"),
-                            new DataSourceParameter("footprint", Polygon2D.class));
-                        put(ParameterName.create(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type"),
-                            new DataSourceParameter("productType", String.class));
-                        put(ParameterName.create(CommonParameterNames.CLOUD_COVER, "cloudcoverpercentage", "Cloud Cover"),
-                            new DataSourceParameter("cloudcoverpercentage", Double.class, 100.));
-                        put(ParameterName.create(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit"),
-                            new DataSourceParameter("relativeOrbitNumber", Short.class));
+                        Tuple<ParameterName, DataSourceParameter> parameter =
+                                ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "platformName", "Satellite", String.class, "Sentinel-2");
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "beginPosition", "Start Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "endPosition", "End Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.TILE, "tileId", "UTM Tile", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "footprint", "Area of Interest", Polygon2D.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.CLOUD_COVER, "cloudcoverpercentage", "Cloud Cover", Double.class, 100.);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit", Short.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
                     put("Landsat8", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                        put(ParameterName.create(CommonParameterNames.PLATFORM, "platformName", "Satellite"),
-                            new DataSourceParameter("platformName", String.class, "Landsat-8", true));
-                        put(ParameterName.create(CommonParameterNames.START_DATE, "sensingStart", "Start Date"),
-                            new DataSourceParameter("sensingStart", Date.class));
-                        put(ParameterName.create(CommonParameterNames.END_DATE, "sensingEnd", "End Date"),
-                            new DataSourceParameter("sensingEnd", Date.class));
-                        put(ParameterName.create("path", "path", "Path"),
-                            new DataSourceParameter("path", String.class));
-                        put(ParameterName.create("row", "row", "Row"),
-                            new DataSourceParameter("row", String.class));
-                        put(ParameterName.create(CommonParameterNames.TILE, "row_path", "Row and Path"),
-                            new DataSourceParameter("row_path", String.class));
-                        put(ParameterName.create(CommonParameterNames.FOOTPRINT, "footprint", "Area of Interest"),
-                            new DataSourceParameter("footprint", Polygon2D.class));
-                        put(ParameterName.create(CommonParameterNames.CLOUD_COVER, "cloudcoverpercentage", "Cloud Cover"),
-                            new DataSourceParameter("cloudcoverpercentage", Double.class, 100.));
-                        put(ParameterName.create(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type"),
-                            new DataSourceParameter("productType", String.class));
-                        put(ParameterName.create("collection", "collection", "Landsat Collection"),
-                            new DataSourceParameter("collection", String.class, LandsatCollection.COLLECTION_1.toString()));
+                        Tuple<ParameterName, DataSourceParameter> parameter =
+                                ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "platformName", "Satellite", String.class, "Landsat-8");
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "sensingStart", "Start Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "sensingEnd", "End Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("path", "path", "Path", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("row", "row", "Row", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.TILE, "row_path", "Row and Path", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "footprint", "Area of Interest", Polygon2D.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.CLOUD_COVER, "cloudcoverpercentage", "Cloud Cover", Double.class, 100.);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("collection", "collection", "Landsat Collection", String.class, LandsatCollection.COLLECTION_1.toString());
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
                 }});
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");

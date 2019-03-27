@@ -24,6 +24,7 @@ import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.peps.Collection;
 import ro.cs.tao.datasource.remote.peps.download.PepsDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.utils.Tuple;
 
 import java.util.*;
 
@@ -41,66 +42,68 @@ public class PepsParameterProvider implements ParameterProvider {
         parameters = Collections.unmodifiableMap(
                 new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
                     put("Sentinel1", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                        put(ParameterName.create("collection", "collection", "Collection"),
-                            new DataSourceParameter("collection", String.class, Collection.S1.toString(), true));
-                        put(ParameterName.create(CommonParameterNames.PLATFORM, "platform", "Satellite"),
-                            new DataSourceParameter("platform", String.class));
-                        put(ParameterName.create("instrument", "instrument", "Instrument"),
-                            new DataSourceParameter("instrument", String.class));
-                        put(ParameterName.create("processingLevel", "processingLevel", "Processing Level"),
-                            new DataSourceParameter("processingLevel", String.class));
-                        put(ParameterName.create(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type"),
-                            new DataSourceParameter("productType", String.class));
-                        put(ParameterName.create("sensorMode", "sensorMode", "Sensor Mode"),
-                            new DataSourceParameter("sensorMode", String.class));
-                        put(ParameterName.create("orbitDirection", "orbitDirection", "Orbit Direction"),
-                            new DataSourceParameter("orbitDirection", String.class));
-                        put(ParameterName.create("orbit", "orbit", "Absolute Orbit"),
-                            new DataSourceParameter("orbit", Short.class));
-                        put(ParameterName.create(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit"),
-                            new DataSourceParameter("relativeOrbitNumber", Short.class));
-                        put(ParameterName.create("isNrt", "isNrt", "NRT Product"),
-                            new DataSourceParameter("isNrt", Boolean.class));
-                        put(ParameterName.create(CommonParameterNames.START_DATE, "startDate", "Start Date"),
-                            new DataSourceParameter("startDate", Date.class, true));
-                        put(ParameterName.create(CommonParameterNames.END_DATE, "completionDate", "End Date"),
-                            new DataSourceParameter("completionDate", Date.class));
-                        put(ParameterName.create(CommonParameterNames.FOOTPRINT, "box", "Area of Interest"),
-                            new DataSourceParameter("box", Polygon2D.class, true));
-                        put(ParameterName.create(CommonParameterNames.POLARISATION, "polarisation", "Polarisation"),
-                            new DataSourceParameter("polarisation", String.class));
+                        Tuple<ParameterName, DataSourceParameter> parameter =
+                                ParameterProvider.createParameter("collection", "collection", "Collection", String.class, Collection.S1.toString());
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "platform", "Satellite", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("instrument", "instrument", "Instrument", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("processingLevel", "processingLevel", "Processing Level", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("sensorMode", "sensorMode", "Sensor Mode", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("orbitDirection", "orbitDirection", "Orbit Direction", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("orbit", "orbit", "Absolute Orbit", Short.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit", Short.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("isNrt", "isNrt", "NRT Product", Boolean.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "startDate", "Start Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "completionDate", "End Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "box", "Area of Interest", Polygon2D.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.POLARISATION, "polarisation", "Polarisation", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
                     put("Sentinel2", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                        put(ParameterName.create("collection", "collection", "Collection"),
-                            new DataSourceParameter("collection", String.class, true));
-                        put(ParameterName.create(CommonParameterNames.PLATFORM, "platform", "Satellite"),
-                            new DataSourceParameter("platform", String.class));
-                        put(ParameterName.create("instrument", "instrument", "Instrument"),
-                            new DataSourceParameter("instrument", String.class));
-                        put(ParameterName.create("processingLevel", "processingLevel", "Processing Level"),
-                            new DataSourceParameter("processingLevel", String.class));
-                        put(ParameterName.create(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type"),
-                            new DataSourceParameter("productType", String.class));
-                        put(ParameterName.create("sensorMode", "sensorMode", "Sensor Mode"),
-                            new DataSourceParameter("sensorMode", String.class));
-                        put(ParameterName.create("orbitDirection", "orbitDirection", "Orbit Direction"),
-                            new DataSourceParameter("orbitDirection", String.class));
-                        put(ParameterName.create("orbit", "orbit", "Absolute Orbit"),
-                            new DataSourceParameter("orbit", Short.class));
-                        put(ParameterName.create(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit"),
-                            new DataSourceParameter("relativeOrbitNumber", Short.class));
-                        put(ParameterName.create("isNrt", "isNrt", "NRT Product"),
-                            new DataSourceParameter("isNrt", Boolean.class));
-                        put(ParameterName.create(CommonParameterNames.START_DATE, "startDate", "Start Date"),
-                            new DataSourceParameter("startDate", Date.class, true));
-                        put(ParameterName.create(CommonParameterNames.END_DATE, "completionDate", "End Date"),
-                            new DataSourceParameter("completionDate", Date.class));
-                        put(ParameterName.create(CommonParameterNames.FOOTPRINT, "box", "Area of Interest"),
-                            new DataSourceParameter("box", Polygon2D.class));
-                        put(ParameterName.create(CommonParameterNames.CLOUD_COVER, "cloudCover", "Cloud Cover"),
-                            new DataSourceParameter("cloudCover", Double.class));
-                        put(ParameterName.create(CommonParameterNames.TILE, "tileid", "UTM Tile"),
-                            new DataSourceParameter("tileid", String.class));
+                        Tuple<ParameterName, DataSourceParameter> parameter =
+                                ParameterProvider.createParameter("collection", "collection", "Collection", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "platform", "Satellite", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("instrument", "instrument", "Instrument", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("processingLevel", "processingLevel", "Processing Level", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("sensorMode", "sensorMode", "Sensor Mode", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("orbitDirection", "orbitDirection", "Orbit Direction", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("orbit", "orbit", "Absolute Orbit", Short.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit", Short.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter("isNrt", "isNrt", "NRT Product", Boolean.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "startDate", "Start Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "completionDate", "End Date", Date.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "box", "Area of Interest", Polygon2D.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.CLOUD_COVER, "cloudCover", "Cloud Cover", Double.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.TILE, "tileid", "UTM Tile", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
                 }});
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");

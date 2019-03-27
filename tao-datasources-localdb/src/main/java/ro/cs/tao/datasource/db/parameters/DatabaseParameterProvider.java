@@ -28,6 +28,7 @@ import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
+import ro.cs.tao.utils.Tuple;
 
 import java.util.*;
 
@@ -51,20 +52,21 @@ public class DatabaseParameterProvider implements ParameterProvider {
                 new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
                     for (String sensor : sensors) {
                         put(sensor, new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                            put(ParameterName.create(CommonParameterNames.PRODUCT, "name", "Product Name"),
-                                new DataSourceParameter("name", String[].class, false));
-                            put(ParameterName.create("productFormat", "type_id", "Product Format"),
-                                new DataSourceParameter("type_id", DataFormat.class, false));
-                            put(ParameterName.create(CommonParameterNames.FOOTPRINT, "geometry", "Region of Interest"),
-                                new DataSourceParameter("geometry", Polygon2D.class, false));
-                            put(ParameterName.create("crs", "coordinate_reference_system", "CRS"),
-                                new DataSourceParameter("coordinate_reference_system", String.class, false));
-                            put(ParameterName.create("sensorType", "sensor_type_id", "Sensor Type"),
-                                new DataSourceParameter("sensor_type_id", SensorType.class, false));
-                            put(ParameterName.create(CommonParameterNames.START_DATE, "acquisition_date", "Acquisition Date"),
-                                new DataSourceParameter("acquisition_date", Date.class, false));
-                            put(ParameterName.create(CommonParameterNames.PRODUCT_TYPE, "product_type", "Satellite"),
-                                new DataSourceParameter("product_type", String.class, sensor));
+                            Tuple<ParameterName, DataSourceParameter> parameter =
+                                    ParameterProvider.createParameter(CommonParameterNames.PRODUCT, "name", "Product Name", String[].class);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter("productFormat", "type_id", "Product Format", DataFormat.class);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "geometry", "Region of Interest", Polygon2D.class);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter("crs", "coordinate_reference_system", "CRS", String.class);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter("sensorType", "sensor_type_id", "Sensor Type", SensorType.class);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "acquisition_date", "Acquisition Date", Date.class);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
+                            parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "product_type", "Satellite", String.class, sensor);
+                            put(parameter.getKeyOne(), parameter.getKeyTwo());
                         }});
                     }
                 }});

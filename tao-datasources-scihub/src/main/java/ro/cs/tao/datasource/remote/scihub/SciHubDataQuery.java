@@ -213,8 +213,8 @@ public class SciHubDataQuery extends DataQuery {
             addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }
         String[] footprints = new String[0];
-        if (this.parameters.containsKey(CommonParameterNames.TILE) &&
-                !"Sentinel1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue())) {
+        boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
+        if (this.parameters.containsKey(CommonParameterNames.TILE) && !isS1) {
             QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
             Object value = tileParameter.getValue();
             if (value != null) {
@@ -286,14 +286,22 @@ public class SciHubDataQuery extends DataQuery {
                             String[] values = value.substring(1, value.length() - 1).split(",");
                             query.append("(");
                             for (int i = 0; i < values.length; i++) {
-                                query.append("filename:*").append(values[i]).append("*");
+                                if (isS1) {
+                                    query.append("relativeOrbitNumber:").append(values[i]);
+                                } else {
+                                    query.append("filename:*").append(values[i]).append("*");
+                                }
                                 if (i < values.length - 1) {
                                     query.append(" OR ");
                                 }
                             }
                             query.append(")");
                         } else {
-                            query.append("filename:*").append(value).append("*");
+                            if (isS1) {
+                                query.append("relativeOrbitNumber:").append(value);
+                            } else {
+                                query.append("filename:*").append(value).append("*");
+                            }
                         }
                         break;
                     default:

@@ -67,11 +67,20 @@ abstract class XmlResponseHandler<H extends ProductHelper>
                         this.current.setName(elementValue);
                         this.helper = createHelper(elementValue);
                         break;
-                    case "processingDate":
+                    case "sensingStartDate":
                         try {
                             this.current.setAcquisitionDate(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(elementValue));
                         } catch (Exception e) {
                             logger.warning(e.getMessage());
+                        }
+                        break;
+                    case "processingDate":
+                        if (this.current.getAcquisitionDate() == null) {
+                            try {
+                                this.current.setAcquisitionDate(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(elementValue));
+                            } catch (Exception e) {
+                                logger.warning(e.getMessage());
+                            }
                         }
                         break;
                     case "category":
