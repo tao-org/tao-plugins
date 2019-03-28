@@ -23,6 +23,7 @@ import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
+import ro.cs.tao.utils.async.Parallel;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -44,7 +45,7 @@ public abstract class BaseDataQuery extends DataQuery {
 
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
-        List<EOProduct> results = new ArrayList<>();
+        final List<EOProduct> results = Collections.synchronizedList(new ArrayList<>());
         List<List<BasicNameValuePair>> queries = buildQueriesParams();
         if (this.pageSize <= 0) {
             this.pageSize = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, DEFAULT_LIMIT);
@@ -54,11 +55,11 @@ public abstract class BaseDataQuery extends DataQuery {
                 this.pageNumber > 0 ? this.pageSize :
                         getCount();
         long actualCount = 0;
-        List<EOProduct> tmpResults;
         final int queriesNo = queries.size();
         for (List<BasicNameValuePair> query : queries) {
             boolean canContinue = true;
-            for (long i = page; actualCount < count * queriesNo && canContinue; i++) {
+            Parallel.For(page, (int) count / pageSize, (i) -> {
+            //for (long i = page; actualCount < count * queriesNo && canContinue; i++) {
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("maxRecords", String.valueOf(pageSize)));
                 params.add(new BasicNameValuePair("startIndex", String.valueOf((i - 1) * pageSize + 1)));
@@ -66,6 +67,7 @@ public abstract class BaseDataQuery extends DataQuery {
                 params.addAll(query);
                 String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 logger.fine(String.format("Executing query: %s", queryUrl));
+                List<EOProduct> tmpResults;
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
@@ -73,9 +75,9 @@ public abstract class BaseDataQuery extends DataQuery {
                             ResponseParser<EOProduct> parser = new XmlResponseParser<>();
                             ((XmlResponseParser) parser).setHandler(responseHandler(null));
                             tmpResults = parser.parse(rawResponse);
-                            canContinue = tmpResults != null && tmpResults.size() > 0 && count != this.pageSize;
+                            //canContinue = tmpResults != null && tmpResults.size() > 0 && count >= i * this.pageSize + 1;
                             if (tmpResults != null) {
-                                actualCount += tmpResults.size();
+                                //actualCount += tmpResults.size();
                                 for (EOProduct result : tmpResults) {
                                     if (!results.contains(result)) {
                                         results.add(result);
@@ -92,7 +94,7 @@ public abstract class BaseDataQuery extends DataQuery {
                 } catch (IOException ex) {
                     throw new QueryException(ex);
                 }
-            }
+            });
         }
         logger.info(String.format("Query returned %s products", results.size()));
         results.sort(Comparator.comparing(EOProduct::getAcquisitionDate));
@@ -108,7 +110,13 @@ public abstract class BaseDataQuery extends DataQuery {
         } else {
             end = null;
         }
-        results = results.stream()
+        final String level;
+        if (this.parameters.containsKey("processingLevel")) {
+            level = (String) this.parameters.get("processingLevel").getValue();
+        } else {
+            level = null;
+        }
+        return results.stream()
                          .filter(p -> {
                              boolean ret = true;
                              if (start != null) {
@@ -117,9 +125,11 @@ public abstract class BaseDataQuery extends DataQuery {
                              if (end != null) {
                                  ret &= end.after(p.getAcquisitionDate());
                              }
+                             if (level != null) {
+                                 ret &= p.getName().contains(level);
+                             }
                              return ret;
                          }).collect(Collectors.toList());
-        return results;
     }
 
     @Override

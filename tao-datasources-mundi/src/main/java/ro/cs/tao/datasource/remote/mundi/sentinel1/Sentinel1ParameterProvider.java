@@ -21,7 +21,7 @@ public class Sentinel1ParameterProvider implements ParameterProvider {
     static {
         sensors = new String[] { "Sentinel1" };
         parameters = Collections.unmodifiableMap(
-                new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
+                new LinkedHashMap<String, Map<ParameterName, DataSourceParameter>>() {{
                     put("Sentinel1", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
                         Tuple<ParameterName, DataSourceParameter> parameter =
                                 ParameterProvider.createParameter("processingLevel", "processingLevel", "Processing Level",
