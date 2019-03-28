@@ -21,7 +21,7 @@ public class Landsat8ParameterProvider implements ParameterProvider {
     static {
         sensors = new String[] { "Landsat8" };
         parameters = Collections.unmodifiableMap(
-                new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
+                new LinkedHashMap<String, Map<ParameterName, DataSourceParameter>>() {{
                     put("Landsat8", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
                         Tuple<ParameterName, DataSourceParameter> parameter =
                                 ParameterProvider.createParameter("processingLevel", "processingLevel", "Processing Level", String.class, "L1TP", false, "L1TP", "L1GT", "L1GS");
