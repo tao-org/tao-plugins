@@ -24,7 +24,7 @@ public class DownloadStrategy extends SimpleArchiveDownloadStrategy {
     public String getProductUrl(EOProduct descriptor) {
         URI location = null;
         try {
-            String baseUrl = this.props.getProperty("download.url", "https://obs.eu-de.otc.t-systems.com/");
+            String baseUrl = this.props.getProperty("sentinel.download.url", "https://obs.eu-de.otc.t-systems.com/");
             location = new URI(baseUrl + descriptor.getLocation());
         } catch (URISyntaxException ignored) {
         }

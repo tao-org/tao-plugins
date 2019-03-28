@@ -6,7 +6,6 @@ import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
-import ro.cs.tao.datasource.remote.NoDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.utils.Tuple;
 
@@ -49,7 +48,8 @@ public class Sentinel2ParameterProvider implements ParameterProvider {
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
-                    put("Sentinel2", new NoDownloadStrategy(targetFolder, new Properties()));
+                    //put("Sentinel2", new NoDownloadStrategy(targetFolder, new Properties()));
+                    put("Sentinel2", new Sentinel2DownloadStrategy(targetFolder));
                 }});
     }
 
