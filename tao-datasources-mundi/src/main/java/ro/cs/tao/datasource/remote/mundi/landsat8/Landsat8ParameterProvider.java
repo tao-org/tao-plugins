@@ -6,7 +6,6 @@ import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
-import ro.cs.tao.datasource.remote.NoDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.utils.Tuple;
 
@@ -45,7 +44,8 @@ public class Landsat8ParameterProvider implements ParameterProvider {
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
-                    put("Landsat8", new NoDownloadStrategy(targetFolder, new Properties()));
+                    //put("Landsat8", new NoDownloadStrategy(targetFolder, new Properties()));
+                    put("Landsat8", new Landsat8Strategy(targetFolder));
                 }});
     }
 
