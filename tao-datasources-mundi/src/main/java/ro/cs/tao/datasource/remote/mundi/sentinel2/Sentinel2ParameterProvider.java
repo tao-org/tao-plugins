@@ -42,6 +42,8 @@ public class Sentinel2ParameterProvider implements ParameterProvider {
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                         parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT, "title", "Product Name", String.class);
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.TILE, CommonParameterNames.TILE, "UTM Tile", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
                 }});
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
