@@ -28,7 +28,7 @@ import ro.cs.tao.utils.async.Parallel;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class BaseDataQuery extends DataQuery {
 
@@ -54,50 +54,6 @@ public abstract class BaseDataQuery extends DataQuery {
         long count = this.limit > 0 ? this.limit :
                 this.pageNumber > 0 ? this.pageSize :
                         getCount();
-        long actualCount = 0;
-        final int queriesNo = queries.size();
-        for (List<BasicNameValuePair> query : queries) {
-            boolean canContinue = true;
-            Parallel.For(page, (int) count / pageSize, (i) -> {
-            //for (long i = page; actualCount < count * queriesNo && canContinue; i++) {
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("maxRecords", String.valueOf(pageSize)));
-                params.add(new BasicNameValuePair("startIndex", String.valueOf((i - 1) * pageSize + 1)));
-                //params.add(new BasicNameValuePair("sortKeys", "timeStart"));
-                params.addAll(query);
-                String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
-                logger.fine(String.format("Executing query: %s", queryUrl));
-                List<EOProduct> tmpResults;
-                try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
-                    switch (response.getStatusLine().getStatusCode()) {
-                        case 200:
-                            String rawResponse = EntityUtils.toString(response.getEntity());
-                            ResponseParser<EOProduct> parser = new XmlResponseParser<>();
-                            ((XmlResponseParser) parser).setHandler(responseHandler(null));
-                            tmpResults = parser.parse(rawResponse);
-                            //canContinue = tmpResults != null && tmpResults.size() > 0 && count >= i * this.pageSize + 1;
-                            if (tmpResults != null) {
-                                //actualCount += tmpResults.size();
-                                for (EOProduct result : tmpResults) {
-                                    if (!results.contains(result)) {
-                                        results.add(result);
-                                    }
-                                }
-                            }
-                            break;
-                        case 401:
-                            throw new QueryException("The supplied credentials are invalid!");
-                        default:
-                            throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                                                   response.getStatusLine().getReasonPhrase()));
-                    }
-                } catch (IOException ex) {
-                    throw new QueryException(ex);
-                }
-            });
-        }
-        logger.info(String.format("Query returned %s products", results.size()));
-        results.sort(Comparator.comparing(EOProduct::getAcquisitionDate));
         final Date start;
         if (this.parameters.containsKey(CommonParameterNames.START_DATE)) {
             start = (Date) this.parameters.get(CommonParameterNames.START_DATE).getValue();
@@ -116,20 +72,78 @@ public abstract class BaseDataQuery extends DataQuery {
         } else {
             level = null;
         }
-        return results.stream()
-                         .filter(p -> {
-                             boolean ret = true;
-                             if (start != null) {
-                                 ret = start.before(p.getAcquisitionDate());
-                             }
-                             if (end != null) {
-                                 ret &= end.after(p.getAcquisitionDate());
-                             }
-                             if (level != null) {
-                                 ret &= p.getName().contains(level);
-                             }
-                             return ret;
-                         }).collect(Collectors.toList());
+        long globalCount = getCount();
+        AtomicLong actualCount = new AtomicLong(0);
+        for (List<BasicNameValuePair> query : queries) {
+            Parallel.For(page, (int) (globalCount / pageSize), (i, cancelSignal) -> {
+                if (results.size() > limit) {
+                    cancelSignal.signal();
+                    return;
+                }
+                List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair("maxRecords", String.valueOf(pageSize)));
+                params.add(new BasicNameValuePair("startIndex", String.valueOf((i - 1) * pageSize + 1)));
+                params.addAll(query);
+                String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+                logger.fine(String.format("Executing query: %s", queryUrl));
+                List<EOProduct> tmpResults;
+                try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
+                    switch (response.getStatusLine().getStatusCode()) {
+                        case 200:
+                            String rawResponse = EntityUtils.toString(response.getEntity());
+                            ResponseParser<EOProduct> parser = new XmlResponseParser<>();
+                            ((XmlResponseParser) parser).setHandler(responseHandler(null));
+                            tmpResults = parser.parse(rawResponse);
+                            if (tmpResults != null && tmpResults.size() > 0) {
+                                tmpResults.removeIf(p ->  (start != null && start.after(p.getAcquisitionDate()) ||
+                                                          (end != null && end.before(p.getAcquisitionDate())) ||
+                                                          (level != null && !p.getName().contains(level))));
+                                synchronized (results) {
+                                    if (results.size() + tmpResults.size() > limit) {
+                                        int remaining = limit - results.size();
+                                        for (int j = 0; j < remaining; j++) {
+                                            if (!results.contains(tmpResults.get(j))) {
+                                                results.add(tmpResults.get(j));
+                                            }
+                                        }
+                                    } else {
+                                        for (EOProduct result : tmpResults) {
+                                            if (!results.contains(result)) {
+                                                results.add(result);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                        case 401:
+                            throw new QueryException("The supplied credentials are invalid!");
+                        default:
+                            throw new QueryException(String.format("The request was not successful. Reason: %s",
+                                                                   response.getStatusLine().getReasonPhrase()));
+                    }
+                } catch (IOException ex) {
+                    throw new QueryException(ex);
+                }
+            });
+        }
+        results.sort(Comparator.comparing(EOProduct::getAcquisitionDate));
+
+        /*results.removeIf(p -> {
+            boolean ret = true;
+            if (start != null) {
+                ret = start.after(p.getAcquisitionDate());
+            }
+            if (end != null) {
+                ret &= end.before(p.getAcquisitionDate());
+            }
+            if (level != null) {
+                ret &= !p.getName().contains(level);
+            }
+            return ret;
+        });*/
+        logger.info(String.format("Query returned %s products", results.size()));
+        return results;
     }
 
     @Override
