@@ -45,7 +45,8 @@ public abstract class BaseDataQuery extends DataQuery {
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
         final List<EOProduct> results = Collections.synchronizedList(new ArrayList<>());
-        List<List<BasicNameValuePair>> queries = buildQueriesParams();
+        final Set<String> productNames = Collections.synchronizedSet(new HashSet<>());
+        final List<List<BasicNameValuePair>> queries = buildQueriesParams();
         if (this.pageSize <= 0) {
             this.pageSize = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, DEFAULT_LIMIT);
         }
@@ -68,7 +69,7 @@ public abstract class BaseDataQuery extends DataQuery {
         } else {
             level = null;
         }
-        long count = getCount();
+        final long count = getCount();
         final BasicNameValuePair maxRecords = new BasicNameValuePair("maxRecords", String.valueOf(pageSize));
         for (List<BasicNameValuePair> query : queries) {
             Parallel.For(page, (int) (count / pageSize), (i, cancelSignal) -> {
@@ -76,18 +77,18 @@ public abstract class BaseDataQuery extends DataQuery {
                     cancelSignal.signal();
                     return;
                 }
-                List<NameValuePair> params = new ArrayList<>();
+                final List<NameValuePair> params = new ArrayList<>();
                 params.add(maxRecords);
                 params.add(new BasicNameValuePair("startIndex", String.valueOf((i - 1) * pageSize + 1)));
                 params.addAll(query);
-                String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+                final String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 logger.finest(String.format("Executing query: %s", queryUrl));
-                List<EOProduct> tmpResults;
+                final List<EOProduct> tmpResults;
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
-                            String rawResponse = EntityUtils.toString(response.getEntity());
-                            ResponseParser<EOProduct> parser = new XmlResponseParser<>();
+                            final String rawResponse = EntityUtils.toString(response.getEntity());
+                            final ResponseParser<EOProduct> parser = new XmlResponseParser<>();
                             ((XmlResponseParser) parser).setHandler(responseHandler(null));
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null && tmpResults.size() > 0) {
@@ -99,13 +100,15 @@ public abstract class BaseDataQuery extends DataQuery {
                                     if (currentSize + tmpResults.size() > limit) {
                                         int remaining = limit - currentSize;
                                         for (int j = 0; j < remaining; j++) {
-                                            if (!results.contains(tmpResults.get(j))) {
+                                            if (!productNames.contains(tmpResults.get(j).getName())) {
+                                                productNames.add(tmpResults.get(j).getName());
                                                 results.add(tmpResults.get(j));
                                             }
                                         }
                                     } else {
                                         for (EOProduct result : tmpResults) {
-                                            if (!results.contains(result)) {
+                                            if (!productNames.contains(result.getName())) {
+                                                productNames.add(result.getName());
                                                 results.add(result);
                                             }
                                         }
@@ -124,6 +127,7 @@ public abstract class BaseDataQuery extends DataQuery {
                 }
             });
         }
+        productNames.clear();
         results.sort(Comparator.comparing(EOProduct::getAcquisitionDate));
         logger.info(String.format("Query returned %s products", results.size()));
         return results;
@@ -133,22 +137,21 @@ public abstract class BaseDataQuery extends DataQuery {
     protected long getCountImpl() {
         long count = 0;
         List<List<BasicNameValuePair>> queries = buildQueriesParams();
-        final int size = queries.size();
         final String countUrl = this.source.getConnectionString();
         if (countUrl != null) {
             for (List<BasicNameValuePair> query : queries) {
-                List<NameValuePair> params = new ArrayList<>();
+                final List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("maxRecords", "1"));
                 params.add(new BasicNameValuePair("startIndex", "1"));
                 params.addAll(query);
 
-                String queryUrl = countUrl + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+                final String queryUrl = countUrl + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 logger.fine(String.format("Executing query: %s", queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
-                            String rawResponse = EntityUtils.toString(response.getEntity());
-                            ResponseParser<EOProduct> parser = new XmlResponseParser<>();
+                            final String rawResponse = EntityUtils.toString(response.getEntity());
+                            final ResponseParser<EOProduct> parser = new XmlResponseParser<>();
                             ((XmlResponseParser) parser).setHandler(responseHandler("totalResults"));
                             count += parser.parseCount(rawResponse);
                             break;
@@ -170,22 +173,24 @@ public abstract class BaseDataQuery extends DataQuery {
 
     protected String[] getFootprintsFromTileParameter() {
         String[] footprints = null;
-        QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
-        Object value = tileParameter.getValue();
+        final QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
+        final Object value = tileParameter.getValue();
         if (value != null) {
             if (value.getClass().isArray()) {
                 footprints = new String[Array.getLength(value)];
+                Polygon2D polygon;
                 for (int i = 0; i < footprints.length; i++) {
-                    Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(Array.get(value, i).toString()));
+                    polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(Array.get(value, i).toString()));
                     footprints[i] = polygon.toWKT();
                 }
             } else {
-                String strVal = tileParameter.getValueAsString();
+                final String strVal = tileParameter.getValueAsString();
                 if (strVal.startsWith("[") && strVal.endsWith("]")) {
-                    String[] values = strVal.substring(1, strVal.length() - 1).split(",");
+                    final String[] values = strVal.substring(1, strVal.length() - 1).split(",");
                     footprints = new String[values.length];
+                    Polygon2D polygon;
                     for (int i = 0; i < values.length; i++) {
-                        Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(strVal));
+                        polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(strVal));
                         footprints[i] = polygon.toWKT();
                     }
                 } else {
@@ -200,7 +205,7 @@ public abstract class BaseDataQuery extends DataQuery {
     }
 
     private List<List<BasicNameValuePair>> buildQueriesParams() {
-        List<List<BasicNameValuePair>> queries = new ArrayList<>();
+        final List<List<BasicNameValuePair>> queries = new ArrayList<>();
         String[] footprints = new String[0];
         if (this.parameters.containsKey(CommonParameterNames.TILE)) {
             footprints = getFootprintsFromTileParameter();
@@ -209,11 +214,10 @@ public abstract class BaseDataQuery extends DataQuery {
             String wkt = ((Polygon2D) this.parameters.get(CommonParameterNames.FOOTPRINT).getValue()).toWKT();
             footprints = splitMultiPolygon(wkt);
         }
-        List<BasicNameValuePair> query = new ArrayList<>();
+        final List<BasicNameValuePair> query = new ArrayList<>();
         for (String footprint : footprints) {
-            int idx = 0;
             for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
-                QueryParameter parameter = entry.getValue();
+                final QueryParameter parameter = entry.getValue();
                 if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                     throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
                 }
@@ -260,9 +264,9 @@ public abstract class BaseDataQuery extends DataQuery {
                         break;
                     default:
                         if (parameter.getType().isArray()) {
-                            StringBuilder builder = new StringBuilder();
-                            Object value = parameter.getValue();
-                            int length = Array.getLength(value);
+                            final StringBuilder builder = new StringBuilder();
+                            final Object value = parameter.getValue();
+                            final int length = Array.getLength(value);
                             for (int i = 0; i < length; i++) {
                                 builder.append(Array.get(value, i).toString());
                                 if (i < length - 1) {
@@ -287,7 +291,6 @@ public abstract class BaseDataQuery extends DataQuery {
                             }
                         }
                 }
-                idx++;
             }
             queries.add(query);
         }
@@ -297,10 +300,10 @@ public abstract class BaseDataQuery extends DataQuery {
     private String[] splitMultiPolygon(String wkt) {
         String[] polygons = null;
         try {
-            WKTReader reader = new WKTReader();
-            Geometry geometry = reader.read(wkt);
+            final WKTReader reader = new WKTReader();
+            final Geometry geometry = reader.read(wkt);
             if (geometry instanceof MultiPolygon) {
-                MultiPolygon mPolygon = (MultiPolygon) geometry;
+                final MultiPolygon mPolygon = (MultiPolygon) geometry;
                 int n = mPolygon.getNumGeometries();
                 polygons = new String[n];
                 for (int i = 0; i < n; i++) {
@@ -310,7 +313,7 @@ public abstract class BaseDataQuery extends DataQuery {
                 polygons = new String[]{wkt};
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.severe(e.getMessage());
         }
         return polygons;
     }
