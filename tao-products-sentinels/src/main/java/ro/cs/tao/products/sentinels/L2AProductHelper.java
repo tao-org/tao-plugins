@@ -49,6 +49,11 @@ public class L2AProductHelper extends Sentinel2ProductHelper {
     }
 
     @Override
+    public String getSensingDate() {
+        return getTokens(ProductV14)[2];
+    }
+
+    @Override
     public String getProductRelativePath() {
         String year, day, month;
 

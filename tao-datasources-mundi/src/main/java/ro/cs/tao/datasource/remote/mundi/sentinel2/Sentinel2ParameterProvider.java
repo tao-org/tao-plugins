@@ -6,7 +6,6 @@ import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
-import ro.cs.tao.datasource.remote.NoDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.utils.Tuple;
 
@@ -21,7 +20,7 @@ public class Sentinel2ParameterProvider implements ParameterProvider {
     static {
         sensors = new String[] { "Sentinel2" };
         parameters = Collections.unmodifiableMap(
-                new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
+                new LinkedHashMap<String, Map<ParameterName, DataSourceParameter>>() {{
                     put("Sentinel2", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
                         Tuple<ParameterName, DataSourceParameter> parameter =
                                 ParameterProvider.createParameter("processingLevel", "processingLevel", "Processing Level",
@@ -42,12 +41,15 @@ public class Sentinel2ParameterProvider implements ParameterProvider {
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                         parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT, "title", "Product Name", String.class);
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.TILE, "uid", "UTM Tile", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
                 }});
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
-                    put("Sentinel2", new NoDownloadStrategy(targetFolder, new Properties()));
+                    //put("Sentinel2", new NoDownloadStrategy(targetFolder, new Properties()));
+                    put("Sentinel2", new Sentinel2DownloadStrategy(targetFolder));
                 }});
     }
 
