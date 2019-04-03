@@ -1,1 +1,2 @@
-ro.cs.tao.datasource.remote.usgs.USGSDataSource
+#ro.cs.tao.datasource.remote.usgs.USGSDataSource
+ro.cs.tao.datasource.usgs.USGSDataSource
