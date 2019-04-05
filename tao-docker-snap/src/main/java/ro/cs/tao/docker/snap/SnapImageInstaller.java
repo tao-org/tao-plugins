@@ -21,6 +21,7 @@ import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.SourceDescriptor;
 import ro.cs.tao.component.TargetDescriptor;
 import ro.cs.tao.component.enums.ProcessingComponentType;
+import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.persistence.PersistenceManager;
 import ro.cs.tao.security.SystemPrincipal;
@@ -105,6 +106,7 @@ public class SnapImageInstaller extends BaseImageInstaller {
                             }
                         });
                     }
+                    component.setVisibility(ProcessingComponentVisibility.SYSTEM);
                     component.addTags(getOrCreateTag(container.getName()).getText());
                     persistenceManager.saveProcessingComponent(component);
                 } catch (Exception inner) {
