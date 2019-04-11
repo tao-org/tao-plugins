@@ -364,7 +364,7 @@ public class Sentinel2DownloadStrategy extends DownloadStrategy {
                     String dsFolder = helper.getDatastripFolder(dataStripId);
                     String dsFileName = helper.getDatastripMetadataFileName(dataStripId);
                     pathBuilder.reset();
-                    String dataStripPath = pathBuilder.node(FOLDER_DATASTRIP).node(dsFolder).node(dsFileName).value();
+                    String dataStripPath = pathBuilder.root(getProductUrl(product)).node(FOLDER_DATASTRIP).node(dsFolder).node(dsFileName).value();
                     java.nio.file.Path dataStrip = FileUtilities.ensureExists(dataStripFolder.resolve(dsFolder));
                     downloadFile(dataStripPath, dataStrip.resolve(dsFileName), NetUtils.getAuthToken());
                 }

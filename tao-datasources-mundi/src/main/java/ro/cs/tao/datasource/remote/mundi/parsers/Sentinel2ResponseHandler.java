@@ -20,8 +20,8 @@ public class Sentinel2ResponseHandler extends XmlResponseHandler<Sentinel2Produc
     protected void initRecord() {
         this.current.setSensorType(SensorType.OPTICAL);
         this.current.setPixelType(PixelType.UINT16);
-        this.current.setWidth(-1);
-        this.current.setHeight(-1);
+        this.current.setWidth(10980);
+        this.current.setHeight(10980);
         this.current.setProductType("Sentinel2");
     }
 
