@@ -55,7 +55,7 @@
         <repository>
             <id>tao-core</id>
             <name>TAO Core</name>
-            <url>https://github.com/tao-org/tao-core/tree/repository</url>
+            <url>https://github.com/tao-org/tao-core/raw/repository</url>
         </repository>
         <repository>
             <id>maven-public</id>
