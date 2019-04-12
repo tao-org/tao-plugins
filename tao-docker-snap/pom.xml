@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>tao-docker-snap</artifactId>
-    <name>TAO Docker SNAP Plugin</name>
+    <name>TAO Docker SNAP 6.0 Plugin</name>
     <packaging>jar</packaging>
 
     <dependencies>
