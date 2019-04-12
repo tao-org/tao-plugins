@@ -46,6 +46,7 @@ import java.util.List;
 public class GdalInfoWrapper implements MetadataInspector {
     private static final String gdalDockerImage;
     private static final boolean useDocker;
+    private static final boolean extractStatistics;
     private static final boolean extractHistogram;
     private static final String[] gdalOnPathCmd;
     private static final String[] gdalOnDocker;
@@ -54,19 +55,22 @@ public class GdalInfoWrapper implements MetadataInspector {
         ConfigurationManager configurationManager = ConfigurationManager.getInstance();
         gdalDockerImage = configurationManager.getValue("docker.gdal.image", "geodata/gdal");
         useDocker = Boolean.parseBoolean(configurationManager.getValue("plugins.use.docker", "false"));
+        extractStatistics = Boolean.parseBoolean(configurationManager.getValue("extract.statistics", "true"));
         extractHistogram = Boolean.parseBoolean(configurationManager.getValue("extract.histogram", "false"));
         List<String> args = new ArrayList<>();
         args.add("gdalinfo");
-        args.add("-stats");
+        if (extractStatistics) {
+            args.add("-stats");
+        }
         if (extractHistogram) {
             args.add("-hist");
         }
         args.add("-json");
         args.add("$FULL_PATH");
         gdalOnPathCmd = args.toArray(new String[0]);
-        args.set(args.size() - 1, "/mnt/$FILE");
+        args.set(args.size() - 1, "/mnt/data/$FILE");
         args.add(0, gdalDockerImage);
-        args.add(0, "$FOLDER:/mnt");
+        args.add(0, "$FOLDER:/mnt/data");
         args.add(0, "-v");
         args.add(0, "--rm");
         args.add(0, "-t");
@@ -276,10 +280,18 @@ public class GdalInfoWrapper implements MetadataInspector {
 
     private Executor initialize(Path path, String[] args) throws IOException {
         List<String> arguments = new ArrayList<>();
+        // At least on Windows, docker doesn't handle well folder symlinks in the path
+        Path realPath = path.getRoot();
+        for (int i = 0; i < path.getNameCount(); i++) {
+            realPath = realPath.resolve(path.getName(i));
+            if (Files.isSymbolicLink(realPath)) {
+                realPath = Files.readSymbolicLink(realPath);
+            }
+        }
         for (String arg : args) {
-            arguments.add(arg.replace("$FULL_PATH", path.toString())
-                              .replace("$FOLDER", path.getParent().toString())
-                              .replace("$FILE", path.getFileName().toString()));
+            arguments.add(arg.replace("$FULL_PATH", realPath.toString())
+                              .replace("$FOLDER", realPath.getParent().toString())
+                              .replace("$FILE", realPath.getFileName().toString()));
         }
         try {
             return ProcessExecutor.create(ExecutorType.PROCESS,
