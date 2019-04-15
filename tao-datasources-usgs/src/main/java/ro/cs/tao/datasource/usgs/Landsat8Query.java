@@ -397,8 +397,8 @@ public class Landsat8Query extends DataQuery {
         if (!count) {
             List<EOProduct> trimmed = (List<EOProduct>) results;
             int currentSize = trimmed.size();
-            if (currentSize > this.limit) {
-                trimmed.subList(this.limit, currentSize).clear();
+            if (currentSize > 0 && currentSize > this.limit) {
+                trimmed.subList(Math.max(this.limit, 0), currentSize).clear();
             }
             resolveDownloadUrls((List<EOProduct>) results);
         }
