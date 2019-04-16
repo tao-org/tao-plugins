@@ -44,6 +44,7 @@ import java.util.*;
 
 /**
  * @author Cosmin Cara
+ * @deprecated
  */
 public class Landsat8Query extends DataQuery {
 

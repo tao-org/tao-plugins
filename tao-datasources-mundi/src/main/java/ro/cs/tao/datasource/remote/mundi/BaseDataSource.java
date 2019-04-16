@@ -30,6 +30,9 @@ public abstract class BaseDataSource extends URLDataSource<BaseDataQuery> {
     }
 
     @Override
+    public int getMaximumAllowedTransfers() { return 4; }
+
+    @Override
     public void setCredentials(String username, String password) {
         //super.setCredentials(username, password);
     }
