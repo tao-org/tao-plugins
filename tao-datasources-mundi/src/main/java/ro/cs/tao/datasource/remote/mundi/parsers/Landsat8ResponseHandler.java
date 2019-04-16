@@ -51,5 +51,8 @@ public class Landsat8ResponseHandler extends XmlResponseHandler<Landsat8ProductH
             default:
                 break;
         }
+        if (this.helper != null && this.current.getAttributeValue("tiles") == null) {
+            this.current.addAttribute("tiles", helper.getPath() + helper.getRow());
+        }
     }
 }

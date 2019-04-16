@@ -235,7 +235,12 @@ public class Landsat8Query extends DataQuery {
         String apiKey = authenticate();
         SearchRequest request = new SearchRequest().withAPIKey(apiKey);
         SearchFilterValue filter;
-        for (QueryParameter parameter : this.parameters.values()) {
+        Map<String, QueryParameter> parameters = new HashMap<>(this.parameters);
+        if ((parameters.containsKey("row") && parameters.containsKey("path")) ||
+             parameters.containsKey(CommonParameterNames.TILE)) {
+            parameters.remove(CommonParameterNames.FOOTPRINT);
+        }
+        for (QueryParameter parameter : parameters.values()) {
             try {
                 switch (parameter.getName()) {
                     case CommonParameterNames.PLATFORM:
@@ -287,24 +292,25 @@ public class Landsat8Query extends DataQuery {
                         filter.setValue(parameter.getValueAsString());
                         request.withFilter(filter);
                         break;
+                    case CommonParameterNames.TILE:
+                        String pathRow = parameters.get(CommonParameterNames.TILE).getValueAsString();
+                        filter = new SearchFilterValue();
+                        filter.setFieldId(fieldIds.get("WRS Path"));
+                        filter.setOperand("=");
+                        filter.setValue(pathRow.substring(0, 3));
+                        request.withFilter(filter);
+                        filter = new SearchFilterValue();
+                        filter.setFieldId(fieldIds.get("WRS Row"));
+                        filter.setOperand("=");
+                        filter.setValue(pathRow.substring(3, 6));
+                        request.withFilter(filter);
+                        break;
                 }
             } catch (ConversionException e) {
                 e.printStackTrace();
             }
         }
-        if (this.parameters.containsKey(CommonParameterNames.TILE)) {
-            String pathRow = this.parameters.get(CommonParameterNames.TILE).getValueAsString();
-            filter = new SearchFilterValue();
-            filter.setFieldId(fieldIds.get("WRS Path"));
-            filter.setOperand("=");
-            filter.setValue(pathRow.substring(0, 3));
-            request.withFilter(filter);
-            filter = new SearchFilterValue();
-            filter.setFieldId(fieldIds.get("WRS Row"));
-            filter.setOperand("=");
-            filter.setValue(pathRow.substring(3, 6));
-            request.withFilter(filter);
-        } else if (pathRowFilter != null) {
+        if (pathRowFilter != null) {
             SearchFilterOr orFilter = new SearchFilterOr();
             for (String pathRow : pathRowFilter) {
                 SearchFilterAnd andFilter = new SearchFilterAnd();
@@ -397,8 +403,8 @@ public class Landsat8Query extends DataQuery {
         if (!count) {
             List<EOProduct> trimmed = (List<EOProduct>) results;
             int currentSize = trimmed.size();
-            if (currentSize > 0 && currentSize > this.limit) {
-                trimmed.subList(Math.max(this.limit, 0), currentSize).clear();
+            if (currentSize > 0 && this.limit > 0 && currentSize > this.limit) {
+                trimmed.subList(this.limit, currentSize).clear();
             }
             if (trimmed.size() > 0) {
                 resolveDownloadUrls((List<EOProduct>) results);

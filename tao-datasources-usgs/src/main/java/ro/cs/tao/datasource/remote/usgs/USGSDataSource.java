@@ -24,6 +24,7 @@ import java.util.Properties;
 
 /**
  * @author Cosmin Cara
+ * @deprecated
  */
 public class USGSDataSource extends URLDataSource<Landsat8Query> {
     private static final Properties props;
