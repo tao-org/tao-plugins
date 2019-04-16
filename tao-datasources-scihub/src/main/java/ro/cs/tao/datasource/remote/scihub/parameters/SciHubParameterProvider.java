@@ -21,7 +21,9 @@ import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
+import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel1DownloadStrategy;
+import ro.cs.tao.datasource.remote.scihub.download.Sentinel2ArchiveDownloadStrategy;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel2DownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.utils.Tuple;
@@ -82,11 +84,19 @@ public final class SciHubParameterProvider implements ParameterProvider {
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
                 }});
-        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
+        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+        final String targetFolder = configurationManager.getValue("product.location");
+        final boolean downloadExpanded =
+                Boolean.parseBoolean(configurationManager.getValue(SciHubDataSource.class.getSimpleName() + ".expanded.download",
+                                                                   "false"));
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
                     put("Sentinel1", new Sentinel1DownloadStrategy(targetFolder));
-                    put("Sentinel2", new Sentinel2DownloadStrategy(targetFolder));
+                    if (downloadExpanded) {
+                        put("Sentinel2", new Sentinel2DownloadStrategy(targetFolder));
+                    } else {
+                        put("Sentinel2", new Sentinel2ArchiveDownloadStrategy(targetFolder));
+                    }
                 }});
     }
 
