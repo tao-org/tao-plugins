@@ -41,6 +41,8 @@ import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
+import ro.cs.tao.datasource.remote.DownloadStrategy;
+import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
@@ -62,8 +64,8 @@ import java.util.logging.Logger;
 public class DataSourceTest {
 
     public static void main(String[] args) {
-        SciHub_Sentinel1_Test();
-        SciHub_Sentinel2_Count_Test();
+        //SciHub_Sentinel1_Test();
+        //SciHub_Sentinel2_Count_Test();
         SciHub_Sentinel2_Test();
     }
 
@@ -144,7 +146,10 @@ public class DataSourceTest {
                         .forEach(a -> System.out.println("\tName='" + a.getName() +
                                                                  "', value='" + a.getValue() + "'"));
             });
-        } catch (QueryException e) {
+            DownloadStrategy strategy = (DownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
+            strategy.setFetchMode(FetchMode.OVERWRITE);
+            strategy.fetch(results.get(0));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
