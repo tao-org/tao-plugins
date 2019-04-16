@@ -50,6 +50,9 @@ public class SciHubDataSource extends URLDataSource<SciHubDataQuery> {
     public String defaultId() { return "Scientific Data Hub"; }
 
     @Override
+    public int getMaximumAllowedTransfers() { return 2; }
+
+    @Override
     public boolean ping() {
         return NetUtils.isAvailable(URL);
     }
