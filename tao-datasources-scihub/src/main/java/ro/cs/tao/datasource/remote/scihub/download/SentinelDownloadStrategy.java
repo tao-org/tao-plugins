@@ -17,9 +17,12 @@ package ro.cs.tao.datasource.remote.scihub.download;
 
 import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
+import ro.cs.tao.datasource.remote.ProductHelper;
 import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
+import ro.cs.tao.products.sentinels.SentinelProductHelper;
 import ro.cs.tao.utils.FileUtilities;
 
 import java.io.IOException;
@@ -92,6 +95,32 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
             this.currentProduct = product;
         }
         return downloadFile(getProductUrl(product), rootPath, NetUtils.getAuthToken());
+    }
+
+    @Override
+    protected Path link(EOProduct product, Path sourceRoot, Path targetRoot) throws IOException {
+        Path path = super.link(product, sourceRoot, targetRoot);
+        if (path != null) {
+            ProductHelper helper = SentinelProductHelper.create(product.getName());
+            if (helper instanceof Sentinel2ProductHelper) {
+                Sentinel2ProductHelper s2Helper = (Sentinel2ProductHelper) helper;
+                product.addAttribute("tiles", s2Helper.getTileIdentifier());
+            }
+        }
+        return path;
+    }
+
+    @Override
+    protected Path check(EOProduct product, Path sourceRoot) {
+        Path path = super.check(product, sourceRoot);
+        if (path != null) {
+            ProductHelper helper = SentinelProductHelper.create(product.getName());
+            if (helper instanceof Sentinel2ProductHelper) {
+                Sentinel2ProductHelper s2Helper = (Sentinel2ProductHelper) helper;
+                product.addAttribute("tiles", s2Helper.getTileIdentifier());
+            }
+        }
+        return path;
     }
 
     class ODataPath {
