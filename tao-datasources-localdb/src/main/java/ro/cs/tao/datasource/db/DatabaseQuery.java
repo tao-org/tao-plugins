@@ -125,28 +125,32 @@ public class DatabaseQuery extends DataQuery {
                 for (ParameterIndex paramIndex : values) {
                     for (int i = paramIndex.fromIndex; i <= paramIndex.toIndex; i++) {
                         Object value = paramIndex.values[i - paramIndex.fromIndex];
-                        Class clazz = value.getClass();
-                        if (paramIndex.paramClass.isEnum()) {
-                            // Enum values come as String, therefore we need to extract the integer value
-                            statement.setObject(i, ((TaoEnum) Enum.valueOf(paramIndex.paramClass, value.toString())).value(), Types.INTEGER);
-                        } else if (Byte.class.equals(clazz)) {
-                            statement.setObject(i, value, Types.TINYINT);
-                        } else if (Short.class.equals(clazz)) {
-                            statement.setObject(i, value, Types.SMALLINT);
-                        } else if (Integer.class.equals(clazz)) {
-                            statement.setObject(i, value, Types.INTEGER);
-                        } else if (Long.class.equals(clazz)) {
-                            statement.setObject(i, value, Types.BIGINT);
-                        } else if (Float.class.equals(clazz)) {
-                            statement.setObject(i, value, Types.FLOAT);
-                        } else if (Double.class.equals(clazz)) {
-                            statement.setObject(i, value, Types.DOUBLE);
-                        } else if (String.class.equals(clazz)) {
-                            statement.setString(i, (String) value);
-                        } else if (Polygon2D.class.equals(clazz)) {
-                            statement.setString(i, ((Polygon2D) value).toWKT());
-                        } else if (Date.class.equals(clazz)) {
-                            statement.setObject(i, value, Types.DATE);
+                        if (value == null) {
+                             statement.setNull(i, Types.VARCHAR);
+                        } else {
+                            Class clazz = value.getClass();
+                            if (paramIndex.paramClass.isEnum()) {
+                                // Enum values come as String, therefore we need to extract the integer value
+                                statement.setObject(i, ((TaoEnum) Enum.valueOf(paramIndex.paramClass, value.toString())).value(), Types.INTEGER);
+                            } else if (Byte.class.equals(clazz)) {
+                                statement.setObject(i, value, Types.TINYINT);
+                            } else if (Short.class.equals(clazz)) {
+                                statement.setObject(i, value, Types.SMALLINT);
+                            } else if (Integer.class.equals(clazz)) {
+                                statement.setObject(i, value, Types.INTEGER);
+                            } else if (Long.class.equals(clazz)) {
+                                statement.setObject(i, value, Types.BIGINT);
+                            } else if (Float.class.equals(clazz)) {
+                                statement.setObject(i, value, Types.FLOAT);
+                            } else if (Double.class.equals(clazz)) {
+                                statement.setObject(i, value, Types.DOUBLE);
+                            } else if (String.class.equals(clazz)) {
+                                statement.setString(i, (String) value);
+                            } else if (Polygon2D.class.equals(clazz)) {
+                                statement.setString(i, ((Polygon2D) value).toWKT());
+                            } else if (Date.class.equals(clazz)) {
+                                statement.setObject(i, value, Types.DATE);
+                            }
                         }
                     }
                 }
