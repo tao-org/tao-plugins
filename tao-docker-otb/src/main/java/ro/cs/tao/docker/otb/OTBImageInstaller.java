@@ -61,8 +61,8 @@ public class OTBImageInstaller extends BaseImageInstaller {
             otbContainer.setTag(container.getTag());
             otbContainer.setApplicationPath(path);
             otbContainer.getApplications().forEach(app -> {
-                String appPath = app.getPath() + (SystemUtils.IS_OS_WINDOWS && (winExtensions.stream()
-                                    .noneMatch(e -> getPathInContainer().toLowerCase().endsWith(e))) ? ".bat" : "");
+                String appPath = app.getPath()/* + (SystemUtils.IS_OS_WINDOWS && (winExtensions.stream()
+                                    .noneMatch(e -> getPathInContainer().toLowerCase().endsWith(e))) ? ".bat" : "")*/;
                 app.setName(app.getName());
                 app.setPath(appPath);
             });

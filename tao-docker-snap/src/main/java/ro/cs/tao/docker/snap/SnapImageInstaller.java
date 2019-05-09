@@ -62,9 +62,9 @@ public class SnapImageInstaller extends BaseImageInstaller {
                 if (a.getPath() == null) {
                     a.setPath("gpt");
                 }
-                if (SystemUtils.IS_OS_WINDOWS && !a.getPath().endsWith(".exe")) {
+                /*if (SystemUtils.IS_OS_WINDOWS && !a.getPath().endsWith(".exe")) {
                     a.setPath(a.getPath() + ".exe");
-                }
+                }*/
                 a.setParallelFlagTemplate("-q <integer>");
             });
             snapContainer.setLogo(readContainerLogo("snap_logo.png"));
