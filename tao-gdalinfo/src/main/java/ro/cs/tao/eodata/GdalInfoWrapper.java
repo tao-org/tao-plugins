@@ -27,6 +27,7 @@ import ro.cs.tao.products.landsat.Landsat8MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel1MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel2MetadataInspector;
 import ro.cs.tao.utils.DockerHelper;
+import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.ExecutorType;
 import ro.cs.tao.utils.executors.OutputAccumulator;
@@ -281,13 +282,7 @@ public class GdalInfoWrapper implements MetadataInspector {
     private Executor initialize(Path path, String[] args) throws IOException {
         List<String> arguments = new ArrayList<>();
         // At least on Windows, docker doesn't handle well folder symlinks in the path
-        Path realPath = path.getRoot();
-        for (int i = 0; i < path.getNameCount(); i++) {
-            realPath = realPath.resolve(path.getName(i));
-            if (Files.isSymbolicLink(realPath)) {
-                realPath = Files.readSymbolicLink(realPath);
-            }
-        }
+        Path realPath = FileUtilities.resolveSymLinks(path);
         for (String arg : args) {
             arguments.add(arg.replace("$FULL_PATH", realPath.toString())
                               .replace("$FOLDER", realPath.getParent().toString())
