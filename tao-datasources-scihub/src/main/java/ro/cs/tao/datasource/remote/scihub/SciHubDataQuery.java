@@ -20,10 +20,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
@@ -246,8 +242,8 @@ public class SciHubDataQuery extends DataQuery {
             }
         }
         if (this.parameters.containsKey(CommonParameterNames.FOOTPRINT)) {
-            String wkt = ((Polygon2D) this.parameters.get(CommonParameterNames.FOOTPRINT).getValue()).toWKT();
-            footprints = splitMultiPolygon(wkt);
+            Polygon2D polygon = (Polygon2D) this.parameters.get(CommonParameterNames.FOOTPRINT).getValue();
+            footprints = polygon.toWKTArray();
         }
         StringBuilder query = new StringBuilder();
         for (String footprint : footprints) {
@@ -345,7 +341,7 @@ public class SciHubDataQuery extends DataQuery {
         return queries;
     }
 
-    private String[] splitMultiPolygon(String wkt) {
+   /* private String[] splitMultiPolygon(String wkt) {
         String[] polygons = null;
         try {
             WKTReader reader = new WKTReader();
@@ -364,5 +360,5 @@ public class SciHubDataQuery extends DataQuery {
             e.printStackTrace();
         }
         return polygons;
-    }
+    }*/
 }

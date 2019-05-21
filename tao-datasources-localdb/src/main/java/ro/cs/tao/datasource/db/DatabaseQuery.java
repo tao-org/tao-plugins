@@ -154,6 +154,7 @@ public class DatabaseQuery extends DataQuery {
                         }
                     }
                 }
+                logger.fine(String.format("Executing query: %s", statement.toString()));
                 final ResultSet resultSet = statement.executeQuery();
                 // TODO Fix field order
                 while (resultSet.next()) {

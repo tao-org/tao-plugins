@@ -13,6 +13,7 @@ public class SearchResult {
     private String downloadUrl;
     private String entityId;
     private String displayId;
+    private Double cloudCover;
     private String metadataUrl;
     private String fgdcMetadataUrl;
     private LocalDate modifiedDate;
@@ -100,6 +101,10 @@ public class SearchResult {
     public void setDisplayId(String displayId) {
         this.displayId = displayId;
     }
+
+    public Double getCloudCover() { return cloudCover; }
+
+    public void setCloudCover(Double cloudCover) { this.cloudCover = cloudCover; }
 
     public String getMetadataUrl() {
         return metadataUrl;

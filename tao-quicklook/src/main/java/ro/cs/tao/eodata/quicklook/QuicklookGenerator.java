@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -91,13 +90,7 @@ public class QuicklookGenerator implements OutputDataHandler<EOProduct> {
         }
         List<String> arguments = new ArrayList<>();
         // At least on Windows, docker doesn't handle well folder symlinks in the path
-        Path realPath = productPath.getRoot();
-        for (int i = 0; i < productPath.getNameCount(); i++) {
-            realPath = realPath.resolve(productPath.getName(i));
-            if (Files.isSymbolicLink(realPath)) {
-                realPath = Files.readSymbolicLink(realPath);
-            }
-        }
+        Path realPath = FileUtilities.resolveSymLinks(productPath);
         for (String arg : args) {
             arguments.add(arg.replace("$FULL_PATH", realPath.toString())
                               .replace("$FOLDER", realPath.getParent().toString())
