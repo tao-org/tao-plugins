@@ -16,6 +16,8 @@ import ro.cs.tao.datasource.converters.ConverterFactory;
 import ro.cs.tao.datasource.converters.SimpleDateParameterConverter;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
+import ro.cs.tao.datasource.remote.mundi.landsat8.Landsat8Query;
+import ro.cs.tao.datasource.remote.mundi.sentinel1.Sentinel1Query;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
 import ro.cs.tao.datasource.util.HttpMethod;
@@ -23,7 +25,6 @@ import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
-import ro.cs.tao.utils.async.Parallel;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -70,12 +71,15 @@ public abstract class BaseDataQuery extends DataQuery {
             level = null;
         }
         final long count = getCount();
+        final int maxPage = Math.max((int) (count / pageSize) + 1, page + 1);
         final BasicNameValuePair maxRecords = new BasicNameValuePair("maxRecords", String.valueOf(pageSize));
         for (List<BasicNameValuePair> query : queries) {
-            Parallel.For(page, (int) (count / pageSize), (i, cancelSignal) -> {
-                if (results.size() > limit) {
-                    cancelSignal.signal();
-                    return;
+            //Parallel.For(page, maxPage, (i, cancelSignal) -> {
+            for (int i = page; i < maxPage; i++) {
+                if (limit > 0 && results.size() > limit) {
+                    //cancelSignal.signal();
+                    //return;
+                    break;
                 }
                 final List<NameValuePair> params = new ArrayList<>();
                 params.add(maxRecords);
@@ -94,10 +98,10 @@ public abstract class BaseDataQuery extends DataQuery {
                             if (tmpResults != null && tmpResults.size() > 0) {
                                 tmpResults.removeIf(p ->  (start != null && start.after(p.getAcquisitionDate()) ||
                                                           (end != null && end.before(p.getAcquisitionDate())) ||
-                                                          (level != null && !p.getName().contains(level))));
+                                                          (this instanceof Landsat8Query && level != null && !p.getName().contains(level))));
                                 synchronized (results) {
                                     final int currentSize = results.size();
-                                    if (currentSize + tmpResults.size() > limit) {
+                                    if (limit > 0 && currentSize + tmpResults.size() > limit) {
                                         int remaining = limit - currentSize;
                                         for (int j = 0; j < remaining; j++) {
                                             if (!productNames.contains(tmpResults.get(j).getName())) {
@@ -125,7 +129,7 @@ public abstract class BaseDataQuery extends DataQuery {
                 } catch (IOException ex) {
                     throw new QueryException(ex);
                 }
-            });
+            }//);
         }
         productNames.clear();
         results.sort(Comparator.comparing(EOProduct::getAcquisitionDate));
@@ -214,8 +218,8 @@ public abstract class BaseDataQuery extends DataQuery {
             String wkt = ((Polygon2D) this.parameters.get(CommonParameterNames.FOOTPRINT).getValue()).toWKT();
             footprints = splitMultiPolygon(wkt);
         }
-        final List<BasicNameValuePair> query = new ArrayList<>();
         for (String footprint : footprints) {
+            final List<BasicNameValuePair> query = new ArrayList<>();
             for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
                 final QueryParameter parameter = entry.getValue();
                 if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
@@ -234,7 +238,11 @@ public abstract class BaseDataQuery extends DataQuery {
                         query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.FOOTPRINT), footprint));
                         break;
                     case CommonParameterNames.TILE:
-                        query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.TILE), "*" + parameter.getValueAsString() + "*"));
+                        if (this instanceof Sentinel1Query) {
+                            query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.TILE), parameter.getValueAsString()));
+                        } else {
+                            query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.TILE), "*" + parameter.getValueAsString() + "*"));
+                        }
                         break;
                     case CommonParameterNames.START_DATE:
                         try {
