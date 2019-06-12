@@ -242,7 +242,7 @@ public class GeostormClient implements OutputDataHandler<EOProduct> {
                     if (crs.contains(":")) {
                         crs = crs.substring(crs.indexOf(":") + 1);
                     }
-                    Set<String> references = product.getReferences();
+                    Set<String> references = product.getRefs();
                     if (references != null && references.size() > 0) {
                         geostormRaster.setOrganization(getUserOrganization(references.stream().findFirst().get()));
                     }
