@@ -85,14 +85,23 @@ public class DatabaseQuery extends DataQuery {
                     if (parameter.getType().isArray()) {
                         query.append(getRemoteName(parameter.getName())).append(" IN (");
                         Object value = parameter.getValue();
-                        int length = Array.getLength(value);
-                        Object[] arrayValue = new Object[length];
-                        for (int i = 0; i < length; i++) {
-                            query.append("?");
-                            if (i < length - 1) {
-                                query.append(",");
+                        Object[] arrayValue;
+                        int length;
+                        try {
+                            length = Array.getLength(value);
+                            arrayValue = new Object[length];
+                            for (int i = 0; i < length; i++) {
+                                query.append("?");
+                                if (i < length - 1) {
+                                    query.append(",");
+                                }
+                                arrayValue[i] = Array.get(value, i);
                             }
-                            arrayValue[i] = Array.get(value, i);
+                        } catch (Exception e) {
+                            length = 1;
+                            arrayValue = new Object[length];
+                            arrayValue[0] = value;
+                            query.append("?");
                         }
                         query.append(") ");
                         values.add(new ParameterIndex(idx, idx + length - 1, parameter.getType(), arrayValue));
