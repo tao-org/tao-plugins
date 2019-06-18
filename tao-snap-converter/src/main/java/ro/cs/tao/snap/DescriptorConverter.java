@@ -19,6 +19,7 @@ package ro.cs.tao.snap;
 import org.xml.sax.SAXException;
 import ro.cs.tao.component.ParameterDescriptor;
 import ro.cs.tao.component.ProcessingComponent;
+import ro.cs.tao.component.SourceDescriptor;
 import ro.cs.tao.snap.xml.OperatorParser;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 
@@ -70,7 +71,7 @@ public class DescriptorConverter {
      *
      * @param component  The TAO processing component
      */
-    public static String toSnapXml(ProcessingComponent component) {
+    public static String toSnapXml(ProcessingComponent component, String parentId) {
         if (component == null || component.getContainerId() == null
                 || !component.getContainerId().contains("snap") || !component.getContainerId().contains("SNAP")) {
             return null;
@@ -79,6 +80,23 @@ public class DescriptorConverter {
         builder.append("<node id=\"").append(component.getId()).append("\">\n");
         builder.append("<operator>").append(component.getId()).append("</operator>\n");
         builder.append("<sources>\n");
+        final List<SourceDescriptor> sourceDescriptors = component.getSources();
+        if (sourceDescriptors != null) {
+            if (parentId != null) {
+                builder.append("<sourceProduct refid=\"").append(parentId).append("\"/>\n");
+            } else {
+                final int size = sourceDescriptors.size();
+                if (size == 1) {
+                    builder.append("<sourceProduct refid=\"${sourceProduct}\"/>\n");
+                } else {
+                    for (int i = 0; i < size; i++) {
+                        builder.append("<sourceProduct refid=\"${sourceProduct")
+                                .append(i + 1)
+                                .append("}\"/>\n");
+                    }
+                }
+            }
+        }
         builder.append("</sources>\n");
         builder.append("<parameters class=\"com.bc.ceres.binding.dom.XppDomElement\">\n");
         List<ParameterDescriptor> parameters = component.getParameterDescriptors();
@@ -92,6 +110,29 @@ public class DescriptorConverter {
         builder.append("</parameters>\n");
         builder.append("</node>\n");
         return builder.toString();
+    }
+    /**
+     * Converts a list of TAO Processing Components which corresponds to several SNAP operators into the respective SNAP Graph XML
+     *
+     * @param components  The TAO processing components
+     */
+    public static String toSnapXml(ProcessingComponent... components) {
+        if (components == null || components.length == 0) {
+            return null;
+        }
+        if (components.length == 1) {
+            return toSnapXml(components[0], null);
+        } else {
+            final StringBuilder builder = new StringBuilder();
+            builder.append("<graph id=\"snap_aggregated_operators\">\n")
+                    .append("<version>1.0</version>\n");
+            builder.append(toSnapXml(components[0], null));
+            for (int i = 1; i < components.length; i++) {
+                builder.append(toSnapXml(components[i], components[i-1]));
+            }
+            builder.append("</graph>");
+            return builder.toString();
+        }
     }
 
 }

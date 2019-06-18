@@ -39,6 +39,7 @@
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTFileReader;
 import org.locationtech.jts.io.WKTReader;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
@@ -54,6 +55,10 @@ import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -69,23 +74,9 @@ import java.util.logging.Logger;
 public class DataSourceTest {
 
     public static void main(String[] args) {
-        //SciHub_Sentinel1_Test();
-        //SciHub_Sentinel2_Count_Test();
-        //SciHub_Sentinel2_Test();
-        Test_Multipolygon_Split();
-    }
-
-    private static void Test_Multipolygon_Split() {
-        String multi = "MULTIPOLYGON(((0.062155436165995 43.7043765460165,0.145239542611307 43.7043765460165,0.145239542611307 43.665149233742,0.062155436165995 43.665149233742,0.062155436165995 43.7043765460165)))";
-        String single = "POLYGON((.062 43.704,.145 43.704,.145 43.665,.062 43.665,.062 43.704))";
-        System.out.println(Polygon2D.fromWKT(single).toWKT());
-        /*String[] polygons = splitMultiPolygon(Polygon2D.fromWKT(multi).toWKT());
-        for (String polygon : polygons) {
-            System.out.println(polygon);
-        }
-
-        Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent("30TYP"));
-        System.out.println(polygon.toWKT());*/
+        SciHub_Sentinel1_Test();
+        SciHub_Sentinel2_Count_Test();
+        SciHub_Sentinel2_Test();
     }
 
     private static void SciHub_Sentinel2_Count_Test() {
@@ -165,9 +156,9 @@ public class DataSourceTest {
                         .forEach(a -> System.out.println("\tName='" + a.getName() +
                                                                  "', value='" + a.getValue() + "'"));
             });
-            DownloadStrategy strategy = (DownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
+            /*DownloadStrategy strategy = (DownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
             strategy.setFetchMode(FetchMode.OVERWRITE);
-            strategy.fetch(results.get(0));
+            strategy.fetch(results.get(0));*/
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -219,26 +210,5 @@ public class DataSourceTest {
 
     private static ServiceRegistry<DataSource> getDatasourceRegistry() {
         return ServiceRegistryManager.getInstance().getServiceRegistry(DataSource.class);
-    }
-
-    private static String[] splitMultiPolygon(String wkt) {
-        String[] polygons = null;
-        try {
-            WKTReader reader = new WKTReader();
-            Geometry geometry = reader.read(wkt);
-            if (geometry instanceof MultiPolygon) {
-                MultiPolygon mPolygon = (MultiPolygon) geometry;
-                int n = mPolygon.getNumGeometries();
-                polygons = new String[n];
-                for (int i = 0; i < n; i++) {
-                    polygons[i] = mPolygon.getGeometryN(i).toText();
-                }
-            } else {
-                polygons = new String[] { wkt };
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return polygons;
     }
 }
