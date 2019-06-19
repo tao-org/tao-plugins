@@ -3,6 +3,18 @@
 	"name": "snap-6-0-0",
 	"tag": "SNAP 6.0.0 Container",
 	"applicationPath": null,
+	"commonParameters": "-c 256",
+	"formatNameParameter": "-f",
+	"format" : [
+		"BEAM-DIMAP",
+		"ENVI",
+		"GeoTIFF",
+		"GeoTIFF-BigTIFF",
+		"JPEG2000",
+		"HDF5",
+		"NetCDF-BEAM",
+		"NetCDF-CF"
+	],
 	"applications": [
 		{
 			"path": "gpt",
