@@ -24,7 +24,9 @@ import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.component.template.BasicTemplate;
 import ro.cs.tao.component.template.Template;
 import ro.cs.tao.component.template.TemplateType;
+import ro.cs.tao.persistence.PersistenceManager;
 import ro.cs.tao.security.SystemPrincipal;
+import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,12 +40,17 @@ import java.util.UUID;
  *
  * @author Cosmin Cara
  */
-public class SnapOperatorAggregator implements RuntimeOptimizer {
+public class SnapOptimizer implements RuntimeOptimizer {
 
+    private static final PersistenceManager persistenceManager;
+
+    static {
+        persistenceManager = SpringContextBridge.services().getService(PersistenceManager.class);
+    }
 
     @Override
     public boolean isIntendedFor(String containerId) {
-        return containerId != null && containerId.toLowerCase().contains("snap");
+        return containerId != null && persistenceManager.getContainerById(containerId).getName().toLowerCase().contains("snap");
     }
 
     @Override

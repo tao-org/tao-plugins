@@ -38,6 +38,7 @@
         <module>tao-executor-wps</module>
         <module>tao-datasources-creodias</module>
         <module>tao-datasources-mundi</module>
+        <module>tao-otb-optimizer</module>
     </modules>
 
     <properties>
