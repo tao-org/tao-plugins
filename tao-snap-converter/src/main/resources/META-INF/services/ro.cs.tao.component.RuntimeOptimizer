@@ -14,4 +14,4 @@
 # with this program; if not, see http://www.gnu.org/licenses/
 #
 
-ro.cs.tao.snap.SnapOperatorAggregator
+ro.cs.tao.snap.SnapOptimizer
