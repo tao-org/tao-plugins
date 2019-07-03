@@ -36,11 +36,6 @@
  *
  */
 
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTFileReader;
-import org.locationtech.jts.io.WKTReader;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
@@ -51,14 +46,9 @@ import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
-import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -74,8 +64,8 @@ import java.util.logging.Logger;
 public class DataSourceTest {
 
     public static void main(String[] args) {
-        SciHub_Sentinel1_Test();
-        SciHub_Sentinel2_Count_Test();
+        //SciHub_Sentinel1_Test();
+        //SciHub_Sentinel2_Count_Test();
         SciHub_Sentinel2_Test();
     }
 
@@ -156,9 +146,9 @@ public class DataSourceTest {
                         .forEach(a -> System.out.println("\tName='" + a.getName() +
                                                                  "', value='" + a.getValue() + "'"));
             });
-            /*DownloadStrategy strategy = (DownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
+            DownloadStrategy strategy = (DownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
             strategy.setFetchMode(FetchMode.OVERWRITE);
-            strategy.fetch(results.get(0));*/
+            strategy.fetch(results.get(0));
         } catch (Exception e) {
             e.printStackTrace();
         }
