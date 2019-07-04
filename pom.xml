@@ -39,6 +39,7 @@
         <module>tao-datasources-creodias</module>
         <module>tao-datasources-mundi</module>
         <module>tao-otb-optimizer</module>
+        <module>tao-workflow-optimizer</module>
     </modules>
 
     <properties>
