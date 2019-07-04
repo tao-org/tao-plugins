@@ -1,0 +1,137 @@
+package ro.cs.tao.optimization;
+
+import ro.cs.tao.component.ComponentLink;
+import ro.cs.tao.persistence.exception.PersistenceException;
+import ro.cs.tao.workflow.WorkflowDescriptor;
+import ro.cs.tao.workflow.WorkflowNodeDescriptor;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * A WorkflowOptimizer is a helper class that tries to find a chain in workflow that can be executed
+ * on the machine for bypassing the I/O.
+ *
+ * @author Alexandru Pirlea
+ */
+public class WorkflowOptimizer {
+
+    private static OptimizationGraph buildGraph(WorkflowDescriptor workflow) {
+        OptimizationGraph graph = new OptimizationGraph();
+        Map<Long, OptimizationNode> references = new HashMap<>();
+
+        /* define an optimization node for every workflow node */
+        for (WorkflowNodeDescriptor wNode : workflow.getNodes()) {
+            OptimizationNode node = new OptimizationNode(wNode);
+            graph.addNode(node);
+            references.put(wNode.getId(), node);
+        }
+
+        /* set dependencies */
+        for (WorkflowNodeDescriptor wNode : workflow.getNodes()) {
+            Long vId = wNode.getId();
+            OptimizationNode v = references.get(vId);
+
+            for (ComponentLink link: wNode.getIncomingLinks()) {
+                Long uId = link.getSourceNodeId();
+
+                OptimizationNode u = references.get(uId);
+
+                if (u == null) {
+                    /* no known optimization node has node with id uId */
+                    return null;
+                }
+
+                u.addChild(v);
+                v.addParent(u);
+            }
+        }
+
+        return graph;
+    }
+
+    private static void optimizeGraph(OptimizationGraph graph) {
+        boolean ok;
+
+        do {
+            ok = false;
+
+            for (int i = 0; i < graph.size(); i++) {
+                OptimizationNode u = graph.getNode(i);
+
+
+                /* node u must have only one successor */
+                if (u.getAdj().size() == 1) {
+                    OptimizationNode v = u.getAdj().get(0);
+
+                    /* node v must have only one predecessor */
+                    if (v.getAdjParent().size() == 1) {
+
+                        /* nodes must be compatible */
+                        if (u.isCompatibleWith(v)) {
+                            ok = true;
+
+                            /* merge as group node */
+                            u.getwNodes().addAll(v.getwNodes());
+
+                            /* change graph neighbours */
+                            u.setAdj(v.getAdj());
+
+                            /* remove v from graph */
+                            graph.removeNode(v);
+                        }
+                    }
+                }
+            }
+        } while (ok);
+    }
+
+    private static WorkflowDescriptor createWorkflow(OptimizationGraph graph) {
+        try {
+            Map<OptimizationNode, WorkflowNodeDescriptor> translation = new HashMap<>();
+
+            /* make empty workflow */
+            OptimizedWorkflowBuilder builder = new OptimizedWorkflowBuilder();
+            WorkflowDescriptor workflow = builder.createWorkflowDescriptor();
+
+            /* for every optimization node make a workflow node */
+            for (OptimizationNode node : graph.getNodes()) {
+                WorkflowNodeDescriptor wNode = builder.getOptimizedNode(node.getwNodes());
+                workflow.addNode(wNode);
+                translation.put(node, wNode);
+            }
+
+            /* make links based on adjParent */
+            for (Map.Entry<OptimizationNode, WorkflowNodeDescriptor> e : translation.entrySet()) {
+                List<OptimizationNode> parents = e.getKey().getAdjParent();
+                WorkflowNodeDescriptor child = e.getValue();
+
+                for (OptimizationNode node : parents) {
+                    WorkflowNodeDescriptor parent = translation.get(node);
+
+                    builder.addLink(workflow, parent, child);
+                }
+            }
+
+            return workflow;
+
+        } catch (PersistenceException e) {
+            return null;
+        }
+    }
+
+    public static WorkflowDescriptor getOptimizedWorkflow(WorkflowDescriptor workflow) {
+        OptimizationGraph graph = buildGraph(workflow);
+
+        if (graph == null) {
+            /* Error */
+            return null;
+        }
+
+        /* for every optimization node with more than one workflow node there is an optimization chain */
+        optimizeGraph(graph);
+
+        return createWorkflow(graph);
+    }
+}
