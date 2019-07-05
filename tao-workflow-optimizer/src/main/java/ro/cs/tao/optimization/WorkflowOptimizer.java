@@ -127,8 +127,8 @@ public class WorkflowOptimizer {
 
             /* for every optimization node make a workflow node */
             for (OptimizationNode node : graph.getNodes()) {
-                WorkflowNodeDescriptor wNode = builder.getOptimizedNode(node);
-                workflow.addNode(wNode);
+                WorkflowNodeDescriptor wNode = builder.getOptimizedNode(workflow, node);
+
                 translation.put(node, wNode);
             }
 
@@ -147,7 +147,9 @@ public class WorkflowOptimizer {
             return workflow;
 
         } catch (PersistenceException e) {
+            /* error: persistence */
             return null;
+
         }
     }
 
