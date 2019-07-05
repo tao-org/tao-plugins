@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class WorkflowOptimizer {
 
-    private static OptimizationGraph buildGraph(WorkflowDescriptor workflow, ComponentDefinition defined) {
+    private static OptimizationGraph buildGraph(WorkflowDescriptor workflow, ComponentsDefinition defined) {
         OptimizationGraph graph = new OptimizationGraph();
         Map<Long, OptimizationNode> references = new HashMap<>();
 
@@ -92,21 +92,21 @@ public class WorkflowOptimizer {
                 OptimizationNode u = graph.getNode(i);
 
                 /* node u must have only one successor */
-                if (u.getAdj().size() == 1) {
-                    OptimizationNode v = u.getAdj().get(0);
+                if (u.getSuccessors().size() == 1) {
+                    OptimizationNode v = u.getSuccessors().get(0);
 
                     /* node v must have only one predecessor */
-                    if (v.getAdjParent().size() == 1) {
+                    if (v.getPredecessors().size() == 1) {
 
                         /* nodes must be compatible */
                         if (u.isCompatibleWith(v)) {
                             ok = true;
 
                             /* merge as group node */
-                            u.getComponents().addAll(v.getComponents());
+                            u.getComponentIds().addAll(v.getComponentIds());
 
                             /* change graph neighbours */
-                            u.setAdj(v.getAdj());
+                            u.setSuccessors(v.getSuccessors());
 
                             /* remove v from graph */
                             graph.removeNode(v);
@@ -127,14 +127,14 @@ public class WorkflowOptimizer {
 
             /* for every optimization node make a workflow node */
             for (OptimizationNode node : graph.getNodes()) {
-                WorkflowNodeDescriptor wNode = builder.getOptimizedNode(workflow, node);
+                WorkflowNodeDescriptor wNode = builder.createOptimizedNode(node, workflow);
 
                 translation.put(node, wNode);
             }
 
             /* make links based on adjParent */
             for (Map.Entry<OptimizationNode, WorkflowNodeDescriptor> e : translation.entrySet()) {
-                List<OptimizationNode> parents = e.getKey().getAdjParent();
+                List<OptimizationNode> parents = e.getKey().getPredecessors();
                 WorkflowNodeDescriptor child = e.getValue();
 
                 for (OptimizationNode node : parents) {
@@ -154,7 +154,7 @@ public class WorkflowOptimizer {
     }
 
     public static WorkflowDescriptor getOptimizedWorkflow(WorkflowDescriptor workflow) {
-        ComponentDefinition defined = new ComponentDefinition();
+        ComponentsDefinition defined = new ComponentsDefinition();
 
         OptimizationGraph graph = buildGraph(workflow, defined);
 

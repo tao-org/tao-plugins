@@ -13,57 +13,57 @@ import java.util.List;
  * @author Alexandru Pirlea
  */
 public class OptimizationNode {
-    private List<OptimizationNode> adj       = new ArrayList<>();
-    private List<OptimizationNode> adjParent = new ArrayList<>();
-    private List<String> components = new ArrayList<>();
-    private ComponentDefinition defined;
+    private List<OptimizationNode> successors   = new ArrayList<>();
+    private List<OptimizationNode> predecessors = new ArrayList<>();
+    private List<String> componentIds = new ArrayList<>();
+    private ComponentsDefinition defined;
 
-    public ComponentDefinition getComponentDefinition() {
+    public ComponentsDefinition getComponentDefinition() {
         return defined;
     }
 
-    public OptimizationNode(String componentId, ComponentDefinition defined) {
-        components.add(componentId);
+    public OptimizationNode(String componentId, ComponentsDefinition defined) {
+        componentIds.add(componentId);
         this.defined = defined;
     }
 
-    public List<OptimizationNode> getAdj() {
-        return adj;
+    public List<OptimizationNode> getSuccessors() {
+        return successors;
     }
 
-    public void setAdj(List<OptimizationNode> adj) {
-        this.adj = adj;
+    public void setSuccessors(List<OptimizationNode> successors) {
+        this.successors = successors;
     }
 
-    public List<OptimizationNode> getAdjParent() {
-        return adjParent;
+    public List<OptimizationNode> getPredecessors() {
+        return predecessors;
     }
 
-    public String getFirstComponent() {
-        return components.get(0);
+    public String getFirstComponentId() {
+        return componentIds.get(0);
     }
 
-    public List<String> getComponents() {
-        return components;
+    public List<String> getComponentIds() {
+        return componentIds;
     }
 
     public void addChild(OptimizationNode n) {
-        adj.add(n);
+        successors.add(n);
     }
 
     public void addParent(OptimizationNode n) {
-        adjParent.add(n);
+        predecessors.add(n);
     }
 
     public boolean isCompatibleWith(OptimizationNode node) {
         if (node != null) {
-            ProcessingComponent uComp = defined.getComponent(this.getFirstComponent());
-            ProcessingComponent vComp = defined.getComponent(node.getFirstComponent());
+            ProcessingComponent uComp = defined.getComponent(this.getFirstComponentId());
+            ProcessingComponent vComp = defined.getComponent(node.getFirstComponentId());
 
             String uContainerId = uComp.getContainerId();
             String vContainerId = vComp.getContainerId();
 
-            /* optimizers must exist for both components and be the same */
+            /* optimizers must exist for both componentIds and be the same */
             if (uContainerId != null && vContainerId != null) {
                 RuntimeOptimizer uOptimizer = Optimizers.findOptimizer(uContainerId);
                 RuntimeOptimizer vOptimizer = Optimizers.findOptimizer(vContainerId);
