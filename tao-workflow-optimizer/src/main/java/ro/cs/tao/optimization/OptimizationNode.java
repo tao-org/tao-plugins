@@ -2,11 +2,7 @@ package ro.cs.tao.optimization;
 
 import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.RuntimeOptimizer;
-import ro.cs.tao.component.TaoComponent;
 import ro.cs.tao.execution.Optimizers;
-import ro.cs.tao.persistence.exception.PersistenceException;
-import ro.cs.tao.services.utils.WorkflowUtilities;
-import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +15,16 @@ import java.util.List;
 public class OptimizationNode {
     private List<OptimizationNode> adj       = new ArrayList<>();
     private List<OptimizationNode> adjParent = new ArrayList<>();
-    private List<WorkflowNodeDescriptor> wNodes = new ArrayList<>();
+    private List<String> components = new ArrayList<>();
+    private ComponentDefinition defined;
 
-    public OptimizationNode(WorkflowNodeDescriptor wNode) {
-        wNodes.add(wNode);
+    public ComponentDefinition getComponentDefinition() {
+        return defined;
+    }
+
+    public OptimizationNode(String componentId, ComponentDefinition defined) {
+        components.add(componentId);
+        this.defined = defined;
     }
 
     public List<OptimizationNode> getAdj() {
@@ -37,12 +39,12 @@ public class OptimizationNode {
         return adjParent;
     }
 
-    public WorkflowNodeDescriptor getFirstwNode() {
-        return wNodes.get(0);
+    public String getFirstComponent() {
+        return components.get(0);
     }
 
-    public List<WorkflowNodeDescriptor> getwNodes() {
-        return wNodes;
+    public List<String> getComponents() {
+        return components;
     }
 
     public void addChild(OptimizationNode n) {
@@ -55,28 +57,20 @@ public class OptimizationNode {
 
     public boolean isCompatibleWith(OptimizationNode node) {
         if (node != null) {
-            try {
-                WorkflowNodeDescriptor u = this.getFirstwNode();
-                WorkflowNodeDescriptor v = this.getFirstwNode();
+            ProcessingComponent uComp = defined.getComponent(this.getFirstComponent());
+            ProcessingComponent vComp = defined.getComponent(node.getFirstComponent());
 
-                TaoComponent uComp = WorkflowUtilities.findComponent(u);
-                TaoComponent vComp = WorkflowUtilities.findComponent(v);
+            String uContainerId = uComp.getContainerId();
+            String vContainerId = vComp.getContainerId();
 
-                if (uComp instanceof ProcessingComponent && vComp instanceof ProcessingComponent) {
-                    String uContainerId = ((ProcessingComponent) uComp).getContainerId();
-                    String vContainerId = ((ProcessingComponent) vComp).getContainerId();
+            /* optimizers must exist for both components and be the same */
+            if (uContainerId != null && vContainerId != null) {
+                RuntimeOptimizer uOptimizer = Optimizers.findOptimizer(uContainerId);
+                RuntimeOptimizer vOptimizer = Optimizers.findOptimizer(vContainerId);
 
-                    if (uContainerId != null && vContainerId != null) {
-                        RuntimeOptimizer uOptimizer = Optimizers.findOptimizer(uContainerId);
-                        RuntimeOptimizer vOptimizer = Optimizers.findOptimizer(vContainerId);
-
-                        if (uOptimizer != null && vOptimizer != null) {
-                            return uOptimizer.equals(vOptimizer);
-                        }
-                    }
+                if (uOptimizer != null && vOptimizer != null) {
+                    return uOptimizer.equals(vOptimizer);
                 }
-            } catch (PersistenceException e) {
-                return false;
             }
         }
 

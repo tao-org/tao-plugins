@@ -1,7 +1,10 @@
 package ro.cs.tao.optimization;
 
 import ro.cs.tao.component.ComponentLink;
+import ro.cs.tao.component.ProcessingComponent;
+import ro.cs.tao.component.TaoComponent;
 import ro.cs.tao.persistence.exception.PersistenceException;
+import ro.cs.tao.services.utils.WorkflowUtilities;
 import ro.cs.tao.workflow.WorkflowDescriptor;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 
@@ -17,15 +20,42 @@ import java.util.Map;
  */
 public class WorkflowOptimizer {
 
-    private static OptimizationGraph buildGraph(WorkflowDescriptor workflow) {
+    private static OptimizationGraph buildGraph(WorkflowDescriptor workflow, ComponentDefinition defined) {
         OptimizationGraph graph = new OptimizationGraph();
         Map<Long, OptimizationNode> references = new HashMap<>();
 
         /* define an optimization node for every workflow node */
         for (WorkflowNodeDescriptor wNode : workflow.getNodes()) {
-            OptimizationNode node = new OptimizationNode(wNode);
+
+            /* create optimization node with the component from this node */
+            OptimizationNode node = new OptimizationNode(wNode.getComponentId(), defined);
+
+            /* add node to graph */
             graph.addNode(node);
+
+            /* add reference from node id to workflow node */
             references.put(wNode.getId(), node);
+
+            /* link componentId with it's workflow node */
+            defined.addWorkflowNode(wNode, wNode.getComponentId());
+            try {
+                /* get component from mode */
+                TaoComponent comp = WorkflowUtilities.findComponent(wNode);
+
+                if (comp instanceof ProcessingComponent) {
+                    /* link componentId with the component */
+                    defined.addComponent((ProcessingComponent) comp, wNode.getComponentId());
+
+                } else {
+                    /* error: component is not processing component */
+                    return null;
+
+                }
+            } catch (PersistenceException e) {
+                /* error: persistence exception */
+                return null;
+
+            }
         }
 
         /* set dependencies */
@@ -43,6 +73,7 @@ public class WorkflowOptimizer {
                     return null;
                 }
 
+                /* add link between optimization nodes both ways */
                 u.addChild(v);
                 v.addParent(u);
             }
@@ -60,7 +91,6 @@ public class WorkflowOptimizer {
             for (int i = 0; i < graph.size(); i++) {
                 OptimizationNode u = graph.getNode(i);
 
-
                 /* node u must have only one successor */
                 if (u.getAdj().size() == 1) {
                     OptimizationNode v = u.getAdj().get(0);
@@ -73,7 +103,7 @@ public class WorkflowOptimizer {
                             ok = true;
 
                             /* merge as group node */
-                            u.getwNodes().addAll(v.getwNodes());
+                            u.getComponents().addAll(v.getComponents());
 
                             /* change graph neighbours */
                             u.setAdj(v.getAdj());
@@ -97,7 +127,7 @@ public class WorkflowOptimizer {
 
             /* for every optimization node make a workflow node */
             for (OptimizationNode node : graph.getNodes()) {
-                WorkflowNodeDescriptor wNode = builder.getOptimizedNode(node.getwNodes());
+                WorkflowNodeDescriptor wNode = builder.getOptimizedNode(node);
                 workflow.addNode(wNode);
                 translation.put(node, wNode);
             }
@@ -122,7 +152,9 @@ public class WorkflowOptimizer {
     }
 
     public static WorkflowDescriptor getOptimizedWorkflow(WorkflowDescriptor workflow) {
-        OptimizationGraph graph = buildGraph(workflow);
+        ComponentDefinition defined = new ComponentDefinition();
+
+        OptimizationGraph graph = buildGraph(workflow, defined);
 
         if (graph == null) {
             /* Error */
