@@ -6,7 +6,6 @@ import ro.cs.tao.component.TaoComponent;
 import ro.cs.tao.execution.Optimizers;
 import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.services.base.WorkflowBuilderBase;
-import ro.cs.tao.services.utils.WorkflowUtilities;
 import ro.cs.tao.workflow.WorkflowDescriptor;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 
@@ -30,50 +29,45 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
         return "Optimized Workflow Builder";
     }
 
-    public WorkflowNodeDescriptor getOptimizedNode(List<WorkflowNodeDescriptor> wNodes) {
+    @Override
+    protected void addLink(WorkflowDescriptor workflow, WorkflowNodeDescriptor parent, WorkflowNodeDescriptor child) throws PersistenceException {
+        super.addLink(workflow, parent, child);
+    }
+
+    public WorkflowNodeDescriptor getOptimizedNode(OptimizationNode node) {
         WorkflowNodeDescriptor optimizedNode = null;
 
-        if (wNodes.size() == 0) {
-            /* error */
+        if (node.getComponents().size() == 0) {
+            /* error: an optimization node cannot exit without a component */
 
-        } else if (wNodes.size() == 1) {
+        } else if (node.getComponents().size() == 1) {
             /* one node in list */
-            optimizedNode = getClone(wNodes.get(0));
+            optimizedNode = getClone(node);
 
         } else {
             /* aggregate list */
             List<ProcessingComponent> components = new ArrayList<>();
 
-            try {
-                for (WorkflowNodeDescriptor w : wNodes) {
-                    components.add((ProcessingComponent) WorkflowUtilities.findComponent(w));
-                }
-
-            } catch (PersistenceException e) {
-                components.clear();
-                return null;
-            }
+            node.getComponents().forEach((id) ->
+                                 components.add(node.getComponentDefinition().getComponent(id)));
 
             RuntimeOptimizer optimizer = Optimizers.findOptimizer(components.get(0).getContainerId());
+
             ProcessingComponent result = optimizer.aggregate(components.toArray(new ProcessingComponent[0]));
+
             optimizedNode = makeNodeWithComponent(result);
         }
 
         return optimizedNode;
     }
 
-    private WorkflowNodeDescriptor getClone(WorkflowNodeDescriptor wNode) {
+    private WorkflowNodeDescriptor getClone(OptimizationNode node) {
         return null;
         // TODO
     }
 
-    private WorkflowNodeDescriptor makeNodeWithComponent(TaoComponent comp) {
+    private WorkflowNodeDescriptor makeNodeWithComponent(ProcessingComponent comp) {
         return null;
         // TODO
-    }
-
-    @Override
-    protected void addLink(WorkflowDescriptor workflow, WorkflowNodeDescriptor parent, WorkflowNodeDescriptor child) throws PersistenceException {
-        super.addLink(workflow, parent, child);
     }
 }
