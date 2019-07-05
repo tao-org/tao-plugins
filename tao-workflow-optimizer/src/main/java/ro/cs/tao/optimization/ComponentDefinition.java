@@ -6,6 +6,12 @@ import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A ComponentDefinition is a helper class with dependencies from a component id to a processing
+ * component and a workflow node.
+ *
+ * @author Alexandru Pirlea
+ */
 public class ComponentDefinition {
     private Map<String, ProcessingComponent> idToComp = new HashMap<>();
     private Map<String, WorkflowNodeDescriptor> idToWorkflowNode = new HashMap<>();
