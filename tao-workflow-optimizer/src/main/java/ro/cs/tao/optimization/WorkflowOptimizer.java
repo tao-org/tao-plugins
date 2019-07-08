@@ -163,7 +163,7 @@ public class WorkflowOptimizer {
             return null;
         }
 
-        /* for every optimization node with more than one workflow node there is an optimization chain */
+        /* for every optimization node with more than one component there is an optimization chain */
         optimizeGraph(graph);
 
         return createWorkflow(graph);
