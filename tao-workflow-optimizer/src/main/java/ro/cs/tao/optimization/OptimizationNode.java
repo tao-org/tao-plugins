@@ -61,16 +61,19 @@ public class OptimizationNode {
             ProcessingComponent uComp = defined.getComponent(this.getFirstComponentId());
             ProcessingComponent vComp = defined.getComponent(node.getFirstComponentId());
 
-            String uContainerId = uComp.getContainerId();
-            String vContainerId = vComp.getContainerId();
+            /* comp is null if not processing */
+            if (uComp != null && vComp != null) {
+                String uContainerId = uComp.getContainerId();
+                String vContainerId = vComp.getContainerId();
 
-            /* optimizers must exist for both componentIds and be the same */
-            if (uContainerId != null && vContainerId != null) {
-                RuntimeOptimizer uOptimizer = Optimizers.findOptimizer(uContainerId);
-                RuntimeOptimizer vOptimizer = Optimizers.findOptimizer(vContainerId);
+                /* optimizers must exist for both componentIds and be the same */
+                if (uContainerId != null && vContainerId != null) {
+                    RuntimeOptimizer uOptimizer = Optimizers.findOptimizer(uContainerId);
+                    RuntimeOptimizer vOptimizer = Optimizers.findOptimizer(vContainerId);
 
-                if (uOptimizer != null && vOptimizer != null) {
-                    return uOptimizer.equals(vOptimizer);
+                    if (uOptimizer != null && vOptimizer != null) {
+                        return uOptimizer.equals(vOptimizer);
+                    }
                 }
             }
         }

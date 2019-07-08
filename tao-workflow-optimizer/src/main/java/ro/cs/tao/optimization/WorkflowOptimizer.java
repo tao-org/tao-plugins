@@ -47,8 +47,8 @@ public class WorkflowOptimizer {
                     defined.addComponent((ProcessingComponent) comp, wNode.getComponentId());
 
                 } else {
-                    /* error: component is not processing component */
-                    return null;
+                    /* component is not processing component */
+                    defined.addComponent(null, wNode.getComponentId());
 
                 }
             } catch (PersistenceException e) {
@@ -132,7 +132,7 @@ public class WorkflowOptimizer {
                 translation.put(node, wNode);
             }
 
-            /* make links based on adjParent */
+            /* add links based on graph */
             for (Map.Entry<OptimizationNode, WorkflowNodeDescriptor> e : translation.entrySet()) {
                 List<OptimizationNode> parents = e.getKey().getPredecessors();
                 WorkflowNodeDescriptor child = e.getValue();
