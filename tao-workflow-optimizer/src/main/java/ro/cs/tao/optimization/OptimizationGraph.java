@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An OptimizationGraph is a list of OptimizationNode
+ * An OptimizationGraph is a list of OptimizationNode.
  *
  * @author Alexandru Pirlea
  */
