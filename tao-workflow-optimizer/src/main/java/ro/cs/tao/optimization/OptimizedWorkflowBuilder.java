@@ -75,7 +75,7 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
         newNode.setCustomValues(oldNode.getCustomValues());
         newNode.setPreserveOutput(oldNode.getPreserveOutput());
         newNode.setCreated(LocalDateTime.now());
-        newNode.setLevel(oldNode.getLevel());
+        newNode.setLevel(node.getLevel());
 
         newNode = workflowService.addNode(workflow.getId(), newNode);
 
@@ -97,7 +97,7 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
         newNode.setCustomValues(oldNode.getCustomValues());
         newNode.setPreserveOutput(oldNode.getPreserveOutput());
         newNode.setCreated(LocalDateTime.now());
-        newNode.setLevel(oldNode.getLevel());
+        newNode.setLevel(node.getLevel());
 
         newNode = workflowService.addNode(workflow.getId(), newNode);
 

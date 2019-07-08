@@ -17,6 +17,7 @@ public class OptimizationNode {
     private List<OptimizationNode> predecessors = new ArrayList<>();
     private List<String> componentIds = new ArrayList<>();
     private ComponentsDefinition defined;
+    private int level = -1;
 
     public ComponentsDefinition getComponentDefinition() {
         return defined;
@@ -75,5 +76,20 @@ public class OptimizationNode {
         }
 
         return false;
+    }
+
+    public int getLevel() {
+        if (level == -1) {
+            if (predecessors.isEmpty()) {
+                level = 1;
+
+            } else {
+                predecessors.forEach((n) -> level = Integer.max(level, n.getLevel()));
+                level++;
+
+            }
+        }
+
+        return level;
     }
 }
