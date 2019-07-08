@@ -159,7 +159,7 @@ public class WorkflowOptimizer {
         OptimizationGraph graph = buildGraph(workflow, defined);
 
         if (graph == null) {
-            /* Error */
+            /* error while creating optimization graph */
             return null;
         }
 
