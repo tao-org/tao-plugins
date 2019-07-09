@@ -82,9 +82,10 @@ public class OptimizationNode {
     }
 
     public int getLevel() {
+        // if level is not defined
         if (level == -1) {
             if (predecessors.isEmpty()) {
-                level = 1;
+                level = 0;
 
             } else {
                 predecessors.forEach((n) -> level = Integer.max(level, n.getLevel()));
