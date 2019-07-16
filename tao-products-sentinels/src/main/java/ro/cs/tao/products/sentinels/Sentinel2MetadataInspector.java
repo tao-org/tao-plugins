@@ -16,9 +16,6 @@
 
 package ro.cs.tao.products.sentinels;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
@@ -26,15 +23,12 @@ import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
 import ro.cs.tao.utils.FileUtilities;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.LongStream;
 
@@ -75,52 +69,56 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
         metadata.setProductType("Sentinel2");
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
         metadata.setSize(FileUtilities.folderSize(productFolderPath));
-        try (InputStream inputStream = Files.newInputStream(productFolderPath.resolve(metadataFileName))) {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = builder.parse(inputStream);
-            Element root = document.getDocumentElement();
-            String points = getValue("EXT_POS_LIST", root);
-            if (points != null) {
-                String[] coords = points.trim().split(" ");
-                Polygon2D polygon2D = new Polygon2D();
-                for (int i = 0; i < coords.length; i += 2) {
-                    polygon2D.append(Double.parseDouble(coords[i + 1]),
-                                     Double.parseDouble(coords[i]));
-                }
-                metadata.setFootprint(polygon2D.toWKT(8));
+        try {
+            readDocument(productFolderPath.resolve(metadataFileName));
+        } catch (Exception e) {
+            logger.warning(String.format("Cannot read metadata %s. Reason: %s", metadataFileName, e.getMessage()));
+            throw new IOException(e);
+        }
+        String points = getValue("/n1:Level-1C_User_Product/Product_Organisation/n1:Geometric_Info/Product_Footprint/Global_Footprint/EXT_POS_LIST/text()");
+        if (points != null) {
+            String[] coords = points.trim().split(" ");
+            Polygon2D polygon2D = new Polygon2D();
+            for (int i = 0; i < coords.length; i += 2) {
+                polygon2D.append(Double.parseDouble(coords[i + 1]),
+                                 Double.parseDouble(coords[i]));
             }
-            metadata.setCrs("EPSG:4326");
-            if (Sentinel2ProductHelper.PSD_14.equals(helper.getVersion())) {
-                metadata.setWidth(10980);
-                metadata.setHeight(10980);
-            } else {
-                List<String> granuleList = getAttributeValues("Granules", "granuleIdentifier", root);
-                if (granuleList == null) {
-                    granuleList = getAttributeValues("Granule", "granuleIdentifier", root);
-                }
-                if (granuleList != null) {
-                    for (String gId : granuleList) {
-                        String granuleMetadataFileName = helper.getGranuleMetadataFileName(gId);
-                        Path granuleMetadataFile = productFolderPath.resolve("GRANULE")
-                                                                    .resolve(gId)
-                                                                    .resolve(granuleMetadataFileName);
-                        try (InputStream gis = Files.newInputStream(granuleMetadataFile)) {
-                            Document gDoc = builder.parse(gis);
-                            Element gRoot = gDoc.getDocumentElement();
-                            List<String> ulx = getValues("ULX", gRoot);
-                            List<String> uly = getValues("ULY", gRoot);
-                            if (ulx != null && uly != null) {
-                                LongStream ulxStm = ulx.stream().mapToLong(Long::parseLong);
-                                LongStream ulyStm = uly.stream().mapToLong(Long::parseLong);
-                                metadata.setWidth((int) ((ulxStm.max().orElse(0) - ulxStm.min().orElse(0)) / 10) + 10980);
-                                metadata.setHeight((int) ((ulyStm.max().orElse(0) - ulyStm.min().orElse(0)) / 10) + 10980);
-                            }
-                        }
+            metadata.setFootprint(polygon2D.toWKT(8));
+        }
+        metadata.setCrs("EPSG:4326");
+        if (Sentinel2ProductHelper.PSD_14.equals(helper.getVersion())) {
+            metadata.setWidth(10980);
+            metadata.setHeight(10980);
+        } else {
+            List<String> granuleList = getValues("/n1:Level-1C_User_Product/Product_Organisation/Granule_List/Granules/@granuleIdentifier");
+            if (granuleList == null) {
+                granuleList = getValues("/n1:Level-1C_User_Product/Product_Organisation/Granule_List/Granule/@granuleIdentifier");
+            }
+            List<String> ulx = new ArrayList<>();
+            List<String> uly = new ArrayList<>();
+            for (String gId : granuleList) {
+                String granuleMetadataFileName = helper.getGranuleMetadataFileName(gId);
+                Path granuleMetadataFile = productFolderPath.resolve("GRANULE")
+                        .resolve(gId)
+                        .resolve(granuleMetadataFileName);
+                try {
+                    readDocument(granuleMetadataFile);
+                    List<String> ulxg = getValues("/n1:Level-1C_Tile_ID/n1:Geometric_Info/Tile_Geocoding/Geoposition/ULX/text()");
+                    if (ulxg != null) {
+                        ulx.addAll(ulxg);
                     }
+                    List<String> ulyg = getValues("/n1:Level-1C_Tile_ID/n1:Geometric_Info/Tile_Geocoding/Geoposition/ULY/text()");
+                    if (ulyg != null) {
+                        uly.addAll(ulyg);
+                    }
+                } catch (Exception e) {
+                    logger.warning(String.format("Cannot read granule metadata %s. Reason: %s", granuleMetadataFile, e.getMessage()));
                 }
             }
-        } catch (ParserConfigurationException | SAXException e) {
-            e.printStackTrace();
+            LongStream ulxStm = ulx.stream().mapToLong(Long::parseLong);
+            LongStream ulyStm = uly.stream().mapToLong(Long::parseLong);
+            metadata.setWidth((int) ((ulxStm.max().orElse(0) - ulxStm.min().orElse(0)) / 10) + 10980);
+            metadata.setHeight((int) ((ulyStm.max().orElse(0) - ulyStm.min().orElse(0)) / 10) + 10980);
         }
         return metadata;
     }
