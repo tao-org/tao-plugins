@@ -1,7 +1,8 @@
 {
 	"id": "0c95867b-3235-419a-8a4a-4a52c1853ee8",
 	"name": "gdal-2-3-2",
-	"tag": "GDAL 2.3.2 Container",
+	"description": "GDAL 2.3.2 Container",
+	"tag": "latest",
 	"applicationPath": null,
 	"formatNameParameter": "-f",
 	"format": [

@@ -1,7 +1,8 @@
 {
 	"id": "caefe468-3830-45ba-a7b8-053397460899",
 	"name": "snap-6-0-0",
-	"tag": "SNAP 6.0.0 Container",
+	"description": "SNAP 6.0.0 Container",
+	"tag": "latest",
 	"applicationPath": null,
 	"commonParameters": "-c 256",
 	"formatNameParameter": "-f",
