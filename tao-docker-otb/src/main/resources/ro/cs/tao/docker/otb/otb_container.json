@@ -1,7 +1,8 @@
 {
 	"id": "690d6747-7b76-4290-bb5d-87d775b5d23a",
 	"name": "otb-6-4-0",
-	"tag": "OTB 6.4.0 Container",
+	"description": "OTB 6.4.0 Container",
+	"tag": "latest",
 	"applicationPath": null,
 	"applications": [
 		{
