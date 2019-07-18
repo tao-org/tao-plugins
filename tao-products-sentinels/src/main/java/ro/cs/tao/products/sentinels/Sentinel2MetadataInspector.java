@@ -17,6 +17,7 @@
 package ro.cs.tao.products.sentinels;
 
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.eodata.enums.OrbitDirection;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
@@ -75,7 +76,7 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
             logger.warning(String.format("Cannot read metadata %s. Reason: %s", metadataFileName, e.getMessage()));
             throw new IOException(e);
         }
-        String points = getValue("/n1:Level-1C_User_Product/Product_Organisation/n1:Geometric_Info/Product_Footprint/Global_Footprint/EXT_POS_LIST/text()");
+        String points = getValue("/Level-1C_User_Product/Geometric_Info/Product_Footprint/Product_Footprint/Global_Footprint/EXT_POS_LIST/text()");
         if (points != null) {
             String[] coords = points.trim().split(" ");
             Polygon2D polygon2D = new Polygon2D();
@@ -86,13 +87,14 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
             metadata.setFootprint(polygon2D.toWKT(8));
         }
         metadata.setCrs("EPSG:4326");
+        metadata.setOrbitDirection(OrbitDirection.valueOf(getValue("/Level-1C_User_Product/General_Info/Product_Info/Datatake/SENSING_ORBIT_DIRECTION/text()")));
         if (Sentinel2ProductHelper.PSD_14.equals(helper.getVersion())) {
             metadata.setWidth(10980);
             metadata.setHeight(10980);
         } else {
-            List<String> granuleList = getValues("/n1:Level-1C_User_Product/Product_Organisation/Granule_List/Granules/@granuleIdentifier");
+            List<String> granuleList = getValues("/Level-1C_User_Product/Product_Organisation/Granule_List/Granules/@granuleIdentifier");
             if (granuleList == null) {
-                granuleList = getValues("/n1:Level-1C_User_Product/Product_Organisation/Granule_List/Granule/@granuleIdentifier");
+                granuleList = getValues("/Level-1C_User_Product/Product_Organisation/Granule_List/Granule/@granuleIdentifier");
             }
             List<String> ulx = new ArrayList<>();
             List<String> uly = new ArrayList<>();
@@ -103,11 +105,11 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
                         .resolve(granuleMetadataFileName);
                 try {
                     readDocument(granuleMetadataFile);
-                    List<String> ulxg = getValues("/n1:Level-1C_Tile_ID/n1:Geometric_Info/Tile_Geocoding/Geoposition/ULX/text()");
+                    List<String> ulxg = getValues("/Level-1C_Tile_ID/n1:Geometric_Info/Tile_Geocoding/Geoposition/ULX/text()");
                     if (ulxg != null) {
                         ulx.addAll(ulxg);
                     }
-                    List<String> ulyg = getValues("/n1:Level-1C_Tile_ID/n1:Geometric_Info/Tile_Geocoding/Geoposition/ULY/text()");
+                    List<String> ulyg = getValues("/Level-1C_Tile_ID/n1:Geometric_Info/Tile_Geocoding/Geoposition/ULY/text()");
                     if (ulyg != null) {
                         uly.addAll(ulyg);
                     }
