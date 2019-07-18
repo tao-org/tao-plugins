@@ -1,10 +1,5 @@
 package ro.cs.tao.quota;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.security.Principal;
-
 import ro.cs.tao.component.SystemVariable;
 import ro.cs.tao.execution.monitor.MemoryUnit;
 import ro.cs.tao.persistence.PersistenceManager;
@@ -12,6 +7,11 @@ import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 import ro.cs.tao.user.User;
 import ro.cs.tao.utils.FileUtilities;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.security.Principal;
 
 /**
  * Quota manager implementation based on database stored user quota
@@ -99,8 +99,8 @@ public class DatabaseQuotaManager implements QuotaManager {
 			final String location = Paths.get(SystemVariable.SHARED_WORKSPACE.value()).toUri().toString();
 
 			// compute the size of all public products assigned to the user
-			final long actualInputQuota = persistenceManager.getUserInputProductsSize(principal.getName(), location)
-					/ ((long) MemoryUnit.MEGABYTE.value());
+			final int actualInputQuota = (int) (persistenceManager.getUserInputProductsSize(principal.getName(), location)
+					/ MemoryUnit.MEGABYTE.value());
 
 			// update the user info
 			persistenceManager.updateUserInputQuota(principal.getName(), actualInputQuota);
@@ -128,7 +128,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 			// compute and update the quota based on the database information
 			 final String userWorkspace = SystemVariable.USER_WORKSPACE.value();
 			 // compute used space in MB
-			final long usedSpace = FileUtilities.folderSize(new File(userWorkspace).toPath()) / ((long) MemoryUnit.MEGABYTE.value());
+			final int usedSpace = (int) (FileUtilities.folderSize(new File(userWorkspace).toPath()) / MemoryUnit.MEGABYTE.value());
 
 			// update the user info
 			persistenceManager.updateUserProcessingQuota(principal.getName(), usedSpace);
