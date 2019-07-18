@@ -36,9 +36,9 @@ import java.util.List;
  */
 public class Sentinel1MetadataInspector extends XmlMetadataInspector {
 
-    private static final String XPATH_ORBIT_DIRECTION = "/xfdu:XFDU/metadataSection/metadataObject[@ID='measurementOrbitReference']/metadataWrap/xmlData/safe:orbitReference/safe:extension/s1:orbitProperties/s1:pass/text()";
-    private static final String XPATH_COORDINATES = "/xfdu:XFDU/metadataSection/metadataObject[@ID='measurementFrameSet']/metadataWrap/xmlData/safe:frameSet/safe:frame/safe:footPrint/gml:coordinates";
-    private static final String XPATH_CHECKSUM = "/xfdu:XFDU/dataObjectSection/dataObject/byteStream/fileLocation[starts-with(@href, './measurement')]/checksum/text()";
+    private static final String XPATH_ORBIT_DIRECTION = "/XFDU/metadataSection/metadataObject[@ID='measurementOrbitReference']/metadataWrap/xmlData/orbitReference/extension/orbitProperties/pass/text()";
+    private static final String XPATH_COORDINATES = "/XFDU/metadataSection/metadataObject[@ID='measurementFrameSet']/metadataWrap/xmlData/frameSet/frame/footPrint/coordinates";
+    private static final String XPATH_CHECKSUM = "/XFDU/dataObjectSection/dataObject/byteStream/fileLocation[starts-with(@href, './measurement')]/checksum/text()";
     private static final String XPATH_PIXEL_TYPE = "/product/imageAnnotation/imageInformation/outputPixels/text()";
     private static final String XPATH_SAMPLES = "/product/imageAnnotation/imageInformation/numberOfSamples/text()";
     private static final String XPATH_LINES = "/product/imageAnnotation/imageInformation/numberOfLines/text()";
