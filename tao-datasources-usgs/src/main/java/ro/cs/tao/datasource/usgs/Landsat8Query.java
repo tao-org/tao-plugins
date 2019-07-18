@@ -123,6 +123,9 @@ public class Landsat8Query extends DataQuery {
         if (this.apiKey == null) {
             LoginRequest request = new LoginRequest();
             UsernamePasswordCredentials credentials = this.source.getCredentials();
+            if (credentials == null) {
+                throw new QueryException(String.format("Credentials not set for %s", this.source.getId()));
+            }
             request.setUsername(credentials.getUserName());
             request.setPassword(credentials.getPassword());
             String url = buildRequestUrl("login", request);
@@ -130,17 +133,24 @@ public class Landsat8Query extends DataQuery {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
                         String body = EntityUtils.toString(response.getEntity());
+                        if (body == null) {
+                            throw new QueryException("Cannot retrieve API key [empty response body]");
+                        }
                         JsonResponseParser<LoginResponse> parser = new JsonResponseParser<>(new LoginResponseHandler());
                         LoginResponse login = parser.parseValue(body);
+                        if (login == null) {
+                            throw new QueryException("Cannot retrieve API key [empty response body]");
+                        }
                         if (login.getErrorCode() == null) {
                             this.apiKey = login.getData();
                         }
                         if (this.apiKey == null) {
-                            throw new QueryException("The supplied credentials are invalid!");
+                            throw new QueryException(String.format("The API key could not be obtained [catalogId:%s,apiVersion:%s,errorCode:%s,error:%s,data:%s",
+                                                                   login.getCatalog_id(), login.getApi_version(), login.getErrorCode(), login.getError(), login.getData()));
                         }
                         break;
                     case 401:
-                        throw new QueryException("The supplied credentials are invalid!");
+                        throw new QueryException("Cannot retrieve API key [401:not authorized]");
                     default:
                         throw new QueryException(String.format("The request was not successful. Reason: %s",
                                                                response.getStatusLine().getReasonPhrase()));
