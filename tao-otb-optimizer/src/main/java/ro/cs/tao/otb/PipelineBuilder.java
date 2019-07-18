@@ -3,8 +3,8 @@ package ro.cs.tao.otb;
 import ro.cs.tao.component.ParameterDescriptor;
 import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.SourceDescriptor;
+import ro.cs.tao.component.TargetDescriptor;
 
-import java.util.List;
 
 /**
  * Utility class that performs conversion from TAO processing component to OTB python pipeline.
@@ -18,7 +18,7 @@ public class PipelineBuilder {
      *
      * @param component  The TAO processing component
      */
-    public static String toPythonPipeline(ProcessingComponent component, boolean isFrist, boolean isLast) {
+    public static String toPythonPipeline(ProcessingComponent component, boolean isFirst, boolean isLast) {
         if (component == null || component.getContainerId() == null
                 || !component.getContainerId().contains("otb") || !component.getContainerId().contains("OTB")) {
             return null;
@@ -41,17 +41,39 @@ public class PipelineBuilder {
         }
 
         // set input to application
-        if (isFrist) {
-            // TODO - link input file to this app
+        if (isFirst) {
+            for (SourceDescriptor source : component.getSources()) {
+                if (source.getCardinality() == 1) {
+                    builder.append("appY.SetParameterString(\"");
+                } else {
+                    builder.append("appY.SetParameterStringList(\"");
+                }
+
+                builder.append(source.getName()).
+                        append("\", \"").
+                        append("$").append(component.getId()).append(".").append(source.getName()).
+                        append("\")\n");
+            }
         } else {
             builder.append("appY.SetParameterInputImage(\"in\", appX.GetParameterOutputImage(\"out\"))\n");
         }
 
         builder.append("appX = appY\n");
 
-        // set whether to write output or not
+        // set whether to write output to file system or not
         if(isLast) {
-            // TODO - set output file for this app
+            for (TargetDescriptor target : component.getTargets()) {
+                if (target.getCardinality() == 1) {
+                    builder.append("appY.SetParameterString(\"");
+                } else {
+                    builder.append("appY.SetParameterStringList(\"");
+                }
+
+                builder.append(target.getName()).
+                        append("\", \"").
+                        append("$").append(component.getId()).append(".").append(target.getName()).
+                        append("\")\n");
+            }
 
             builder.append("appX.ExecuteAndWriteOutput()\n\n");
         } else {
