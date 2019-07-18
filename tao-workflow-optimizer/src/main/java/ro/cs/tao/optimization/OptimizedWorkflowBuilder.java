@@ -5,6 +5,7 @@ import ro.cs.tao.component.RuntimeOptimizer;
 import ro.cs.tao.execution.Optimizers;
 import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.services.base.WorkflowBuilderBase;
+import ro.cs.tao.workflow.ParameterValue;
 import ro.cs.tao.workflow.WorkflowDescriptor;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 import ro.cs.tao.workflow.enums.ComponentType;
@@ -94,7 +95,20 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
         newNode.setComponentId(comp.getId());
         newNode.setComponentType(ComponentType.PROCESSING);
 
-        newNode.setCustomValues(oldNode.getCustomValues());
+        /* set customValues for every component
+         * from ParameterValue.key to componentId + . + ParameterValue.key
+         */
+        for (String componentId : node.getComponentIds()) {
+            WorkflowNodeDescriptor wNode = node.getComponentDefinition().getWorkflowNode(componentId);
+
+            for (ParameterValue param : wNode.getCustomValues()) {
+                String key = componentId + "." + param.getParameterName();
+                String value = param.getParameterValue();
+
+                newNode.addCustomValue(key, value);
+            }
+        }
+
         newNode.setPreserveOutput(oldNode.getPreserveOutput());
         newNode.setCreated(LocalDateTime.now());
         newNode.setLevel(node.getLevel());
