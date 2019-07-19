@@ -71,44 +71,46 @@ public class DescriptorConverter {
      *
      * @param component  The TAO processing component
      */
-    public static String toSnapXml(ProcessingComponent component, String parentId) {
-        if (component == null || component.getContainerId() == null
-                || !component.getContainerId().contains("snap") || !component.getContainerId().contains("SNAP")) {
+    private static String toSnapXml(ProcessingComponent component, String parentId) {
+        if (component == null) {
             return null;
         }
         StringBuilder builder = new StringBuilder();
-        builder.append("<node id=\"").append(component.getId()).append("\">\n");
-        builder.append("<operator>").append(component.getId()).append("</operator>\n");
-        builder.append("<sources>\n");
+        final String sourceTemplate = component.getTemplateContents();
+        builder.append("\t\t\t<node id=\"").append(component.getId()).append("\">\n");
+        final String operatorId = sourceTemplate != null ? sourceTemplate.substring(0, sourceTemplate.indexOf('\n')) : null;
+        if (operatorId == null) {
+            throw new IllegalArgumentException("Cannot determine SNAP operator from component " + component.getId());
+        }
+        builder.append("\t\t\t\t<operator>").append(operatorId).append("</operator>\n");
+        builder.append("\t\t\t\t<sources>\n");
         final List<SourceDescriptor> sourceDescriptors = component.getSources();
         if (sourceDescriptors != null) {
             if (parentId != null) {
-                builder.append("<sourceProduct refid=\"").append(parentId).append("\"/>\n");
+                builder.append("\t\t\t\t\t<sourceProduct refid=\"").append(parentId).append("\"/>\n");
             } else {
                 final int size = sourceDescriptors.size();
                 if (size == 1) {
-                    builder.append("<sourceProduct refid=\"${sourceProduct}\"/>\n");
+                    builder.append("\t\t\t\t\t<sourceProduct refid=\"${sourceProduct}\" />\n");
                 } else {
                     for (int i = 0; i < size; i++) {
-                        builder.append("<sourceProduct refid=\"${sourceProduct")
+                        builder.append("\t\t\t\t\t<sourceProduct refid=\"${sourceProduct")
                                 .append(i + 1)
                                 .append("}\"/>\n");
                     }
                 }
             }
         }
-        builder.append("</sources>\n");
-        builder.append("<parameters class=\"com.bc.ceres.binding.dom.XppDomElement\">\n");
+        builder.append("\t\t\t\t</sources>\n");
+        builder.append("\t\t\t\t<parameters class=\"com.bc.ceres.binding.dom.XppDomElement\">\n");
         List<ParameterDescriptor> parameters = component.getParameterDescriptors();
         if (parameters != null) {
             for (ParameterDescriptor parameter : parameters) {
-                builder.append("<").append(parameter.getName()).append(">")
-                        .append(parameter.getDataType().getSimpleName().toLowerCase())
-                        .append("</").append(parameter.getName()).append(">\n");
+                builder.append(parameterToXml(component.getId(), parameter));
             }
         }
-        builder.append("</parameters>\n");
-        builder.append("</node>\n");
+        builder.append("\t\t\t\t</parameters>\n");
+        builder.append("\t\t\t</node>\n");
         return builder.toString();
     }
     /**
@@ -116,7 +118,7 @@ public class DescriptorConverter {
      *
      * @param components  The TAO processing components
      */
-    public static String toSnapXml(ProcessingComponent... components) {
+    static String toSnapXml(ProcessingComponent... components) {
         if (components == null || components.length == 0) {
             return null;
         }
@@ -124,15 +126,45 @@ public class DescriptorConverter {
             return toSnapXml(components[0], null);
         } else {
             final StringBuilder builder = new StringBuilder();
-            builder.append("<graph id=\"snap_aggregated_operators\">\n")
-                    .append("<version>1.0</version>\n");
+            builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+                    .append("<xsl:stylesheet version=\"1.0\"\n")
+                    .append("xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\n")
+                    .append("\t<xsl:output method=\"xml\" indent=\"yes\" encoding=\"UTF-8\"/>\n");
+            for (ProcessingComponent component : components) {
+                List<ParameterDescriptor> descriptors = component.getParameterDescriptors();
+                for (ParameterDescriptor descriptor : descriptors) {
+                    builder.append(parameterToXslParam(component.getId(), descriptor));
+                }
+            }
+            builder.append("\t<xsl:template match=\"/\">\n");
+            builder.append("\t\t<graph id=\"snap_aggregated_operators\">\n")
+                    .append("\t\t\t<version>1.0</version>\n");
             builder.append(toSnapXml(components[0], null));
             for (int i = 1; i < components.length; i++) {
-                builder.append(toSnapXml(components[i], components[i-1]));
+                builder.append(toSnapXml(components[i], components[i-1].getId()));
             }
-            builder.append("</graph>");
+            builder.append("\t\t</graph>\n");
+            builder.append("\t</xsl:template>\n").append("</xsl:stylesheet>");
             return builder.toString();
         }
+    }
+
+    private static String parameterToXml(String componentId, ParameterDescriptor parameter) {
+        return "\t\t\t\t\t<" + parameter.getName() + ">" +
+                "<xsl:value-of select=\"$" +
+                componentId + "-" + parameter.getName() +
+                "\"/>" +
+                "</" + parameter.getName() + ">\n";
+    }
+
+    private static String parameterToXslParam(String componentId, ParameterDescriptor parameter) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("\t<xsl:param name=\"").append(componentId).append("-").append(parameter.getName()).append("\" ");
+        if (parameter.getDefaultValue() != null) {
+            builder.append("select=\"").append(parameter.getDefaultValue()).append("\" ");
+        }
+        builder.append("/>\n");
+        return builder.toString();
     }
 
 }
