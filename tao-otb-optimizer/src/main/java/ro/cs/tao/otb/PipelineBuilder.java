@@ -19,20 +19,20 @@ public class PipelineBuilder {
      * @param component  The TAO processing component
      */
     public static String toPythonPipeline(ProcessingComponent component, boolean isFirst, boolean isLast) {
-        if (component == null || component.getContainerId() == null
-                || !component.getContainerId().contains("otb") || !component.getContainerId().contains("OTB")) {
+        if (component == null || component.getContainerId() == null) {
             return null;
         }
 
         StringBuilder builder = new StringBuilder();
 
         builder.append("appY = otb.Registry.CreateApplication(\"").
-                append(component.getContainerId()).
+                append(component.getId()).
                 append("\")\n");
 
         builder.append("apps.append(appY)\n");
 
         for (ParameterDescriptor param : component.getParameterDescriptors()) {
+            // TODO - parameter set based on type and cardinality
             builder.append("appY.SetParameterString(\"").
                     append(param.getName()).
                     append("\", \"").
