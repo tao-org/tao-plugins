@@ -1,8 +1,9 @@
 package ro.cs.tao.otb;
 
+import ro.cs.tao.BaseRuntimeOptimizer;
 import ro.cs.tao.component.AggregationException;
+import ro.cs.tao.component.ParameterDescriptor;
 import ro.cs.tao.component.ProcessingComponent;
-import ro.cs.tao.component.RuntimeOptimizer;
 import ro.cs.tao.component.SystemVariable;
 import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.component.template.BasicTemplate;
@@ -17,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,7 +27,7 @@ import java.util.UUID;
  *
  * @author Alexandru Pirlea
  */
-public class OtbOptimizer implements RuntimeOptimizer {
+public class OtbOptimizer extends BaseRuntimeOptimizer {
     private static final PersistenceManager persistenceManager;
 
     static {
@@ -37,75 +40,71 @@ public class OtbOptimizer implements RuntimeOptimizer {
     }
 
     @Override
-    public ProcessingComponent aggregate(ProcessingComponent... sources) throws AggregationException {
-        ProcessingComponent aggregator = null;
+    protected ProcessingComponent createAggregatedComponent(ProcessingComponent... sources) throws AggregationException {
+        ProcessingComponent component = new ProcessingComponent();
 
-        /* TODO - resulted component is not ProcessingComponent.
-         * it is of a class which extends ProcessingComponent
-         */
+        final String newId = "otb-aggregated-component-" + UUID.randomUUID().toString();
 
-        if (sources != null && sources.length > 0) {
-            if (sources.length == 1) {
-                aggregator = sources[0];
-            } else {
-                String containerId = null;
+        component.setId(newId);
+        component.setLabel(newId);
+        component.setVersion("1.0");
+        component.setDescription("OTB aggregated component");
+        component.setAuthors(SystemPrincipal.instance().getName());
+        component.setCopyright("(C)" + LocalDate.now().getYear());
+        component.setFileLocation("python");
+        component.setWorkingDirectory(sources[0].getWorkingDirectory());
 
-                for (ProcessingComponent source : sources) {
-                    if (!isIntendedFor(source.getContainerId())) {
-                        throw new AggregationException(String.format("This aggregator is not intended for components belonging to the container '%s'",
-                                source.getContainerId()));
-                    } else if (containerId == null) {
-                        containerId = source.getContainerId();
-                    } else if (!containerId.equals(source.getContainerId())) {
-                        throw new AggregationException("The components to be aggregated must belong to the same container");
-                    }
-                }
+        Template template = new BasicTemplate();
+        template.setName(newId + " template");
+        template.setTemplateType(TemplateType.VELOCITY);
 
-                ProcessingComponent component = new ProcessingComponent();
-                final String newId = "otb-aggregated-component-" + UUID.randomUUID().toString();
+        component.setTemplate(template);
+        component.setTemplateType(TemplateType.VELOCITY);
+        component.setVisibility(ProcessingComponentVisibility.USER);
+        component.setNodeAffinity("Any");
+        component.setMultiThread(true);
+        component.setActive(true);
+        component.setContainerId(sources[0].getContainerId());
 
-                component.setId(newId);
-                component.setLabel(newId);
-                component.setVersion("1.0");
-                component.setDescription("OTB aggregated component");
-                component.setAuthors(SystemPrincipal.instance().getName());
-                component.setCopyright("(C)" + LocalDate.now().getYear());
-                component.setFileLocation("python");
-                component.setWorkingDirectory(sources[0].getWorkingDirectory());
+        Path pipelinePath = Paths.get(SystemVariable.USER_WORKSPACE.value(), newId + ".py");
 
-                Template template = new BasicTemplate();
-                template.setName(newId + " template");
-                template.setTemplateType(TemplateType.VELOCITY);
+        component.setTemplateContents(pipelinePath.toString());
+        component.setSources(sources[0].getSources());
+        component.setTargets(sources[sources.length - 1].getTargets());
 
-                component.setTemplate(template);
-                component.setTemplateType(TemplateType.VELOCITY);
-                component.setVisibility(ProcessingComponentVisibility.SYSTEM);
-                component.setNodeAffinity("Any");
-                component.setMultiThread(true);
-                component.setActive(true);
-                component.setContainerId(containerId);
+        String pipeline = PipelineBuilder.toPythonPipeline(sources);
 
-                Path pipelinePath = Paths.get(SystemVariable.USER_WORKSPACE.value(), newId + ".xml");
+        List<ParameterDescriptor> parameterDescriptors = new ArrayList<>();
 
-                component.setTemplateContents(pipelinePath.toString());
-                component.setSources(sources[0].getSources());
-                component.setTargets(sources[sources.length - 1].getTargets());
-
-                final String pipeline = PipelineBuilder.toPythonPipeline(sources);
-
-                if (pipeline == null) {
-                    throw new AggregationException("Cannot produce aggregagted graph");
-                }
-
-                try {
-                    Files.write(pipelinePath, pipeline.getBytes());
-                } catch (IOException ex) {
-                    throw new AggregationException(ex.getMessage());
-                }
-
-                return component;
+        for (ProcessingComponent source : sources) {
+            for (ParameterDescriptor descriptor : source.getParameterDescriptors()) {
+                parameterDescriptors.add(new ParameterDescriptor(UUID.randomUUID().toString(),
+                        source.getId() + "-" + descriptor.getName(),
+                        descriptor.getType(),
+                        descriptor.getDataType(),
+                        descriptor.getDefaultValue(),
+                        descriptor.getDescription(),
+                        descriptor.getLabel(),
+                        descriptor.getUnit(),
+                        descriptor.getValueSet(),
+                        descriptor.getFormat(),
+                        descriptor.isNotNull(),
+                        descriptor.getExpansionRule()));
             }
         }
-        return aggregator;
+
+        if (pipeline == null) {
+            throw new AggregationException("Cannot produce aggregagted graph");
+        }
+
+        component.setParameterDescriptors(parameterDescriptors);
+
+        try {
+            Files.write(pipelinePath, pipeline.getBytes());
+        } catch (IOException ex) {
+            throw new AggregationException(ex.getMessage());
+        }
+
+        return component;
     }
 }

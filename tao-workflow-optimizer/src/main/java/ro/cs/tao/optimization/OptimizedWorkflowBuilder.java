@@ -96,13 +96,13 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
         newNode.setComponentType(ComponentType.PROCESSING);
 
         /* set customValues for every component
-         * from ParameterValue.key to componentId + . + ParameterValue.key
+         * from parameter.name to componentId + "-" + parameter.name
          */
         for (String componentId : node.getComponentIds()) {
             WorkflowNodeDescriptor wNode = node.getComponentDefinition().getWorkflowNode(componentId);
 
             for (ParameterValue param : wNode.getCustomValues()) {
-                String key = componentId + "." + param.getParameterName();
+                String key = componentId + "-" + param.getParameterName();
                 String value = param.getParameterValue();
 
                 newNode.addCustomValue(key, value);

@@ -36,7 +36,7 @@ public class PipelineBuilder {
             builder.append("appY.SetParameterString(\"").
                     append(param.getName()).
                     append("\", \"").
-                    append("$").append(component.getId()).append(".").append(param.getName()).
+                    append("$").append(component.getId()).append("-").append(param.getName()).
                     append("\")\n");
         }
 
@@ -51,7 +51,7 @@ public class PipelineBuilder {
 
                 builder.append(source.getName()).
                         append("\", \"").
-                        append("$").append(component.getId()).append(".").append(source.getName()).
+                        append("$").append(component.getId()).append("-").append(source.getName()).
                         append("\")\n");
             }
         } else {
@@ -71,7 +71,7 @@ public class PipelineBuilder {
 
                 builder.append(target.getName()).
                         append("\", \"").
-                        append("$").append(component.getId()).append(".").append(target.getName()).
+                        append("$").append(component.getId()).append("-").append(target.getName()).
                         append("\")\n");
             }
 
