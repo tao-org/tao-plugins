@@ -65,14 +65,8 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
         component.setMultiThread(true);
         component.setActive(true);
         component.setContainerId(sources[0].getContainerId());
-
-        Path pipelinePath = Paths.get(SystemVariable.USER_WORKSPACE.value(), newId + ".py");
-
-        component.setTemplateContents(pipelinePath.toString());
         component.setSources(sources[0].getSources());
         component.setTargets(sources[sources.length - 1].getTargets());
-
-        String pipeline = PipelineBuilder.toPythonPipeline(sources);
 
         List<ParameterDescriptor> parameterDescriptors = new ArrayList<>();
 
@@ -93,17 +87,15 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
             }
         }
 
-        if (pipeline == null) {
-            throw new AggregationException("Cannot produce aggregagted graph");
-        }
-
         component.setParameterDescriptors(parameterDescriptors);
 
-        try {
-            Files.write(pipelinePath, pipeline.getBytes());
-        } catch (IOException ex) {
-            throw new AggregationException(ex.getMessage());
+        String pipeline = PipelineBuilder.toPythonPipeline(sources);
+
+        if (pipeline == null) {
+            throw new AggregationException("Cannot produce aggregated graph");
         }
+
+        component.setTemplateContents(pipeline);
 
         return component;
     }

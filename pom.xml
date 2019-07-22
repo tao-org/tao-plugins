@@ -283,6 +283,15 @@
                 <role>Java Developer</role>
             </roles>
         </developer>
+        <developer>
+            <id>apirlea</id>
+            <name>Alexandru Pirlea</name>
+            <email>alex.pirlea@c-s.ro</email>
+            <organization>CS ROMANIA</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
     </developers>
 
 </project>
