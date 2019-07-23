@@ -39,10 +39,10 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
     public WorkflowNodeDescriptor createOptimizedNode(OptimizationNode node, WorkflowDescriptor workflow) throws PersistenceException {
         WorkflowNodeDescriptor optimizedNode = null;
 
-        if (node.getComponentIds().size() == 0) {
+        if (node.getNodeIds().size() == 0) {
             /* error: an optimization node cannot exit without a component */
 
-        } else if (node.getComponentIds().size() == 1) {
+        } else if (node.getNodeIds().size() == 1) {
             /* one node in list */
             optimizedNode = getNodeClone(node, workflow);
 
@@ -50,7 +50,7 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
             /* aggregate list */
             List<ProcessingComponent> components = new ArrayList<>();
 
-            node.getComponentIds().forEach((id) ->
+            node.getNodeIds().forEach((id) ->
                                  components.add(node.getComponentDefinition().getComponent(id)));
 
             RuntimeOptimizer optimizer = Optimizers.findOptimizer(components.get(0).getContainerId());
@@ -65,7 +65,7 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
 
     private WorkflowNodeDescriptor getNodeClone(OptimizationNode node, WorkflowDescriptor workflow) throws PersistenceException {
         WorkflowNodeDescriptor newNode = new WorkflowNodeDescriptor();
-        WorkflowNodeDescriptor oldNode = node.getComponentDefinition().getWorkflowNode(node.getFirstComponentId());
+        WorkflowNodeDescriptor oldNode = node.getComponentDefinition().getWorkflowNode(node.getFirstNodeId());
 
         newNode.setWorkflow(workflow);
         newNode.setName(oldNode.getName());
@@ -85,7 +85,7 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
 
     private WorkflowNodeDescriptor createNodeWithComponent(ProcessingComponent comp, OptimizationNode node, WorkflowDescriptor workflow) throws PersistenceException {
         WorkflowNodeDescriptor newNode = new WorkflowNodeDescriptor();
-        WorkflowNodeDescriptor oldNode = node.getComponentDefinition().getWorkflowNode(node.getFirstComponentId());
+        WorkflowNodeDescriptor oldNode = node.getComponentDefinition().getWorkflowNode(node.getFirstNodeId());
 
         newNode.setName("Optimized component chain");
 
@@ -98,11 +98,11 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
         /* set customValues for every component
          * from parameter.name to componentId + "-" + parameter.name
          */
-        for (String componentId : node.getComponentIds()) {
-            WorkflowNodeDescriptor wNode = node.getComponentDefinition().getWorkflowNode(componentId);
+        for (Long nodeId : node.getNodeIds()) {
+            WorkflowNodeDescriptor wNode = node.getComponentDefinition().getWorkflowNode(nodeId);
 
             for (ParameterValue param : wNode.getCustomValues()) {
-                String key = componentId + "-" + param.getParameterName();
+                String key = wNode.getComponentId() + "-" + param.getParameterName();
                 String value = param.getParameterValue();
 
                 newNode.addCustomValue(key, value);

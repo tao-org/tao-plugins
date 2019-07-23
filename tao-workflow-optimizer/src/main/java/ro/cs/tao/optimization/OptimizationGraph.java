@@ -19,10 +19,6 @@ public class OptimizationGraph {
         nodes.add(node);
     }
 
-    public OptimizationNode getNode(int position) {
-        return nodes.get(position);
-    }
-
     public void removeNode(OptimizationNode node) {
         nodes.remove(node);
     }
