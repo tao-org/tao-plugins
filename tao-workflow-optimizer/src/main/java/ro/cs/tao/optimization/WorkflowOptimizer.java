@@ -28,7 +28,7 @@ public class WorkflowOptimizer {
         for (WorkflowNodeDescriptor wNode : workflow.getNodes()) {
 
             /* create optimization node with the component from this node */
-            OptimizationNode node = new OptimizationNode(wNode.getComponentId(), defined);
+            OptimizationNode node = new OptimizationNode(wNode.getId(), defined);
 
             /* add node to graph */
             graph.addNode(node);
@@ -37,18 +37,18 @@ public class WorkflowOptimizer {
             references.put(wNode.getId(), node);
 
             /* link componentId with it's workflow node */
-            defined.addWorkflowNode(wNode, wNode.getComponentId());
+            defined.addWorkflowNode(wNode, wNode.getId());
             try {
                 /* get component from mode */
                 TaoComponent comp = WorkflowUtilities.findComponent(wNode);
 
                 if (comp instanceof ProcessingComponent) {
                     /* link componentId with the component */
-                    defined.addComponent((ProcessingComponent) comp, wNode.getComponentId());
+                    defined.addComponent((ProcessingComponent) comp, wNode.getId());
 
                 } else {
                     /* component is not processing component */
-                    defined.addComponent(null, wNode.getComponentId());
+                    defined.addComponent(null, wNode.getId());
 
                 }
             } catch (PersistenceException e) {
@@ -89,7 +89,7 @@ public class WorkflowOptimizer {
             ok = false;
 
             for (int i = 0; i < graph.size(); i++) {
-                OptimizationNode u = graph.getNode(i);
+                OptimizationNode u = graph.getNodes().get(i);
 
                 /* node u must have only one successor */
                 if (u.getSuccessors().size() == 1) {
@@ -103,7 +103,7 @@ public class WorkflowOptimizer {
                             ok = true;
 
                             /* merge as group node */
-                            u.getComponentIds().addAll(v.getComponentIds());
+                            u.getNodeIds().addAll(v.getNodeIds());
 
                             /* change graph neighbours */
                             u.setSuccessors(v.getSuccessors());

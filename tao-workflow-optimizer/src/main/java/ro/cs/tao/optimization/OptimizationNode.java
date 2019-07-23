@@ -15,7 +15,7 @@ import java.util.List;
 public class OptimizationNode {
     private List<OptimizationNode> successors   = new ArrayList<>();
     private List<OptimizationNode> predecessors = new ArrayList<>();
-    private List<String> componentIds = new ArrayList<>();
+    private List<Long> nodeIds = new ArrayList<>();
     private ComponentsDefinition defined;
     private int level = -1;
 
@@ -23,8 +23,8 @@ public class OptimizationNode {
         return defined;
     }
 
-    public OptimizationNode(String componentId, ComponentsDefinition defined) {
-        componentIds.add(componentId);
+    public OptimizationNode(Long nodeId, ComponentsDefinition defined) {
+        nodeIds.add(nodeId);
         this.defined = defined;
     }
 
@@ -40,12 +40,12 @@ public class OptimizationNode {
         return predecessors;
     }
 
-    public String getFirstComponentId() {
-        return componentIds.get(0);
+    public Long getFirstNodeId() {
+        return nodeIds.get(0);
     }
 
-    public List<String> getComponentIds() {
-        return componentIds;
+    public List<Long> getNodeIds() {
+        return nodeIds;
     }
 
     public void addChild(OptimizationNode n) {
@@ -58,8 +58,8 @@ public class OptimizationNode {
 
     public boolean isCompatibleWith(OptimizationNode node) {
         if (node != null) {
-            ProcessingComponent uComp = defined.getComponent(this.getFirstComponentId());
-            ProcessingComponent vComp = defined.getComponent(node.getFirstComponentId());
+            ProcessingComponent uComp = defined.getComponent(this.getFirstNodeId());
+            ProcessingComponent vComp = defined.getComponent(node.getFirstNodeId());
 
             /* comp is null if not processing */
             if (uComp != null && vComp != null) {
