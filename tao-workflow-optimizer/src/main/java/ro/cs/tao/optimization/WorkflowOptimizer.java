@@ -144,7 +144,7 @@ public class WorkflowOptimizer {
                 }
             }
 
-            return workflow;
+            return builder.updateWorkflowDescriptor(workflow);
 
         } catch (PersistenceException e) {
             /* error: persistence */
