@@ -13,6 +13,7 @@ import ro.cs.tao.workflow.enums.ComponentType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * A OptimizedWorkflowBuilder is a helper class for creating a workflow from an optimization graph.
@@ -20,6 +21,11 @@ import java.util.List;
  * @author Alexandru Pirlea
  */
 public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
+    private String name;
+
+    public OptimizedWorkflowBuilder() {
+        this.name = "Optimized-Workflow-" + UUID.randomUUID().toString();
+    }
 
     @Override
     protected void addNodes(WorkflowDescriptor workflow) throws PersistenceException {
@@ -28,7 +34,7 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
 
     @Override
     public String getName() {
-        return "Optimized Workflow Builder";
+        return name;
     }
 
     @Override
@@ -36,7 +42,11 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
         super.addLink(workflow, parent, child);
     }
 
-    public WorkflowNodeDescriptor createOptimizedNode(OptimizationNode node, WorkflowDescriptor workflow) throws PersistenceException {
+    protected WorkflowDescriptor updateWorkflowDescriptor(WorkflowDescriptor wf) throws PersistenceException {
+        return persistenceManager.getWorkflowDescriptor(wf.getId());
+    }
+
+    protected WorkflowNodeDescriptor createOptimizedNode(OptimizationNode node, WorkflowDescriptor workflow) throws PersistenceException {
         WorkflowNodeDescriptor optimizedNode = null;
 
         if (node.getNodeIds().size() == 0) {
