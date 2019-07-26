@@ -67,6 +67,8 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
 
             ProcessingComponent result = optimizer.aggregate(components.toArray(new ProcessingComponent[0]));
 
+            result = persistenceManager.saveProcessingComponent(result);
+
             optimizedNode = createNodeWithComponent(result, node, workflow);
         }
 
