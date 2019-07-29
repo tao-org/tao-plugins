@@ -2,7 +2,9 @@ package ro.cs.tao.optimization;
 
 import ro.cs.tao.component.ComponentLink;
 import ro.cs.tao.component.ProcessingComponent;
+import ro.cs.tao.component.RuntimeOptimizer;
 import ro.cs.tao.component.TaoComponent;
+import ro.cs.tao.execution.Optimizers;
 import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.services.utils.WorkflowUtilities;
 import ro.cs.tao.workflow.WorkflowDescriptor;
@@ -36,19 +38,26 @@ public class WorkflowOptimizer {
             /* add reference from node id to workflow node */
             references.put(wNode.getId(), node);
 
-            /* link componentId with it's workflow node */
+            /* link node id with it's workflow node */
             defined.addWorkflowNode(wNode, wNode.getId());
+
             try {
                 /* get component from mode */
                 TaoComponent comp = WorkflowUtilities.findComponent(wNode);
 
                 if (comp instanceof ProcessingComponent) {
-                    /* link componentId with the component */
+                    /* link componentId with the node id */
                     defined.addComponent((ProcessingComponent) comp, wNode.getId());
+
+                    /* link RuntimeOptimizer with node id */
+                    String containerId = ((ProcessingComponent) comp).getContainerId();
+                    RuntimeOptimizer optimizer = Optimizers.findOptimizer(containerId);
+                    defined.addOptimizer(optimizer, wNode.getId());
 
                 } else {
                     /* component is not processing component */
                     defined.addComponent(null, wNode.getId());
+                    defined.addOptimizer(null, wNode.getId());
 
                 }
             } catch (PersistenceException e) {
@@ -58,7 +67,7 @@ public class WorkflowOptimizer {
             }
         }
 
-        /* set dependencies */
+        /* set dependencies (u -> v) */
         for (WorkflowNodeDescriptor wNode : workflow.getNodes()) {
             Long vId = wNode.getId();
             OptimizationNode v = references.get(vId);

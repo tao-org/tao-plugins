@@ -63,7 +63,7 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
             node.getNodeIds().forEach((id) ->
                                  components.add(node.getComponentDefinition().getComponent(id)));
 
-            RuntimeOptimizer optimizer = Optimizers.findOptimizer(components.get(0).getContainerId());
+            RuntimeOptimizer optimizer = node.getComponentDefinition().getOptimizer(node.getFirstNodeId());
 
             ProcessingComponent result = optimizer.aggregate(components.toArray(new ProcessingComponent[0]));
 

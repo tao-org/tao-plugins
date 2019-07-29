@@ -1,8 +1,6 @@
 package ro.cs.tao.optimization;
 
-import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.RuntimeOptimizer;
-import ro.cs.tao.execution.Optimizers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,23 +56,11 @@ public class OptimizationNode {
 
     public boolean isCompatibleWith(OptimizationNode node) {
         if (node != null) {
-            ProcessingComponent uComp = defined.getComponent(this.getFirstNodeId());
-            ProcessingComponent vComp = defined.getComponent(node.getFirstNodeId());
+            RuntimeOptimizer uOptimizer = defined.getOptimizer(this.getFirstNodeId());
+            RuntimeOptimizer vOptimizer = defined.getOptimizer(node.getFirstNodeId());
 
-            /* comp is null if not processing */
-            if (uComp != null && vComp != null) {
-                String uContainerId = uComp.getContainerId();
-                String vContainerId = vComp.getContainerId();
-
-                /* optimizers must exist for both componentIds and be the same */
-                if (uContainerId != null && vContainerId != null) {
-                    RuntimeOptimizer uOptimizer = Optimizers.findOptimizer(uContainerId);
-                    RuntimeOptimizer vOptimizer = Optimizers.findOptimizer(vContainerId);
-
-                    if (uOptimizer != null && vOptimizer != null) {
-                        return uOptimizer.equals(vOptimizer);
-                    }
-                }
+            if (uOptimizer != null && vOptimizer != null) {
+                return uOptimizer.equals(vOptimizer);
             }
         }
 
