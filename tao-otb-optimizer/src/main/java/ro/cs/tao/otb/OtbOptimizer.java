@@ -1,10 +1,7 @@
 package ro.cs.tao.otb;
 
 import ro.cs.tao.BaseRuntimeOptimizer;
-import ro.cs.tao.component.AggregationException;
-import ro.cs.tao.component.ParameterDescriptor;
-import ro.cs.tao.component.ProcessingComponent;
-import ro.cs.tao.component.SystemVariable;
+import ro.cs.tao.component.*;
 import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.component.template.BasicTemplate;
 import ro.cs.tao.component.template.Template;
@@ -13,10 +10,6 @@ import ro.cs.tao.persistence.PersistenceManager;
 import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +58,30 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
         component.setMultiThread(true);
         component.setActive(true);
         component.setContainerId(sources[0].getContainerId());
-        component.setSources(sources[0].getSources());
-        component.setTargets(sources[sources.length - 1].getTargets());
+
+        sources[0].getSources().forEach((s) -> {
+            SourceDescriptor source = new SourceDescriptor();
+
+            source.setParentId(s.getParentId());
+            source.setDataDescriptor(s.getDataDescriptor());
+            source.setCardinality(s.getCardinality());
+            source.setName(sources[0].getId() + "-" + s.getName());
+            source.setConstraints(new ArrayList<>(s.getConstraints()));
+
+            component.addSource(source);
+        });
+
+        sources[sources.length - 1].getTargets().forEach((t) -> {
+            TargetDescriptor target = new TargetDescriptor();
+
+            target.setParentId(t.getParentId());
+            target.setDataDescriptor(t.getDataDescriptor());
+            target.setCardinality(t.getCardinality());
+            target.setName(sources[sources.length - 1].getId() + "-" + t.getName());
+            target.setConstraints(new ArrayList<>(t.getConstraints()));
+
+            component.addTarget(target);
+        });
 
         List<ParameterDescriptor> parameterDescriptors = new ArrayList<>();
 
@@ -92,7 +107,7 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
         String pipeline = PipelineBuilder.toPythonPipeline(sources);
 
         if (pipeline == null) {
-            throw new AggregationException("Cannot produce aggregated graph");
+            throw new AggregationException("Cannot produce aggregated graph.");
         }
 
         component.setTemplateContents(pipeline);

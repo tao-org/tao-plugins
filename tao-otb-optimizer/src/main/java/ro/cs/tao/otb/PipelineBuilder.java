@@ -1,9 +1,6 @@
 package ro.cs.tao.otb;
 
-import ro.cs.tao.component.ParameterDescriptor;
-import ro.cs.tao.component.ProcessingComponent;
-import ro.cs.tao.component.SourceDescriptor;
-import ro.cs.tao.component.TargetDescriptor;
+import ro.cs.tao.component.*;
 
 
 /**
@@ -18,7 +15,7 @@ public class PipelineBuilder {
      *
      * @param component  The TAO processing component
      */
-    public static String toPythonPipeline(ProcessingComponent component, boolean isFirst, boolean isLast) {
+    private static String toPythonPipeline(ProcessingComponent component, boolean isFirst, boolean isLast, String outParamName) throws AggregationException {
         if (component == null || component.getContainerId() == null) {
             return null;
         }
@@ -32,7 +29,6 @@ public class PipelineBuilder {
         builder.append("apps.append(appY)\n");
 
         for (ParameterDescriptor param : component.getParameterDescriptors()) {
-            // TODO - parameter set based on type and cardinality
             builder.append("appY.SetParameterString(\"").
                     append(param.getName()).
                     append("\", \"").
@@ -45,8 +41,10 @@ public class PipelineBuilder {
             for (SourceDescriptor source : component.getSources()) {
                 if (source.getCardinality() == 1) {
                     builder.append("appY.SetParameterString(\"");
+                } else if (source.getCardinality() == 0) {
+                    builder.append("appY.AddParameterStringList(\"");
                 } else {
-                    builder.append("appY.SetParameterStringList(\"");
+                    throw new AggregationException("Unknown way to treat cardinality.");
                 }
 
                 builder.append(source.getName()).
@@ -55,7 +53,22 @@ public class PipelineBuilder {
                         append("\")\n");
             }
         } else {
-            builder.append("appY.SetParameterInputImage(\"in\", appX.GetParameterOutputImage(\"out\"))\n");
+            if (component.getSources().size() != 1) {
+                throw new AggregationException("Other applications should only have one source.");
+            }
+
+            if (component.getSources().get(0).getCardinality() == 1) {
+                builder.append("appY.SetParameterInputImage(\"");
+
+            } else {
+                throw new AggregationException("Source must have \"1\" as cardinality.");
+
+            }
+
+            builder.append(component.getSources().get(0).getName()).
+                    append("\", appX.GetParameterOutputImage(\"").
+                    append(outParamName).
+                    append("\"))\n");
         }
 
         builder.append("appX = appY\n");
@@ -66,7 +79,7 @@ public class PipelineBuilder {
                 if (target.getCardinality() == 1) {
                     builder.append("appY.SetParameterString(\"");
                 } else {
-                    builder.append("appY.SetParameterStringList(\"");
+                    builder.append("appY.AddParameterStringList(\"");
                 }
 
                 builder.append(target.getName()).
@@ -77,6 +90,15 @@ public class PipelineBuilder {
 
             builder.append("appX.ExecuteAndWriteOutput()\n\n");
         } else {
+
+            if (component.getTargets().size() != 1) {
+                throw new AggregationException("Application should have only one target.");
+            }
+
+            if (component.getTargets().get(0).getCardinality() != 1) {
+                throw new AggregationException("Target must have \"1\" as cardinality.");
+            }
+
             builder.append("appX.Execute()\n\n");
         }
 
@@ -89,7 +111,7 @@ public class PipelineBuilder {
      *
      * @param components  The TAO processing components
      */
-    public static String toPythonPipeline(ProcessingComponent... components) {
+    public static String toPythonPipeline(ProcessingComponent... components) throws AggregationException {
         if (components == null || components.length == 0) {
             return null;
         }
@@ -97,20 +119,22 @@ public class PipelineBuilder {
         if (components.length == 1) {
             return "import otbApplication as otb\n\n" +
                    "apps = []\n\n" +
-                   toPythonPipeline(components[0], true, true);
+                   toPythonPipeline(components[0], true, true, null);
         } else {
             final StringBuilder builder = new StringBuilder();
 
             builder.append("import otbApplication as otb\n\n")
                     .append("apps = []\n\n");
 
-            builder.append(toPythonPipeline(components[0], true, false));
+            builder.append(toPythonPipeline(components[0], true, false, null));
+            String outParamName = components[0].getTargets().get(0).getName();
 
             for (int i = 1; i < components.length - 1; i++) {
-                builder.append(toPythonPipeline(components[i], false, false));
+                builder.append(toPythonPipeline(components[i], false, false, outParamName));
+                outParamName = components[0].getTargets().get(0).getName();
             }
 
-            builder.append(toPythonPipeline(components[components.length - 1], false, true));
+            builder.append(toPythonPipeline(components[components.length - 1], false, true, outParamName));
 
             return builder.toString();
         }
