@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class WorkflowOptimizer {
 
-    private static OptimizationGraph buildGraph(WorkflowDescriptor workflow, ComponentsDefinition defined) {
+    private static OptimizationGraph createGraph(WorkflowDescriptor workflow, ComponentsDefinition defined) {
         OptimizationGraph graph = new OptimizationGraph();
         Map<Long, OptimizationNode> references = new HashMap<>();
 
@@ -92,38 +92,31 @@ public class WorkflowOptimizer {
     }
 
     private static void optimizeGraph(OptimizationGraph graph) {
-        boolean ok;
+        boolean isModified;
 
         do {
-            ok = false;
+            isModified = false;
 
             for (int i = 0; i < graph.size(); i++) {
                 OptimizationNode u = graph.getNodes().get(i);
 
-                /* node u must have only one successor */
-                if (u.getSuccessors().size() == 1) {
-                    OptimizationNode v = u.getSuccessors().get(0);
+                OptimizationNode v = u.getSuccessors().stream().findFirst().orElse(null);
 
-                    /* node v must have only one predecessor */
-                    if (v.getPredecessors().size() == 1) {
+                /* nodes must be compatible for grouping */
+                if (u.isCompatibleWith(v) && v != null) {
+                    isModified = true;
 
-                        /* nodes must be compatible */
-                        if (u.isCompatibleWith(v)) {
-                            ok = true;
+                    /* merge as group node */
+                    u.getNodeIds().addAll(v.getNodeIds());
 
-                            /* merge as group node */
-                            u.getNodeIds().addAll(v.getNodeIds());
+                    /* change graph neighbours */
+                    u.setSuccessors(v.getSuccessors());
 
-                            /* change graph neighbours */
-                            u.setSuccessors(v.getSuccessors());
-
-                            /* remove v from graph */
-                            graph.removeNode(v);
-                        }
-                    }
+                    /* remove v from graph */
+                    graph.removeNode(v);
                 }
             }
-        } while (ok);
+        } while (isModified);
     }
 
     private static WorkflowDescriptor createWorkflow(OptimizationGraph graph) {
@@ -163,9 +156,17 @@ public class WorkflowOptimizer {
     }
 
     public static WorkflowDescriptor getOptimizedWorkflow(WorkflowDescriptor workflow) {
+        if (workflow == null) {
+            return null;
+        }
+
+        if (workflow.getNodes().isEmpty()) {
+            return null;
+        }
+
         ComponentsDefinition defined = new ComponentsDefinition();
 
-        OptimizationGraph graph = buildGraph(workflow, defined);
+        OptimizationGraph graph = createGraph(workflow, defined);
 
         if (graph == null) {
             /* error while creating optimization graph */

@@ -1,5 +1,6 @@
 package ro.cs.tao.optimization;
 
+import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.RuntimeOptimizer;
 
 import java.util.ArrayList;
@@ -42,6 +43,10 @@ public class OptimizationNode {
         return nodeIds.get(0);
     }
 
+    public Long getLastNodeId() {
+        return nodeIds.get(nodeIds.size() - 1);
+    }
+
     public List<Long> getNodeIds() {
         return nodeIds;
     }
@@ -55,16 +60,41 @@ public class OptimizationNode {
     }
 
     public boolean isCompatibleWith(OptimizationNode node) {
-        if (node != null) {
-            RuntimeOptimizer uOptimizer = defined.getOptimizer(this.getFirstNodeId());
-            RuntimeOptimizer vOptimizer = defined.getOptimizer(node.getFirstNodeId());
-
-            if (uOptimizer != null && vOptimizer != null) {
-                return uOptimizer.equals(vOptimizer);
-            }
+        if (node == null) {
+            return false;
         }
 
-        return false;
+        if (this.successors.size() != 1 || node.predecessors.size() != 1) {
+            return false;
+        }
+
+        /* First node must have component with only one output. */
+        ProcessingComponent uComponent = defined.getComponent(this.getLastNodeId());
+
+        /* Second node must have component with only one input. */
+        ProcessingComponent vComponent = defined.getComponent(node.getFirstNodeId());
+
+        if (uComponent == null || vComponent == null) {
+            return false;
+        }
+
+        if (uComponent.getTargets().size() != 1 || vComponent.getSources().size() != 1) {
+            return false;
+        }
+
+        if (uComponent.getTargets().get(0).getCardinality() != 1 || vComponent.getSources().get(0).getCardinality() != 1) {
+            return false;
+        }
+
+        /* Components must have the same aggregator. */
+        RuntimeOptimizer uOptimizer = defined.getOptimizer(this.getFirstNodeId());
+        RuntimeOptimizer vOptimizer = defined.getOptimizer(node.getFirstNodeId());
+
+        if (uOptimizer == null || vOptimizer == null) {
+            return false;
+        }
+
+        return uOptimizer.equals(vOptimizer);
     }
 
     public int getLevel() {
