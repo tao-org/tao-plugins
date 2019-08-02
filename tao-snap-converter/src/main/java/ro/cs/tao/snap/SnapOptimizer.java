@@ -17,9 +17,7 @@
 package ro.cs.tao.snap;
 
 import ro.cs.tao.BaseRuntimeOptimizer;
-import ro.cs.tao.component.AggregationException;
-import ro.cs.tao.component.ParameterDescriptor;
-import ro.cs.tao.component.ProcessingComponent;
+import ro.cs.tao.component.*;
 import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.component.template.BasicTemplate;
 import ro.cs.tao.component.template.Template;
@@ -74,8 +72,23 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
         aggregator.setActive(true);
         aggregator.setContainerId(sources[0].getContainerId());
         //Path graphPath = Paths.get(SystemVariable.USER_WORKSPACE.value(), newId + ".xml");
-        aggregator.setSources(sources[0].getSources());
-        aggregator.setTargets(sources[sources.length - 1].getTargets());
+
+        sources[0].getSources().forEach((s) -> {
+            SourceDescriptor source = s.clone();
+
+            source.setParentId(aggregator.getId());
+
+            aggregator.addSource(source);
+        });
+
+        sources[sources.length - 1].getTargets().forEach((t) -> {
+            TargetDescriptor target = t.clone();
+
+            target.setParentId(aggregator.getId());
+
+            aggregator.addTarget(target);
+        });
+
         final List<ParameterDescriptor> parameterDescriptors = new ArrayList<>();
         List<ParameterDescriptor> sourceParameterDescriptors;
         for (ProcessingComponent source : sources) {

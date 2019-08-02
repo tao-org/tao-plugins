@@ -1,8 +1,9 @@
 package ro.cs.tao.optimization;
 
+import ro.cs.tao.component.ParameterDescriptor;
 import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.RuntimeOptimizer;
-import ro.cs.tao.execution.Optimizers;
+import ro.cs.tao.component.TargetDescriptor;
 import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.services.base.WorkflowBuilderBase;
 import ro.cs.tao.workflow.ParameterValue;
@@ -21,6 +22,7 @@ import java.util.UUID;
  * @author Alexandru Pirlea
  */
 public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
+    private List<Object> cache = new ArrayList<>();
     private String name;
 
     public OptimizedWorkflowBuilder() {
@@ -95,9 +97,35 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
         return newNode;
     }
 
+    private boolean isTarget(ParameterValue param, ProcessingComponent component) {
+        boolean ret = false;
+
+        for (TargetDescriptor target : component.getTargets()) {
+            if (target.getName().equals(param.getParameterName())) {
+                ret = true;
+            }
+        }
+
+        return ret;
+    }
+
+    private boolean isParameter(ParameterValue param, ProcessingComponent component) {
+        boolean ret = false;
+
+        for (ParameterDescriptor descriptor : component.getParameterDescriptors()) {
+            if (descriptor.getName().equals(param.getParameterName())) {
+                ret = true;
+            }
+        }
+
+        return ret;
+    }
+
     private WorkflowNodeDescriptor createNodeWithComponent(ProcessingComponent comp, OptimizationNode node, WorkflowDescriptor workflow) throws PersistenceException {
+        ComponentsDefinition defined = node.getComponentDefinition();
+
         WorkflowNodeDescriptor newNode = new WorkflowNodeDescriptor();
-        WorkflowNodeDescriptor oldNode = node.getComponentDefinition().getWorkflowNode(node.getFirstNodeId());
+        WorkflowNodeDescriptor oldNode = defined.getWorkflowNode(node.getFirstNodeId());
 
         newNode.setName("Optimized component chain");
 
@@ -111,13 +139,24 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
          * from parameter.name to componentId + "-" + parameter.name
          */
         for (Long nodeId : node.getNodeIds()) {
-            WorkflowNodeDescriptor wNode = node.getComponentDefinition().getWorkflowNode(nodeId);
+            WorkflowNodeDescriptor wNode = defined.getWorkflowNode(nodeId);
+            ProcessingComponent nodeComp = defined.getComponent(nodeId);
 
+            /* Keep targets only if they are for the aggregated component. */
             for (ParameterValue param : wNode.getCustomValues()) {
-                String key = wNode.getComponentId() + "-" + param.getParameterName();
-                String value = param.getParameterValue();
+                if (isTarget(param, nodeComp)) {
+                    /* Node is last one in chain. */
+                    if (node.getNodeIds().indexOf(nodeId) == node.getNodeIds().size() - 1) {
+                        newNode.addCustomValue(param.getParameterName(), param.getParameterValue());
+                    }
+                } else if (isParameter(param, nodeComp)) {
+                    String key = wNode.getComponentId() + "-" + param.getParameterName();
+                    String value = param.getParameterValue();
 
-                newNode.addCustomValue(key, value);
+                    newNode.addCustomValue(key, value);
+                } else {
+                    newNode.addCustomValue(param.getParameterName(), param.getParameterValue());
+                }
             }
         }
 
@@ -128,5 +167,34 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
         newNode = workflowService.addNode(workflow.getId(), newNode);
 
         return newNode;
+    }
+
+    @Override
+    public WorkflowDescriptor createWorkflowDescriptor() throws PersistenceException {
+        WorkflowDescriptor wf = super.createWorkflowDescriptor();
+        cache.add(wf);
+        return wf;
+    }
+
+    protected void cleanCache() {
+        for (Object obj : cache) {
+            try {
+                if (obj instanceof ProcessingComponent) {
+                    persistenceManager.deleteProcessingComponent(((ProcessingComponent) obj).getId());
+
+                } else if (obj instanceof WorkflowNodeDescriptor) {
+                    persistenceManager.delete((WorkflowNodeDescriptor) obj);
+
+                } else if (obj instanceof WorkflowDescriptor) {
+                    persistenceManager.deleteWorkflowDescriptor(((WorkflowDescriptor) obj).getId());
+
+                } else {
+                    /* Ignore */
+
+                }
+            } catch (PersistenceException e) {
+                /* Do nothing else? */
+            }
+        }
     }
 }
