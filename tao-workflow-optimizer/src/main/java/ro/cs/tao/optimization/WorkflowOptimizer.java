@@ -120,11 +120,12 @@ public class WorkflowOptimizer {
     }
 
     private static WorkflowDescriptor createWorkflow(OptimizationGraph graph) {
+        OptimizedWorkflowBuilder builder = new OptimizedWorkflowBuilder();
+
         try {
             Map<OptimizationNode, WorkflowNodeDescriptor> translation = new HashMap<>();
 
             /* make empty workflow */
-            OptimizedWorkflowBuilder builder = new OptimizedWorkflowBuilder();
             WorkflowDescriptor workflow = builder.createWorkflowDescriptor();
 
             /* for every optimization node make a workflow node */
@@ -133,6 +134,8 @@ public class WorkflowOptimizer {
 
                 translation.put(node, wNode);
             }
+
+            workflow = builder.updateWorkflowDescriptor(workflow);
 
             /* add links based on graph */
             for (Map.Entry<OptimizationNode, WorkflowNodeDescriptor> e : translation.entrySet()) {
@@ -148,10 +151,9 @@ public class WorkflowOptimizer {
 
             return builder.updateWorkflowDescriptor(workflow);
 
-        } catch (PersistenceException e) {
-            /* error: persistence */
+        } catch (Exception e) {
+            builder.cleanCache();
             return null;
-
         }
     }
 

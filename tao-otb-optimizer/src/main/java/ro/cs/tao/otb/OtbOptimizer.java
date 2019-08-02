@@ -60,25 +60,17 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
         component.setContainerId(sources[0].getContainerId());
 
         sources[0].getSources().forEach((s) -> {
-            SourceDescriptor source = new SourceDescriptor();
+            SourceDescriptor source = s.clone();
 
-            source.setParentId(s.getParentId());
-            source.setDataDescriptor(s.getDataDescriptor());
-            source.setCardinality(s.getCardinality());
-            source.setName(sources[0].getId() + "-" + s.getName());
-            source.setConstraints(new ArrayList<>(s.getConstraints()));
+            source.setParentId(component.getId());
 
             component.addSource(source);
         });
 
         sources[sources.length - 1].getTargets().forEach((t) -> {
-            TargetDescriptor target = new TargetDescriptor();
+            TargetDescriptor target = t.clone();
 
-            target.setParentId(t.getParentId());
-            target.setDataDescriptor(t.getDataDescriptor());
-            target.setCardinality(t.getCardinality());
-            target.setName(sources[sources.length - 1].getId() + "-" + t.getName());
-            target.setConstraints(new ArrayList<>(t.getConstraints()));
+            target.setParentId(component.getId());
 
             component.addTarget(target);
         });
