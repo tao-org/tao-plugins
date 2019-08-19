@@ -209,10 +209,11 @@ public class SciHubDataQuery extends DataQuery {
             addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }
         String[] footprints = new String[0];
-        boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
+        final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
+        final boolean canUseTileParameter = this.parameters.containsKey(CommonParameterNames.TILE) && !isS1;
         if (this.parameters.containsKey(CommonParameterNames.TILE) && !isS1) {
-            QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
-            Object value = tileParameter.getValue();
+            final QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
+            final Object value = tileParameter.getValue();
             if (value != null) {
                 if (value.getClass().isArray()) {
                     footprints = new String[Array.getLength(value)];
@@ -241,7 +242,7 @@ public class SciHubDataQuery extends DataQuery {
                 }
             }
         }
-        if (this.parameters.containsKey(CommonParameterNames.FOOTPRINT)) {
+        if (this.parameters.containsKey(CommonParameterNames.FOOTPRINT) && footprints.length == 0) {
             Polygon2D polygon = (Polygon2D) this.parameters.get(CommonParameterNames.FOOTPRINT).getValue();
             footprints = polygon.toWKTArray();
         }
@@ -266,14 +267,18 @@ public class SciHubDataQuery extends DataQuery {
                         query.append(parameter.getValueAsString());
                         break;
                     case CommonParameterNames.FOOTPRINT:
-                        query.append(getRemoteName(entry.getKey())).append(":");
-                        try {
-                            QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
-                                                                                       "footprint",
-                                                                                       Polygon2D.fromWKT(footprint));
-                            query.append(converterFactory.create(fakeParam).stringValue());
-                        } catch (ConversionException e) {
-                            throw new QueryException(e.getMessage());
+                        if (!canUseTileParameter) {
+                            query.append(getRemoteName(entry.getKey())).append(":");
+                            try {
+                                QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
+                                                                                           "footprint",
+                                                                                           Polygon2D.fromWKT(footprint));
+                                query.append(converterFactory.create(fakeParam).stringValue());
+                            } catch (ConversionException e) {
+                                throw new QueryException(e.getMessage());
+                            }
+                        } else {
+                            idx--;
                         }
                         break;
                     case CommonParameterNames.TILE:
