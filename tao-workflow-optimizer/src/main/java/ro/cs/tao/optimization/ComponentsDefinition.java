@@ -1,6 +1,7 @@
 package ro.cs.tao.optimization;
 
 import ro.cs.tao.component.ProcessingComponent;
+import ro.cs.tao.component.RuntimeOptimizer;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 
 import java.util.HashMap;
@@ -13,22 +14,31 @@ import java.util.Map;
  * @author Alexandru Pirlea
  */
 public class ComponentsDefinition {
-    private Map<String, ProcessingComponent> idToComp = new HashMap<>();
-    private Map<String, WorkflowNodeDescriptor> idToWorkflowNode = new HashMap<>();
+    private Map<Long, ProcessingComponent> idToComp = new HashMap<>();
+    private Map<Long, WorkflowNodeDescriptor> idToWorkflowNode = new HashMap<>();
+    private Map<Long, RuntimeOptimizer> idToOptimizer = new HashMap<>();
 
-    public void addComponent(ProcessingComponent comp, String id) {
+    public void addComponent(ProcessingComponent comp, Long id) {
         idToComp.put(id, comp);
     }
 
-    public ProcessingComponent getComponent(String id) {
+    public ProcessingComponent getComponent(Long id) {
         return idToComp.get(id);
     }
 
-    public void addWorkflowNode(WorkflowNodeDescriptor node, String id) {
+    public void addWorkflowNode(WorkflowNodeDescriptor node, Long id) {
         idToWorkflowNode.put(id, node);
     }
 
-    public WorkflowNodeDescriptor getWorkflowNode(String id) {
+    public WorkflowNodeDescriptor getWorkflowNode(Long id) {
         return idToWorkflowNode.get(id);
+    }
+
+    public void addOptimizer(RuntimeOptimizer optimizer, Long id) {
+        idToOptimizer.put(id, optimizer);
+    }
+
+    public RuntimeOptimizer getOptimizer(Long id) {
+        return idToOptimizer.get(id);
     }
 }

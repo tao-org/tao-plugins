@@ -32,14 +32,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 
 	@Override
 	public boolean checkUserInputQuota(Principal principal) throws QuotaException {
-		if (principal == null) {
-			throw new IllegalArgumentException("[principal] null");
-		}
-		String userName = principal.getName();
-		User user = this.persistenceManager.findUserByUsername(userName);
-		if (user == null) {
-			throw new QuotaException(String.format("User '%s' not found", userName));
-		}
+		final User user = getUser(principal);
 		final long targetQuota = user.getInputQuota();
 		final long actualQuota = user.getActualInputQuota();
 		return targetQuota == -1 || targetQuota > actualQuota;
@@ -47,14 +40,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 
 	@Override
 	public boolean checkUserInputQuota(Principal principal, long addedQuota) throws QuotaException {
-		if (principal == null) {
-			throw new IllegalArgumentException("[principal] null");
-		}
-		String userName = principal.getName();
-		User user = this.persistenceManager.findUserByUsername(userName);
-		if (user == null) {
-			throw new QuotaException(String.format("User '%s' not found", userName));
-		}
+		final User user = getUser(principal);
 		final long targetQuota = user.getInputQuota();
 		final long actualQuota = user.getActualInputQuota() + (addedQuota / (long)MemoryUnit.MEGABYTE.value());
 		return targetQuota == -1 || targetQuota > actualQuota;
@@ -63,31 +49,40 @@ public class DatabaseQuotaManager implements QuotaManager {
 	
 	@Override
 	public boolean checkUserProcessingQuota(Principal principal) throws QuotaException {
-		if (principal == null) {
-			throw new IllegalArgumentException("[principal] null");
-		}
-		User user = this.persistenceManager.findUserByUsername(principal.getName());
-		if (user == null) {
-			throw new QuotaException(String.format("User '%s' not found", principal.getName()));
-		}
+		final User user = getUser(principal);
 		final long targetQuota = user.getProcessingQuota();
 		final long actualQuota = user.getActualProcessingQuota();
 		return targetQuota == -1 || targetQuota > actualQuota;
 	}
 
 	@Override
-	public boolean checkUserProcessingResources(Principal principal) throws QuotaException {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean checkUserProcessingMemory(Principal principal, int memory) throws QuotaException {
+		final User user = getUser(principal);
+		
+		// check if the user has any memory quota
+		if(user.getMemoryQuota() == -1) {
+			return true;
+		}
+		final int requiredMemory = memory + this.persistenceManager.getMemoryForUser(user.getUsername()); 
+		
+		return (user.getMemoryQuota() - requiredMemory) > 0;
+	}
+
+	@Override
+	public int getAvailableCpus(Principal principal) throws QuotaException {
+		final User user = getUser(principal);
+		
+		// check if the user has any CPU quota
+		if (user.getCpuQuota() == -1) {
+			return -1;
+		}
+		
+		return Math.max(0, user.getCpuQuota() - this.persistenceManager.getCPUsForUser(user.getUsername()));
 	}
 
 	@Override
 	public void updateUserInputQuota(Principal principal) throws QuotaException {
-
-		final User user = persistenceManager.findUserByUsername(principal.getName());
-		if (user == null) {
-			throw new QuotaException(String.format("User '%s' not found", principal.getName()));
-		}
+		final User user = getUser(principal);
 
 		// nothing to do if the user has no limit on the input disk quota
 		if (user.getInputQuota() == -1) {
@@ -103,7 +98,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 					/ ((long) MemoryUnit.MEGABYTE.value());
 
 			// update the user info
-			persistenceManager.updateUserInputQuota(principal.getName(), actualInputQuota);
+			persistenceManager.updateUserInputQuota(principal.getName(), (int)actualInputQuota);
 
 		} catch (PersistenceException e) {
 			throw new QuotaException(String.format("Cannot update input quota for the user '%s'. Reason: %s",
@@ -114,10 +109,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 	@Override
 	public void updateUserProcessingQuota(Principal principal) throws QuotaException {
 
-		final User user = persistenceManager.findUserByUsername(principal.getName());
-		if (user == null) {
-			throw new QuotaException(String.format("User '%s' not found", principal.getName()));
-		}
+		final User user = getUser(principal);
 
 		// nothing to do if the user has no limit on the processing disk quota
 		if (user.getProcessingQuota() == -1) {
@@ -131,17 +123,28 @@ public class DatabaseQuotaManager implements QuotaManager {
 			final long usedSpace = FileUtilities.folderSize(new File(userWorkspace).toPath()) / ((long) MemoryUnit.MEGABYTE.value());
 
 			// update the user info
-			persistenceManager.updateUserProcessingQuota(principal.getName(), usedSpace);
+			persistenceManager.updateUserProcessingQuota(principal.getName(), (int)usedSpace);
 		} catch (PersistenceException | IOException e) {
 			throw new QuotaException(String.format("Cannot update input quota for the user '%s'. Reason: %s",
 					principal.getName(), e.getMessage()), e);
 		}
 	}
 
-	@Override
-	public boolean updateUserProcessingResources(Principal principal, long addedCpu, long addedMemory)
-			throws QuotaException {
-		// TODO Auto-generated method stub
-		return false;
+	/** 
+	 * Get he user's details from the database
+	 * @param principal the used security data
+	 * @return the user structure
+	 * @throws QuotaException if the user does not exists in the database
+	 */
+	private User getUser(Principal principal) throws QuotaException {
+		if (principal == null) {
+			throw new IllegalArgumentException("[principal] null");
+		}
+		final String userName = principal.getName();
+		final User user = this.persistenceManager.findUserByUsername(userName);
+		if (user == null) {
+			throw new QuotaException(String.format("User '%s' not found", userName));
+		}
+		return user;
 	}
 }

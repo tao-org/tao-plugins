@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 public class Sentinel3ProductHelper extends ProductHelper {
 
     static final Pattern S3Pattern =
-            Pattern.compile("(S3[A-B])_(OL)_(\\d{1})_(EFR___)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{4})_(\\d{3})_(\\d{3})_(\\d{4})_(\\w{3})_(\\w{1})_(\\w{2})_(\\d{3})(?:.SAFE)?");
+            Pattern.compile("(S3[AB])_(OL|SR|SL|ST)_(\\d{1})_(EFR___|ERR___|LFR___|LRR___|SRA___|SRA_A_|SRA_BS|LAN___|RBT___|LST___|SYN___|V10___|VG1___|VGP___)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{4})_(\\d{3})_(\\d{3})______(\\w{3})_(\\w{1})_(\\w{2})_(\\d{3})(?:.SEN3)?");
 
     Sentinel3ProductHelper() { super(); }
 
@@ -43,7 +43,19 @@ public class Sentinel3ProductHelper extends ProductHelper {
     public String getMetadataFileName() { return "xfdumanifest.xml"; }
 
     @Override
-    public String getOrbit() { return "-1"; }
+    public String getOrbit() {
+        return getTokens(S3Pattern, this.name, null)[9];
+    }
+
+    @Override
+    public String getSensingDate() {
+        return getTokens(S3Pattern, this.name, null)[4];
+    }
+
+    @Override
+    public String getProcessingDate() {
+        return getTokens(S3Pattern, this.name, null)[6];
+    }
 
     @Override
     protected boolean verifyProductName(String name) {
