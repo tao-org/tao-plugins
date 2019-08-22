@@ -25,6 +25,7 @@ import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel1DownloadStrategy;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel2ArchiveDownloadStrategy;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel2DownloadStrategy;
+import ro.cs.tao.datasource.remote.scihub.download.Sentinel3DownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.utils.Tuple;
 
@@ -40,7 +41,7 @@ public final class SciHubParameterProvider implements ParameterProvider {
     private static Map<String, ProductFetchStrategy> productFetchers;
 
     static {
-        sensors = new String[] { "Sentinel1", "Sentinel2", "Sentinel3" };
+        sensors = new String[] { "Sentinel1", "Sentinel2" , "Sentinel3" };
         parameters = Collections.unmodifiableMap(
                 new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
                     put("Sentinel1", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
@@ -87,7 +88,7 @@ public final class SciHubParameterProvider implements ParameterProvider {
                         parameter = ParameterProvider.createParameter(CommonParameterNames.TILE, "tileId", "UTM Tile", String.class);
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
-                    /*put("Sentinel3", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
+                    put("Sentinel3", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
                         Tuple<ParameterName, DataSourceParameter> parameter =
                                 ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "platformName", "Satellite", String.class, "Sentinel-3");
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
@@ -115,7 +116,7 @@ public final class SciHubParameterProvider implements ParameterProvider {
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                         parameter = ParameterProvider.createParameter("productlevel", "productlevel", "Product Level", String.class, null, false, "L1", "L2");
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
-                    }});*/
+                    }});
                 }});
         ConfigurationManager configurationManager = ConfigurationManager.getInstance();
         final String targetFolder = configurationManager.getValue("product.location");
@@ -130,7 +131,7 @@ public final class SciHubParameterProvider implements ParameterProvider {
                     } else {
                         put("Sentinel2", new Sentinel2ArchiveDownloadStrategy(targetFolder));
                     }
-                    /*put("Sentinel3", new NoDownloadStrategy(targetFolder, new Properties()));*/
+                    put("Sentinel3", new Sentinel3DownloadStrategy(targetFolder));
                 }});
     }
 

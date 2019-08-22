@@ -96,16 +96,16 @@ public class SciHubDataQuery extends DataQuery {
                 List<NameValuePair> params = new ArrayList<>();
                 if (this.source.getConnectionString().contains("dhus")) {
                     params.add(new BasicNameValuePair("limit", String.valueOf(pageSize)));
-                    params.add(new BasicNameValuePair("offset", String.valueOf((i - 1) * pageSize + 1)));
+                    params.add(new BasicNameValuePair("offset", String.valueOf((i - 1) * pageSize)));
                     params.add(new BasicNameValuePair("filter", query.getValue()));
                 } else {
                     params.add(new BasicNameValuePair("rows", String.valueOf(pageSize)));
-                    params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize + 1)));
+                    params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize)));
                     params.add(new BasicNameValuePair("q", query.getValue()));
                 }
                 params.add(new BasicNameValuePair("orderby", "beginposition asc"));
                 String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
-                final boolean isS2 = "Sentinel2".equals(this.sensorName);
+                final boolean hasProcessingDate = "Sentinel2".equals(this.sensorName) || "Sentinel3".equals(this.sensorName);
                 logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
@@ -122,7 +122,7 @@ public class SciHubDataQuery extends DataQuery {
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null) {
                                 count = tmpResults.size();
-                                if (isS2 && this.parameters.containsKey(CommonParameterNames.CLOUD_COVER)) {
+                                if (hasProcessingDate && this.parameters.containsKey(CommonParameterNames.CLOUD_COVER)) {
                                     final double clouds = Double.parseDouble(this.parameters.get(CommonParameterNames.CLOUD_COVER).getValue().toString());
                                     tmpResults = tmpResults.stream()
                                             .filter(r -> Double.parseDouble(r.getAttributeValue(isXml ? "cloudcoverpercentage" : "Cloud Cover Percentage")) <= clouds)
@@ -130,7 +130,7 @@ public class SciHubDataQuery extends DataQuery {
                                 }
                                 for (EOProduct result : tmpResults) {
                                     if (!results.contains(result)) {
-                                        if (isS2) {
+                                        if (hasProcessingDate) {
                                             String dateString = SentinelProductHelper.create(result.getName()).getProcessingDate();
                                             if (dateString != null) {
                                                 try {
