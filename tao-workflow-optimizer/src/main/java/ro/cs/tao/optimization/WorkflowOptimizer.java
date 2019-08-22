@@ -2,7 +2,9 @@ package ro.cs.tao.optimization;
 
 import ro.cs.tao.component.ComponentLink;
 import ro.cs.tao.component.ProcessingComponent;
+import ro.cs.tao.component.RuntimeOptimizer;
 import ro.cs.tao.component.TaoComponent;
+import ro.cs.tao.execution.Optimizers;
 import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.services.utils.WorkflowUtilities;
 import ro.cs.tao.workflow.WorkflowDescriptor;
@@ -20,7 +22,7 @@ import java.util.Map;
  */
 public class WorkflowOptimizer {
 
-    private static OptimizationGraph buildGraph(WorkflowDescriptor workflow, ComponentsDefinition defined) {
+    private static OptimizationGraph createGraph(WorkflowDescriptor workflow, ComponentsDefinition defined) {
         OptimizationGraph graph = new OptimizationGraph();
         Map<Long, OptimizationNode> references = new HashMap<>();
 
@@ -28,7 +30,7 @@ public class WorkflowOptimizer {
         for (WorkflowNodeDescriptor wNode : workflow.getNodes()) {
 
             /* create optimization node with the component from this node */
-            OptimizationNode node = new OptimizationNode(wNode.getComponentId(), defined);
+            OptimizationNode node = new OptimizationNode(wNode.getId(), defined);
 
             /* add node to graph */
             graph.addNode(node);
@@ -36,19 +38,26 @@ public class WorkflowOptimizer {
             /* add reference from node id to workflow node */
             references.put(wNode.getId(), node);
 
-            /* link componentId with it's workflow node */
-            defined.addWorkflowNode(wNode, wNode.getComponentId());
+            /* link node id with it's workflow node */
+            defined.addWorkflowNode(wNode, wNode.getId());
+
             try {
                 /* get component from mode */
                 TaoComponent comp = WorkflowUtilities.findComponent(wNode);
 
                 if (comp instanceof ProcessingComponent) {
-                    /* link componentId with the component */
-                    defined.addComponent((ProcessingComponent) comp, wNode.getComponentId());
+                    /* link componentId with the node id */
+                    defined.addComponent((ProcessingComponent) comp, wNode.getId());
+
+                    /* link RuntimeOptimizer with node id */
+                    String containerId = ((ProcessingComponent) comp).getContainerId();
+                    RuntimeOptimizer optimizer = Optimizers.findOptimizer(containerId);
+                    defined.addOptimizer(optimizer, wNode.getId());
 
                 } else {
                     /* component is not processing component */
-                    defined.addComponent(null, wNode.getComponentId());
+                    defined.addComponent(null, wNode.getId());
+                    defined.addOptimizer(null, wNode.getId());
 
                 }
             } catch (PersistenceException e) {
@@ -58,7 +67,7 @@ public class WorkflowOptimizer {
             }
         }
 
-        /* set dependencies */
+        /* set dependencies (u -> v) */
         for (WorkflowNodeDescriptor wNode : workflow.getNodes()) {
             Long vId = wNode.getId();
             OptimizationNode v = references.get(vId);
@@ -83,46 +92,40 @@ public class WorkflowOptimizer {
     }
 
     private static void optimizeGraph(OptimizationGraph graph) {
-        boolean ok;
+        boolean isModified;
 
         do {
-            ok = false;
+            isModified = false;
 
             for (int i = 0; i < graph.size(); i++) {
-                OptimizationNode u = graph.getNode(i);
+                OptimizationNode u = graph.getNodes().get(i);
 
-                /* node u must have only one successor */
-                if (u.getSuccessors().size() == 1) {
-                    OptimizationNode v = u.getSuccessors().get(0);
+                OptimizationNode v = u.getSuccessors().stream().findFirst().orElse(null);
 
-                    /* node v must have only one predecessor */
-                    if (v.getPredecessors().size() == 1) {
+                /* nodes must be compatible for grouping */
+                if (u.isCompatibleWith(v) && v != null) {
+                    isModified = true;
 
-                        /* nodes must be compatible */
-                        if (u.isCompatibleWith(v)) {
-                            ok = true;
+                    /* merge as group node */
+                    u.getNodeIds().addAll(v.getNodeIds());
 
-                            /* merge as group node */
-                            u.getComponentIds().addAll(v.getComponentIds());
+                    /* change graph neighbours */
+                    u.setSuccessors(v.getSuccessors());
 
-                            /* change graph neighbours */
-                            u.setSuccessors(v.getSuccessors());
-
-                            /* remove v from graph */
-                            graph.removeNode(v);
-                        }
-                    }
+                    /* remove v from graph */
+                    graph.removeNode(v);
                 }
             }
-        } while (ok);
+        } while (isModified);
     }
 
     private static WorkflowDescriptor createWorkflow(OptimizationGraph graph) {
+        OptimizedWorkflowBuilder builder = new OptimizedWorkflowBuilder();
+
         try {
             Map<OptimizationNode, WorkflowNodeDescriptor> translation = new HashMap<>();
 
             /* make empty workflow */
-            OptimizedWorkflowBuilder builder = new OptimizedWorkflowBuilder();
             WorkflowDescriptor workflow = builder.createWorkflowDescriptor();
 
             /* for every optimization node make a workflow node */
@@ -131,6 +134,8 @@ public class WorkflowOptimizer {
 
                 translation.put(node, wNode);
             }
+
+            workflow = builder.updateWorkflowDescriptor(workflow);
 
             /* add links based on graph */
             for (Map.Entry<OptimizationNode, WorkflowNodeDescriptor> e : translation.entrySet()) {
@@ -144,19 +149,26 @@ public class WorkflowOptimizer {
                 }
             }
 
-            return workflow;
+            return builder.updateWorkflowDescriptor(workflow);
 
-        } catch (PersistenceException e) {
-            /* error: persistence */
+        } catch (Exception e) {
+            builder.cleanCache();
             return null;
-
         }
     }
 
     public static WorkflowDescriptor getOptimizedWorkflow(WorkflowDescriptor workflow) {
+        if (workflow == null) {
+            return null;
+        }
+
+        if (workflow.getNodes().isEmpty()) {
+            return null;
+        }
+
         ComponentsDefinition defined = new ComponentsDefinition();
 
-        OptimizationGraph graph = buildGraph(workflow, defined);
+        OptimizationGraph graph = createGraph(workflow, defined);
 
         if (graph == null) {
             /* error while creating optimization graph */

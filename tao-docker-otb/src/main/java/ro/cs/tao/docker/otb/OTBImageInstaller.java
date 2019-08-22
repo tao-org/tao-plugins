@@ -111,7 +111,7 @@ public class OTBImageInstaller extends BaseImageInstaller {
                     String template = component.getTemplateContents();
                     int i = 0;
                     while (i < template.length()) {
-                        Character ch = template.charAt(i);
+                        char ch = template.charAt(i);
                         if (ch == '$' && template.charAt(i - 1) != '\n') {
                             template = template.substring(0, i) + "\n" + template.substring(i);
                         }

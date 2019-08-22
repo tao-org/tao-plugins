@@ -46,10 +46,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -77,34 +74,39 @@ public class SciHubDataQuery extends DataQuery {
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
         List<EOProduct> results = new ArrayList<>();
-        List<String> queries = buildQueriesParams();
+        Map<String, String> queries = buildQueriesParams();
+        StringBuilder msgBuilder = new StringBuilder();
+        msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
+        for (String queryId : queries.keySet()) {
+            msgBuilder.append(queryId).append(",");
+        }
+        msgBuilder.setLength(msgBuilder.length() - 1);
+        logger.fine(msgBuilder.toString());
+        msgBuilder.setLength(0);
         if (this.pageSize <= 0) {
             this.pageSize = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, DEFAULT_LIMIT);
         }
         int page = Math.max(this.pageNumber, 1);
-        long count = this.limit > 0 ? this.limit :
-                        this.pageNumber > 0 ? this.pageSize :
-                        getCount();
-        long actualCount = 0;
         List<EOProduct> tmpResults;
-        final int queriesNo = queries.size();
-        for (String query : queries) {
-            boolean canContinue = true;
-            for (long i = page; actualCount < count * queriesNo && canContinue; i++) {
+        for (Map.Entry<String, String> query : queries.entrySet()) {
+            long i = page;
+            long count;
+            do {
+                count = 0;
                 List<NameValuePair> params = new ArrayList<>();
                 if (this.source.getConnectionString().contains("dhus")) {
                     params.add(new BasicNameValuePair("limit", String.valueOf(pageSize)));
-                    params.add(new BasicNameValuePair("offset", String.valueOf((i - 1) * pageSize + 1)));
-                    params.add(new BasicNameValuePair("filter", query));
+                    params.add(new BasicNameValuePair("offset", String.valueOf((i - 1) * pageSize)));
+                    params.add(new BasicNameValuePair("filter", query.getValue()));
                 } else {
                     params.add(new BasicNameValuePair("rows", String.valueOf(pageSize)));
-                    params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize + 1)));
-                    params.add(new BasicNameValuePair("q", query));
+                    params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize)));
+                    params.add(new BasicNameValuePair("q", query.getValue()));
                 }
                 params.add(new BasicNameValuePair("orderby", "beginposition asc"));
                 String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
-                logger.fine(String.format("Executing query: %s", queryUrl));
-                final boolean isS2 = "Sentinel2".equals(this.sensorName);
+                final boolean hasProcessingDate = "Sentinel2".equals(this.sensorName) || "Sentinel3".equals(this.sensorName);
+                logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
@@ -118,23 +120,23 @@ public class SciHubDataQuery extends DataQuery {
                                 parser = new JsonResponseParser<>(new SciHubJsonResponseHandler());
                             }
                             tmpResults = parser.parse(rawResponse);
-                            canContinue = tmpResults != null && tmpResults.size() > 0 && count != this.pageSize;
                             if (tmpResults != null) {
-                                actualCount += tmpResults.size();
-                                if (isS2 && this.parameters.containsKey(CommonParameterNames.CLOUD_COVER)) {
-                                    final Double clouds = Double.parseDouble(this.parameters.get(CommonParameterNames.CLOUD_COVER).getValue().toString());
+                                count = tmpResults.size();
+                                if (hasProcessingDate && this.parameters.containsKey(CommonParameterNames.CLOUD_COVER)) {
+                                    final double clouds = Double.parseDouble(this.parameters.get(CommonParameterNames.CLOUD_COVER).getValue().toString());
                                     tmpResults = tmpResults.stream()
                                             .filter(r -> Double.parseDouble(r.getAttributeValue(isXml ? "cloudcoverpercentage" : "Cloud Cover Percentage")) <= clouds)
                                             .collect(Collectors.toList());
                                 }
                                 for (EOProduct result : tmpResults) {
                                     if (!results.contains(result)) {
-                                        if (isS2) {
+                                        if (hasProcessingDate) {
                                             String dateString = SentinelProductHelper.create(result.getName()).getProcessingDate();
                                             if (dateString != null) {
                                                 try {
                                                     result.setProcessingDate(dateFormat.parse(dateString));
-                                                } catch (java.text.ParseException ignored) { }
+                                                } catch (java.text.ParseException ignored) {
+                                                }
                                             }
                                         }
                                         results.add(result);
@@ -151,32 +153,34 @@ public class SciHubDataQuery extends DataQuery {
                 } catch (IOException ex) {
                     throw new QueryException(ex);
                 }
-            }
+                logger.info(String.format("Query %s page %d returned %s products", query.getKey(), i, count));
+                i++;
+            } while (count > 0);
         }
-        logger.info(String.format("Query returned %s products", results.size()));
+        logger.info(String.format("Query {%s-%s} returned %s products", this.source.getId(), this.sensorName, results.size()));
         return results;
     }
 
     @Override
     public long getCount() {
         long count = 0;
-        List<String> queries = buildQueriesParams();
+        Map<String, String> queries = buildQueriesParams();
         final int size = queries.size();
         final String countUrl = this.source.getProperty("scihub.search.count.url");
         if (countUrl != null) {
-            for (String query : queries) {
+            for (Map.Entry<String, String> query : queries.entrySet()) {
                 List<NameValuePair> params = new ArrayList<>();
                 if (countUrl.contains("dhus")) {
                     params.add(new BasicNameValuePair("limit", "1"));
                     params.add(new BasicNameValuePair("offset", "0"));
-                    params.add(new BasicNameValuePair("filter", query));
+                    params.add(new BasicNameValuePair("filter", query.getValue()));
                 } else {
                     params.add(new BasicNameValuePair("rows", "1"));
                     params.add(new BasicNameValuePair("start", "0"));
-                    params.add(new BasicNameValuePair("q", query));
+                    params.add(new BasicNameValuePair("q", query.getValue()));
                 }
                 String queryUrl = countUrl + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
-                logger.fine(String.format("Executing query: %s", queryUrl));
+                logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
@@ -184,6 +188,8 @@ public class SciHubDataQuery extends DataQuery {
                             ResponseParser<Long> parser = new XmlResponseParser<>();
                             ((XmlResponseParser) parser).setHandler(new SciHubXmlCountResponseHandler("totalResults"));
                             List<Long> result = parser.parse(rawResponse);
+                            logger.fine(String.format(QUERY_RESULT_MESSAGE, query.getKey(),
+                                                      this.source.getId(), this.sensorName, 1, count));
                             count += result.size() > 0 ? result.get(0) : 0;
                             break;
                         case 401:
@@ -203,16 +209,17 @@ public class SciHubDataQuery extends DataQuery {
     @Override
     public String defaultId() { return "SciHubQuery"; }
 
-    private List<String> buildQueriesParams() {
-        List<String> queries = new ArrayList<>();
+    private Map<String, String> buildQueriesParams() {
+        Map<String, String> queries = new HashMap<>();
         if (!this.parameters.containsKey(CommonParameterNames.PLATFORM)) {
             addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }
         String[] footprints = new String[0];
-        boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
+        final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
+        final boolean canUseTileParameter = this.parameters.containsKey(CommonParameterNames.TILE) && !isS1;
         if (this.parameters.containsKey(CommonParameterNames.TILE) && !isS1) {
-            QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
-            Object value = tileParameter.getValue();
+            final QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
+            final Object value = tileParameter.getValue();
             if (value != null) {
                 if (value.getClass().isArray()) {
                     footprints = new String[Array.getLength(value)];
@@ -241,7 +248,7 @@ public class SciHubDataQuery extends DataQuery {
                 }
             }
         }
-        if (this.parameters.containsKey(CommonParameterNames.FOOTPRINT)) {
+        if (this.parameters.containsKey(CommonParameterNames.FOOTPRINT) && footprints.length == 0) {
             Polygon2D polygon = (Polygon2D) this.parameters.get(CommonParameterNames.FOOTPRINT).getValue();
             footprints = polygon.toWKTArray();
         }
@@ -266,14 +273,18 @@ public class SciHubDataQuery extends DataQuery {
                         query.append(parameter.getValueAsString());
                         break;
                     case CommonParameterNames.FOOTPRINT:
-                        query.append(getRemoteName(entry.getKey())).append(":");
-                        try {
-                            QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
-                                                                                       "footprint",
-                                                                                       Polygon2D.fromWKT(footprint));
-                            query.append(converterFactory.create(fakeParam).stringValue());
-                        } catch (ConversionException e) {
-                            throw new QueryException(e.getMessage());
+                        if (!canUseTileParameter) {
+                            query.append(getRemoteName(entry.getKey())).append(":");
+                            try {
+                                QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
+                                                                                           "footprint",
+                                                                                           Polygon2D.fromWKT(footprint));
+                                query.append(converterFactory.create(fakeParam).stringValue());
+                            } catch (ConversionException e) {
+                                throw new QueryException(e.getMessage());
+                            }
+                        } else {
+                            idx--;
                         }
                         break;
                     case CommonParameterNames.TILE:
@@ -335,7 +346,7 @@ public class SciHubDataQuery extends DataQuery {
                 }
                 idx++;
             }
-            queries.add(query.toString());
+            queries.put(UUID.randomUUID().toString(), query.toString());
             query.setLength(0);
         }
         return queries;

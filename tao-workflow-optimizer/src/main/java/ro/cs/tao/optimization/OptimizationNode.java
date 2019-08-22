@@ -2,7 +2,6 @@ package ro.cs.tao.optimization;
 
 import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.RuntimeOptimizer;
-import ro.cs.tao.execution.Optimizers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
 public class OptimizationNode {
     private List<OptimizationNode> successors   = new ArrayList<>();
     private List<OptimizationNode> predecessors = new ArrayList<>();
-    private List<String> componentIds = new ArrayList<>();
+    private List<Long> nodeIds = new ArrayList<>();
     private ComponentsDefinition defined;
     private int level = -1;
 
@@ -23,8 +22,8 @@ public class OptimizationNode {
         return defined;
     }
 
-    public OptimizationNode(String componentId, ComponentsDefinition defined) {
-        componentIds.add(componentId);
+    public OptimizationNode(Long nodeId, ComponentsDefinition defined) {
+        nodeIds.add(nodeId);
         this.defined = defined;
     }
 
@@ -40,12 +39,16 @@ public class OptimizationNode {
         return predecessors;
     }
 
-    public String getFirstComponentId() {
-        return componentIds.get(0);
+    public Long getFirstNodeId() {
+        return nodeIds.get(0);
     }
 
-    public List<String> getComponentIds() {
-        return componentIds;
+    public Long getLastNodeId() {
+        return nodeIds.get(nodeIds.size() - 1);
+    }
+
+    public List<Long> getNodeIds() {
+        return nodeIds;
     }
 
     public void addChild(OptimizationNode n) {
@@ -57,28 +60,41 @@ public class OptimizationNode {
     }
 
     public boolean isCompatibleWith(OptimizationNode node) {
-        if (node != null) {
-            ProcessingComponent uComp = defined.getComponent(this.getFirstComponentId());
-            ProcessingComponent vComp = defined.getComponent(node.getFirstComponentId());
-
-            /* comp is null if not processing */
-            if (uComp != null && vComp != null) {
-                String uContainerId = uComp.getContainerId();
-                String vContainerId = vComp.getContainerId();
-
-                /* optimizers must exist for both componentIds and be the same */
-                if (uContainerId != null && vContainerId != null) {
-                    RuntimeOptimizer uOptimizer = Optimizers.findOptimizer(uContainerId);
-                    RuntimeOptimizer vOptimizer = Optimizers.findOptimizer(vContainerId);
-
-                    if (uOptimizer != null && vOptimizer != null) {
-                        return uOptimizer.equals(vOptimizer);
-                    }
-                }
-            }
+        if (node == null) {
+            return false;
         }
 
-        return false;
+        if (this.successors.size() != 1 || node.predecessors.size() != 1) {
+            return false;
+        }
+
+        /* First node must have component with only one output. */
+        ProcessingComponent uComponent = defined.getComponent(this.getLastNodeId());
+
+        /* Second node must have component with only one input. */
+        ProcessingComponent vComponent = defined.getComponent(node.getFirstNodeId());
+
+        if (uComponent == null || vComponent == null) {
+            return false;
+        }
+
+        if (uComponent.getTargets().size() != 1 || vComponent.getSources().size() != 1) {
+            return false;
+        }
+
+        if (uComponent.getTargets().get(0).getCardinality() != 1 || vComponent.getSources().get(0).getCardinality() != 1) {
+            return false;
+        }
+
+        /* Components must have the same aggregator. */
+        RuntimeOptimizer uOptimizer = defined.getOptimizer(this.getFirstNodeId());
+        RuntimeOptimizer vOptimizer = defined.getOptimizer(node.getFirstNodeId());
+
+        if (uOptimizer == null || vOptimizer == null) {
+            return false;
+        }
+
+        return uOptimizer.equals(vOptimizer);
     }
 
     public int getLevel() {
