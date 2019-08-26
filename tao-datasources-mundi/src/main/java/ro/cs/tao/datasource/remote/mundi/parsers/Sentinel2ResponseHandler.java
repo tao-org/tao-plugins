@@ -5,6 +5,9 @@ import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Sentinel2ResponseHandler extends XmlResponseHandler<Sentinel2ProductHelper> {
 
     public Sentinel2ResponseHandler() {
@@ -35,12 +38,22 @@ public class Sentinel2ResponseHandler extends XmlResponseHandler<Sentinel2Produc
         StringBuilder builder = new StringBuilder();
         String sensingDate = this.helper.getSensingDate();
         String tileId = this.helper.getTileIdentifier();
-        builder.append(tileId.substring(0, 2)).append("/")
-                .append(tileId.substring(2, 3)).append("/")
-                .append(tileId.substring(3, 5)).append("/");
-        builder.append(sensingDate.substring(0, 4)).append("/")
-                .append(sensingDate.substring(4, 6)).append("/")
-                .append(sensingDate.substring(6, 8)).append("/")
+        // Since around 05-2019, MUNDI split the buckets for S2 products in quarters, so we have to compute them
+        LocalDateTime date = LocalDateTime.from(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss").parse(sensingDate));
+        final int year = date.getYear();
+        if (year < 2019) {
+            builder.append("s2-l1c/");
+        } else {
+            builder.append("s2-l1c-").append(year).append("-q");
+            final int month = date.getMonthValue();
+            builder.append(month < 4 ? "1" : month < 7 ? "2" : month < 10 ? "3" : "4").append("/");
+        }
+        builder.append(tileId, 0, 2).append("/")
+                .append(tileId, 2, 3).append("/")
+                .append(tileId, 3, 5).append("/");
+        builder.append(sensingDate, 0, 4).append("/")
+                .append(sensingDate, 4, 6).append("/")
+                .append(sensingDate, 6, 8).append("/")
                 .append(this.current.getName());
         return builder.toString();
     }

@@ -155,7 +155,7 @@ public class SciHubDataQuery extends DataQuery {
                 }
                 logger.info(String.format("Query %s page %d returned %s products", query.getKey(), i, count));
                 i++;
-            } while (count > 0);
+            } while (this.pageNumber == -1 && count > 0);
         }
         logger.info(String.format("Query {%s-%s} returned %s products", this.source.getId(), this.sensorName, results.size()));
         return results;
