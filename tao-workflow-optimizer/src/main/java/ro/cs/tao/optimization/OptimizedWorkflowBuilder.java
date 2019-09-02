@@ -1,5 +1,6 @@
 package ro.cs.tao.optimization;
 
+import com.google.common.collect.Lists;
 import ro.cs.tao.component.ParameterDescriptor;
 import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.RuntimeOptimizer;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * A OptimizedWorkflowBuilder is a helper class for creating a workflow from an optimization graph.
@@ -24,6 +26,7 @@ import java.util.UUID;
 public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
     private List<Object> cache = new ArrayList<>();
     private String name;
+    private Logger logger = Logger.getLogger(getClass().getName());
 
     public OptimizedWorkflowBuilder() {
         this.name = "Optimized-Workflow-" + UUID.randomUUID().toString();
@@ -61,6 +64,8 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
         } else {
             /* aggregate list */
             List<ProcessingComponent> components = new ArrayList<>();
+
+            logger.finer("Creating aggregated components from nodes: " + node.getNodeIds());
 
             node.getNodeIds().forEach((id) ->
                                  components.add(node.getComponentDefinition().getComponent(id)));
@@ -177,6 +182,9 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
     }
 
     protected void cleanCache() {
+        /* Delete elements from newest to oldest. */
+        cache = Lists.reverse(cache);
+
         for (Object obj : cache) {
             try {
                 if (obj instanceof ProcessingComponent) {
@@ -189,11 +197,11 @@ public class OptimizedWorkflowBuilder extends WorkflowBuilderBase {
                     persistenceManager.deleteWorkflowDescriptor(((WorkflowDescriptor) obj).getId());
 
                 } else {
-                    /* Ignore */
+                    logger.fine("Unknown element in list.");
 
                 }
             } catch (PersistenceException e) {
-                /* Do nothing else? */
+                logger.finer("Persistence exception while deleting object.");
             }
         }
     }

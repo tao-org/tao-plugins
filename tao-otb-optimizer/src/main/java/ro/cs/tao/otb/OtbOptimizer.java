@@ -2,6 +2,7 @@ package ro.cs.tao.otb;
 
 import ro.cs.tao.BaseRuntimeOptimizer;
 import ro.cs.tao.component.*;
+import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.component.template.BasicTemplate;
 import ro.cs.tao.component.template.Template;
@@ -61,17 +62,13 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
 
         sources[0].getSources().forEach((s) -> {
             SourceDescriptor source = s.clone();
-
             source.setParentId(component.getId());
-
             component.addSource(source);
         });
 
         sources[sources.length - 1].getTargets().forEach((t) -> {
             TargetDescriptor target = t.clone();
-
             target.setParentId(component.getId());
-
             component.addTarget(target);
         });
 
@@ -103,6 +100,7 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
         }
 
         component.setTemplateContents(pipeline);
+        component.setComponentType(ProcessingComponentType.AGGREGATE);
 
         return component;
     }

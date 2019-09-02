@@ -1,9 +1,6 @@
 package ro.cs.tao.optimization;
 
-import ro.cs.tao.component.ComponentLink;
-import ro.cs.tao.component.ProcessingComponent;
-import ro.cs.tao.component.RuntimeOptimizer;
-import ro.cs.tao.component.TaoComponent;
+import ro.cs.tao.component.*;
 import ro.cs.tao.execution.Optimizers;
 import ro.cs.tao.persistence.exception.PersistenceException;
 import ro.cs.tao.services.utils.WorkflowUtilities;
@@ -13,6 +10,7 @@ import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * A WorkflowOptimizer is a helper class that tries to find a chain in workflow that can be executed
@@ -23,6 +21,8 @@ import java.util.Map;
 public class WorkflowOptimizer {
 
     private static OptimizationGraph createGraph(WorkflowDescriptor workflow, ComponentsDefinition defined) {
+        Logger logger = Logger.getLogger(WorkflowOptimizer.class.getName());
+
         OptimizationGraph graph = new OptimizationGraph();
         Map<Long, OptimizationNode> references = new HashMap<>();
 
@@ -62,8 +62,8 @@ public class WorkflowOptimizer {
                 }
             } catch (PersistenceException e) {
                 /* error: persistence exception */
+                logger.finer("Persistence exception on component: " + wNode.getComponentId() + ".");
                 return null;
-
             }
         }
 
@@ -103,7 +103,7 @@ public class WorkflowOptimizer {
                 OptimizationNode v = u.getSuccessors().stream().findFirst().orElse(null);
 
                 /* nodes must be compatible for grouping */
-                if (u.isCompatibleWith(v) && v != null) {
+                if (v != null && u.isCompatibleWith(v)) {
                     isModified = true;
 
                     /* merge as group node */
@@ -120,6 +120,8 @@ public class WorkflowOptimizer {
     }
 
     private static WorkflowDescriptor createWorkflow(OptimizationGraph graph) {
+        Logger logger = Logger.getLogger(WorkflowOptimizer.class.getName());
+
         OptimizedWorkflowBuilder builder = new OptimizedWorkflowBuilder();
 
         try {
@@ -151,18 +153,29 @@ public class WorkflowOptimizer {
 
             return builder.updateWorkflowDescriptor(workflow);
 
-        } catch (Exception e) {
+        } catch (AggregationException e1) {
+            logger.fine("Aggregation exception: " + e1.getMessage());
             builder.cleanCache();
             return null;
+
+        } catch (PersistenceException e2) {
+            logger.fine("Persistence exception: " + e2.getMessage());
+            builder.cleanCache();
+            return null;
+
         }
     }
 
     public static WorkflowDescriptor getOptimizedWorkflow(WorkflowDescriptor workflow) {
+        Logger logger = Logger.getLogger(WorkflowOptimizer.class.getName());
+
         if (workflow == null) {
+            logger.finest("Null workflow parameter.");
             return null;
         }
 
         if (workflow.getNodes().isEmpty()) {
+            logger.finest("Empty workflow.");
             return null;
         }
 
