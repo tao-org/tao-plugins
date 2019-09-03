@@ -40,7 +40,6 @@
         <module>tao-datasources-mundi</module>
         <module>tao-otb-optimizer</module>
         <module>tao-quota-database</module>
-        <module>tao-workflow-optimizer</module>
         <module>tao-muscate-metadata</module>
     </modules>
 
