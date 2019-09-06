@@ -82,9 +82,12 @@ public class SciHubDataQuery extends DataQuery {
         }
         msgBuilder.setLength(msgBuilder.length() - 1);
         logger.fine(msgBuilder.toString());
+        final int actualLimit = this.limit > 0 ? this.limit : DEFAULT_LIMIT;
         msgBuilder.setLength(0);
         if (this.pageSize <= 0) {
-            this.pageSize = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, DEFAULT_LIMIT);
+            this.pageSize = Math.min(actualLimit, DEFAULT_LIMIT);
+        } else {
+            this.pageSize = Math.min(actualLimit, this.pageSize);
         }
         int page = Math.max(this.pageNumber, 1);
         List<EOProduct> tmpResults;

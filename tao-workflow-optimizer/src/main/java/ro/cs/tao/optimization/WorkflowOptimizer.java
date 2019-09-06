@@ -145,7 +145,7 @@ public class WorkflowOptimizer {
                 for (OptimizationNode node : parents) {
                     WorkflowNodeDescriptor parent = translation.get(node);
 
-                    builder.addLink(workflow, parent, child);
+                    builder.addLink(parent, child);
                 }
             }
 
