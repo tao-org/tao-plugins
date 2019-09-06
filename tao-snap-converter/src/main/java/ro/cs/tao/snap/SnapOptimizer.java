@@ -18,6 +18,7 @@ package ro.cs.tao.snap;
 
 import ro.cs.tao.BaseRuntimeOptimizer;
 import ro.cs.tao.component.*;
+import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.component.template.BasicTemplate;
 import ro.cs.tao.component.template.Template;
@@ -75,17 +76,13 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
 
         sources[0].getSources().forEach((s) -> {
             SourceDescriptor source = s.clone();
-
             source.setParentId(aggregator.getId());
-
             aggregator.addSource(source);
         });
 
         sources[sources.length - 1].getTargets().forEach((t) -> {
             TargetDescriptor target = t.clone();
-
             target.setParentId(aggregator.getId());
-
             aggregator.addTarget(target);
         });
 
@@ -114,6 +111,7 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
             throw new AggregationException("Cannot produce aggregated graph");
         }
         aggregator.setTemplateContents(graph);
+        aggregator.setComponentType(ProcessingComponentType.AGGREGATE);
         /*try {
             Files.write(graphPath, graph.getBytes());
         } catch (IOException ex) {
