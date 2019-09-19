@@ -106,7 +106,7 @@ public class PipelineBuilder {
     }
 
     /**
-     * Converts a list of TAO Processing Components which corresponds to several OTB operators into OTB pipeline in
+     * Converts a list of TAO Processing Components which correspond to several OTB operators into an OTB pipeline in
      * python.
      *
      * @param components  The TAO processing components
