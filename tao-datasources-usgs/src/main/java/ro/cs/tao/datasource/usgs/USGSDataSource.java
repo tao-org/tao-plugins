@@ -51,6 +51,9 @@ public class USGSDataSource extends URLDataSource<Landsat8Query> {
     public int getMaximumAllowedTransfers() { return 2; }
 
     @Override
+    public boolean requiresAuthentication() { return true; }
+
+    @Override
     protected Landsat8Query createQueryImpl(String code) {
         return new Landsat8Query(this);
     }
