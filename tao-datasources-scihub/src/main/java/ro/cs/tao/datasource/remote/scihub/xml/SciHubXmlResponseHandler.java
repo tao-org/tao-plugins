@@ -101,6 +101,7 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                                 size = 0;
                             }
                             this.current.setApproximateSize(size);
+                            break;
                         default:
                             this.current.addAttribute(this.identifiedElement, elementValue);
                             break;
