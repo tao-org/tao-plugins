@@ -256,101 +256,109 @@ public class SciHubDataQuery extends DataQuery {
             footprints = polygon.toWKTArray();
         }
         StringBuilder query = new StringBuilder();
-        for (String footprint : footprints) {
-            int idx = 0;
-            for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
-                QueryParameter parameter = entry.getValue();
-                if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
-                    throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
-                }
-                if (parameter.isOptional() &
-                        ((!parameter.isInterval() & parameter.getValue() == null) |
-                                (parameter.isInterval() & parameter.getMinValue() == null & parameter.getMaxValue() == null))) {
-                    continue;
-                }
-                if (idx > 0) {
-                    query.append(" AND ");
-                }
-                switch (parameter.getName()) {
-                    case CommonParameterNames.PRODUCT:
-                        query.append(parameter.getValueAsString());
-                        break;
-                    case CommonParameterNames.FOOTPRINT:
-                        if (!canUseTileParameter) {
-                            query.append(getRemoteName(entry.getKey())).append(":");
-                            try {
-                                QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
-                                                                                           "footprint",
-                                                                                           Polygon2D.fromWKT(footprint));
-                                query.append(converterFactory.create(fakeParam).stringValue());
-                            } catch (ConversionException e) {
-                                throw new QueryException(e.getMessage());
-                            }
-                        } else {
-                            idx--;
-                        }
-                        break;
-                    case CommonParameterNames.TILE:
-                        String value = parameter.getValueAsString();
-                        if (value.startsWith("[") && value.endsWith("]")) {
-                            String[] values = value.substring(1, value.length() - 1).split(",");
-                            query.append("(");
-                            for (int i = 0; i < values.length; i++) {
-                                if (isS1) {
-                                    query.append("relativeOrbitNumber:").append(values[i]);
-                                } else {
-                                    query.append("filename:*").append(values[i]).append("*");
-                                }
-                                if (i < values.length - 1) {
-                                    query.append(" OR ");
-                                }
-                            }
-                            query.append(")");
-                        } else {
-                            if (isS1) {
-                                query.append("relativeOrbitNumber:").append(value);
-                            } else {
-                                query.append("filename:*").append(value).append("*");
-                            }
-                        }
-                        break;
-                    default:
-                        if (parameter.getType().isArray()) {
-                            query.append("(");
-                            Object values = parameter.getValue();
-                            int length = Array.getLength(values);
-                            for (int i = 0; i < length; i++) {
-                                query.append(Array.get(values, i).toString());
-                                if (i < length - 1) {
-                                    query.append(" OR ");
-                                }
-                            }
-                            if (length > 1) {
-                                query = new StringBuilder(query.substring(0, query.length() - 4));
-                            }
-                            query.append(")");
-                        } else if (Date.class.equals(parameter.getType())) {
-                            query.append(getRemoteName(entry.getKey())).append(":[");
-                            try {
-                                query.append(converterFactory.create(parameter).stringValue());
-                            } catch (ConversionException e) {
-                                throw new QueryException(e.getMessage());
-                            }
-                            query.append("]");
-                        } else {
-                            query.append(getRemoteName(entry.getKey())).append(":");
-                            try {
-                                query.append(converterFactory.create(parameter).stringValue());
-                            } catch (ConversionException e) {
-                                throw new QueryException(e.getMessage());
-                            }
-                        }
-                        break;
-                }
-                idx++;
-            }
+        if (this.parameters.containsKey(CommonParameterNames.PRODUCT)) {
+            query.append(getRemoteName(CommonParameterNames.PRODUCT))
+                    .append(":")
+                    .append(this.parameters.get(CommonParameterNames.PRODUCT).getValueAsString());
             queries.put(UUID.randomUUID().toString(), query.toString());
             query.setLength(0);
+        } else {
+            for (String footprint : footprints) {
+                int idx = 0;
+                for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
+                    QueryParameter parameter = entry.getValue();
+                    if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
+                        throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
+                    }
+                    if (parameter.isOptional() &
+                            ((!parameter.isInterval() & parameter.getValue() == null) |
+                                    (parameter.isInterval() & parameter.getMinValue() == null & parameter.getMaxValue() == null))) {
+                        continue;
+                    }
+                    if (idx > 0) {
+                        query.append(" AND ");
+                    }
+                    switch (parameter.getName()) {
+                        case CommonParameterNames.PRODUCT:
+                            query.append(parameter.getValueAsString());
+                            break;
+                        case CommonParameterNames.FOOTPRINT:
+                            if (!canUseTileParameter) {
+                                query.append(getRemoteName(entry.getKey())).append(":");
+                                try {
+                                    QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
+                                                                                               "footprint",
+                                                                                               Polygon2D.fromWKT(footprint));
+                                    query.append(converterFactory.create(fakeParam).stringValue());
+                                } catch (ConversionException e) {
+                                    throw new QueryException(e.getMessage());
+                                }
+                            } else {
+                                idx--;
+                            }
+                            break;
+                        case CommonParameterNames.TILE:
+                            String value = parameter.getValueAsString();
+                            if (value.startsWith("[") && value.endsWith("]")) {
+                                String[] values = value.substring(1, value.length() - 1).split(",");
+                                query.append("(");
+                                for (int i = 0; i < values.length; i++) {
+                                    if (isS1) {
+                                        query.append("relativeOrbitNumber:").append(values[i]);
+                                    } else {
+                                        query.append("filename:*").append(values[i]).append("*");
+                                    }
+                                    if (i < values.length - 1) {
+                                        query.append(" OR ");
+                                    }
+                                }
+                                query.append(")");
+                            } else {
+                                if (isS1) {
+                                    query.append("relativeOrbitNumber:").append(value);
+                                } else {
+                                    query.append("filename:*").append(value).append("*");
+                                }
+                            }
+                            break;
+                        default:
+                            if (parameter.getType().isArray()) {
+                                query.append("(");
+                                Object values = parameter.getValue();
+                                int length = Array.getLength(values);
+                                for (int i = 0; i < length; i++) {
+                                    query.append(Array.get(values, i).toString());
+                                    if (i < length - 1) {
+                                        query.append(" OR ");
+                                    }
+                                }
+                                if (length > 1) {
+                                    query = new StringBuilder(query.substring(0, query.length() - 4));
+                                }
+                                query.append(")");
+                            } else if (Date.class.equals(parameter.getType())) {
+                                query.append(getRemoteName(entry.getKey())).append(":[");
+                                try {
+                                    query.append(converterFactory.create(parameter).stringValue());
+                                } catch (ConversionException e) {
+                                    throw new QueryException(e.getMessage());
+                                }
+                                query.append("]");
+                            } else {
+                                query.append(getRemoteName(entry.getKey())).append(":");
+                                try {
+                                    query.append(converterFactory.create(parameter).stringValue());
+                                } catch (ConversionException e) {
+                                    throw new QueryException(e.getMessage());
+                                }
+                            }
+                            break;
+                    }
+                    idx++;
+                }
+                queries.put(UUID.randomUUID().toString(), query.toString());
+                query.setLength(0);
+            }
         }
         return queries;
     }
