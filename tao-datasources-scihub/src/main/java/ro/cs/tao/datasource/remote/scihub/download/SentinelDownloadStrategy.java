@@ -95,8 +95,7 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
             this.currentProduct = product;
         }
         if ("archived".equalsIgnoreCase(product.getAttributeValue("status"))) {
-            logger.warning(String.format("Product %s is marked as archived. Will be retried later.", productName));
-            return null;
+            throw new IOException(String.format("Product %s is marked as archived", productName));
         }
         return downloadFile(getProductUrl(product), rootPath, NetUtils.getAuthToken());
     }
