@@ -101,6 +101,7 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                                 size = 0;
                             }
                             this.current.setApproximateSize(size);
+                            break;
                         default:
                             this.current.addAttribute(this.identifiedElement, elementValue);
                             break;
@@ -116,6 +117,7 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                             this.current.addAttribute(this.identifiedElement, elementValue);
                             break;
                         default:
+                            this.current.addAttribute(this.identifiedElement, elementValue);
                             break;
                     }
                 } catch (Exception e) {
@@ -129,6 +131,7 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                             this.current.setAcquisitionDate(new DateAdapter().unmarshal(elementValue));
                             break;
                         default:
+                            this.current.addAttribute(this.identifiedElement, elementValue);
                             break;
                     }
                 } catch (Exception e) {

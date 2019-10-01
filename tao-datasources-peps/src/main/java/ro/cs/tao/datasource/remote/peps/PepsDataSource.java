@@ -48,6 +48,11 @@ public class PepsDataSource extends URLDataSource<PepsDataQuery> {
     public String defaultId() { return "PEPS"; }
 
     @Override
+    public boolean requiresAuthentication() {
+        return true;
+    }
+
+    @Override
     public void setCredentials(String username, String password) {
         super.setCredentials(username, password);
         String authToken = "Basic " + new String(Base64.getEncoder().encode((username + ":" + password).getBytes()));

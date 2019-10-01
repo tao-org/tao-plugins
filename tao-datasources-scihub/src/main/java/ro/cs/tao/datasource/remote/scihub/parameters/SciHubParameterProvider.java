@@ -65,6 +65,8 @@ public final class SciHubParameterProvider implements ParameterProvider {
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                         parameter = ParameterProvider.createParameter(CommonParameterNames.TILE, "relativeOrbitNumber", "Relative Orbit", String.class);
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT, "filename", "Product Name", String.class);
+                        put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
                     put("Sentinel2", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
                         Tuple<ParameterName, DataSourceParameter> parameter =
@@ -83,7 +85,7 @@ public final class SciHubParameterProvider implements ParameterProvider {
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                         parameter = ParameterProvider.createParameter(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit", String.class);
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT, "product", "Product Name", String.class);
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT, "filename", "Product Name", String.class);
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                         parameter = ParameterProvider.createParameter(CommonParameterNames.TILE, "tileId", "UTM Tile", String.class);
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
@@ -109,7 +111,7 @@ public final class SciHubParameterProvider implements ParameterProvider {
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                         parameter = ParameterProvider.createParameter(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit", String.class);
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT, "product", "Product Name", String.class);
+                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT, "filename", "Product Name", String.class);
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                         parameter = ParameterProvider.createParameter("instrumentshortname", "instrumentshortname", "Instrument", String.class, null,
                                                                       false, "OLCI", "SRAL", "SLSTR", "SYNERGY");
