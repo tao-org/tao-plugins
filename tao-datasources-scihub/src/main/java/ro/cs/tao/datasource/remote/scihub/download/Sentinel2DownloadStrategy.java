@@ -182,6 +182,10 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
             logger.warning(String.format("The product %s did not contain any tiles from the tile list", product.getName()));
             return null;
         } else {
+            if ("archived".equalsIgnoreCase(product.getAttributeValue("status"))) {
+                logger.warning(String.format("Product %s is marked as archived. Will be retried later.", product.getName()));
+                return null;
+            }
             return downloadImpl(product);
         }
     }

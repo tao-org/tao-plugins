@@ -40,6 +40,7 @@ public class Sentinel2ArchiveDownloadStrategy extends SentinelDownloadStrategy {
                     Sentinel2ProductHelper s2Helper = (Sentinel2ProductHelper) helper;
                     product.addAttribute("tiles", s2Helper.getTileIdentifier());
                 }
+                product.setEntryPoint(helper.getMetadataFileName());
             } catch (URISyntaxException e) {
                 logger.severe(e.getMessage());
             }

@@ -91,6 +91,7 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
         if (Sentinel2ProductHelper.PSD_14.equals(helper.getVersion())) {
             metadata.setWidth(10980);
             metadata.setHeight(10980);
+            metadata.addAttribute("tiles", helper.getTileIdentifier());
         } else {
             List<String> granuleList = getValues("/Level-1C_User_Product/Product_Organisation/Granule_List/Granules/@granuleIdentifier");
             if (granuleList == null) {

@@ -18,7 +18,6 @@ package ro.cs.tao.datasource.remote.mundi.sentinel2;
 import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.mundi.BaseDataSource;
-import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.L1CProductHelper;
@@ -27,9 +26,12 @@ import ro.cs.tao.utils.FileUtilities;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -169,7 +171,46 @@ public class Sentinel2DownloadStrategy extends DownloadStrategy {
 
     @Override
     public String getProductUrl(EOProduct descriptor) {
-        return this.urlProductPath + descriptor.getLocation();
+        final String location = descriptor.getLocation();
+        try {
+            URI.create(location);
+            // if we get here, the location is a URL
+            if (location.startsWith(this.urlProductPath)) {
+                // the location is a MUNDI URL
+                return location;
+            } else {
+                // the location is not a MUNDI URL, we have to compute one
+                return this.urlProductPath + computeRelativeLocation(descriptor);
+            }
+        } catch (IllegalArgumentException ignored) {
+            // the location is not a URL, it should be relative already
+            return this.urlProductPath + location;
+        }
+    }
+
+    private String computeRelativeLocation(EOProduct descriptor) {
+        StringBuilder builder = new StringBuilder();
+        Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(descriptor.getName());
+        String sensingDate = helper.getSensingDate();
+        String tileId = helper.getTileIdentifier();
+        // Since around 05-2019, MUNDI split the buckets for S2 products in quarters, so we have to compute them
+        LocalDateTime date = LocalDateTime.from(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss").parse(sensingDate));
+        final int year = date.getYear();
+        if (year < 2019) {
+            builder.append("s2-l1c/");
+        } else {
+            builder.append("s2-l1c-").append(year).append("-q");
+            final int month = date.getMonthValue();
+            builder.append(month < 4 ? "1" : month < 7 ? "2" : month < 10 ? "3" : "4").append("/");
+        }
+        builder.append(tileId, 0, 2).append("/")
+                .append(tileId, 2, 3).append("/")
+                .append(tileId, 3, 5).append("/");
+        builder.append(sensingDate, 0, 4).append("/")
+                .append(sensingDate, 4, 6).append("/")
+                .append(sensingDate, 6, 8).append("/")
+                .append(descriptor.getName());
+        return builder.toString();
     }
 
     @Override
@@ -245,7 +286,7 @@ public class Sentinel2DownloadStrategy extends DownloadStrategy {
         url = getMetadataUrl(product);
         java.nio.file.Path metadataFile = rootPath.resolve(metadataFileName);
         currentStep = "Metadata";
-        downloadFile(url, metadataFile, NetUtils.getAuthToken());
+        downloadFile(url, metadataFile);
         if (Files.exists(metadataFile)) {
             final Path pathBuilder = new Path(getProductUrl(product));
             List<String> allLines = Files.readAllLines(metadataFile);
@@ -302,7 +343,7 @@ public class Sentinel2DownloadStrategy extends DownloadStrategy {
                     java.nio.file.Path imgData = FileUtilities.ensureExists(tileFolder.resolve(FOLDER_IMG_DATA));
                     java.nio.file.Path qiData = FileUtilities.ensureExists(tileFolder.resolve(FOLDER_QI_DATA));
                     String metadataName = helper.getGranuleMetadataFileName(granuleId);
-                    java.nio.file.Path tileMetaFile = downloadFile(pathBuilder.root(tileUrl).node(metadataName).value(), tileFolder.resolve(metadataName), NetUtils.getAuthToken());
+                    java.nio.file.Path tileMetaFile = downloadFile(pathBuilder.root(tileUrl).node(metadataName).value(), tileFolder.resolve(metadataName));
                     if (tileMetaFile != null) {
                         if (Files.exists(tileMetaFile)) {
                             if (isL1C) {
@@ -311,8 +352,7 @@ public class Sentinel2DownloadStrategy extends DownloadStrategy {
                                                          .node(FOLDER_IMG_DATA)
                                                          .node(helper.getBandFileName(granuleId, bandFileName))
                                                          .value(),
-                                                 imgData.resolve(helper.getBandFileName(granuleId, bandFileName)),
-                                                 NetUtils.getAuthToken());
+                                                 imgData.resolve(helper.getBandFileName(granuleId, bandFileName)));
                                 }
                             } else {
                                 for (Map.Entry<String, Set<String>> resEntry : l2aBandFiles.entrySet()) {
@@ -323,8 +363,7 @@ public class Sentinel2DownloadStrategy extends DownloadStrategy {
                                                              .node(resEntry.getKey())
                                                              .node(helper.getBandFileName(granuleId, bandFileName))
                                                              .value(),
-                                                     imgDataRes.resolve(helper.getBandFileName(granuleId, bandFileName)),
-                                                     NetUtils.getAuthToken());
+                                                     imgDataRes.resolve(helper.getBandFileName(granuleId, bandFileName)));
                                     }
                                 }
                             }
@@ -340,8 +379,7 @@ public class Sentinel2DownloadStrategy extends DownloadStrategy {
                                                      .node(FOLDER_QI_DATA)
                                                      .node(maskFileName)
                                                      .value(),
-                                             qiData.resolve(maskFileName),
-                                             NetUtils.getAuthToken());
+                                             qiData.resolve(maskFileName));
                             }
                             if (!isL1C) {
                                 for (String maskFileName : l2aMasks) {
@@ -349,8 +387,7 @@ public class Sentinel2DownloadStrategy extends DownloadStrategy {
                                                          .node(FOLDER_QI_DATA)
                                                          .node(helper.getBandFileName(granuleId, maskFileName))
                                                          .value(),
-                                                 qiData.resolve(helper.getBandFileName(granuleId, maskFileName)),
-                                                 NetUtils.getAuthToken());
+                                                 qiData.resolve(helper.getBandFileName(granuleId, maskFileName)));
                                 }
                             }
                             logger.fine(String.format("Tile download completed in %s", Utilities.formatTime(System.currentTimeMillis() - start)));
@@ -366,7 +403,7 @@ public class Sentinel2DownloadStrategy extends DownloadStrategy {
                     pathBuilder.reset();
                     String dataStripPath = pathBuilder.root(getProductUrl(product)).node(FOLDER_DATASTRIP).node(dsFolder).node(dsFileName).value();
                     java.nio.file.Path dataStrip = FileUtilities.ensureExists(dataStripFolder.resolve(dsFolder));
-                    downloadFile(dataStripPath, dataStrip.resolve(dsFileName), NetUtils.getAuthToken());
+                    downloadFile(dataStripPath, dataStrip.resolve(dsFileName));
                 }
                 if (downloadedTiles.size() > 0) {
                     final Pattern tilePattern = helper.getTilePattern();
