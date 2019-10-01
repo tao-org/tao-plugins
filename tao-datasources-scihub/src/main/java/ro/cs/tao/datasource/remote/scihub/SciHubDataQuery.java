@@ -257,9 +257,11 @@ public class SciHubDataQuery extends DataQuery {
         }
         StringBuilder query = new StringBuilder();
         if (this.parameters.containsKey(CommonParameterNames.PRODUCT)) {
-            query.append(getRemoteName(CommonParameterNames.PRODUCT))
-                    .append(":")
-                    .append(this.parameters.get(CommonParameterNames.PRODUCT).getValueAsString());
+            String productName = this.parameters.get(CommonParameterNames.PRODUCT).getValueAsString();
+            if (!productName.endsWith(".SAFE")) {
+                productName += ".SAFE";
+            }
+            query.append(getRemoteName(CommonParameterNames.PRODUCT)).append(":").append(productName);
             queries.put(UUID.randomUUID().toString(), query.toString());
             query.setLength(0);
         } else {
@@ -279,9 +281,9 @@ public class SciHubDataQuery extends DataQuery {
                         query.append(" AND ");
                     }
                     switch (parameter.getName()) {
-                        case CommonParameterNames.PRODUCT:
+                        /*case CommonParameterNames.PRODUCT:
                             query.append(parameter.getValueAsString());
-                            break;
+                            break;*/
                         case CommonParameterNames.FOOTPRINT:
                             if (!canUseTileParameter) {
                                 query.append(getRemoteName(entry.getKey())).append(":");
