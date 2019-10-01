@@ -34,7 +34,6 @@
         <module>tao-docker-python</module>
         <module>tao-executor-wps</module>
 		<module>tao-otb-optimizer</module>
-		<module>tao-workflow-optimizer</module>
 		<module>tao-quota-database</module>
 		<module>tao-muscate-metadata</module>
 	</modules>
