@@ -18,6 +18,7 @@ package ro.cs.tao.datasource.usgs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
@@ -128,8 +129,10 @@ public class Landsat8Query extends DataQuery {
             }
             request.setUsername(credentials.getUserName());
             request.setPassword(credentials.getPassword());
-            String url = buildRequestUrl("login", request);
-            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, null)) {
+            String url = buildPostRequestURL("login");
+            List<org.apache.http.NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("jsonRequest", request.toString()));
+            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, null, params)) {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
                         String body = EntityUtils.toString(response.getEntity());
@@ -171,7 +174,7 @@ public class Landsat8Query extends DataQuery {
             request.setDatasetName(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
                                            this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
                                            "LANDSAT_8_C1");
-            String url = buildRequestUrl("datasetfields", request);
+            String url = buildGetRequestURL("datasetfields", request);
             try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, url, null)) {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
@@ -209,7 +212,7 @@ public class Landsat8Query extends DataQuery {
             indices.put(ids[i], i);
         }
         request.setEntityIds(ids);
-        String url = buildRequestUrl("download", request);
+        String url = buildGetRequestURL("download", request);
         try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, url, null)) {
             switch (response.getStatusLine().getStatusCode()) {
                 case 200:
@@ -232,10 +235,14 @@ public class Landsat8Query extends DataQuery {
         return products;
     }
 
-    private String buildRequestUrl(String operation, Object jsonRequest) throws Exception {
+    private String buildGetRequestURL(String operation, Object jsonRequest) throws Exception {
         return this.source.getConnectionString()
                 + operation + "?jsonRequest="
                 + URLEncoder.encode(new ObjectMapper().writer().writeValueAsString(jsonRequest), "UTF-8");
+    }
+
+    private String buildPostRequestURL(String operation) throws Exception {
+        return this.source.getConnectionString() + operation;
     }
 
     private String buildQueryUrl(int pgNumber, int pgSize, Set<String> pathRowFilter) throws Exception {
@@ -344,7 +351,7 @@ public class Landsat8Query extends DataQuery {
         } else {
             request.withMaxResults(Math.max(this.limit, pgSize));
         }
-        return buildRequestUrl("search", request);
+        return buildGetRequestURL("search", request);
     }
 
     private Object executeQuery(int start, int pageSize, Set<String> pathRows, boolean count) throws Exception {

@@ -28,4 +28,11 @@ public class LoginRequest {
     public void setCatalogId(String catalogId) {
         this.catalogId = catalogId;
     }
+
+    @Override
+    public String toString() {
+        return "{ \"username\":\"" + username + "\", " +
+                "\"password\":\"" + password + "\", " +
+                "\"catalogId\":\"" + catalogId + "\" }";
+    }
 }
