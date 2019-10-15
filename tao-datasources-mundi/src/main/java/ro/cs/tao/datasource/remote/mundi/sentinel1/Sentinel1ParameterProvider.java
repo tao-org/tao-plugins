@@ -4,7 +4,6 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
-import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.mundi.DownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
@@ -15,15 +14,15 @@ import java.util.*;
 public class Sentinel1ParameterProvider implements ParameterProvider {
 
     private static final String[] sensors;
-    private static final Map<String, Map<ParameterName, DataSourceParameter>> parameters;
+    private static final Map<String, Map<String, DataSourceParameter>> parameters;
     private static final Map<String, ProductFetchStrategy> productFetchers;
 
     static {
         sensors = new String[] { "Sentinel1" };
         parameters = Collections.unmodifiableMap(
-                new LinkedHashMap<String, Map<ParameterName, DataSourceParameter>>() {{
-                    put("Sentinel1", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                        Tuple<ParameterName, DataSourceParameter> parameter =
+                new LinkedHashMap<String, Map<String, DataSourceParameter>>() {{
+                    put("Sentinel1", new LinkedHashMap<String, DataSourceParameter>() {{
+                        Tuple<String, DataSourceParameter> parameter =
                                 ParameterProvider.createParameter("processingLevel", "processingLevel", "Processing Level",
                                                                   String.class, "L1_", false, "L0_", "L1_", "L2_");
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
@@ -58,7 +57,7 @@ public class Sentinel1ParameterProvider implements ParameterProvider {
     }
 
     @Override
-    public Map<String, Map<ParameterName, DataSourceParameter>> getSupportedParameters() {
+    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
         return parameters;
     }
 
