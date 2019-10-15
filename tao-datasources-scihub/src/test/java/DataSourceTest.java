@@ -36,6 +36,8 @@
  *
  */
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.*;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
@@ -64,10 +66,17 @@ import java.util.logging.Logger;
  */
 public class DataSourceTest {
 
-    public static void main(String[] args) {
-        SciHub_Sentinel1_Test();
+    public static void main(String[] args) throws JsonProcessingException {
+        //SciHub_Sentinel1_Test();
         //SciHub_Sentinel2_Count_Test();
         //SciHub_Sentinel2_Test();
+        printParams();
+    }
+
+    private static void printParams() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        DataSource dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
+        System.out.println(mapper.writeValueAsString(dataSource.getSupportedParameters()));
     }
 
     private static void SciHub_Sentinel2_Count_Test() {
