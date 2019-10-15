@@ -4,7 +4,6 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
-import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.SimpleArchiveDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
@@ -15,11 +14,11 @@ import java.util.*;
 public class ASFParameterProvider implements ParameterProvider {
 
     @Override
-    public Map<String, Map<ParameterName, DataSourceParameter>> getSupportedParameters() {
+    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
         return Collections.unmodifiableMap(
-                new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
-                    put("Sentinel1", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                        Tuple<ParameterName, DataSourceParameter> parameter =
+                new HashMap<String, Map<String, DataSourceParameter>>() {{
+                    put("Sentinel1", new LinkedHashMap<String, DataSourceParameter>() {{
+                        Tuple<String, DataSourceParameter> parameter =
                                 ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "platform", "Satellite", String.class, "Sentinel-1");
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                         parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "start", "Start Date", Date.class);
