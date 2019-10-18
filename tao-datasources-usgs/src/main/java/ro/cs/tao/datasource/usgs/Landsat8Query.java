@@ -16,6 +16,7 @@
 package ro.cs.tao.datasource.usgs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
@@ -132,7 +133,7 @@ public class Landsat8Query extends DataQuery {
             String url = buildPostRequestURL("login");
             List<org.apache.http.NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("jsonRequest", request.toString()));
-            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, null, params)) {
+            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, (Credentials) null, params)) {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
                         String body = EntityUtils.toString(response.getEntity());
