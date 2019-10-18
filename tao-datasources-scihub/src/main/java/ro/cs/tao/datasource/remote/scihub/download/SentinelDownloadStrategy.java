@@ -26,6 +26,8 @@ import ro.cs.tao.products.sentinels.SentinelProductHelper;
 import ro.cs.tao.utils.FileUtilities;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -80,6 +82,14 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
                 descriptor.getLocation();
     }
 
+    public String getProductOnlineStatusUrl(EOProduct descriptor) {
+        return descriptor.getLocation() == null ?
+                odataArchivePath.replace(ODATA_UUID, descriptor.getId()).replace("$value", "Online/$value") :
+                descriptor.getLocation().endsWith("$value") ?
+                        descriptor.getLocation().replace("$value", "Online/$value") :
+                        null;
+    }
+
     @Override
     protected String getMetadataUrl(EOProduct descriptor) {
         return null;
@@ -94,8 +104,21 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
         if (this.currentProduct == null) {
             this.currentProduct = product;
         }
+        /* The status=archived received from ApiHUB doesn't indicate that the product is offline!
         if ("archived".equalsIgnoreCase(product.getAttributeValue("status"))) {
             throw new IOException(String.format("Product %s is marked as archived", productName));
+        }*/
+        final String statusUrl = getProductOnlineStatusUrl(product);
+        if (statusUrl != null) {
+            HttpURLConnection connection = NetUtils.openConnection(statusUrl, NetUtils.getAuthToken());
+            try (InputStream inputStream = connection.getInputStream()) {
+                byte[] buffer = new byte[256];
+                if (inputStream.read(buffer) == -1 && !Boolean.parseBoolean(new String(buffer))) {
+                    throw new IOException(String.format("Product %s is not online", productName));
+                }
+            } finally {
+                connection.disconnect();
+            }
         }
         return downloadFile(getProductUrl(product), rootPath, NetUtils.getAuthToken());
     }
