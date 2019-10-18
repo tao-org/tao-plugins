@@ -15,30 +15,50 @@
  */
 package ro.cs.tao.datasource.remote.aws;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import ro.cs.tao.datasource.remote.URLDataSource;
 import ro.cs.tao.datasource.remote.aws.parameters.AWSParameterProvider;
+import ro.cs.tao.datasource.util.HttpMethod;
+import ro.cs.tao.datasource.util.Logger;
 import ro.cs.tao.datasource.util.NetUtils;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.Scanner;
 
 /**
  * @author Cosmin Cara
  */
 public class AWSDataSource extends URLDataSource<AWSDataQuery> {
     private static String S2_URL;
+    private static String S2_TILES_URL;
     private static String L8_URL;
     private static String L8_PRE_URL;
+    private static String S2_REQUEST_PAYER;
+    private static String L8_REQUEST_PAYER;
+
+    private static String accessKeyId;
+    private static String secretAccessKey;
 
     static {
         Properties props = new Properties();
         try {
             props.load(AWSDataSource.class.getResourceAsStream("aws.properties"));
             S2_URL = props.getProperty("s2.aws.search.url");
+            S2_TILES_URL = props.getProperty("s2.aws.tiles.url");
             L8_URL = props.getProperty("l8.aws.search.url");
             L8_PRE_URL = props.getProperty("l8.aws.pre.search.url");
+            S2_REQUEST_PAYER = props.getProperty("s2.aws." + S3AuthenticationV4.REQUEST_PAYER_HEADER_NAME);
+            L8_REQUEST_PAYER = props.getProperty("l8.aws." + S3AuthenticationV4.REQUEST_PAYER_HEADER_NAME);
         } catch (IOException ignored) {
         }
     }
@@ -48,18 +68,79 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery> {
         setParameterProvider(new AWSParameterProvider());
     }
 
+    public static HttpURLConnection buildS3Connection(HttpMethod method, String urlString) throws MalformedURLException {
+        URL url = new URL(urlString);
+        String region = S3AuthenticationV4.fetchRegionName(url);
+        List<NameValuePair> customParameters = new ArrayList<>();
+        String requestPayer = AWSDataSource.getRequestPayer(url);
+        if (requestPayer != null && !requestPayer.isEmpty()) {
+            customParameters.add(new BasicNameValuePair(S3AuthenticationV4.REQUEST_PAYER_HEADER_NAME, requestPayer));
+        }
+        S3AuthenticationV4 s3AuthenticationV4 = new S3AuthenticationV4(method.name(), region, accessKeyId, secretAccessKey, customParameters);
+        return NetUtils.openConnection(method, urlString, s3AuthenticationV4.getAuthorizationToken(url), s3AuthenticationV4.getAwsHeaders(url));
+    }
+
+    static String getS3ResponseAsString(HttpMethod method, String urlString) throws IOException {
+        String result = null;
+        HttpURLConnection connection = buildS3Connection(method, urlString);
+        if (connection != null) {
+            switch (connection.getResponseCode()) {
+                case 200:
+                    result = new Scanner(connection.getInputStream(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
+                    break;
+                case 401:
+                    String msg = "The supplied credentials are invalid!";
+                    Logger.getRootLogger().warn(msg);
+                    throw new IllegalArgumentException(msg);
+                default:
+                    String reason = new Scanner(connection.getErrorStream(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
+                    msg = ("The request was not successful. Reason: " + reason);
+                    Logger.getRootLogger().warn(msg);
+                    throw new IllegalStateException(msg);
+            }
+            connection.disconnect();
+        } else {
+            Logger.getRootLogger().warn(String.format("The url %s was not reachable", urlString));
+        }
+        return result;
+    }
+
+    private static String getRequestPayer(URL url) {
+        if (S2_URL.contains(url.getHost()) || S2_TILES_URL.contains(url.getHost())) {
+            return S2_REQUEST_PAYER;
+        }
+        if (L8_PRE_URL.contains(url.getHost())) {
+            return L8_REQUEST_PAYER;
+        }
+        return null;
+    }
+
+    private static void setS3Credentials(String username, String password) {
+        accessKeyId = username;
+        secretAccessKey = password;
+    }
+
     @Override
     public void setCredentials(String username, String password) {
-        // no-op
+        super.setCredentials(username, password);
+        setS3Credentials(username, password);
     }
 
     @Override
     public boolean ping() {
-        return NetUtils.isAvailable(S2_URL);
+        try {
+            HttpURLConnection connection = buildS3Connection(HttpMethod.GET, S2_URL);
+            return 200 == connection.getResponseCode() || 400 == connection.getResponseCode();
+        } catch (Exception e) {
+            //nothing
+        }
+        return false;
     }
 
     @Override
-    public String defaultId() { return "Amazon Web Services"; }
+    public String defaultId() {
+        return "Amazon Web Services";
+    }
 
     @Override
     protected AWSDataQuery createQueryImpl(String sensorName) {
