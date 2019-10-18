@@ -31,11 +31,11 @@ public class DownloadStrategy extends SimpleArchiveDownloadStrategy {
                 URI.create(location);
                 // if we get here, the location is a URL
                 if (location.startsWith(baseUrl)) {
-                    // the location is a MUNDI URL
+                    // the location is a URL
                     productUrl = new URI(location);
                 } else {
-                    // the location is not a MUNDI URL, we have to compute one
-                    productUrl = new URI(baseUrl + computeRelativeLocation(descriptor).replace(".SAFE","") + ".zip");
+                    // the location is not a URL
+                    productUrl = new URI(baseUrl + location);
                 }
             } catch (IllegalArgumentException ignored) {
                 // the location is not a URL, it should be relative already
