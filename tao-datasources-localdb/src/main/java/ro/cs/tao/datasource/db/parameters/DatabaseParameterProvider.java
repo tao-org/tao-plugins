@@ -21,7 +21,6 @@ import ro.cs.tao.datasource.db.DatabaseSource;
 import ro.cs.tao.datasource.db.fetch.DatabaseFetchStrategy;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
-import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
@@ -46,13 +45,13 @@ public class DatabaseParameterProvider implements ParameterProvider {
     }
 
     @Override
-    public Map<String, Map<ParameterName, DataSourceParameter>> getSupportedParameters() {
+    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
         String[] sensors = getSupportedSensors();
         return Collections.unmodifiableMap(
-                new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
+                new HashMap<String, Map<String, DataSourceParameter>>() {{
                     for (String sensor : sensors) {
-                        put(sensor, new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                            Tuple<ParameterName, DataSourceParameter> parameter =
+                        put(sensor, new LinkedHashMap<String, DataSourceParameter>() {{
+                            Tuple<String, DataSourceParameter> parameter =
                                     ParameterProvider.createParameter(CommonParameterNames.PRODUCT, "name", "Product Name", String[].class);
                             put(parameter.getKeyOne(), parameter.getKeyTwo());
                             parameter = ParameterProvider.createParameter("productFormat", "type_id", "Product Format", DataFormat.class);

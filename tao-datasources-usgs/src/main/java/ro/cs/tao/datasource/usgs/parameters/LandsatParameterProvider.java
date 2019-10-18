@@ -19,7 +19,6 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
-import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.SimpleArchiveDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
@@ -33,7 +32,7 @@ import java.util.*;
 public class LandsatParameterProvider implements ParameterProvider {
 
     private static String[] sensors;
-    private static Map<String, Map<ParameterName, DataSourceParameter>> parameters;
+    private static Map<String, Map<String, DataSourceParameter>> parameters;
     private static Map<String, ProductFetchStrategy> productFetchers;
 
     public LandsatParameterProvider() {
@@ -42,9 +41,9 @@ public class LandsatParameterProvider implements ParameterProvider {
         }
         if (parameters == null) {
             parameters = Collections.unmodifiableMap(
-                    new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
-                        put("Landsat8", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                            Tuple<ParameterName, DataSourceParameter> parameter =
+                    new HashMap<String, Map<String, DataSourceParameter>>() {{
+                        put("Landsat8", new LinkedHashMap<String, DataSourceParameter>() {{
+                            Tuple<String, DataSourceParameter> parameter =
                                     ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "datasetName", "Dataset", String.class, "LANDSAT_8_C1");
                             put(parameter.getKeyOne(), parameter.getKeyTwo());
                             parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "startDate", "Start Date", Date.class);
@@ -84,7 +83,7 @@ public class LandsatParameterProvider implements ParameterProvider {
     public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() { return productFetchers; }
 
     @Override
-    public Map<String, Map<ParameterName, DataSourceParameter>> getSupportedParameters() {
+    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
         return parameters;
     }
 

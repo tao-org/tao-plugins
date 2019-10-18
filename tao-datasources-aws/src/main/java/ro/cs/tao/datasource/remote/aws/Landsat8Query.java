@@ -23,7 +23,7 @@ import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.aws.internal.AwsResult;
 import ro.cs.tao.datasource.remote.aws.internal.IntermediateParser;
-import ro.cs.tao.datasource.util.NetUtils;
+import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
@@ -38,8 +38,6 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -164,7 +162,7 @@ class Landsat8Query extends DataQuery {
                 String path = tile.substring(0, 3);
                 String row = tile.substring(3, 6);
                 String tileUrl = (preCollection ? alternateUrl : baseUrl) + path + DownloadStrategy.URL_SEPARATOR + row + DownloadStrategy.URL_SEPARATOR;
-                final AwsResult preCollectionResult = IntermediateParser.parse(NetUtils.getResponseAsString(tileUrl));
+                final AwsResult preCollectionResult = IntermediateParser.parse(AWSDataSource.getS3ResponseAsString(HttpMethod.GET, tileUrl));
                 if (preCollectionResult.getCommonPrefixes() != null) {
                     Set<String> names = preCollectionResult.getCommonPrefixes().stream()
                             .map(p -> p.replace(preCollectionResult.getPrefix(), "").replace(preCollectionResult.getDelimiter(), ""))
@@ -199,7 +197,7 @@ class Landsat8Query extends DataQuery {
                     }
                 }
                 tileUrl = baseUrl + path + DownloadStrategy.URL_SEPARATOR + row + DownloadStrategy.URL_SEPARATOR;
-                final AwsResult productResult = IntermediateParser.parse(NetUtils.getResponseAsString(tileUrl));
+                final AwsResult productResult = IntermediateParser.parse(AWSDataSource.getS3ResponseAsString(HttpMethod.GET, tileUrl));
                 if (productResult.getCommonPrefixes() != null) {
                     Set<String> names = productResult.getCommonPrefixes().stream()
                             .map(p -> p.replace(productResult.getPrefix(), "").replace(productResult.getDelimiter(), ""))
@@ -244,7 +242,7 @@ class Landsat8Query extends DataQuery {
 
     private EOProduct parseProductJson(String jsonUrl) throws Exception {
         EOProduct product;
-        try (InputStream inputStream = new URI(jsonUrl).toURL().openStream();
+        try (InputStream inputStream = AWSDataSource.buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream();
              JsonReader reader = Json.createReader(inputStream)) {
             JsonObject rootObject = reader.readObject().getJsonObject("L1_METADATA_FILE");
             JsonObject obj = rootObject.getJsonObject("METADATA_FILE_INFO");
@@ -287,8 +285,8 @@ class Landsat8Query extends DataQuery {
         return product;
     }
 
-    private double getTileCloudPercentage(String jsonUrl) throws IOException, URISyntaxException {
-        try (InputStream inputStream = new URI(jsonUrl).toURL().openStream();
+    private double getTileCloudPercentage(String jsonUrl) throws IOException {
+        try (InputStream inputStream = AWSDataSource.buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream();
              JsonReader reader = Json.createReader(inputStream)) {
             JsonObject obj = reader.readObject();
             return obj.getJsonObject("L1_METADATA_FILE")

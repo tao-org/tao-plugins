@@ -34,7 +34,7 @@ import java.util.regex.Matcher;
 /**
  * @author Cosmin Cara
  */
-public class Landsat8Strategy extends DownloadStrategy {
+public class Landsat8Strategy extends AWSStrategy {
     private static final Properties properties;
     private static final Set<String> bandFiles = new LinkedHashSet<String>() {{
         add("_B1.TIF");

@@ -20,7 +20,6 @@ import ro.cs.tao.datasource.AbstractDataSource;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.db.parameters.DatabaseParameterProvider;
 import ro.cs.tao.datasource.param.DataSourceParameter;
-import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
 
 import java.sql.Connection;
@@ -99,7 +98,7 @@ public class DatabaseSource extends AbstractDataSource<DatabaseQuery> {
         if (parameterProvider == null) {
             throw new QueryException("No parameter provider found for this data source");
         }
-        final Map<String, Map<ParameterName, DataSourceParameter>> supportedParameters =
+        final Map<String, Map<String, DataSourceParameter>> supportedParameters =
                 parameterProvider.getSupportedParameters();
         if (supportedParameters == null || !supportedParameters.containsKey(sensorName)) {
             throw new QueryException(String.format("Parameters not defined for this data source and sensor %s",
