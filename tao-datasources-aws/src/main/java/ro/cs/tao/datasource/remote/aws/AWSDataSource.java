@@ -45,6 +45,8 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery> {
     private static String L8_PRE_URL;
     private static String S2_REQUEST_PAYER;
     private static String L8_REQUEST_PAYER;
+    private static URL AWS_PARAMETERS_CONFIG_URL;
+    private static URL AWS_SENSORS_CONFIG_URL;
 
     private static String accessKeyId;
     private static String secretAccessKey;
@@ -59,13 +61,15 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery> {
             L8_PRE_URL = props.getProperty("l8.aws.pre.search.url");
             S2_REQUEST_PAYER = props.getProperty("s2.aws." + S3AuthenticationV4.REQUEST_PAYER_HEADER_NAME);
             L8_REQUEST_PAYER = props.getProperty("l8.aws." + S3AuthenticationV4.REQUEST_PAYER_HEADER_NAME);
+            AWS_PARAMETERS_CONFIG_URL = AWSDataSource.class.getResource("awsParameters.json");
+            AWS_SENSORS_CONFIG_URL = AWSDataSource.class.getResource("awsSensors.json");
         } catch (IOException ignored) {
         }
     }
 
     public AWSDataSource() throws URISyntaxException {
         super(S2_URL);
-        setParameterProvider(new AWSParameterProvider());
+        setParameterProvider(new AWSParameterProvider(AWS_PARAMETERS_CONFIG_URL, AWS_SENSORS_CONFIG_URL));
     }
 
     public static HttpURLConnection buildS3Connection(HttpMethod method, String urlString) throws MalformedURLException {

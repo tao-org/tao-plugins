@@ -17,6 +17,7 @@ package ro.cs.tao.datasource.remote.aws.parameters;
 
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
+import ro.cs.tao.datasource.param.AbstractParameterProvider;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterProvider;
@@ -26,12 +27,13 @@ import ro.cs.tao.datasource.remote.aws.download.Sentinel2Strategy;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.utils.Tuple;
 
+import java.net.URL;
 import java.util.*;
 
 /**
  * @author Cosmin Cara
  */
-public class AWSParameterProvider implements ParameterProvider {
+public class AWSParameterProvider extends AbstractParameterProvider {
 
     private static final String[] sensors;
     private static final Map<String, Map<String, DataSourceParameter>> parameters;
@@ -92,13 +94,26 @@ public class AWSParameterProvider implements ParameterProvider {
                 }});
     }
 
+    public AWSParameterProvider(URL parametersConfigUrl, URL sensorsConfigUrl) {
+        super(parametersConfigUrl, sensorsConfigUrl);
+    }
+
     @Override
     public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
+        Map<String, Map<String, DataSourceParameter>> supportedParamters = super.getSupportedParameters();
+        if(supportedParamters != null && !supportedParamters.isEmpty()){
+            return supportedParamters;
+        }
+
         return parameters;
     }
 
     @Override
     public String[] getSupportedSensors() {
+        String[] supportedSensors = super.getSupportedSensors();
+        if(supportedSensors != null && supportedSensors.length > 0){
+            return supportedSensors;
+        }
         return sensors;
     }
 
