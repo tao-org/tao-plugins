@@ -4,7 +4,6 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
-import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.NoDownloadStrategy;
 import ro.cs.tao.eodata.Polygon2D;
@@ -15,15 +14,15 @@ import java.util.*;
 public class Sentinel2ParameterProvider implements ParameterProvider {
 
     private static final String[] sensors;
-    private static final Map<String, Map<ParameterName, DataSourceParameter>> parameters;
+    private static final Map<String, Map<String, DataSourceParameter>> parameters;
     private static final Map<String, ProductFetchStrategy> productFetchers;
 
     static {
         sensors = new String[] { "Sentinel2" };
         parameters = Collections.unmodifiableMap(
-                new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
-                    put("Sentinel2", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                        Tuple<ParameterName, DataSourceParameter> parameter =
+                new HashMap<String, Map<String, DataSourceParameter>>() {{
+                    put("Sentinel2", new LinkedHashMap<String, DataSourceParameter>() {{
+                        Tuple<String, DataSourceParameter> parameter =
                                 ParameterProvider.createParameter("processingLevel", "processingLevel", "Processing Level", String.class, "LEVEL1C", false, "LEVEL1C", "LEVEL2A", "LEVEL2AP", "LEVELL1C", "LEVELL2A");
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                         parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type", String.class, "L1C", false, "L1C", "L2A", "N0204");
@@ -50,7 +49,7 @@ public class Sentinel2ParameterProvider implements ParameterProvider {
     }
 
     @Override
-    public Map<String, Map<ParameterName, DataSourceParameter>> getSupportedParameters() {
+    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
         return parameters;
     }
 

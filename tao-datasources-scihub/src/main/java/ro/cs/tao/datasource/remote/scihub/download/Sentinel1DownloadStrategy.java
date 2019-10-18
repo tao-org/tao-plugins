@@ -46,22 +46,27 @@ public class Sentinel1DownloadStrategy extends SentinelDownloadStrategy {
     @Override
     protected Path fetchImpl(EOProduct product) throws IOException, InterruptedException {
         Path archivePath = super.fetchImpl(product);
-        Path productFile = Zipper.decompressZip(archivePath, archivePath.getParent(), true);
-        if (productFile != null) {
-            try {
-                if (!productFile.toString().contains(product.getName())) {
-                    productFile = Paths.get(archivePath.toString().replace(".zip", ".SAFE"));
+        Path productFile;
+        if (Boolean.parseBoolean(this.props.getProperty("auto.uncompress", "false"))) {
+            productFile = Zipper.decompressZip(archivePath, archivePath.getParent(), true);
+            if (productFile != null) {
+                try {
+                    if (!productFile.toString().contains(product.getName())) {
+                        productFile = Paths.get(archivePath.toString().replace(".zip", ".SAFE"));
+                    }
+                    product.setLocation(productFile.toUri().toString());
+                    ProductHelper helper = SentinelProductHelper.create(product.getName());
+                    if (helper instanceof Sentinel1ProductHelper) {
+                        Sentinel1ProductHelper s1Helper = (Sentinel1ProductHelper) helper;
+                        s1Helper.getOrbit();
+                        product.addAttribute("tiles", s1Helper.getOrbit());
+                    }
+                } catch (URISyntaxException e) {
+                    logger.severe(e.getMessage());
                 }
-                product.setLocation(productFile.toUri().toString());
-                ProductHelper helper = SentinelProductHelper.create(product.getName());
-                if (helper instanceof Sentinel1ProductHelper) {
-                    Sentinel1ProductHelper s1Helper = (Sentinel1ProductHelper) helper;
-                    s1Helper.getOrbit();
-                    product.addAttribute("tiles", s1Helper.getOrbit());
-                }
-            } catch (URISyntaxException e) {
-                logger.severe(e.getMessage());
             }
+        } else {
+            productFile = archivePath;
         }
         return productFile;
     }

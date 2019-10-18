@@ -15,10 +15,9 @@
  */
 package ro.cs.tao.datasource.remote.aws.download;
 
-import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.aws.AWSDataSource;
-import ro.cs.tao.datasource.util.NetUtils;
+import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
@@ -45,7 +44,7 @@ import java.util.stream.Collectors;
 /**
  * @author Cosmin Cara
  */
-public class Sentinel2Strategy extends DownloadStrategy {
+public class Sentinel2Strategy extends AWSStrategy {
     private static final Properties properties;
     private static final Set<String> l1cBandFiles;
     private static final String FOLDER_GRANULE = "GRANULE";
@@ -180,7 +179,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                 JsonReader reader = null;
                 try {
                     logger.fine(String.format("Downloading json product descriptor %s", productJsonUrl));
-                    connection = NetUtils.openConnection(productJsonUrl);
+                    connection = AWSDataSource.buildS3Connection(HttpMethod.GET, productJsonUrl);
                     inputStream = connection.getInputStream();
                     reader = Json.createReader(inputStream);
                     logger.fine(String.format("Parsing json descriptor %s", productJsonUrl));
@@ -248,7 +247,7 @@ public class Sentinel2Strategy extends DownloadStrategy {
                             JsonReader tiReader = null;
                             try {
                                 logger.fine(String.format("Downloading json tile descriptor %s", tileJson));
-                                tileConnection = NetUtils.openConnection(tileJson);
+                                tileConnection = AWSDataSource.buildS3Connection(HttpMethod.GET, tileJson);
                                 is = tileConnection.getInputStream();
                                 tiReader = Json.createReader(is);
                                 logger.fine(String.format("Parsing json tile descriptor %s", tileJson));

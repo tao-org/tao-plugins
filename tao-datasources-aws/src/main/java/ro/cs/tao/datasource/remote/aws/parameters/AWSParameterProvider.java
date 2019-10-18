@@ -19,7 +19,6 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
-import ro.cs.tao.datasource.param.ParameterName;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.remote.aws.LandsatCollection;
 import ro.cs.tao.datasource.remote.aws.download.Landsat8Strategy;
@@ -35,15 +34,15 @@ import java.util.*;
 public class AWSParameterProvider implements ParameterProvider {
 
     private static final String[] sensors;
-    private static final Map<String, Map<ParameterName, DataSourceParameter>> parameters;
+    private static final Map<String, Map<String, DataSourceParameter>> parameters;
     private static final Map<String, ProductFetchStrategy> productFetchers;
 
     static {
         sensors = new String[] { "Sentinel2", "Landsat8" };
         parameters = Collections.unmodifiableMap(
-                new HashMap<String, Map<ParameterName, DataSourceParameter>>() {{
-                    put("Sentinel2", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                        Tuple<ParameterName, DataSourceParameter> parameter =
+                new HashMap<String, Map<String, DataSourceParameter>>() {{
+                    put("Sentinel2", new LinkedHashMap<String, DataSourceParameter>() {{
+                        Tuple<String, DataSourceParameter> parameter =
                                 ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "platformName", "Satellite", String.class, "Sentinel-2");
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                         parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "beginPosition", "Start Date", Date.class);
@@ -61,8 +60,8 @@ public class AWSParameterProvider implements ParameterProvider {
                         parameter = ParameterProvider.createParameter(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit", Short.class);
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                     }});
-                    put("Landsat8", new LinkedHashMap<ParameterName, DataSourceParameter>() {{
-                        Tuple<ParameterName, DataSourceParameter> parameter =
+                    put("Landsat8", new LinkedHashMap<String, DataSourceParameter>() {{
+                        Tuple<String, DataSourceParameter> parameter =
                                 ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "platformName", "Satellite", String.class, "Landsat-8");
                         put(parameter.getKeyOne(), parameter.getKeyTwo());
                         parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "sensingStart", "Start Date", Date.class);
@@ -94,7 +93,7 @@ public class AWSParameterProvider implements ParameterProvider {
     }
 
     @Override
-    public Map<String, Map<ParameterName, DataSourceParameter>> getSupportedParameters() {
+    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
         return parameters;
     }
 
