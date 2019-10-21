@@ -1,0 +1,105 @@
+["java.util.Collections$UnmodifiableMap", {
+  "Sentinel2": ["java.util.Map", {
+    "processingLevel": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "processingLevel",
+      "remoteName": "processingLevel",
+      "label": "Processing Level",
+      "type": "java.lang.String",
+      "defaultValue": "L1C",
+      "required": false,
+      "valueSet": ["[Ljava.lang.String;", ["L1A", "L1B", "L1C", "L2A"]],
+      "order": 0
+    }
+    ],
+    "productType": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "java.lang.String",
+      "defaultValue": "IMAGE",
+      "required": false,
+      "valueSet": ["[Ljava.lang.String;", ["IMAGE", "S2MSI2Ap"]],
+      "order": 0
+    }
+    ],
+    "relativeOrbit": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "relativeOrbit",
+      "remoteName": "orbitNumber",
+      "label": "Relative Orbit",
+      "type": "java.lang.Short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+    ],
+    "startDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "startDate",
+      "remoteName": "timeStart",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+    ],
+    "endDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "endDate",
+      "remoteName": "timeEnd",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+    ],
+    "footprint": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "footprint",
+      "remoteName": "geometry",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+    ],
+    "cloudCover": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "cloudCover",
+      "remoteName": "cloudCover",
+      "label": "Cloud Cover",
+      "type": "java.lang.Short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+    ],
+    "productIdentifier": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "productIdentifier",
+      "remoteName": "title",
+      "label": "Product Name",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+    ],
+    "tileId": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "tileId",
+      "remoteName": "uid",
+      "label": "UTM Tile",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+    ]
+  }
+  ]
+}
+]

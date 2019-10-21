@@ -1,0 +1,207 @@
+["java.util.Collections$UnmodifiableMap", {
+  "Landsat8": ["java.util.Map", {
+	"platformName": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "platformName",
+	  "remoteName": "platformName",
+	  "label": "Satellite",
+	  "type": "java.lang.String",
+	  "defaultValue": "Landsat-8",
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"startDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "startDate",
+	  "remoteName": "sensingStart",
+	  "label": "Start Date",
+	  "type": "java.util.Date",
+	  "defaultValue": null,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"endDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "endDate",
+	  "remoteName": "sensingEnd",
+	  "label": "End Date",
+	  "type": "java.util.Date",
+	  "defaultValue": null,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"path": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "path",
+	  "remoteName": "path",
+	  "label": "Path",
+	  "type": "java.lang.String",
+	  "defaultValue": null,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"row": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "row",
+	  "remoteName": "row",
+	  "label": "Row",
+	  "type": "java.lang.String",
+	  "defaultValue": null,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"tileId": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "tileId",
+	  "remoteName": "row_path",
+	  "label": "Row and Path",
+	  "type": "java.lang.String",
+	  "defaultValue": null,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"footprint": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "footprint",
+	  "remoteName": "footprint",
+	  "label": "Area of Interest",
+	  "type": "ro.cs.tao.eodata.Polygon2D",
+	  "defaultValue": null,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"cloudCover": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "cloudCover",
+	  "remoteName": "cloudcoverpercentage",
+	  "label": "Cloud Cover",
+	  "type": "java.lang.Double",
+	  "defaultValue": 100.0,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"productType": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "productType",
+	  "remoteName": "productType",
+	  "label": "Product Type",
+	  "type": "java.lang.String",
+	  "defaultValue": null,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"collection": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "collection",
+	  "remoteName": "collection",
+	  "label": "Landsat Collection",
+	  "type": "java.lang.String",
+	  "defaultValue": "COLLECTION_1",
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	]
+  }
+  ],
+  "Sentinel2": ["java.util.Map", {
+	"platformName": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "platformName",
+	  "remoteName": "platformName",
+	  "label": "Satellite",
+	  "type": "java.lang.String",
+	  "defaultValue": "Sentinel-2",
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"startDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "startDate",
+	  "remoteName": "beginPosition",
+	  "label": "Start Date",
+	  "type": "java.util.Date",
+	  "defaultValue": null,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"endDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "endDate",
+	  "remoteName": "endPosition",
+	  "label": "End Date",
+	  "type": "java.util.Date",
+	  "defaultValue": null,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"tileId": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "tileId",
+	  "remoteName": "tileId",
+	  "label": "UTM Tile",
+	  "type": "java.lang.String",
+	  "defaultValue": null,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"footprint": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "footprint",
+	  "remoteName": "footprint",
+	  "label": "Area of Interest",
+	  "type": "ro.cs.tao.eodata.Polygon2D",
+	  "defaultValue": null,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"productType": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "productType",
+	  "remoteName": "productType",
+	  "label": "Product Type",
+	  "type": "java.lang.String",
+	  "defaultValue": null,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"cloudCover": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "cloudCover",
+	  "remoteName": "cloudcoverpercentage",
+	  "label": "Cloud Cover",
+	  "type": "java.lang.Double",
+	  "defaultValue": 100.0,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	],
+	"relativeOrbit": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+	  "name": "relativeOrbit",
+	  "remoteName": "relativeOrbitNumber",
+	  "label": "Relative Orbit",
+	  "type": "java.lang.Short",
+	  "defaultValue": null,
+	  "required": false,
+	  "valueSet": null,
+	  "order": 0
+	}
+	]
+  }
+  ]
+}
+]
