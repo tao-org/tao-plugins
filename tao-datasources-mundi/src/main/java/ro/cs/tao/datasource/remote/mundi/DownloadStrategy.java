@@ -32,6 +32,9 @@ public class DownloadStrategy extends SimpleArchiveDownloadStrategy {
         try {
             try {
                 productUrl = URI.create(location);
+                if (productUrl.getScheme() == null || !productUrl.getScheme().startsWith("http")) {
+                    throw new IllegalArgumentException();
+                }
                 // if we get here, the location is a URL
                 if (location.startsWith(baseUrl)) {
                     // the location is a MUNDI URL
@@ -76,7 +79,7 @@ public class DownloadStrategy extends SimpleArchiveDownloadStrategy {
                 .append(sensingDate, 4, 6).append("/")
                 .append(sensingDate, 6, 8).append("/")
                 .append(helper.getSensorMode().name()).append("/")
-                .append(helper.getPolarisation().name()).append("/").append(descriptor.getName());
+                .append(helper.getPolarisation().name()).append("/").append(descriptor.getName()).append(".zip");
         return builder.toString();
     }
 }
