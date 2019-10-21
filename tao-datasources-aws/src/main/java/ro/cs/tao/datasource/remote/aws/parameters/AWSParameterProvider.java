@@ -17,89 +17,26 @@ package ro.cs.tao.datasource.remote.aws.parameters;
 
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
-import ro.cs.tao.datasource.param.CommonParameterNames;
-import ro.cs.tao.datasource.param.DataSourceParameter;
-import ro.cs.tao.datasource.param.ParameterProvider;
-import ro.cs.tao.datasource.remote.aws.LandsatCollection;
+import ro.cs.tao.datasource.param.AbstractParameterProvider;
 import ro.cs.tao.datasource.remote.aws.download.Landsat8Strategy;
 import ro.cs.tao.datasource.remote.aws.download.Sentinel2Strategy;
-import ro.cs.tao.eodata.Polygon2D;
-import ro.cs.tao.utils.Tuple;
 
 import java.util.*;
 
 /**
  * @author Cosmin Cara
  */
-public class AWSParameterProvider implements ParameterProvider {
+public class AWSParameterProvider extends AbstractParameterProvider {
 
-    private static final String[] sensors;
-    private static final Map<String, Map<String, DataSourceParameter>> parameters;
     private static final Map<String, ProductFetchStrategy> productFetchers;
 
     static {
-        sensors = new String[] { "Sentinel2", "Landsat8" };
-        parameters = Collections.unmodifiableMap(
-                new HashMap<String, Map<String, DataSourceParameter>>() {{
-                    put("Sentinel2", new LinkedHashMap<String, DataSourceParameter>() {{
-                        Tuple<String, DataSourceParameter> parameter =
-                                ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "platformName", "Satellite", String.class, "Sentinel-2");
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "beginPosition", "Start Date", Date.class);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "endPosition", "End Date", Date.class);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.TILE, "tileId", "UTM Tile", String.class);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "footprint", "Area of Interest", Polygon2D.class);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type", String.class);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.CLOUD_COVER, "cloudcoverpercentage", "Cloud Cover", Double.class, 100.);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.RELATIVE_ORBIT, "relativeOrbitNumber", "Relative Orbit", Short.class);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                    }});
-                    put("Landsat8", new LinkedHashMap<String, DataSourceParameter>() {{
-                        Tuple<String, DataSourceParameter> parameter =
-                                ParameterProvider.createParameter(CommonParameterNames.PLATFORM, "platformName", "Satellite", String.class, "Landsat-8");
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "sensingStart", "Start Date", Date.class);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "sensingEnd", "End Date", Date.class);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter("path", "path", "Path", String.class);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter("row", "row", "Row", String.class);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.TILE, "row_path", "Row and Path", String.class);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "footprint", "Area of Interest", Polygon2D.class);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.CLOUD_COVER, "cloudcoverpercentage", "Cloud Cover", Double.class, 100.);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "productType", "Product Type", String.class);
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        parameter = ParameterProvider.createParameter("collection", "collection", "Landsat Collection", String.class, LandsatCollection.COLLECTION_1.toString());
-                        put(parameter.getKeyOne(), parameter.getKeyTwo());
-                    }});
-                }});
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
                     put("Sentinel2", new Sentinel2Strategy(targetFolder));
                     put("Landsat8", new Landsat8Strategy(targetFolder));
                 }});
-    }
-
-    @Override
-    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
-        return parameters;
-    }
-
-    @Override
-    public String[] getSupportedSensors() {
-        return sensors;
     }
 
     @Override
