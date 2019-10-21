@@ -79,7 +79,7 @@ public class DownloadStrategy extends SimpleArchiveDownloadStrategy {
                 .append(sensingDate, 4, 6).append("/")
                 .append(sensingDate, 6, 8).append("/")
                 .append(helper.getSensorMode().name()).append("/")
-                .append(helper.getPolarisation().name()).append("/").append(descriptor.getName());
+                .append(helper.getPolarisation().name()).append("/").append(descriptor.getName()).append(".zip");
         return builder.toString();
     }
 }
