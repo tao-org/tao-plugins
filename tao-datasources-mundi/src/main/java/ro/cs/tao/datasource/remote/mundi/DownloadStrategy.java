@@ -9,8 +9,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 public class DownloadStrategy extends SimpleArchiveDownloadStrategy {
+
+    private static final Pattern mundiPathPattern = Pattern.compile("s1-l1-slc-(\\d{4})-q(\\d{1})\\/(\\d{4}\\/\\d{2}\\/\\d{2}\\/\\w{2}\\/\\w{2})\\/[\\S]+");
 
     public DownloadStrategy(String targetFolder, Properties properties) {
         super(targetFolder, properties);
@@ -28,18 +31,23 @@ public class DownloadStrategy extends SimpleArchiveDownloadStrategy {
         String baseUrl = this.props.getProperty("sentinel.download.url", "https://obs.eu-de.otc.t-systems.com/");
         try {
             try {
-                URI.create(location);
+                productUrl = URI.create(location);
                 // if we get here, the location is a URL
                 if (location.startsWith(baseUrl)) {
                     // the location is a MUNDI URL
                     productUrl = new URI(location);
                 } else {
-                    // the location is not a MUNDI URL, we have to compute one
-                    productUrl = new URI(baseUrl + computeRelativeLocation(descriptor).replace(".SAFE","") + ".zip");
+                    // the location is not a MUNDI URL, we must compute it
+                    productUrl = new URI(baseUrl + computeRelativeLocation(descriptor));
                 }
             } catch (IllegalArgumentException ignored) {
                 // the location is not a URL, it should be relative already
-                productUrl = new URI(baseUrl + location);
+                if (mundiPathPattern.matcher(location).find()) {
+                    // the location is a MUNDI relative path
+                    productUrl = new URI(baseUrl + location);
+                } else {
+                    productUrl = new URI(baseUrl + computeRelativeLocation(descriptor));
+                }
             }
         } catch (URISyntaxException ignored) {
         }
@@ -60,9 +68,13 @@ public class DownloadStrategy extends SimpleArchiveDownloadStrategy {
         Sentinel1ProductHelper helper = new Sentinel1ProductHelper(descriptor.getName());
         StringBuilder builder = new StringBuilder();
         String sensingDate = helper.getSensingDate();
-        builder.append(sensingDate.substring(0, 4)).append("/")
-                .append(sensingDate.substring(4, 6)).append("/")
-                .append(sensingDate.substring(6, 8)).append("/")
+        final int month = Integer.parseInt(sensingDate.substring(4, 6));
+        builder.append("s1-l1-slc-")
+                .append(sensingDate, 0, 4).append("-")
+                .append("q").append(month < 4 ? 1 : month < 7 ? 2 : month < 10 ? 3 : 4).append("/")
+                .append(sensingDate, 0, 4).append("/")
+                .append(sensingDate, 4, 6).append("/")
+                .append(sensingDate, 6, 8).append("/")
                 .append(helper.getSensorMode().name()).append("/")
                 .append(helper.getPolarisation().name()).append("/").append(descriptor.getName());
         return builder.toString();
