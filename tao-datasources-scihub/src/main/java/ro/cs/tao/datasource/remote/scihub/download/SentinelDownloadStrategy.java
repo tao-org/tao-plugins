@@ -110,7 +110,7 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
         }*/
         final String statusUrl = getProductOnlineStatusUrl(product);
         if (statusUrl != null) {
-            HttpURLConnection connection = NetUtils.openConnection(statusUrl, NetUtils.getAuthToken());
+            HttpURLConnection connection = NetUtils.openConnection(statusUrl, getAuthenticationToken());
             try (InputStream inputStream = connection.getInputStream()) {
                 byte[] buffer = new byte[256];
                 if (inputStream.read(buffer) == -1 && !Boolean.parseBoolean(new String(buffer))) {
@@ -120,7 +120,7 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
                 connection.disconnect();
             }
         }
-        return downloadFile(getProductUrl(product), rootPath, NetUtils.getAuthToken());
+        return downloadFile(getProductUrl(product), rootPath, getAuthenticationToken());
     }
 
     @Override
