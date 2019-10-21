@@ -102,7 +102,7 @@ public class PepsDownloadStrategy extends DownloadStrategy {
                 }
                 break;
             case AVAILABLE:
-                productFile = downloadFile(getProductUrl(product), rootPath, NetUtils.getAuthToken());
+                productFile = downloadFile(getProductUrl(product), rootPath, getAuthenticationToken());
                 break;
         }
         if (productFile != null) {

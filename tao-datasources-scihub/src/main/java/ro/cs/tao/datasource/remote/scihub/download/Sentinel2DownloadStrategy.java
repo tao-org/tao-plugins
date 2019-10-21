@@ -16,7 +16,6 @@
 package ro.cs.tao.datasource.remote.scihub.download;
 
 import ro.cs.tao.datasource.InterruptedException;
-import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.L1CProductHelper;
@@ -263,18 +262,19 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
         String metadataFileName = helper.getMetadataFileName();
         boolean isL1C = helper instanceof L1CProductHelper;
         product.setEntryPoint(metadataFileName);
+        final String token = getAuthenticationToken();
         if ("13".equals(helper.getVersion())) {
             currentStep = "Archive";
             url = odataArchivePath.replace(ODATA_UUID, product.getId());
             rootPath = Paths.get(destination, productName + ".zip");
-            rootPath = downloadFile(url, rootPath, NetUtils.getAuthToken());
+            rootPath = downloadFile(url, rootPath, token);
         }
         if (rootPath == null || !Files.exists(rootPath)) {
             rootPath = FileUtilities.ensureExists(Paths.get(destination, productName + ".SAFE"));
             url = getMetadataUrl(product);
             Path metadataFile = rootPath.resolve(metadataFileName);
             currentStep = "Metadata";
-            downloadFile(url, metadataFile, NetUtils.getAuthToken());
+            downloadFile(url, metadataFile, token);
             if (Files.exists(metadataFile)) {
                 List<String> allLines = Files.readAllLines(metadataFile);
                 List<String> metaTileNames = Utilities.filter(allLines, "<Granule" + ("13".equals(helper.getVersion()) ? "s" : " "));
@@ -331,7 +331,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                         Path imgData = FileUtilities.ensureExists(tileFolder.resolve(FOLDER_IMG_DATA));
                         Path qiData = FileUtilities.ensureExists(tileFolder.resolve(FOLDER_QI_DATA));
                         String metadataName = helper.getGranuleMetadataFileName(granuleId);
-                        Path tileMetaFile = downloadFile(pathBuilder.root(tileUrl).node(metadataName).value(), tileFolder.resolve(metadataName), NetUtils.getAuthToken());
+                        Path tileMetaFile = downloadFile(pathBuilder.root(tileUrl).node(metadataName).value(), tileFolder.resolve(metadataName), token);
                         if (tileMetaFile != null) {
                             if (Files.exists(tileMetaFile)) {
                                 if (isL1C) {
@@ -341,7 +341,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                                                              .node(helper.getBandFileName(granuleId, bandFileName))
                                                              .value(),
                                                      imgData.resolve(helper.getBandFileName(granuleId, bandFileName)),
-                                                     NetUtils.getAuthToken());
+                                                     token);
                                     }
                                 } else {
                                     for (Map.Entry<String, Set<String>> resEntry : l2aBandFiles.entrySet()) {
@@ -353,7 +353,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                                                                  .node(helper.getBandFileName(granuleId, bandFileName))
                                                                  .value(),
                                                          imgDataRes.resolve(helper.getBandFileName(granuleId, bandFileName)),
-                                                         NetUtils.getAuthToken());
+                                                         token);
                                         }
                                     }
                                 }
@@ -370,7 +370,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                                                          .node(maskFileName)
                                                          .value(),
                                                  qiData.resolve(maskFileName),
-                                                 NetUtils.getAuthToken());
+                                                 token);
                                 }
                                 if (!isL1C) {
                                     for (String maskFileName : l2aMasks) {
@@ -379,7 +379,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                                                              .node(helper.getBandFileName(granuleId, maskFileName))
                                                              .value(),
                                                      qiData.resolve(helper.getBandFileName(granuleId, maskFileName)),
-                                                     NetUtils.getAuthToken());
+                                                     token);
                                     }
                                 }
                                 logger.fine(String.format("Tile download completed in %s", Utilities.formatTime(System.currentTimeMillis() - start)));
@@ -398,7 +398,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                                 .node(dsFileName)
                                 .value();
                         Path dataStrip = FileUtilities.ensureExists(dataStripFolder.resolve(dsFolder));
-                        downloadFile(dataStripPath, dataStrip.resolve(dsFileName), NetUtils.getAuthToken());
+                        downloadFile(dataStripPath, dataStrip.resolve(dsFileName), token);
                     }
                     if (downloadedTiles.size() > 0) {
                         final Pattern tilePattern = helper.getTilePattern();
