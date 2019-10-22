@@ -3,7 +3,7 @@ package ro.cs.tao.datasource.remote.mundi.landsat8;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.mundi.BaseDataQuery;
-import ro.cs.tao.datasource.remote.mundi.BaseDataSource;
+import ro.cs.tao.datasource.remote.mundi.MundiDataSource;
 import ro.cs.tao.datasource.remote.mundi.parsers.Landsat8ResponseHandler;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
@@ -12,8 +12,8 @@ import java.lang.reflect.Array;
 
 public class Landsat8Query extends BaseDataQuery {
 
-    public Landsat8Query(BaseDataSource source) {
-        super(source, "Landsat8");
+    public Landsat8Query(MundiDataSource source, String sensorName, String connectionString) {
+        super(source, sensorName, connectionString);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class Landsat8Query extends BaseDataQuery {
     }
 
     @Override
-    public String defaultId() { return "MUNDI Landsat-8 Query"; }
+    public String defaultId() { return "Mundi DIAS Landsat-8 Query"; }
 
     @Override
     protected String[] getFootprintsFromTileParameter() {

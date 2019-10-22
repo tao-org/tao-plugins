@@ -16,7 +16,7 @@
 package ro.cs.tao.datasource.remote.mundi.landsat8;
 
 import ro.cs.tao.datasource.remote.DownloadStrategy;
-import ro.cs.tao.datasource.remote.mundi.BaseDataSource;
+import ro.cs.tao.datasource.remote.mundi.MundiDataSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.landsat.Landsat8ProductHelper;
 import ro.cs.tao.utils.FileUtilities;
@@ -56,7 +56,7 @@ public class Landsat8Strategy extends DownloadStrategy {
     static {
         properties = new Properties();
         try {
-            properties.load(BaseDataSource.class.getResourceAsStream("mundi.properties"));
+            properties.load(MundiDataSource.class.getResourceAsStream("mundi.properties"));
         } catch (IOException ignored) {
         }
     }

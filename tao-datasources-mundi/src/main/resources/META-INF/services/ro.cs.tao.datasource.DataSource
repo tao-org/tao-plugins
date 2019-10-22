@@ -14,6 +14,4 @@
 # with this program; if not, see http://www.gnu.org/licenses/
 #
 
-ro.cs.tao.datasource.remote.mundi.sentinel1.Sentinel1DataSource
-ro.cs.tao.datasource.remote.mundi.sentinel2.Sentinel2DataSource
-ro.cs.tao.datasource.remote.mundi.landsat8.Landsat8DataSource
+ro.cs.tao.datasource.remote.mundi.MundiDataSource
