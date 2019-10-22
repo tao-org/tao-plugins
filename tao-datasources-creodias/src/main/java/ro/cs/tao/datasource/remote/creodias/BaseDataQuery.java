@@ -34,15 +34,18 @@ import java.util.Map;
 
 public abstract class BaseDataQuery extends DataQuery {
 
+    protected final String connectionString;
+
     private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
 
     static {
         converterFactory.register(DateParameterConverter.class, Date.class);
     }
 
-    protected BaseDataQuery(BaseDataSource source, String sensorName) {
+    protected BaseDataQuery(CreoDiasDataSource source, String sensorName, String connectionString) {
         super(source, sensorName);
         this.sensorName = sensorName;
+        this.connectionString = connectionString;
     }
 
     @Override
@@ -69,7 +72,7 @@ public abstract class BaseDataQuery extends DataQuery {
                 params.add(new BasicNameValuePair("sortParam", "startDate"));
                 params.add(new BasicNameValuePair("sortOrder", "asc"));
                 params.addAll(query);
-                String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+                String queryUrl = this.connectionString + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 logger.fine(String.format("Executing query: %s", queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
@@ -107,7 +110,7 @@ public abstract class BaseDataQuery extends DataQuery {
         long count = 0;
         List<List<BasicNameValuePair>> queries = buildQueriesParams();
         final int size = queries.size();
-        final String countUrl = this.source.getConnectionString();
+        final String countUrl = this.connectionString;
         if (countUrl != null) {
             for (List<BasicNameValuePair> query : queries) {
                 List<NameValuePair> params = new ArrayList<>();

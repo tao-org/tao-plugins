@@ -1,13 +1,13 @@
 package ro.cs.tao.datasource.remote.mundi.sentinel1;
 
 import ro.cs.tao.datasource.remote.mundi.BaseDataQuery;
-import ro.cs.tao.datasource.remote.mundi.BaseDataSource;
+import ro.cs.tao.datasource.remote.mundi.MundiDataSource;
 import ro.cs.tao.datasource.remote.mundi.parsers.Sentinel1ResponseHandler;
 
 public class Sentinel1Query extends BaseDataQuery {
 
-    public Sentinel1Query(BaseDataSource source) {
-        super(source, "Sentinel1");
+    public Sentinel1Query(MundiDataSource source, String sensorName, String connectionString) {
+        super(source, sensorName, connectionString);
     }
 
     @Override
