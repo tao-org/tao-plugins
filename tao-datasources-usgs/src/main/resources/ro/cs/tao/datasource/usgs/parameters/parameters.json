@@ -1,6 +1,6 @@
-["java.util.Collections$UnmodifiableMap", {
-  "Landsat8": ["java.util.Map", {
-    "platformName": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+{
+  "Landsat8": {
+    "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
       "label": "Dataset",
@@ -9,9 +9,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "startDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "startDate": {
       "name": "startDate",
       "remoteName": "startDate",
       "label": "Start Date",
@@ -20,9 +19,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "endDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "endDate": {
       "name": "endDate",
       "remoteName": "endDate",
       "label": "End Date",
@@ -31,9 +29,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "footprint": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "footprint": {
       "name": "footprint",
       "remoteName": "spatialFilter",
       "label": "Area of Interest",
@@ -42,9 +39,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "minClouds": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "minClouds": {
       "name": "minClouds",
       "remoteName": "minCloudCover",
       "label": "Minimum Cloud Cover",
@@ -53,9 +49,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "maxClouds": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "maxClouds": {
       "name": "maxClouds",
       "remoteName": "maxCloudCover",
       "label": "Maximum Cloud Cover",
@@ -64,9 +59,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "row": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "row": {
       "name": "row",
       "remoteName": "WRS Row",
       "label": "Row",
@@ -75,9 +69,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "path": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "path": {
       "name": "path",
       "remoteName": "WRS Path",
       "label": "Path",
@@ -86,9 +79,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "tileId": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "tileId": {
       "name": "tileId",
       "remoteName": "row_path",
       "label": "Row and Path",
@@ -97,9 +89,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "productIdentifier": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "productIdentifier": {
       "name": "productIdentifier",
       "remoteName": "Landsat Product Identifier",
       "label": "Product",
@@ -108,20 +99,16 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "productType": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "productType": {
       "name": "productType",
       "remoteName": "Data Type Level-1",
       "label": "Product Type",
       "type": "java.lang.String",
       "defaultValue": "L1TP",
       "required": false,
-      "valueSet": ["[Ljava.lang.String;", ["L1TP", "L1GT", "L1GS"]],
+      "valueSet": ["L1TP", "L1GT", "L1GS"],
       "order": 0
     }
-    ]
   }
-  ]
 }
-]
