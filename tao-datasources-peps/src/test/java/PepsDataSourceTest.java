@@ -1,8 +1,9 @@
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
-import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.param.QueryParameter;
+import ro.cs.tao.datasource.remote.DownloadStrategy;
+import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.peps.Collection;
 import ro.cs.tao.datasource.remote.peps.PepsDataSource;
 import ro.cs.tao.eodata.EOProduct;
@@ -43,14 +44,14 @@ public class PepsDataSourceTest {
 
             DataQuery query = dataSource.createQuery(sensors[1]);
             query.addParameter("collection", Collection.S2ST.toString());
-            query.addParameter("platform", "S2A");
+            query.addParameter("platformName", "S2A");
 
-            QueryParameter begin = query.createParameter("startDate", Date.class);
+            QueryParameter<Date> begin = query.createParameter("startDate", Date.class);
             begin.setValue(Date.from(LocalDateTime.of(2017, 12, 1, 0, 0, 0, 0)
                                                 .atZone(ZoneId.systemDefault())
                                                 .toInstant()));
             query.addParameter(begin);
-            QueryParameter end = query.createParameter("completionDate", Date.class);
+            QueryParameter<Date> end = query.createParameter("endDate", Date.class);
             end.setValue(Date.from(LocalDateTime.of(2017, 12, 6, 0, 0, 0, 0)
                                                 .atZone(ZoneId.systemDefault())
                                                 .toInstant()));
@@ -64,9 +65,9 @@ public class PepsDataSourceTest {
             QueryParameter aoiParam = query.createParameter("box", Polygon2D.class);
             aoiParam.setValue(aoi);
             query.addParameter(aoiParam);*/
-            query.addParameter("tileid", "34TFP");
+            query.addParameter("tileId", "34TFP");
 
-            query.addParameter("cloudCover", 100.);
+            query.addParameter("cloudCover", 100);
             query.setPageSize(20);
             query.setMaxResults(2);
 
@@ -81,11 +82,12 @@ public class PepsDataSourceTest {
                 System.out.println("LOCATION=" + r.getLocation());
                 System.out.println("FOOTPRINT=" + r.getGeometry());
                 System.out.println("Attributes ->");
-                r.getAttributes().stream()
+                r.getAttributes()
                   .forEach(a -> System.out.println("\tName='" + a.getName() +
                     "', value='" + a.getValue() + "'"));
             });
-            final ProductFetchStrategy strategy = dataSource.getProductFetchStrategy("Sentinel2");
+            final DownloadStrategy strategy = (DownloadStrategy) dataSource.getProductFetchStrategy("Sentinel2");
+            strategy.setFetchMode(FetchMode.OVERWRITE);
             results.forEach(r -> {
                 try {
                     strategy.fetch(r);
