@@ -1,39 +1,36 @@
-["java.util.Collections$UnmodifiableMap", {
-  "Sentinel1": ["java.util.Map", {
-    "processingLevel": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+{
+  "Sentinel1": {
+    "processingLevel": {
       "name": "processingLevel",
       "remoteName": "processingLevel",
       "label": "Processing Level",
       "type": "java.lang.String",
       "defaultValue": "LEVEL1",
       "required": false,
-      "valueSet": ["[Ljava.lang.String;", ["LEVEL0", "LEVEL1", "LEVEL2"]],
+      "valueSet": ["LEVEL0", "LEVEL1", "LEVEL2"],
       "order": 0
-    }
-    ],
-    "productType": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "productType": {
       "name": "productType",
       "remoteName": "productType",
       "label": "Product Type",
       "type": "java.lang.String",
       "defaultValue": "SLC",
       "required": false,
-      "valueSet": ["[Ljava.lang.String;", ["GRD", "OCN", "RAW", "SLC"]],
+      "valueSet": ["GRD", "OCN", "RAW", "SLC"],
       "order": 0
-    }
-    ],
-    "sensorMode": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "sensorMode": {
       "name": "sensorMode",
       "remoteName": "sensorMode",
       "label": "Sensor Mode",
       "type": "java.lang.String",
       "defaultValue": "IW",
       "required": false,
-      "valueSet": ["[Ljava.lang.String;", ["EW", "IW", "SM", "WV"]],
+      "valueSet": ["EW", "IW", "SM", "WV"],
       "order": 0
-    }
-    ],
-    "orbitDirection": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "orbitDirection": {
       "name": "orbitDirection",
       "remoteName": "orbitDirection",
       "label": "Orbit Direction",
@@ -42,9 +39,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "relativeOrbit": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "relativeOrbit": {
       "name": "relativeOrbit",
       "remoteName": "orbitNumber",
       "label": "Relative Orbit",
@@ -53,9 +49,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "startDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "startDate": {
       "name": "startDate",
       "remoteName": "startDate",
       "label": "Start Date",
@@ -64,9 +59,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "endDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "endDate": {
       "name": "endDate",
       "remoteName": "completionDate",
       "label": "End Date",
@@ -75,9 +69,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "footprint": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "footprint": {
       "name": "footprint",
       "remoteName": "geometry",
       "label": "Area of Interest",
@@ -86,9 +79,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "polarisation": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "polarisation": {
       "name": "polarisation",
       "remoteName": "polarisation",
       "label": "Polarisation",
@@ -98,8 +90,5 @@
       "valueSet": null,
       "order": 0
     }
-    ]
   }
-  ]
 }
-]
