@@ -45,6 +45,7 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
         metadata.setProductType("Sentinel2");
         metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
         metadata.setSize(FileUtilities.folderSize(productFolderPath));
+        metadata.addAttribute("relativeOrbit", helper.getOrbit());
         Path metadataPath = productFolderPath.resolve(helper.getGranuleFolder(helper.getTileIdentifier())).resolve(metadataFileName);
         try {
             readDocument(metadataPath);
