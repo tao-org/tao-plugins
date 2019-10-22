@@ -40,9 +40,7 @@ import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
-import ro.cs.tao.datasource.remote.creodias.landsat8.Landsat8DataSource;
-import ro.cs.tao.datasource.remote.creodias.sentinel1.Sentinel1DataSource;
-import ro.cs.tao.datasource.remote.creodias.sentinel2.Sentinel2DataSource;
+import ro.cs.tao.datasource.remote.creodias.CreoDiasDataSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
@@ -104,10 +102,10 @@ public class CreoDiasDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
-            DataSource dataSource = new Sentinel2DataSource();
+            DataSource dataSource = new CreoDiasDataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
-            DataQuery query = dataSource.createQuery(sensors[0]);
+            DataQuery query = dataSource.createQuery("Sentinel2");
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
@@ -124,10 +122,10 @@ public class CreoDiasDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
-            DataSource dataSource = new Sentinel2DataSource();
+            DataSource dataSource = new CreoDiasDataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
-            DataQuery query = dataSource.createQuery(sensors[0]);
+            DataQuery query = dataSource.createQuery("Sentinel2");
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
@@ -147,10 +145,10 @@ public class CreoDiasDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
-            DataSource dataSource = new Sentinel1DataSource();
+            DataSource dataSource = new CreoDiasDataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
-            DataQuery query = dataSource.createQuery(sensors[0]);
+            DataQuery query = dataSource.createQuery("Sentinel1");
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
@@ -167,10 +165,10 @@ public class CreoDiasDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel1DataSource.class.getName());
-            DataSource dataSource = new Sentinel1DataSource();
+            DataSource dataSource = new CreoDiasDataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
-            DataQuery query = dataSource.createQuery(sensors[0]);
+            DataQuery query = dataSource.createQuery("Sentinel1");
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
@@ -190,10 +188,10 @@ public class CreoDiasDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
-            DataSource dataSource = new Landsat8DataSource();
+            DataSource dataSource = new CreoDiasDataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
-            DataQuery query = dataSource.createQuery(sensors[0]);
+            DataQuery query = dataSource.createQuery("Landsat8");
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
@@ -210,10 +208,10 @@ public class CreoDiasDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel1DataSource.class.getName());
-            DataSource dataSource = new Landsat8DataSource();
+            DataSource dataSource = new CreoDiasDataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
-            DataQuery query = dataSource.createQuery(sensors[0]);
+            DataQuery query = dataSource.createQuery("Landsat8");
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
