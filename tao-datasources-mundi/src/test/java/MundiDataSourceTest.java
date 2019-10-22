@@ -40,6 +40,8 @@ import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
+import ro.cs.tao.datasource.remote.DownloadStrategy;
+import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.mundi.landsat8.Landsat8DataSource;
 import ro.cs.tao.datasource.remote.mundi.sentinel1.Sentinel1DataSource;
 import ro.cs.tao.datasource.remote.mundi.sentinel2.Sentinel2DataSource;
@@ -90,12 +92,12 @@ public class MundiDataSourceTest {
     }
 
     public static void main(String[] args) {
-        /*Sentinel2_Count_Test();
+        Sentinel2_Count_Test();
         Sentinel2_Test();
-        Sentinel1_Count_Test();*/
+        Sentinel1_Count_Test();
         Sentinel1_Test();
-        /*Landsat8_Count_Test();
-        Landsat8_Test();*/
+        Landsat8_Count_Test();
+        Landsat8_Test();
     }
 
     public static void Sentinel2_Count_Test() {
@@ -136,6 +138,9 @@ public class MundiDataSourceTest {
             results.forEach(r -> {
                 System.out.println(String.format(rowTemplate, r.getId(), r.getName(), r.getLocation()));
             });
+            DownloadStrategy downloadStrategy= (DownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
+            downloadStrategy.setFetchMode(FetchMode.OVERWRITE);
+            Path path = downloadStrategy.fetch(results.get(0));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -223,6 +228,9 @@ public class MundiDataSourceTest {
             results.forEach(r -> {
                 System.out.println(String.format(rowTemplate, r.getId(), r.getName(), r.getLocation()));
             });
+            DownloadStrategy downloadStrategy= (DownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
+            downloadStrategy.setFetchMode(FetchMode.OVERWRITE);
+            Path path = downloadStrategy.fetch(results.get(0));
         } catch (Exception e) {
             e.printStackTrace();
         }
