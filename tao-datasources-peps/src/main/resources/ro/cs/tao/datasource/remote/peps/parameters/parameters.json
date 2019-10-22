@@ -1,6 +1,6 @@
-["java.util.Collections$UnmodifiableMap", {
-  "Sentinel1": ["java.util.Map", {
-    "collection": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+{
+  "Sentinel1": {
+    "collection": {
       "name": "collection",
       "remoteName": "collection",
       "label": "Collection",
@@ -9,9 +9,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "platformName": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "platformName": {
       "name": "platformName",
       "remoteName": "platform",
       "label": "Satellite",
@@ -20,9 +19,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "instrument": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "instrument": {
       "name": "instrument",
       "remoteName": "instrument",
       "label": "Instrument",
@@ -31,9 +29,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "processingLevel": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "processingLevel": {
       "name": "processingLevel",
       "remoteName": "processingLevel",
       "label": "Processing Level",
@@ -42,9 +39,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "productType": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "productType": {
       "name": "productType",
       "remoteName": "productType",
       "label": "Product Type",
@@ -53,9 +49,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "sensorMode": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "sensorMode": {
       "name": "sensorMode",
       "remoteName": "sensorMode",
       "label": "Sensor Mode",
@@ -64,9 +59,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "orbitDirection": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "orbitDirection": {
       "name": "orbitDirection",
       "remoteName": "orbitDirection",
       "label": "Orbit Direction",
@@ -75,9 +69,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "orbit": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "orbit": {
       "name": "orbit",
       "remoteName": "orbit",
       "label": "Absolute Orbit",
@@ -86,9 +79,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "relativeOrbit": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "relativeOrbit": {
       "name": "relativeOrbit",
       "remoteName": "relativeOrbitNumber",
       "label": "Relative Orbit",
@@ -97,9 +89,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "isNrt": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "isNrt": {
       "name": "isNrt",
       "remoteName": "isNrt",
       "label": "NRT Product",
@@ -108,9 +99,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "startDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "startDate": {
       "name": "startDate",
       "remoteName": "startDate",
       "label": "Start Date",
@@ -119,9 +109,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "endDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "endDate": {
       "name": "endDate",
       "remoteName": "completionDate",
       "label": "End Date",
@@ -130,9 +119,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "footprint": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "footprint": {
       "name": "footprint",
       "remoteName": "box",
       "label": "Area of Interest",
@@ -141,9 +129,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "polarisation": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "polarisation": {
       "name": "polarisation",
       "remoteName": "polarisation",
       "label": "Polarisation",
@@ -153,11 +140,9 @@
       "valueSet": null,
       "order": 0
     }
-    ]
-  }
-  ],
-  "Sentinel2": ["java.util.Map", {
-    "collection": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+  },
+  "Sentinel2": {
+    "collection": {
       "name": "collection",
       "remoteName": "collection",
       "label": "Collection",
@@ -166,9 +151,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "platformName": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "platformName": {
       "name": "platformName",
       "remoteName": "platform",
       "label": "Satellite",
@@ -177,9 +161,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "instrument": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "instrument": {
       "name": "instrument",
       "remoteName": "instrument",
       "label": "Instrument",
@@ -188,9 +171,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "processingLevel": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "processingLevel": {
       "name": "processingLevel",
       "remoteName": "processingLevel",
       "label": "Processing Level",
@@ -199,9 +181,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "productType": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "productType": {
       "name": "productType",
       "remoteName": "productType",
       "label": "Product Type",
@@ -210,9 +191,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "sensorMode": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "sensorMode": {
       "name": "sensorMode",
       "remoteName": "sensorMode",
       "label": "Sensor Mode",
@@ -221,9 +201,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "orbitDirection": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "orbitDirection": {
       "name": "orbitDirection",
       "remoteName": "orbitDirection",
       "label": "Orbit Direction",
@@ -232,9 +211,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "orbit": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "orbit": {
       "name": "orbit",
       "remoteName": "orbit",
       "label": "Absolute Orbit",
@@ -243,9 +221,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "relativeOrbit": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "relativeOrbit": {
       "name": "relativeOrbit",
       "remoteName": "relativeOrbitNumber",
       "label": "Relative Orbit",
@@ -254,9 +231,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "isNrt": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "isNrt": {
       "name": "isNrt",
       "remoteName": "isNrt",
       "label": "NRT Product",
@@ -265,9 +241,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "startDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "startDate": {
       "name": "startDate",
       "remoteName": "startDate",
       "label": "Start Date",
@@ -276,9 +251,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "endDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "endDate": {
       "name": "endDate",
       "remoteName": "completionDate",
       "label": "End Date",
@@ -287,9 +261,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "footprint": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "footprint": {
       "name": "footprint",
       "remoteName": "box",
       "label": "Area of Interest",
@@ -298,9 +271,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "cloudCover": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "cloudCover": {
       "name": "cloudCover",
       "remoteName": "cloudCover",
       "label": "Cloud Cover",
@@ -309,9 +281,8 @@
       "required": false,
       "valueSet": null,
       "order": 0
-    }
-    ],
-    "tileId": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+    },
+    "tileId": {
       "name": "tileId",
       "remoteName": "tileid",
       "label": "UTM Tile",
@@ -321,8 +292,5 @@
       "valueSet": null,
       "order": 0
     }
-    ]
   }
-  ]
 }
-]
