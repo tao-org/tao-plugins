@@ -45,6 +45,7 @@ public class Landsat8MetadataInspector extends XmlMetadataInspector {
         metadata.setProductType("Landsat8");
         metadata.setAquisitionDate(LocalDate.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd")).atStartOfDay());
         metadata.setSize(FileUtilities.folderSize(productFolderPath));
+        metadata.addAttribute("relativeOrbit", helper.getOrbit());
         try {
             readDocument(productFolderPath.resolve(metadataFileName));
         } catch (Exception e) {

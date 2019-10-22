@@ -1,15 +1,15 @@
 package ro.cs.tao.datasource.remote.creodias.sentinel2;
 
 import ro.cs.tao.datasource.remote.creodias.BaseDataQuery;
-import ro.cs.tao.datasource.remote.creodias.BaseDataSource;
+import ro.cs.tao.datasource.remote.creodias.CreoDiasDataSource;
 import ro.cs.tao.datasource.remote.creodias.parsers.Sentinel2JsonResponseHandler;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.eodata.EOProduct;
 
 public class Sentinel2Query extends BaseDataQuery {
 
-    public Sentinel2Query(BaseDataSource source) {
-        super(source, "Sentinel2");
+    public Sentinel2Query(CreoDiasDataSource source, String sensorName, String connectionString) {
+        super(source, sensorName, connectionString);
     }
 
     @Override
@@ -18,6 +18,6 @@ public class Sentinel2Query extends BaseDataQuery {
     }
 
     @Override
-    public String defaultId() { return "CreoDIAS Sentinel-2 Query"; }
+    public String defaultId() { return "Creo DIAS Sentinel-2 Query"; }
 
 }

@@ -32,15 +32,18 @@ import java.util.*;
 
 public abstract class BaseDataQuery extends DataQuery {
 
+    protected final String connectionString;
+
     private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
 
     static {
         converterFactory.register(SimpleDateParameterConverter.class, Date.class);
     }
 
-    protected BaseDataQuery(BaseDataSource source, String sensorName) {
+    protected BaseDataQuery(MundiDataSource source, String sensorName, String connectionString) {
         super(source, sensorName);
         this.sensorName = sensorName;
+        this.connectionString = connectionString;
     }
 
     @Override
@@ -85,7 +88,7 @@ public abstract class BaseDataQuery extends DataQuery {
                 params.add(maxRecords);
                 params.add(new BasicNameValuePair("startIndex", String.valueOf((i - 1) * pageSize + 1)));
                 params.addAll(query);
-                final String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+                final String queryUrl = this.connectionString + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 logger.finest(String.format("Executing query: %s", queryUrl));
                 final List<EOProduct> tmpResults;
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
@@ -141,7 +144,7 @@ public abstract class BaseDataQuery extends DataQuery {
     protected long getCountImpl() {
         long count = 0;
         List<List<BasicNameValuePair>> queries = buildQueriesParams();
-        final String countUrl = this.source.getConnectionString();
+        final String countUrl = this.connectionString;
         if (countUrl != null) {
             for (List<BasicNameValuePair> query : queries) {
                 final List<NameValuePair> params = new ArrayList<>();

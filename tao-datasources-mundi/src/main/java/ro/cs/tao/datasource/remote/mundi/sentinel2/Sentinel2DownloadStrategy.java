@@ -17,7 +17,7 @@ package ro.cs.tao.datasource.remote.mundi.sentinel2;
 
 import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
-import ro.cs.tao.datasource.remote.mundi.BaseDataSource;
+import ro.cs.tao.datasource.remote.mundi.MundiDataSource;
 import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.L1CProductHelper;
@@ -126,7 +126,7 @@ public class Sentinel2DownloadStrategy extends DownloadStrategy {
     static {
         properties = new Properties();
         try {
-            properties.load(BaseDataSource.class.getResourceAsStream("mundi.properties"));
+            properties.load(MundiDataSource.class.getResourceAsStream("mundi.properties"));
         } catch (IOException ignored) {
         }
     }
