@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
  */
 public class SciHubDataQuery extends DataQuery {
 
-    private static final String PATTERN_DATE = "NOW";
+    //private static final String PATTERN_DATE = "NOW";
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
     private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
 
@@ -73,7 +73,7 @@ public class SciHubDataQuery extends DataQuery {
 
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
-        List<EOProduct> results = new ArrayList<>();
+        Map<String, EOProduct> results = new LinkedHashMap<>();
         Map<String, String> queries = buildQueriesParams();
         StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
@@ -85,9 +85,12 @@ public class SciHubDataQuery extends DataQuery {
         final int actualLimit = this.limit > 0 ? this.limit : DEFAULT_LIMIT;
         msgBuilder.setLength(0);
         if (this.pageSize <= 0) {
-            this.pageSize = Math.min(actualLimit, DEFAULT_LIMIT);
+            this.pageSize = Math.min(actualLimit, DEFAULT_PAGE_SIZE);
         } else {
             this.pageSize = Math.min(actualLimit, this.pageSize);
+        }
+        if (this.pageNumber == 1) {
+            this.pageNumber = -1;
         }
         int page = Math.max(this.pageNumber, 1);
         List<EOProduct> tmpResults;
@@ -125,26 +128,29 @@ public class SciHubDataQuery extends DataQuery {
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null) {
                                 count = tmpResults.size();
-                                if (hasProcessingDate && this.parameters.containsKey(CommonParameterNames.CLOUD_COVER)) {
-                                    final double clouds = Double.parseDouble(this.parameters.get(CommonParameterNames.CLOUD_COVER).getValue().toString());
-                                    tmpResults = tmpResults.stream()
-                                            .filter(r -> Double.parseDouble(r.getAttributeValue(isXml ? "cloudcoverpercentage" : "Cloud Cover Percentage")) <= clouds)
-                                            .collect(Collectors.toList());
-                                }
-                                for (EOProduct result : tmpResults) {
-                                    if (!results.contains(result)) {
-                                        if (hasProcessingDate) {
-                                            String dateString = SentinelProductHelper.create(result.getName()).getProcessingDate();
-                                            if (dateString != null) {
-                                                try {
-                                                    result.setProcessingDate(dateFormat.parse(dateString));
-                                                } catch (java.text.ParseException ignored) {
+                                if (count > 0) {
+                                    if (hasProcessingDate && this.parameters.containsKey(CommonParameterNames.CLOUD_COVER)) {
+                                        final double clouds = Double.parseDouble(this.parameters.get(CommonParameterNames.CLOUD_COVER).getValue().toString());
+                                        tmpResults = tmpResults.stream()
+                                                .filter(r -> Double.parseDouble(r.getAttributeValue(isXml ? "cloudcoverpercentage" : "Cloud Cover Percentage")) <= clouds)
+                                                .collect(Collectors.toList());
+                                    }
+                                    for (EOProduct result : tmpResults) {
+                                        if (!results.containsKey(result.getName())) {
+                                            if (hasProcessingDate) {
+                                                String dateString = SentinelProductHelper.create(result.getName()).getProcessingDate();
+                                                if (dateString != null) {
+                                                    try {
+                                                        result.setProcessingDate(dateFormat.parse(dateString));
+                                                    } catch (java.text.ParseException ignored) {
+                                                    }
                                                 }
                                             }
+                                            results.put(result.getName(), result);
                                         }
-                                        results.add(result);
                                     }
                                 }
+                                logger.info(String.format("Query %s page %d returned %s products", query.getKey(), i, tmpResults.size()));
                             }
                             break;
                         case 401:
@@ -156,19 +162,18 @@ public class SciHubDataQuery extends DataQuery {
                 } catch (IOException ex) {
                     throw new QueryException(ex);
                 }
-                logger.info(String.format("Query %s page %d returned %s products", query.getKey(), i, count));
                 i++;
-            } while (this.pageNumber == -1 && count > 0);
+            } while (this.pageNumber == -1 && count > 0 && results.size() < actualLimit);
         }
         logger.info(String.format("Query {%s-%s} returned %s products", this.source.getId(), this.sensorName, results.size()));
-        return results;
+        return new ArrayList<>(results.values());
     }
 
     @Override
     public long getCount() {
         long count = 0;
         Map<String, String> queries = buildQueriesParams();
-        final int size = queries.size();
+        //final int size = queries.size();
         final String countUrl = this.source.getProperty("scihub.search.count.url");
         if (countUrl != null) {
             for (Map.Entry<String, String> query : queries.entrySet()) {
