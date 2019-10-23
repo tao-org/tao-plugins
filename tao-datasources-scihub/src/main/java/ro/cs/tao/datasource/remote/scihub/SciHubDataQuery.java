@@ -85,7 +85,7 @@ public class SciHubDataQuery extends DataQuery {
         final int actualLimit = this.limit > 0 ? this.limit : DEFAULT_LIMIT;
         msgBuilder.setLength(0);
         if (this.pageSize <= 0) {
-            this.pageSize = Math.min(actualLimit, DEFAULT_LIMIT);
+            this.pageSize = Math.min(actualLimit, DEFAULT_PAGE_SIZE);
         } else {
             this.pageSize = Math.min(actualLimit, this.pageSize);
         }
