@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,15 +21,16 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 public class GenericQuicklookGenerator implements OutputDataHandler<Path> {
+    private static final String QUICKLOOK_EXTENSION = ".png";
     private static final Set<String> extensions = new HashSet<String>() {{
         add(".tif"); add(".tiff"); add(".nc"); add(".png"); add(".jpg"); add(".bmp");
     }};
     private static final String[] gdalOnPathCmd = new String[] {
-            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "$FULL_PATH", "$FULL_PATH.png"
+            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "$FULL_PATH", "$FULL_PATH" + QUICKLOOK_EXTENSION
     };
     private static final String[] gdalOnDocker = new String[] {
             "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt/data", "geodata/gdal",
-            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "/mnt/data/$FILE", "/mnt/data/$FILE.png"
+            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "/mnt/data/$FILE", "/mnt/data/$FILE" + QUICKLOOK_EXTENSION
     };
     private final Logger logger = Logger.getLogger(getClass().getName());
     @Override
@@ -39,21 +41,27 @@ public class GenericQuicklookGenerator implements OutputDataHandler<Path> {
 
     @Override
     public List<Path> handle(List<Path> list) throws DataHandlingException {
-        DebugOutputConsumer consumer = new DebugOutputConsumer();
+        final DebugOutputConsumer consumer = new DebugOutputConsumer();
+        final List<Path> results = new ArrayList<>();
         for (Path productFile : list) {
+            Path realPath = null;
             try {
-                Executor executor = initialize(productFile, DockerHelper.isDockerFound() ? gdalOnDocker : gdalOnPathCmd);
+                // At least on Windows, docker doesn't handle well folder symlinks in the path
+                realPath = FileUtilities.resolveSymLinks(productFile);
+                Executor executor = initialize(realPath, DockerHelper.isDockerFound() ? gdalOnDocker : gdalOnPathCmd);
                 if (executor != null) {
                     executor.setOutputConsumer(consumer);
                     executor.execute(false);
+                    realPath = Paths.get(realPath.toString() + ".png");
                 } else {
                     logger.warning(String.format("Quicklooks not supported for %s files", FileUtilities.getExtension(productFile)));
                 }
             } catch (Exception e) {
                 logger.severe(String.format("Cannot create quicklook for %s. Reason: %s", productFile, e.getMessage()));
             }
+            results.add(realPath);
         }
-        return list;
+        return results;
     }
 
     private Executor initialize(Path productPath, String[] args) throws IOException {
@@ -62,12 +70,10 @@ public class GenericQuicklookGenerator implements OutputDataHandler<Path> {
             return null;
         }
         List<String> arguments = new ArrayList<>();
-        // At least on Windows, docker doesn't handle well folder symlinks in the path
-        Path realPath = FileUtilities.resolveSymLinks(productPath);
         for (String arg : args) {
-            arguments.add(arg.replace("$FULL_PATH", realPath.toString())
-                                  .replace("$FOLDER", realPath.getParent().toString())
-                                  .replace("$FILE", realPath.getFileName().toString()));
+            arguments.add(arg.replace("$FULL_PATH", productPath.toString())
+                                  .replace("$FOLDER", productPath.getParent().toString())
+                                  .replace("$FILE", productPath.getFileName().toString()));
         }
         try {
             return ProcessExecutor.create(ExecutorType.PROCESS,
