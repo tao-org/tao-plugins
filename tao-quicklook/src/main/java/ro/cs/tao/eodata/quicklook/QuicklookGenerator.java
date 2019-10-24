@@ -48,11 +48,11 @@ public class QuicklookGenerator implements OutputDataHandler<EOProduct> {
         add(".tif"); add(".tiff"); add(".nc"); add(".png"); add(".jpg"); add(".bmp");
     }};
     private static final String[] gdalOnPathCmd = new String[] {
-            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "10%", "10%", "-b", "1", "$FULL_PATH", "$FULL_PATH.png"
+            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "$FULL_PATH", "$FULL_PATH.png"
     };
     private static final String[] gdalOnDocker = new String[] {
             "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt/data", "geodata/gdal",
-            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "10%", "10%", "-b", "1", "/mnt/data/$FILE", "/mnt/data/$FILE.png"
+            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "/mnt/data/$FILE", "/mnt/data/$FILE.png"
     };
     private final Logger logger = Logger.getLogger(getClass().getName());
 
