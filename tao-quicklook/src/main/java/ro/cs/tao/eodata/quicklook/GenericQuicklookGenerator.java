@@ -1,0 +1,80 @@
+package ro.cs.tao.eodata.quicklook;
+
+import ro.cs.tao.eodata.DataHandlingException;
+import ro.cs.tao.eodata.OutputDataHandler;
+import ro.cs.tao.utils.DockerHelper;
+import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.executors.DebugOutputConsumer;
+import ro.cs.tao.utils.executors.Executor;
+import ro.cs.tao.utils.executors.ExecutorType;
+import ro.cs.tao.utils.executors.ProcessExecutor;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
+
+public class GenericQuicklookGenerator implements OutputDataHandler<Path> {
+    private static final Set<String> extensions = new HashSet<String>() {{
+        add(".tif"); add(".tiff"); add(".nc"); add(".png"); add(".jpg"); add(".bmp");
+    }};
+    private static final String[] gdalOnPathCmd = new String[] {
+            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "$FULL_PATH", "$FULL_PATH.png"
+    };
+    private static final String[] gdalOnDocker = new String[] {
+            "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt/data", "geodata/gdal",
+            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "/mnt/data/$FILE", "/mnt/data/$FILE.png"
+    };
+    private final Logger logger = Logger.getLogger(getClass().getName());
+    @Override
+    public Class<Path> isIntendedFor() { return Path.class; }
+
+    @Override
+    public int getPriority() { return 1; }
+
+    @Override
+    public List<Path> handle(List<Path> list) throws DataHandlingException {
+        DebugOutputConsumer consumer = new DebugOutputConsumer();
+        for (Path productFile : list) {
+            try {
+                Executor executor = initialize(productFile, DockerHelper.isDockerFound() ? gdalOnDocker : gdalOnPathCmd);
+                if (executor != null) {
+                    executor.setOutputConsumer(consumer);
+                    executor.execute(false);
+                } else {
+                    logger.warning(String.format("Quicklooks not supported for %s files", FileUtilities.getExtension(productFile)));
+                }
+            } catch (Exception e) {
+                logger.severe(String.format("Cannot create quicklook for %s. Reason: %s", productFile, e.getMessage()));
+            }
+        }
+        return list;
+    }
+
+    private Executor initialize(Path productPath, String[] args) throws IOException {
+        String extension = FileUtilities.getExtension(productPath);
+        if (!extensions.contains(extension.toLowerCase())) {
+            return null;
+        }
+        List<String> arguments = new ArrayList<>();
+        // At least on Windows, docker doesn't handle well folder symlinks in the path
+        Path realPath = FileUtilities.resolveSymLinks(productPath);
+        for (String arg : args) {
+            arguments.add(arg.replace("$FULL_PATH", realPath.toString())
+                                  .replace("$FOLDER", realPath.getParent().toString())
+                                  .replace("$FILE", realPath.getFileName().toString()));
+        }
+        try {
+            return ProcessExecutor.create(ExecutorType.PROCESS,
+                                          InetAddress.getLocalHost().getHostName(),
+                                          arguments);
+        } catch (UnknownHostException e) {
+            throw new IOException(e);
+        }
+    }
+}

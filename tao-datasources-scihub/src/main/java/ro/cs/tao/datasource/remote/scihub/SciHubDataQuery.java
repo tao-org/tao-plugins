@@ -27,6 +27,7 @@ import ro.cs.tao.datasource.converters.ConverterFactory;
 import ro.cs.tao.datasource.converters.DateParameterConverter;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
+import ro.cs.tao.datasource.remote.ProductHelper;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
@@ -39,6 +40,7 @@ import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
 
@@ -75,6 +77,7 @@ public class SciHubDataQuery extends DataQuery {
     protected List<EOProduct> executeImpl() throws QueryException {
         Map<String, EOProduct> results = new LinkedHashMap<>();
         Map<String, String> queries = buildQueriesParams();
+        final boolean isS2 = "Sentinel-2".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
         StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
         for (String queryId : queries.keySet()) {
@@ -135,10 +138,19 @@ public class SciHubDataQuery extends DataQuery {
                                                 .filter(r -> Double.parseDouble(r.getAttributeValue(isXml ? "cloudcoverpercentage" : "Cloud Cover Percentage")) <= clouds)
                                                 .collect(Collectors.toList());
                                     }
+                                    ProductHelper productHelper;
                                     for (EOProduct result : tmpResults) {
                                         if (!results.containsKey(result.getName())) {
+                                            productHelper = SentinelProductHelper.create(result.getName());
+                                            if (isS2) {
+                                                if (result.getAttributeValue("tileid") == null) {
+                                                    result.addAttribute("tiles", ((Sentinel2ProductHelper) productHelper).getTileIdentifier());
+                                                } else {
+                                                    result.addAttribute("tiles", result.getAttributeValue("tileid"));
+                                                }
+                                            }
                                             if (hasProcessingDate) {
-                                                String dateString = SentinelProductHelper.create(result.getName()).getProcessingDate();
+                                                String dateString = productHelper.getProcessingDate();
                                                 if (dateString != null) {
                                                     try {
                                                         result.setProcessingDate(dateFormat.parse(dateString));

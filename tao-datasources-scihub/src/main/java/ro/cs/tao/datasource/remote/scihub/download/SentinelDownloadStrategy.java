@@ -126,7 +126,7 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
     @Override
     protected Path link(EOProduct product, Path sourceRoot, Path targetRoot) throws IOException {
         Path path = super.link(product, sourceRoot, targetRoot);
-        if (path != null) {
+        if (path != null && product.getAttributeValue("tiles") == null) {
             ProductHelper helper = SentinelProductHelper.create(product.getName());
             if (helper instanceof Sentinel2ProductHelper) {
                 Sentinel2ProductHelper s2Helper = (Sentinel2ProductHelper) helper;
