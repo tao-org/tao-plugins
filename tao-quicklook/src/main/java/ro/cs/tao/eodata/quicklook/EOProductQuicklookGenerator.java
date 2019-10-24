@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  *
  * @author Cosmin Cara
  */
-public class QuicklookGenerator implements OutputDataHandler<EOProduct> {
+public class EOProductQuicklookGenerator implements OutputDataHandler<EOProduct> {
     private static final Set<String> extensions = new HashSet<String>() {{
         add(".tif"); add(".tiff"); add(".nc"); add(".png"); add(".jpg"); add(".bmp");
     }};
