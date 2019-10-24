@@ -191,13 +191,17 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
 
     @Override
     protected Path link(EOProduct product) throws IOException {
-        String productName = product.getName();
         String localArchiveRoot = getLocalArchiveRoot();
         if (localArchiveRoot == null) {
             throw new IllegalArgumentException("Local archive root not set");
         }
-        Path productRepositoryPath = Paths.get(localArchiveRoot);
-        Path destinationPath = FileUtilities.ensureExists(Paths.get(destination, productName + ".SAFE"));
+        return link(product, Paths.get(getLocalArchiveRoot()), Paths.get(destination));
+    }
+
+    @Override
+    protected Path link(EOProduct product, Path productRepositoryPath, Path destination) throws IOException {
+        String productName = product.getName();
+        Path destinationPath = FileUtilities.ensureExists(destination.resolve(productName + ".SAFE"));
         Path productSourcePath = findProductPath(productRepositoryPath, product);
         if (productSourcePath == null) {
             logger.warning(String.format("%s not found locally", productName));
@@ -215,30 +219,9 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                 currentProduct.addAttribute("tiles", String.join(",", tileNames));
                 FileUtilities.link(productSourcePath, destinationPath,
                                    folder -> !folder.toString().contains("GRANULE") ||
-                                          "GRANULE".equals(folder.getName(folder.getNameCount() - 1).toString()) ||
-                                          tileNames.stream().anyMatch(tn -> folder.toString().contains(tn)),
+                                           "GRANULE".equals(folder.getName(folder.getNameCount() - 1).toString()) ||
+                                           tileNames.stream().anyMatch(tn -> folder.toString().contains(tn)),
                                    null);
-                /*List<Path> folders = FileUtilities.listFolders(productSourcePath);
-                final Path destPath = destinationPath;
-                folders.stream()
-                        .filter(folder -> !folder.toString().contains("GRANULE") ||
-                                "GRANULE".equals(folder.getName(folder.getNameCount() - 1).toString()) ||
-                                tileNames.stream().anyMatch(tn -> folder.toString().contains(tn)))
-                        .forEach(folder -> {
-                            try {
-                                FileUtilities.ensureExists(destPath.resolve(productSourcePath.relativize(folder)));
-                                FileUtilities.listFiles(folder)
-                                        .forEach(file -> {
-                                            try {
-                                                linkFile(file, destPath.resolve(productSourcePath.relativize(file)));
-                                            } catch (IOException e) {
-                                                logger.warning(e.getMessage());
-                                            }
-                                        });
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        });*/
             } else {
                 Files.deleteIfExists(metadataFile);
                 logger.warning(String.format("The product %s did not contain any tiles from the tile list", productName));
@@ -246,7 +229,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
             }
         } else {
             logger.warning(String.format("Either the product %s was not found or the metadata file could not be downloaded",
-                    productName));
+                                         productName));
             destinationPath = null;
         }
         return destinationPath;
@@ -257,7 +240,6 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
         String url;
         FileUtilities.ensureExists(Paths.get(destination));
         String productName = product.getName();
-        //boolean isL1C = "Level-1C".equals(product.getAttributeValue("processinglevel"));
         Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(productName);
         String metadataFileName = helper.getMetadataFileName();
         boolean isL1C = helper instanceof L1CProductHelper;
