@@ -101,7 +101,7 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                      * To solve this issue, we try a second connection to amazon URL (which already contains the authentication token) without providing
                      * the authentication header.
                      */
-                    //get the last connection URL (which didn't succeeded.
+                    //get the last connection URL (which didn't succeeded).
                     URL downloadUrl = connection.getURL();
                     //try to reconnect without providing authentication header
                     HttpURLConnection downloadConnection = NetUtils.openConnection(downloadUrl.toString());
@@ -145,8 +145,13 @@ public class AsfDownloadStrategy extends DownloadStrategy {
             FileUtilities.ensureExists(Paths.get(destination));
             Files.deleteIfExists(archivePath);
             SeekableByteChannel outputStream = null;
-            long length = connection.getContentLength();
             long size = currentProduct.getApproximateSize();
+            long length = connection.getContentLength();
+            if(length == -1){
+                //try to get the length from header
+                length = connection.getHeaderFieldLong("Content-Length", size);
+            }
+
             if (size > length) {
                 Path existingProduct = Paths.get(destination, product.getName() + ".SAFE");
                 if (Files.exists(existingProduct)) {
