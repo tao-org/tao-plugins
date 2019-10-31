@@ -42,7 +42,7 @@
     },
     "productType": {
       "name": "productType",
-      "remoteName": "productType",
+      "remoteName": "processingLevel",
       "label": "Product Type",
       "type": "java.lang.String",
       "defaultValue": "SLC",
@@ -52,7 +52,7 @@
     },
     "polarisation": {
       "name": "polarisation",
-      "remoteName": "polarisation",
+      "remoteName": "polarization",
       "label": "Polarisation",
       "type": "java.lang.String",
       "defaultValue": "VV+VH",
