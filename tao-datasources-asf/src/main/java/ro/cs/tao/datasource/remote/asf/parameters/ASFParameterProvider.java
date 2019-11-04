@@ -18,7 +18,6 @@ package ro.cs.tao.datasource.remote.asf.parameters;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
-import ro.cs.tao.datasource.remote.SimpleArchiveDownloadStrategy;
 import ro.cs.tao.datasource.remote.asf.download.AsfDownloadStrategy;
 
 import java.util.*;
@@ -32,9 +31,8 @@ public class ASFParameterProvider extends AbstractParameterProvider {
             final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
             productFetchers = Collections.unmodifiableMap(
                     new HashMap<String, ProductFetchStrategy>() {{
-                        put("Sentinel1",
-                                new AsfDownloadStrategy(targetFolder,
-                                        new Properties() {{ put("auto.uncompress", "false"); }}));
+                        put("Sentinel1", new AsfDownloadStrategy(targetFolder, new Properties() {{ put("auto.uncompress", "false"); }}));
+                        put("ALOS", new AsfDownloadStrategy(targetFolder, new Properties() {{ put("auto.uncompress", "false"); }}));
                     }});
         }
     }
