@@ -47,6 +47,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
             return Arrays.stream(results[0]).map(r -> {
                 try {
                     EOProduct product = new EOProduct();
+                    product.setProductType(r.getPlatform());
                     product.setName(r.getProductName());
                     product.setId(r.getFileId());
                     product.setFormatType(DataFormat.RASTER);
@@ -68,9 +69,12 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                         String[] sensorAttributes = sensor.split(" ");
                         String sensorName = sensorAttributes[0].toLowerCase();
                         String instrument = sensorAttributes[1];
+                        //overwrite the producttype
                         product.setProductType(sensorName);
-                        product.addAttribute("instrument", instrument);
+                        //add sensor attribute
                         product.addAttribute("instrumentshortname", instrument);
+                    } else {
+                        product.addAttribute("instrumentshortname", sensor);
                     }
 
                     //add some attributes

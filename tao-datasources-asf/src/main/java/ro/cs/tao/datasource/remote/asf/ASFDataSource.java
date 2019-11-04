@@ -9,23 +9,23 @@ import java.net.URISyntaxException;
 import java.util.Base64;
 import java.util.Properties;
 
-public class ASFSentinel1DataSource extends URLDataSource<ASFSentinel1Query> {
+public class ASFDataSource extends URLDataSource<ASFQuery> {
     private static final Properties props;
     private static String URL;
 
     static {
         props = new Properties();
         try {
-            props.load(ASFSentinel1DataSource.class.getResourceAsStream("asf.properties"));
+            props.load(ASFDataSource.class.getResourceAsStream("asf.properties"));
             URL = props.getProperty("asf.search.url");
         } catch (IOException ignored) {
         }
     }
 
-    public ASFSentinel1DataSource() throws URISyntaxException {
+    public ASFDataSource() throws URISyntaxException {
         super(URL);
         setParameterProvider(new ASFParameterProvider());
-        this.properties = ASFSentinel1DataSource.props;
+        this.properties = ASFDataSource.props;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ASFSentinel1DataSource extends URLDataSource<ASFSentinel1Query> {
     }
 
     @Override
-    protected ASFSentinel1Query createQueryImpl(String code) {
-        return new ASFSentinel1Query(this);
+    protected ASFQuery createQueryImpl(String sensorName) {
+        return new ASFQuery(this, sensorName);
     }
 }
