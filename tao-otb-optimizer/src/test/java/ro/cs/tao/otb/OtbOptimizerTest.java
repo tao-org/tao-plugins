@@ -3,6 +3,7 @@ package ro.cs.tao.otb;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSourceResolvable;
@@ -90,6 +91,11 @@ public class OtbOptimizerTest {
             }
 
             @Override
+            public String[] getBeanNamesForType(ResolvableType resolvableType, boolean b, boolean b1) {
+                return new String[0];
+            }
+
+            @Override
             public String[] getBeanNamesForType(Class<?> aClass) {
                 return new String[0];
             }
@@ -159,6 +165,16 @@ public class OtbOptimizerTest {
             }
 
             @Override
+            public <T> ObjectProvider<T> getBeanProvider(Class<T> aClass) {
+                return null;
+            }
+
+            @Override
+            public <T> ObjectProvider<T> getBeanProvider(ResolvableType resolvableType) {
+                return null;
+            }
+
+            @Override
             public boolean containsBean(String s) {
                 return false;
             }
@@ -185,6 +201,11 @@ public class OtbOptimizerTest {
 
             @Override
             public Class<?> getType(String s) throws NoSuchBeanDefinitionException {
+                return null;
+            }
+
+            @Override
+            public Class<?> getType(String s, boolean b) throws NoSuchBeanDefinitionException {
                 return null;
             }
 
