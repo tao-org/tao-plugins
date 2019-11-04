@@ -39,6 +39,9 @@ import java.util.*;
  * @author Valentin Netoiu
  */
 public class AsfDownloadStrategy extends DownloadStrategy {
+    private static final String ZIP_EXTENSION = ".zip";
+    private static final String TAR_GZ_EXTENSION = ".tar.gz";
+    private static final String KMZ_EXTENSION = ".kmz";
     private static final long DOWNLOAD_TIMEOUT = 30000; // 30s
     private Timer timeoutTimer;
 
@@ -130,15 +133,8 @@ public class AsfDownloadStrategy extends DownloadStrategy {
     protected Path downloadProduct(EOProduct product, HttpURLConnection connection) throws IOException {
         Path productFile;
         try {
-            String extension;
             String productUrl = getProductUrl(product);
-            // It is possible that, for archives, the query string of the URL to contain some authentication/redirection tokens
-            if (productUrl.indexOf('?') > 0) {
-                String trimmedUrl = productUrl.substring(0, productUrl.indexOf('?'));
-                extension = trimmedUrl.endsWith(".zip") ? ".zip" : trimmedUrl.endsWith(".tar.gz") ? ".tar.gz" : "";
-            } else {
-                extension = productUrl.endsWith(".zip") ? ".zip" : productUrl.endsWith(".tar.gz") ? ".tar.gz" : "";
-            }
+            String extension = getExtensionFromUrl(productUrl);
             boolean isArchive = !extension.isEmpty();
             subActivityStart(product.getName());
             Path archivePath = Paths.get(destination, product.getName() + extension);
@@ -242,5 +238,27 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                 Zipper.decompressZip(archivePath, targetPath, true);
         logger.fine(String.format("Decompression of %s completed", archivePath.getFileName()));
         return result;
+    }
+
+    protected String getExtensionFromUrl(String url){
+        String normalizedUrl = url;
+        if (url.indexOf('?') > 0) {
+            normalizedUrl = url.substring(0, url.indexOf('?'));
+        }
+        if(normalizedUrl.toLowerCase().endsWith(ZIP_EXTENSION)){
+            return ZIP_EXTENSION;
+        } else if(normalizedUrl.toLowerCase().endsWith(TAR_GZ_EXTENSION)){
+            return TAR_GZ_EXTENSION;
+        } else if(normalizedUrl.toLowerCase().endsWith(KMZ_EXTENSION)){
+            return KMZ_EXTENSION;
+        } else {
+            //try to get the extension
+            String fileName = normalizedUrl.substring(normalizedUrl.lastIndexOf("/"));
+            if(fileName.contains(".")){
+                return fileName.substring(fileName.lastIndexOf("."));
+            }
+        }
+
+        return "";
     }
 }
