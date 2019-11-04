@@ -2,7 +2,7 @@ import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.FetchMode;
-import ro.cs.tao.datasource.remote.asf.ASFSentinel1DataSource;
+import ro.cs.tao.datasource.remote.asf.ASFDataSource;
 import ro.cs.tao.datasource.remote.asf.download.AsfDownloadStrategy;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
@@ -35,7 +35,7 @@ public class ASFDataSourceTest {
             handler.setLevel(Level.INFO);
         }
         ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
-        DataSource dataSource = serviceRegistry.getService(ASFSentinel1DataSource.class);
+        DataSource dataSource = serviceRegistry.getService(ASFDataSource.class);
         dataSource.setCredentials("vnetoiu", "ASF_x2019");
         if (dataSource.ping()) {
             System.out.println("Ping successful");
@@ -51,7 +51,7 @@ public class ASFDataSourceTest {
                 handler.setLevel(Level.INFO);
             }
             ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
-            DataSource dataSource = serviceRegistry.getService(ASFSentinel1DataSource.class);
+            DataSource dataSource = serviceRegistry.getService(ASFDataSource.class);
             dataSource.setCredentials("vnetoiu", "ASF_x2019");
             String[] sensors = dataSource.getSupportedSensors();
 
