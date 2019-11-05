@@ -22,7 +22,7 @@
     <parent>
         <artifactId>tao-plugins</artifactId>
         <groupId>ro.cs.tao</groupId>
-        <version>1.0</version>
+        <version>1.0.1</version>
     </parent>
 
     <artifactId>tao-docker-gdal</artifactId>
