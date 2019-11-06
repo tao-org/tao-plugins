@@ -17,11 +17,9 @@ package ro.cs.tao.datasource.remote.peps;
 
 import ro.cs.tao.datasource.remote.URLDataSource;
 import ro.cs.tao.datasource.remote.peps.parameters.PepsParameterProvider;
-import ro.cs.tao.datasource.util.NetUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Base64;
 import java.util.Properties;
 
 /**
@@ -55,8 +53,6 @@ public class PepsDataSource extends URLDataSource<PepsDataQuery> {
     @Override
     public void setCredentials(String username, String password) {
         super.setCredentials(username, password);
-        String authToken = "Basic " + new String(Base64.getEncoder().encode((username + ":" + password).getBytes()));
-        NetUtils.setAuthToken(authToken);
     }
 
     @Override
