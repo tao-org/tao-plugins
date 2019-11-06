@@ -1,0 +1,166 @@
+{
+  "Sentinel1": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platform",
+      "label": "Satellite",
+      "type": "java.lang.String",
+      "defaultValue": "Sentinel-1",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "start",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "end",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "intersectsWith",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "processingLevel",
+      "label": "Product Type",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["METADATA_GRD", "GRD_HS", "GRD_HD", "GRD_MS", "GRD_MD", "GRD_FS", "GRD_FD", "SLC", "RAW", "OCN", "METADATA_RAW", "METADATA", "METADATA_SLC", "THUMBNAIL"],
+      "order": 0
+    },
+    "polarisation": {
+      "name": "polarisation",
+      "remoteName": "polarization",
+      "label": "Polarisation",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["HH", "VV", "Dual VV", "Dual HV", "Dual VH", "HH+HV", "VV+VH"],
+      "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "relativeOrbit",
+      "label": "Relative Orbit",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "beamMode": {
+      "name": "beamMode",
+      "remoteName": "beamMode",
+      "label": "Operational Mode",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["S1", "S2", "S3", "S4", "S5", "S6", "IW", "EW", "WV"],
+      "order": 0
+    }
+  },
+  "ALOS": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platform",
+      "label": "Satellite",
+      "type": "java.lang.String",
+      "defaultValue": "ALOS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "start",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "end",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "intersectsWith",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "processingLevel",
+      "label": "Product Type",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["L1.0", "L1.1", "L1.5", "RTC_LOW_RES", "RTC_HI_RES", "BROWSE", "THUMBNAIL", "METADATA", "INTERFEROMETRY"],
+      "order": 0
+    },
+    "polarisation": {
+      "name": "polarisation",
+      "remoteName": "polarization",
+      "label": "Polarisation",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["HH", "VV", "HH+HV", "VV+VH", "QUADRATURE", "HH+5SCAN", "HH+4SCAN", "HH+3SCAN", "FULL"],
+      "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "relativeOrbit",
+      "label": "Relative Orbit",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "beamMode": {
+      "name": "beamMode",
+      "remoteName": "beamMode",
+      "label": "Operational Mode",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["FBD", "FBS", "PLR", "WB1", "WB2", "DSN"],
+      "order": 0
+    }
+  }
+}
