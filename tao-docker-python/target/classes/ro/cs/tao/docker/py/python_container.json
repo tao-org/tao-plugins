@@ -1,0 +1,14 @@
+{
+  "id": "10c453c1-0cc4-49a1-a65a-6482f43115c1",
+  "name": "python-2-7-15",
+  "description": "Python 2.7.15 Container",
+  "tag": "latest",
+  "applicationPath": null,
+  "applications": [
+    {
+      "path": "python",
+      "name": "sample.py",
+      "memoryRequirements": 2048
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+["java.util.Collections$UnmodifiableMap", {
+  "Sentinel1": ["java.util.Map", {
+    "processingLevel": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "processingLevel",
+      "remoteName": "processingLevel",
+      "label": "Processing Level",
+      "type": "java.lang.String",
+      "defaultValue": "LEVEL1",
+      "required": false,
+      "valueSet": ["[Ljava.lang.String;", ["LEVEL0", "LEVEL1", "LEVEL2"]],
+      "order": 0
+    }
+    ],
+    "productType": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "java.lang.String",
+      "defaultValue": "SLC",
+      "required": false,
+      "valueSet": ["[Ljava.lang.String;", ["GRD", "OCN", "RAW", "SLC"]],
+      "order": 0
+    }
+    ],
+    "sensorMode": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "sensorMode",
+      "remoteName": "sensorMode",
+      "label": "Sensor Mode",
+      "type": "java.lang.String",
+      "defaultValue": "IW",
+      "required": false,
+      "valueSet": ["[Ljava.lang.String;", ["EW", "IW", "SM", "WV"]],
+      "order": 0
+    }
+    ],
+    "orbitDirection": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "orbitDirection",
+      "remoteName": "orbitDirection",
+      "label": "Orbit Direction",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+    ],
+    "relativeOrbit": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "relativeOrbit",
+      "remoteName": "orbitNumber",
+      "label": "Relative Orbit",
+      "type": "java.lang.Short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+    ],
+    "startDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+    ],
+    "endDate": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "endDate",
+      "remoteName": "completionDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+    ],
+    "footprint": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "footprint",
+      "remoteName": "geometry",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+    ],
+    "polarisation": ["ro.cs.tao.datasource.param.DataSourceParameter", {
+      "name": "polarisation",
+      "remoteName": "polarisation",
+      "label": "Polarisation",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+    ]
+  }
+  ]
+}
+]
