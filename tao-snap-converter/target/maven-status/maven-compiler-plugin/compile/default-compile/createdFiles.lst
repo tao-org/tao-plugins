@@ -1,0 +1,9 @@
+ro\cs\tao\snap\xml\OperatorParser.class
+ro\cs\tao\snap\SnapOptimizer.class
+ro\cs\tao\snap\xml\GraphParser.class
+ro\cs\tao\snap\SnapOperatorAggregator.class
+ro\cs\tao\snap\xml\GraphHandler.class
+ro\cs\tao\snap\OperatorAggregator.class
+ro\cs\tao\snap\xml\OperatorHandler.class
+ro\cs\tao\snap\xml\AbstractHandler.class
+ro\cs\tao\snap\DescriptorConverter.class

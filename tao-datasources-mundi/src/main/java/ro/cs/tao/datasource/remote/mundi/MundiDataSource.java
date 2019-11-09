@@ -50,9 +50,9 @@ public class MundiDataSource extends URLDataSource<BaseDataQuery> {
 
     @Override
     public boolean ping() {
-        return NetUtils.isAvailable(this.sentinel1ConnectionString) &&
-                NetUtils.isAvailable(this.sentinel2ConnectionString) &&
-                NetUtils.isAvailable(this.landsat8ConnectionString);
+        return NetUtils.isAvailable(this.sentinel1ConnectionString, credentials.getUserName(), credentials.getPassword()) &&
+                NetUtils.isAvailable(this.sentinel2ConnectionString, credentials.getUserName(), credentials.getPassword()) &&
+                NetUtils.isAvailable(this.landsat8ConnectionString, credentials.getUserName(), credentials.getPassword());
     }
 
     @Override

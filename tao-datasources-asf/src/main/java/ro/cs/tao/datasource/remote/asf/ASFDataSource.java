@@ -6,7 +6,6 @@ import ro.cs.tao.datasource.util.NetUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Base64;
 import java.util.Properties;
 
 public class ASFDataSource extends URLDataSource<ASFQuery> {
@@ -36,7 +35,7 @@ public class ASFDataSource extends URLDataSource<ASFQuery> {
 
     @Override
     public boolean ping() {
-        return NetUtils.isAvailable(URL);
+        return NetUtils.isAvailable(URL, credentials.getUserName(), credentials.getPassword());
     }
 
     @Override
@@ -45,8 +44,6 @@ public class ASFDataSource extends URLDataSource<ASFQuery> {
     @Override
     public void setCredentials(String username, String password) {
         super.setCredentials(username, password);
-        String authToken = "Basic " + new String(Base64.getEncoder().encode((username + ":" + password).getBytes()));
-        NetUtils.setAuthToken(authToken);
     }
 
     @Override

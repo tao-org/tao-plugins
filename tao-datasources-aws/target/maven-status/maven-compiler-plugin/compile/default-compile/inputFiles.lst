@@ -1,0 +1,13 @@
+W:\Dev\tao\tao-plugins\tao-datasources-aws\src\main\java\ro\cs\tao\datasource\remote\aws\internal\ManifestSizeParser.java
+W:\Dev\tao\tao-plugins\tao-datasources-aws\src\main\java\ro\cs\tao\datasource\remote\aws\Sentinel2Query.java
+W:\Dev\tao\tao-plugins\tao-datasources-aws\src\main\java\ro\cs\tao\datasource\remote\aws\AWSDataSource.java
+W:\Dev\tao\tao-plugins\tao-datasources-aws\src\main\java\ro\cs\tao\datasource\remote\aws\internal\AwsResult.java
+W:\Dev\tao\tao-plugins\tao-datasources-aws\src\main\java\ro\cs\tao\datasource\remote\aws\download\Sentinel2Strategy.java
+W:\Dev\tao\tao-plugins\tao-datasources-aws\src\main\java\ro\cs\tao\datasource\remote\aws\download\AWSStrategy.java
+W:\Dev\tao\tao-plugins\tao-datasources-aws\src\main\java\ro\cs\tao\datasource\remote\aws\internal\IntermediateParser.java
+W:\Dev\tao\tao-plugins\tao-datasources-aws\src\main\java\ro\cs\tao\datasource\remote\aws\parameters\AWSParameterProvider.java
+W:\Dev\tao\tao-plugins\tao-datasources-aws\src\main\java\ro\cs\tao\datasource\remote\aws\S3AuthenticationV4.java
+W:\Dev\tao\tao-plugins\tao-datasources-aws\src\main\java\ro\cs\tao\datasource\remote\aws\AWSDataQuery.java
+W:\Dev\tao\tao-plugins\tao-datasources-aws\src\main\java\ro\cs\tao\datasource\remote\aws\LandsatCollection.java
+W:\Dev\tao\tao-plugins\tao-datasources-aws\src\main\java\ro\cs\tao\datasource\remote\aws\Landsat8Query.java
+W:\Dev\tao\tao-plugins\tao-datasources-aws\src\main\java\ro\cs\tao\datasource\remote\aws\download\Landsat8Strategy.java
