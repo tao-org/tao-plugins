@@ -22,6 +22,7 @@ import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtilities;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
@@ -77,57 +78,86 @@ public class AsfDownloadStrategy extends DownloadStrategy {
      * @return the Path to downloaded product
      * @throws IOException in case of any error occurs
      */
-    protected Path connectAndDownload(EOProduct product) throws IOException {
+    protected Path connectAndDownload(EOProduct product) throws QueryException, IOException {
+        HttpURLConnection connection = getConnectionForProduct(product);
+        return downloadProduct(product, connection);
+    }
+
+    protected HttpURLConnection getConnectionForProduct(EOProduct product) {
+        int numberOfTries = 0;
+        int responseStatus;
+
         // First set the default cookie manager.
         CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
         String productDownloadUrl = getProductUrl(product);
+
         try {
             //1. connect to product download URL and follow all redirects
             HttpURLConnection connection = NetUtils.openConnection(productDownloadUrl, getAuthenticationToken());
             connection.setInstanceFollowRedirects(true);
             connection.connect();
-            switch (connection.getResponseCode()) {
-                case HttpStatus.SC_OK:
-                    return downloadProduct(product, connection);
-                case HttpStatus.SC_BAD_REQUEST:
-                    /**
-                     * Workaround.
-                     *
-                     * The reason we get a BAD_REQUEST answer may be the error: “Only one auth mechanism allowed; only the X-Amz-Algorithm query parameter…”
-                     *
-                     * The product download url is redirected many times (to login urs.earthdata.nasa.gov, etc) and some resources
-                     * are hosted to s3.amazonaws.com.
-                     * Amazon API's often give a URL to resource, which gives a redirect URL with 30s life as redirect.
-                     * However, the headers from the original request (which contains the basic authentication) are carried over resulting in this error.
-                     * The redirect is processed with authentication from signed redirect url, and the authentication header.
-                     *
-                     * To solve this issue, we try a second connection to amazon URL (which already contains the authentication token) without providing
-                     * the authentication header.
-                     */
-                    //get the last connection URL (which didn't succeeded).
-                    URL downloadUrl = connection.getURL();
-                    //try to reconnect without providing authentication header
-                    HttpURLConnection downloadConnection = NetUtils.openConnection(downloadUrl.toString());
-                    downloadConnection.setInstanceFollowRedirects(true);
-                    downloadConnection.connect();
-                    //check the connection response
-                    if (downloadConnection.getResponseCode() == HttpStatus.SC_OK) {
-                        //connection succeeded, download the product
-                        return downloadProduct(product, downloadConnection);
-                    } else {
-                        throw new QueryException(String.format("The request was not successful. Reason: Cannot connect to remote url %s. Response code: %d: response message: %s",
-                                downloadUrl, connection.getResponseCode(), connection.getResponseMessage()));
-                    }
-                case HttpStatus.SC_UNAUTHORIZED:
-                    throw new QueryException(String.format("Cannot connect to remote url: %s. Cause: The supplied credentials are invalid!", connection.getURL()));
-                default:
-                    throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
-                            connection.getResponseCode(), connection.getResponseMessage()));
+            responseStatus = connection.getResponseCode();
+            do {
+                switch (responseStatus) {
+                    case HttpStatus.SC_OK:
+                        return connection;
+                    case HttpStatus.SC_MULTIPLE_CHOICES:
+                    case HttpStatus.SC_MOVED_PERMANENTLY:
+                    case HttpStatus.SC_MOVED_TEMPORARILY:
+                        /**
+                         * This may occur if redirect from http to https or vice versa. See:
+                         * https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4620571
+                         *
+                         * HttpURLConnection by design won't automatically redirect from HTTP to HTTPS (or vice versa).
+                         * Thus the fix is to return the server responses for redirect. Check response code and Location header field value
+                         * for redirect information. It's the application's responsibility to follow the redirect.
+                         */
 
-            }
+                        // get redirect url from "location" header field
+                        String newUrl = connection.getHeaderField("Location");
+                        // open the new connnection again
+                        connection = NetUtils.openConnection(newUrl, getAuthenticationToken());
+                        connection.setInstanceFollowRedirects(true);
+                        responseStatus = connection.getResponseCode();
+                        numberOfTries++;
+                        break;
+                    case HttpStatus.SC_BAD_REQUEST:
+                        /**
+                         * Workaround.
+                         *
+                         * The reason we get a BAD_REQUEST answer may be the error: “Only one auth mechanism allowed; only the X-Amz-Algorithm query parameter…”
+                         *
+                         * The product download url is redirected many times (to login urs.earthdata.nasa.gov, etc) and some resources
+                         * are hosted to s3.amazonaws.com.
+                         * Amazon API's often give a URL to resource, which gives a redirect URL with 30s life as redirect.
+                         * However, the headers from the original request (which contains the basic authentication) are carried over resulting in this error.
+                         * The redirect is processed with authentication from signed redirect url, and the authentication header.
+                         *
+                         * To solve this issue, we try a second connection to amazon URL (which already contains the authentication token) without providing
+                         * the authentication header.
+                         */
+                        //get the last connection URL (which didn't succeeded).
+                        URL downloadUrl = connection.getURL();
+                        //try to reconnect without providing authentication header
+                        connection = NetUtils.openConnection(downloadUrl.toString());
+                        connection.setInstanceFollowRedirects(true);
+                        responseStatus = connection.getResponseCode();
+                        numberOfTries++;
+                        break;
+                    case HttpStatus.SC_UNAUTHORIZED:
+                        throw new QueryException(String.format("Cannot connect to remote url: %s. Cause: The supplied credentials are invalid!", connection.getURL()));
+                    default:
+                        throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
+                                connection.getResponseCode(), connection.getResponseMessage()));
+
+                }
+            } while (numberOfTries < 5);
+
         } catch (IOException e) {
             throw new QueryException(String.format("The request was not successful. Reason: %s", e.getMessage()));
         }
+
+        throw new QueryException(String.format("The request was not successful. Reason: Too many redirects!"));
     }
 
     protected Path downloadProduct(EOProduct product, HttpURLConnection connection) throws IOException {
@@ -143,7 +173,7 @@ public class AsfDownloadStrategy extends DownloadStrategy {
             SeekableByteChannel outputStream = null;
             long size = currentProduct.getApproximateSize();
             long length = connection.getContentLength();
-            if(length == -1){
+            if (length == -1) {
                 //try to get the length from header
                 length = connection.getHeaderFieldLong("Content-Length", size);
             }
@@ -240,25 +270,26 @@ public class AsfDownloadStrategy extends DownloadStrategy {
         return result;
     }
 
-    protected String getExtensionFromUrl(String url){
+    protected String getExtensionFromUrl(String url) {
         String normalizedUrl = url;
         if (url.indexOf('?') > 0) {
             normalizedUrl = url.substring(0, url.indexOf('?'));
         }
-        if(normalizedUrl.toLowerCase().endsWith(ZIP_EXTENSION)){
+        if (normalizedUrl.toLowerCase().endsWith(ZIP_EXTENSION)) {
             return ZIP_EXTENSION;
-        } else if(normalizedUrl.toLowerCase().endsWith(TAR_GZ_EXTENSION)){
+        } else if (normalizedUrl.toLowerCase().endsWith(TAR_GZ_EXTENSION)) {
             return TAR_GZ_EXTENSION;
-        } else if(normalizedUrl.toLowerCase().endsWith(KMZ_EXTENSION)){
+        } else if (normalizedUrl.toLowerCase().endsWith(KMZ_EXTENSION)) {
             return KMZ_EXTENSION;
         } else {
             //try to get the extension
             String fileName = normalizedUrl.substring(normalizedUrl.lastIndexOf("/"));
-            if(fileName.contains(".")){
+            if (fileName.contains(".")) {
                 return fileName.substring(fileName.lastIndexOf("."));
             }
         }
 
         return "";
     }
+
 }
