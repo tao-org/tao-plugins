@@ -83,16 +83,12 @@ public class ASFQuery extends DataQuery {
             }
         }
 
-        if (this.limit <= 0) {
-            this.limit = DEFAULT_LIMIT;
-        }
-        if (this.pageSize <= 0) {
-            this.pageSize = Math.min(this.limit, DEFAULT_LIMIT);
-        }
 
         List<EOProduct> tmpResults;
         List<NameValuePair> queryParams = new ArrayList<>(params);
-        queryParams.add(new BasicNameValuePair("maxResults", String.valueOf(this.pageSize)));
+        if (this.limit > 0) {
+            queryParams.add(new BasicNameValuePair("maxResults", String.valueOf(this.limit)));
+        }
         queryParams.add(new BasicNameValuePair("output", "json"));
 
         String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(queryParams, "UTF-8").replace("+", "%20");
