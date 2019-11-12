@@ -116,7 +116,7 @@ public class ASFQuery extends DataQuery {
         } catch (IOException ex) {
             throw new QueryException(ex);
         }
-        if (results.size() > this.limit) {
+        if (this.limit > 0 && results.size() > this.limit) {
             logger.info(String.format("Query {%s-%s} returned %s products", this.source.getId(), this.sensorName, this.limit));
             return results.subList(0, this.limit);
         } else {
