@@ -23,15 +23,12 @@ public class ASFDataSource extends URLDataSource<ASFQuery> {
 
     public ASFDataSource() throws URISyntaxException {
         super(URL);
-        setParameterProvider(new ASFParameterProvider());
+        setParameterProvider(new ASFParameterProvider(this));
         this.properties = ASFDataSource.props;
     }
 
     @Override
     public String defaultId() { return "Alaska Satellite Facility"; }
-
-    @Override
-    public int getMaximumAllowedTransfers() { return 2; }
 
     @Override
     public boolean ping() {

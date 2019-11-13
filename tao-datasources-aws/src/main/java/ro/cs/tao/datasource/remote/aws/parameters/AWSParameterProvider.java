@@ -18,25 +18,30 @@ package ro.cs.tao.datasource.remote.aws.parameters;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
+import ro.cs.tao.datasource.remote.aws.AWSDataSource;
 import ro.cs.tao.datasource.remote.aws.download.Landsat8Strategy;
 import ro.cs.tao.datasource.remote.aws.download.Sentinel2Strategy;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Cosmin Cara
  */
 public class AWSParameterProvider extends AbstractParameterProvider {
 
-    private static final Map<String, ProductFetchStrategy> productFetchers;
+    private static Map<String, ProductFetchStrategy> productFetchers;
 
-    static {
-        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
-        productFetchers = Collections.unmodifiableMap(
-                new HashMap<String, ProductFetchStrategy>() {{
-                    put("Sentinel2", new Sentinel2Strategy(targetFolder));
-                    put("Landsat8", new Landsat8Strategy(targetFolder));
-                }});
+    public AWSParameterProvider(AWSDataSource dataSource) {
+        if (productFetchers == null) {
+            final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
+            productFetchers = Collections.unmodifiableMap(
+                    new HashMap<String, ProductFetchStrategy>() {{
+                        put("Sentinel2", new Sentinel2Strategy(dataSource, targetFolder));
+                        put("Landsat8", new Landsat8Strategy(dataSource, targetFolder));
+                    }});
+        }
     }
 
     @Override

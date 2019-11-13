@@ -61,8 +61,8 @@ public class Landsat8Strategy extends AWSStrategy {
         }
     }
 
-    public Landsat8Strategy(String targetFolder) {
-        super(targetFolder, properties);
+    public Landsat8Strategy(AWSDataSource dataSource, String targetFolder) {
+        super(dataSource, targetFolder, properties);
         baseUrl = props.getProperty("l8.aws.products.url", "http://landsat-pds.s3.amazonaws.com/");
         if (!baseUrl.endsWith("/"))
             baseUrl += "/";

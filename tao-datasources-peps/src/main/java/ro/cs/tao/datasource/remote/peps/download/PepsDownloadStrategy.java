@@ -50,8 +50,8 @@ public class PepsDownloadStrategy extends DownloadStrategy {
         }
     }
 
-    public PepsDownloadStrategy(String targetFolder) {
-        super(targetFolder, properties);
+    public PepsDownloadStrategy(PepsDataSource dataSource, String targetFolder) {
+        super(dataSource, targetFolder, properties);
         retries = Integer.parseInt(properties.getProperty("peps.wait.retries", "5"));
     }
 

@@ -162,7 +162,7 @@ class Landsat8Query extends DataQuery {
                 String path = tile.substring(0, 3);
                 String row = tile.substring(3, 6);
                 String tileUrl = (preCollection ? alternateUrl : baseUrl) + path + DownloadStrategy.URL_SEPARATOR + row + DownloadStrategy.URL_SEPARATOR;
-                final AwsResult preCollectionResult = IntermediateParser.parse(AWSDataSource.getS3ResponseAsString(HttpMethod.GET, tileUrl));
+                final AwsResult preCollectionResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, tileUrl));
                 if (preCollectionResult.getCommonPrefixes() != null) {
                     Set<String> names = preCollectionResult.getCommonPrefixes().stream()
                             .map(p -> p.replace(preCollectionResult.getPrefix(), "").replace(preCollectionResult.getDelimiter(), ""))
@@ -197,7 +197,7 @@ class Landsat8Query extends DataQuery {
                     }
                 }
                 tileUrl = baseUrl + path + DownloadStrategy.URL_SEPARATOR + row + DownloadStrategy.URL_SEPARATOR;
-                final AwsResult productResult = IntermediateParser.parse(AWSDataSource.getS3ResponseAsString(HttpMethod.GET, tileUrl));
+                final AwsResult productResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, tileUrl));
                 if (productResult.getCommonPrefixes() != null) {
                     Set<String> names = productResult.getCommonPrefixes().stream()
                             .map(p -> p.replace(productResult.getPrefix(), "").replace(productResult.getDelimiter(), ""))
@@ -242,7 +242,7 @@ class Landsat8Query extends DataQuery {
 
     private EOProduct parseProductJson(String jsonUrl) throws Exception {
         EOProduct product;
-        try (InputStream inputStream = AWSDataSource.buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream();
+        try (InputStream inputStream = ((AWSDataSource) this.source).buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream();
              JsonReader reader = Json.createReader(inputStream)) {
             JsonObject rootObject = reader.readObject().getJsonObject("L1_METADATA_FILE");
             JsonObject obj = rootObject.getJsonObject("METADATA_FILE_INFO");
@@ -286,7 +286,7 @@ class Landsat8Query extends DataQuery {
     }
 
     private double getTileCloudPercentage(String jsonUrl) throws IOException {
-        try (InputStream inputStream = AWSDataSource.buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream();
+        try (InputStream inputStream = ((AWSDataSource) this.source).buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream();
              JsonReader reader = Json.createReader(inputStream)) {
             JsonObject obj = reader.readObject();
             return obj.getJsonObject("L1_METADATA_FILE")

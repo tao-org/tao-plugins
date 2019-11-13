@@ -18,24 +18,29 @@ package ro.cs.tao.datasource.remote.peps.parameters;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
+import ro.cs.tao.datasource.remote.peps.PepsDataSource;
 import ro.cs.tao.datasource.remote.peps.download.PepsDownloadStrategy;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Cosmin Cara
  */
 public class PepsParameterProvider extends AbstractParameterProvider {
 
-    private static final Map<String, ProductFetchStrategy> productFetchers;
+    private static Map<String, ProductFetchStrategy> productFetchers;
 
-    static {
-        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
-        productFetchers = Collections.unmodifiableMap(
-                new HashMap<String, ProductFetchStrategy>() {{
-                    put("Sentinel1", new PepsDownloadStrategy(targetFolder));
-                    put("Sentinel2", new PepsDownloadStrategy(targetFolder));
-                }});
+    public PepsParameterProvider(PepsDataSource dataSource) {
+        if (productFetchers == null) {
+            final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
+            productFetchers = Collections.unmodifiableMap(
+                    new HashMap<String, ProductFetchStrategy>() {{
+                        put("Sentinel1", new PepsDownloadStrategy(dataSource, targetFolder));
+                        put("Sentinel2", new PepsDownloadStrategy(dataSource, targetFolder));
+                    }});
+        }
     }
 
     @Override

@@ -81,8 +81,8 @@ public class Sentinel2Strategy extends AWSStrategy {
         }};
     }
 
-    public Sentinel2Strategy(String targetFolder) {
-        super(targetFolder, properties);
+    public Sentinel2Strategy(AWSDataSource dataSource, String targetFolder) {
+        super(dataSource, targetFolder, properties);
         baseUrl = props.getProperty("s2.aws.tiles.url", "http://sentinel-s2-l1c.s3-website.eu-central-1.amazonaws.com");
         if (!baseUrl.endsWith("/"))
             baseUrl += "/";
@@ -179,7 +179,7 @@ public class Sentinel2Strategy extends AWSStrategy {
                 JsonReader reader = null;
                 try {
                     logger.fine(String.format("Downloading json product descriptor %s", productJsonUrl));
-                    connection = AWSDataSource.buildS3Connection(HttpMethod.GET, productJsonUrl);
+                    connection = ((AWSDataSource) this.dataSource).buildS3Connection(HttpMethod.GET, productJsonUrl);
                     inputStream = connection.getInputStream();
                     reader = Json.createReader(inputStream);
                     logger.fine(String.format("Parsing json descriptor %s", productJsonUrl));
@@ -247,7 +247,7 @@ public class Sentinel2Strategy extends AWSStrategy {
                             JsonReader tiReader = null;
                             try {
                                 logger.fine(String.format("Downloading json tile descriptor %s", tileJson));
-                                tileConnection = AWSDataSource.buildS3Connection(HttpMethod.GET, tileJson);
+                                tileConnection = ((AWSDataSource) this.dataSource).buildS3Connection(HttpMethod.GET, tileJson);
                                 is = tileConnection.getInputStream();
                                 tiReader = Json.createReader(is);
                                 logger.fine(String.format("Parsing json tile descriptor %s", tileJson));

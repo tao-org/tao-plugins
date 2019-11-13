@@ -18,10 +18,12 @@ package ro.cs.tao.datasource.remote.asf.download;
 import org.apache.http.HttpStatus;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
+import ro.cs.tao.datasource.remote.asf.ASFDataSource;
 import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtilities;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
@@ -31,7 +33,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.EnumSet;
+import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * ASF Download strategy
@@ -45,8 +50,8 @@ public class AsfDownloadStrategy extends DownloadStrategy {
     private static final long DOWNLOAD_TIMEOUT = 30000; // 30s
     private Timer timeoutTimer;
 
-    public AsfDownloadStrategy(String targetFolder, Properties properties) {
-        super(targetFolder, properties);
+    public AsfDownloadStrategy(ASFDataSource dataSource, String targetFolder, Properties properties) {
+        super(dataSource, targetFolder, properties);
     }
 
     protected AsfDownloadStrategy(AsfDownloadStrategy other) {

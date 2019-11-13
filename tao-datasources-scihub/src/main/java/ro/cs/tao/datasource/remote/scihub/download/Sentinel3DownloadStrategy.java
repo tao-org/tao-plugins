@@ -2,6 +2,7 @@ package ro.cs.tao.datasource.remote.scihub.download;
 
 import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.remote.ProductHelper;
+import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.Sentinel3ProductHelper;
@@ -14,8 +15,8 @@ import java.nio.file.Paths;
 
 public class Sentinel3DownloadStrategy extends SentinelDownloadStrategy {
 
-    public Sentinel3DownloadStrategy(String targetFolder) {
-        super(targetFolder);
+    public Sentinel3DownloadStrategy(SciHubDataSource dataSource, String targetFolder) {
+        super(dataSource, targetFolder);
     }
 
     protected Sentinel3DownloadStrategy(Sentinel3DownloadStrategy other) {

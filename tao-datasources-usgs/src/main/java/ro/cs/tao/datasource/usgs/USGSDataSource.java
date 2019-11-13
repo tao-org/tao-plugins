@@ -40,7 +40,7 @@ public class USGSDataSource extends URLDataSource<Landsat8Query> {
 
     public USGSDataSource() throws URISyntaxException {
         super(URL);
-        setParameterProvider(new LandsatParameterProvider());
+        setParameterProvider(new LandsatParameterProvider(this));
         this.properties = USGSDataSource.props;
     }
 
