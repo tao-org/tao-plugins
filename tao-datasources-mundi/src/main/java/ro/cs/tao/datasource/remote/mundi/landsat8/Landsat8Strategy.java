@@ -61,8 +61,8 @@ public class Landsat8Strategy extends DownloadStrategy {
         }
     }
 
-    public Landsat8Strategy(String targetFolder) {
-        super(targetFolder, properties);
+    public Landsat8Strategy(MundiDataSource dataSource, String targetFolder) {
+        super(dataSource, targetFolder, properties);
         baseUrl = props.getProperty("landsat.download.url", "https://obs.eu-de.otc.t-systems.com/l8-l1gt/");
         if (!baseUrl.endsWith("/"))
             baseUrl += "/";

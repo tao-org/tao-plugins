@@ -34,7 +34,7 @@ public class MundiDataSource extends URLDataSource<BaseDataQuery> {
         this.sentinel1ConnectionString = properties.getProperty("s1.search.url");
         this.sentinel2ConnectionString = properties.getProperty("s2.search.url");
         this.landsat8ConnectionString = properties.getProperty("l8.search.url");
-        setParameterProvider(new MundiParameterProvider());
+        setParameterProvider(new MundiParameterProvider(this));
     }
 
     @Override

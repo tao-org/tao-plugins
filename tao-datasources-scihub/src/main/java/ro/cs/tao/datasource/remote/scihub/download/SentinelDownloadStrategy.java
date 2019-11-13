@@ -54,8 +54,8 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
         }
     }
 
-    public SentinelDownloadStrategy(String targetFolder) {
-        super(targetFolder, properties);
+    public SentinelDownloadStrategy(SciHubDataSource dataSource, String targetFolder) {
+        super(dataSource, targetFolder, properties);
         ODataPath odp = new ODataPath();
         String scihubUrl = props.getProperty("scihub.product.url", "https://scihub.copernicus.eu/apihub/odata/v1");
         /*if (!NetUtils.isAvailable(scihubUrl)) {

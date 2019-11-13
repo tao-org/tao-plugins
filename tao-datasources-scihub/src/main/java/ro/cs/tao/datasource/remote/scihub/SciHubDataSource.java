@@ -41,7 +41,7 @@ public class SciHubDataSource extends URLDataSource<SciHubDataQuery> {
 
     public SciHubDataSource() throws URISyntaxException {
         super(URL);
-        setParameterProvider(new SciHubParameterProvider());
+        setParameterProvider(new SciHubParameterProvider(this));
         this.properties = SciHubDataSource.props;
     }
 

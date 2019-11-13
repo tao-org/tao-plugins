@@ -34,7 +34,7 @@ public class CreoDiasDataSource extends URLDataSource<BaseDataQuery> {
         this.sentinel1ConnectionString = normalizedURL("s1.search.url");
         this.sentinel2ConnectionString = normalizedURL("s2.search.url");
         this.landsat8ConnectionString = normalizedURL("l8.search.url");
-        setParameterProvider(new CreodiasParameterProvider());
+        setParameterProvider(new CreodiasParameterProvider(this));
     }
 
     @Override
