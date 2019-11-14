@@ -17,11 +17,11 @@ package ro.cs.tao.datasource.remote.aws.download;
 
 import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.aws.AWSDataSource;
-import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.HttpMethod;
 
 import javax.json.Json;
 import javax.json.JsonArray;

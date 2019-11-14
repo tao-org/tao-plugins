@@ -36,13 +36,13 @@ import ro.cs.tao.datasource.remote.scihub.parameters.DoubleParameterConverter;
 import ro.cs.tao.datasource.remote.scihub.parameters.SciHubPolygonParameterConverter;
 import ro.cs.tao.datasource.remote.scihub.xml.SciHubXmlCountResponseHandler;
 import ro.cs.tao.datasource.remote.scihub.xml.SciHubXmlResponseHandler;
-import ro.cs.tao.datasource.util.HttpMethod;
-import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Array;

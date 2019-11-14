@@ -23,7 +23,6 @@ import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.aws.internal.AwsResult;
 import ro.cs.tao.datasource.remote.aws.internal.IntermediateParser;
-import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
@@ -32,6 +31,7 @@ import ro.cs.tao.eodata.util.Conversions;
 import ro.cs.tao.products.landsat.Landsat8ProductHelper;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
 import ro.cs.tao.products.landsat.LandsatProduct;
+import ro.cs.tao.utils.HttpMethod;
 
 import javax.json.Json;
 import javax.json.JsonObject;

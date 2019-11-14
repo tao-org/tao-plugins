@@ -28,9 +28,9 @@ import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.asf.handlers.AsfJsonResponseHandler;
 import ro.cs.tao.datasource.remote.asf.parameters.DateParameterConverter;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
-import ro.cs.tao.datasource.util.HttpMethod;
-import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.text.DateFormat;
