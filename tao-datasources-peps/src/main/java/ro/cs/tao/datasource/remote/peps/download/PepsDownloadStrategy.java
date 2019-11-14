@@ -23,11 +23,11 @@ import ro.cs.tao.datasource.remote.ProductHelper;
 import ro.cs.tao.datasource.remote.peps.PepsDataSource;
 import ro.cs.tao.datasource.remote.peps.PepsMetadataResponseHandler;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
-import ro.cs.tao.datasource.util.HttpMethod;
-import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;

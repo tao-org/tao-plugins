@@ -2,7 +2,7 @@ package ro.cs.tao.datasource.remote.asf;
 
 import ro.cs.tao.datasource.remote.URLDataSource;
 import ro.cs.tao.datasource.remote.asf.parameters.ASFParameterProvider;
-import ro.cs.tao.datasource.util.NetUtils;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

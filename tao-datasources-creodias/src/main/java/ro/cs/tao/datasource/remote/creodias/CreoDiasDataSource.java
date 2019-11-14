@@ -5,7 +5,7 @@ import ro.cs.tao.datasource.remote.creodias.landsat8.Landsat8Query;
 import ro.cs.tao.datasource.remote.creodias.parameters.CreodiasParameterProvider;
 import ro.cs.tao.datasource.remote.creodias.sentinel1.Sentinel1Query;
 import ro.cs.tao.datasource.remote.creodias.sentinel2.Sentinel2Query;
-import ro.cs.tao.datasource.util.NetUtils;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

@@ -19,9 +19,9 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import ro.cs.tao.datasource.remote.URLDataSource;
 import ro.cs.tao.datasource.remote.aws.parameters.AWSParameterProvider;
-import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.Logger;
-import ro.cs.tao.datasource.util.NetUtils;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.net.*;

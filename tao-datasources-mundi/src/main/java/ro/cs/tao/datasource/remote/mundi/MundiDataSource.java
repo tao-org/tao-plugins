@@ -5,7 +5,7 @@ import ro.cs.tao.datasource.remote.mundi.landsat8.Landsat8Query;
 import ro.cs.tao.datasource.remote.mundi.parameters.MundiParameterProvider;
 import ro.cs.tao.datasource.remote.mundi.sentinel1.Sentinel1Query;
 import ro.cs.tao.datasource.remote.mundi.sentinel2.Sentinel2Query;
-import ro.cs.tao.datasource.util.NetUtils;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
