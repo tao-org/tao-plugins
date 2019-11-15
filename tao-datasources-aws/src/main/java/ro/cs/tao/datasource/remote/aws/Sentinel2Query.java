@@ -15,6 +15,11 @@
  */
 package ro.cs.tao.datasource.remote.aws;
 
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.locationtech.jts.geom.Coordinate;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
@@ -31,6 +36,7 @@ import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
+import ro.cs.tao.serialization.CRSAdapter;
 import ro.cs.tao.utils.HttpMethod;
 
 import javax.json.Json;
@@ -436,24 +442,34 @@ class Sentinel2Query extends DataQuery {
             double clouds = obj.getJsonNumber("cloudyPixelPercentage").doubleValue();
             product.addAttribute("cloudcoverpercentage", String.valueOf(clouds));
             try {
-                product.setCrs(obj.getJsonObject("tileGeometry")
-                                       .getJsonObject("crs")
-                                       .getJsonObject("properties")
-                                       .getString("name"));
-                //if (product.getGeometry() == null) {
+                final String initialCrsCode = obj.getJsonObject("tileGeometry")
+                        .getJsonObject("crs")
+                        .getJsonObject("properties")
+                        .getString("name");
+                final CoordinateReferenceSystem initialCrs = new CRSAdapter().marshal(initialCrsCode);
+                final CoordinateReferenceSystem targetCrs = CRS.decode("EPSG:4326");
+                MathTransform mathTransform;
+                try {
+                    mathTransform = CRS.findMathTransform(initialCrs, targetCrs);
+                } catch (Exception ex) {
+                    // fall back to lenient transform if Bursa Wolf parameters are not provided
+                    mathTransform = CRS.findMathTransform(initialCrs, targetCrs, true);
+                }
+
                 JsonArray coords = obj.getJsonObject("tileGeometry").getJsonArray("coordinates").getJsonArray(0);
                 Polygon2D polygon2D = new Polygon2D();
-                polygon2D.append(coords.getJsonArray(0).getJsonNumber(0).doubleValue(),
-                                 coords.getJsonArray(0).getJsonNumber(1).doubleValue());
-                polygon2D.append(coords.getJsonArray(1).getJsonNumber(0).doubleValue(),
-                                 coords.getJsonArray(1).getJsonNumber(1).doubleValue());
-                polygon2D.append(coords.getJsonArray(2).getJsonNumber(0).doubleValue(),
-                                 coords.getJsonArray(2).getJsonNumber(1).doubleValue());
-                polygon2D.append(coords.getJsonArray(3).getJsonNumber(0).doubleValue(),
-                                 coords.getJsonArray(3).getJsonNumber(1).doubleValue());
-                polygon2D.append(coords.getJsonArray(4).getJsonNumber(0).doubleValue(),
-                                 coords.getJsonArray(4).getJsonNumber(1).doubleValue());
+                final int latIdx = 1, lonIdx = 0;
+                for (int i = 0; i < 5; i++) {
+                    final JsonArray array = coords.getJsonArray(i);
+                    Coordinate fromPoint = new Coordinate(array.getJsonNumber(lonIdx).doubleValue(),
+                                                      array.getJsonNumber(latIdx).doubleValue());
+                    Coordinate toPoint = new Coordinate();
+                    JTS.transform(fromPoint, toPoint, mathTransform);
+                    polygon2D.append(toPoint.y, toPoint.x);
+                    //polygon2D.append(toPoint.x, toPoint.y);
+                }
                 product.setGeometry(polygon2D.toWKT());
+                product.setCrs("EPSG:4326");
                 //}
             } catch (Exception e) {
                 e.printStackTrace();
