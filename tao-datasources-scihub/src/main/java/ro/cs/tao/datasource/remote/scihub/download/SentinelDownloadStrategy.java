@@ -116,6 +116,9 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
                 if (inputStream.read(buffer) == -1 && !Boolean.parseBoolean(new String(buffer))) {
                     throw new IOException(String.format("Product %s is not online", productName));
                 }
+            } catch (IOException inner) {
+                logger.warning(String.format("Cannot determine online status for product %s", productName));
+                throw inner;
             } finally {
                 connection.disconnect();
             }
