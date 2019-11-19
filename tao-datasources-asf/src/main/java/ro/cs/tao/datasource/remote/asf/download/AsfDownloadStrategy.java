@@ -169,7 +169,10 @@ public class AsfDownloadStrategy extends DownloadStrategy {
         try {
             String productUrl = getProductUrl(product);
             String extension = getExtensionFromUrl(productUrl);
-            boolean isArchive = !extension.isEmpty();
+            boolean isArchive = !extension.isEmpty() &&
+                    (extension.equalsIgnoreCase(ZIP_EXTENSION) ||
+                            extension.equalsIgnoreCase(TAR_GZ_EXTENSION) ||
+                            extension.equalsIgnoreCase(KMZ_EXTENSION));
             subActivityStart(product.getName());
             Path archivePath = Paths.get(destination, product.getName() + extension);
             FileUtilities.ensureExists(Paths.get(destination));
@@ -232,7 +235,7 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                 outputStream.close();
                 logger.finest("End reading from input stream");
                 checkCancelled();
-                if (Boolean.parseBoolean(this.props.getProperty("auto.uncompress", "true"))) {
+                if (isArchive && Boolean.parseBoolean(this.props.getProperty("auto.uncompress", "true"))) {
                     productFile = extract(archivePath, computeTarget(archivePath));
                 } else {
                     productFile = archivePath;
