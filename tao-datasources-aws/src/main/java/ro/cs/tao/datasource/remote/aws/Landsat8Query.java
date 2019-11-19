@@ -261,17 +261,18 @@ class Landsat8Query extends DataQuery {
             product.setWidth(obj.getInt("REFLECTIVE_SAMPLES"));
             product.setHeight(obj.getInt("REFLECTIVE_LINES"));
             Polygon2D footprint = new Polygon2D();
-            footprint.append(obj.getJsonNumber("CORNER_UL_LAT_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_UL_LON_PRODUCT").doubleValue());
-            footprint.append(obj.getJsonNumber("CORNER_UR_LAT_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_UR_LON_PRODUCT").doubleValue());
-            footprint.append(obj.getJsonNumber("CORNER_LR_LAT_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_LR_LON_PRODUCT").doubleValue());
-            footprint.append(obj.getJsonNumber("CORNER_LL_LAT_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_LL_LON_PRODUCT").doubleValue());
-            footprint.append(obj.getJsonNumber("CORNER_UL_LAT_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_UL_LON_PRODUCT").doubleValue());
+            footprint.append(obj.getJsonNumber("CORNER_UL_LON_PRODUCT").doubleValue(),
+                             obj.getJsonNumber("CORNER_UL_LAT_PRODUCT").doubleValue());
+            footprint.append(obj.getJsonNumber("CORNER_UR_LON_PRODUCT").doubleValue(),
+                             obj.getJsonNumber("CORNER_UR_LAT_PRODUCT").doubleValue());
+            footprint.append(obj.getJsonNumber("CORNER_LR_LON_PRODUCT").doubleValue(),
+                             obj.getJsonNumber("CORNER_LR_LAT_PRODUCT").doubleValue());
+            footprint.append(obj.getJsonNumber("CORNER_LL_LON_PRODUCT").doubleValue(),
+                             obj.getJsonNumber("CORNER_LL_LAT_PRODUCT").doubleValue());
+            footprint.append(obj.getJsonNumber("CORNER_UL_LON_PRODUCT").doubleValue(),
+                             obj.getJsonNumber("CORNER_UL_LAT_PRODUCT").doubleValue());
             product.setGeometry(footprint.toWKT());
+            product.setCrs("EPSG:4326");
 
             obj = rootObject.getJsonObject("MIN_MAX_PIXEL_VALUE");
             product.setPixelType(Conversions.pixelTypeFromRange(obj.getInt("QUANTIZE_CAL_MIN_BAND_1"),
