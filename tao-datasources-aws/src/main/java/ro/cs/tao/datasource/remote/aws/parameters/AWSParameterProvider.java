@@ -24,26 +24,19 @@ import ro.cs.tao.datasource.remote.aws.download.Sentinel2Strategy;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Cosmin Cara
  */
 public class AWSParameterProvider extends AbstractParameterProvider {
 
-    private static Map<String, ProductFetchStrategy> productFetchers;
-
     public AWSParameterProvider(AWSDataSource dataSource) {
-        if (productFetchers == null) {
-            final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
-            productFetchers = Collections.unmodifiableMap(
-                    new HashMap<String, ProductFetchStrategy>() {{
-                        put("Sentinel2", new Sentinel2Strategy(dataSource, targetFolder));
-                        put("Landsat8", new Landsat8Strategy(dataSource, targetFolder));
-                    }});
-        }
+        super();
+        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
+        productFetchers = Collections.unmodifiableMap(
+                new HashMap<String, ProductFetchStrategy>() {{
+                    put("Sentinel2", new Sentinel2Strategy(dataSource, targetFolder));
+                    put("Landsat8", new Landsat8Strategy(dataSource, targetFolder));
+                }});
     }
-
-    @Override
-    public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() { return productFetchers; }
 }
