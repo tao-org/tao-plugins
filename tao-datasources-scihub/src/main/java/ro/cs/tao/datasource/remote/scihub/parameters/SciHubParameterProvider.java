@@ -26,35 +26,28 @@ import ro.cs.tao.datasource.remote.scihub.download.Sentinel3DownloadStrategy;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Cosmin Cara
  */
 public final class SciHubParameterProvider extends AbstractParameterProvider {
 
-    private static Map<String, ProductFetchStrategy> productFetchers;
-
     public SciHubParameterProvider(SciHubDataSource dataSource) {
-        if (productFetchers == null) {
-            ConfigurationManager configurationManager = ConfigurationManager.getInstance();
-            final String targetFolder = configurationManager.getValue("product.location");
-            final boolean downloadExpanded =
-                    Boolean.parseBoolean(configurationManager.getValue(SciHubDataSource.class.getSimpleName() + ".expanded.download",
-                                                                       "false"));
-            productFetchers = Collections.unmodifiableMap(
-                    new HashMap<String, ProductFetchStrategy>() {{
-                        put("Sentinel1", new Sentinel1DownloadStrategy(dataSource, targetFolder));
-                        if (downloadExpanded) {
-                            put("Sentinel2", new Sentinel2DownloadStrategy(dataSource, targetFolder));
-                        } else {
-                            put("Sentinel2", new Sentinel2ArchiveDownloadStrategy(dataSource, targetFolder));
-                        }
-                        put("Sentinel3", new Sentinel3DownloadStrategy(dataSource, targetFolder));
-                    }});
-        }
+        super();
+        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+        final String targetFolder = configurationManager.getValue("product.location");
+        final boolean downloadExpanded =
+                Boolean.parseBoolean(configurationManager.getValue(SciHubDataSource.class.getSimpleName() + ".expanded.download",
+                                                                   "false"));
+        productFetchers = Collections.unmodifiableMap(
+                new HashMap<String, ProductFetchStrategy>() {{
+                    put("Sentinel1", new Sentinel1DownloadStrategy(dataSource, targetFolder));
+                    if (downloadExpanded) {
+                        put("Sentinel2", new Sentinel2DownloadStrategy(dataSource, targetFolder));
+                    } else {
+                        put("Sentinel2", new Sentinel2ArchiveDownloadStrategy(dataSource, targetFolder));
+                    }
+                    put("Sentinel3", new Sentinel3DownloadStrategy(dataSource, targetFolder));
+                }});
     }
-
-    @Override
-    public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() { return productFetchers; }
 }

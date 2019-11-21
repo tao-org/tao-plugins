@@ -22,6 +22,7 @@ import ro.cs.tao.datasource.opensearch.OpenSearchParameterProvider;
 import ro.cs.tao.datasource.remote.SimpleArchiveDownloadStrategy;
 import ro.cs.tao.datasource.remote.fedeo.FedEODataSource;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,13 +30,11 @@ public class FedEOParameterProvider extends OpenSearchParameterProvider {
 
     public FedEOParameterProvider(FedEODataSource dataSource, String url) {
         super(url);
-        if (this.productFetchers == null) {
-            final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
-            this.productFetchers = new HashMap<>();
-            String[] sensors = getSupportedSensors();
-            for (String sensor : sensors) {
-                this.productFetchers.put(sensor, new SimpleArchiveDownloadStrategy(dataSource, targetFolder, null));
-            }
+        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
+        this.productFetchers = Collections.unmodifiableMap(new HashMap<>());
+        String[] sensors = getSupportedSensors();
+        for (String sensor : sensors) {
+            this.productFetchers.put(sensor, new SimpleArchiveDownloadStrategy(dataSource, targetFolder, null));
         }
     }
 

@@ -23,27 +23,19 @@ import ro.cs.tao.datasource.remote.peps.download.PepsDownloadStrategy;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Cosmin Cara
  */
 public class PepsParameterProvider extends AbstractParameterProvider {
 
-    private static Map<String, ProductFetchStrategy> productFetchers;
-
     public PepsParameterProvider(PepsDataSource dataSource) {
-        if (productFetchers == null) {
-            final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
-            productFetchers = Collections.unmodifiableMap(
-                    new HashMap<String, ProductFetchStrategy>() {{
-                        put("Sentinel1", new PepsDownloadStrategy(dataSource, targetFolder));
-                        put("Sentinel2", new PepsDownloadStrategy(dataSource, targetFolder));
-                    }});
-        }
+        super();
+        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
+        productFetchers = Collections.unmodifiableMap(
+                new HashMap<String, ProductFetchStrategy>() {{
+                    put("Sentinel1", new PepsDownloadStrategy(dataSource, targetFolder));
+                    put("Sentinel2", new PepsDownloadStrategy(dataSource, targetFolder));
+                }});
     }
-
-    @Override
-    public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() { return productFetchers; }
-
 }

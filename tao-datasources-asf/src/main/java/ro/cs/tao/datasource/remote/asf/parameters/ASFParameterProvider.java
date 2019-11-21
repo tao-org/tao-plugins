@@ -23,26 +23,17 @@ import ro.cs.tao.datasource.remote.asf.download.AsfDownloadStrategy;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 public class ASFParameterProvider extends AbstractParameterProvider {
 
-    private static Map<String, ProductFetchStrategy> productFetchers;
-
     public ASFParameterProvider(ASFDataSource dataSource) {
-        if (productFetchers == null) {
-            final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
-            productFetchers = Collections.unmodifiableMap(
-                    new HashMap<String, ProductFetchStrategy>() {{
-                        put("Sentinel1", new AsfDownloadStrategy(dataSource, targetFolder, new Properties() {{ put("auto.uncompress", "false"); }}));
-                        put("ALOS", new AsfDownloadStrategy(dataSource, targetFolder, new Properties() {{ put("auto.uncompress", "false"); }}));
-                    }});
-        }
-    }
-
-    @Override
-    public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() {
-        return productFetchers;
+        super();
+        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
+        productFetchers = Collections.unmodifiableMap(
+                new HashMap<String, ProductFetchStrategy>() {{
+                    put("Sentinel1", new AsfDownloadStrategy(dataSource, targetFolder, new Properties() {{ put("auto.uncompress", "false"); }}));
+                    put("ALOS", new AsfDownloadStrategy(dataSource, targetFolder, new Properties() {{ put("auto.uncompress", "false"); }}));
+                }});
     }
 }
