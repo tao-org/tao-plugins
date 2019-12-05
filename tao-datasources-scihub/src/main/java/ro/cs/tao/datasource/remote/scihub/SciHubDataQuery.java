@@ -354,7 +354,7 @@ public class SciHubDataQuery extends DataQuery {
                                 }
                                 query.append(")");
                             } else {
-                                query.append(paramTypeName).append(value);
+                                query.append(paramTypeName).append(":").append(value);
                             }
                             break;
                         default:
