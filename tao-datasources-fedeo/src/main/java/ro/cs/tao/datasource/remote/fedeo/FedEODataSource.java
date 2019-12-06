@@ -41,7 +41,7 @@ public class FedEODataSource extends URLDataSource<FedEODataQuery> {
 
     public FedEODataSource() throws URISyntaxException {
         super(URL);
-        setParameterProvider(new FedEOParameterProvider(URL + "description.xml"));
+        setParameterProvider(new FedEOParameterProvider(this, URL + "description.xml"));
     }
 
     @Override

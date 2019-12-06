@@ -28,9 +28,9 @@ import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.asf.handlers.AsfJsonResponseHandler;
 import ro.cs.tao.datasource.remote.asf.parameters.DateParameterConverter;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
-import ro.cs.tao.datasource.util.HttpMethod;
-import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -83,16 +83,12 @@ public class ASFQuery extends DataQuery {
             }
         }
 
-        if (this.limit <= 0) {
-            this.limit = DEFAULT_LIMIT;
-        }
-        if (this.pageSize <= 0) {
-            this.pageSize = Math.min(this.limit, DEFAULT_LIMIT);
-        }
 
         List<EOProduct> tmpResults;
         List<NameValuePair> queryParams = new ArrayList<>(params);
-        queryParams.add(new BasicNameValuePair("maxResults", String.valueOf(this.pageSize)));
+        if (this.limit > 0) {
+            queryParams.add(new BasicNameValuePair("maxResults", String.valueOf(this.limit)));
+        }
         queryParams.add(new BasicNameValuePair("output", "json"));
 
         String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(queryParams, "UTF-8").replace("+", "%20");
@@ -120,7 +116,7 @@ public class ASFQuery extends DataQuery {
         } catch (IOException ex) {
             throw new QueryException(ex);
         }
-        if (results.size() > this.limit) {
+        if (this.limit > 0 && results.size() > this.limit) {
             logger.info(String.format("Query {%s-%s} returned %s products", this.source.getId(), this.sensorName, this.limit));
             return results.subList(0, this.limit);
         } else {

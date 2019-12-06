@@ -20,11 +20,11 @@ import ro.cs.tao.datasource.remote.mundi.landsat8.Landsat8Query;
 import ro.cs.tao.datasource.remote.mundi.sentinel1.Sentinel1Query;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
-import ro.cs.tao.datasource.util.HttpMethod;
-import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Array;

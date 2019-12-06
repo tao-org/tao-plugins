@@ -19,16 +19,12 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import ro.cs.tao.datasource.remote.URLDataSource;
 import ro.cs.tao.datasource.remote.aws.parameters.AWSParameterProvider;
-import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.datasource.util.Logger;
-import ro.cs.tao.datasource.util.NetUtils;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +42,8 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery> {
     private static String S2_REQUEST_PAYER;
     private static String L8_REQUEST_PAYER;
 
-    private static String accessKeyId;
-    private static String secretAccessKey;
+    private String accessKeyId;
+    private String secretAccessKey;
 
     static {
         Properties props = new Properties();
@@ -65,10 +61,13 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery> {
 
     public AWSDataSource() throws URISyntaxException {
         super(S2_URL);
-        setParameterProvider(new AWSParameterProvider());
+        setParameterProvider(new AWSParameterProvider(this));
     }
 
-    public static HttpURLConnection buildS3Connection(HttpMethod method, String urlString) throws MalformedURLException {
+    @Override
+    public boolean requiresAuthentication() { return true; }
+
+    public HttpURLConnection buildS3Connection(HttpMethod method, String urlString) throws MalformedURLException {
         URL url = new URL(urlString);
         String region = S3AuthenticationV4.fetchRegionName(url);
         List<NameValuePair> customParameters = new ArrayList<>();
@@ -80,7 +79,7 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery> {
         return NetUtils.openConnection(method, urlString, s3AuthenticationV4.getAuthorizationToken(url), s3AuthenticationV4.getAwsHeaders(url));
     }
 
-    static String getS3ResponseAsString(HttpMethod method, String urlString) throws IOException {
+    String getS3ResponseAsString(HttpMethod method, String urlString) throws IOException {
         String result = null;
         HttpURLConnection connection = buildS3Connection(method, urlString);
         if (connection != null) {
@@ -115,15 +114,11 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery> {
         return null;
     }
 
-    private static void setS3Credentials(String username, String password) {
-        accessKeyId = username;
-        secretAccessKey = password;
-    }
-
     @Override
     public void setCredentials(String username, String password) {
         super.setCredentials(username, password);
-        setS3Credentials(username, password);
+        accessKeyId = username;
+        secretAccessKey = password;
     }
 
     @Override

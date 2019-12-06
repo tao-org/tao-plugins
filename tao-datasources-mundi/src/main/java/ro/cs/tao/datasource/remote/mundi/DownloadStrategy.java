@@ -15,8 +15,8 @@ public class DownloadStrategy extends SimpleArchiveDownloadStrategy {
 
     private static final Pattern mundiPathPattern = Pattern.compile("s1-l1-slc-(\\d{4})-q(\\d{1})\\/(\\d{4}\\/\\d{2}\\/\\d{2}\\/\\w{2}\\/\\w{2})\\/[\\S]+");
 
-    public DownloadStrategy(String targetFolder, Properties properties) {
-        super(targetFolder, properties);
+    public DownloadStrategy(MundiDataSource dataSource, String targetFolder, Properties properties) {
+        super(dataSource, targetFolder, properties);
         this.fetchMode = FetchMode.OVERWRITE;
     }
 

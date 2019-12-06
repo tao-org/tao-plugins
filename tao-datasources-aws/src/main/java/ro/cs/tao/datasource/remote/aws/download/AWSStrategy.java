@@ -4,9 +4,9 @@ import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.aws.AWSDataSource;
-import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.HttpMethod;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -27,8 +27,8 @@ public abstract class AWSStrategy extends DownloadStrategy {
     private static final String COMPLETE_MESSAGE = "(%s,%s) %s [elapsed: %ss]";
     private static final String ERROR_MESSAGE = "Cannot download %s: %s";
 
-    AWSStrategy(String targetFolder, Properties properties) {
-        super(targetFolder, properties);
+    AWSStrategy(AWSDataSource dataSource, String targetFolder, Properties properties) {
+        super(dataSource, targetFolder, properties);
     }
 
     AWSStrategy(AWSStrategy other) {
@@ -51,7 +51,7 @@ public abstract class AWSStrategy extends DownloadStrategy {
         try {
             logger.fine(String.format("Begin download for %s", subActivity));
             subActivityStart(subActivity);
-            connection = AWSDataSource.buildS3Connection(HttpMethod.GET, remoteUrl);
+            connection = ((AWSDataSource) this.dataSource).buildS3Connection(HttpMethod.GET, remoteUrl);
             long remoteFileLength = connection.getContentLengthLong();
             if (currentProductProgress.needsAdjustment()) {
                 currentProductProgress.adjust(remoteFileLength);
@@ -63,7 +63,7 @@ public abstract class AWSStrategy extends DownloadStrategy {
                 if (localFileLength != remoteFileLength) {
                     if (FetchMode.RESUME.equals(this.fetchMode)) {
                         connection.disconnect();
-                        connection = AWSDataSource.buildS3Connection(HttpMethod.GET, remoteUrl);
+                        connection = ((AWSDataSource) this.dataSource).buildS3Connection(HttpMethod.GET, remoteUrl);
                         connection.setRequestProperty("Range", "bytes=" + localFileLength + "-");
                     } else {
                         Files.delete(file);

@@ -16,6 +16,7 @@
 package ro.cs.tao.datasource.remote.scihub.download;
 
 import ro.cs.tao.datasource.InterruptedException;
+import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
 import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.L1CProductHelper;
@@ -120,8 +121,8 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
     private boolean shouldFilterTiles;
     private Pattern tileIdPattern;
 
-    public Sentinel2DownloadStrategy(String targetFolder) {
-        super(targetFolder);
+    public Sentinel2DownloadStrategy(SciHubDataSource dataSource, String targetFolder) {
+        super(dataSource, targetFolder);
         ODataPath odp = new ODataPath();
         odataProductPath = odp.root(oDataBasePath).node("${PRODUCT_NAME}.SAFE").path();
         odp.root(odataProductPath).node(FOLDER_GRANULE).node("${tile}");

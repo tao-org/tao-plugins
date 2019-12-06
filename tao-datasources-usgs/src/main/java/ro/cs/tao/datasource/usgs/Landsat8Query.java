@@ -37,11 +37,11 @@ import ro.cs.tao.datasource.usgs.json.handlers.SearchResponseHandler;
 import ro.cs.tao.datasource.usgs.json.requests.*;
 import ro.cs.tao.datasource.usgs.json.responses.LoginResponse;
 import ro.cs.tao.datasource.usgs.parameters.USGSDateParameterConverter;
-import ro.cs.tao.datasource.util.HttpMethod;
-import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 import ro.cs.tao.utils.StringUtilities;
 
 import java.awt.geom.Rectangle2D;
