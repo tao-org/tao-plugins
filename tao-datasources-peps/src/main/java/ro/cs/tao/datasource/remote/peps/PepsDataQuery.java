@@ -32,10 +32,10 @@ import ro.cs.tao.datasource.remote.peps.parameters.BooleanParameterConverter;
 import ro.cs.tao.datasource.remote.peps.parameters.DateParameterConverter;
 import ro.cs.tao.datasource.remote.peps.parameters.PolygonParameterConverter;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
-import ro.cs.tao.datasource.util.HttpMethod;
-import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;

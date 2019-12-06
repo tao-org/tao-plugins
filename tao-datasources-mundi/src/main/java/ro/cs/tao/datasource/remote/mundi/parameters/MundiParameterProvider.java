@@ -4,12 +4,12 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
 import ro.cs.tao.datasource.remote.mundi.DownloadStrategy;
+import ro.cs.tao.datasource.remote.mundi.MundiDataSource;
 import ro.cs.tao.datasource.remote.mundi.landsat8.Landsat8Strategy;
 import ro.cs.tao.datasource.remote.mundi.sentinel2.Sentinel2DownloadStrategy;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -17,18 +17,14 @@ import java.util.Properties;
  */
 public class MundiParameterProvider extends AbstractParameterProvider {
 
-    private static final Map<String, ProductFetchStrategy> productFetchers;
-
-    static {
+    public MundiParameterProvider(MundiDataSource dataSource) {
+        super();
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
-                    put("Sentinel1", new DownloadStrategy(targetFolder, new Properties()));
-                    put("Sentinel2", new Sentinel2DownloadStrategy(targetFolder));
-                    put("Landsat8", new Landsat8Strategy(targetFolder));
+                    put("Sentinel1", new DownloadStrategy(dataSource, targetFolder, new Properties()));
+                    put("Sentinel2", new Sentinel2DownloadStrategy(dataSource, targetFolder));
+                    put("Landsat8", new Landsat8Strategy(dataSource, targetFolder));
                 }});
     }
-
-    @Override
-    public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() { return productFetchers; }
 }

@@ -4,10 +4,10 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
 import ro.cs.tao.datasource.remote.NoDownloadStrategy;
+import ro.cs.tao.datasource.remote.creodias.CreoDiasDataSource;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -15,18 +15,13 @@ import java.util.Properties;
  */
 public class CreodiasParameterProvider extends AbstractParameterProvider {
 
-    private static final Map<String, ProductFetchStrategy> productFetchers;
-
-    static {
+    public CreodiasParameterProvider(CreoDiasDataSource dataSource) {
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
-                    put("Sentinel1", new NoDownloadStrategy(targetFolder, new Properties()));
-                    put("Sentinel2", new NoDownloadStrategy(targetFolder, new Properties()));
-                    put("Landsat8", new NoDownloadStrategy(targetFolder, new Properties()));
+                    put("Sentinel1", new NoDownloadStrategy(dataSource, targetFolder, new Properties()));
+                    put("Sentinel2", new NoDownloadStrategy(dataSource, targetFolder, new Properties()));
+                    put("Landsat8", new NoDownloadStrategy(dataSource, targetFolder, new Properties()));
                 }});
     }
-
-    @Override
-    public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() { return productFetchers; }
 }

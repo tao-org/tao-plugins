@@ -19,11 +19,11 @@ import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.ProductHelper;
 import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
-import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,8 +54,8 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
         }
     }
 
-    public SentinelDownloadStrategy(String targetFolder) {
-        super(targetFolder, properties);
+    public SentinelDownloadStrategy(SciHubDataSource dataSource, String targetFolder) {
+        super(dataSource, targetFolder, properties);
         ODataPath odp = new ODataPath();
         String scihubUrl = props.getProperty("scihub.product.url", "https://scihub.copernicus.eu/apihub/odata/v1");
         /*if (!NetUtils.isAvailable(scihubUrl)) {
@@ -116,6 +116,9 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
                 if (inputStream.read(buffer) == -1 && !Boolean.parseBoolean(new String(buffer))) {
                     throw new IOException(String.format("Product %s is not online", productName));
                 }
+            } catch (IOException inner) {
+                logger.warning(String.format("Cannot determine online status for product %s", productName));
+                throw inner;
             } finally {
                 connection.disconnect();
             }

@@ -17,7 +17,7 @@ package ro.cs.tao.datasource.remote.scihub;
 
 import ro.cs.tao.datasource.remote.URLDataSource;
 import ro.cs.tao.datasource.remote.scihub.parameters.SciHubParameterProvider;
-import ro.cs.tao.datasource.util.NetUtils;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -41,7 +41,7 @@ public class SciHubDataSource extends URLDataSource<SciHubDataQuery> {
 
     public SciHubDataSource() throws URISyntaxException {
         super(URL);
-        setParameterProvider(new SciHubParameterProvider());
+        setParameterProvider(new SciHubParameterProvider(this));
         this.properties = SciHubDataSource.props;
     }
 

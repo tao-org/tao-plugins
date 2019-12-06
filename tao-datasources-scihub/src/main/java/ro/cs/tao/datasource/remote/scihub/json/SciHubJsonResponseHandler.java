@@ -18,6 +18,7 @@ package ro.cs.tao.datasource.remote.scihub.json;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
+import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
 import ro.cs.tao.datasource.remote.scihub.download.SentinelDownloadStrategy;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
@@ -35,11 +36,17 @@ import java.util.stream.Collectors;
  * @author Cosmin Cara
  */
 public class SciHubJsonResponseHandler implements JSonResponseHandler<EOProduct> {
+    private SciHubDataSource dataSource;
+
+    public SciHubJsonResponseHandler(SciHubDataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         Result[] results = mapper.readValue(content, Result[].class);
-        SentinelDownloadStrategy downloader = new SentinelDownloadStrategy("");
+        SentinelDownloadStrategy downloader = new SentinelDownloadStrategy(dataSource, "");
         return Arrays.stream(results).map(r -> {
             try {
                 EOProduct product = new EOProduct();

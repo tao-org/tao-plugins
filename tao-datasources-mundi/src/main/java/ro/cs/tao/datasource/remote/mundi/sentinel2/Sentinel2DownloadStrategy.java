@@ -131,8 +131,8 @@ public class Sentinel2DownloadStrategy extends DownloadStrategy {
         }
     }
 
-    public Sentinel2DownloadStrategy(String targetFolder) {
-        super(targetFolder, properties);
+    public Sentinel2DownloadStrategy(MundiDataSource dataSource, String targetFolder) {
+        super(dataSource, targetFolder, properties);
         this.urlProductPath = props.getProperty("sentinel.download.url", "https://obs.eu-de.otc.t-systems.com/");
     }
 

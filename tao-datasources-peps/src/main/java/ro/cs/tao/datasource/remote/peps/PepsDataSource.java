@@ -39,7 +39,7 @@ public class PepsDataSource extends URLDataSource<PepsDataQuery> {
 
     public PepsDataSource() throws URISyntaxException {
         super(URL);
-        setParameterProvider(new PepsParameterProvider());
+        setParameterProvider(new PepsParameterProvider(this));
     }
 
     @Override

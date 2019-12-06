@@ -23,7 +23,6 @@ import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.aws.internal.AwsResult;
 import ro.cs.tao.datasource.remote.aws.internal.IntermediateParser;
-import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
@@ -32,6 +31,7 @@ import ro.cs.tao.eodata.util.Conversions;
 import ro.cs.tao.products.landsat.Landsat8ProductHelper;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
 import ro.cs.tao.products.landsat.LandsatProduct;
+import ro.cs.tao.utils.HttpMethod;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -162,7 +162,7 @@ class Landsat8Query extends DataQuery {
                 String path = tile.substring(0, 3);
                 String row = tile.substring(3, 6);
                 String tileUrl = (preCollection ? alternateUrl : baseUrl) + path + DownloadStrategy.URL_SEPARATOR + row + DownloadStrategy.URL_SEPARATOR;
-                final AwsResult preCollectionResult = IntermediateParser.parse(AWSDataSource.getS3ResponseAsString(HttpMethod.GET, tileUrl));
+                final AwsResult preCollectionResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, tileUrl));
                 if (preCollectionResult.getCommonPrefixes() != null) {
                     Set<String> names = preCollectionResult.getCommonPrefixes().stream()
                             .map(p -> p.replace(preCollectionResult.getPrefix(), "").replace(preCollectionResult.getDelimiter(), ""))
@@ -197,7 +197,7 @@ class Landsat8Query extends DataQuery {
                     }
                 }
                 tileUrl = baseUrl + path + DownloadStrategy.URL_SEPARATOR + row + DownloadStrategy.URL_SEPARATOR;
-                final AwsResult productResult = IntermediateParser.parse(AWSDataSource.getS3ResponseAsString(HttpMethod.GET, tileUrl));
+                final AwsResult productResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, tileUrl));
                 if (productResult.getCommonPrefixes() != null) {
                     Set<String> names = productResult.getCommonPrefixes().stream()
                             .map(p -> p.replace(productResult.getPrefix(), "").replace(productResult.getDelimiter(), ""))
@@ -242,7 +242,7 @@ class Landsat8Query extends DataQuery {
 
     private EOProduct parseProductJson(String jsonUrl) throws Exception {
         EOProduct product;
-        try (InputStream inputStream = AWSDataSource.buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream();
+        try (InputStream inputStream = ((AWSDataSource) this.source).buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream();
              JsonReader reader = Json.createReader(inputStream)) {
             JsonObject rootObject = reader.readObject().getJsonObject("L1_METADATA_FILE");
             JsonObject obj = rootObject.getJsonObject("METADATA_FILE_INFO");
@@ -261,17 +261,18 @@ class Landsat8Query extends DataQuery {
             product.setWidth(obj.getInt("REFLECTIVE_SAMPLES"));
             product.setHeight(obj.getInt("REFLECTIVE_LINES"));
             Polygon2D footprint = new Polygon2D();
-            footprint.append(obj.getJsonNumber("CORNER_UL_LAT_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_UL_LON_PRODUCT").doubleValue());
-            footprint.append(obj.getJsonNumber("CORNER_UR_LAT_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_UR_LON_PRODUCT").doubleValue());
-            footprint.append(obj.getJsonNumber("CORNER_LR_LAT_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_LR_LON_PRODUCT").doubleValue());
-            footprint.append(obj.getJsonNumber("CORNER_LL_LAT_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_LL_LON_PRODUCT").doubleValue());
-            footprint.append(obj.getJsonNumber("CORNER_UL_LAT_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_UL_LON_PRODUCT").doubleValue());
+            footprint.append(obj.getJsonNumber("CORNER_UL_LON_PRODUCT").doubleValue(),
+                             obj.getJsonNumber("CORNER_UL_LAT_PRODUCT").doubleValue());
+            footprint.append(obj.getJsonNumber("CORNER_UR_LON_PRODUCT").doubleValue(),
+                             obj.getJsonNumber("CORNER_UR_LAT_PRODUCT").doubleValue());
+            footprint.append(obj.getJsonNumber("CORNER_LR_LON_PRODUCT").doubleValue(),
+                             obj.getJsonNumber("CORNER_LR_LAT_PRODUCT").doubleValue());
+            footprint.append(obj.getJsonNumber("CORNER_LL_LON_PRODUCT").doubleValue(),
+                             obj.getJsonNumber("CORNER_LL_LAT_PRODUCT").doubleValue());
+            footprint.append(obj.getJsonNumber("CORNER_UL_LON_PRODUCT").doubleValue(),
+                             obj.getJsonNumber("CORNER_UL_LAT_PRODUCT").doubleValue());
             product.setGeometry(footprint.toWKT());
+            product.setCrs("EPSG:4326");
 
             obj = rootObject.getJsonObject("MIN_MAX_PIXEL_VALUE");
             product.setPixelType(Conversions.pixelTypeFromRange(obj.getInt("QUANTIZE_CAL_MIN_BAND_1"),
@@ -286,7 +287,7 @@ class Landsat8Query extends DataQuery {
     }
 
     private double getTileCloudPercentage(String jsonUrl) throws IOException {
-        try (InputStream inputStream = AWSDataSource.buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream();
+        try (InputStream inputStream = ((AWSDataSource) this.source).buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream();
              JsonReader reader = Json.createReader(inputStream)) {
             JsonObject obj = reader.readObject();
             return obj.getJsonObject("L1_METADATA_FILE")

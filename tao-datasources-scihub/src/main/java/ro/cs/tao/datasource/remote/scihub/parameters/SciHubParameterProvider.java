@@ -24,16 +24,16 @@ import ro.cs.tao.datasource.remote.scihub.download.Sentinel2ArchiveDownloadStrat
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel2DownloadStrategy;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel3DownloadStrategy;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * @author Cosmin Cara
  */
 public final class SciHubParameterProvider extends AbstractParameterProvider {
 
-    private static Map<String, ProductFetchStrategy> productFetchers;
-
-    static {
+    public SciHubParameterProvider(SciHubDataSource dataSource) {
+        super();
         ConfigurationManager configurationManager = ConfigurationManager.getInstance();
         final String targetFolder = configurationManager.getValue("product.location");
         final boolean downloadExpanded =
@@ -41,16 +41,13 @@ public final class SciHubParameterProvider extends AbstractParameterProvider {
                                                                    "false"));
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
-                    put("Sentinel1", new Sentinel1DownloadStrategy(targetFolder));
+                    put("Sentinel1", new Sentinel1DownloadStrategy(dataSource, targetFolder));
                     if (downloadExpanded) {
-                        put("Sentinel2", new Sentinel2DownloadStrategy(targetFolder));
+                        put("Sentinel2", new Sentinel2DownloadStrategy(dataSource, targetFolder));
                     } else {
-                        put("Sentinel2", new Sentinel2ArchiveDownloadStrategy(targetFolder));
+                        put("Sentinel2", new Sentinel2ArchiveDownloadStrategy(dataSource, targetFolder));
                     }
-                    put("Sentinel3", new Sentinel3DownloadStrategy(targetFolder));
+                    put("Sentinel3", new Sentinel3DownloadStrategy(dataSource, targetFolder));
                 }});
     }
-
-    @Override
-    public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() { return productFetchers; }
 }

@@ -5,10 +5,12 @@ import ro.cs.tao.datasource.remote.creodias.landsat8.Landsat8Query;
 import ro.cs.tao.datasource.remote.creodias.parameters.CreodiasParameterProvider;
 import ro.cs.tao.datasource.remote.creodias.sentinel1.Sentinel1Query;
 import ro.cs.tao.datasource.remote.creodias.sentinel2.Sentinel2Query;
-import ro.cs.tao.datasource.util.NetUtils;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -17,9 +19,10 @@ import java.util.Properties;
 public class CreoDiasDataSource extends URLDataSource<BaseDataQuery> {
 
     protected static final Properties properties;
-    protected String sentinel1ConnectionString;
+    protected Map<String, String> connectionStrings;
+    /*protected String sentinel1ConnectionString;
     protected String sentinel2ConnectionString;
-    protected String landsat8ConnectionString;
+    protected String landsat8ConnectionString;*/
 
     static {
         properties = new Properties();
@@ -31,10 +34,12 @@ public class CreoDiasDataSource extends URLDataSource<BaseDataQuery> {
 
     public CreoDiasDataSource() throws URISyntaxException {
         super("");
-        this.sentinel1ConnectionString = normalizedURL("s1.search.url");
-        this.sentinel2ConnectionString = normalizedURL("s2.search.url");
-        this.landsat8ConnectionString = normalizedURL("l8.search.url");
-        setParameterProvider(new CreodiasParameterProvider());
+        this.connectionStrings = new HashMap<String, String>() {{
+            put("Sentinel1", normalizedURL("s1.search.url"));
+            put("Sentinel2", normalizedURL("s2.search.url"));
+            put("Landsat8", normalizedURL("l8.search.url"));
+        }};
+        setParameterProvider(new CreodiasParameterProvider(this));
     }
 
     @Override
@@ -42,9 +47,20 @@ public class CreoDiasDataSource extends URLDataSource<BaseDataQuery> {
 
     @Override
     public boolean ping() {
-        return NetUtils.isAvailable(this.sentinel1ConnectionString, credentials.getUserName(), credentials.getPassword()) &&
+        for (String value : this.connectionStrings.values()) {
+            if (!NetUtils.isAvailable(value, credentials.getUserName(), credentials.getPassword())) {
+                return false;
+            }
+        }
+        return true;
+        /*return NetUtils.isAvailable(this.sentinel1ConnectionString, credentials.getUserName(), credentials.getPassword()) &&
                 NetUtils.isAvailable(this.sentinel2ConnectionString, credentials.getUserName(), credentials.getPassword()) &&
-                NetUtils.isAvailable(this.landsat8ConnectionString, credentials.getUserName(), credentials.getPassword());
+                NetUtils.isAvailable(this.landsat8ConnectionString, credentials.getUserName(), credentials.getPassword());*/
+    }
+
+    @Override
+    public String getConnectionString(String sensorName) {
+        return this.connectionStrings.get(sensorName);
     }
 
     @Override
@@ -52,13 +68,13 @@ public class CreoDiasDataSource extends URLDataSource<BaseDataQuery> {
         BaseDataQuery query;
         switch (sensorName) {
             case "Sentinel1":
-                query = new Sentinel1Query(this, sensorName, sentinel1ConnectionString);
+                query = new Sentinel1Query(this, sensorName, this.connectionStrings.get(sensorName));
                 break;
             case "Sentinel2":
-                query = new Sentinel2Query(this, sensorName, sentinel2ConnectionString);
+                query = new Sentinel2Query(this, sensorName, this.connectionStrings.get(sensorName));
                 break;
             case "Landsat8":
-                query = new Landsat8Query(this, sensorName, landsat8ConnectionString);
+                query = new Landsat8Query(this, sensorName, this.connectionStrings.get(sensorName));
                 break;
             default:
                 query = null;
@@ -69,7 +85,7 @@ public class CreoDiasDataSource extends URLDataSource<BaseDataQuery> {
     private String normalizedURL(String urlPropertyName) {
         String url = properties.getProperty(urlPropertyName);
         if (!url.endsWith("/")) {
-            url.concat("/");
+            url = url.concat("/");
         }
         return url;
     }

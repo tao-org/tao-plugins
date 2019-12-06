@@ -2,7 +2,7 @@ package ro.cs.tao.datasource.remote.asf;
 
 import ro.cs.tao.datasource.remote.URLDataSource;
 import ro.cs.tao.datasource.remote.asf.parameters.ASFParameterProvider;
-import ro.cs.tao.datasource.util.NetUtils;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -23,15 +23,12 @@ public class ASFDataSource extends URLDataSource<ASFQuery> {
 
     public ASFDataSource() throws URISyntaxException {
         super(URL);
-        setParameterProvider(new ASFParameterProvider());
+        setParameterProvider(new ASFParameterProvider(this));
         this.properties = ASFDataSource.props;
     }
 
     @Override
     public String defaultId() { return "Alaska Satellite Facility"; }
-
-    @Override
-    public int getMaximumAllowedTransfers() { return 2; }
 
     @Override
     public boolean ping() {

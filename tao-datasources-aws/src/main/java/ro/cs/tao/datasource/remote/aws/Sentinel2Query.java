@@ -15,6 +15,11 @@
  */
 package ro.cs.tao.datasource.remote.aws;
 
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.locationtech.jts.geom.Coordinate;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
@@ -24,7 +29,6 @@ import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.aws.internal.AwsResult;
 import ro.cs.tao.datasource.remote.aws.internal.IntermediateParser;
 import ro.cs.tao.datasource.remote.aws.internal.ManifestSizeParser;
-import ro.cs.tao.datasource.util.HttpMethod;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
@@ -32,6 +36,8 @@ import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
+import ro.cs.tao.serialization.CRSAdapter;
+import ro.cs.tao.utils.HttpMethod;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -164,7 +170,7 @@ class Sentinel2Query extends DataQuery {
                         break;
                     }
                     String yearUrl = tileUrl + String.valueOf(year) + DownloadStrategy.URL_SEPARATOR;
-                    AwsResult yearResult = IntermediateParser.parse(AWSDataSource.getS3ResponseAsString(HttpMethod.GET, yearUrl));
+                    AwsResult yearResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, yearUrl));
                     if (yearResult.getCommonPrefixes() != null) {
                         Set<Integer> months = yearResult.getCommonPrefixes().stream()
                                 .map(p -> {
@@ -178,8 +184,8 @@ class Sentinel2Query extends DataQuery {
                                 break;
                             }
                             if (months.contains(month)) {
-                                String monthUrl = yearUrl + String.valueOf(month) + DownloadStrategy.URL_SEPARATOR;
-                                AwsResult monthResult = IntermediateParser.parse(AWSDataSource.getS3ResponseAsString(HttpMethod.GET, monthUrl));
+                                String monthUrl = yearUrl + month + DownloadStrategy.URL_SEPARATOR;
+                                AwsResult monthResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, monthUrl));
                                 if (monthResult.getCommonPrefixes() != null) {
                                     Set<Integer> days = monthResult.getCommonPrefixes().stream()
                                             .map(p -> {
@@ -193,7 +199,7 @@ class Sentinel2Query extends DataQuery {
                                     for (int day = dayS; day <= dayE; day++) {
                                         if (days.contains(day)) {
                                             String dayUrl = monthUrl + String.valueOf(day) + DownloadStrategy.URL_SEPARATOR;
-                                            AwsResult dayResult = IntermediateParser.parse(AWSDataSource.getS3ResponseAsString(HttpMethod.GET, dayUrl));
+                                            AwsResult dayResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, dayUrl));
                                             if (dayResult.getCommonPrefixes() != null) {
                                                 Set<Integer> sequences = dayResult.getCommonPrefixes().stream()
                                                         .map(p -> {
@@ -346,7 +352,7 @@ class Sentinel2Query extends DataQuery {
                         break;
                     }
                     String yearUrl = tileUrl + String.valueOf(year) + DownloadStrategy.URL_SEPARATOR;
-                    AwsResult yearResult = IntermediateParser.parse(AWSDataSource.getS3ResponseAsString(HttpMethod.GET, yearUrl));
+                    AwsResult yearResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, yearUrl));
                     if (yearResult.getCommonPrefixes() != null) {
                         Set<Integer> months = yearResult.getCommonPrefixes().stream()
                                 .map(p -> {
@@ -361,7 +367,7 @@ class Sentinel2Query extends DataQuery {
                             }
                             if (months.contains(month)) {
                                 String monthUrl = yearUrl + String.valueOf(month) + DownloadStrategy.URL_SEPARATOR;
-                                AwsResult monthResult = IntermediateParser.parse(AWSDataSource.getS3ResponseAsString(HttpMethod.GET, monthUrl));
+                                AwsResult monthResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, monthUrl));
                                 if (monthResult.getCommonPrefixes() != null) {
                                     Set<Integer> days = monthResult.getCommonPrefixes().stream()
                                             .map(p -> {
@@ -375,7 +381,7 @@ class Sentinel2Query extends DataQuery {
                                     for (int day = dayS; day <= dayE; day++) {
                                         if (days.contains(day)) {
                                             String dayUrl = monthUrl + String.valueOf(day) + DownloadStrategy.URL_SEPARATOR;
-                                            AwsResult dayResult = IntermediateParser.parse(AWSDataSource.getS3ResponseAsString(HttpMethod.GET, dayUrl));
+                                            AwsResult dayResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, dayUrl));
                                             if (dayResult.getCommonPrefixes() != null) {
                                                 count += dayResult.getCommonPrefixes().stream()
                                                         .map(p -> {
@@ -398,7 +404,7 @@ class Sentinel2Query extends DataQuery {
     }
 
     private void parseProductJson(String jsonUrl, EOProduct product) throws Exception {
-        try (JsonReader reader = Json.createReader(AWSDataSource.buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream())) {
+        try (JsonReader reader = Json.createReader(((AWSDataSource) this.source).buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream())) {
             JsonObject obj = reader.readObject();
             product.setFormatType(DataFormat.RASTER);
             product.setSensorType(SensorType.OPTICAL);
@@ -418,7 +424,7 @@ class Sentinel2Query extends DataQuery {
     }
 
     private void parseManifest(String manifestUrl, EOProduct product) {
-        try (InputStream inputStream = AWSDataSource.buildS3Connection(HttpMethod.GET, manifestUrl).getInputStream()) {
+        try (InputStream inputStream = ((AWSDataSource) this.source).buildS3Connection(HttpMethod.GET, manifestUrl).getInputStream()) {
             long size = ManifestSizeParser.parse(new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining("\n")));
             product.setApproximateSize(size);
         } catch (Exception ex) {
@@ -427,43 +433,48 @@ class Sentinel2Query extends DataQuery {
     }
 
     private double getTileCloudPercentage(String jsonUrl, EOProduct product) throws IOException {
-        JsonReader reader = null;
         if (product == null) {
             product = new EOProduct();
         }
-        try (InputStream inputStream = AWSDataSource.buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream()) {
-            reader = Json.createReader(inputStream);
+        try (InputStream inputStream = ((AWSDataSource) this.source).buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream();
+             JsonReader reader = Json.createReader(inputStream)) {
             JsonObject obj = reader.readObject();
             double clouds = obj.getJsonNumber("cloudyPixelPercentage").doubleValue();
             product.addAttribute("cloudcoverpercentage", String.valueOf(clouds));
             try {
-                product.setCrs(obj.getJsonObject("tileGeometry")
-                                .getJsonObject("crs")
-                                .getJsonObject("properties")
-                                .getString("name"));
-                //if (product.getGeometry() == null) {
-                    JsonArray coords = obj.getJsonObject("tileGeometry").getJsonArray("coordinates").getJsonArray(0);
-                    Polygon2D polygon2D = new Polygon2D();
-                    polygon2D.append(coords.getJsonArray(0).getJsonNumber(0).doubleValue(),
-                                     coords.getJsonArray(0).getJsonNumber(1).doubleValue());
-                    polygon2D.append(coords.getJsonArray(1).getJsonNumber(0).doubleValue(),
-                                     coords.getJsonArray(1).getJsonNumber(1).doubleValue());
-                    polygon2D.append(coords.getJsonArray(2).getJsonNumber(0).doubleValue(),
-                                     coords.getJsonArray(2).getJsonNumber(1).doubleValue());
-                    polygon2D.append(coords.getJsonArray(3).getJsonNumber(0).doubleValue(),
-                                     coords.getJsonArray(3).getJsonNumber(1).doubleValue());
-                    polygon2D.append(coords.getJsonArray(4).getJsonNumber(0).doubleValue(),
-                                     coords.getJsonArray(4).getJsonNumber(1).doubleValue());
-                    product.setGeometry(polygon2D.toWKT());
+                final String initialCrsCode = obj.getJsonObject("tileGeometry")
+                        .getJsonObject("crs")
+                        .getJsonObject("properties")
+                        .getString("name");
+                final CoordinateReferenceSystem initialCrs = new CRSAdapter().marshal(initialCrsCode);
+                final CoordinateReferenceSystem targetCrs = CRS.decode("EPSG:4326");
+                MathTransform mathTransform;
+                try {
+                    mathTransform = CRS.findMathTransform(initialCrs, targetCrs);
+                } catch (Exception ex) {
+                    // fall back to lenient transform if Bursa Wolf parameters are not provided
+                    mathTransform = CRS.findMathTransform(initialCrs, targetCrs, true);
+                }
+
+                JsonArray coords = obj.getJsonObject("tileGeometry").getJsonArray("coordinates").getJsonArray(0);
+                Polygon2D polygon2D = new Polygon2D();
+                final int latIdx = 1, lonIdx = 0;
+                for (int i = 0; i < 5; i++) {
+                    final JsonArray array = coords.getJsonArray(i);
+                    Coordinate fromPoint = new Coordinate(array.getJsonNumber(lonIdx).doubleValue(),
+                                                      array.getJsonNumber(latIdx).doubleValue());
+                    Coordinate toPoint = new Coordinate();
+                    JTS.transform(fromPoint, toPoint, mathTransform);
+                    polygon2D.append(toPoint.y, toPoint.x);
+                    //polygon2D.append(toPoint.x, toPoint.y);
+                }
+                product.setGeometry(polygon2D.toWKT());
+                product.setCrs("EPSG:4326");
                 //}
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return clouds;
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
         }
     }
 

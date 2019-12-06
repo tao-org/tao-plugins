@@ -36,13 +36,13 @@ import ro.cs.tao.datasource.remote.scihub.parameters.DoubleParameterConverter;
 import ro.cs.tao.datasource.remote.scihub.parameters.SciHubPolygonParameterConverter;
 import ro.cs.tao.datasource.remote.scihub.xml.SciHubXmlCountResponseHandler;
 import ro.cs.tao.datasource.remote.scihub.xml.SciHubXmlResponseHandler;
-import ro.cs.tao.datasource.util.HttpMethod;
-import ro.cs.tao.datasource.util.NetUtils;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -126,7 +126,7 @@ public class SciHubDataQuery extends DataQuery {
                                 parser = new XmlResponseParser<>();
                                 ((XmlResponseParser) parser).setHandler(new SciHubXmlResponseHandler("entry"));
                             } else {
-                                parser = new JsonResponseParser<>(new SciHubJsonResponseHandler());
+                                parser = new JsonResponseParser<>(new SciHubJsonResponseHandler((SciHubDataSource) this.source));
                             }
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null) {
@@ -338,6 +338,23 @@ public class SciHubDataQuery extends DataQuery {
                                 } else {
                                     query.append("filename:*").append(value).append("*");
                                 }
+                            }
+                            break;
+                        case CommonParameterNames.PRODUCT_TYPE:
+                            value = parameter.getValueAsString();
+                            final String paramTypeName = getRemoteName(parameter.getName());
+                            if (value.startsWith("[") && value.endsWith("]")) {
+                                String[] values = value.substring(1, value.length() - 1).split(",");
+                                query.append("(");
+                                for (int i = 0; i < values.length; i++) {
+                                    query.append(paramTypeName).append(":").append(values[i]);
+                                    if (i < values.length - 1) {
+                                        query.append(" OR ");
+                                    }
+                                }
+                                query.append(")");
+                            } else {
+                                query.append(paramTypeName).append(":").append(value);
                             }
                             break;
                         default:

@@ -19,27 +19,24 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
 import ro.cs.tao.datasource.remote.SimpleArchiveDownloadStrategy;
+import ro.cs.tao.datasource.usgs.USGSDataSource;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Properties;
 
 /**
  * @author Cosmin Cara
  */
 public class LandsatParameterProvider extends AbstractParameterProvider {
 
-    private static Map<String, ProductFetchStrategy> productFetchers;
-
-    public LandsatParameterProvider() {
-        if (productFetchers == null) {
-            final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
-            productFetchers = Collections.unmodifiableMap(
-                    new HashMap<String, ProductFetchStrategy>() {{
-                        put("Landsat8", new SimpleArchiveDownloadStrategy(targetFolder, new Properties()));
-                    }});
-        }
+    public LandsatParameterProvider(USGSDataSource dataSource) {
+        super();
+        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
+        productFetchers = Collections.unmodifiableMap(
+                new HashMap<String, ProductFetchStrategy>() {{
+                    put("Landsat8", new SimpleArchiveDownloadStrategy(dataSource, targetFolder, new Properties()));
+                }});
     }
-
-    @Override
-    public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() { return productFetchers; }
 
 }

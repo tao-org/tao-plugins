@@ -40,6 +40,11 @@
             <artifactId>tao-products-landsat</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-api</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
