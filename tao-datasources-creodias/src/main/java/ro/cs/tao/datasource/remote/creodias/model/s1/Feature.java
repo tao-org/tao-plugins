@@ -2,9 +2,9 @@
 package ro.cs.tao.datasource.remote.creodias.model.s1;
 
 import com.fasterxml.jackson.annotation.*;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import ro.cs.tao.datasource.remote.creodias.model.common.Geometry;
 
 import java.util.HashMap;
