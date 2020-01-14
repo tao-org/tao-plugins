@@ -16,6 +16,7 @@
 
 package ro.cs.tao.datasource.remote.fedeo.parameters;
 
+import ro.cs.tao.configuration.Configuration;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.opensearch.OpenSearchParameterProvider;
@@ -30,7 +31,7 @@ public class FedEOParameterProvider extends OpenSearchParameterProvider {
 
     public FedEOParameterProvider(FedEODataSource dataSource, String url) {
         super(url);
-        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
+        final String targetFolder = ConfigurationManager.getInstance().getValue(Configuration.FileSystem.PRODUCTS_LOCATION);
         this.productFetchers = Collections.unmodifiableMap(new HashMap<>());
         String[] sensors = getSupportedSensors();
         for (String sensor : sensors) {
