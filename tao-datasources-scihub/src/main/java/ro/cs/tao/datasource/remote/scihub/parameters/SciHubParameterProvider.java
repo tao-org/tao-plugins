@@ -15,6 +15,7 @@
  */
 package ro.cs.tao.datasource.remote.scihub.parameters;
 
+import ro.cs.tao.configuration.Configuration;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
@@ -35,7 +36,7 @@ public final class SciHubParameterProvider extends AbstractParameterProvider {
     public SciHubParameterProvider(SciHubDataSource dataSource) {
         super();
         ConfigurationManager configurationManager = ConfigurationManager.getInstance();
-        final String targetFolder = configurationManager.getValue("product.location");
+        final String targetFolder = configurationManager.getValue(Configuration.FileSystem.PRODUCTS_LOCATION);
         final boolean downloadExpanded =
                 Boolean.parseBoolean(configurationManager.getValue(SciHubDataSource.class.getSimpleName() + ".expanded.download",
                                                                    "false"));

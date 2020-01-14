@@ -15,6 +15,7 @@
  */
 package ro.cs.tao.datasource.usgs.parameters;
 
+import ro.cs.tao.configuration.Configuration;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
@@ -32,7 +33,7 @@ public class LandsatParameterProvider extends AbstractParameterProvider {
 
     public LandsatParameterProvider(USGSDataSource dataSource) {
         super();
-        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
+        final String targetFolder = ConfigurationManager.getInstance().getValue(Configuration.FileSystem.PRODUCTS_LOCATION);
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
                     put("Landsat8", new SimpleArchiveDownloadStrategy(dataSource, targetFolder, new Properties()));
