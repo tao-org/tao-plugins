@@ -42,6 +42,7 @@
         <module>tao-otb-optimizer</module>
         <module>tao-quota-database</module>
         <module>tao-muscate-metadata</module>
+        <module>tao-openstack</module>
     </modules>
 
     <properties>
