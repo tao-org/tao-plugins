@@ -15,6 +15,7 @@
  */
 package ro.cs.tao.datasource.db;
 
+import ro.cs.tao.configuration.Configuration;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.AbstractDataSource;
 import ro.cs.tao.datasource.QueryException;
@@ -42,9 +43,9 @@ public class DatabaseSource extends AbstractDataSource<DatabaseQuery> {
 
     public DatabaseSource() {
         super();
-        this.connectionString = ConfigurationManager.getInstance().getValue("spring.datasource.url");
-        this.dbUser = ConfigurationManager.getInstance().getValue("spring.datasource.username");
-        this.dbPass = ConfigurationManager.getInstance().getValue("spring.datasource.password");
+        this.connectionString = ConfigurationManager.getInstance().getValue(Configuration.Services.DATABASE_CONNECTION_STRING);
+        this.dbUser = ConfigurationManager.getInstance().getValue(Configuration.Services.DATABASE_USER);
+        this.dbPass = ConfigurationManager.getInstance().getValue(Configuration.Services.DATABASE_PASSWORD);
         this.logger = Logger.getLogger(DatabaseSource.class.getName());
         try {
             Class.forName("org.postgresql.Driver");
