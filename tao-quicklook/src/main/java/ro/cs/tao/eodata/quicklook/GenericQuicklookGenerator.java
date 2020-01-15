@@ -1,5 +1,7 @@
 package ro.cs.tao.eodata.quicklook;
 
+import ro.cs.tao.configuration.Configuration;
+import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.eodata.DataHandlingException;
 import ro.cs.tao.eodata.OutputDataHandler;
 import ro.cs.tao.utils.DockerHelper;
@@ -21,18 +23,31 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 public class GenericQuicklookGenerator implements OutputDataHandler<Path> {
+    private static final boolean useDocker;
+    private static final String gdalDockerImage;
     private static final String QUICKLOOK_EXTENSION = ".png";
     private static final Set<String> extensions = new HashSet<String>() {{
         add(".tif"); add(".tiff"); add(".nc"); add(".png"); add(".jpg"); add(".bmp");
     }};
-    private static final String[] gdalOnPathCmd = new String[] {
-            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "$FULL_PATH", "$FULL_PATH" + QUICKLOOK_EXTENSION
-    };
-    private static final String[] gdalOnDocker = new String[] {
-            "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt/data", "geodata/gdal",
-            "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "/mnt/data/$FILE", "/mnt/data/$FILE" + QUICKLOOK_EXTENSION
-    };
+    private static final String[] gdalOnPathCmd;
+    private static final String[] gdalOnDockerCmd;
     private final Logger logger = Logger.getLogger(getClass().getName());
+
+    static {
+        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+        useDocker = Boolean.parseBoolean(configurationManager.getValue(Configuration.Docker.PLUGINS_USE_DOCKER, "false")) && DockerHelper.isDockerFound();
+        gdalDockerImage = configurationManager.getValue("docker.gdal.image", "geodata/gdal");
+        gdalOnPathCmd = new String[] {
+                "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "$FULL_PATH", "$FULL_PATH" + QUICKLOOK_EXTENSION
+        };
+        gdalOnDockerCmd = new String[] {
+                "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt/data", gdalDockerImage,
+                "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "/mnt/data/$FILE", "/mnt/data/$FILE" + QUICKLOOK_EXTENSION
+        };
+        Logger.getLogger(GenericQuicklookGenerator.class.getName())
+                .fine(String.format("'gdal_translate' will be run %s", useDocker ? "using Docker [" + gdalDockerImage + "]" : "from command line"));
+    }
+
     @Override
     public Class<Path> isIntendedFor() { return Path.class; }
 
@@ -48,7 +63,7 @@ public class GenericQuicklookGenerator implements OutputDataHandler<Path> {
             try {
                 // At least on Windows, docker doesn't handle well folder symlinks in the path
                 realPath = FileUtilities.resolveSymLinks(productFile);
-                Executor executor = initialize(realPath, DockerHelper.isDockerFound() ? gdalOnDocker : gdalOnPathCmd);
+                Executor<?> executor = initialize(realPath, useDocker && DockerHelper.isDockerFound() ? gdalOnDockerCmd : gdalOnPathCmd);
                 if (executor != null) {
                     executor.setOutputConsumer(consumer);
                     executor.execute(false);
@@ -64,7 +79,7 @@ public class GenericQuicklookGenerator implements OutputDataHandler<Path> {
         return results;
     }
 
-    private Executor initialize(Path productPath, String[] args) throws IOException {
+    private Executor<?> initialize(Path productPath, String[] args) throws IOException {
         String extension = FileUtilities.getExtension(productPath);
         if (!extensions.contains(extension.toLowerCase())) {
             return null;

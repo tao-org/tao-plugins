@@ -17,8 +17,8 @@
 package ro.cs.tao.eodata;
 
 import org.geotools.referencing.CRS;
-import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import ro.cs.tao.configuration.Configuration;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
@@ -43,6 +43,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class GdalInfoWrapper implements MetadataInspector {
     private static final String gdalDockerImage;
@@ -55,9 +56,14 @@ public class GdalInfoWrapper implements MetadataInspector {
     static {
         ConfigurationManager configurationManager = ConfigurationManager.getInstance();
         gdalDockerImage = configurationManager.getValue("docker.gdal.image", "geodata/gdal");
-        useDocker = Boolean.parseBoolean(configurationManager.getValue("plugins.use.docker", "false"));
+        useDocker = Boolean.parseBoolean(configurationManager.getValue(Configuration.Docker.PLUGINS_USE_DOCKER, "false")) && DockerHelper.isDockerFound();
         extractStatistics = Boolean.parseBoolean(configurationManager.getValue("extract.statistics", "true"));
         extractHistogram = Boolean.parseBoolean(configurationManager.getValue("extract.histogram", "false"));
+        Logger.getLogger(GdalInfoWrapper.class.getName())
+                .fine(String.format("'gdalinfo' will be run %s. Statistics extraction is %s, histogram extraction is %s",
+                                      useDocker ? "using Docker [" + gdalDockerImage + "]" : "from command line",
+                                      extractStatistics ? "enabled" : "disabled",
+                                      extractHistogram ? "enabled" : "disabled"));
         List<String> args = new ArrayList<>();
         args.add("gdalinfo");
         if (extractStatistics) {
@@ -92,28 +98,30 @@ public class GdalInfoWrapper implements MetadataInspector {
         if (productPath == null) {
             return null;
         }
-        Executor executor;
+        Executor<?> executor;
+        Metadata metadata = null;
         try {
-            return new Sentinel2MetadataInspector().getMetadata(productPath);
+            metadata = new Sentinel2MetadataInspector().getMetadata(productPath);
         } catch (Exception notS2) {
             try {
-                return new Sentinel1MetadataInspector().getMetadata(productPath);
+                metadata = new Sentinel1MetadataInspector().getMetadata(productPath);
             } catch (Exception notS1) {
                 try {
-                    return new Landsat8MetadataInspector().getMetadata(productPath);
+                    metadata = new Landsat8MetadataInspector().getMetadata(productPath);
                 } catch (Exception ignored) {}
             }
+        }
+        if (metadata != null) {
+            return metadata;
         }
         if (Files.isDirectory(productPath)) {
             // gdalinfo would work only on files
             return null;
         }
-        executor = initialize(productPath.toAbsolutePath(),
-                              useDocker && DockerHelper.isDockerFound() ? gdalOnDocker : gdalOnPathCmd);
+        executor = initialize(productPath.toAbsolutePath(), useDocker ? gdalOnDocker : gdalOnPathCmd);
         OutputAccumulator consumer = new OutputAccumulator();
         executor.setOutputConsumer(consumer);
         StringReader reader = null;
-        Metadata metadata;
         try {
             if (executor.execute(true) == 0) {
                 String output = consumer.getOutput();
@@ -172,9 +180,9 @@ public class GdalInfoWrapper implements MetadataInspector {
                 if (crsObject != null) {
                     CoordinateReferenceSystem crs = CRS.parseWKT(isNetCDF ? crsObject.getString("SRS") : crsObject.getString("wkt"));
                     if (crs != null && crs.getIdentifiers() != null && crs.getIdentifiers().size() > 0) {
-                        ReferenceIdentifier identifier = crs.getIdentifiers().stream()
-                                .findFirst().get();
-                        metadata.setCrs(identifier.getCodeSpace() + ":" + identifier.getCode());
+                        Metadata finalMetadata = metadata;
+                        crs.getIdentifiers().stream()
+                                .findFirst().ifPresent(identifier -> finalMetadata.setCrs(identifier.getCodeSpace() + ":" + identifier.getCode()));
                     }
                 }
                 JsonObject extentObject = root.getJsonObject("wgs84Extent");
@@ -279,7 +287,7 @@ public class GdalInfoWrapper implements MetadataInspector {
         return metadata;
     }
 
-    private Executor initialize(Path path, String[] args) throws IOException {
+    private Executor<?> initialize(Path path, String[] args) throws IOException {
         List<String> arguments = new ArrayList<>();
         // At least on Windows, docker doesn't handle well folder symlinks in the path
         Path realPath = FileUtilities.resolveSymLinks(path);
