@@ -2,10 +2,12 @@ package ro.cs.tao.topology.openstack;
 
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.common.Identifier;
+import org.openstack4j.model.identity.v3.Service;
 import org.openstack4j.openstack.OSFactory;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.topology.TopologyException;
 
+import java.util.Comparator;
 import java.util.logging.Logger;
 
 /**
@@ -61,10 +63,13 @@ public class OSAccount {
     }
 
     public OSClient.OSClientV3 getService() {
-        return OSFactory.builderV3()
-                        .endpoint(authenticationURL)
-                        .credentials(user, password, Identifier.byName(domain))
-                        .scopeToProject(Identifier.byId(tenantId))
-                        .authenticate();
+        OSClient.OSClientV3 service = OSFactory.builderV3()
+                                                .endpoint(authenticationURL)
+                                                .credentials(user, password, Identifier.byName(domain))
+                                                .scopeToProject(Identifier.byId(tenantId))
+                                                .authenticate();
+        // hack to force the retrieval of newest version of a service
+        service.getToken().getCatalog().sort((Comparator<Service>) (o1, o2) -> o2.getType().compareTo(o1.getType()));
+        return service;
     }
 }

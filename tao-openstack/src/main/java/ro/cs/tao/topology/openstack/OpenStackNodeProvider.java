@@ -1,22 +1,27 @@
 package ro.cs.tao.topology.openstack;
 
 import org.openstack4j.api.Builders;
+import org.openstack4j.api.OSClient;
+import org.openstack4j.api.compute.ComputeFloatingIPService;
 import org.openstack4j.api.compute.ComputeService;
 import org.openstack4j.api.compute.ServerService;
 import org.openstack4j.api.storage.BlockStorageService;
+import org.openstack4j.api.storage.BlockVolumeService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.compute.*;
 import org.openstack4j.model.compute.builder.ServerCreateBuilder;
+import org.openstack4j.model.network.Network;
 import org.openstack4j.model.storage.block.Volume;
+import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.topology.NodeDescription;
 import ro.cs.tao.topology.NodeFlavor;
 import ro.cs.tao.topology.TopologyException;
 import ro.cs.tao.topology.provider.DefaultNodeProvider;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.net.InetAddress;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * OpenStack topology node provider implementation.
@@ -25,12 +30,15 @@ import java.util.Set;
  */
 public class OpenStackNodeProvider extends DefaultNodeProvider {
     private OSAccount openStackAccount;
+    private Server master;
 
     @Override
     public void authenticate() {
         if (this.openStackAccount == null) {
             try {
                 this.openStackAccount = OSAccount.getInstance();
+                final OSClient.OSClientV3 service = this.openStackAccount.getService();
+                this.master = service.compute().servers().get(InetAddress.getLocalHost().getHostName());
             } catch (Exception ex) {
                 throw new TopologyException(String.format("OpenStack authentication failed. Reason: %s", ex.getMessage()));
             }
@@ -78,6 +86,9 @@ public class OpenStackNodeProvider extends DefaultNodeProvider {
     @Override
     public NodeDescription getNode(String nodeName) throws TopologyException {
         authenticate();
+        if ("localhost".equals(nodeName)) {
+            return super.getNode(nodeName);
+        }
         final Server server = this.openStackAccount.getService().compute().servers().get(nodeName);
         NodeDescription node = super.getNode(nodeName);
         if (node == null && server == null) {
@@ -108,31 +119,68 @@ public class OpenStackNodeProvider extends DefaultNodeProvider {
     public NodeDescription addNode(NodeDescription node) throws TopologyException {
         try {
             authenticate();
-            final ComputeService novaService = this.openStackAccount.getService().compute();
-            final BlockStorageService blockStorageService = this.openStackAccount.getService().blockStorage();
+            final ConfigurationManager cfgManager = ConfigurationManager.getInstance();
+            final String ssdType = cfgManager.getValue(Constants.OPENSTACK_VOLUME_TYPE_SSD, "SSD");
+            final String hddType = cfgManager.getValue(Constants.OPENSTACK_VOLUME_TYPE_HDD, "HDD");
+            final String defaultSecGroup = cfgManager.getValue(Constants.OPENSTACK_DEFAULT_SECURITY_GROUP);
+            final OSClient.OSClientV3 session = this.openStackAccount.getService();
+            final ComputeService novaService = session.compute();
+            final BlockStorageService blockStorageService = session.blockStorage();
             final ServerService serverService = novaService.servers();
             final ServerCreateBuilder builder = serverService.serverBuilder();
-            final Flavor flavor = novaService.flavors().get(node.getFlavor().getId());
-            final Volume ssdVolume = blockStorageService.volumes().create(Builders.volume()
-                                                                               .name("ssd")
-                                                                               .volumeType("ssd")
-                                                                               .size(250)
-                                                                               .build());
-            final Volume hddVolume = blockStorageService.volumes().create(Builders.volume()
-                                                                                .name("hdd")
-                                                                                .volumeType("sata")
-                                                                                .size(node.getFlavor().getDisk())
-                                                                                .build());
-            final BlockDeviceMappingCreate sddCreate = Builders.blockDeviceMapping().uuid(ssdVolume.getId()).deviceName("/dev/hda").bootIndex(0).build();
-            final BlockDeviceMappingCreate hddCreate = Builders.blockDeviceMapping().uuid(hddVolume.getId()).deviceName("/dev/hdb").bootIndex(1).build();
-            final ServerCreate centos7 = builder.name(node.getId())
-                                                .flavor(flavor)
-                                                .image("centos7")
-                                                .blockDevice(sddCreate)
-                                                .blockDevice(hddCreate)
-                                                .addAdminPass(node.getUserPass())
-                                                .build();
-            final Server server = serverService.boot(centos7);
+            final Flavor flavor = novaService.flavors().list().stream().filter(f -> f.getName().equals(node.getFlavor().getId())).findFirst().orElse(null);
+            final List<String> networkIds = this.master != null ? new ArrayList<>(this.master.getAddresses().getAddresses().keySet()) : new ArrayList<>();
+            final String ssdVolumeName = node.getId() + "-ssd";
+            final String hddVolumeName = node.getId() + "-hdd";
+            final BlockVolumeService volumeService = blockStorageService.volumes();
+            Volume ssdVolume = volumeService.get(ssdVolumeName);
+            if (ssdVolume == null || (ssdVolume.getAttachments() != null && ssdVolume.getAttachments().size() > 0)) {
+                ssdVolume = volumeService.create(Builders.volume()
+                                                         .name(ssdVolumeName + "2")
+                                                         .volumeType(ssdType)
+                                                         .size(240)
+                                                         .build());
+            }
+            Volume hddVolume = volumeService.get(hddVolumeName);
+            if (hddVolume == null || (hddVolume.getAttachments() != null && hddVolume.getAttachments().size() > 0)) {
+                hddVolume = volumeService.create(Builders.volume()
+                                                         .name(hddVolumeName + "2")
+                                                         .volumeType(hddType)
+                                                         .size(node.getFlavor().getDisk())
+                                                         .build());
+            }
+            final BlockDeviceMappingCreate sddCreate = Builders.blockDeviceMapping().uuid(ssdVolume.getId()).deviceName("/dev/sdb").bootIndex(0).build();
+            final BlockDeviceMappingCreate hddCreate = Builders.blockDeviceMapping().uuid(hddVolume.getId()).deviceName("/dev/sdc").bootIndex(1).build();
+            builder.name(node.getId())
+                    .flavor(flavor)
+                    .image(this.master != null ? this.master.getImageId() : "3c3e0e36-41f0-4180-95ef-f32c7173b845"); //CentOS 7
+            if (networkIds.size() == 0) {
+                final String privateNetworkName = cfgManager.getValue(Constants.OPENSTACK_PRIVATE_NETWORK);
+                final String eoDataNetworkName = cfgManager.getValue(Constants.OPENSTACK_DATA_NETWORK);
+                if (privateNetworkName != null || eoDataNetworkName != null) {
+                    for (Network network : session.networking().network().list()) {
+                        if ((privateNetworkName != null && privateNetworkName.equals(network.getName())) ||
+                                (eoDataNetworkName != null && eoDataNetworkName.equals(network.getName()))) {
+                            networkIds.add(network.getId());
+                        }
+                    }
+                }
+            }
+            builder.networks(networkIds);
+            final ServerCreate newServer = builder.addSecurityGroup(defaultSecGroup)
+                    .blockDevice(sddCreate)
+                    .blockDevice(hddCreate)
+                    .addAdminPass(node.getUserPass())
+                    .build();
+            final Server server = serverService.boot(newServer);
+            /*final FloatingIP floatingIp = getAvailableFloatingIp();
+            if (floatingIp == null) {
+                throw new Exception("Cannot allocate IP for " + node.getId());
+            }
+            ActionResponse response = novaService.floatingIps().addFloatingIP(newServer.getName(), floatingIp.getFloatingIpAddress());
+            if (!response.isSuccess()) {
+                throw new Exception("Cannot register IP for " + node.getId());
+            }*/
             if (server != null) {
                 return super.addNode(node);
             } else {
@@ -156,7 +204,23 @@ public class OpenStackNodeProvider extends DefaultNodeProvider {
 
     @Override
     public void removeNode(String nodeName) throws TopologyException {
-
+        authenticate();
+        final ComputeService novaService = this.openStackAccount.getService().compute();
+        Server server = novaService.servers().get(nodeName);
+        if (server == null) {
+            logger.warning(String.format("Node %s doesn't exist on %s", nodeName, getClass().getSimpleName()));
+        } else {
+            final List<Address> IPtoDelete = new ArrayList<>();
+            for (List<? extends Address> addresses : server.getAddresses().getAddresses().values()) {
+                addresses.stream().filter(a -> a.getType().equalsIgnoreCase("floating")).findFirst().ifPresent(IPtoDelete::add);
+            }
+            novaService.servers().delete(nodeName);
+            final Map<String, ? extends FloatingIP> ipMap = novaService.floatingIps().list().stream().collect(Collectors.toMap(FloatingIP::getFixedIpAddress, Function.identity()));
+            for (Address address : IPtoDelete) {
+                novaService.floatingIps().deallocateIP(ipMap.get(address.getAddr()).getId());
+            }
+        }
+        super.removeNode(nodeName);
     }
 
     @Override
@@ -206,10 +270,27 @@ public class OpenStackNodeProvider extends DefaultNodeProvider {
         throw new TopologyException("Update operation not implemented");
     }
 
+    private FloatingIP getAvailableFloatingIp() {
+        FloatingIP floatingIP = null;
+        final ComputeFloatingIPService floatingIPService = this.openStackAccount.getService().compute().floatingIps();
+        final List<? extends FloatingIP> floatingIPS = floatingIPService.list();
+        for (FloatingIP ip : floatingIPS) {
+            if (ip.getInstanceId() == null) { // no instance is attached to the IP, hence it's free to use
+                floatingIP = ip;
+                break;
+            }
+        }
+        if (floatingIP == null) { // all floating IPs are attached, create a new one
+            floatingIP = floatingIPService.allocateIP(ConfigurationManager.getInstance().getValue(Constants.OPENSTACK_FLOATING_IP_POOL));
+        }
+        return floatingIP;
+    }
+
     private NodeFlavor convert(Flavor flavor) {
         return flavor != null ?
-                new NodeFlavor(flavor.getId(), flavor.getVcpus(), flavor.getRam(),
-                               flavor.getDisk(), flavor.getSwap(), flavor.getRxtxFactor()) : null;
+                new NodeFlavor(flavor.getName(), flavor.getVcpus(), flavor.getRam(),
+                               flavor.getDisk(), flavor.getSwap() == 0 ? flavor.getRam() / 1024 * 2 : flavor.getSwap(),
+                               flavor.getRxtxFactor()) : null;
     }
 
     private NodeDescription convert(Server server) {
