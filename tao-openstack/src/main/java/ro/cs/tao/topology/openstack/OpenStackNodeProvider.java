@@ -15,12 +15,15 @@ import org.openstack4j.model.storage.block.Volume;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.topology.NodeDescription;
 import ro.cs.tao.topology.NodeFlavor;
+import ro.cs.tao.topology.NodeProvider;
 import ro.cs.tao.topology.TopologyException;
-import ro.cs.tao.topology.provider.DefaultNodeProvider;
 
 import java.net.InetAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -28,7 +31,8 @@ import java.util.stream.Collectors;
  *
  * @author Cosmin Cara
  */
-public class OpenStackNodeProvider extends DefaultNodeProvider {
+public class OpenStackNodeProvider implements NodeProvider {
+    private final Logger logger = Logger.getLogger(OpenStackNodeProvider.class.getName());
     private OSAccount openStackAccount;
     private Server master;
 
@@ -62,22 +66,11 @@ public class OpenStackNodeProvider extends DefaultNodeProvider {
     public List<NodeDescription> listNodes() throws TopologyException {
         authenticate();
         final List<? extends Server> servers = this.openStackAccount.getService().compute().servers().list();
-        final Set<NodeDescription> registeredNodes = new HashSet<>(super.listNodes());
+        //final Set<NodeDescription> registeredNodes = new HashSet<>(super.listNodes());
         List<NodeDescription> remoteNodes = new ArrayList<>();
         if (servers != null) {
             for (Server server : servers) {
-                final NodeDescription node = convert(server);
-                remoteNodes.add(node);
-                if (!registeredNodes.contains(node)) {
-                    super.addNode(node);
-                } else {
-                    registeredNodes.remove(node);
-                }
-            }
-            if (registeredNodes.size() > 0) {
-                for (NodeDescription node : registeredNodes) {
-                    super.removeNode(node);
-                }
+                remoteNodes.add(convert(server));
             }
         }
         return remoteNodes;
@@ -87,36 +80,20 @@ public class OpenStackNodeProvider extends DefaultNodeProvider {
     public NodeDescription getNode(String nodeName) throws TopologyException {
         authenticate();
         if ("localhost".equals(nodeName)) {
-            return super.getNode(nodeName);
+            return null;
         }
         final Server server = this.openStackAccount.getService().compute().servers().get(nodeName);
-        NodeDescription node = super.getNode(nodeName);
-        if (node == null && server == null) {
-            logger.warning(String.format("Node '%s' doesn't exist", nodeName));
-        } else if (node == null) {
-            logger.info(String.format("Node '%s' found in OpenStack topology, but not registered locally. Will register it.",
-                                      nodeName));
-            node = super.addNode(convert(server));
-        } else if (server == null) {
-            logger.warning(String.format("Node '%s' is registered locally, but not found in OpenStack topology. Will remove it.",
-                                         nodeName));
-            super.removeNode(node);
-            node = null;
+        NodeDescription node = null;
+        if (server == null) {
+            logger.warning(String.format("Node '%s' not found in OpenStack topology", nodeName));
         } else {
-            NodeDescription remoteNode = convert(server);
-            final NodeFlavor flavor = remoteNode.getFlavor();
-            if (!node.getFlavor().equals(flavor)) {
-                logger.warning(String.format("Node '%s' exists both locally and in OpenStack topology, but with different flavor. Will update it.",
-                                             nodeName));
-                node.setFlavor(flavor);
-                node = super.updateNode(node);
-            }
+            node = convert(server);
         }
         return node;
     }
 
     @Override
-    public NodeDescription addNode(NodeDescription node) throws TopologyException {
+    public NodeDescription create(NodeDescription node) throws TopologyException {
         try {
             authenticate();
             final ConfigurationManager cfgManager = ConfigurationManager.getInstance();
@@ -173,37 +150,28 @@ public class OpenStackNodeProvider extends DefaultNodeProvider {
                     .addAdminPass(node.getUserPass())
                     .build();
             final Server server = serverService.boot(newServer);
-            /*final FloatingIP floatingIp = getAvailableFloatingIp();
-            if (floatingIp == null) {
-                throw new Exception("Cannot allocate IP for " + node.getId());
-            }
-            ActionResponse response = novaService.floatingIps().addFloatingIP(newServer.getName(), floatingIp.getFloatingIpAddress());
-            if (!response.isSuccess()) {
-                throw new Exception("Cannot register IP for " + node.getId());
-            }*/
-            if (server != null) {
-                return super.addNode(node);
-            } else {
+            if (server == null) {
                 throw new TopologyException("OpenStack node was not created");
             }
+            return convert(server);
         } catch (Exception ex) {
             throw new TopologyException(String.format("Cannot add the node '%s'. Reason: %s", node.getId(), ex.getMessage()));
         }
     }
 
     @Override
-    public NodeDescription addNode(NodeFlavor flavor, String name, String description, String user, String pwd) throws TopologyException {
+    public NodeDescription create(NodeFlavor flavor, String name, String description, String user, String pwd) throws TopologyException {
         NodeDescription node = new NodeDescription();
         node.setFlavor(flavor);
         node.setId(name);
         node.setDescription(description);
         node.setUserName(user);
         node.setUserPass(pwd);
-        return addNode(node);
+        return create(node);
     }
 
     @Override
-    public void removeNode(String nodeName) throws TopologyException {
+    public void remove(String nodeName) throws TopologyException {
         authenticate();
         final ComputeService novaService = this.openStackAccount.getService().compute();
         Server server = novaService.servers().get(nodeName);
@@ -220,54 +188,42 @@ public class OpenStackNodeProvider extends DefaultNodeProvider {
                 novaService.floatingIps().deallocateIP(ipMap.get(address.getAddr()).getId());
             }
         }
-        super.removeNode(nodeName);
     }
 
     @Override
-    public void suspendNode(String nodeName) throws TopologyException {
+    public void suspend(String nodeName) throws TopologyException {
         authenticate();
         final ServerService serverService = this.openStackAccount.getService().compute().servers();
-        NodeDescription localNode = super.getNode(nodeName);
-        if (localNode == null) {
-            throw new TopologyException(String.format("Node '%s' not registered", nodeName));
-        }
         final Server server = serverService.get(nodeName);
         if (server == null) {
             throw new TopologyException(String.format("Node '%s' is not created", nodeName));
         }
         final ActionResponse response = serverService.action(server.getId(), Action.SUSPEND);
-        if (response.isSuccess()) {
-            super.suspendNode(nodeName);
-        } else {
+        if (!response.isSuccess()) {
             throw new TopologyException(String.format("Suspending node '%s' failed. Reason: %s",
                                                       nodeName, response.getFault()));
         }
     }
 
     @Override
-    public void resumeNode(String nodeName) throws TopologyException {
+    public void resume(String nodeName) throws TopologyException {
         authenticate();
         final ServerService serverService = this.openStackAccount.getService().compute().servers();
-        NodeDescription localNode = super.getNode(nodeName);
-        if (localNode == null) {
-            throw new TopologyException(String.format("Node '%s' not registered", nodeName));
-        }
         final Server server = serverService.get(nodeName);
         if (server == null) {
             throw new TopologyException(String.format("Node '%s' is not created", nodeName));
         }
         final ActionResponse response = serverService.action(server.getId(), Action.RESUME);
-        if (response.isSuccess()) {
-            super.suspendNode(nodeName);
-        } else {
+        if (!response.isSuccess()) {
             throw new TopologyException(String.format("Resuming node '%s' failed. Reason: %s",
                                                       nodeName, response.getFault()));
         }
     }
 
     @Override
-    public NodeDescription updateNode(NodeDescription node) throws TopologyException {
-        throw new TopologyException("Update operation not implemented");
+    public NodeDescription update(NodeDescription node) throws TopologyException {
+        // Update not implemented for now
+        return node;
     }
 
     private FloatingIP getAvailableFloatingIp() {
