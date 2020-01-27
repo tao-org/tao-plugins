@@ -103,7 +103,8 @@ class S3AuthenticationV4 {
             regionName = Pattern.compile(AWS_URL_REGEX).matcher(url.toString()).group(1);
         }
         try {
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            URL s3ServiceURL = new URL(url.getProtocol() + "://" + url.getHost());
+            HttpURLConnection connection = (HttpURLConnection) s3ServiceURL.openConnection();
             if (connection != null) {
                 connection.connect();
                 String connectionRegionName = connection.getHeaderField("x-amz-bucket-region");
