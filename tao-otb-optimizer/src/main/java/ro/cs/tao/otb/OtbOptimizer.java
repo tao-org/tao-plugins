@@ -7,7 +7,7 @@ import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.component.template.BasicTemplate;
 import ro.cs.tao.component.template.Template;
 import ro.cs.tao.component.template.TemplateType;
-import ro.cs.tao.persistence.PersistenceManager;
+import ro.cs.tao.persistence.ContainerProvider;
 import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 
@@ -22,15 +22,15 @@ import java.util.UUID;
  * @author Alexandru Pirlea
  */
 public class OtbOptimizer extends BaseRuntimeOptimizer {
-    private static final PersistenceManager persistenceManager;
+    private static final ContainerProvider containerProvider;
 
     static {
-        persistenceManager = SpringContextBridge.services().getService(PersistenceManager.class);
+        containerProvider = SpringContextBridge.services().getService(ContainerProvider.class);
     }
 
     @Override
     public boolean isIntendedFor(String containerId) {
-        return containerId != null && persistenceManager.getContainerById(containerId).getName().toLowerCase().contains("otb");
+        return containerId != null && containerProvider.get(containerId).getName().toLowerCase().contains("otb");
     }
 
     @Override

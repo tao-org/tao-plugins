@@ -2,17 +2,19 @@ package ro.cs.tao.topology.openstack;
 
 import org.openstack4j.api.Builders;
 import org.openstack4j.api.OSClient;
-import org.openstack4j.api.compute.ComputeFloatingIPService;
 import org.openstack4j.api.compute.ComputeService;
 import org.openstack4j.api.compute.ServerService;
-import org.openstack4j.api.storage.BlockStorageService;
 import org.openstack4j.api.storage.BlockVolumeService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.compute.*;
 import org.openstack4j.model.compute.builder.ServerCreateBuilder;
+import org.openstack4j.model.image.Image;
 import org.openstack4j.model.network.Network;
 import org.openstack4j.model.storage.block.Volume;
+import org.openstack4j.model.storage.block.VolumeAttachment;
+import org.openstack4j.model.storage.block.VolumeType;
 import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.topology.NodeDescription;
 import ro.cs.tao.topology.NodeFlavor;
 import ro.cs.tao.topology.NodeProvider;
@@ -94,68 +96,51 @@ public class OpenStackNodeProvider implements NodeProvider {
 
     @Override
     public NodeDescription create(NodeDescription node) throws TopologyException {
+        final OSClient.OSClientV3 session = this.openStackAccount.getService();
+        Volume ssdVolume = null, hddVolume = null;
+        Server server = null;
         try {
             authenticate();
-            final ConfigurationManager cfgManager = ConfigurationManager.getInstance();
-            final String ssdType = cfgManager.getValue(Constants.OPENSTACK_VOLUME_TYPE_SSD, "SSD");
-            final String hddType = cfgManager.getValue(Constants.OPENSTACK_VOLUME_TYPE_HDD, "HDD");
-            final String defaultSecGroup = cfgManager.getValue(Constants.OPENSTACK_DEFAULT_SECURITY_GROUP);
-            final OSClient.OSClientV3 session = this.openStackAccount.getService();
+            final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
+            final String ssdType = cfgProvider.getValue(Constants.OPENSTACK_VOLUME_TYPE_SSD, "SSD");
+            checkVolumeType(ssdType);
+            final String hddType = cfgProvider.getValue(Constants.OPENSTACK_VOLUME_TYPE_HDD, "HDD");
+            checkVolumeType(hddType);
+            final String defaultSecGroup = cfgProvider.getValue(Constants.OPENSTACK_DEFAULT_SECURITY_GROUP);
             final ComputeService novaService = session.compute();
-            final BlockStorageService blockStorageService = session.blockStorage();
             final ServerService serverService = novaService.servers();
             final ServerCreateBuilder builder = serverService.serverBuilder();
             final Flavor flavor = novaService.flavors().list().stream().filter(f -> f.getName().equals(node.getFlavor().getId())).findFirst().orElse(null);
-            final List<String> networkIds = this.master != null ? new ArrayList<>(this.master.getAddresses().getAddresses().keySet()) : new ArrayList<>();
+            final List<String> networkIds = getNetworks();
             final String ssdVolumeName = node.getId() + "-ssd";
             final String hddVolumeName = node.getId() + "-hdd";
-            final BlockVolumeService volumeService = blockStorageService.volumes();
-            Volume ssdVolume = volumeService.get(ssdVolumeName);
-            if (ssdVolume == null || (ssdVolume.getAttachments() != null && ssdVolume.getAttachments().size() > 0)) {
-                ssdVolume = volumeService.create(Builders.volume()
-                                                         .name(ssdVolumeName + "2")
-                                                         .volumeType(ssdType)
-                                                         .size(240)
-                                                         .build());
-            }
-            Volume hddVolume = volumeService.get(hddVolumeName);
-            if (hddVolume == null || (hddVolume.getAttachments() != null && hddVolume.getAttachments().size() > 0)) {
-                hddVolume = volumeService.create(Builders.volume()
-                                                         .name(hddVolumeName + "2")
-                                                         .volumeType(hddType)
-                                                         .size(node.getFlavor().getDisk())
-                                                         .build());
-            }
+            final int ssdSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_SIZE, "240"));
+            final int hddSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_SIZE, "0"));
+            ssdVolume = createVolume(ssdVolumeName, ssdType, ssdSize);
+            hddVolume = createVolume(hddVolumeName, hddType, hddSize > 0 ? hddSize : node.getFlavor().getDisk());
             final BlockDeviceMappingCreate sddCreate = Builders.blockDeviceMapping().uuid(ssdVolume.getId()).deviceName("/dev/sdb").bootIndex(0).build();
             final BlockDeviceMappingCreate hddCreate = Builders.blockDeviceMapping().uuid(hddVolume.getId()).deviceName("/dev/sdc").bootIndex(1).build();
             builder.name(node.getId())
                     .flavor(flavor)
-                    .image(this.master != null ? this.master.getImageId() : "3c3e0e36-41f0-4180-95ef-f32c7173b845"); //CentOS 7
-            if (networkIds.size() == 0) {
-                final String privateNetworkName = cfgManager.getValue(Constants.OPENSTACK_PRIVATE_NETWORK);
-                final String eoDataNetworkName = cfgManager.getValue(Constants.OPENSTACK_DATA_NETWORK);
-                if (privateNetworkName != null || eoDataNetworkName != null) {
-                    for (Network network : session.networking().network().list()) {
-                        if ((privateNetworkName != null && privateNetworkName.equals(network.getName())) ||
-                                (eoDataNetworkName != null && eoDataNetworkName.equals(network.getName()))) {
-                            networkIds.add(network.getId());
-                        }
-                    }
-                }
-            }
+                    .image(this.master != null ?
+                                   this.master.getImageId() :
+                                   getImageId(cfgProvider.getValue(Constants.OPENSTACK_OS_IMAGE, "CentOS 7")));
             builder.networks(networkIds);
             final ServerCreate newServer = builder.addSecurityGroup(defaultSecGroup)
                     .blockDevice(sddCreate)
                     .blockDevice(hddCreate)
                     .addAdminPass(node.getUserPass())
                     .build();
-            final Server server = serverService.boot(newServer);
+            server = serverService.boot(newServer);
             if (server == null) {
                 throw new TopologyException("OpenStack node was not created");
             }
             return convert(server);
         } catch (Exception ex) {
-            throw new TopologyException(String.format("Cannot add the node '%s'. Reason: %s", node.getId(), ex.getMessage()));
+            deleteVolume(ssdVolume);
+            deleteVolume(hddVolume);
+            deleteServer(server);
+            throw new TopologyException(ex.getMessage());
         }
     }
 
@@ -226,7 +211,7 @@ public class OpenStackNodeProvider implements NodeProvider {
         return node;
     }
 
-    private FloatingIP getAvailableFloatingIp() {
+    /*private FloatingIP getAvailableFloatingIp() {
         FloatingIP floatingIP = null;
         final ComputeFloatingIPService floatingIPService = this.openStackAccount.getService().compute().floatingIps();
         final List<? extends FloatingIP> floatingIPS = floatingIPService.list();
@@ -240,6 +225,119 @@ public class OpenStackNodeProvider implements NodeProvider {
             floatingIP = floatingIPService.allocateIP(ConfigurationManager.getInstance().getValue(Constants.OPENSTACK_FLOATING_IP_POOL));
         }
         return floatingIP;
+    }*/
+
+    private Volume createVolume(String volumeName, String volumeType, int sizeGB) {
+        final OSClient.OSClientV3 session = this.openStackAccount.getService();
+        if (!session.supportsBlockStorage()) {
+            throw new TopologyException("The remote provider doesn't support BlockStorage API");
+        }
+        final BlockVolumeService volumeService = session.blockStorage().volumes();
+        Volume volume = volumeService.get(volumeName);
+        if (volume == null) { // the volume doesn't exist
+            volume = volumeService.create(Builders.volume()
+                                                  .name(volumeName)
+                                                  .volumeType(volumeType)
+                                                  .size(sizeGB)
+                                                  .build());
+        } else {
+            final List<? extends VolumeAttachment> attachments = volume.getAttachments();
+            if (attachments != null && attachments.size() > 0) {
+                // the volume exists and already has attachments
+                throw new TopologyException("The volume '%s' already exists and is attached [%s]",
+                                            volumeName,
+                                            attachments.stream().map(VolumeAttachment::getHostname).collect(Collectors.joining(",")));
+            }
+        }
+        return volume;
+    }
+
+    private void deleteVolume(Volume volume) {
+        final OSClient.OSClientV3 session = this.openStackAccount.getService();
+        if (!session.supportsBlockStorage()) {
+            throw new TopologyException("The remote provider doesn't support BlockStorage API");
+        }
+        if (volume != null) {
+            final BlockVolumeService volumeService = session.blockStorage().volumes();
+            if (volumeService.get(volume.getId()) != null) { // make sure it exists
+                final ActionResponse response = volumeService.delete(volume.getId());
+                if (!response.isSuccess()) {
+                    logger.severe(String.format("Volume '%s' could not be deleted. Reason: %s",
+                                                volume.getId(), response.getFault()));
+                }
+            }
+        }
+    }
+
+    private void deleteServer(Server server) {
+        final OSClient.OSClientV3 session = this.openStackAccount.getService();
+        if (!session.supportsCompute()) {
+            throw new TopologyException("The remote provider doesn't support Compute API");
+        }
+        if (server != null) {
+            if (session.compute().servers().get(server.getId()) != null) { // make sure it exists
+                final ActionResponse response = session.compute().servers().delete(server.getId());
+                if (!response.isSuccess()) {
+                    logger.severe(String.format("Server '%s' could not be deleted. Reason: %s",
+                                                server.getName(), response.getFault()));
+                }
+            }
+        }
+    }
+
+    private List<String> getNetworks() {
+        final OSClient.OSClientV3 session = this.openStackAccount.getService();
+        if (!session.supportsNetwork()) {
+            throw new TopologyException("The remote provider doesn't support Network API");
+        }
+        final List<String> networkIds = this.master != null ?
+                new ArrayList<>(this.master.getAddresses().getAddresses().keySet()) : new ArrayList<>();
+        if (networkIds.size() == 0) {
+            final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
+            final String privateNetworkName = cfgProvider.getValue(Constants.OPENSTACK_PRIVATE_NETWORK);
+            final String eoDataNetworkName = cfgProvider.getValue(Constants.OPENSTACK_DATA_NETWORK);
+            if (privateNetworkName != null || eoDataNetworkName != null) {
+                for (Network network : session.networking().network().list()) {
+                    if ((privateNetworkName != null && privateNetworkName.equals(network.getName())) ||
+                            (eoDataNetworkName != null && eoDataNetworkName.equals(network.getName()))) {
+                        networkIds.add(network.getId());
+                    }
+                }
+            }
+        }
+        return networkIds;
+    }
+
+    private void checkVolumeType(String volumeType) {
+        final OSClient.OSClientV3 session = this.openStackAccount.getService();
+        if (!session.supportsBlockStorage()) {
+            throw new TopologyException("The remote provider doesn't support BlockStorage API");
+        }
+        final List<? extends VolumeType> volumeTypes = session.blockStorage().volumes().listVolumeTypes();
+        if (volumeType == null) {
+            throw new TopologyException("The remote provider API returned an empty VolumeType list");
+        }
+        if (volumeTypes.stream().noneMatch(vt -> vt.getName().equals(volumeType))) {
+            throw new TopologyException("The VolumeType '%s' doesn't exist", volumeType);
+        }
+    }
+
+    private String getImageId(String imageName) {
+        final OSClient.OSClientV3 session = this.openStackAccount.getService();
+        if (!session.supportsImage()) {
+            throw new TopologyException("Remote provider doesn't support Image API");
+        }
+        String imageId = null;
+        for (Image image : session.images().list()) {
+            if (imageName.equals(image.getName())) {
+                imageId = image.getId();
+                break;
+            }
+        }
+        if (imageId == null) {
+            throw new TopologyException("Image '%s' doesn't exist", imageName);
+        }
+        return imageId;
     }
 
     private NodeFlavor convert(Flavor flavor) {

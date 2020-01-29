@@ -15,8 +15,8 @@
  */
 package ro.cs.tao.ldap;
 
-import ro.cs.tao.configuration.Configuration;
 import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.configuration.ConfigurationProvider;
 
 import javax.naming.AuthenticationException;
 import javax.naming.Context;
@@ -43,10 +43,10 @@ public class TaoLdapClient {
 
     public TaoLdapClient() {
         // read LDAP settings from configuration
-        ConfigurationManager configManager = ConfigurationManager.getInstance();
-        initialContextFactory = configManager.getValue(Configuration.LDAP.CONTEXT_FACTORY_CLASS);
-        providerUrl = configManager.getValue(Configuration.LDAP.CONTEXT_PROVIDER_URL);
-        securityAuthentication = configManager.getValue(Configuration.LDAP.AUTHENTICATION_MODE);
+        final ConfigurationProvider configurationProvider = ConfigurationManager.getInstance();
+        initialContextFactory = configurationProvider.getValue("ldap.context.initial.context.factory");
+        providerUrl = configurationProvider.getValue("ldap.context.provider.url");
+        securityAuthentication = configurationProvider.getValue("ldap.context.security.authentication");
     }
 
     public boolean checkLoginCredentials(final String username, final String password){

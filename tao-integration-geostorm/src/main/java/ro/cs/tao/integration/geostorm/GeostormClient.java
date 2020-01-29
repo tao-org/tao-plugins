@@ -30,15 +30,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.eodata.DataHandlingException;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.OutputDataHandler;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.integration.geostorm.model.RasterProduct;
 import ro.cs.tao.integration.geostorm.model.Resource;
-import ro.cs.tao.persistence.PersistenceManager;
-import ro.cs.tao.persistence.exception.PersistenceException;
+import ro.cs.tao.persistence.PersistenceException;
+import ro.cs.tao.persistence.UserProvider;
 import ro.cs.tao.serialization.GeometryAdapter;
+import ro.cs.tao.user.User;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -74,7 +76,7 @@ public class GeostormClient implements OutputDataHandler<EOProduct> {
     private RestTemplate restTemplate;
 
     @Autowired
-    private PersistenceManager persistenceMng;
+    private UserProvider userProvider;
 
     private String geostormRestBaseURL;
     private String geostormRestCatalogResourceEndpoint;
@@ -94,21 +96,21 @@ public class GeostormClient implements OutputDataHandler<EOProduct> {
     private final boolean enabled;
 
     public GeostormClient() {
-        ConfigurationManager configManager = ConfigurationManager.getInstance();
-        String enabledString = configManager.getValue("geostorm.integration.enabled", "false");
+        final ConfigurationProvider configurationProvider = ConfigurationManager.getInstance();
+        String enabledString = configurationProvider.getValue("geostorm.integration.enabled", "false");
         enabled = Boolean.parseBoolean(enabledString);
         if (enabled) {
-            geostormRestBaseURL = configManager.getValue("geostorm.rest.base.url");
-            geostormRestCatalogResourceEndpoint = configManager.getValue("geostorm.rest.catalog.resource.endpoint");
-            geostormRestRasterImportEndpoint = configManager.getValue("geostorm.rest.raster.import.endpoint");
-            geostormUsername = configManager.getValue("geostorm.admin.username");
-            geostormPassword = configManager.getValue("geostorm.admin.password");
-            geostormCollectionMapfilesPath = configManager.getValue("geostorm.raster.collection.mapfiles.path");
-            geostormCollectionMapfilesSample = configManager.getValue("geostorm.raster.collection.mapfiles.sample");
-            geostormHostName = configManager.getValue("geostorm.host.name");
-            geostormStormConnectionUsername = configManager.getValue("geostorm.storm.connection.username");
-            geostormSSHConnectionKey = configManager.getValue("geostorm.ssh.connection.private.key.file.path");
-            geostormRootPathRelative = configManager.getValue("geostorm.data.root.path.relative");
+            geostormRestBaseURL = configurationProvider.getValue("geostorm.rest.base.url");
+            geostormRestCatalogResourceEndpoint = configurationProvider.getValue("geostorm.rest.catalog.resource.endpoint");
+            geostormRestRasterImportEndpoint = configurationProvider.getValue("geostorm.rest.raster.import.endpoint");
+            geostormUsername = configurationProvider.getValue("geostorm.admin.username");
+            geostormPassword = configurationProvider.getValue("geostorm.admin.password");
+            geostormCollectionMapfilesPath = configurationProvider.getValue("geostorm.raster.collection.mapfiles.path");
+            geostormCollectionMapfilesSample = configurationProvider.getValue("geostorm.raster.collection.mapfiles.sample");
+            geostormHostName = configurationProvider.getValue("geostorm.host.name");
+            geostormStormConnectionUsername = configurationProvider.getValue("geostorm.storm.connection.username");
+            geostormSSHConnectionKey = configurationProvider.getValue("geostorm.ssh.connection.private.key.file.path");
+            geostormRootPathRelative = configurationProvider.getValue("geostorm.data.root.path.relative");
 
 
             if (geostormRestBaseURL == null || geostormRestCatalogResourceEndpoint == null ||
@@ -373,10 +375,14 @@ public class GeostormClient implements OutputDataHandler<EOProduct> {
         }
     }
 
-    private String getUserOrganization(final String username) {
+    private String getUserOrganization(final String userName) {
         String organization = "Unknown";
         try {
-            organization = persistenceMng.getUserOrganization(username);
+            final User user = userProvider.getByName(userName);
+            if (user == null) {
+                throw new PersistenceException("No such user [%s]", userName);
+            }
+            organization = user.getOrganization();
         } catch (PersistenceException e) {
             e.printStackTrace();
         }

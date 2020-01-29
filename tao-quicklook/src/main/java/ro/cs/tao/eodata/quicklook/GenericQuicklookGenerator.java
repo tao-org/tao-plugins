@@ -1,7 +1,7 @@
 package ro.cs.tao.eodata.quicklook;
 
-import ro.cs.tao.configuration.Configuration;
 import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.eodata.DataHandlingException;
 import ro.cs.tao.eodata.OutputDataHandler;
 import ro.cs.tao.utils.DockerHelper;
@@ -34,8 +34,8 @@ public class GenericQuicklookGenerator implements OutputDataHandler<Path> {
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     static {
-        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
-        useDocker = Boolean.parseBoolean(configurationManager.getValue(Configuration.Docker.PLUGINS_USE_DOCKER, "false")) && DockerHelper.isDockerFound();
+        ConfigurationProvider configurationManager = ConfigurationManager.getInstance();
+        useDocker = Boolean.parseBoolean(configurationManager.getValue("plugins.use.docker", "false")) && DockerHelper.isDockerFound();
         gdalDockerImage = configurationManager.getValue("docker.gdal.image", "geodata/gdal");
         gdalOnPathCmd = new String[] {
                 "gdal_translate", "-of", "PNG", "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "$FULL_PATH", "$FULL_PATH" + QUICKLOOK_EXTENSION

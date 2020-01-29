@@ -4,8 +4,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.eodata.enums.Visibility;
-import ro.cs.tao.persistence.PersistenceManager;
-import ro.cs.tao.persistence.exception.PersistenceException;
+import ro.cs.tao.persistence.PersistenceException;
+import ro.cs.tao.persistence.ProcessingComponentProvider;
 import ro.cs.tao.security.SessionStore;
 import ro.cs.tao.services.interfaces.WorkflowService;
 import ro.cs.tao.workflow.ParameterValue;
@@ -27,49 +27,46 @@ public class GraphHandler extends AbstractHandler<WorkflowDescriptor> {
     private List<String[]> links = new ArrayList<>();
     boolean ignoreSection;
 
-    GraphHandler(PersistenceManager persistenceManager, WorkflowService workflowService) {
-        super(persistenceManager, workflowService);
+    GraphHandler(ProcessingComponentProvider processingComponentProvider,
+                 WorkflowService workflowService) {
+        super(processingComponentProvider, workflowService);
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
         // strip any namespace prefix
         if (qName.indexOf(":") > 0) {
             qName = qName.substring(qName.indexOf(":") + 1);
         }
         buffer.setLength(0);
-        try {
-            switch (qName) {
-                case "graph":
-                    this.result.setName(attributes.getValue("id"));
-                    this.result.setVisibility(Visibility.PRIVATE);
-                    this.result.setStatus(Status.DRAFT);
-                    this.result.setCreated(LocalDateTime.now());
-                    this.result.setActive(true);
-                    this.result.setUserName(SessionStore.currentContext().getPrincipal().getName());
-                    this.result.setVisibility(Visibility.PRIVATE);
-                    this.result = persistenceManager.saveWorkflowDescriptor(this.result);
-                    break;
-                case "node":
-                    this.currentNode = new WorkflowNodeDescriptor();
-                    this.currentNode.setName(attributes.getValue("id"));
-                    break;
-                case "parameters":
-                    this.currentParameters = new ArrayList<>();
-                    break;
-                case "sourceProduct":
-                case "source":
-                    String refId = attributes.getValue("refid");
-                    if (refId != null && !refId.startsWith("$")) {
-                        links.add(new String[] { refId, currentNode.getName() });
-                    }
-                    break;
-                case "applicationData":
-                    ignoreSection = true;
-                    break;
-            }
-        } catch (PersistenceException pex) {
-            throw new SAXException(pex);
+        switch (qName) {
+            case "graph":
+                this.result.setName(attributes.getValue("id"));
+                this.result.setVisibility(Visibility.PRIVATE);
+                this.result.setStatus(Status.DRAFT);
+                this.result.setCreated(LocalDateTime.now());
+                this.result.setActive(true);
+                this.result.setUserName(SessionStore.currentContext().getPrincipal().getName());
+                this.result.setVisibility(Visibility.PRIVATE);
+                this.result = workflowService.save(this.result);
+                break;
+            case "node":
+                this.currentNode = new WorkflowNodeDescriptor();
+                this.currentNode.setName(attributes.getValue("id"));
+                break;
+            case "parameters":
+                this.currentParameters = new ArrayList<>();
+                break;
+            case "sourceProduct":
+            case "source":
+                String refId = attributes.getValue("refid");
+                if (refId != null && !refId.startsWith("$")) {
+                    links.add(new String[] { refId, currentNode.getName() });
+                }
+                break;
+            case "applicationData":
+                ignoreSection = true;
+                break;
         }
     }
 
@@ -88,8 +85,8 @@ public class GraphHandler extends AbstractHandler<WorkflowDescriptor> {
                     break;
                 case "graph":
                     for (String[] pair : links) {
-                        ProcessingComponent sourceComponent = persistenceManager.getProcessingComponentById(nodeMap.get(pair[0]).getComponentId());
-                        ProcessingComponent targetComponent = persistenceManager.getProcessingComponentById(nodeMap.get(pair[1]).getComponentId());
+                        ProcessingComponent sourceComponent = processingComponentProvider.get(nodeMap.get(pair[0]).getComponentId());
+                        ProcessingComponent targetComponent = processingComponentProvider.get(nodeMap.get(pair[1]).getComponentId());
                         currentNode = workflowService.addLink(nodeMap.get(pair[0]).getId(),
                                                               sourceComponent.getTargets().get(0).getId(),
                                                               nodeMap.get(pair[1]).getId(),
@@ -98,7 +95,7 @@ public class GraphHandler extends AbstractHandler<WorkflowDescriptor> {
                     break;
                 case "node":
                     if (!ignoreSection) {
-                        currentNode = this.workflowService.addNode(this.result.getId(), currentNode);
+                        currentNode = workflowService.addNode(this.result.getId(), currentNode);
                         nodeMap.put(currentNode.getName(), currentNode);
                         currentNode = null;
                     }

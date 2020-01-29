@@ -1,6 +1,5 @@
 package ro.cs.tao.datasource.remote.mundi.parameters;
 
-import ro.cs.tao.configuration.Configuration;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
@@ -20,7 +19,7 @@ public class MundiParameterProvider extends AbstractParameterProvider {
 
     public MundiParameterProvider(MundiDataSource dataSource) {
         super();
-        final String targetFolder = ConfigurationManager.getInstance().getValue(Configuration.FileSystem.PRODUCTS_LOCATION);
+        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
                     put("Sentinel1", new DownloadStrategy(dataSource, targetFolder, new Properties()));
