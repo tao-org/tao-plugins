@@ -16,6 +16,7 @@ import ro.cs.tao.execution.Executor;
 import ro.cs.tao.execution.model.ExecutionStatus;
 import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.model.WPSExecutionTask;
+import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
 import ro.cs.tao.persistence.data.jsonutil.JacksonUtil;
 
 import java.net.URL;
@@ -28,6 +29,9 @@ import java.util.UUID;
 public class WPSExecutor extends Executor<WPSExecutionTask> {
 
     private WPSComponent wpsComponent;
+    private static ExecutionTaskProvider taskProvider;
+
+    public static void setTaskProvider(ExecutionTaskProvider provider) { taskProvider = provider; }
 
     @Override
     public boolean supports(TaoComponent component) { return component instanceof WPSComponent; }
@@ -95,7 +99,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
         if(!isInitialized) {
             return;
         }
-        List<ExecutionTask> tasks = persistenceManager.getRemoteExecutingTasks();
+        List<ExecutionTask> tasks = taskProvider.listRemoteExecuting();
         if (tasks != null) {
             for (ExecutionTask task : tasks) {
                 try {
@@ -121,13 +125,13 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
                         } else if (status.getProcessStarted() != null) {
                             logger.fine(String.format("Task %s is at %d%%",
                                                       task.getId(), status.getProcessStarted().getPercentCompleted().intValue()));
-                            persistenceManager.updateTaskStatus(task, ExecutionStatus.RUNNING);
+                            taskProvider.updateStatus(task, ExecutionStatus.RUNNING);
                         } else if (status.getProcessAccepted() != null) {
-                            persistenceManager.updateTaskStatus(task, ExecutionStatus.RUNNING);
+                            taskProvider.updateStatus(task, ExecutionStatus.RUNNING);
                         } else if (status.getProcessPaused() != null) {
                             logger.fine(String.format("Task %s was paused at %d%%",
                                                       task.getId(), status.getProcessPaused().getPercentCompleted().intValue()));
-                            persistenceManager.updateTaskStatus(task, ExecutionStatus.SUSPENDED);
+                            taskProvider.updateStatus(task, ExecutionStatus.SUSPENDED);
                         } else {
                             throw new Exception("Empty status");
                         }

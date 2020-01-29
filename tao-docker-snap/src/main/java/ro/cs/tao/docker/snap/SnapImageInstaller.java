@@ -23,7 +23,6 @@ import ro.cs.tao.component.TargetDescriptor;
 import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.docker.Container;
-import ro.cs.tao.persistence.PersistenceManager;
 import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
 
@@ -50,7 +49,6 @@ public class SnapImageInstaller extends BaseImageInstaller {
 
     @Override
     protected Container initializeContainer(Container container, String path) {
-        PersistenceManager persistenceManager = getPersistenceManager();
         Container snapContainer = null;
         try {
             snapContainer = readContainerDescriptor("snap_container.json");
@@ -68,7 +66,7 @@ public class SnapImageInstaller extends BaseImageInstaller {
                 a.setParallelFlagTemplate("-q <integer>");
             });
             snapContainer.setLogo(readContainerLogo("snap_logo.png"));
-            snapContainer = persistenceManager.saveContainer(snapContainer);
+            snapContainer = this.containerProvider.save(snapContainer);
             ProcessingComponent[] components = readComponentDescriptors("snap_operators.json");
             for (ProcessingComponent component : components) {
                 try {
@@ -108,7 +106,7 @@ public class SnapImageInstaller extends BaseImageInstaller {
                     }
                     component.setVisibility(ProcessingComponentVisibility.SYSTEM);
                     component.addTags(getOrCreateTag(container.getName()).getText());
-                    persistenceManager.saveProcessingComponent(component);
+                    this.componentProvider.save(component);
                 } catch (Exception inner) {
                     logger.severe(String.format("Faulty component: %s. Error: %s",
                                                 component != null ? component.getId() : "n/a",

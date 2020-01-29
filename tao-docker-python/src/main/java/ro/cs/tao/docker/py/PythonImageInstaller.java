@@ -23,7 +23,6 @@ import ro.cs.tao.component.SourceDescriptor;
 import ro.cs.tao.component.TargetDescriptor;
 import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.docker.Container;
-import ro.cs.tao.persistence.PersistenceManager;
 import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
 
@@ -49,7 +48,6 @@ public class PythonImageInstaller extends BaseImageInstaller {
 
     @Override
     protected Container initializeContainer(Container container, String path) {
-        PersistenceManager persistenceManager = getPersistenceManager();
         Container pyContainer = null;
         try {
             pyContainer = readContainerDescriptor("python_container.json");
@@ -58,7 +56,7 @@ public class PythonImageInstaller extends BaseImageInstaller {
             pyContainer.setTag(container.getTag());
             pyContainer.setApplicationPath(path);
             pyContainer.setLogo(readContainerLogo("python_logo.png"));
-            pyContainer = persistenceManager.saveContainer(pyContainer);
+            pyContainer = this.containerProvider.save(pyContainer);
             ProcessingComponent[] components = readComponentDescriptors("python_applications.json");
             for (ProcessingComponent component : components) {
                 if (component.getId() == null || component.getId().isEmpty()) {
@@ -96,7 +94,7 @@ public class PythonImageInstaller extends BaseImageInstaller {
                         }
                     });
                 }
-                persistenceManager.saveProcessingComponent(component);
+                this.componentProvider.save(component);
             }
         } catch (Exception e) {
             logger.severe(e.getMessage());

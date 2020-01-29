@@ -9,7 +9,6 @@ import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.docker.Application;
 import ro.cs.tao.docker.Container;
-import ro.cs.tao.persistence.PersistenceManager;
 import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
 
@@ -41,8 +40,7 @@ public class GdalImageInstaller extends BaseImageInstaller {
 
     @Override
     protected Container initializeContainer(Container container, String path) {
-        PersistenceManager persistenceManager = getPersistenceManager();
-        Container gdalContainer = null;
+        Container gdalContainer;
         try {
             gdalContainer = readContainerDescriptor("gdal_container.json");
             gdalContainer.setId(container.getId());
@@ -56,7 +54,7 @@ public class GdalImageInstaller extends BaseImageInstaller {
                 app.setPath(appPath);
             });
             gdalContainer.setLogo(readContainerLogo("gdal_logo.png"));
-            gdalContainer = persistenceManager.saveContainer(gdalContainer);
+            gdalContainer = this.containerProvider.save(gdalContainer);
         } catch (Exception e) {
             logger.severe(e.getMessage());
             return null;
@@ -127,7 +125,7 @@ public class GdalImageInstaller extends BaseImageInstaller {
                     component.setVisibility(ProcessingComponentVisibility.SYSTEM);
                     component.setOwner(SystemPrincipal.instance().getName());
                     component.addTags(getOrCreateTag(container.getName()).getText());
-                    persistenceManager.saveProcessingComponent(component);
+                    this.componentProvider.save(component);
                 } catch (Exception inner) {
                     logger.severe(String.format("Faulty component: %s. Error: %s",
                                                 current != null ? current.getId() : "n/a",

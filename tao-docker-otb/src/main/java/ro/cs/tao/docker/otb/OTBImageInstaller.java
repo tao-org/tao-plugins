@@ -25,7 +25,6 @@ import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.docker.Application;
 import ro.cs.tao.docker.Container;
-import ro.cs.tao.persistence.PersistenceManager;
 import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
 
@@ -52,8 +51,7 @@ public class OTBImageInstaller extends BaseImageInstaller {
 
     @Override
     protected Container initializeContainer(Container container, String path) {
-        PersistenceManager persistenceManager = getPersistenceManager();
-        Container otbContainer = null;
+        Container otbContainer;
         try {
             otbContainer = readContainerDescriptor("otb_container.json");
             otbContainer.setId(container.getId());
@@ -67,9 +65,10 @@ public class OTBImageInstaller extends BaseImageInstaller {
                 app.setPath(appPath);
             });
             otbContainer.setLogo(readContainerLogo("otb_logo.png"));
-            otbContainer = persistenceManager.saveContainer(otbContainer);
+            otbContainer = this.containerProvider.save(otbContainer);
         } catch (Exception e) {
             logger.severe(e.getMessage());
+            return null;
         }
         ProcessingComponent current = null;
         try {
@@ -81,7 +80,8 @@ public class OTBImageInstaller extends BaseImageInstaller {
                     component.setContainerId(otbContainer.getId());
                     component.setLabel(component.getId());
                     component.setComponentType(ProcessingComponentType.EXECUTABLE);
-                    component.setFileLocation(containerApplications.stream().filter(a -> a.getName().equals(component.getId())).findFirst().get().getPath());
+                    containerApplications.stream().filter(a -> a.getName().equals(component.getId())).findFirst()
+                            .ifPresent(application -> component.setFileLocation(application.getPath()));
                     List<ParameterDescriptor> parameterDescriptors = component.getParameterDescriptors();
                     if (parameterDescriptors != null) {
                         parameterDescriptors.forEach(p -> {
@@ -131,7 +131,7 @@ public class OTBImageInstaller extends BaseImageInstaller {
                     component.setVisibility(ProcessingComponentVisibility.SYSTEM);
                     component.setOwner(SystemPrincipal.instance().getName());
                     component.addTags(getOrCreateTag(container.getName()).getText());
-                    persistenceManager.saveProcessingComponent(component);
+                    this.componentProvider.save(component);
                 } catch (Exception inner) {
                     logger.severe(String.format("Faulty component: %s. Error: %s",
                                                 current != null ? current.getId() : "n/a",

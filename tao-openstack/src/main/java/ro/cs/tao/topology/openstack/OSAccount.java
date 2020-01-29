@@ -5,6 +5,7 @@ import org.openstack4j.model.common.Identifier;
 import org.openstack4j.model.identity.v3.Service;
 import org.openstack4j.openstack.OSFactory;
 import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.topology.TopologyException;
 
 import java.util.Comparator;
@@ -28,24 +29,24 @@ public class OSAccount {
 
     public static synchronized OSAccount getInstance() {
         if (instance == null) {
-            final ConfigurationManager configurationManager = ConfigurationManager.getInstance();
-            final String domain = configurationManager.getValue(Constants.OPENSTACK_DOMAIN, null);
+            final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
+            final String domain = cfgProvider.getValue(Constants.OPENSTACK_DOMAIN, null);
             if (domain == null || domain.isEmpty()) {
                 throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_DOMAIN));
             }
-            final String user = configurationManager.getValue(Constants.OPENSTACK_USER, null);
+            final String user = cfgProvider.getValue(Constants.OPENSTACK_USER, null);
             if (user == null || user.isEmpty()) {
                 throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_USER));
             }
-            final String password = configurationManager.getValue(Constants.OPENSTACK_PASSWORD, null);
+            final String password = cfgProvider.getValue(Constants.OPENSTACK_PASSWORD, null);
             if (password == null || password.isEmpty()) {
                 throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_PASSWORD));
             }
-            final String authUrl = configurationManager.getValue(Constants.OPENSTACK_AUTH_URL, null);
+            final String authUrl = cfgProvider.getValue(Constants.OPENSTACK_AUTH_URL, null);
             if (authUrl == null || authUrl.isEmpty()) {
                 throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_AUTH_URL));
             }
-            final String tenantId = configurationManager.getValue(Constants.OPENSTACK_TENANT_ID, null);
+            final String tenantId = cfgProvider.getValue(Constants.OPENSTACK_TENANT_ID, null);
             if (tenantId == null || tenantId.isEmpty()) {
                 throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_TENANT_ID));
             }
