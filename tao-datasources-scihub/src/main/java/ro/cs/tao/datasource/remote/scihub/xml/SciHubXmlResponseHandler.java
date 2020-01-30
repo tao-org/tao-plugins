@@ -91,6 +91,9 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                         case "platformname":
                             this.current.setProductType(elementValue);
                             break;
+                        case "platformserialidentifier":
+                            this.current.setSatelliteName(elementValue);
+                            break;
                         case "size":
                             long size;
                             if (elementValue.endsWith("MB")) {
