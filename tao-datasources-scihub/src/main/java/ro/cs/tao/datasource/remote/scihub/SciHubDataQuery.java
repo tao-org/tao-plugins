@@ -282,6 +282,18 @@ public class SciHubDataQuery extends DataQuery {
             queries.put(UUID.randomUUID().toString(), query.toString());
             query.setLength(0);
         } else {
+            final QueryParameter startDate = this.parameters.get(CommonParameterNames.START_DATE);
+            final QueryParameter endDate = this.parameters.get(CommonParameterNames.END_DATE);
+            // SciHub requires beginDate and endDate to be of form [start,end]
+            // If only the value is set for these parameters, we have to "correct" them
+            if (startDate != null && !startDate.isInterval() && endDate != null) {
+                startDate.setMinValue(startDate.getValue());
+                startDate.setMaxValue(endDate.isInterval() ? endDate.getMaxValue() : endDate.getValue());
+            }
+            if (endDate != null && !endDate.isInterval() && startDate != null) {
+                endDate.setMinValue(startDate.isInterval() ? startDate.getMinValue() : startDate.getValue());
+                endDate.setMaxValue(endDate.getValue());
+            }
             for (String footprint : footprints) {
                 int idx = 0;
                 for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
