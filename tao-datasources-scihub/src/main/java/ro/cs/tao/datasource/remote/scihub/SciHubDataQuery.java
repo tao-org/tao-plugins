@@ -124,7 +124,7 @@ public class SciHubDataQuery extends DataQuery {
                             boolean isXml = rawResponse.startsWith("<?xml");
                             if (isXml) {
                                 parser = new XmlResponseParser<>();
-                                ((XmlResponseParser) parser).setHandler(new SciHubXmlResponseHandler("entry"));
+                                ((XmlResponseParser<?>) parser).setHandler(new SciHubXmlResponseHandler("entry"));
                             } else {
                                 parser = new JsonResponseParser<>(new SciHubJsonResponseHandler((SciHubDataSource) this.source));
                             }
