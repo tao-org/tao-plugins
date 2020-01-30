@@ -61,7 +61,7 @@ public class GdalInfoWrapper implements MetadataInspector {
         extractHistogram = Boolean.parseBoolean(configurationProvider.getValue("extract.histogram", "false"));
         Logger.getLogger(GdalInfoWrapper.class.getName())
                 .fine(String.format("'gdalinfo' will be run %s. Statistics extraction is %s, histogram extraction is %s",
-                                      useDocker ? "using Docker [" + gdalDockerImage + "]" : "from command line",
+                                      useDocker ? "using Docker [" + gdalDockerImage + "]" : "from system path",
                                       extractStatistics ? "enabled" : "disabled",
                                       extractHistogram ? "enabled" : "disabled"));
         List<String> args = new ArrayList<>();
