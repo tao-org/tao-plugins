@@ -49,7 +49,7 @@ public class Landsat8MetadataInspector implements MetadataInspector {
 
     @Override
     public Metadata getMetadata(Path productPath) throws IOException {
-        if (!Files.exists(productPath)) {
+        if (decodeQualification(productPath) == DecodeStatus.UNABLE) {
             return null;
         }
         Path productFolderPath = Files.isRegularFile(productPath) ?  productPath.getParent() : productPath;
