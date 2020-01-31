@@ -6,9 +6,9 @@ import ro.cs.tao.eodata.DataHandlingException;
 import ro.cs.tao.eodata.OutputDataHandler;
 import ro.cs.tao.utils.DockerHelper;
 import ro.cs.tao.utils.FileUtilities;
-import ro.cs.tao.utils.executors.DebugOutputConsumer;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.ExecutorType;
+import ro.cs.tao.utils.executors.OutputAccumulator;
 import ro.cs.tao.utils.executors.ProcessExecutor;
 
 import java.io.IOException;
@@ -56,18 +56,23 @@ public class GenericQuicklookGenerator implements OutputDataHandler<Path> {
 
     @Override
     public List<Path> handle(List<Path> list) throws DataHandlingException {
-        final DebugOutputConsumer consumer = new DebugOutputConsumer();
+        final OutputAccumulator consumer = new OutputAccumulator();
         final List<Path> results = new ArrayList<>();
         for (Path productFile : list) {
             Path realPath = null;
             try {
                 // At least on Windows, docker doesn't handle well folder symlinks in the path
                 realPath = FileUtilities.resolveSymLinks(productFile);
-                Executor<?> executor = initialize(realPath, useDocker && DockerHelper.isDockerFound() ? gdalOnDockerCmd : gdalOnPathCmd);
+                Executor<?> executor = initialize(realPath, useDocker ? gdalOnDockerCmd : gdalOnPathCmd);
                 if (executor != null) {
                     executor.setOutputConsumer(consumer);
-                    executor.execute(false);
-                    realPath = Paths.get(realPath.toString() + ".png");
+                    int code;
+                    if ((code = executor.execute(false)) == 0) {
+                        realPath = Paths.get(realPath.toString() + QUICKLOOK_EXTENSION);
+                    } else {
+                        logger.warning(String.format("Quicklook for %s was not created (return code: %d, output: %s)",
+                                                     realPath.getFileName(), code, consumer.getOutput()));
+                    }
                 } else {
                     logger.warning(String.format("Quicklooks not supported for %s files", FileUtilities.getExtension(productFile)));
                 }
