@@ -140,7 +140,7 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
     }
 
     @Override
-    protected Path check(EOProduct product, Path sourceRoot) {
+    protected Path check(EOProduct product, Path sourceRoot) throws IOException {
         Path path = super.check(product, sourceRoot);
         if (path != null) {
             ProductHelper helper = SentinelProductHelper.create(product.getName());
@@ -152,7 +152,7 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
         return path;
     }
 
-    class ODataPath {
+    static class ODataPath {
         private StringBuilder buffer;
 
         ODataPath() {
