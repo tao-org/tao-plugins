@@ -46,7 +46,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
         try {
             task.setResourceId(UUID.randomUUID().toString());
             logger.fine(String.format("Succesfully submitted task with id %s", task.getResourceId()));
-            wpsComponent = task.getWpsComponent();
+            wpsComponent = task.getComponent();
             task.setExecutionNodeHostName(wpsComponent.getRemoteAddress());
             task.setStartTime(LocalDateTime.now());
             changeTaskStatus(task, ExecutionStatus.RUNNING);

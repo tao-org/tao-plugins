@@ -268,7 +268,7 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                 Paths.get(archivePath.toString().replace(".zip", ""));
     }
 
-    protected Path extract(Path archivePath, Path targetPath) {
+    protected Path extract(Path archivePath, Path targetPath) throws IOException {
         logger.fine(String.format("Begin decompressing %s into %s", archivePath.getFileName(), targetPath));
         Path result = archivePath.toString().endsWith(".tar.gz") ?
                 Zipper.decompressTarGz(archivePath, targetPath, true) :

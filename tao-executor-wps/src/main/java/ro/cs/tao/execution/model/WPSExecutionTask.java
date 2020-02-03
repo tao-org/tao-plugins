@@ -7,13 +7,13 @@ import java.util.ArrayList;
 
 public class WPSExecutionTask extends ExecutionTask {
 
-    private WPSComponent wpsComponent;
+    private WPSComponent component;
 
     public WPSExecutionTask() { super(); }
 
-    public WPSComponent getWpsComponent() { return wpsComponent; }
+    public WPSComponent getComponent() { return component; }
 
-    public void setWpsComponent(WPSComponent wpsComponent) { this.wpsComponent = wpsComponent; }
+    public void setComponent(WPSComponent component) { this.component = component; }
 
     @Override
     public void setInputParameterValue(String parameterId, String value) {
