@@ -32,8 +32,8 @@ import java.util.regex.Pattern;
 public class L1CProductHelper extends Sentinel2ProductHelper {
 
     static final Pattern ProductV13 = Pattern.compile("(S2[A-B])_(OPER)_(PRD)_(MSIL1C)_(PDMC)_(\\d{8}T\\d{6})_R(\\d{3})_V(\\d{8}T\\d{6})_(\\d{8}T\\d{6})(?:.SAFE)?");
-    static final Pattern ProductV14 = Pattern.compile("(S2[A-B])_(MSIL1C)_(\\d{8}T\\d{6})_(N\\d{4})_R(\\d{3})_(T\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
-    private static final Pattern TileV13 = Pattern.compile("(S2[A-B])_(OPER)_(MSI)_(L1C)_(TL)_(\\w{3})__(\\d{8}T\\d{6})_(A\\d{6})_(T\\d{2}\\w{3})_(N\\d{2}.\\d{2})");
+    static final Pattern ProductV14 = Pattern.compile("(S2[A-B])_(MSIL1C)_(\\d{8}T\\d{6})_(N\\d{4})_R(\\d{3})_T(\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
+    private static final Pattern TileV13 = Pattern.compile("(S2[A-B])_(OPER)_(MSI)_(L1C)_(TL)_(\\w{3})__(\\d{8}T\\d{6})_(A\\d{6})_T(\\d{2}\\w{3})_(N\\d{2}.\\d{2})");
 
     private boolean oldFormat;
 
@@ -96,7 +96,6 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
         String tileId = null;
         if (!this.oldFormat) {
             tileId = getTokens(ProductV14)[5];
-            tileId = tileId.substring(1);
         }
         return tileId;
     }
