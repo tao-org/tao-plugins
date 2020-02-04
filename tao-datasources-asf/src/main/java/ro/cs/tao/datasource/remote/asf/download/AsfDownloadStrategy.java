@@ -174,7 +174,8 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                             extension.equalsIgnoreCase(TAR_GZ_EXTENSION) ||
                             extension.equalsIgnoreCase(KMZ_EXTENSION));
             subActivityStart(product.getName());
-            Path archivePath = Paths.get(destination, product.getName() + extension);
+            final String archiveName = (product.getId() != null ? product.getId() : product.getName()) + extension;
+            Path archivePath = Paths.get(destination, archiveName);
             FileUtilities.ensureExists(Paths.get(destination));
             Files.deleteIfExists(archivePath);
             SeekableByteChannel outputStream = null;
