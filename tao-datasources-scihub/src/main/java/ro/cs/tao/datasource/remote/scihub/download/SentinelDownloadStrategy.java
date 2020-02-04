@@ -152,7 +152,7 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
         return path;
     }
 
-    static class ODataPath {
+    class ODataPath {
         private StringBuilder buffer;
 
         ODataPath() {

@@ -33,6 +33,10 @@ public class DownloadResponseHandler implements JSonResponseHandler<NameValuePai
     public List<NameValuePair> readValues(String content, AttributeFilter...filters) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         DownloadResponse response = mapper.readValue(content, DownloadResponse.class);
+        final String error = response.getError();
+        if (response.getData() == null) {
+            throw new IOException(error != null ? error : "No data [error: null]");
+        }
         return response.getData().stream().map(r -> {
             NameValuePair pair = new NameValuePair();
             pair.setName(r.getEntityId());
