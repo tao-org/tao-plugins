@@ -43,6 +43,7 @@
         <module>tao-quota-database</module>
         <module>tao-muscate-metadata</module>
         <module>tao-openstack</module>
+        <module>tao-docker-sen2cor</module>
     </modules>
 
     <properties>
