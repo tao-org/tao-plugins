@@ -71,7 +71,7 @@
       ],
       "order": 5
     },
-    "relativeOrbit": {
+    "tileId": {
       "name": "tileId",
       "remoteName": "relativeOrbitNumber",
       "label": "Relative Orbit",
@@ -106,16 +106,6 @@
       ],
       "order": 8
     },
-    "tileId": {
-      "name": "tileId",
-      "remoteName": "relativeOrbitNumber",
-      "label": "Relative Orbit",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 9
-    },
     "productIdentifier": {
       "name": "productIdentifier",
       "remoteName": "filename",
@@ -124,7 +114,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 10
+      "order": 9
     }
   },
   "Sentinel2": {
