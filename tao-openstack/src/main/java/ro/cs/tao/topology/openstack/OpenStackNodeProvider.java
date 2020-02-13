@@ -357,6 +357,7 @@ public class OpenStackNodeProvider implements NodeProvider {
             node.setUserPass(server.getAdminPass());
             node.setDescription(server.getAccessIPv4());
             node.setActive(server.getStatus() == Server.Status.ACTIVE);
+            node.setVolatile(true);
         }
         return node;
     }
