@@ -90,15 +90,15 @@ public class Landsat8Query extends DataQuery {
         try {
             retVal = (long) executeQuery(1, 1, pathRows, true);
         } catch (Exception e) {
-            logger.warning(e.getMessage());
+            throw new QueryException(e);
         }
         return retVal;
     }
 
     private Set<String> getPathRows() {
         Set<String> pathRows = null;
-        for (QueryParameter parameter : this.parameters.values()) {
-            final Class parameterType = parameter.getType();
+        for (QueryParameter<?> parameter : this.parameters.values()) {
+            final Class<?> parameterType = parameter.getType();
             final Object parameterValue = parameter.getValue();
             if (parameterType.isArray() && String[].class.isAssignableFrom(parameterType)) {
                 // we have an array of rows and paths
