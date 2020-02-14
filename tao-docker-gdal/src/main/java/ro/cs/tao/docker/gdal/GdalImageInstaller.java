@@ -125,7 +125,11 @@ public class GdalImageInstaller extends BaseImageInstaller {
                     component.setVisibility(ProcessingComponentVisibility.SYSTEM);
                     component.setOwner(SystemPrincipal.instance().getName());
                     component.addTags(getOrCreateTag(container.getName()).getText());
-                    this.componentProvider.save(component);
+                    if (!this.componentProvider.exists(component.getId())) {
+                        this.componentProvider.save(component);
+                    } else {
+                        this.componentProvider.update(component);
+                    }
                 } catch (Exception inner) {
                     logger.severe(String.format("Faulty component: %s. Error: %s",
                                                 current != null ? current.getId() : "n/a",
