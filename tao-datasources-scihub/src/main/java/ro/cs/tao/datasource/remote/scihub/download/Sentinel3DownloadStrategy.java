@@ -29,7 +29,9 @@ public class Sentinel3DownloadStrategy extends SentinelDownloadStrategy {
     @Override
     protected Path fetchImpl(EOProduct product) throws IOException, InterruptedException {
         Path archivePath = super.fetchImpl(product);
-        Path productFile = Zipper.decompressZip(archivePath, archivePath.getParent(), true);
+        Path productFile;
+        if (Boolean.parseBoolean(this.props.getProperty("auto.uncompress", "false"))) {
+            productFile = Zipper.decompressZip(archivePath, archivePath.getParent(), true);
         if (productFile != null) {
             try {
                 if (!productFile.toString().contains(product.getName())) {
@@ -44,6 +46,9 @@ public class Sentinel3DownloadStrategy extends SentinelDownloadStrategy {
             } catch (URISyntaxException e) {
                 logger.severe(e.getMessage());
             }
+        }
+        } else {
+            productFile = archivePath;
         }
         return productFile;
     }
