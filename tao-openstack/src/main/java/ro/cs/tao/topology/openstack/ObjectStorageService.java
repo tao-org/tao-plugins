@@ -1,0 +1,155 @@
+package ro.cs.tao.topology.openstack;
+
+import org.openstack4j.api.exceptions.AuthenticationException;
+import org.openstack4j.model.common.ActionResponse;
+import org.openstack4j.model.common.Payloads;
+import org.openstack4j.model.storage.object.SwiftObject;
+import org.openstack4j.model.storage.object.options.ObjectListOptions;
+import org.openstack4j.model.storage.object.options.ObjectPutOptions;
+import ro.cs.tao.topology.TopologyException;
+import ro.cs.tao.topology.openstack.commons.OpenStackSession;
+import ro.cs.tao.utils.StringUtilities;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
+import java.util.logging.Logger;
+
+public class ObjectStorageService {
+    private final Logger logger;
+    private org.openstack4j.api.storage.ObjectStorageService objectStorageService;
+
+    public ObjectStorageService() {
+        this.logger = Logger.getLogger(ObjectStorageService.class.getName());
+    }
+
+
+    public String copy(Path source, String containerName) throws IOException {
+        if (source == null) {
+            throw new IllegalArgumentException("[source] is null");
+        }
+        if (StringUtilities.isNullOrEmpty(containerName)) {
+            throw new IllegalArgumentException("[containerName] is null or empty");
+        }
+        if (!Files.exists(source)) {
+            throw new IOException("[source] not found");
+        }
+        authenticate();
+        final List<Path> paths;
+        if (Files.isDirectory(source)) {
+            paths = list(source);
+        } else {
+            paths = new ArrayList<Path>() {{ add(source); }};
+        }
+        String relativePath;
+        try {
+            ActionResponse actionResponse = this.objectStorageService.containers().create(containerName);
+            if (actionResponse != null && !actionResponse.isSuccess()) {
+                throw new IOException(String.format("Failed to connect to container %s. Response code: %d; fault: %s",
+                                                    containerName, actionResponse.getCode(), actionResponse.getFault()));
+            } else {
+                logger.finest(String.format("Connected to container %s", containerName));
+            }
+        } catch (Exception ex) {
+            throw new IOException(String.format("Container %s does not exist", containerName));
+        }
+        final List<String> movedPaths = new LinkedList<>();
+        String relativeTargetRoot = source.getName(source.getNameCount() - 1).toString();
+        for (Path path : paths) {
+            try {
+                if (!Files.isDirectory(path)) {
+                    relativePath = relativeTargetRoot + "/" + source.relativize(path.getParent()).toString();
+                    if (relativePath.endsWith("/")) {
+                        relativePath = relativePath.substring(0, relativePath.length() - 1);
+                    }
+                    relativePath = relativePath.replace("\\", "/");
+                    logger.fine(String.format("Copying '%s' to '%s'",
+                                              path.toString(),
+                                              relativePath + path.getFileName().toString()));
+                    this.objectStorageService
+                            .objects().put(containerName,
+                                           path.getFileName().toString(),
+                                           Files.size(path) > 0 ? Payloads.create(Files.newInputStream(path)) : null,
+                                           ObjectPutOptions.create().path(relativePath));
+                    movedPaths.add(relativePath);
+                }
+            } catch (Exception inner) {
+                logger.severe(String.format("Uploading '%s' failed: %s", path, inner.getMessage()));
+                for (String relPath : movedPaths) {
+                    try {
+                        this.objectStorageService.objects().delete(containerName, relPath);
+                    } catch (Exception ex) {
+                        logger.warning(String.format("Removing '%s' failed: %s", relPath, ex.getMessage()));
+                    }
+                }
+                throw new IOException(inner);
+            }
+        }
+        return Files.isDirectory(source) ? relativeTargetRoot : movedPaths.get(0);
+    }
+
+    public String move(Path source, String containerName) throws IOException {
+        final String targetPath = copy(source, containerName);
+        Files.walk(source, FileVisitOption.FOLLOW_LINKS)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        return targetPath;
+    }
+
+    public int delete(String containerName, String filter) throws IOException {
+        if (StringUtilities.isNullOrEmpty(containerName)) {
+            throw new IllegalArgumentException("[containerName] is null or empty");
+        }
+        authenticate();
+        int deleted = 0;
+        try {
+            final ObjectListOptions options = !StringUtilities.isNullOrEmpty(filter) ?
+                    ObjectListOptions.create().startsWith(filter) : null;
+            final List<? extends SwiftObject> objects = options != null ?
+                    this.objectStorageService.objects().list(containerName, options):
+                    this.objectStorageService.objects().list(containerName);
+            for (SwiftObject object : objects) {
+                try {
+                    this.objectStorageService.objects().delete(containerName, object.getName());
+                    deleted++;
+                } catch (Exception ex) {
+                    logger.severe(String.format("Deleting '%s' failed: %s", object.getName(), ex.getMessage()));
+                }
+            }
+        } catch (Exception ex) {
+            throw new IOException(ex);
+        }
+        return deleted;
+    }
+
+    private void authenticate() {
+        if (this.objectStorageService == null) {
+            try {
+                this.objectStorageService = OpenStackSession.objectStorageService();
+            } catch (AuthenticationException ex) {
+                throw new TopologyException(String.format("OpenStack authentication failed. Reason: %s", ex.getMessage()));
+            }
+        }
+    }
+
+    private List<Path> list(Path source) throws IOException {
+        final List<Path> files = new LinkedList<>();
+        Files.walkFileTree(source, EnumSet.noneOf(FileVisitOption.class), 16,
+                           new SimpleFileVisitor<Path>() {
+                               @Override
+                               public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                                   files.add(dir);
+                                   return super.preVisitDirectory(dir, attrs);
+                               }
+                               @Override
+                               public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                                   files.add(file);
+                                   return super.visitFile(file, attrs);
+                               }
+                           });
+        return files;
+    }
+}
