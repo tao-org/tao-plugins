@@ -1,6 +1,11 @@
-package ro.cs.tao.topology.openstack;
+package ro.cs.tao.topology.openstack.commons;
 
 import org.openstack4j.api.OSClient;
+import org.openstack4j.api.compute.ComputeService;
+import org.openstack4j.api.image.ImageService;
+import org.openstack4j.api.networking.NetworkingService;
+import org.openstack4j.api.storage.BlockStorageService;
+import org.openstack4j.api.storage.ObjectStorageService;
 import org.openstack4j.model.common.Identifier;
 import org.openstack4j.model.identity.v3.Service;
 import org.openstack4j.openstack.OSFactory;
@@ -16,9 +21,9 @@ import java.util.logging.Logger;
  *
  * @author Cosmin Cara
  */
-public class OSAccount {
-    private static OSAccount instance;
-    private static final Logger logger = Logger.getLogger(OSAccount.class.getName());
+public class OpenStackSession {
+    private static OpenStackSession instance;
+    private static final Logger logger = Logger.getLogger(OpenStackSession.class.getName());
 
     private final String domain;
     private final String user;
@@ -26,8 +31,47 @@ public class OSAccount {
     private final String authenticationURL;
     private final String tenantId;
 
+    public static ComputeService computeService() {
+        final OSClient.OSClientV3 service = getInstance().getService();
+        if (!service.supportsCompute()) {
+            throw new TopologyException("The remote provider doesn't support Compute API");
+        }
+        return service.compute();
+    }
 
-    public static synchronized OSAccount getInstance() {
+    public static BlockStorageService blockStorageService() {
+        final OSClient.OSClientV3 service = getInstance().getService();
+        if (!service.supportsBlockStorage()) {
+            throw new TopologyException("The remote provider doesn't support Block Storage API");
+        }
+        return service.blockStorage();
+    }
+
+    public static ObjectStorageService objectStorageService() {
+        final OSClient.OSClientV3 service = getInstance().getService();
+        if (!service.supportsObjectStorage()) {
+            throw new TopologyException("The remote provider doesn't support Object Storage API");
+        }
+        return service.objectStorage();
+    }
+
+    public static NetworkingService networkService() {
+        final OSClient.OSClientV3 service = getInstance().getService();
+        if (!service.supportsNetwork()) {
+            throw new TopologyException("The remote provider doesn't support Network API");
+        }
+        return service.networking();
+    }
+
+    public static ImageService imageService() {
+        final OSClient.OSClientV3 service = getInstance().getService();
+        if (!service.supportsImage()) {
+            throw new TopologyException("The remote provider doesn't support Image API");
+        }
+        return service.images();
+    }
+
+    private static synchronized OpenStackSession getInstance() {
         if (instance == null) {
             final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
             final String domain = cfgProvider.getValue(Constants.OPENSTACK_DOMAIN, null);
@@ -50,12 +94,12 @@ public class OSAccount {
             if (tenantId == null || tenantId.isEmpty()) {
                 throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_TENANT_ID));
             }
-            OSAccount.instance = new OSAccount(domain, user, password, authUrl, tenantId);
+            OpenStackSession.instance = new OpenStackSession(domain, user, password, authUrl, tenantId);
         }
         return instance;
     }
 
-    private OSAccount(String domain, String user, String password, String authenticationURL, String tenantId) {
+    private OpenStackSession(String domain, String user, String password, String authenticationURL, String tenantId) {
         this.domain = domain;
         this.user = user;
         this.password = password;

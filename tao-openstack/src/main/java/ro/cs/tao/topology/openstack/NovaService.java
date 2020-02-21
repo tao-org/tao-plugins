@@ -1,9 +1,13 @@
 package ro.cs.tao.topology.openstack;
 
 import org.openstack4j.api.Builders;
-import org.openstack4j.api.OSClient;
+import org.openstack4j.api.compute.ComputeFloatingIPService;
 import org.openstack4j.api.compute.ComputeService;
 import org.openstack4j.api.compute.ServerService;
+import org.openstack4j.api.exceptions.AuthenticationException;
+import org.openstack4j.api.image.ImageService;
+import org.openstack4j.api.networking.NetworkingService;
+import org.openstack4j.api.storage.BlockStorageService;
 import org.openstack4j.api.storage.BlockVolumeService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.compute.*;
@@ -19,8 +23,11 @@ import ro.cs.tao.topology.NodeDescription;
 import ro.cs.tao.topology.NodeFlavor;
 import ro.cs.tao.topology.NodeProvider;
 import ro.cs.tao.topology.TopologyException;
+import ro.cs.tao.topology.openstack.commons.Constants;
+import ro.cs.tao.topology.openstack.commons.OpenStackSession;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,20 +40,27 @@ import java.util.stream.Collectors;
  *
  * @author Cosmin Cara
  */
-public class OpenStackNodeProvider implements NodeProvider {
-    private final Logger logger = Logger.getLogger(OpenStackNodeProvider.class.getName());
-    private OSAccount openStackAccount;
+public class NovaService implements NodeProvider {
+    private final Logger logger = Logger.getLogger(NovaService.class.getName());
     private Server master;
+    private ComputeService computeService;
+    private BlockStorageService blockStorageService;
+    private NetworkingService networkService;
+    private ImageService imageService;
 
     @Override
     public void authenticate() {
-        if (this.openStackAccount == null) {
+        if (this.computeService == null) {
             try {
-                this.openStackAccount = OSAccount.getInstance();
-                final OSClient.OSClientV3 service = this.openStackAccount.getService();
-                this.master = service.compute().servers().get(InetAddress.getLocalHost().getHostName());
-            } catch (Exception ex) {
+                this.computeService = OpenStackSession.computeService();
+                this.blockStorageService = OpenStackSession.blockStorageService();
+                this.networkService = OpenStackSession.networkService();
+                this.imageService = OpenStackSession.imageService();
+                this.master = this.computeService.servers().get(InetAddress.getLocalHost().getHostName());
+            } catch (AuthenticationException ex) {
                 throw new TopologyException(String.format("OpenStack authentication failed. Reason: %s", ex.getMessage()));
+            } catch (UnknownHostException ex) {
+                throw new TopologyException(String.format("Unable to determine localhost. Reason: %s", ex.getMessage()));
             }
         }
     }
@@ -54,7 +68,7 @@ public class OpenStackNodeProvider implements NodeProvider {
     @Override
     public List<NodeFlavor> listFlavors() throws TopologyException {
         authenticate();
-        final List<? extends Flavor> remoteFlavors = this.openStackAccount.getService().compute().flavors().list();
+        final List<? extends Flavor> remoteFlavors = this.computeService.flavors().list();
         List<NodeFlavor> flavors = new ArrayList<>();
         if (remoteFlavors != null) {
             for (Flavor flavor : remoteFlavors) {
@@ -67,8 +81,7 @@ public class OpenStackNodeProvider implements NodeProvider {
     @Override
     public List<NodeDescription> listNodes() throws TopologyException {
         authenticate();
-        final List<? extends Server> servers = this.openStackAccount.getService().compute().servers().list();
-        //final Set<NodeDescription> registeredNodes = new HashSet<>(super.listNodes());
+        final List<? extends Server> servers = this.computeService.servers().list();
         List<NodeDescription> remoteNodes = new ArrayList<>();
         if (servers != null) {
             for (Server server : servers) {
@@ -84,7 +97,7 @@ public class OpenStackNodeProvider implements NodeProvider {
         if ("localhost".equals(nodeName)) {
             return null;
         }
-        final Server server = this.openStackAccount.getService().compute().servers().get(nodeName);
+        final Server server = this.computeService.servers().get(nodeName);
         NodeDescription node = null;
         if (server == null) {
             logger.warning(String.format("Node '%s' not found in OpenStack topology", nodeName));
@@ -96,7 +109,6 @@ public class OpenStackNodeProvider implements NodeProvider {
 
     @Override
     public NodeDescription create(NodeDescription node) throws TopologyException {
-        final OSClient.OSClientV3 session = this.openStackAccount.getService();
         Volume ssdVolume = null, hddVolume = null;
         Server server = null;
         try {
@@ -107,10 +119,9 @@ public class OpenStackNodeProvider implements NodeProvider {
             final String hddType = cfgProvider.getValue(Constants.OPENSTACK_VOLUME_TYPE_HDD, "HDD");
             checkVolumeType(hddType);
             final String defaultSecGroup = cfgProvider.getValue(Constants.OPENSTACK_DEFAULT_SECURITY_GROUP);
-            final ComputeService novaService = session.compute();
-            final ServerService serverService = novaService.servers();
+            final ServerService serverService = this.computeService.servers();
             final ServerCreateBuilder builder = serverService.serverBuilder();
-            final Flavor flavor = novaService.flavors().list().stream().filter(f -> f.getName().equals(node.getFlavor().getId())).findFirst().orElse(null);
+            final Flavor flavor = this.computeService.flavors().list().stream().filter(f -> f.getName().equals(node.getFlavor().getId())).findFirst().orElse(null);
             final List<String> networkIds = getNetworks();
             final String ssdVolumeName = node.getId() + "-ssd";
             final String hddVolumeName = node.getId() + "-hdd";
@@ -158,19 +169,20 @@ public class OpenStackNodeProvider implements NodeProvider {
     @Override
     public void remove(String nodeName) throws TopologyException {
         authenticate();
-        final ComputeService novaService = this.openStackAccount.getService().compute();
-        Server server = novaService.servers().get(nodeName);
+        final ServerService serverService = this.computeService.servers();
+        Server server = serverService.get(nodeName);
         if (server == null) {
             logger.warning(String.format("Node %s doesn't exist on %s", nodeName, getClass().getSimpleName()));
         } else {
             final List<Address> IPtoDelete = new ArrayList<>();
+            final ComputeFloatingIPService floatingIPService = this.computeService.floatingIps();
             for (List<? extends Address> addresses : server.getAddresses().getAddresses().values()) {
                 addresses.stream().filter(a -> a.getType().equalsIgnoreCase("floating")).findFirst().ifPresent(IPtoDelete::add);
             }
-            novaService.servers().delete(nodeName);
-            final Map<String, ? extends FloatingIP> ipMap = novaService.floatingIps().list().stream().collect(Collectors.toMap(FloatingIP::getFixedIpAddress, Function.identity()));
+            serverService.delete(nodeName);
+            final Map<String, ? extends FloatingIP> ipMap = floatingIPService.list().stream().collect(Collectors.toMap(FloatingIP::getFixedIpAddress, Function.identity()));
             for (Address address : IPtoDelete) {
-                novaService.floatingIps().deallocateIP(ipMap.get(address.getAddr()).getId());
+                floatingIPService.deallocateIP(ipMap.get(address.getAddr()).getId());
             }
         }
     }
@@ -178,7 +190,7 @@ public class OpenStackNodeProvider implements NodeProvider {
     @Override
     public void suspend(String nodeName) throws TopologyException {
         authenticate();
-        final ServerService serverService = this.openStackAccount.getService().compute().servers();
+        final ServerService serverService = this.computeService.servers();
         final Server server = serverService.get(nodeName);
         if (server == null) {
             throw new TopologyException(String.format("Node '%s' is not created", nodeName));
@@ -193,7 +205,7 @@ public class OpenStackNodeProvider implements NodeProvider {
     @Override
     public void resume(String nodeName) throws TopologyException {
         authenticate();
-        final ServerService serverService = this.openStackAccount.getService().compute().servers();
+        final ServerService serverService = this.computeService.servers();
         final Server server = serverService.get(nodeName);
         if (server == null) {
             throw new TopologyException(String.format("Node '%s' is not created", nodeName));
@@ -211,28 +223,8 @@ public class OpenStackNodeProvider implements NodeProvider {
         return node;
     }
 
-    /*private FloatingIP getAvailableFloatingIp() {
-        FloatingIP floatingIP = null;
-        final ComputeFloatingIPService floatingIPService = this.openStackAccount.getService().compute().floatingIps();
-        final List<? extends FloatingIP> floatingIPS = floatingIPService.list();
-        for (FloatingIP ip : floatingIPS) {
-            if (ip.getInstanceId() == null) { // no instance is attached to the IP, hence it's free to use
-                floatingIP = ip;
-                break;
-            }
-        }
-        if (floatingIP == null) { // all floating IPs are attached, create a new one
-            floatingIP = floatingIPService.allocateIP(ConfigurationManager.getInstance().getValue(Constants.OPENSTACK_FLOATING_IP_POOL));
-        }
-        return floatingIP;
-    }*/
-
     private Volume createVolume(String volumeName, String volumeType, int sizeGB) {
-        final OSClient.OSClientV3 session = this.openStackAccount.getService();
-        if (!session.supportsBlockStorage()) {
-            throw new TopologyException("The remote provider doesn't support BlockStorage API");
-        }
-        final BlockVolumeService volumeService = session.blockStorage().volumes();
+        final BlockVolumeService volumeService = this.blockStorageService.volumes();
         Volume volume = volumeService.get(volumeName);
         if (volume == null) { // the volume doesn't exist
             volume = volumeService.create(Builders.volume()
@@ -253,12 +245,8 @@ public class OpenStackNodeProvider implements NodeProvider {
     }
 
     private void deleteVolume(Volume volume) {
-        final OSClient.OSClientV3 session = this.openStackAccount.getService();
-        if (!session.supportsBlockStorage()) {
-            throw new TopologyException("The remote provider doesn't support BlockStorage API");
-        }
         if (volume != null) {
-            final BlockVolumeService volumeService = session.blockStorage().volumes();
+            final BlockVolumeService volumeService = this.blockStorageService.volumes();
             if (volumeService.get(volume.getId()) != null) { // make sure it exists
                 final ActionResponse response = volumeService.delete(volume.getId());
                 if (!response.isSuccess()) {
@@ -270,13 +258,10 @@ public class OpenStackNodeProvider implements NodeProvider {
     }
 
     private void deleteServer(Server server) {
-        final OSClient.OSClientV3 session = this.openStackAccount.getService();
-        if (!session.supportsCompute()) {
-            throw new TopologyException("The remote provider doesn't support Compute API");
-        }
         if (server != null) {
-            if (session.compute().servers().get(server.getId()) != null) { // make sure it exists
-                final ActionResponse response = session.compute().servers().delete(server.getId());
+            final ServerService serverService = this.computeService.servers();
+            if (serverService.get(server.getId()) != null) { // make sure it exists
+                final ActionResponse response = serverService.delete(server.getId());
                 if (!response.isSuccess()) {
                     logger.severe(String.format("Server '%s' could not be deleted. Reason: %s",
                                                 server.getName(), response.getFault()));
@@ -286,10 +271,6 @@ public class OpenStackNodeProvider implements NodeProvider {
     }
 
     private List<String> getNetworks() {
-        final OSClient.OSClientV3 session = this.openStackAccount.getService();
-        if (!session.supportsNetwork()) {
-            throw new TopologyException("The remote provider doesn't support Network API");
-        }
         final List<String> networkIds = this.master != null ?
                 new ArrayList<>(this.master.getAddresses().getAddresses().keySet()) : new ArrayList<>();
         if (networkIds.size() == 0) {
@@ -297,7 +278,7 @@ public class OpenStackNodeProvider implements NodeProvider {
             final String privateNetworkName = cfgProvider.getValue(Constants.OPENSTACK_PRIVATE_NETWORK);
             final String eoDataNetworkName = cfgProvider.getValue(Constants.OPENSTACK_DATA_NETWORK);
             if (privateNetworkName != null || eoDataNetworkName != null) {
-                for (Network network : session.networking().network().list()) {
+                for (Network network : this.networkService.network().list()) {
                     if ((privateNetworkName != null && privateNetworkName.equals(network.getName())) ||
                             (eoDataNetworkName != null && eoDataNetworkName.equals(network.getName()))) {
                         networkIds.add(network.getId());
@@ -309,11 +290,7 @@ public class OpenStackNodeProvider implements NodeProvider {
     }
 
     private void checkVolumeType(String volumeType) {
-        final OSClient.OSClientV3 session = this.openStackAccount.getService();
-        if (!session.supportsBlockStorage()) {
-            throw new TopologyException("The remote provider doesn't support BlockStorage API");
-        }
-        final List<? extends VolumeType> volumeTypes = session.blockStorage().volumes().listVolumeTypes();
+        final List<? extends VolumeType> volumeTypes = this.blockStorageService.volumes().listVolumeTypes();
         if (volumeType == null) {
             throw new TopologyException("The remote provider API returned an empty VolumeType list");
         }
@@ -323,12 +300,8 @@ public class OpenStackNodeProvider implements NodeProvider {
     }
 
     private String getImageId(String imageName) {
-        final OSClient.OSClientV3 session = this.openStackAccount.getService();
-        if (!session.supportsImage()) {
-            throw new TopologyException("Remote provider doesn't support Image API");
-        }
         String imageId = null;
-        for (Image image : session.images().list()) {
+        for (Image image : this.imageService.list()) {
             if (imageName.equals(image.getName())) {
                 imageId = image.getId();
                 break;
