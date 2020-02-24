@@ -45,6 +45,7 @@
         <module>tao-openstack</module>
         <module>tao-docker-sen2cor</module>
         <module>tao-docker-console</module>
+        <module>tao-integration-sen2agri</module>
     </modules>
 
     <properties>
