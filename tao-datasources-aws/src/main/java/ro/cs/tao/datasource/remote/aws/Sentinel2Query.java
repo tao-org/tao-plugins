@@ -252,6 +252,7 @@ class Sentinel2Query extends DataQuery {
             }
         } catch (Exception ex) {
             logger.warning(ex.getMessage());
+            throw new QueryException(ex);
         }
         logger.info(String.format("Query returned %s products", results.size()));
         return new ArrayList<>(results.values());
