@@ -274,9 +274,8 @@ public class GraphConverter implements ExternalGraphConverter {
             container.setDescription("Sen2Agri mock container");
             container.setTag("sen2agri");
         }
-        final List<Application> applications = container.getApplications();
-        Application application;
-        if (applications.stream().noneMatch(a -> a.getName().equals(name))) {
+        Application application = container.getApplications().stream().filter(a -> a.getName().equals(name)).findFirst().orElse(null);
+        if (application == null) {
             // First create the container application
             application = new Application();
             application.setName(name);
@@ -291,8 +290,6 @@ public class GraphConverter implements ExternalGraphConverter {
             } else {
                 containerProvider.update(container);
             }
-        } else {
-            application = container.getApplications().stream().filter(a -> a.getName().equals(name)).findFirst().get();
         }
         ProcessingComponent component = componentProvider.get(name);
         boolean collidedWithExisting = component != null && !component.getContainerId().equals(container.getId());
