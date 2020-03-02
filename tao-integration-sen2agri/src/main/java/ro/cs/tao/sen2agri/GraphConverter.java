@@ -213,6 +213,7 @@ public class GraphConverter implements ExternalGraphConverter {
             for (Map.Entry<String, String> entry : values.entrySet()) {
                 node.addCustomValue(entry.getKey(), entry.getValue());
             }
+            node.addInfo("externalTaskId", String.valueOf(task.getId()));
             node = workflowNodeProvider.save(node);
             nodes.add(node);
         }
@@ -227,6 +228,7 @@ public class GraphConverter implements ExternalGraphConverter {
             componentMap.put(component.getId(), component);
             node.setComponentId(component.getId());
             node.setComponentType(ComponentType.GROUP);
+            node.addInfo("externalTaskId", String.valueOf(task.getId()));
             node = workflowNodeProvider.save(node);
             WorkflowNodeGroupDescriptor grpNode = (WorkflowNodeGroupDescriptor) node;
             WorkflowNodeDescriptor previous;
