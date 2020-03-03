@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>ro.cs.tao</groupId>
+  <artifactId>tao-docker-sen2cor</artifactId>
+  <versioning>
+    <versions>
+      <version>1.1.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20200303133542</lastUpdated>
+  </versioning>
+</metadata>
