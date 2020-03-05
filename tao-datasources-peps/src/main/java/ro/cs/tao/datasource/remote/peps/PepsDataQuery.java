@@ -48,13 +48,14 @@ import java.util.stream.Collectors;
  * @author Cosmin Cara
  */
 public class PepsDataQuery extends DataQuery {
-    private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
 
     static {
-        converterFactory.register(PolygonParameterConverter.class, Polygon2D.class);
-        converterFactory.register(DateParameterConverter.class, Date.class);
-        converterFactory.register(RangeParameterConverter.class, Double.class);
-        converterFactory.register(BooleanParameterConverter.class, Boolean.class);
+        ConverterFactory factory = new ConverterFactory();
+        factory.register(PolygonParameterConverter.class, Polygon2D.class);
+        factory.register(DateParameterConverter.class, Date.class);
+        factory.register(RangeParameterConverter.class, Double.class);
+        factory.register(BooleanParameterConverter.class, Boolean.class);
+        converterFactory.put(PepsDataQuery.class, factory);
     }
 
     private PepsDataQuery() { super(); }
@@ -81,7 +82,7 @@ public class PepsDataQuery extends DataQuery {
             try {
                 if (!"collection".equals(parameter.getName())) {
                     params.add(new BasicNameValuePair(getRemoteName(parameter.getName()),
-                                                      converterFactory.create(parameter).stringValue()));
+                                                      getParameterValue(parameter)));
                 } else {
                     collection = Enum.valueOf(Collection.class, parameter.getValueAsString());
                 }
