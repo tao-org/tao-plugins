@@ -12,10 +12,8 @@ import org.locationtech.jts.io.WKTReader;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
-import ro.cs.tao.datasource.converters.ConverterFactory;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
-import ro.cs.tao.datasource.remote.creodias.parsers.DateParameterConverter;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
@@ -35,12 +33,6 @@ import java.util.Map;
 public abstract class BaseDataQuery extends DataQuery {
 
     protected final String connectionString;
-
-    private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
-
-    static {
-        converterFactory.register(DateParameterConverter.class, Date.class);
-    }
 
     protected BaseDataQuery(CreoDiasDataSource source, String sensorName, String connectionString) {
         super(source, sensorName);
@@ -199,7 +191,7 @@ public abstract class BaseDataQuery extends DataQuery {
                             QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
                                                                                        CommonParameterNames.FOOTPRINT,
                                                                                        Polygon2D.fromWKT(footprint));
-                            query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), converterFactory.create(fakeParam).stringValue()));
+                            query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), getParameterValue(fakeParam)));
                         } catch (ConversionException e) {
                             throw new QueryException(e.getMessage());
                         }
@@ -221,13 +213,13 @@ public abstract class BaseDataQuery extends DataQuery {
                             query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), builder.toString()));
                         } else if (Date.class.equals(parameter.getType())) {
                             try {
-                                query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), converterFactory.create(parameter).stringValue()));
+                                query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), getParameterValue(parameter)));
                             } catch (ConversionException e) {
                                 throw new QueryException(e.getMessage());
                             }
                         } else {
                             try {
-                                query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), converterFactory.create(parameter).stringValue()));
+                                query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), getParameterValue(parameter)));
                             } catch (ConversionException e) {
                                 throw new QueryException(e.getMessage());
                             }
