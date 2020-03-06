@@ -12,8 +12,6 @@ import org.locationtech.jts.io.WKTReader;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
-import ro.cs.tao.datasource.converters.ConverterFactory;
-import ro.cs.tao.datasource.converters.SimpleDateParameterConverter;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.mundi.landsat8.Landsat8Query;
@@ -33,12 +31,6 @@ import java.util.*;
 public abstract class BaseDataQuery extends DataQuery {
 
     protected final String connectionString;
-
-    private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
-
-    static {
-        converterFactory.register(SimpleDateParameterConverter.class, Date.class);
-    }
 
     protected BaseDataQuery(MundiDataSource source, String sensorName, String connectionString) {
         super(source, sensorName);
@@ -255,7 +247,7 @@ public abstract class BaseDataQuery extends DataQuery {
                                 parameter.setMaxValue(null);
                             }
                             query.add(new BasicNameValuePair(getRemoteName(entry.getKey()),
-                                                             converterFactory.create(parameter).stringValue()));
+                                                             getParameterValue(parameter)));
                         } catch (ConversionException e) {
                             throw new QueryException(e.getMessage());
                         }
@@ -268,7 +260,7 @@ public abstract class BaseDataQuery extends DataQuery {
                                 parameter.setMaxValue(null);
                             }
                             query.add(new BasicNameValuePair(getRemoteName(entry.getKey()),
-                                                             converterFactory.create(parameter).stringValue()));
+                                                             getParameterValue(parameter)));
                         } catch (ConversionException e) {
                             throw new QueryException(e.getMessage());
                         }
@@ -290,13 +282,13 @@ public abstract class BaseDataQuery extends DataQuery {
                             query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), builder.toString()));
                         } else if (Date.class.equals(parameter.getType())) {
                             try {
-                                query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), converterFactory.create(parameter).stringValue()));
+                                query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), getParameterValue(parameter)));
                             } catch (ConversionException e) {
                                 throw new QueryException(e.getMessage());
                             }
                         } else {
                             try {
-                                query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), converterFactory.create(parameter).stringValue()));
+                                query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), getParameterValue(parameter)));
                             } catch (ConversionException e) {
                                 throw new QueryException(e.getMessage());
                             }

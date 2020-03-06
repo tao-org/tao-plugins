@@ -56,16 +56,16 @@ import java.util.stream.Collectors;
  */
 public class SciHubDataQuery extends DataQuery {
 
-    //private static final String PATTERN_DATE = "NOW";
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-    private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
 
     private final String sensorName;
 
     static {
-        converterFactory.register(SciHubPolygonParameterConverter.class, Polygon2D.class);
-        converterFactory.register(DateParameterConverter.class, Date.class);
-        converterFactory.register(DoubleParameterConverter.class, Double.class);
+        final ConverterFactory factory = new ConverterFactory();
+        factory.register(SciHubPolygonParameterConverter.class, Polygon2D.class);
+        factory.register(DateParameterConverter.class, Date.class);
+        factory.register(DoubleParameterConverter.class, Double.class);
+        converterFactory.put(SciHubDataQuery.class, factory);
     }
 
     SciHubDataQuery(SciHubDataSource source, String sensorName) {
@@ -320,7 +320,7 @@ public class SciHubDataQuery extends DataQuery {
                                     QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
                                                                                                "footprint",
                                                                                                Polygon2D.fromWKT(footprint));
-                                    query.append(converterFactory.create(fakeParam).stringValue());
+                                    query.append(getParameterValue(fakeParam));
                                 } catch (ConversionException e) {
                                     throw new QueryException(e.getMessage());
                                 }
@@ -387,7 +387,7 @@ public class SciHubDataQuery extends DataQuery {
                             } else if (Date.class.equals(parameter.getType())) {
                                 query.append(getRemoteName(entry.getKey())).append(":[");
                                 try {
-                                    query.append(converterFactory.create(parameter).stringValue());
+                                    query.append(getParameterValue(parameter));
                                 } catch (ConversionException e) {
                                     throw new QueryException(e.getMessage());
                                 }
@@ -395,7 +395,7 @@ public class SciHubDataQuery extends DataQuery {
                             } else {
                                 query.append(getRemoteName(entry.getKey())).append(":");
                                 try {
-                                    query.append(converterFactory.create(parameter).stringValue());
+                                    query.append(getParameterValue(parameter));
                                 } catch (ConversionException e) {
                                     throw new QueryException(e.getMessage());
                                 }

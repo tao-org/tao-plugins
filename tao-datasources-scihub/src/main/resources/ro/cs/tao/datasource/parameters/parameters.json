@@ -15,10 +15,9 @@
       "remoteName": "filename",
       "label": "Satellite Platform",
       "type": "java.lang.String",
-      "defaultValue": "",
+      "defaultValue": null,
       "required": false,
       "valueSet": [
-        "",
         "S1A_*",
         "S1B_*"
       ],
@@ -262,10 +261,9 @@
       "remoteName": "filename",
       "label": "Satellite Platform",
       "type": "java.lang.String",
-      "defaultValue": "",
+      "defaultValue": null,
       "required": false,
       "valueSet": [
-        "",
         "S3A_*",
         "S3B_*"
       ],
