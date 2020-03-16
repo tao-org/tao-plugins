@@ -66,7 +66,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>${maven.compiler.plugin.version}</version>
                     <configuration>
                         <source>1.8</source>
                         <target>1.8</target>
@@ -75,7 +75,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.5</version>
+                    <version>${maven.jar.plugin.version}</version>
                     <configuration>
                         <archive>
                             <manifest>
@@ -92,8 +92,21 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven.source.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.10</version>
+                    <version>${maven.dependency.plugin.version}</version>
                     <executions>
                         <execution>
                             <id>copy-libs</id>
@@ -107,6 +120,7 @@
                                 <overWriteReleases>false</overWriteReleases>
                                 <overWriteSnapshots>true</overWriteSnapshots>
                                 <outputDirectory>../../tao-core/tao-core-kit/target/tao-core-${project.version}/tao-core/lib</outputDirectory>
+                                <overWriteIfNewer>true</overWriteIfNewer>
                             </configuration>
                         </execution>
                         <execution>
