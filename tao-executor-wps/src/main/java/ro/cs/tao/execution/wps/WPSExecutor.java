@@ -25,13 +25,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class WPSExecutor extends Executor<WPSExecutionTask> {
 
-    private WPSComponent wpsComponent;
+    //private WPSComponent wpsComponent;
     private static ExecutionTaskProvider taskProvider;
+    private final Map<String, WebProcessingService> webServicesMap;
+    private final ExecutorService backgroundWorker;
 
     public static void setTaskProvider(ExecutionTaskProvider provider) { taskProvider = provider; }
+
+    public WPSExecutor() {
+        this.webServicesMap = new HashMap<>();
+        this.backgroundWorker = Executors.newSingleThreadExecutor();
+    }
 
     @Override
     public boolean supports(TaoComponent component) { return component instanceof WPSComponent; }
@@ -46,36 +55,52 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
         try {
             task.setResourceId(UUID.randomUUID().toString());
             logger.fine(String.format("Succesfully submitted task with id %s", task.getResourceId()));
-            wpsComponent = task.getComponent();
-            task.setExecutionNodeHostName(wpsComponent.getRemoteAddress());
+            final WPSComponent wpsComponent = task.getComponent();
+            final String address = wpsComponent.getRemoteAddress();
+            task.setExecutionNodeHostName(address);
             task.setStartTime(LocalDateTime.now());
             changeTaskStatus(task, ExecutionStatus.RUNNING);
             List<Variable> values = task.getInputParameterValues();
             if (values == null || values.size() == 0) {
                 throw new ExecutionException("No input data for the task");
             }
-            Map<String, Object> input = new HashMap<>();
+            final Map<String, Object> input = new HashMap<>();
             try {
-                input = JacksonUtil.fromString(values.get(0).getValue(), input.getClass());
-            } catch (IllegalArgumentException iex) {
-                input = null;
+                input.putAll(JacksonUtil.fromString(values.get(0).getValue(), input.getClass()));
+            } catch (IllegalArgumentException ignored) {
             }
-            if (input == null) {
+            if (input.size() == 0) {
                 throw new ExecutionException("Invalid input data for the task");
             }
-            URL url = new URL(wpsComponent.getRemoteAddress());
-            WebProcessingService wps = new WebProcessingService(url);
-            DescribeProcessRequest descRequest = wps.createDescribeProcessRequest();
+            final URL url = new URL(address);
+            final WebProcessingService wps = this.webServicesMap.computeIfAbsent(address,
+                                                 addr -> {
+                                                    try {
+                                                        return new WebProcessingService(url);
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    return null;
+                                                });
+            if (wps == null) {
+                throw new ExecutionException(String.format("Cannot create WPS client for address %s", address));
+            }
+            final DescribeProcessRequest descRequest = wps.createDescribeProcessRequest();
             descRequest.setIdentifier(wpsComponent.getCapabilityName());
-            DescribeProcessResponse descResponse = wps.issueRequest(descRequest);
-            ProcessDescriptionsType processDesc = descResponse.getProcessDesc();
-            ProcessDescriptionType pdt = (ProcessDescriptionType) processDesc.getProcessDescription().get(0);
-            WPSFactory wpsfactory = new WPSFactory(pdt, url);
-            Process process = wpsfactory.create();
-            process.execute(input, null);
+            final DescribeProcessResponse descResponse = wps.issueRequest(descRequest);
+            final ProcessDescriptionsType processDesc = descResponse.getProcessDesc();
+            final ProcessDescriptionType pdt = (ProcessDescriptionType) processDesc.getProcessDescription().get(0);
+            final WPSFactory wpsfactory = new WPSFactory(pdt, url);
+            final Process process = wpsfactory.create();
+            this.backgroundWorker.submit(() -> {
+                try {
+                    process.execute(input, null);
+                } catch (Exception inner) {
+                    onException(task, inner);
+                }
+            });
         } catch (Exception ex) {
-            logger.severe(ex.getMessage());
-            markTaskFinished(task, ExecutionStatus.FAILED);
+            onException(task, ex);
         }
     }
 
@@ -103,6 +128,8 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
         if (tasks != null) {
             for (ExecutionTask task : tasks) {
                 try {
+                    final WPSExecutionTask wpsTask = (WPSExecutionTask) task;
+                    final WPSComponent wpsComponent = wpsTask.getComponent();
                     WebProcessingService wps = new WebProcessingService(new URL(wpsComponent.getRemoteAddress()));
                     final ExecuteProcessResponse response = wps.issueStatusRequest(new URL(wpsComponent.getRemoteAddress() + "?service=WPS&request=GetStatus"));
                     // Checking for Exceptions and Status...
@@ -158,4 +185,8 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
     @Override
     public String defaultId() { return "WPSExecutor"; }
 
+    private void onException(WPSExecutionTask task, Exception ex) {
+        logger.severe(String.format("Task %s FAILED to execute. Reason: %s", task.getId(), ex.getMessage()));
+        markTaskFinished(task, ExecutionStatus.FAILED);
+    }
 }
