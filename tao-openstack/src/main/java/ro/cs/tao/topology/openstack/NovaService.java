@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
  * @author Cosmin Cara
  */
 public class NovaService implements NodeProvider {
+    private static final int WAIT_TIMEOUT = 1000 * 30;
     private final Logger logger = Logger.getLogger(NovaService.class.getName());
     private Server master;
     private ComputeService computeService;
@@ -125,8 +126,8 @@ public class NovaService implements NodeProvider {
             final List<String> networkIds = getNetworks();
             final String ssdVolumeName = node.getId() + "-ssd";
             final String hddVolumeName = node.getId() + "-hdd";
-            final int ssdSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_SIZE, "240"));
-            final int hddSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_SIZE, "0"));
+            final int ssdSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_SIZE, "480"));
+            final int hddSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_SIZE, "4096"));
             ssdVolume = createVolume(ssdVolumeName, ssdType, ssdSize);
             hddVolume = createVolume(hddVolumeName, hddType, hddSize > 0 ? hddSize : node.getFlavor().getDisk());
             final BlockDeviceMappingCreate sddCreate = Builders.blockDeviceMapping().uuid(ssdVolume.getId()).deviceName("/dev/sdb").bootIndex(0).build();
@@ -142,7 +143,7 @@ public class NovaService implements NodeProvider {
                     .blockDevice(hddCreate)
                     .addAdminPass(node.getUserPass())
                     .build();
-            server = serverService.boot(newServer);
+            server = serverService.bootAndWaitActive(newServer, WAIT_TIMEOUT);
             if (server == null) {
                 throw new TopologyException("OpenStack node was not created");
             }

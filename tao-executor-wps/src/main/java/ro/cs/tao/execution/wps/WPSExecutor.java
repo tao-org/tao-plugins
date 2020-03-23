@@ -54,7 +54,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
     public void execute(WPSExecutionTask task) throws ExecutionException {
         try {
             task.setResourceId(UUID.randomUUID().toString());
-            logger.fine(String.format("Succesfully submitted task with id %s", task.getResourceId()));
+            logger.fine(String.format("Successfully submitted task with id %s", task.getResourceId()));
             final WPSComponent wpsComponent = task.getComponent();
             final String address = wpsComponent.getRemoteAddress();
             task.setExecutionNodeHostName(address);
