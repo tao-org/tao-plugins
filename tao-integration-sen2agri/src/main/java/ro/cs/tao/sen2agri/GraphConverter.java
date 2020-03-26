@@ -151,7 +151,25 @@ public class GraphConverter implements ExternalGraphConverter {
                         node.setxCoord(coords[0]);
                         node.setyCoord(coords[1]);
                     }
+                    node.setPreserveOutput(graph.isKeepIntermediate());
                     workflowNodeProvider.update(node);
+                }
+                final String outputFolder = graph.getOutputFolder();
+                final String temporaryFolder = graph.getTemporaryFolder();
+                if (outputFolder != null && !outputFolder.equals(temporaryFolder)) {
+                    final Map<String, String> customValues = new HashMap<>();
+                    customValues.put("source", temporaryFolder);
+                    customValues.put("dest", outputFolder);
+                    Container container = dockerContainer != null ?
+                            containerProvider.getByName(dockerContainer) : containerProvider.getByName("sen2agri");
+                    final List<WorkflowNodeDescriptor> terminals = WorkflowUtilities.findTerminals(workflow.getNodes());
+                    if (terminals.size() > 0) {
+                        addUtilityNode(workflow,
+                                graph.isKeepIntermediate() ? "Copy" : "Move",
+                                container.getId(),
+                                customValues,
+                                terminals.get(0), Direction.RIGHT);
+                    }
                 }
             }
 
