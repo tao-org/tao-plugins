@@ -118,7 +118,7 @@ public class OTBImageInstaller extends BaseImageInstaller {
                         i++;
                     }
                     String[] tokens = template.split("\n");
-                    for (int j = 0; j < tokens.length; j++) {
+                    for (int j = 0; j < tokens.length - 1; j++) {
                         final int idx = j;
                         if ((targets != null && targets.stream().anyMatch(t -> t.getName().equals(tokens[idx].substring(1)))) ||
                                 (sources != null && sources.stream().anyMatch(s -> s.getName().equals(tokens[idx].substring(1))))) {
@@ -131,7 +131,7 @@ public class OTBImageInstaller extends BaseImageInstaller {
                     component.setVisibility(ProcessingComponentVisibility.SYSTEM);
                     component.setOwner(SystemPrincipal.instance().getName());
                     component.addTags(getOrCreateTag(container.getName()).getText());
-                    if (!this.componentProvider.exists(component.getId())) {
+                    if (this.componentProvider.get(component.getId(), component.getContainerId()) == null) {
                         this.componentProvider.save(component);
                     } else {
                         this.componentProvider.update(component);

@@ -94,7 +94,7 @@ public class PythonImageInstaller extends BaseImageInstaller {
                         }
                     });
                 }
-                if (!this.componentProvider.exists(component.getId())) {
+                if (this.componentProvider.get(component.getId(), component.getContainerId()) == null) {
                     this.componentProvider.save(component);
                 } else {
                     this.componentProvider.update(component);
