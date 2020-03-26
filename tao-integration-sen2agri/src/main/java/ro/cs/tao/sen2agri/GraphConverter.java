@@ -10,6 +10,7 @@ import ro.cs.tao.component.template.TemplateType;
 import ro.cs.tao.docker.Application;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.eodata.enums.DataFormat;
+import ro.cs.tao.execution.ExecutionConfiguration;
 import ro.cs.tao.persistence.*;
 import ro.cs.tao.sen2agri.model.Graph;
 import ro.cs.tao.sen2agri.model.Step;
@@ -18,6 +19,7 @@ import ro.cs.tao.services.base.WorkflowBuilderBase;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 import ro.cs.tao.services.bridge.spring.SpringContextBridgedServices;
 import ro.cs.tao.services.utils.WorkflowUtilities;
+import ro.cs.tao.topology.docker.BaseImageInstaller;
 import ro.cs.tao.workflow.ExternalGraphConverter;
 import ro.cs.tao.workflow.WorkflowDescriptor;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
@@ -25,6 +27,7 @@ import ro.cs.tao.workflow.WorkflowNodeGroupDescriptor;
 import ro.cs.tao.workflow.enums.ComponentType;
 import ro.cs.tao.workflow.enums.TransitionBehavior;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -116,8 +119,18 @@ public class GraphConverter implements ExternalGraphConverter {
                 //final Map<Integer, Task> mappedTasks = tasks.stream().collect(Collectors.toMap(Task::getId, Function.identity()));
                 final Map<Integer, WorkflowNodeDescriptor> mappedNodes = new HashMap<>();
                 tasks.sort(Comparator.comparingInt(Task::getId));
+                Map<String, String> replacements = new HashMap<>();
+                final String outputFolder = graph.getOutputFolder();
+                final String temporaryFolder = graph.getTemporaryFolder();
+                final String tempMount = ExecutionConfiguration.getDockerNodeTempMount();
+                final boolean shouldMoveOrCopy = outputFolder != null && !outputFolder.equals(temporaryFolder);
+                if (shouldMoveOrCopy && temporaryFolder != null) {
+                    if (tempMount != null) {
+                        replacements.put(temporaryFolder, tempMount.substring(tempMount.indexOf(":") + 1));
+                    }
+                }
                 for (Task task : tasks) {
-                    final WorkflowNodeDescriptor node = convert(workflow, task);
+                final WorkflowNodeDescriptor node = convert(workflow, task, replacements);
                     mappedNodes.put(task.getId(), node);
                     workflow.addNode(node);
                     final List<Integer> precedingTasksIds = task.getPrecedingTasksIds();
@@ -154,11 +167,9 @@ public class GraphConverter implements ExternalGraphConverter {
                     node.setPreserveOutput(graph.isKeepIntermediate());
                     workflowNodeProvider.update(node);
                 }
-                final String outputFolder = graph.getOutputFolder();
-                final String temporaryFolder = graph.getTemporaryFolder();
-                if (outputFolder != null && !outputFolder.equals(temporaryFolder)) {
+                if (shouldMoveOrCopy) {
                     final Map<String, String> customValues = new HashMap<>();
-                    customValues.put("source", temporaryFolder);
+                    customValues.put("source", replacements.get(temporaryFolder));
                     customValues.put("dest", outputFolder);
                     Container container = dockerContainer != null ?
                             containerProvider.getByName(dockerContainer) : containerProvider.getByName("sen2agri");
@@ -207,7 +218,7 @@ public class GraphConverter implements ExternalGraphConverter {
         }.createWorkflowDescriptor();
     }
 
-    private WorkflowNodeDescriptor convert(WorkflowDescriptor parent, Task task) throws PersistenceException {
+    private WorkflowNodeDescriptor convert(WorkflowDescriptor parent, Task task, Map<String, String> replacements) throws PersistenceException {
         if (task == null) {
             throw new IllegalArgumentException("[task] null");
         }
@@ -218,7 +229,7 @@ public class GraphConverter implements ExternalGraphConverter {
         List<WorkflowNodeDescriptor> nodes = new ArrayList<>();
         WorkflowNodeDescriptor node;
         for (Step step : steps) {
-            ProcessingComponent component = convert(step);
+            ProcessingComponent component = convert(step, replacements);
             node = new WorkflowNodeDescriptor();
             node.setWorkflow(parent);
             node.setName(component.getLabel());
@@ -273,7 +284,7 @@ public class GraphConverter implements ExternalGraphConverter {
         return workflowNodeProvider.update(node);
     }
 
-    private ProcessingComponent convert(Step step) throws PersistenceException {
+    private ProcessingComponent convert(Step step, Map<String, String> replacements) throws PersistenceException {
         if (step == null) {
             throw new IllegalArgumentException("[step] null");
         }
@@ -291,6 +302,15 @@ public class GraphConverter implements ExternalGraphConverter {
             container.setName("sen2agri");
             container.setDescription("Sen2Agri mock container");
             container.setTag("sen2agri");
+            try {
+                for (Application app : BaseImageInstaller.readCommonContainerDescriptor().getApplications()) {
+                    if ("Copy".equals(app.getName()) || "Move".equals(app.getName()) || "Delete".equals(app.getName())) {
+                        container.addApplication(app);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         Application application = container.getApplications().stream().filter(a -> a.getName().equals(name)).findFirst().orElse(null);
         if (application == null) {
@@ -309,7 +329,21 @@ public class GraphConverter implements ExternalGraphConverter {
                 containerProvider.update(container);
             }
         }
-        ProcessingComponent component = componentProvider.get(name);
+        if (notExists) {
+            try {
+                final ProcessingComponent[] components = BaseImageInstaller.readCommonComponentsDescriptors();
+                for (ProcessingComponent component : components) {
+                    component.setId(UUID.randomUUID().toString());
+                    component.getSources().forEach(s -> s.setParentId(component.getId()));
+                    component.getTargets().forEach(t -> t.setParentId(component.getId()));
+                    component.setContainerId(container.getId());
+                    componentProvider.save(component);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ProcessingComponent component = componentProvider.get(name, container.getId());
         boolean collidedWithExisting = component != null && !component.getContainerId().equals(container.getId());
         if (collidedWithExisting) {
             component = null;
@@ -337,31 +371,55 @@ public class GraphConverter implements ExternalGraphConverter {
             component.setTemplateType(TemplateType.VELOCITY);
             this.values.put(component.getId(), new HashMap<>());
             ParameterDescriptor parameter = null;
+            boolean prevMinus = false;
             for (int i = 1; i < arguments.size(); i++) {
-                final String arg = arguments.get(i);
+                String arg = arguments.get(i);
                 if (arg.startsWith("-")) {
-                    parameter = new ParameterDescriptor();
-                    parameter.setDataType(String.class);
-                    parameter.setId(StringUtils.stripStart(arg, "-"));
-                    parameter.setDescription(parameter.getId());
-                    parameter.setName(parameter.getId());
-                    parameter.setLabel(parameter.getId());
-                    parameter.setType(ParameterType.REGULAR);
-                    templateBuilder.append(arg).append("\n");
+                    if (!prevMinus) {
+                        parameter = new ParameterDescriptor();
+                        parameter.setDataType(String.class);
+                        parameter.setId(StringUtils.stripStart(arg, "-"));
+                        parameter.setDescription(parameter.getId());
+                        parameter.setName(parameter.getId());
+                        parameter.setLabel(parameter.getId());
+                        parameter.setType(ParameterType.REGULAR);
+                        templateBuilder.append(arg).append("\n");
+                        prevMinus = true;
+                    } else {
+                        component.addParameter(parameter);
+                        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+                            arg = arg.replace(entry.getKey(), entry.getValue());
+                        }
+                        this.values.get(component.getId()).put(parameter.getId(), arg);
+                        templateBuilder.append("$").append(parameter.getId()).append("\n");
+                        parameter = null;
+                        prevMinus = false;
+                    }
                 } else {
                     if (parameter == null) {
-                        parameter = new ParameterDescriptor();
+                        // unnamed parameter
+                        /*parameter = new ParameterDescriptor();
                         parameter.setDataType(String.class);
                         parameter.setId(arg);
                         parameter.setDescription(parameter.getId());
                         parameter.setName(parameter.getId());
                         parameter.setLabel(parameter.getId());
-                        parameter.setType(ParameterType.REGULAR);
+                        parameter.setType(ParameterType.REGULAR);*/
+                        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+                            arg = arg.replace(entry.getKey(), entry.getValue());
+                        }
+                        templateBuilder.append(arg).append("\n");
+                        prevMinus = false;
+                        continue;
                     }
                     component.addParameter(parameter);
+                    for (Map.Entry<String, String> entry : replacements.entrySet()) {
+                        arg = arg.replace(entry.getKey(), entry.getValue());
+                    }
                     this.values.get(component.getId()).put(parameter.getId(), arg);
-                    templateBuilder.append("$").append(arg).append("\n");
+                    templateBuilder.append("$").append(parameter.getId()).append("\n");
                     parameter = null;
+                    prevMinus = false;
                 }
             }
             component.setTemplateContents(templateBuilder.toString());
