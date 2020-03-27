@@ -175,11 +175,16 @@ public class GraphConverter implements ExternalGraphConverter {
                             containerProvider.getByName(dockerContainer) : containerProvider.getByName("sen2agri");
                     final List<WorkflowNodeDescriptor> terminals = WorkflowUtilities.findTerminals(workflow.getNodes());
                     if (terminals.size() > 0) {
-                        addUtilityNode(workflow,
-                                graph.isKeepIntermediate() ? "Copy" : "Move",
-                                container.getId(),
-                                customValues,
-                                terminals.get(0), Direction.RIGHT);
+                        final WorkflowNodeDescriptor utilityNode = addUtilityNode(workflow,
+                                                                                  graph.isKeepIntermediate() ? "Copy" : "Move",
+                                                                                  container.getId(),
+                                                                                  customValues,
+                                                                                  terminals.get(0), Direction.RIGHT);
+                        for (int i = 1; i < terminals.size(); i++) {
+                            final WorkflowNodeDescriptor leaf = terminals.get(i);
+                            final ProcessingComponent component = componentProvider.get(utilityNode.getComponentId(), container.getId());
+                            addLink(leaf, TARGET_NAME, utilityNode, component.getSources().get(0).getName());
+                        }
                     }
                 }
             }
