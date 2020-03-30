@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class GraphConverter implements ExternalGraphConverter {
+public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
     private static final String WORKFLOW_NAME = "Sen2Agri-Workflow-%d";
     private static final String SOURCE_NAME = "generated_source";
     private static final String TARGET_NAME = "generated_target";
@@ -50,7 +50,7 @@ public class GraphConverter implements ExternalGraphConverter {
         groupProvider = services.getService(GroupComponentProvider.class);
     }
 
-    public GraphConverter() {
+    public Sen2AgriExecutionGraphConverter() {
         if (containerProvider == null) {
             throw new IllegalArgumentException("[containerProvider] null");
         }
