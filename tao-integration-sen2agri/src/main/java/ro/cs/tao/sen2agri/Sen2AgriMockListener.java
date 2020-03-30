@@ -37,13 +37,14 @@ public class Sen2AgriMockListener {
     }
 
     private void onConnection(Socket socket) {
+        final StringBuilder builder = new StringBuilder();
         try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             String line;
-            System.out.print(getClass().getSimpleName() + " received: ");
             while ((line = in.readLine()) != null) {
-                System.out.print(line);
+                builder.append(line).append(" ");
             }
-            System.out.println();
+            System.out.println(getClass().getSimpleName() + " received: " + builder.toString());
+            builder.setLength(0);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
