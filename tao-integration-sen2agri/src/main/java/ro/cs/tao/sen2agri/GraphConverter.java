@@ -120,8 +120,13 @@ public class GraphConverter implements ExternalGraphConverter {
                 Map<String, String> replacements = new HashMap<>();
                 final String outputFolder = graph.getOutputFolder();
                 final String temporaryFolder = graph.getTemporaryFolder();
+                final String configFolder = graph.getConfigurationFolder();
                 final String tempMount = ExecutionConfiguration.getDockerNodeTempMount();
+                final String cfgMount = ExecutionConfiguration.getDockerNodeConfigMount();
                 final boolean shouldMoveOrCopy = outputFolder != null && !outputFolder.equals(temporaryFolder);
+                if (cfgMount != null) {
+                    replacements.put(configFolder, cfgMount.substring((cfgMount.indexOf(":") + 1)));
+                }
                 if (shouldMoveOrCopy && temporaryFolder != null) {
                     if (tempMount != null) {
                         replacements.put(temporaryFolder, tempMount.substring(tempMount.indexOf(":") + 1));

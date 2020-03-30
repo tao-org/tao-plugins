@@ -6,6 +6,7 @@ public class Graph {
     private int jobId;
     private String outputFolder;
     private String temporaryFolder;
+    private String configurationFolder;
     private boolean keepIntermediate;
     private List<Task> tasks;
 
@@ -32,6 +33,10 @@ public class Graph {
     public void setTemporaryFolder(String temporaryFolder) {
         this.temporaryFolder = temporaryFolder;
     }
+
+    public String getConfigurationFolder() { return configurationFolder; }
+
+    public void setConfigurationFolder(String configurationFolder) { this.configurationFolder = configurationFolder; }
 
     public boolean isKeepIntermediate() {
         return keepIntermediate;
