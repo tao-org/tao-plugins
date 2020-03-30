@@ -2,6 +2,7 @@ package ro.cs.tao.sen2agri;
 
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
+import ro.cs.tao.execution.ExecutionConfiguration;
 import ro.cs.tao.execution.model.ExternalTaskListener;
 import ro.cs.tao.execution.model.ProcessingExecutionTask;
 import ro.cs.tao.persistence.WorkflowNodeProvider;
@@ -26,12 +27,20 @@ public class Sen2AgriTaskNotifier implements ExternalTaskListener {
     public Sen2AgriTaskNotifier() {
         final ConfigurationProvider cfgManager = ConfigurationManager.getInstance();
         hostName = cfgManager.getValue(Constants.HOSTNAME);
-        port = Integer.parseInt(cfgManager.getValue(Constants.PORT, "8088"));
-        enabled = hostName != null;
+        port = Integer.parseInt(cfgManager.getValue(Constants.PORT, "-1"));
+        enabled = hostName != null && port != -1;
         logger = Logger.getLogger(Sen2AgriTaskNotifier.class.getName());
         nodeProvider = SpringContextBridge.services().getService(WorkflowNodeProvider.class);
         if (!enabled) {
-            logger.severe("Sen2Agri configuration not found");
+            logger.severe("Sen2Agri callback configuration not found");
+        } else {
+            if (ExecutionConfiguration.developmentModeEnabled()) {
+                try {
+                    new Sen2AgriMockListener(port).start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
