@@ -375,10 +375,17 @@ public class GraphConverter implements ExternalGraphConverter {
             component.setTransient(true);
             //this.values.put(component.getId(), new HashMap<>());
             final StringBuilder templateBuilder = new StringBuilder();
+            String arg;
             for (int i = 1; i < arguments.size(); i++) {
-                templateBuilder.append(arguments.get(i)).append("\n");
+                arg = arguments.get(i);
+                for (Map.Entry<String, String> entry : replacements.entrySet()) {
+                    arg = arg.replace(entry.getKey(), entry.getValue());
+                }
+                templateBuilder.append(arg).append("\n");
             }
-            templateBuilder.setLength(templateBuilder.length() - 1);
+            if (templateBuilder.length() > 1) {
+                templateBuilder.setLength(templateBuilder.length() - 1);
+            }
             /*ParameterDescriptor parameter = null;
             boolean prevMinus = false;
             for (int i = 1; i < arguments.size(); i++) {
