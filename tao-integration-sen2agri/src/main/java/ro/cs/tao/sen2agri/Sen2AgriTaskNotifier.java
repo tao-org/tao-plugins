@@ -37,6 +37,7 @@ public class Sen2AgriTaskNotifier implements ExternalTaskListener {
             if (ExecutionConfiguration.developmentModeEnabled()) {
                 try {
                     new Sen2AgriMockListener(port).start();
+                    logger.fine(String.format("Started Sen2Agri callback listener on port %d", port));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -92,23 +93,21 @@ public class Sen2AgriTaskNotifier implements ExternalTaskListener {
     public void onCompleted(ProcessingExecutionTask task, String processOutput) {
         if (enabled) {
             final List<ParameterValue> info = nodeProvider.get(task.getWorkflowNodeId()).getAdditionalInfo();
-            if (info == null) {
-                throw new IllegalArgumentException("Node doesn't contain any additional info");
-            }
-            final int taskId = info.stream().filter(p -> "externalTaskId".equals(p.getParameterName()))
-                    .mapToInt(value -> Integer.parseInt(value.getParameterValue())).findFirst().orElse(0);
-            if (taskId == 0) {
-                throw new IllegalArgumentException("Node doesn't contain mapped external id");
-            }
-            final LocalDateTime startTime = task.getStartTime();
-            Duration duration = Duration.between(startTime, task.getEndTime());
-            try (Socket socket = createSocket()) {
-                final TaskMessage message = TaskMessage.createEndMessage(taskId, task.getComponent().getId(),
-                                                                         task.getInstanceId(), processOutput, 0,
-                                                                         duration.toMillis());
-                socket.getOutputStream().write(message.toString().getBytes());
-            } catch (IOException e) {
-                logger.severe(e.getMessage());
+            if (info != null) {
+                final int taskId = info.stream().filter(p -> "externalTaskId".equals(p.getParameterName()))
+                        .mapToInt(value -> Integer.parseInt(value.getParameterValue())).findFirst().orElse(0);
+                if (taskId != 0) {
+                    final LocalDateTime startTime = task.getStartTime();
+                    Duration duration = Duration.between(startTime, task.getEndTime());
+                    try (Socket socket = createSocket()) {
+                        final TaskMessage message = TaskMessage.createEndMessage(taskId, task.getComponent().getId(),
+                                                                                 task.getInstanceId(), processOutput, 0,
+                                                                                 duration.toMillis());
+                        socket.getOutputStream().write(message.toString().getBytes());
+                    } catch (IOException e) {
+                        logger.severe(e.getMessage());
+                    }
+                }
             }
         }
     }

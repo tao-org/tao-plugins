@@ -133,7 +133,7 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
                     }
                 }
                 for (Task task : tasks) {
-                final WorkflowNodeDescriptor node = convert(workflow, task, replacements);
+                    final WorkflowNodeDescriptor node = convert(workflow, task, replacements);
                     mappedNodes.put(task.getId(), node);
                     workflow.addNode(node);
                     final List<Integer> precedingTasksIds = task.getPrecedingTasksIds();
