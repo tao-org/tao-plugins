@@ -1,9 +1,7 @@
 package ro.cs.tao.sen2agri;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.StringUtils;
 import ro.cs.tao.component.*;
-import ro.cs.tao.component.enums.ParameterType;
 import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.component.template.TemplateType;
@@ -41,7 +39,7 @@ public class GraphConverter implements ExternalGraphConverter {
     private static final ProcessingComponentProvider componentProvider;
     private static final GroupComponentProvider groupProvider;
     private final Map<String, TaoComponent> componentMap;
-    private final Map<String, Map<String, String>> values;
+    //private final Map<String, Map<String, String>> values;
     private String dockerContainer;
 
     static {
@@ -65,7 +63,7 @@ public class GraphConverter implements ExternalGraphConverter {
         if (groupProvider == null) {
             throw new IllegalArgumentException("[groupProvider] null");
         }
-        this.values = new HashMap<>();
+        //this.values = new HashMap<>();
         this.componentMap = new HashMap<>();
     }
 
@@ -73,7 +71,7 @@ public class GraphConverter implements ExternalGraphConverter {
     public WorkflowDescriptor convert(String jsonGraph, String container) throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
         final Graph graph = mapper.readerFor(Graph.class).readValue(jsonGraph);
-        this.values.clear();
+        //this.values.clear();
         this.dockerContainer = container;
         return new WorkflowBuilderBase() {
             @Override
@@ -238,10 +236,10 @@ public class GraphConverter implements ExternalGraphConverter {
             node.setComponentType(ComponentType.PROCESSING);
             node.setPreserveOutput(true);
             node.setCreated(LocalDateTime.now());
-            final Map<String, String> values = this.values.get(component.getId());
+            /*final Map<String, String> values = this.values.get(component.getId());
             for (Map.Entry<String, String> entry : values.entrySet()) {
                 node.addCustomValue(entry.getKey(), entry.getValue());
-            }
+            }*/
             node.addInfo("externalTaskId", String.valueOf(task.getId()));
             node = workflowNodeProvider.save(node);
             nodes.add(node);
@@ -337,6 +335,7 @@ public class GraphConverter implements ExternalGraphConverter {
                     component.getSources().forEach(s -> s.setParentId(component.getId()));
                     component.getTargets().forEach(t -> t.setParentId(component.getId()));
                     component.setContainerId(container.getId());
+                    component.setTransient(true);
                     componentProvider.save(component);
                 }
             } catch (IOException e) {
@@ -350,7 +349,6 @@ public class GraphConverter implements ExternalGraphConverter {
         }
         if (component == null) {
             // Next create the component
-            final StringBuilder templateBuilder = new StringBuilder();
             component = new ProcessingComponent();
             component.setId(collidedWithExisting ? name + "-sen2agri" : name);
             component.setLabel(name);
@@ -369,8 +367,14 @@ public class GraphConverter implements ExternalGraphConverter {
             }
             component.setFileLocation(application.getPath());
             component.setTemplateType(TemplateType.VELOCITY);
-            this.values.put(component.getId(), new HashMap<>());
-            ParameterDescriptor parameter = null;
+            component.setTransient(true);
+            //this.values.put(component.getId(), new HashMap<>());
+            final StringBuilder templateBuilder = new StringBuilder();
+            for (int i = 1; i < arguments.size(); i++) {
+                templateBuilder.append(arguments.get(i)).append("\n");
+            }
+            templateBuilder.setLength(templateBuilder.length() - 1);
+            /*ParameterDescriptor parameter = null;
             boolean prevMinus = false;
             for (int i = 1; i < arguments.size(); i++) {
                 String arg = arguments.get(i);
@@ -398,13 +402,13 @@ public class GraphConverter implements ExternalGraphConverter {
                 } else {
                     if (parameter == null) {
                         // unnamed parameter
-                        /*parameter = new ParameterDescriptor();
+                        *//*parameter = new ParameterDescriptor();
                         parameter.setDataType(String.class);
                         parameter.setId(arg);
                         parameter.setDescription(parameter.getId());
                         parameter.setName(parameter.getId());
                         parameter.setLabel(parameter.getId());
-                        parameter.setType(ParameterType.REGULAR);*/
+                        parameter.setType(ParameterType.REGULAR);*//*
                         for (Map.Entry<String, String> entry : replacements.entrySet()) {
                             arg = arg.replace(entry.getKey(), entry.getValue());
                         }
@@ -421,7 +425,7 @@ public class GraphConverter implements ExternalGraphConverter {
                     parameter = null;
                     prevMinus = false;
                 }
-            }
+            }*/
             component.setTemplateContents(templateBuilder.toString());
             component.addSource(createSource(component.getId()));
             component.addTarget(createTarget(component.getId()));
