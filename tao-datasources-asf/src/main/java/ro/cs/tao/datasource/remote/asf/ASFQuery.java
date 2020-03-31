@@ -64,6 +64,9 @@ public class ASFQuery extends DataQuery {
         return "ASFQuery";
     }
 
+    @Override
+    public boolean supportsPaging() { return false; }
+
     protected List<EOProduct> executeImpl() {
         List<EOProduct> results = new ArrayList<>();
         List<NameValuePair> params = new ArrayList<>();

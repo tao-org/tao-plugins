@@ -20,11 +20,6 @@
             <artifactId>tao-data-model</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>ro.cs.tao</groupId>
-            <artifactId>tao-data-sources</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
     <build>

@@ -1,6 +1,6 @@
 package ro.cs.tao.products.maccs;
 
-import ro.cs.tao.datasource.remote.ProductHelper;
+import ro.cs.tao.eodata.util.ProductHelper;
 
 import java.nio.file.Path;
 import java.util.logging.Logger;

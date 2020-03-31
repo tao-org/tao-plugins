@@ -15,8 +15,7 @@
  */
 package ro.cs.tao.products.landsat;
 
-import ro.cs.tao.datasource.remote.DownloadStrategy;
-import ro.cs.tao.datasource.remote.ProductHelper;
+import ro.cs.tao.eodata.util.ProductHelper;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -93,12 +92,12 @@ public class Landsat8ProductHelper extends ProductHelper {
     public String getProductRelativePath() {
         StringBuilder buffer = new StringBuilder();
         if (!this.oldFormat) {
-            buffer.append("c1").append(DownloadStrategy.URL_SEPARATOR);
+            buffer.append("c1").append(URL_SEPARATOR);
         }
-        buffer.append("L8").append(DownloadStrategy.URL_SEPARATOR);
-        buffer.append(getPath()).append(DownloadStrategy.URL_SEPARATOR);
-        buffer.append(getRow()).append(DownloadStrategy.URL_SEPARATOR);
-        buffer.append(this.name).append(DownloadStrategy.URL_SEPARATOR);
+        buffer.append("L8").append(URL_SEPARATOR);
+        buffer.append(getPath()).append(URL_SEPARATOR);
+        buffer.append(getRow()).append(URL_SEPARATOR);
+        buffer.append(this.name).append(URL_SEPARATOR);
         return buffer.toString();
     }
 
