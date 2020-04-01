@@ -25,10 +25,10 @@ import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
-import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.aws.internal.AwsResult;
 import ro.cs.tao.datasource.remote.aws.internal.IntermediateParser;
 import ro.cs.tao.datasource.remote.aws.internal.ManifestSizeParser;
+import ro.cs.tao.datasource.util.Constants;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
@@ -163,13 +163,13 @@ class Sentinel2Query extends DataQuery {
                 String latBand = tile.substring(2, 3);
                 String square = tile.substring(3, 5);
                 String tileUrl = this.source.getConnectionString() + utmCode +
-                        DownloadStrategy.URL_SEPARATOR + latBand + DownloadStrategy.URL_SEPARATOR +
-                        square + DownloadStrategy.URL_SEPARATOR;
+                        Constants.URL_SEPARATOR + latBand + Constants.URL_SEPARATOR +
+                        square + Constants.URL_SEPARATOR;
                 for (int year = yearStart; year <= yearEnd; year++) {
                     if (this.limit > 0 && this.limit <= results.size()) {
                         break;
                     }
-                    String yearUrl = tileUrl + String.valueOf(year) + DownloadStrategy.URL_SEPARATOR;
+                    String yearUrl = tileUrl + String.valueOf(year) + Constants.URL_SEPARATOR;
                     AwsResult yearResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, yearUrl));
                     if (yearResult.getCommonPrefixes() != null) {
                         Set<Integer> months = yearResult.getCommonPrefixes().stream()
@@ -184,7 +184,7 @@ class Sentinel2Query extends DataQuery {
                                 break;
                             }
                             if (months.contains(month)) {
-                                String monthUrl = yearUrl + month + DownloadStrategy.URL_SEPARATOR;
+                                String monthUrl = yearUrl + month + Constants.URL_SEPARATOR;
                                 AwsResult monthResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, monthUrl));
                                 if (monthResult.getCommonPrefixes() != null) {
                                     Set<Integer> days = monthResult.getCommonPrefixes().stream()
@@ -198,7 +198,7 @@ class Sentinel2Query extends DataQuery {
                                     int dayE = month == monthE ? dayEnd : calendar.get(Calendar.DAY_OF_MONTH);
                                     for (int day = dayS; day <= dayE; day++) {
                                         if (days.contains(day)) {
-                                            String dayUrl = monthUrl + String.valueOf(day) + DownloadStrategy.URL_SEPARATOR;
+                                            String dayUrl = monthUrl + String.valueOf(day) + Constants.URL_SEPARATOR;
                                             AwsResult dayResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, dayUrl));
                                             if (dayResult.getCommonPrefixes() != null) {
                                                 Set<Integer> sequences = dayResult.getCommonPrefixes().stream()
@@ -208,7 +208,7 @@ class Sentinel2Query extends DataQuery {
                                                         }).collect(Collectors.toSet());
                                                 for (int sequence : sequences) {
                                                     String jsonTile = dayUrl + String.valueOf(sequence) +
-                                                            DownloadStrategy.URL_SEPARATOR + "tileInfo.json";
+                                                            Constants.URL_SEPARATOR + "tileInfo.json";
                                                     jsonTile = jsonTile.replace(S2_SEARCH_URL_SUFFIX, "");
                                                     EOProduct product = new EOProduct();
                                                     product.setProductType("Sentinel2");
@@ -221,11 +221,11 @@ class Sentinel2Query extends DataQuery {
                                                                                      clouds));
                                                     } else {
                                                         String jsonProduct = dayUrl + String.valueOf(sequence) +
-                                                                DownloadStrategy.URL_SEPARATOR + "productInfo.json";
+                                                                Constants.URL_SEPARATOR + "productInfo.json";
                                                         jsonProduct = jsonProduct.replace("?delimiter=/&prefix=", "");
                                                         parseProductJson(jsonProduct, product);
                                                         String manifest = product.getLocation() +
-                                                                DownloadStrategy.URL_SEPARATOR + "manifest.safe";
+                                                                Constants.URL_SEPARATOR + "manifest.safe";
                                                         parseManifest(manifest, product);
                                                         if (relativeOrbit == 0 ||
                                                                 product.getName().contains("_R" + String.format("%03d", relativeOrbit))) {
@@ -345,13 +345,13 @@ class Sentinel2Query extends DataQuery {
                 String latBand = tile.substring(2, 3);
                 String square = tile.substring(3, 5);
                 String tileUrl = this.source.getConnectionString() + utmCode +
-                        DownloadStrategy.URL_SEPARATOR + latBand + DownloadStrategy.URL_SEPARATOR +
-                        square + DownloadStrategy.URL_SEPARATOR;
+                        Constants.URL_SEPARATOR + latBand + Constants.URL_SEPARATOR +
+                        square + Constants.URL_SEPARATOR;
                 for (int year = yearStart; year <= yearEnd; year++) {
                     if (this.limit > 0 && this.limit <= count) {
                         break;
                     }
-                    String yearUrl = tileUrl + String.valueOf(year) + DownloadStrategy.URL_SEPARATOR;
+                    String yearUrl = tileUrl + String.valueOf(year) + Constants.URL_SEPARATOR;
                     AwsResult yearResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, yearUrl));
                     if (yearResult.getCommonPrefixes() != null) {
                         Set<Integer> months = yearResult.getCommonPrefixes().stream()
@@ -366,7 +366,7 @@ class Sentinel2Query extends DataQuery {
                                 break;
                             }
                             if (months.contains(month)) {
-                                String monthUrl = yearUrl + String.valueOf(month) + DownloadStrategy.URL_SEPARATOR;
+                                String monthUrl = yearUrl + String.valueOf(month) + Constants.URL_SEPARATOR;
                                 AwsResult monthResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, monthUrl));
                                 if (monthResult.getCommonPrefixes() != null) {
                                     Set<Integer> days = monthResult.getCommonPrefixes().stream()
@@ -380,7 +380,7 @@ class Sentinel2Query extends DataQuery {
                                     int dayE = month == monthE ? dayEnd : calendar.get(Calendar.DAY_OF_MONTH);
                                     for (int day = dayS; day <= dayE; day++) {
                                         if (days.contains(day)) {
-                                            String dayUrl = monthUrl + String.valueOf(day) + DownloadStrategy.URL_SEPARATOR;
+                                            String dayUrl = monthUrl + String.valueOf(day) + Constants.URL_SEPARATOR;
                                             AwsResult dayResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, dayUrl));
                                             if (dayResult.getCommonPrefixes() != null) {
                                                 count += dayResult.getCommonPrefixes().stream()

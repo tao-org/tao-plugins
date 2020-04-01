@@ -18,6 +18,7 @@ package ro.cs.tao.datasource.remote.mundi.sentinel2;
 import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.mundi.MundiDataSource;
+import ro.cs.tao.datasource.util.Constants;
 import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.L1CProductHelper;
@@ -374,7 +375,7 @@ public class Sentinel2DownloadStrategy extends DownloadStrategy {
                                 int firstTagCloseIdx = line.indexOf(">") + 1;
                                 int secondTagBeginIdx = line.indexOf("<", firstTagCloseIdx);
                                 String maskFileName = line.substring(firstTagCloseIdx, secondTagBeginIdx);
-                                maskFileName = maskFileName.substring(maskFileName.lastIndexOf(URL_SEPARATOR) + 1);
+                                maskFileName = maskFileName.substring(maskFileName.lastIndexOf(Constants.URL_SEPARATOR) + 1);
                                 downloadFile(pathBuilder.root(tileUrl)
                                                      .node(FOLDER_QI_DATA)
                                                      .node(maskFileName)

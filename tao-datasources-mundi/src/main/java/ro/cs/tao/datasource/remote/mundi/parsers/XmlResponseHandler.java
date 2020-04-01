@@ -2,9 +2,9 @@ package ro.cs.tao.datasource.remote.mundi.parsers;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import ro.cs.tao.datasource.remote.ProductHelper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.eodata.util.ProductHelper;
 
 import java.net.URI;
 import java.net.URISyntaxException;

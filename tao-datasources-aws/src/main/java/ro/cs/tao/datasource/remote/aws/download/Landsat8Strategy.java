@@ -15,8 +15,8 @@
  */
 package ro.cs.tao.datasource.remote.aws.download;
 
-import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.aws.AWSDataSource;
+import ro.cs.tao.datasource.util.Constants;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.landsat.Landsat8ProductHelper;
 import ro.cs.tao.utils.FileUtilities;
@@ -106,7 +106,7 @@ public class Landsat8Strategy extends AWSStrategy {
                 String bandFileName = productName + suffix;
                 currentStep = "Band " + bandFileName;
                 try {
-                    String bandFileUrl = getProductUrl(currentProduct) + URL_SEPARATOR + bandFileName;
+                    String bandFileUrl = getProductUrl(currentProduct) + Constants.URL_SEPARATOR + bandFileName;
                     Path path = rootPath.resolve(bandFileName);
                     logger.fine(String.format("Downloading band raster %s from %s", path, bandFileUrl));
                     downloadFile(bandFileUrl, path);
@@ -117,7 +117,7 @@ public class Landsat8Strategy extends AWSStrategy {
             if ("coll".equals(helper.getVersion())) {
                 String fileName = productName + "_ANG.txt";
                 try {
-                    String fileUrl = getProductUrl(currentProduct) + URL_SEPARATOR + fileName;
+                    String fileUrl = getProductUrl(currentProduct) + Constants.URL_SEPARATOR + fileName;
                     Path path = rootPath.resolve(fileName);
                     logger.fine(String.format("Downloading band raster %s from %s", path, fileUrl));
                     downloadFile(fileUrl, path);
@@ -146,6 +146,6 @@ public class Landsat8Strategy extends AWSStrategy {
 
     @Override
     protected String getMetadataUrl(EOProduct descriptor) {
-        return getProductUrl(descriptor) + DownloadStrategy.URL_SEPARATOR + descriptor.getName() + "_MTL.txt";
+        return getProductUrl(descriptor) + Constants.URL_SEPARATOR + descriptor.getName() + "_MTL.txt";
     }
 }

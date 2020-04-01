@@ -17,6 +17,7 @@ package ro.cs.tao.datasource.remote.aws.download;
 
 import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.aws.AWSDataSource;
+import ro.cs.tao.datasource.util.Constants;
 import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
@@ -203,7 +204,7 @@ public class Sentinel2Strategy extends AWSStrategy {
                         downloadFile(tileUrl + "/metadata.xml", tileMetadataPath);
                         for (String bandFileName : l1cBandFiles) {
                             try {
-                                String bandFileUrl = tileUrl + URL_SEPARATOR + bandFileName;
+                                String bandFileUrl = tileUrl + Constants.URL_SEPARATOR + bandFileName;
                                 Path path = imgData.resolve(helper.getBandFileName(tileName, bandFileName));
                                 logger.fine(String.format("Downloading band raster %s from %s", path, bandFileName));
                                 downloadFile(bandFileUrl, path);
@@ -225,7 +226,7 @@ public class Sentinel2Strategy extends AWSStrategy {
                                 remoteName = tokens[2] + NAME_SEPARATOR + tokens[3] + NAME_SEPARATOR + tokens[9] + ".gml";
                                 path = qiData.resolve(maskFileName);
                             } else {
-                                remoteName = maskFileName.substring(maskFileName.lastIndexOf(URL_SEPARATOR) + 1);
+                                remoteName = maskFileName.substring(maskFileName.lastIndexOf(Constants.URL_SEPARATOR) + 1);
                                 path = rootPath.resolve(maskFileName);
                             }
 
@@ -405,7 +406,7 @@ public class Sentinel2Strategy extends AWSStrategy {
                                 remoteName = tokens[2] + NAME_SEPARATOR + tokens[3] + NAME_SEPARATOR + tokens[9] + ".gml";
                                 path = qiData.resolve(maskFileName);
                             } else {
-                                remoteName = maskFileName.substring(maskFileName.lastIndexOf(URL_SEPARATOR) + 1);
+                                remoteName = maskFileName.substring(maskFileName.lastIndexOf(Constants.URL_SEPARATOR) + 1);
                                 path = destinationPath.resolve(maskFileName);
                             }
 
@@ -532,7 +533,7 @@ public class Sentinel2Strategy extends AWSStrategy {
         JsonArray tiles = productInfo.getJsonArray("tiles");
         for (JsonObject result : tiles.getValuesAs(JsonObject.class)) {
             String tilePath = result.getString("path");
-            String[] tokens = tilePath.split(URL_SEPARATOR);
+            String[] tokens = tilePath.split(Constants.URL_SEPARATOR);
             String simpleTileId = tokens[1] + tokens[2] + tokens[3];
             String tileId = "T" + simpleTileId;
             String tileName = Utilities.find(metaTileNames, tileId, psdVersion);
