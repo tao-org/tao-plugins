@@ -174,7 +174,7 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
             fileName = String.join("_", Arrays.copyOfRange(tokens, 0, 6)) + "__" + String.join("_", Arrays.copyOfRange(tokens, 6, 9)) + "_" + band;
         } else {
             tokens = getTokens(ProductV14, prodName, null);
-            fileName = tokens[5] + "_" + tokens[2] + "_" + band;
+            fileName = "T" + tokens[5] + "_" + tokens[2] + "_" + band;
         }
         return fileName;
     }
