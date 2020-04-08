@@ -251,6 +251,7 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
                 node.addCustomValue(entry.getKey(), entry.getValue());
             }*/
             node.addInfo("externalTaskId", String.valueOf(task.getId()));
+            node.addInfo("externalStep", step.getName());
             node = workflowNodeProvider.save(node);
             nodes.add(node);
         }

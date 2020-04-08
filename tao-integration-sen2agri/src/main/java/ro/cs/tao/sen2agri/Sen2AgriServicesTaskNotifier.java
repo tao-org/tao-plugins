@@ -7,12 +7,11 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
-import ro.cs.tao.execution.model.ExternalTaskListener;
-import ro.cs.tao.execution.model.ExternalTaskListenerDescriptor;
+import ro.cs.tao.execution.model.EndpointDescriptor;
 import ro.cs.tao.execution.model.ProcessingExecutionTask;
+import ro.cs.tao.execution.model.TaskListener;
 import ro.cs.tao.persistence.WorkflowNodeProvider;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
-import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workflow.ParameterValue;
@@ -25,18 +24,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class Sen2AgriServicesTaskNotifier implements ExternalTaskListener {
+public class Sen2AgriServicesTaskNotifier implements TaskListener {
     private final WorkflowNodeProvider nodeProvider;
-    private ExternalTaskListenerDescriptor descriptor;
+    private EndpointDescriptor descriptor;
     private final Logger logger;
 
     public Sen2AgriServicesTaskNotifier() {
         logger = Logger.getLogger(Sen2AgriServicesTaskNotifier.class.getName());
         nodeProvider = SpringContextBridge.services().getService(WorkflowNodeProvider.class);
         final ConfigurationProvider cfgManager = ConfigurationManager.getInstance();
+        final String protocol = cfgManager.getValue(Constants.SEN2AGRI_SERVICES_PROTOCOL);
         final String hostName = cfgManager.getValue(Constants.SEN2AGRI_SERVICES_HOSTNAME);
         final int port = Integer.parseInt(cfgManager.getValue(Constants.SEN2AGRI_SERVICES_PORT, "-1"));
-        if (hostName != null && port > 0) {
+        if (protocol != null && hostName != null && port > 0) {
             final String endpoint = cfgManager.getValue(Constants.SEN2AGRI_SERVICES_ENDPOINT);
             if (StringUtilities.isNullOrEmpty(endpoint)) {
                 logger.severe("Sen2Agri-Services host and port are configured, but no endpoint is defined");
@@ -47,7 +47,9 @@ public class Sen2AgriServicesTaskNotifier implements ExternalTaskListener {
                 if (!StringUtilities.isNullOrEmpty(user) && !StringUtilities.isNullOrEmpty(pwd)) {
                     credentials = new UsernamePasswordCredentials(user, pwd);
                 }
-                this.descriptor = new ExternalTaskListenerDescriptor(hostName, port, endpoint, credentials);
+                final String method = cfgManager.getValue(Constants.SEN2AGRI_SERVICES_METHOD);
+                this.descriptor = new EndpointDescriptor(protocol.toLowerCase(), hostName, port, endpoint,
+                                                         method.toUpperCase(), credentials);
                 logger.fine(String.format("Sen2Agri-Services callback configured at https://%s:%d%s",
                                           hostName, port, endpoint));
             }
@@ -57,12 +59,12 @@ public class Sen2AgriServicesTaskNotifier implements ExternalTaskListener {
     }
 
     @Override
-    public void setDescriptor(ExternalTaskListenerDescriptor descriptor) {
+    public void setDescriptor(EndpointDescriptor descriptor) {
         this.descriptor = descriptor;
     }
 
     @Override
-    public ExternalTaskListenerDescriptor getDescriptor() { return this.descriptor; }
+    public EndpointDescriptor getDescriptor() { return this.descriptor; }
 
     @Override
     public void onStarted(ProcessingExecutionTask task) {
@@ -75,11 +77,16 @@ public class Sen2AgriServicesTaskNotifier implements ExternalTaskListener {
         }
         final int taskId = info.stream().filter(p -> "externalTaskId".equals(p.getParameterName()))
                 .mapToInt(value -> Integer.parseInt(value.getParameterValue())).findFirst().orElse(0);
+        final String stepName = info.stream().filter(p -> "externalStep".equals(p.getParameterName()))
+                .map(ParameterValue::getParameterValue).findFirst().orElse(null);
         if (taskId == 0) {
             throw new IllegalArgumentException("Node doesn't contain mapped external id");
         }
         List<NameValuePair> params = new ArrayList<NameValuePair>() {{
+            add(new BasicNameValuePair("host", task.getExecutionNodeHostName()));
             add(new BasicNameValuePair("taskId", String.valueOf(taskId)));
+            add(new BasicNameValuePair("step", stepName));
+            add(new BasicNameValuePair("status", task.getExecutionStatus().name()));
         }};
         submit(params);
     }
@@ -89,7 +96,27 @@ public class Sen2AgriServicesTaskNotifier implements ExternalTaskListener {
         if (this.descriptor == null) {
             throw new RuntimeException(("External listener descriptor not set"));
         }
-
+        final List<ParameterValue> info = nodeProvider.get(task.getWorkflowNodeId()).getAdditionalInfo();
+        if (info == null) {
+            throw new IllegalArgumentException("Node doesn't contain any additional info");
+        }
+        final int taskId = info.stream().filter(p -> "externalTaskId".equals(p.getParameterName()))
+                .mapToInt(value -> Integer.parseInt(value.getParameterValue())).findFirst().orElse(0);
+        final String stepName = info.stream().filter(p -> "externalStep".equals(p.getParameterName()))
+                .map(ParameterValue::getParameterValue).findFirst().orElse(null);
+        if (taskId == 0) {
+            throw new IllegalArgumentException("Node doesn't contain mapped external id");
+        }
+        final LocalDateTime startTime = task.getStartTime();
+        Duration duration = Duration.between(startTime, task.getLastUpdated());
+        List<NameValuePair> params = new ArrayList<NameValuePair>() {{
+            add(new BasicNameValuePair("host", task.getExecutionNodeHostName()));
+            add(new BasicNameValuePair("taskId", String.valueOf(taskId)));
+            add(new BasicNameValuePair("step", stepName));
+            add(new BasicNameValuePair("status", task.getExecutionStatus().name()));
+            add(new BasicNameValuePair("elapsed", String.valueOf(duration.toMillis())));
+        }};
+        submit(params);
     }
 
     @Override
@@ -103,13 +130,18 @@ public class Sen2AgriServicesTaskNotifier implements ExternalTaskListener {
         }
         final int taskId = info.stream().filter(p -> "externalTaskId".equals(p.getParameterName()))
                 .mapToInt(value -> Integer.parseInt(value.getParameterValue())).findFirst().orElse(0);
+        final String stepName = info.stream().filter(p -> "externalStep".equals(p.getParameterName()))
+                .map(ParameterValue::getParameterValue).findFirst().orElse(null);
         if (taskId == 0) {
             throw new IllegalArgumentException("Node doesn't contain mapped external id");
         }
         final LocalDateTime startTime = task.getStartTime();
         Duration duration = Duration.between(startTime, task.getLastUpdated());
         List<NameValuePair> params = new ArrayList<NameValuePair>() {{
+            add(new BasicNameValuePair("host", task.getExecutionNodeHostName()));
             add(new BasicNameValuePair("taskId", String.valueOf(taskId)));
+            add(new BasicNameValuePair("step", stepName));
+            add(new BasicNameValuePair("status", task.getExecutionStatus().name()));
             add(new BasicNameValuePair("elapsed", String.valueOf(duration.toMillis())));
             add(new BasicNameValuePair("code", "0"));
             add(new BasicNameValuePair("output", processOutput));
@@ -128,13 +160,18 @@ public class Sen2AgriServicesTaskNotifier implements ExternalTaskListener {
         }
         final int taskId = info.stream().filter(p -> "externalTaskId".equals(p.getParameterName()))
                 .mapToInt(value -> Integer.parseInt(value.getParameterValue())).findFirst().orElse(0);
+        final String stepName = info.stream().filter(p -> "externalStep".equals(p.getParameterName()))
+                .map(ParameterValue::getParameterValue).findFirst().orElse(null);
         if (taskId == 0) {
             throw new IllegalArgumentException("Node doesn't contain mapped external id");
         }
         final LocalDateTime startTime = task.getStartTime();
         Duration duration = Duration.between(startTime, task.getLastUpdated());
         List<NameValuePair> params = new ArrayList<NameValuePair>() {{
+            add(new BasicNameValuePair("host", task.getExecutionNodeHostName()));
             add(new BasicNameValuePair("taskId", String.valueOf(taskId)));
+            add(new BasicNameValuePair("step", stepName));
+            add(new BasicNameValuePair("status", task.getExecutionStatus().name()));
             add(new BasicNameValuePair("elapsed", String.valueOf(duration.toMillis())));
             add(new BasicNameValuePair("code", String.valueOf(errorCode)));
             add(new BasicNameValuePair("reason", reason));
@@ -162,7 +199,11 @@ public class Sen2AgriServicesTaskNotifier implements ExternalTaskListener {
     }
 
     private CloseableHttpResponse createConnection(List<NameValuePair> params) throws IOException {
-        URL url = new URL("https", this.descriptor.getHostName(), this.descriptor.getPort(), this.descriptor.getEndpoint());
-        return NetUtils.openConnection(HttpMethod.POST, url.toString(), this.descriptor.getCredentials(), params);
+        final URL url = new URL(this.descriptor.getProtocol(),
+                                this.descriptor.getHostName(),
+                                this.descriptor.getPort(),
+                                this.descriptor.getEndpoint());
+        return NetUtils.openConnection(this.descriptor.getMethod(),
+                                       url.toString(), this.descriptor.getCredentials(), params);
     }
 }

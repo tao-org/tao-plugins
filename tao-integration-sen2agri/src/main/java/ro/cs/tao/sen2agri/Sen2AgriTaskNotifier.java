@@ -3,9 +3,9 @@ package ro.cs.tao.sen2agri;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.execution.ExecutionConfiguration;
-import ro.cs.tao.execution.model.ExternalTaskListener;
-import ro.cs.tao.execution.model.ExternalTaskListenerDescriptor;
+import ro.cs.tao.execution.model.EndpointDescriptor;
 import ro.cs.tao.execution.model.ProcessingExecutionTask;
+import ro.cs.tao.execution.model.TaskListener;
 import ro.cs.tao.persistence.WorkflowNodeProvider;
 import ro.cs.tao.sen2agri.model.TaskMessage;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class Sen2AgriTaskNotifier implements ExternalTaskListener {
-    private ExternalTaskListenerDescriptor descriptor;
+public class Sen2AgriTaskNotifier implements TaskListener {
+    private EndpointDescriptor descriptor;
     private final WorkflowNodeProvider nodeProvider;
     private final Logger logger;
 
@@ -33,7 +33,7 @@ public class Sen2AgriTaskNotifier implements ExternalTaskListener {
         if (hostName == null || port == -1) {
             logger.warning("Sen2Agri callback configuration not found");
         }  else {
-            this.descriptor = new ExternalTaskListenerDescriptor(hostName, port, null);
+            this.descriptor = new EndpointDescriptor("tcp", hostName, port, null);
             logger.fine(String.format("Sen2Agri callback configured at %s:%d", hostName, port));
             if (devMode) {
                 try {
@@ -47,10 +47,10 @@ public class Sen2AgriTaskNotifier implements ExternalTaskListener {
     }
 
     @Override
-    public void setDescriptor(ExternalTaskListenerDescriptor descriptor) { this.descriptor = descriptor; }
+    public void setDescriptor(EndpointDescriptor descriptor) { this.descriptor = descriptor; }
 
     @Override
-    public ExternalTaskListenerDescriptor getDescriptor() { return this.descriptor; }
+    public EndpointDescriptor getDescriptor() { return this.descriptor; }
 
     @Override
     public void onStarted(ProcessingExecutionTask task) {
