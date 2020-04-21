@@ -2,11 +2,12 @@ package ro.cs.tao.sen2agri.model;
 
 import java.util.List;
 
-public class Step {
+public class ExternalStep {
     private String name;
     private List<String> arguments;
     private Integer procs;
     private Integer mem;
+    private String output;
 
     public String getName() {
         return name;
@@ -39,4 +40,8 @@ public class Step {
     public void setMem(Integer mem) {
         this.mem = mem;
     }
+
+    public String getOutput() { return output; }
+
+    public void setOutput(String output) { this.output = output; }
 }

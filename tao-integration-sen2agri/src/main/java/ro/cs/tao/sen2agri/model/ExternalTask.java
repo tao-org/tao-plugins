@@ -2,13 +2,15 @@ package ro.cs.tao.sen2agri.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Task {
+public class ExternalTask {
     private int id;
     private String name;
+    private boolean adHoc;
     private List<Integer> precedingTasksIds;
-    private List<Step> steps;
+    private List<ExternalStep> steps;
 
     public int getId() {
         return id;
@@ -26,6 +28,10 @@ public class Task {
         this.name = name;
     }
 
+    public boolean isAdHoc() { return adHoc; }
+
+    public void setAdHoc(boolean adHoc) { this.adHoc = adHoc; }
+
     @JsonProperty("preceding_task_ids")
     public List<Integer> getPrecedingTasksIds() {
         return precedingTasksIds;
@@ -35,11 +41,18 @@ public class Task {
         this.precedingTasksIds = precedingTasksIds;
     }
 
-    public List<Step> getSteps() {
+    public List<ExternalStep> getSteps() {
+        if (steps == null) {
+            steps = new ArrayList<>();
+        }
         return steps;
     }
 
-    public void setSteps(List<Step> steps) {
+    public void setSteps(List<ExternalStep> steps) {
         this.steps = steps;
+    }
+
+    public void addStep(ExternalStep executionStep) {
+        getSteps().add(executionStep);
     }
 }

@@ -1,14 +1,16 @@
 package ro.cs.tao.sen2agri.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class Graph {
+public class ExternalGraph {
     private int jobId;
     private String outputFolder;
     private String temporaryFolder;
     private String configurationFolder;
     private boolean keepIntermediate;
-    private List<Task> tasks;
+    private List<ExternalTask> tasks;
 
     public int getJobId() {
         return jobId;
@@ -46,11 +48,21 @@ public class Graph {
         this.keepIntermediate = keepIntermediate;
     }
 
-    public List<Task> getTasks() {
+    public List<ExternalTask> getTasks() {
+        if (tasks == null) {
+            tasks = new ArrayList<>();
+        }
         return tasks;
     }
 
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
+    public void setTasks(List<ExternalTask> executionTasks) {
+        this.tasks = executionTasks;
+    }
+
+    public void addTask(ExternalTask task, Integer...parentTaskIds) {
+        List<Integer> precedingTaskIds = parentTaskIds != null && parentTaskIds.length > 0 ?
+                Arrays.asList(parentTaskIds) : null;
+        task.setPrecedingTasksIds(precedingTaskIds);
+        getTasks().add(task);
     }
 }
