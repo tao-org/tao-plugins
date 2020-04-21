@@ -10,9 +10,9 @@ import ro.cs.tao.docker.Container;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.execution.ExecutionConfiguration;
 import ro.cs.tao.persistence.*;
-import ro.cs.tao.sen2agri.model.Graph;
-import ro.cs.tao.sen2agri.model.Step;
-import ro.cs.tao.sen2agri.model.Task;
+import ro.cs.tao.sen2agri.model.ExternalGraph;
+import ro.cs.tao.sen2agri.model.ExternalStep;
+import ro.cs.tao.sen2agri.model.ExternalTask;
 import ro.cs.tao.services.base.WorkflowBuilderBase;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 import ro.cs.tao.services.bridge.spring.SpringContextBridgedServices;
@@ -70,12 +70,12 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
     @Override
     public WorkflowDescriptor convert(String jsonGraph, String container) throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
-        final Graph graph = mapper.readerFor(Graph.class).readValue(jsonGraph);
+        final ExternalGraph externalGraph = mapper.readerFor(ExternalGraph.class).readValue(jsonGraph);
         //this.values.clear();
         this.dockerContainer = container;
         return new WorkflowBuilderBase() {
             @Override
-            public String getName() { return String.format(WORKFLOW_NAME, graph.getJobId()); }
+            public String getName() { return String.format(WORKFLOW_NAME, externalGraph.getJobId()); }
 
             @Override
             public WorkflowDescriptor createWorkflowDescriptor() throws PersistenceException {
@@ -113,14 +113,14 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
 
             @Override
             protected void addNodes(WorkflowDescriptor workflow) throws PersistenceException {
-                final List<Task> tasks = graph.getTasks();
+                final List<ExternalTask> tasks = externalGraph.getTasks();
                 //final Map<Integer, Task> mappedTasks = tasks.stream().collect(Collectors.toMap(Task::getId, Function.identity()));
                 final Map<Integer, WorkflowNodeDescriptor> mappedNodes = new HashMap<>();
-                tasks.sort(Comparator.comparingInt(Task::getId));
+                tasks.sort(Comparator.comparingInt(ExternalTask::getId));
                 Map<String, String> replacements = new HashMap<>();
-                final String outputFolder = graph.getOutputFolder();
-                final String temporaryFolder = graph.getTemporaryFolder();
-                final String configFolder = graph.getConfigurationFolder();
+                final String outputFolder = externalGraph.getOutputFolder();
+                final String temporaryFolder = externalGraph.getTemporaryFolder();
+                final String configFolder = externalGraph.getConfigurationFolder();
                 final String tempMount = ExecutionConfiguration.getDockerNodeTempMount();
                 final String cfgMount = ExecutionConfiguration.getDockerNodeConfigMount();
                 final boolean shouldMoveOrCopy = outputFolder != null && !outputFolder.equals(temporaryFolder);
@@ -132,7 +132,7 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
                         replacements.put(temporaryFolder, tempMount.substring(tempMount.indexOf(":") + 1));
                     }
                 }
-                for (Task task : tasks) {
+                for (ExternalTask task : tasks) {
                     final WorkflowNodeDescriptor node = convert(workflow, task, replacements);
                     mappedNodes.put(task.getId(), node);
                     workflow.addNode(node);
@@ -167,7 +167,7 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
                         node.setxCoord(coords[0]);
                         node.setyCoord(coords[1]);
                     }
-                    node.setPreserveOutput(graph.isKeepIntermediate());
+                    node.setPreserveOutput(externalGraph.isKeepIntermediate());
                     workflowNodeProvider.update(node);
                 }
                 if (shouldMoveOrCopy) {
@@ -179,7 +179,7 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
                     final List<WorkflowNodeDescriptor> terminals = WorkflowUtilities.findTerminals(workflow.getNodes());
                     if (terminals.size() > 0) {
                         final WorkflowNodeDescriptor utilityNode = addUtilityNode(workflow,
-                                                                                  graph.isKeepIntermediate() ? "Copy" : "Move",
+                                                                                  externalGraph.isKeepIntermediate() ? "Copy" : "Move",
                                                                                   container.getId(),
                                                                                   customValues,
                                                                                   terminals.get(0), Direction.RIGHT);
@@ -226,18 +226,18 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
         }.createWorkflowDescriptor();
     }
 
-    private WorkflowNodeDescriptor convert(WorkflowDescriptor parent, Task task, Map<String, String> replacements) throws PersistenceException {
+    private WorkflowNodeDescriptor convert(WorkflowDescriptor parent, ExternalTask task, Map<String, String> replacements) throws PersistenceException {
         if (task == null) {
             throw new IllegalArgumentException("[task] null");
         }
-        final List<Step> steps = task.getSteps();
-        if (steps == null || steps.isEmpty()) {
+        final List<ExternalStep> externalSteps = task.getSteps();
+        if (externalSteps == null || externalSteps.isEmpty()) {
             throw new IllegalArgumentException("[task.steps] null or empty");
         }
         List<WorkflowNodeDescriptor> nodes = new ArrayList<>();
         WorkflowNodeDescriptor node;
-        for (Step step : steps) {
-            ProcessingComponent component = convert(step, replacements);
+        for (ExternalStep externalStep : externalSteps) {
+            ProcessingComponent component = convert(externalStep, replacements);
             node = new WorkflowNodeDescriptor();
             node.setWorkflow(parent);
             node.setName(component.getLabel());
@@ -251,7 +251,7 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
                 node.addCustomValue(entry.getKey(), entry.getValue());
             }*/
             node.addInfo("externalTaskId", String.valueOf(task.getId()));
-            node.addInfo("externalStep", step.getName());
+            node.addInfo("externalStep", externalStep.getName());
             node = workflowNodeProvider.save(node);
             nodes.add(node);
         }
@@ -293,15 +293,15 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
         return workflowNodeProvider.update(node);
     }
 
-    private ProcessingComponent convert(Step step, Map<String, String> replacements) throws PersistenceException {
-        if (step == null) {
+    private ProcessingComponent convert(ExternalStep externalStep, Map<String, String> replacements) throws PersistenceException {
+        if (externalStep == null) {
             throw new IllegalArgumentException("[step] null");
         }
-        final List<String> arguments = step.getArguments();
+        final List<String> arguments = externalStep.getArguments();
         if (arguments == null || arguments.isEmpty()) {
             throw new IllegalArgumentException("[step.arguments] null or empty");
         }
-        final String name = step.getName();
+        final String name = externalStep.getName();
         Container container = this.dockerContainer != null ?
                 containerProvider.getByName(this.dockerContainer) : containerProvider.getByName("sen2agri");
         final boolean notExists = container == null;
@@ -326,7 +326,7 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
             // First create the container application
             application = new Application();
             application.setName(name);
-            final Integer mem = step.getMem();
+            final Integer mem = externalStep.getMem();
             if (mem != null && mem > 0) {
                 application.setMemoryRequirements(mem);
             }
@@ -371,7 +371,7 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
             component.setAuthors("TAO Team");
             component.setCopyright("TAO Team");
             component.setActive(true);
-            final Integer procs = step.getProcs();
+            final Integer procs = externalStep.getProcs();
             if (procs != null && procs > 0) {
                 component.setMultiThread(true);
                 component.setParallelism(procs);
@@ -392,61 +392,15 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
             if (templateBuilder.length() > 1) {
                 templateBuilder.setLength(templateBuilder.length() - 1);
             }
-            /*ParameterDescriptor parameter = null;
-            boolean prevMinus = false;
-            for (int i = 1; i < arguments.size(); i++) {
-                String arg = arguments.get(i);
-                if (arg.startsWith("-")) {
-                    if (!prevMinus) {
-                        parameter = new ParameterDescriptor();
-                        parameter.setDataType(String.class);
-                        parameter.setId(StringUtils.stripStart(arg, "-"));
-                        parameter.setDescription(parameter.getId());
-                        parameter.setName(parameter.getId());
-                        parameter.setLabel(parameter.getId());
-                        parameter.setType(ParameterType.REGULAR);
-                        templateBuilder.append(arg).append("\n");
-                        prevMinus = true;
-                    } else {
-                        component.addParameter(parameter);
-                        for (Map.Entry<String, String> entry : replacements.entrySet()) {
-                            arg = arg.replace(entry.getKey(), entry.getValue());
-                        }
-                        this.values.get(component.getId()).put(parameter.getId(), arg);
-                        templateBuilder.append("$").append(parameter.getId()).append("\n");
-                        parameter = null;
-                        prevMinus = false;
-                    }
-                } else {
-                    if (parameter == null) {
-                        // unnamed parameter
-                        *//*parameter = new ParameterDescriptor();
-                        parameter.setDataType(String.class);
-                        parameter.setId(arg);
-                        parameter.setDescription(parameter.getId());
-                        parameter.setName(parameter.getId());
-                        parameter.setLabel(parameter.getId());
-                        parameter.setType(ParameterType.REGULAR);*//*
-                        for (Map.Entry<String, String> entry : replacements.entrySet()) {
-                            arg = arg.replace(entry.getKey(), entry.getValue());
-                        }
-                        templateBuilder.append(arg).append("\n");
-                        prevMinus = false;
-                        continue;
-                    }
-                    component.addParameter(parameter);
-                    for (Map.Entry<String, String> entry : replacements.entrySet()) {
-                        arg = arg.replace(entry.getKey(), entry.getValue());
-                    }
-                    this.values.get(component.getId()).put(parameter.getId(), arg);
-                    templateBuilder.append("$").append(parameter.getId()).append("\n");
-                    parameter = null;
-                    prevMinus = false;
-                }
-            }*/
             component.setTemplateContents(templateBuilder.toString());
             component.addSource(createSource(component.getId()));
             component.addTarget(createTarget(component.getId()));
+            if (externalStep.getOutput() != null) {
+                final TargetDescriptor outTarget = createTarget(component.getId());
+                outTarget.getDataDescriptor().setFormatType(DataFormat.RASTER);
+                outTarget.getDataDescriptor().setLocation(externalStep.getOutput());
+                component.addTarget(outTarget);
+            }
             componentProvider.save(component);
         }
         componentMap.put(component.getId(), component);
