@@ -3,21 +3,19 @@ package ro.cs.tao.sen2agri;
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
-import ro.cs.tao.execution.model.EndpointDescriptor;
+import ro.cs.tao.execution.callback.CallbackClient;
+import ro.cs.tao.execution.callback.CallbackClientFactory;
+import ro.cs.tao.execution.callback.EndpointDescriptor;
 import ro.cs.tao.execution.model.ProcessingExecutionTask;
 import ro.cs.tao.execution.model.TaskListener;
 import ro.cs.tao.persistence.WorkflowNodeProvider;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
-import ro.cs.tao.utils.NetUtils;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workflow.ParameterValue;
 
-import java.io.IOException;
-import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -88,7 +86,7 @@ public class Sen2AgriServicesTaskNotifier implements TaskListener {
             add(new BasicNameValuePair("step", stepName));
             add(new BasicNameValuePair("status", task.getExecutionStatus().name()));
         }};
-        submit(params);
+        call(params);
     }
 
     @Override
@@ -116,7 +114,7 @@ public class Sen2AgriServicesTaskNotifier implements TaskListener {
             add(new BasicNameValuePair("status", task.getExecutionStatus().name()));
             add(new BasicNameValuePair("elapsed", String.valueOf(duration.toMillis())));
         }};
-        submit(params);
+        call(params);
     }
 
     @Override
@@ -146,7 +144,7 @@ public class Sen2AgriServicesTaskNotifier implements TaskListener {
             add(new BasicNameValuePair("code", "0"));
             add(new BasicNameValuePair("output", processOutput));
         }};
-        submit(params);
+        call(params);
     }
 
     @Override
@@ -177,33 +175,24 @@ public class Sen2AgriServicesTaskNotifier implements TaskListener {
             add(new BasicNameValuePair("reason", reason));
             add(new BasicNameValuePair("output", processOutput));
         }};
-        submit(params);
+        call(params);
     }
 
-    private void submit(List<NameValuePair> params) {
-        try (CloseableHttpResponse response = createConnection(params)) {
-            switch (response.getStatusLine().getStatusCode()) {
-                case 200:
-                    break;
-                case 401:
-                    logger.severe("Unauthorized. Please check the sent credentials.");
-                    break;
-                default:
-                    logger.severe(String.format("The request was not successful. Reason: %s",
-                            response.getStatusLine().getReasonPhrase()));
-                    break;
-            }
-        } catch (IOException e) {
-            logger.severe(e.getMessage());
+    private void call(List<NameValuePair> params) {
+        final CallbackClient client = CallbackClientFactory.createFor(this.descriptor);
+        final int retCode = client.call(params);
+        switch (retCode) {
+            case 200:
+                logger.fine(String.format("Request to '%s' was successful", this.descriptor.toAnonString()));
+                break;
+            case 401:
+                logger.severe(String.format("Unauthorized to call '%s'. Please check the sent credentials.",
+                                            this.descriptor.toString()));
+                break;
+            default:
+                logger.severe(String.format("The request to '%s' was not successful. Returned code: %d",
+                                            this.descriptor.toAnonString(), retCode));
+                break;
         }
-    }
-
-    private CloseableHttpResponse createConnection(List<NameValuePair> params) throws IOException {
-        final URL url = new URL(this.descriptor.getProtocol(),
-                                this.descriptor.getHostName(),
-                                this.descriptor.getPort(),
-                                this.descriptor.getEndpoint());
-        return NetUtils.openConnection(this.descriptor.getMethod(),
-                                       url.toString(), this.descriptor.getCredentials(), params);
     }
 }

@@ -26,6 +26,7 @@ import ro.cs.tao.workflow.enums.ComponentType;
 import ro.cs.tao.workflow.enums.TransitionBehavior;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -73,6 +74,9 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
         final ExternalGraph externalGraph = mapper.readerFor(ExternalGraph.class).readValue(jsonGraph);
         //this.values.clear();
         this.dockerContainer = container;
+        if (containerProvider.getByName(this.dockerContainer) == null) {
+            throw new InvalidObjectException(String.format("The container %s is not registered", container));
+        }
         return new WorkflowBuilderBase() {
             @Override
             public String getName() { return String.format(WORKFLOW_NAME, externalGraph.getJobId()); }
@@ -185,8 +189,10 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
                                                                                   terminals.get(0), Direction.RIGHT);
                         for (int i = 1; i < terminals.size(); i++) {
                             final WorkflowNodeDescriptor leaf = terminals.get(i);
-                            final ProcessingComponent component = componentProvider.get(utilityNode.getComponentId(), container.getId());
-                            addLink(leaf, TARGET_NAME, utilityNode, component.getSources().get(0).getName());
+                            if (!utilityNode.equals(leaf)) {
+                                final ProcessingComponent component = componentProvider.get(utilityNode.getComponentId(), container.getId());
+                                addLink(leaf, TARGET_NAME, utilityNode, component.getSources().get(0).getName());
+                            }
                         }
                     }
                 }
