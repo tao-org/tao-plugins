@@ -59,7 +59,7 @@ public class TaskMessage {
         }};
     }
 
-    private TaskMessage() {
+    public TaskMessage() {
     }
 
     public int getExternalTaskId() {
