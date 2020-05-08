@@ -2,15 +2,13 @@ package ro.cs.tao.sen2agri;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import ro.cs.tao.configuration.ConfigurationManager;
-import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.execution.ExecutionConfiguration;
 import ro.cs.tao.execution.callback.CallbackClient;
 import ro.cs.tao.execution.callback.CallbackClientFactory;
 import ro.cs.tao.execution.callback.EndpointDescriptor;
 import ro.cs.tao.execution.callback.ResponseConverter;
+import ro.cs.tao.execution.model.AbstractTaskListener;
 import ro.cs.tao.execution.model.ProcessingExecutionTask;
-import ro.cs.tao.execution.model.TaskListener;
 import ro.cs.tao.persistence.WorkflowNodeProvider;
 import ro.cs.tao.sen2agri.model.TaskMessage;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
@@ -21,77 +19,50 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
-public class Sen2AgriTaskNotifier implements TaskListener {
-    private EndpointDescriptor descriptor;
+public class Sen2AgriTaskNotifier extends AbstractTaskListener {
     private final WorkflowNodeProvider nodeProvider;
-    private final Logger logger;
 
     public Sen2AgriTaskNotifier() {
-        logger = Logger.getLogger(Sen2AgriTaskNotifier.class.getName());
+        super();
         nodeProvider = SpringContextBridge.services().getService(WorkflowNodeProvider.class);
-        final ConfigurationProvider cfgManager = ConfigurationManager.getInstance();
-        final boolean devMode = ExecutionConfiguration.developmentModeEnabled();
-        String hostName = cfgManager.getValue(Constants.SEN2AGRI_HOSTNAME, devMode ? "127.0.0.1" : null);
-        String proto = cfgManager.getValue(Constants.SEN2AGRI_LISTENER_PROTO);
-        int port = Integer.parseInt(cfgManager.getValue(Constants.SEN2AGRI_LISTENER_PORT, devMode ? "9001" : "-1"));
-        if (hostName == null || proto == null || port == -1) {
-            logger.warning("Sen2Agri callback configuration not found");
-        }  else {
-            this.descriptor = new EndpointDescriptor(proto, hostName, port, null);
-            logger.fine(String.format("Sen2Agri callback configured at %s:%d", hostName, port));
-            if (devMode) {
-                try {
-                    new Sen2AgriMockListener(port).start();
-                    logger.fine(String.format("Started Sen2Agri callback listener on port %d", port));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        if (ExecutionConfiguration.developmentModeEnabled()) {
+            try {
+                new Sen2AgriMockListener(9001).start();
+                logger.fine("Started Sen2Agri callback listener on port 9001");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
 
     @Override
-    public void setDescriptor(EndpointDescriptor descriptor) { this.descriptor = descriptor; }
-
-    @Override
-    public EndpointDescriptor getDescriptor() { return this.descriptor; }
+    public boolean supportsProtocol(String protocol) {
+        return protocol != null && protocol.toLowerCase().equals("tcp");
+    }
 
     @Override
     public void onStarted(ProcessingExecutionTask task) {
-        if (this.descriptor == null) {
-            throw new RuntimeException(("External listener descriptor not set"));
-        }
         final List<NameValuePair> params = prepareParams(task, "STARTED", null, 0, null, null);
-        call(params);
+        call(getCallbackFor(task), params);
     }
 
     @Override
     public void onUpdated(ProcessingExecutionTask task) {
-        if (this.descriptor == null) {
-            throw new RuntimeException(("External listener descriptor not set"));
-        }
         final List<NameValuePair> params = prepareParams(task, "STARTED", null, 0, null, null);
-        call(params);
+        call(getCallbackFor(task), params);
     }
 
     @Override
     public void onCompleted(ProcessingExecutionTask task, String processOutput) {
-        if (this.descriptor == null) {
-            throw new RuntimeException(("External listener descriptor not set"));
-        }
         final List<NameValuePair> params = prepareParams(task, "ENDED", "OK", 0, processOutput, null);
-        call(params);
+        call(getCallbackFor(task), params);
     }
 
     @Override
     public void onError(ProcessingExecutionTask task, String reason, int errorCode, String processOutput) {
-        if (this.descriptor == null) {
-            throw new RuntimeException(("External listener descriptor not set"));
-        }
         final List<NameValuePair> params = prepareParams(task, "ENDED", "FAILED", errorCode, processOutput, reason);
-        call(params);
+        call(getCallbackFor(task), params);
     }
 
     private List<NameValuePair> prepareParams(ProcessingExecutionTask task, String messageType, String status, int exitCode, String output, String error) {
@@ -120,15 +91,15 @@ public class Sen2AgriTaskNotifier implements TaskListener {
         }};
     }
 
-    private void call(List<NameValuePair> params) {
-        final CallbackClient client = CallbackClientFactory.createFor(this.descriptor);
+    private void call(EndpointDescriptor descriptor, List<NameValuePair> params) {
+        final CallbackClient client = CallbackClientFactory.createFor(descriptor);
         client.setConverter(new Sen2AgriResponseConverter());
         final int retCode = client.call(params);
         if (retCode == 0) {
             logger.severe(String.format("No message was sent to remote endpoint '%s'. Please check the configuration.",
-                    this.descriptor.toAnonString()));
+                                        descriptor.toAnonString()));
         } else {
-            logger.fine(String.format("Sent %d bytes to remote endpoint '%s'", retCode, this.descriptor.toAnonString()));
+            logger.fine(String.format("Sent %d bytes to remote endpoint '%s'", retCode, descriptor.toAnonString()));
         }
     }
 
