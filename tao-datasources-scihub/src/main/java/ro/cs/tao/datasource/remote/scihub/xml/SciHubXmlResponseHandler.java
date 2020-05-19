@@ -113,6 +113,9 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                     logger.warning(e.getMessage());
                 }
                 break;
+            case "int":
+                this.current.addAttribute(this.identifiedElement, elementValue);
+                break;
             case "double":
                 try {
                     switch (this.identifiedElement) {
