@@ -18,6 +18,7 @@ import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 import ro.cs.tao.services.bridge.spring.SpringContextBridgedServices;
 import ro.cs.tao.services.utils.WorkflowUtilities;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
+import ro.cs.tao.topology.docker.DockerManager;
 import ro.cs.tao.workflow.ExternalGraphConverter;
 import ro.cs.tao.workflow.WorkflowDescriptor;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
     private static final String WORKFLOW_NAME = "Sen2Agri-Workflow-%d";
@@ -40,8 +42,8 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
     private static final ProcessingComponentProvider componentProvider;
     private static final GroupComponentProvider groupProvider;
     private final Map<String, TaoComponent> componentMap;
-    //private final Map<String, Map<String, String>> values;
-    private String dockerContainer;
+    private final Logger logger;
+    private Container dockerContainer;
 
     static {
         final SpringContextBridgedServices services = SpringContextBridge.services();
@@ -64,7 +66,7 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
         if (groupProvider == null) {
             throw new IllegalArgumentException("[groupProvider] null");
         }
-        //this.values = new HashMap<>();
+        this.logger = Logger.getLogger(getClass().getName());
         this.componentMap = new HashMap<>();
     }
 
@@ -72,10 +74,13 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
     public WorkflowDescriptor convert(String jsonGraph, String container) throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
         final ExternalGraph externalGraph = mapper.readerFor(ExternalGraph.class).readValue(jsonGraph);
-        //this.values.clear();
-        this.dockerContainer = container;
-        if (containerProvider.getByName(this.dockerContainer) == null) {
-            throw new InvalidObjectException(String.format("The container %s is not registered", container));
+        if ((this.dockerContainer = containerProvider.getByName(container)) == null) {
+            if ((this.dockerContainer = DockerManager.getDockerImage(container)) == null) {
+                throw new InvalidObjectException(String.format("The container %s is not registered", container));
+            } else {
+                logger.info(String.format("Container %s was not found in database, but is registered with the local Docker instance",
+                                           container));
+            }
         }
         return new WorkflowBuilderBase() {
             @Override
@@ -178,19 +183,17 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
                     final Map<String, String> customValues = new HashMap<>();
                     customValues.put("source", replacements.get(temporaryFolder));
                     customValues.put("dest", outputFolder);
-                    Container container = dockerContainer != null ?
-                            containerProvider.getByName(dockerContainer) : containerProvider.getByName("sen2agri");
                     final List<WorkflowNodeDescriptor> terminals = WorkflowUtilities.findTerminals(workflow.getNodes());
                     if (terminals.size() > 0) {
                         final WorkflowNodeDescriptor utilityNode = addUtilityNode(workflow,
                                                                                   externalGraph.isKeepIntermediate() ? "Copy" : "Move",
-                                                                                  container.getId(),
+                                                                                  dockerContainer.getId(),
                                                                                   customValues,
                                                                                   terminals.get(0), Direction.RIGHT);
                         for (int i = 1; i < terminals.size(); i++) {
                             final WorkflowNodeDescriptor leaf = terminals.get(i);
                             if (!utilityNode.equals(leaf)) {
-                                final ProcessingComponent component = componentProvider.get(utilityNode.getComponentId(), container.getId());
+                                final ProcessingComponent component = componentProvider.get(utilityNode.getComponentId(), dockerContainer.getId());
                                 addLink(leaf, TARGET_NAME, utilityNode, component.getSources().get(0).getName());
                             }
                         }
@@ -252,10 +255,6 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
             node.setComponentType(ComponentType.PROCESSING);
             node.setPreserveOutput(true);
             node.setCreated(LocalDateTime.now());
-            /*final Map<String, String> values = this.values.get(component.getId());
-            for (Map.Entry<String, String> entry : values.entrySet()) {
-                node.addCustomValue(entry.getKey(), entry.getValue());
-            }*/
             node.addInfo("externalTaskId", String.valueOf(task.getId()));
             node.addInfo("externalStep", externalStep.getName());
             node = workflowNodeProvider.save(node);
@@ -308,15 +307,14 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
             throw new IllegalArgumentException("[step.arguments] null or empty");
         }
         final String name = externalStep.getName();
-        Container container = this.dockerContainer != null ?
-                containerProvider.getByName(this.dockerContainer) : containerProvider.getByName("sen2agri");
-        final boolean notExists = container == null;
+        final boolean notExists = containerProvider.getByName(this.dockerContainer.getName()) == null;
+        Container container = this.dockerContainer;
         if (notExists) {
             container = new Container();
-            container.setId(UUID.randomUUID().toString());
-            container.setName("sen2agri");
-            container.setDescription("Sen2Agri mock container");
-            container.setTag("sen2agri");
+            container.setId(this.dockerContainer.getId());
+            container.setName(this.dockerContainer.getName());
+            container.setDescription(this.dockerContainer.getDescription() == null ? "External container" : this.dockerContainer.getDescription());
+            container.setTag(this.dockerContainer.getTag() != null ? this.dockerContainer.getTag() : "external");
             try {
                 for (Application app : BaseImageInstaller.readCommonContainerDescriptor().getApplications()) {
                     if ("Copy".equals(app.getName()) || "Move".equals(app.getName()) || "Delete".equals(app.getName())) {
@@ -339,9 +337,9 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
             application.setPath(arguments.get(0));
             container.addApplication(application);
             if (notExists) {
-                containerProvider.save(container);
+                this.dockerContainer = containerProvider.save(container);
             } else {
-                containerProvider.update(container);
+                this.dockerContainer = containerProvider.update(container);
             }
         }
         if (notExists) {
@@ -385,7 +383,6 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
             component.setFileLocation(application.getPath());
             component.setTemplateType(TemplateType.VELOCITY);
             component.setTransient(true);
-            //this.values.put(component.getId(), new HashMap<>());
             final StringBuilder templateBuilder = new StringBuilder();
             String arg;
             for (int i = 1; i < arguments.size(); i++) {
