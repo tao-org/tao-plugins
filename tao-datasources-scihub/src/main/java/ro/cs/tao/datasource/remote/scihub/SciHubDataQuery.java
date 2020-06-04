@@ -208,9 +208,9 @@ public class SciHubDataQuery extends DataQuery {
                             ResponseParser<Long> parser = new XmlResponseParser<>();
                             ((XmlResponseParser) parser).setHandler(new SciHubXmlCountResponseHandler("totalResults"));
                             List<Long> result = parser.parse(rawResponse);
+                            count += result.size() > 0 ? result.get(0) : 0;
                             logger.fine(String.format(QUERY_RESULT_MESSAGE, query.getKey(),
                                                       this.source.getId(), this.sensorName, 1, count));
-                            count += result.size() > 0 ? result.get(0) : 0;
                             break;
                         case 401:
                             throw new QueryException("The supplied credentials are invalid!");
