@@ -26,7 +26,7 @@ public class ShellInABoxContainer extends BaseStandaloneContainer {
     protected String logoFile() { return "sib_logo.png"; }
 
     @Override
-    protected String descriptor() { return "sib_descriptor.json"; }
+    protected String descriptor() { return "sib_container.json"; }
 
     @Override
     protected List<String> startupArguments() {
@@ -40,7 +40,7 @@ public class ShellInABoxContainer extends BaseStandaloneContainer {
         // -e SHELLINABOX_DISABLE_SSL=1
         // -e SHELLINABOX_DEFAULT=host
         return new ArrayList<String>() {{
-            add("--name"); add("shellinabox"); add("-p"); add("4200:4200");
+            add("--name"); add("websshshell"); add("-p"); add("4200:4200");
             add("-e"); add("SHELLINABOX_ALLOW_SUDO=1");
             add("-e"); add("SHELLINABOX_DISABLE_SSL=1");
         }};
