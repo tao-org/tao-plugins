@@ -68,9 +68,9 @@ public class DataSourceTest {
 
     public static void main(String[] args) throws JsonProcessingException {
         //SciHub_Sentinel1_Test();
-        //SciHub_Sentinel2_Count_Test();
+        SciHub_Sentinel2_Count_Test();
         //SciHub_Sentinel2_Test();
-        printParams();
+        //printParams();
     }
 
     private static void printParams() throws JsonProcessingException {
@@ -92,21 +92,21 @@ public class DataSourceTest {
             DataQuery query = dataSource.createQuery(sensors[1]);
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
             QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(2016, 2, 1, 0, 0, 0, 0)
+            begin.setMinValue(Date.from(LocalDateTime.of(2019, 1, 1, 0, 0, 0, 0)
                                                 .atZone(ZoneId.systemDefault())
                                                 .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(2017, 2, 1, 0, 0, 0, 0)
+            begin.setMaxValue(Date.from(LocalDateTime.of(2019, 12, 31, 0, 0, 0, 0)
                                                 .atZone(ZoneId.systemDefault())
                                                 .toInstant()));
             query.addParameter(begin);
-            Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
+            /*Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
                                                       "24.83885442747927 43.8379609098684," +
                                                       "24.83885442747927 44.795645304033826," +
                                                       "22.8042573604346 44.795645304033826," +
                                                       "22.8042573604346 43.8379609098684))");
 
-            query.addParameter(CommonParameterNames.FOOTPRINT, aoi);
-
+            query.addParameter(CommonParameterNames.FOOTPRINT, aoi);*/
+            query.addParameter(CommonParameterNames.TILE, "34TGQ");
             query.addParameter(CommonParameterNames.CLOUD_COVER, 100.);
             System.out.println(String.format("Query returned %s",query.getCount()));
         } catch (QueryException e) {
