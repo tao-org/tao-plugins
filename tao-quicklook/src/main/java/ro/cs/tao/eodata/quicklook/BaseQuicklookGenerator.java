@@ -1,0 +1,95 @@
+package ro.cs.tao.eodata.quicklook;
+
+import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.configuration.ConfigurationProvider;
+import ro.cs.tao.eodata.DataHandlingException;
+import ro.cs.tao.eodata.OutputDataHandler;
+import ro.cs.tao.utils.DockerHelper;
+import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.executors.Executor;
+import ro.cs.tao.utils.executors.ExecutorType;
+import ro.cs.tao.utils.executors.ProcessExecutor;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.logging.Logger;
+
+public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> {
+    protected static final String gdalDockerImage;
+    protected static final boolean useDocker;
+    protected static final Map<String, String> driverMap = new HashMap<String, String>() {{
+        put(".tif", "GTiff"); put(".tiff", "GTiff");
+        put(".png", "PNG"); put(".jpg", "JPEG"); put(".bmp", "BMP");
+    }};
+    private final boolean canCreate;
+    protected final Set<String> extensions;
+    protected final String extension;
+
+    static {
+        ConfigurationProvider configurationManager = ConfigurationManager.getInstance();
+        useDocker = Boolean.parseBoolean(configurationManager.getValue("plugins.use.docker", "false")) && DockerHelper.isDockerFound();
+        gdalDockerImage = configurationManager.getValue("docker.gdal.image", "geodata/gdal");
+        Logger.getLogger(GenericQuicklookGenerator.class.getName())
+                .fine(String.format("'gdal_translate' will be run %s", useDocker ? "using Docker [" + gdalDockerImage + "]" : "from command line"));
+    }
+
+    protected final Logger logger = Logger.getLogger(getClass().getName());
+
+    public BaseQuicklookGenerator() {
+        extensions = getSupportedExtensions();
+        extension = getExtension();
+        canCreate = driverMap.containsKey(extension);
+    }
+
+    @Override
+    public List<T> handle(List<T> list) throws DataHandlingException {
+        List<T> results = new ArrayList<>();
+        if (canCreate) {
+            results.addAll(handleInner(list));
+        }
+        return results;
+    }
+
+    protected String getExtension() {
+        return ConfigurationManager.getInstance().getValue("quicklook.extension", ".png");
+    }
+
+    protected Executor<?> initialize(Path productPath, String[] args) throws IOException {
+        String extension = FileUtilities.getExtension(productPath);
+        if (!extensions.contains(extension.toLowerCase())) {
+            return null;
+        }
+        List<String> arguments = new ArrayList<>();
+        for (String arg : args) {
+            arguments.add(arg.replace("$FULL_PATH", productPath.toString())
+                    .replace("$FOLDER", productPath.getParent().toString())
+                    .replace("$FILE", productPath.getFileName().toString()));
+        }
+        try {
+            return ProcessExecutor.create(ExecutorType.PROCESS,
+                    InetAddress.getLocalHost().getHostName(),
+                    arguments);
+        } catch (UnknownHostException e) {
+            throw new IOException(e);
+        }
+    }
+
+    protected String[] getGDALCommandLineOnPath() {
+        return new String[] {
+                "gdal_translate", "-of", driverMap.get(extension), "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "$FULL_PATH", "$FULL_PATH" + extension
+        };
+    }
+
+    protected String[] getGDALCommandLineOnDocker() {
+        return new String[] {
+                "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt/data", gdalDockerImage,
+                "gdal_translate", "-of", driverMap.get(extension), "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "/mnt/data/$FILE", "/mnt/data/$FILE" + extension
+        };
+    }
+
+    protected abstract Set<String> getSupportedExtensions();
+    protected abstract List<T> handleInner(List<T> list) throws DataHandlingException;
+}
