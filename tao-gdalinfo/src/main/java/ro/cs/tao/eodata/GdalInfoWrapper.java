@@ -185,36 +185,36 @@ public class GdalInfoWrapper implements MetadataInspector {
                                 .findFirst().ifPresent(identifier -> finalMetadata.setCrs(identifier.getCodeSpace() + ":" + identifier.getCode()));
                     }
                 }
-                JsonObject extentObject = root.getJsonObject("wgs84Extent");
+                JsonObject extentObject = root.getJsonObject("cornerCoordinates");
                 if (extentObject != null) {
                     Polygon2D polygon2D = new Polygon2D();
-                    JsonArray points = extentObject.getJsonArray("coordinates").getJsonArray(0);
-                    for (int i = 0; i < points.size(); i++) {
-                        polygon2D.append(points.getJsonArray(i).getJsonNumber(0).doubleValue(),
-                                         points.getJsonArray(i).getJsonNumber(1).doubleValue());
+                    JsonArray ul = extentObject.getJsonArray("upperLeft");
+                    if (ul != null) {
+                        polygon2D.append(ul.getJsonNumber(0).doubleValue(),
+                                ul.getJsonNumber(1).doubleValue());
+                        JsonArray point = extentObject.getJsonArray("lowerLeft");
+                        polygon2D.append(point.getJsonNumber(0).doubleValue(),
+                                point.getJsonNumber(1).doubleValue());
+                        point = extentObject.getJsonArray("lowerRight");
+                        polygon2D.append(point.getJsonNumber(0).doubleValue(),
+                                point.getJsonNumber(1).doubleValue());
+                        point = extentObject.getJsonArray("upperRight");
+                        polygon2D.append(point.getJsonNumber(0).doubleValue(),
+                                point.getJsonNumber(1).doubleValue());
+                        polygon2D.append(ul.getJsonNumber(0).doubleValue(),
+                                ul.getJsonNumber(1).doubleValue());
+                        metadata.setFootprint(polygon2D.toWKT(8));
                     }
-                    metadata.setFootprint(polygon2D.toWKT(8));
                 } else {
-                    extentObject = root.getJsonObject("cornerCoordinates");
+                    extentObject = root.getJsonObject("wgs84Extent");
                     if (extentObject != null) {
                         Polygon2D polygon2D = new Polygon2D();
-                        JsonArray ul = extentObject.getJsonArray("upperLeft");
-                        if (ul != null) {
-                            polygon2D.append(ul.getJsonNumber(0).doubleValue(),
-                                             ul.getJsonNumber(1).doubleValue());
-                            JsonArray point = extentObject.getJsonArray("lowerLeft");
-                            polygon2D.append(point.getJsonNumber(0).doubleValue(),
-                                             point.getJsonNumber(1).doubleValue());
-                            point = extentObject.getJsonArray("lowerRight");
-                            polygon2D.append(point.getJsonNumber(0).doubleValue(),
-                                             point.getJsonNumber(1).doubleValue());
-                            point = extentObject.getJsonArray("upperRight");
-                            polygon2D.append(point.getJsonNumber(0).doubleValue(),
-                                             point.getJsonNumber(1).doubleValue());
-                            polygon2D.append(ul.getJsonNumber(0).doubleValue(),
-                                             ul.getJsonNumber(1).doubleValue());
-                            metadata.setFootprint(polygon2D.toWKT(8));
+                        JsonArray points = extentObject.getJsonArray("coordinates").getJsonArray(0);
+                        for (int i = 0; i < points.size(); i++) {
+                            polygon2D.append(points.getJsonArray(i).getJsonNumber(0).doubleValue(),
+                                    points.getJsonArray(i).getJsonNumber(1).doubleValue());
                         }
+                        metadata.setFootprint(polygon2D.toWKT(8));
                     }
                 }
                 JsonArray bandsArray = root.getJsonArray("bands");
