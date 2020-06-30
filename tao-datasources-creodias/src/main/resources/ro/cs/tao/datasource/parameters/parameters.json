@@ -89,6 +89,16 @@
       "required": false,
       "valueSet": null,
       "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "orbitNumber",
+      "label": "Relative Orbit",
+      "type": "java.lang.Short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
     }
   },
   "Sentinel2": {
@@ -166,6 +176,16 @@
       "name": "productIdentifier",
       "remoteName": "productIdentifier",
       "label": "Product Name",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "productIdentifier",
+      "label": "UTM Tile",
       "type": "java.lang.String",
       "defaultValue": null,
       "required": false,

@@ -14,6 +14,8 @@ import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
+import ro.cs.tao.datasource.remote.creodias.sentinel1.Sentinel1Query;
+import ro.cs.tao.datasource.remote.creodias.sentinel2.Sentinel2Query;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
@@ -185,6 +187,17 @@ public abstract class BaseDataQuery extends DataQuery {
                 switch (parameter.getName()) {
                     case CommonParameterNames.PRODUCT:
                         query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.FOOTPRINT), parameter.getValueAsString()));
+                        break;
+                    case CommonParameterNames.TILE:
+                        if (this instanceof Sentinel2Query) {
+                            query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.TILE), '%' + parameter.getValueAsString() + '%'));
+                        } else if (this instanceof Sentinel1Query) {
+                            try {
+                                query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.TILE), getParameterValue(parameter)));
+                            } catch (ConversionException e) {
+                                throw new QueryException(e);
+                            }
+                        }
                         break;
                     case CommonParameterNames.FOOTPRINT:
                         try {
