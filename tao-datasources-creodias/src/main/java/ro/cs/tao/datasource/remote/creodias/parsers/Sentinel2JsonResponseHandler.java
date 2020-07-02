@@ -48,14 +48,15 @@ public class Sentinel2JsonResponseHandler implements JSonResponseHandler<EOProdu
                         }
                         product.setGeometry(footprint.toWKT());
                     }
-                    switch (result.getProductType()) {
+                    /*switch (result.getProductType()) {
                         case "L1C":
                             product.setProductType("MSIL1C");
                             break;
                         case "L2A":
                             product.setProductType("MSIL2A");
                             break;
-                    }
+                    }*/
+                    product.setProductType("Sentinel2");
                     product.setLocation(result.getProductIdentifier());
                     product.setAcquisitionDate(new DateAdapter().unmarshal(result.getStartDate()));
                     product.addAttribute("cloudcoverpercentage", String.valueOf(result.getCloudCover()));

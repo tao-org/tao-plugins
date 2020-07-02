@@ -48,7 +48,8 @@ public class Landsat8JsonResponseHandler implements JSonResponseHandler<EOProduc
                         }
                         product.setGeometry(footprint.toWKT());
                     }
-                    product.setProductType(result.getProductType());
+                    //product.setProductType(result.getProductType());
+                    product.setProductType("Landsat8");
                     product.setLocation(result.getProductIdentifier());
                     product.setAcquisitionDate(new DateAdapter().unmarshal(result.getStartDate()));
                     product.addAttribute("cloudcoverpercentage", String.valueOf(result.getCloudCover()));
