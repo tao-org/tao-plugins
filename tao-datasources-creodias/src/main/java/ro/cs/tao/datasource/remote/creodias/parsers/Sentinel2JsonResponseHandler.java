@@ -48,14 +48,14 @@ public class Sentinel2JsonResponseHandler implements JSonResponseHandler<EOProdu
                         }
                         product.setGeometry(footprint.toWKT());
                     }
-                    /*switch (result.getProductType()) {
+                    switch (result.getProductType()) {
                         case "L1C":
-                            product.setProductType("MSIL1C");
+                            product.addAttribute("productType", "S2MSI1C");
                             break;
                         case "L2A":
-                            product.setProductType("MSIL2A");
+                            product.addAttribute("productType", "S2MSI2A");
                             break;
-                    }*/
+                    }
                     product.setProductType("Sentinel2");
                     product.setLocation(result.getProductIdentifier());
                     product.setAcquisitionDate(new DateAdapter().unmarshal(result.getStartDate()));
