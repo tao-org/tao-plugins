@@ -1,5 +1,6 @@
 package ro.cs.tao.datasource.remote.creodias.parsers;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.creodias.model.common.Geometry;
 import ro.cs.tao.datasource.remote.creodias.model.common.Geometry2;
@@ -24,6 +25,7 @@ public class Sentinel1JsonResponseHandler implements JSonResponseHandler<EOProdu
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter... filters) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
         List<EOProduct> products = new ArrayList<>();
         try {
             ResultSet results = mapper.readValue(content, ResultSet.class);
@@ -64,6 +66,7 @@ public class Sentinel1JsonResponseHandler implements JSonResponseHandler<EOProdu
             }
         } catch (Exception e) {
             ResultSet2 results = mapper.readValue(content, ResultSet2.class);
+            mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
             List<Feature2> features = results.getFeatures();
             if (features != null) {
                 for (Feature2 feature : features) {
@@ -106,6 +109,7 @@ public class Sentinel1JsonResponseHandler implements JSonResponseHandler<EOProdu
     @Override
     public long countValues(String content) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
         try {
             ResultSet results = mapper.readValue(content, ResultSet.class);
             return results != null ? results.getProperties().getTotalResults().longValue() : 0;
