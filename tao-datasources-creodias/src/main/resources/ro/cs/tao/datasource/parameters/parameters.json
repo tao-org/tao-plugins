@@ -99,6 +99,16 @@
       "required": false,
       "valueSet": null,
       "order": 0
+    },
+    "status" : {
+      "name":"status",
+      "remoteName":"status",
+      "label": "Status",
+      "type":"java.lang.String",
+      "defaultValue":"all",
+      "required":false,
+      "valueSet":["all","31","32","34","37","0"],
+      "order":0
     }
   },
   "Sentinel2": {
