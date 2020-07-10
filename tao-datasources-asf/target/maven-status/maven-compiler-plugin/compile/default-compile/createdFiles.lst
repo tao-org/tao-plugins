@@ -1,0 +1,12 @@
+ro\cs\tao\datasource\remote\asf\parameters\ASFParameterProvider$1$2.class
+ro\cs\tao\datasource\remote\asf\download\AsfDownloadStrategy.class
+ro\cs\tao\datasource\remote\asf\parameters\ASFParameterProvider$1.class
+ro\cs\tao\datasource\remote\asf\ASFDataSource.class
+ro\cs\tao\datasource\remote\asf\parameters\ASFParameterProvider$1$1.class
+ro\cs\tao\datasource\remote\asf\parameters\ASFParameterProvider.class
+ro\cs\tao\datasource\remote\asf\ASFQuery$1.class
+ro\cs\tao\datasource\remote\asf\ASFQuery.class
+ro\cs\tao\datasource\remote\asf\handlers\AsfJsonResponseHandler.class
+ro\cs\tao\datasource\remote\asf\parameters\DateParameterConverter.class
+ro\cs\tao\datasource\remote\asf\download\AsfDownloadStrategy$1.class
+ro\cs\tao\datasource\remote\asf\json\AsfSearchResult.class

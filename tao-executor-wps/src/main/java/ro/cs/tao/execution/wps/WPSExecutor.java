@@ -1,11 +1,12 @@
 package ro.cs.tao.execution.wps;
 
-import net.opengis.wps10.ProcessDescriptionType;
-import net.opengis.wps10.ProcessDescriptionsType;
+import net.opengis.ows11.ExceptionReportType;
+import net.opengis.wps10.*;
 import org.geotools.data.wps.WPSFactory;
 import org.geotools.data.wps.WebProcessingService;
 import org.geotools.data.wps.request.DescribeProcessRequest;
 import org.geotools.data.wps.response.DescribeProcessResponse;
+import org.geotools.data.wps.response.ExecuteProcessResponse;
 import org.geotools.process.Process;
 import ro.cs.tao.component.TaoComponent;
 import ro.cs.tao.component.Variable;
@@ -13,6 +14,7 @@ import ro.cs.tao.component.WPSComponent;
 import ro.cs.tao.execution.ExecutionException;
 import ro.cs.tao.execution.Executor;
 import ro.cs.tao.execution.model.ExecutionStatus;
+import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.model.WPSExecutionTask;
 import ro.cs.tao.persistence.data.jsonutil.JacksonUtil;
 
@@ -93,31 +95,60 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
         if(!isInitialized) {
             return;
         }
-        //TODO: Not yet implemented in GeoTools-WPS
-        /*WebProcessingService wps = new WebProcessingService(new URL(wpsComponent.getRemoteAddress()));
-        GetExecutionStatusRequest execRequest = wps.createGetExecutionStatusRequest();
-        execRequest.setIdentifier(this.wpsProcessIdentifier);
-
-        GetExecutionStatusResponse response = wps.issueRequest(execRequest);
-
-        // Checking for Exceptions and Status...
-        if ((response.getExceptionResponse() == null) && (response.getExecuteResponse() != null)) {
-            if (response.getExecuteResponse().getStatus().getProcessSucceeded() != null) {
-                // Process complete ... checking output
-                for (Object processOutput : response.getExecuteResponse().getProcessOutputs().getOutput()) {
-                    OutputDataType wpsOutput = (OutputDataType) processOutput;
-                    // retrieve the value of the output ...
-                    wpsOutput.getData().getLiteralData().getValue();
+        List<ExecutionTask> tasks = persistenceManager.getRemoteExecutingTasks();
+        if (tasks != null) {
+            for (ExecutionTask task : tasks) {
+                try {
+                    WebProcessingService wps = new WebProcessingService(new URL(wpsComponent.getRemoteAddress()));
+                    final ExecuteProcessResponse response = wps.issueStatusRequest(new URL(wpsComponent.getRemoteAddress() + "?service=WPS&request=GetStatus"));
+                    // Checking for Exceptions and Status...
+                    final ExceptionReportType exceptionResponse = response.getExceptionResponse();
+                    final ExecuteResponseType executeResponse = response.getExecuteResponse();
+                    if ((exceptionResponse == null) && (executeResponse != null)) {
+                        final StatusType status = executeResponse.getStatus();
+                        if (status.getProcessSucceeded() != null) {
+                            // Process complete ... checking output
+                            for (Object processOutput : executeResponse.getProcessOutputs().getOutput()) {
+                                OutputDataType wpsOutput = (OutputDataType) processOutput;
+                                // retrieve the value of the output ...
+                                task.setOutputParameterValue(wpsOutput.getIdentifier().getValue(),
+                                                             wpsOutput.getData().getLiteralData().getValue());
+                            }
+                            markTaskFinished(task, ExecutionStatus.DONE);
+                        } else if (status.getProcessFailed() != null) {
+                            // Process failed ... handle failed status
+                            markTaskFinished(task, ExecutionStatus.FAILED);
+                        } else if (status.getProcessStarted() != null) {
+                            logger.fine(String.format("Task %s is at %d%%",
+                                                      task.getId(), status.getProcessStarted().getPercentCompleted().intValue()));
+                            persistenceManager.updateTaskStatus(task, ExecutionStatus.RUNNING);
+                        } else if (status.getProcessAccepted() != null) {
+                            persistenceManager.updateTaskStatus(task, ExecutionStatus.RUNNING);
+                        } else if (status.getProcessPaused() != null) {
+                            logger.fine(String.format("Task %s was paused at %d%%",
+                                                      task.getId(), status.getProcessPaused().getPercentCompleted().intValue()));
+                            persistenceManager.updateTaskStatus(task, ExecutionStatus.SUSPENDED);
+                        } else {
+                            throw new Exception("Empty status");
+                        }
+                    } else if (exceptionResponse != null) {
+                        // Retrieve here the Exception message and handle the errored status ...
+                        StringBuilder builder = new StringBuilder();
+                        for (Object o : exceptionResponse.getException()) {
+                            builder.append(o).append("\n");
+                        }
+                        logger.warning(String.format("Task %s FAILED. Process output: %s", task.getId(), builder.toString()));
+                        markTaskFinished(task, ExecutionStatus.FAILED);
+                    } else {
+                        throw new Exception("Empty response");
+                    }
+                } catch (Exception ex) {
+                    logger.severe(String.format("%s: Error while getting the status for the task %s [%s]",
+                                                ex.getClass().getName(), task.getId(), ex.getMessage()));
+                    markTaskFinished(task, ExecutionStatus.FAILED);
                 }
-            } else if (response.getExecuteResponse().getStatus().getProcessFailed() != null) {
-                // Process failed ... handle failed status
-            } else if (response.getExecuteResponse().getStatus().getProcessStarted() != null) {
-                // Updating status percentage...
-                int percentComplete = response.getExecuteResponse().getStatus().getProcessStarted().getPercentCompleted().intValue();
             }
-        } else {
-                // Retrieve here the Exception message and handle the errored status ...
-        }*/
+        }
     }
 
     @Override
