@@ -16,7 +16,7 @@
 
 package ro.cs.tao.products.sentinels;
 
-import ro.cs.tao.datasource.remote.ProductHelper;
+import ro.cs.tao.eodata.util.ProductHelper;
 
 public class SentinelProductHelper {
 

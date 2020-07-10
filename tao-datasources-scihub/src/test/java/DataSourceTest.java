@@ -38,7 +38,9 @@
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ro.cs.tao.datasource.*;
+import ro.cs.tao.datasource.DataQuery;
+import ro.cs.tao.datasource.DataSource;
+import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
@@ -49,13 +51,10 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -67,10 +66,10 @@ import java.util.logging.Logger;
 public class DataSourceTest {
 
     public static void main(String[] args) throws JsonProcessingException {
-        //SciHub_Sentinel1_Test();
+        SciHub_Sentinel1_Test();
         //SciHub_Sentinel2_Count_Test();
         //SciHub_Sentinel2_Test();
-        printParams();
+        //printParams();
     }
 
     private static void printParams() throws JsonProcessingException {
@@ -120,7 +119,7 @@ public class DataSourceTest {
             for (Handler handler : logger.getHandlers()) {
                 handler.setLevel(Level.INFO);
             }
-            DataSource dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
+            DataSource<?> dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
             dataSource.setCredentials("kraftek", "cei7samurai");
             String[] sensors = dataSource.getSupportedSensors();
 
@@ -143,6 +142,7 @@ public class DataSourceTest {
             query.addParameter(CommonParameterNames.FOOTPRINT, aoi);
 
             query.addParameter(CommonParameterNames.CLOUD_COVER, 100.);
+            query.addParameter(CommonParameterNames.PRODUCT_TYPE, "S2MSI2A");
             query.setPageSize(50);
             query.setMaxResults(83);
             List<EOProduct> results = query.execute();
@@ -178,10 +178,10 @@ public class DataSourceTest {
             DataQuery query = dataSource.createQuery(sensors[0]);
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-1");
             QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(2018, 11, 1, 0, 0, 0, 0)
+            begin.setMinValue(Date.from(LocalDateTime.of(2019, 11, 1, 0, 0, 0, 0)
                                                 .atZone(ZoneId.systemDefault())
                                                 .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(2018, 12, 15, 0, 0, 0, 0)
+            begin.setMaxValue(Date.from(LocalDateTime.of(2019, 12, 15, 0, 0, 0, 0)
                                                 .atZone(ZoneId.systemDefault())
                                                 .toInstant()));
             query.addParameter(begin);
@@ -195,18 +195,19 @@ public class DataSourceTest {
                                                       "22.8042573604346 43.8379609098684))");
 
             query.addParameter(CommonParameterNames.FOOTPRINT, aoi);
+            //query.addParameter("satellitePlatform", "");
             query.setPageSize(10);
             query.setMaxResults(10);
             //SentinelDownloadStrategy downloader = new SentinelDownloadStrategy("E:\\NewFormat");
             List<EOProduct> results = query.execute();
             //downloader.download(results);
-            Path repositoryPath = Paths.get("/mnt/products");
+            /*Path repositoryPath = Paths.get("/mnt/products");
             String localPathFormat = ".";
             Properties properties = new Properties();
             properties.put(ProductPathBuilder.LOCAL_ARCHIVE_PATH_FORMAT, ".");
             properties.put(ProductPathBuilder.PATH_SUFFIX, "none");
             properties.put(ProductPathBuilder.PRODUCT_FORMAT, "zip");
-            ProductPathBuilder pathBuilder = new DefaultProductPathBuilder(repositoryPath, localPathFormat, properties, true);
+            ProductPathBuilder pathBuilder = new DefaultProductPathBuilder(repositoryPath, localPathFormat, properties, true);*/
             results.forEach(r -> {
                 System.out.println("ID=" + r.getId());
                 System.out.println("NAME=" + r.getName());
@@ -216,12 +217,12 @@ public class DataSourceTest {
                 r.getAttributes()
                   .forEach(a -> System.out.println("\tName='" + a.getName() +
                     "', value='" + a.getValue() + "'"));
-                Path path = pathBuilder.getProductPath(repositoryPath, r);
+                /*Path path = pathBuilder.getProductPath(repositoryPath, r);
                 if (!path.toString().contains(r.getName()) &&
                         (!path.toString().toLowerCase().endsWith(".zip") || !path.toString().toLowerCase().endsWith(".tar.gz"))) {
                     path = path.resolve(r.getName());
                 }
-                System.out.println(path.toUri().toString());
+                System.out.println(path.toUri().toString());*/
             });
         } catch (QueryException e) {
             e.printStackTrace();

@@ -1,5 +1,7 @@
 package ro.cs.tao.datasource.remote.mundi.landsat8;
 
+import ro.cs.tao.datasource.converters.ConverterFactory;
+import ro.cs.tao.datasource.converters.SimpleDateParameterConverter;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.mundi.BaseDataQuery;
@@ -9,8 +11,15 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
 
 import java.lang.reflect.Array;
+import java.util.Date;
 
 public class Landsat8Query extends BaseDataQuery {
+
+    static {
+        ConverterFactory factory = new ConverterFactory();
+        factory.register(SimpleDateParameterConverter.class, Date.class);
+        converterFactory.put(Landsat8Query.class, factory);
+    }
 
     public Landsat8Query(MundiDataSource source, String sensorName, String connectionString) {
         super(source, sensorName, connectionString);

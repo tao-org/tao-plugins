@@ -10,6 +10,19 @@
       "valueSet": null,
       "order": 0
     },
+    "satellitePlatform": {
+      "name": "satellitePlatform",
+      "remoteName": "filename",
+      "label": "Satellite Platform",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": [
+        "S1A_*",
+        "S1B_*"
+      ],
+      "order": 1
+    },
     "startDate": {
       "name": "startDate",
       "remoteName": "beginPosition",
@@ -18,7 +31,7 @@
       "defaultValue": null,
       "required": true,
       "valueSet": null,
-      "order": 1
+      "order": 2
     },
     "endDate": {
       "name": "endDate",
@@ -28,7 +41,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 2
+      "order": 3
     },
     "footprint": {
       "name": "footprint",
@@ -38,7 +51,7 @@
       "defaultValue": null,
       "required": true,
       "valueSet": null,
-      "order": 3
+      "order": 4
     },
     "productType": {
       "name": "productType",
@@ -52,7 +65,7 @@
         "GRD",
         "OCN"
       ],
-      "order": 4
+      "order": 5
     },
     "polarisation": {
       "name": "polarisation",
@@ -69,7 +82,27 @@
         "HH+HV",
         "VV+VH"
       ],
-      "order": 5
+      "order": 6
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "relativeOrbitNumber",
+      "label": "Relative Orbit",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 7
+    },
+    "orbitDirection": {
+      "name": "orbitDirection",
+      "remoteName": "orbitdirection",
+      "label": "Orbit Direction",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["Ascending", "Descending"],
+      "order": 8
     },
     "sensorOperationalMode": {
       "name": "sensorOperationalMode",
@@ -84,17 +117,7 @@
         "EW",
         "WV"
       ],
-      "order": 6
-    },
-    "tileId": {
-      "name": "tileId",
-      "remoteName": "relativeOrbitNumber",
-      "label": "Relative Orbit",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 7
+      "order": 9
     },
     "productIdentifier": {
       "name": "productIdentifier",
@@ -104,7 +127,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 8
+      "order": 10
     }
   },
   "Sentinel2": {
@@ -118,6 +141,19 @@
       "valueSet": null,
       "order": 0
     },
+    "satellitePlatform": {
+      "name": "satellitePlatform",
+      "remoteName": "filename",
+      "label": "Satellite Platform",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": [
+        "S2A_*",
+        "S2B_*"
+      ],
+      "order": 1
+    },
     "startDate": {
       "name": "startDate",
       "remoteName": "beginPosition",
@@ -126,7 +162,7 @@
       "defaultValue": null,
       "required": true,
       "valueSet": null,
-      "order": 1
+      "order": 2
     },
     "endDate": {
       "name": "endDate",
@@ -136,7 +172,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 2
+      "order": 3
     },
     "footprint": {
       "name": "footprint",
@@ -146,7 +182,7 @@
       "defaultValue": null,
       "required": true,
       "valueSet": null,
-      "order": 3
+      "order": 4
     },
     "productType": {
       "name": "productType",
@@ -156,7 +192,7 @@
       "defaultValue": "S2MSI1C",
       "required": false,
       "valueSet": ["S2MSI1C", "S2MSI2A", "S2MSI2Ap"],
-      "order": 4
+      "order": 5
     },
     "cloudCover": {
       "name": "cloudCover",
@@ -166,7 +202,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 5
+      "order": 6
     },
     "relativeOrbit": {
       "name": "relativeOrbit",
@@ -176,7 +212,17 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 6
+      "order": 7
+    },
+    "orbitDirection": {
+      "name": "orbitDirection",
+      "remoteName": "orbitdirection",
+      "label": "Orbit Direction",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["Ascending", "Descending"],
+      "order": 8
     },
     "productIdentifier": {
       "name": "productIdentifier",
@@ -186,7 +232,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 7
+      "order": 9
     },
     "tileId": {
       "name": "tileId",
@@ -196,7 +242,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 8
+      "order": 10
     }
   },
   "Sentinel3": {
@@ -210,6 +256,19 @@
       "valueSet": null,
       "order": 0
     },
+    "satellitePlatform": {
+      "name": "satellitePlatform",
+      "remoteName": "filename",
+      "label": "Satellite Platform",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": [
+        "S3A_*",
+        "S3B_*"
+      ],
+      "order": 1
+    },
     "startDate": {
       "name": "startDate",
       "remoteName": "beginPosition",
@@ -218,7 +277,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 1
+      "order": 2
     },
     "endDate": {
       "name": "endDate",
@@ -228,7 +287,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 2
+      "order": 3
     },
     "footprint": {
       "name": "footprint",
@@ -238,7 +297,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 3
+      "order": 4
     },
     "productType": {
       "name": "productType",
@@ -248,7 +307,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": ["OL_1_EFR___", "OL_1_ERR___", "OL_2_LFR___", "OL_2_LRR___", "SR_1_SRA___", "SR_1_SRA_A_", "SR_1_SRA_BS", "SR_2_LAN___", "SL_1_RBT___", "SL_2_LST___", "SY_2_SYN___", "SY_2_V10___", "SY_2_VG1___", "SY_2_VGP___"],
-      "order": 4
+      "order": 5
     },
     "timeliness": {
       "name": "timeliness",
@@ -258,7 +317,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": ["Near Real Time", "Short Time Critical", "Non Time Critical"],
-      "order": 5
+      "order": 6
     },
     "relativeOrbit": {
       "name": "relativeOrbit",
@@ -268,7 +327,17 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 6
+      "order": 7
+    },
+    "orbitDirection": {
+      "name": "orbitDirection",
+      "remoteName": "orbitdirection",
+      "label": "Orbit Direction",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["Ascending", "Descending"],
+      "order": 8
     },
     "productIdentifier": {
       "name": "productIdentifier",
@@ -278,7 +347,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 7
+      "order": 9
     },
     "instrumentshortname": {
       "name": "instrumentshortname",
@@ -288,7 +357,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": ["OLCI", "SRAL", "SLSTR", "SYNERGY"],
-      "order": 8
+      "order": 10
     },
     "productlevel": {
       "name": "productlevel",
@@ -298,7 +367,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": ["L1", "L2"],
-      "order": 9
+      "order": 11
     }
   }
 }

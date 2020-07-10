@@ -1,6 +1,5 @@
 package ro.cs.tao.datasource.remote.creodias.parameters;
 
-import ro.cs.tao.configuration.Configuration;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
@@ -17,7 +16,7 @@ import java.util.Properties;
 public class CreodiasParameterProvider extends AbstractParameterProvider {
 
     public CreodiasParameterProvider(CreoDiasDataSource dataSource) {
-        final String targetFolder = ConfigurationManager.getInstance().getValue(Configuration.FileSystem.PRODUCTS_LOCATION);
+        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
                     put("Sentinel1", new NoDownloadStrategy(dataSource, targetFolder, new Properties()));

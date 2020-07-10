@@ -15,7 +15,6 @@
  */
 package ro.cs.tao.datasource.remote.aws.parameters;
 
-import ro.cs.tao.configuration.Configuration;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
@@ -33,7 +32,7 @@ public class AWSParameterProvider extends AbstractParameterProvider {
 
     public AWSParameterProvider(AWSDataSource dataSource) {
         super();
-        final String targetFolder = ConfigurationManager.getInstance().getValue(Configuration.FileSystem.PRODUCTS_LOCATION);
+        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
                     put("Sentinel2", new Sentinel2Strategy(dataSource, targetFolder));

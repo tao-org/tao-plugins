@@ -4,6 +4,7 @@ import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.aws.AWSDataSource;
+import ro.cs.tao.datasource.util.Constants;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.HttpMethod;
@@ -43,7 +44,7 @@ public abstract class AWSStrategy extends DownloadStrategy {
 
     protected Path downloadFile(String remoteUrl, Path file) throws IOException, InterruptedException {
         checkCancelled();
-        String subActivity = remoteUrl.substring(remoteUrl.lastIndexOf(URL_SEPARATOR) + 1);
+        String subActivity = remoteUrl.substring(remoteUrl.lastIndexOf(Constants.URL_SEPARATOR) + 1);
         if ("$value".equals(subActivity)) {
             subActivity = file.getFileName().toString();
         }

@@ -1,10 +1,20 @@
 package ro.cs.tao.datasource.remote.mundi.sentinel1;
 
+import ro.cs.tao.datasource.converters.ConverterFactory;
+import ro.cs.tao.datasource.converters.SimpleDateParameterConverter;
 import ro.cs.tao.datasource.remote.mundi.BaseDataQuery;
 import ro.cs.tao.datasource.remote.mundi.MundiDataSource;
 import ro.cs.tao.datasource.remote.mundi.parsers.Sentinel1ResponseHandler;
 
+import java.util.Date;
+
 public class Sentinel1Query extends BaseDataQuery {
+
+    static {
+        ConverterFactory factory = new ConverterFactory();
+        factory.register(SimpleDateParameterConverter.class, Date.class);
+        converterFactory.put(Sentinel1Query.class, factory);
+    }
 
     public Sentinel1Query(MundiDataSource source, String sensorName, String connectionString) {
         super(source, sensorName, connectionString);

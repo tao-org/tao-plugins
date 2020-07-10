@@ -20,9 +20,9 @@ import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
-import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.aws.internal.AwsResult;
 import ro.cs.tao.datasource.remote.aws.internal.IntermediateParser;
+import ro.cs.tao.datasource.util.Constants;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
@@ -161,7 +161,7 @@ class Landsat8Query extends DataQuery {
                 }
                 String path = tile.substring(0, 3);
                 String row = tile.substring(3, 6);
-                String tileUrl = (preCollection ? alternateUrl : baseUrl) + path + DownloadStrategy.URL_SEPARATOR + row + DownloadStrategy.URL_SEPARATOR;
+                String tileUrl = (preCollection ? alternateUrl : baseUrl) + path + Constants.URL_SEPARATOR + row + Constants.URL_SEPARATOR;
                 final AwsResult preCollectionResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, tileUrl));
                 if (preCollectionResult.getCommonPrefixes() != null) {
                     Set<String> names = preCollectionResult.getCommonPrefixes().stream()
@@ -173,7 +173,7 @@ class Landsat8Query extends DataQuery {
                                 Landsat8ProductHelper temporaryDescriptor = new Landsat8ProductHelper(name);
                                 Calendar productDate = temporaryDescriptor.getAcquisitionDate();
                                 if (startDate.before(productDate) && endDate.after(productDate)) {
-                                    String jsonTile = tileUrl + name + DownloadStrategy.URL_SEPARATOR + name + "_MTL.json";
+                                    String jsonTile = tileUrl + name + Constants.URL_SEPARATOR + name + "_MTL.json";
                                     jsonTile = jsonTile.replace(L8_SEARCH_URL_SUFFIX, "");
                                     double clouds = getTileCloudPercentage(jsonTile);
                                     if (clouds > cloudFilter) {
@@ -196,7 +196,7 @@ class Landsat8Query extends DataQuery {
                         }
                     }
                 }
-                tileUrl = baseUrl + path + DownloadStrategy.URL_SEPARATOR + row + DownloadStrategy.URL_SEPARATOR;
+                tileUrl = baseUrl + path + Constants.URL_SEPARATOR + row + Constants.URL_SEPARATOR;
                 final AwsResult productResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, tileUrl));
                 if (productResult.getCommonPrefixes() != null) {
                     Set<String> names = productResult.getCommonPrefixes().stream()
@@ -208,7 +208,7 @@ class Landsat8Query extends DataQuery {
                                 Landsat8ProductHelper temporaryDescriptor = new Landsat8ProductHelper(name);
                                 Calendar productDate = temporaryDescriptor.getAcquisitionDate();
                                 if (startDate.before(productDate) && endDate.after(productDate)) {
-                                    String jsonTile = tileUrl + name + DownloadStrategy.URL_SEPARATOR + name + "_MTL.json";
+                                    String jsonTile = tileUrl + name + Constants.URL_SEPARATOR + name + "_MTL.json";
                                     jsonTile = jsonTile.replace(L8_SEARCH_URL_SUFFIX, "");
                                     double clouds = getTileCloudPercentage(jsonTile);
                                     if (clouds > cloudFilter) {

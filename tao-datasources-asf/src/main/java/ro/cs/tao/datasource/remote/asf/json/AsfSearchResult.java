@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.*;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +33,7 @@ import java.util.Map;
         "stringFootprint",
         "downloadUrl",
         "thumbnailUrl",
+        "sceneDate",
         "processingDate",
         "sizeMB",
         "fileName",
@@ -61,6 +61,8 @@ public class AsfSearchResult {
     private String thumbnailUrl;
     @JsonProperty("browse")
     private String browseUrl;
+    @JsonProperty("sceneDate")
+    private Date sceneDate;
     @JsonProperty("processingDate")
     private Date processingDate;
     @JsonProperty("sizeMB")
@@ -148,6 +150,10 @@ public class AsfSearchResult {
     public void setBrowseUrl(String browseUrl) {
         this.browseUrl = browseUrl;
     }
+
+    public Date getSceneDate() { return sceneDate; }
+
+    public void setSceneDate(Date sceneDate) { this.sceneDate = sceneDate; }
 
     public Date getProcessingDate() {
         return processingDate;

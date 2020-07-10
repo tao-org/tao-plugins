@@ -15,19 +15,20 @@
  */
 package ro.cs.tao.datasource.remote.scihub.download;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
-import ro.cs.tao.datasource.remote.ProductHelper;
 import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.eodata.util.ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -110,17 +111,23 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
         }*/
         final String statusUrl = getProductOnlineStatusUrl(product);
         if (statusUrl != null) {
-            HttpURLConnection connection = NetUtils.openConnection(statusUrl, getAuthenticationToken());
-            try (InputStream inputStream = connection.getInputStream()) {
-                byte[] buffer = new byte[256];
-                if (inputStream.read(buffer) == -1 && !Boolean.parseBoolean(new String(buffer))) {
-                    throw new IOException(String.format("Product %s is not online", productName));
+            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, statusUrl, this.credentials)) {
+                int statusCode = response.getStatusLine().getStatusCode();
+                logger.finest(String.format("GET %s received status code %d and content", statusUrl, statusCode));
+                switch (statusCode) {
+                    case 200:
+                        final String body = EntityUtils.toString(response.getEntity());
+                        logger.finest(String.format("Content: %s", body));
+                        if (!Boolean.parseBoolean(body)) {
+                            throw new IOException(String.format("Product %s is not online", productName));
+                        }
+                        break;
+                    case 401:
+                        throw new IOException("The supplied credentials are invalid or the user is unauthorized");
+                    default:
+                        throw new IOException(String.format("The request was not successful. Reason: %s",
+                                                            response.getStatusLine().getReasonPhrase()));
                 }
-            } catch (IOException inner) {
-                logger.warning(String.format("Cannot determine online status for product %s", productName));
-                throw inner;
-            } finally {
-                connection.disconnect();
             }
         }
         return downloadFile(getProductUrl(product), rootPath, getAuthenticationToken());
@@ -140,7 +147,7 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
     }
 
     @Override
-    protected Path check(EOProduct product, Path sourceRoot) {
+    protected Path check(EOProduct product, Path sourceRoot) throws IOException {
         Path path = super.check(product, sourceRoot);
         if (path != null) {
             ProductHelper helper = SentinelProductHelper.create(product.getName());
@@ -152,7 +159,7 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
         return path;
     }
 
-    class ODataPath {
+    static class ODataPath {
         private StringBuilder buffer;
 
         ODataPath() {

@@ -16,7 +16,6 @@
 package ro.cs.tao.datasource.remote.asf.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import ro.cs.tao.datasource.remote.asf.json.AsfSearchResult;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
@@ -26,6 +25,7 @@ import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,7 +58,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     product.setGeometry(r.getFootprint());
                     product.setLocation(r.getDownloadUrl());
                     product.setProcessingDate(r.getProcessingDate());
-                    product.setAcquisitionDate(r.getProcessingDate());
+                    product.setAcquisitionDate(r.getSceneDate());
                     String thumbnailUrl = r.getThumbnailUrl();
                     if(!"NA".equalsIgnoreCase(thumbnailUrl) && !"N/A".equalsIgnoreCase(thumbnailUrl)){
                         product.setQuicklookLocation(r.getThumbnailUrl());
@@ -105,7 +105,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
             }).collect(Collectors.toList());
         }
 
-        return Lists.newArrayList();
+        return new ArrayList<>();
 
     }
 }

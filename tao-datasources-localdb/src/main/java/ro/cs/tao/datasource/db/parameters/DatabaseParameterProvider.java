@@ -15,6 +15,7 @@
  */
 package ro.cs.tao.datasource.db.parameters;
 
+import ro.cs.tao.Tuple;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.db.DatabaseSource;
@@ -27,7 +28,6 @@ import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
-import ro.cs.tao.utils.Tuple;
 
 import java.util.*;
 

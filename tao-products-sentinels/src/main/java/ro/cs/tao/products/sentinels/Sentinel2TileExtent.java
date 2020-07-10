@@ -15,8 +15,8 @@
  */
 package ro.cs.tao.products.sentinels;
 
-import ro.cs.tao.datasource.util.TileExtent;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.eodata.util.TileExtent;
 
 import java.io.BufferedReader;
 import java.io.IOException;

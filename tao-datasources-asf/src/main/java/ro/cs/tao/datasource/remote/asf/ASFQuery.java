@@ -48,10 +48,11 @@ import java.util.Map;
 public class ASFQuery extends DataQuery {
 
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-    private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
 
     static {
-        converterFactory.register(DateParameterConverter.class, Date.class);
+        final ConverterFactory factory = new ConverterFactory();
+        factory.register(DateParameterConverter.class, Date.class);
+        converterFactory.put(ASFQuery.class, factory);
     }
 
     public ASFQuery(ASFDataSource source, String sensorName) {
@@ -63,11 +64,14 @@ public class ASFQuery extends DataQuery {
         return "ASFQuery";
     }
 
+    @Override
+    public boolean supportsPaging() { return false; }
+
     protected List<EOProduct> executeImpl() {
         List<EOProduct> results = new ArrayList<>();
         List<NameValuePair> params = new ArrayList<>();
         for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
-            QueryParameter parameter = entry.getValue();
+            QueryParameter<?> parameter = entry.getValue();
             if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                 throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
             }
@@ -77,7 +81,7 @@ public class ASFQuery extends DataQuery {
                 continue;
             }
             try {
-                params.add(new BasicNameValuePair(getRemoteName(parameter.getName()), converterFactory.create(parameter).stringValue()));
+                params.add(new BasicNameValuePair(getRemoteName(parameter.getName()), getParameterValue(parameter)));
             } catch (ConversionException e) {
                 throw new QueryException(e.getMessage());
             }

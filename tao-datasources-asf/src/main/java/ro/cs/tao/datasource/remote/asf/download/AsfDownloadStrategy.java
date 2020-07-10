@@ -97,17 +97,27 @@ public class AsfDownloadStrategy extends DownloadStrategy {
 
         try {
             //1. connect to product download URL and follow all redirects
-            HttpURLConnection connection = NetUtils.openConnection(productDownloadUrl, getAuthenticationToken());
-            connection.setInstanceFollowRedirects(true);
+            final String token = getAuthenticationToken();
+            HttpURLConnection connection = NetUtils.openConnection(productDownloadUrl, token);
+            connection.setInstanceFollowRedirects(false);
             connection.connect();
-            responseStatus = connection.getResponseCode();
+            boolean secondRedirect = false;
             do {
+                responseStatus = connection.getResponseCode();
                 switch (responseStatus) {
                     case HttpStatus.SC_OK:
-                        return connection;
+                        connection = NetUtils.openConnection(connection.getURL().toString(), token);
+                        connection.setInstanceFollowRedirects(true);
+                        connection.connect();
+                        if (secondRedirect) {
+                            return connection;
+                        }
+                        numberOfTries++;
+                        break;
                     case HttpStatus.SC_MULTIPLE_CHOICES:
                     case HttpStatus.SC_MOVED_PERMANENTLY:
                     case HttpStatus.SC_MOVED_TEMPORARILY:
+                    case HttpStatus.SC_SEE_OTHER:
                         /**
                          * This may occur if redirect from http to https or vice versa. See:
                          * https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4620571
@@ -120,9 +130,18 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                         // get redirect url from "location" header field
                         String newUrl = connection.getHeaderField("Location");
                         // open the new connnection again
-                        connection = NetUtils.openConnection(newUrl, getAuthenticationToken());
+                        secondRedirect = connection.getInstanceFollowRedirects();
+                        connection = NetUtils.openConnection(newUrl, token);
+                        connection.setInstanceFollowRedirects(secondRedirect);
+                        connection.connect();
+                        numberOfTries++;
+                        break;
+                    case HttpStatus.SC_TEMPORARY_REDIRECT:
+                        newUrl = connection.getHeaderField("Location");
+                        // open the new connnection again
+                        connection = NetUtils.openConnection(newUrl, token);
                         connection.setInstanceFollowRedirects(true);
-                        responseStatus = connection.getResponseCode();
+                        connection.connect();
                         numberOfTries++;
                         break;
                     case HttpStatus.SC_BAD_REQUEST:
@@ -145,7 +164,7 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                         //try to reconnect without providing authentication header
                         connection = NetUtils.openConnection(downloadUrl.toString());
                         connection.setInstanceFollowRedirects(true);
-                        responseStatus = connection.getResponseCode();
+                        connection.connect();
                         numberOfTries++;
                         break;
                     case HttpStatus.SC_UNAUTHORIZED:
@@ -155,8 +174,7 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                                 connection.getResponseCode(), connection.getResponseMessage()));
 
                 }
-            } while (numberOfTries < 5);
-
+            } while (numberOfTries < 10);
         } catch (IOException e) {
             throw new QueryException(String.format("The request was not successful. Reason: %s", e.getMessage()));
         }
@@ -174,7 +192,8 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                             extension.equalsIgnoreCase(TAR_GZ_EXTENSION) ||
                             extension.equalsIgnoreCase(KMZ_EXTENSION));
             subActivityStart(product.getName());
-            Path archivePath = Paths.get(destination, product.getName() + extension);
+            final String archiveName = (product.getId() != null ? product.getId() : product.getName()) + extension;
+            Path archivePath = Paths.get(destination, archiveName);
             FileUtilities.ensureExists(Paths.get(destination));
             Files.deleteIfExists(archivePath);
             SeekableByteChannel outputStream = null;
@@ -268,7 +287,7 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                 Paths.get(archivePath.toString().replace(".zip", ""));
     }
 
-    protected Path extract(Path archivePath, Path targetPath) {
+    protected Path extract(Path archivePath, Path targetPath) throws IOException {
         logger.fine(String.format("Begin decompressing %s into %s", archivePath.getFileName(), targetPath));
         Path result = archivePath.toString().endsWith(".tar.gz") ?
                 Zipper.decompressTarGz(archivePath, targetPath, true) :

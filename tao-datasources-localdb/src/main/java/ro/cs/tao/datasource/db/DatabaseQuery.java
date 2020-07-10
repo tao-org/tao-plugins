@@ -45,13 +45,13 @@ import java.util.logging.Logger;
  */
 public class DatabaseQuery extends DataQuery {
 
-    private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
     private Logger logger;
 
-
     static {
-        converterFactory.register(PolygonParameterConverter.class, Polygon2D.class);
-        converterFactory.register(DateParameterConverter.class, Date.class);
+        ConverterFactory factory = new ConverterFactory();
+        factory.register(PolygonParameterConverter.class, Polygon2D.class);
+        factory.register(DateParameterConverter.class, Date.class);
+        converterFactory.put(DatabaseQuery.class, factory);
     }
     DatabaseQuery(DatabaseSource source, String sensorName) {
         super(source, sensorName);
