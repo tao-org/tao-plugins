@@ -12,6 +12,9 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.eodata.util.ProductHelper;
+import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
+import ro.cs.tao.products.sentinels.SentinelProductHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +33,7 @@ public class Sentinel2JsonResponseHandler implements JSonResponseHandler<EOProdu
             ResultSet results = mapper.readValue(content, ResultSet.class);
             List<Feature> features = results.getFeatures();
             if (features != null) {
+                ProductHelper productHelper;
                 for (Feature feature : features) {
                     try {
                         Result result = feature.getProperties();
@@ -62,6 +66,8 @@ public class Sentinel2JsonResponseHandler implements JSonResponseHandler<EOProdu
                         product.setLocation(result.getProductIdentifier());
                         product.setAcquisitionDate(new DateAdapter().unmarshal(result.getStartDate()));
                         product.addAttribute("cloudcoverpercentage", String.valueOf(result.getCloudCover()));
+                        productHelper = SentinelProductHelper.create(result.getTitle());
+                        product.addAttribute("tiles", ((Sentinel2ProductHelper) productHelper).getTileIdentifier());
                         products.add(product);
                     } catch (Exception ex) {
                         logger.warning("Error parsing JSON: " + ex.getMessage());
