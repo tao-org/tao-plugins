@@ -18,8 +18,8 @@ package ro.cs.tao.eodata;
 
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import ro.cs.tao.configuration.Configuration;
 import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.MetadataInspector;
@@ -54,16 +54,16 @@ public class GdalInfoWrapper implements MetadataInspector {
     private static final String[] gdalOnDocker;
 
     static {
-        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
-        gdalDockerImage = configurationManager.getValue("docker.gdal.image", "geodata/gdal");
-        useDocker = Boolean.parseBoolean(configurationManager.getValue(Configuration.Docker.PLUGINS_USE_DOCKER, "false")) && DockerHelper.isDockerFound();
-        extractStatistics = Boolean.parseBoolean(configurationManager.getValue("extract.statistics", "true"));
-        extractHistogram = Boolean.parseBoolean(configurationManager.getValue("extract.histogram", "false"));
+        final ConfigurationProvider configurationProvider = ConfigurationManager.getInstance();
+        gdalDockerImage = configurationProvider.getValue("docker.gdal.image", "geodata/gdal");
+        useDocker = Boolean.parseBoolean(configurationProvider.getValue("plugins.use.docker", "false")) && DockerHelper.isDockerFound();
+        extractStatistics = Boolean.parseBoolean(configurationProvider.getValue("extract.statistics", "true"));
+        extractHistogram = Boolean.parseBoolean(configurationProvider.getValue("extract.histogram", "false"));
         Logger.getLogger(GdalInfoWrapper.class.getName())
                 .fine(String.format("'gdalinfo' will be run %s. Statistics extraction is %s, histogram extraction is %s",
-                                      useDocker ? "using Docker [" + gdalDockerImage + "]" : "from command line",
-                                      extractStatistics ? "enabled" : "disabled",
-                                      extractHistogram ? "enabled" : "disabled"));
+                                    useDocker ? "using Docker [" + gdalDockerImage + "]" : "from system path",
+                                    extractStatistics ? "enabled" : "disabled",
+                                    extractHistogram ? "enabled" : "disabled"));
         List<String> args = new ArrayList<>();
         args.add("gdalinfo");
         if (extractStatistics) {
@@ -185,37 +185,36 @@ public class GdalInfoWrapper implements MetadataInspector {
                                 .findFirst().ifPresent(identifier -> finalMetadata.setCrs(identifier.getCodeSpace() + ":" + identifier.getCode()));
                     }
                 }
-                JsonObject extentObject = root.getJsonObject("wgs84Extent");
+                JsonObject extentObject = root.getJsonObject("cornerCoordinates");
+                if (extentObject != null) {
+                    Polygon2D polygon2D = new Polygon2D();
+                    JsonArray ul = extentObject.getJsonArray("upperLeft");
+                    if (ul != null) {
+                        polygon2D.append(ul.getJsonNumber(0).doubleValue(),
+                                ul.getJsonNumber(1).doubleValue());
+                        JsonArray point = extentObject.getJsonArray("lowerLeft");
+                        polygon2D.append(point.getJsonNumber(0).doubleValue(),
+                                point.getJsonNumber(1).doubleValue());
+                        point = extentObject.getJsonArray("lowerRight");
+                        polygon2D.append(point.getJsonNumber(0).doubleValue(),
+                                point.getJsonNumber(1).doubleValue());
+                        point = extentObject.getJsonArray("upperRight");
+                        polygon2D.append(point.getJsonNumber(0).doubleValue(),
+                                point.getJsonNumber(1).doubleValue());
+                        polygon2D.append(ul.getJsonNumber(0).doubleValue(),
+                                ul.getJsonNumber(1).doubleValue());
+                        metadata.setFootprint(polygon2D.toWKT(8));
+                    }
+                }
+                extentObject = root.getJsonObject("wgs84Extent");
                 if (extentObject != null) {
                     Polygon2D polygon2D = new Polygon2D();
                     JsonArray points = extentObject.getJsonArray("coordinates").getJsonArray(0);
                     for (int i = 0; i < points.size(); i++) {
                         polygon2D.append(points.getJsonArray(i).getJsonNumber(0).doubleValue(),
-                                         points.getJsonArray(i).getJsonNumber(1).doubleValue());
+                                points.getJsonArray(i).getJsonNumber(1).doubleValue());
                     }
-                    metadata.setFootprint(polygon2D.toWKT(8));
-                } else {
-                    extentObject = root.getJsonObject("cornerCoordinates");
-                    if (extentObject != null) {
-                        Polygon2D polygon2D = new Polygon2D();
-                        JsonArray ul = extentObject.getJsonArray("upperLeft");
-                        if (ul != null) {
-                            polygon2D.append(ul.getJsonNumber(0).doubleValue(),
-                                             ul.getJsonNumber(1).doubleValue());
-                            JsonArray point = extentObject.getJsonArray("lowerLeft");
-                            polygon2D.append(point.getJsonNumber(0).doubleValue(),
-                                             point.getJsonNumber(1).doubleValue());
-                            point = extentObject.getJsonArray("lowerRight");
-                            polygon2D.append(point.getJsonNumber(0).doubleValue(),
-                                             point.getJsonNumber(1).doubleValue());
-                            point = extentObject.getJsonArray("upperRight");
-                            polygon2D.append(point.getJsonNumber(0).doubleValue(),
-                                             point.getJsonNumber(1).doubleValue());
-                            polygon2D.append(ul.getJsonNumber(0).doubleValue(),
-                                             ul.getJsonNumber(1).doubleValue());
-                            metadata.setFootprint(polygon2D.toWKT(8));
-                        }
-                    }
+                    metadata.setWgs84footprint(polygon2D.toWKT(8));
                 }
                 JsonArray bandsArray = root.getJsonArray("bands");
                 JsonObject jsonObject = bandsArray.size() > 0 ? bandsArray.getJsonObject(0) : null;

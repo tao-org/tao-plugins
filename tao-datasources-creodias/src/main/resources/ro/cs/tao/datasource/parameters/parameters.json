@@ -89,19 +89,29 @@
       "required": false,
       "valueSet": null,
       "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "orbitNumber",
+      "label": "Relative Orbit",
+      "type": "java.lang.Short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "status" : {
+      "name":"status",
+      "remoteName":"status",
+      "label": "Status",
+      "type":"java.lang.String",
+      "defaultValue":"all",
+      "required":false,
+      "valueSet":["all","31","32","34","37","0"],
+      "order":0
     }
   },
   "Sentinel2": {
-    "processingLevel": {
-      "name": "processingLevel",
-      "remoteName": "processingLevel",
-      "label": "Processing Level",
-      "type": "java.lang.String",
-      "defaultValue": "LEVEL1C",
-      "required": false,
-      "valueSet": ["LEVEL1C", "LEVEL2A", "LEVEL2AP", "LEVELL1C", "LEVELL2A"],
-      "order": 0
-    },
     "productType": {
       "name": "productType",
       "remoteName": "productType",
@@ -171,6 +181,26 @@
       "required": false,
       "valueSet": null,
       "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "productIdentifier",
+      "label": "UTM Tile",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "status" : {
+      "name":"status",
+      "remoteName":"status",
+      "label": "Status",
+      "type":"java.lang.String",
+      "defaultValue":"all",
+      "required":false,
+      "valueSet":["all","31","32","34","37","0"],
+      "order":0
     }
   },
   "Landsat8": {

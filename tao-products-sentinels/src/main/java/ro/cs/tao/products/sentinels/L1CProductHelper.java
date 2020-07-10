@@ -15,8 +15,6 @@
  */
 package ro.cs.tao.products.sentinels;
 
-import ro.cs.tao.datasource.remote.DownloadStrategy;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -85,10 +83,10 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
             month = String.valueOf(Integer.parseInt(dateToken.substring(4, 6)));
             day = String.valueOf(Integer.parseInt(dateToken.substring(6, 8)));
         }
-        return year + DownloadStrategy.URL_SEPARATOR
-                + month + DownloadStrategy.URL_SEPARATOR
-                + day + DownloadStrategy.URL_SEPARATOR
-                + this.name + DownloadStrategy.URL_SEPARATOR;
+        return year + URL_SEPARATOR
+                + month + URL_SEPARATOR
+                + day + URL_SEPARATOR
+                + this.name + URL_SEPARATOR;
     }
 
     @Override
@@ -176,7 +174,7 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
             fileName = String.join("_", Arrays.copyOfRange(tokens, 0, 6)) + "__" + String.join("_", Arrays.copyOfRange(tokens, 6, 9)) + "_" + band;
         } else {
             tokens = getTokens(ProductV14, prodName, null);
-            fileName = tokens[5] + "_" + tokens[2] + "_" + band;
+            fileName = "T" + tokens[5] + "_" + tokens[2] + "_" + band;
         }
         return fileName;
     }

@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * S3AuthenticationV4 class for S3 VFS.
@@ -61,6 +62,7 @@ class S3AuthenticationV4 {
     private static final String AWS_ACCESS_KEY_ID_NAME = "<Credential>";
     private static final String AWS_SIGNATURE_NAME = "<Signature>";
     private static final String AWS_AUTHORIZATION_TOKEN_VALUE = AWS_SIGNATURE_ALGORITHM_NAME + " Credential=" + AWS_ACCESS_KEY_ID_NAME + "/" + SCOPE_NAME + ", SignedHeaders=" + SIGNED_HEADERS_NAME + ", Signature=" + AWS_SIGNATURE_NAME;
+    private static final String AWS_URL_REGEX = "^https?://[\\w\\-.]+\\.s3\\.([\\w\\-]*)\\.?amazonaws\\.com/?[\\w\\-.]+/?$";
     private final String httpVerb;
     private final String region;
     private final String accessKeyId;
@@ -97,13 +99,18 @@ class S3AuthenticationV4 {
 
     static String fetchRegionName(URL url) {
         String regionName = "eu-central-1";
+        if (Pattern.compile(AWS_URL_REGEX).matcher(url.toString()).matches()) {
+            regionName = Pattern.compile(AWS_URL_REGEX).matcher(url.toString()).group(1);
+        }
         try {
             URL s3ServiceURL = new URL(url.getProtocol() + "://" + url.getHost());
-
             HttpURLConnection connection = (HttpURLConnection) s3ServiceURL.openConnection();
             if (connection != null) {
                 connection.connect();
-                regionName = connection.getHeaderField("x-amz-bucket-region");
+                String connectionRegionName = connection.getHeaderField("x-amz-bucket-region");
+                if (connectionRegionName != null && !connectionRegionName.isEmpty()) {
+                    regionName = connectionRegionName;
+                }
             }
         } catch (Exception ignored) {
             //nothing

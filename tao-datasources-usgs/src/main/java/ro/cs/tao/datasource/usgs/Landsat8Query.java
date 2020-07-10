@@ -55,12 +55,13 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class Landsat8Query extends DataQuery {
 
-    private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
     private static final Map<String, Integer> fieldIds;
     private String apiKey;
 
     static {
-        converterFactory.register(USGSDateParameterConverter.class, Date.class);
+        ConverterFactory factory = new ConverterFactory();
+        factory.register(USGSDateParameterConverter.class, Date.class);
+        converterFactory.put(Landsat8Query.class, factory);
         fieldIds = new HashMap<>();
     }
 
@@ -90,15 +91,15 @@ public class Landsat8Query extends DataQuery {
         try {
             retVal = (long) executeQuery(1, 1, pathRows, true);
         } catch (Exception e) {
-            logger.warning(e.getMessage());
+            throw new QueryException(e);
         }
         return retVal;
     }
 
     private Set<String> getPathRows() {
         Set<String> pathRows = null;
-        for (QueryParameter parameter : this.parameters.values()) {
-            final Class parameterType = parameter.getType();
+        for (QueryParameter<?> parameter : this.parameters.values()) {
+            final Class<?> parameterType = parameter.getType();
             final Object parameterValue = parameter.getValue();
             if (parameterType.isArray() && String[].class.isAssignableFrom(parameterType)) {
                 // we have an array of rows and paths
@@ -258,17 +259,17 @@ public class Landsat8Query extends DataQuery {
              parameters.containsKey(CommonParameterNames.TILE)) {
             parameters.remove(CommonParameterNames.FOOTPRINT);
         }
-        for (QueryParameter parameter : parameters.values()) {
+        for (QueryParameter<?> parameter : parameters.values()) {
             try {
                 switch (parameter.getName()) {
                     case CommonParameterNames.PLATFORM:
                         request.withDataSet(parameter.getValueAsString());
                         break;
                     case CommonParameterNames.START_DATE:
-                        request.withStartDate(converterFactory.create(parameter).stringValue());
+                        request.withStartDate(getParameterValue(parameter));
                         break;
                     case CommonParameterNames.END_DATE:
-                        request.withEndDate(converterFactory.create(parameter).stringValue());
+                        request.withEndDate(getParameterValue(parameter));
                         break;
                     case CommonParameterNames.FOOTPRINT:
                         Polygon2D footprint = (Polygon2D) parameter.getValue();

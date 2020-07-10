@@ -15,7 +15,7 @@
  */
 package ro.cs.tao.products.sentinels;
 
-import ro.cs.tao.datasource.remote.ProductHelper;
+import ro.cs.tao.eodata.util.ProductHelper;
 
 import java.util.regex.Pattern;
 
@@ -25,7 +25,8 @@ import java.util.regex.Pattern;
 public class Sentinel3ProductHelper extends ProductHelper {
 
     static final Pattern S3Pattern =
-            Pattern.compile("(S3[AB])_(OL|SR|SL|ST)_(\\d{1})_(EFR___|ERR___|LFR___|LRR___|SRA___|SRA_A_|SRA_BS|LAN___|RBT___|LST___|SYN___|V10___|VG1___|VGP___)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{4})_(\\d{3})_(\\d{3})______(\\w{3})_(\\w{1})_(\\w{2})_(\\d{3})(?:.SEN3)?");
+            //Pattern.compile("(S3[AB])_(OL|SR|SL|ST)_(\\d{1})_(EFR___|ERR___|LFR___|LRR___|SRA___|SRA_A_|SRA_BS|LAN___|RBT___|LST___|SYN___|V10___|VG1___|VGP___)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{4})_(\\d{3})_(\\d{3})______(\\w{3})_(\\w{1})_(\\w{2})_(\\d{3})(?:.SEN3)?");
+            Pattern.compile("(S3[AB])_(OL|SR|SL|ST|SY)_(\\d{1})_(EFR___|ERR___|LFR___|LRR___|SRA___|SRA_A_|SRA_BS|LAN___|RBT___|LST___|SYN___|V10___|VG1___|VGP___)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(((\\d{4})_(\\d{3})_(\\d{3})_(\\d{4}|____))|([\\w_]{17}))_(\\w{3})_(\\w{1})_(\\w{2})_(\\d{3})(?:.SEN3)?");
 
     Sentinel3ProductHelper() { super(); }
 

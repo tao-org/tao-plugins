@@ -27,7 +27,6 @@ import ro.cs.tao.datasource.converters.ConverterFactory;
 import ro.cs.tao.datasource.converters.DateParameterConverter;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
-import ro.cs.tao.datasource.remote.ProductHelper;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
@@ -38,6 +37,7 @@ import ro.cs.tao.datasource.remote.scihub.xml.SciHubXmlCountResponseHandler;
 import ro.cs.tao.datasource.remote.scihub.xml.SciHubXmlResponseHandler;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.eodata.util.ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
@@ -56,16 +56,16 @@ import java.util.stream.Collectors;
  */
 public class SciHubDataQuery extends DataQuery {
 
-    //private static final String PATTERN_DATE = "NOW";
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-    private static final ConverterFactory converterFactory = ConverterFactory.getInstance();
 
     private final String sensorName;
 
     static {
-        converterFactory.register(SciHubPolygonParameterConverter.class, Polygon2D.class);
-        converterFactory.register(DateParameterConverter.class, Date.class);
-        converterFactory.register(DoubleParameterConverter.class, Double.class);
+        final ConverterFactory factory = new ConverterFactory();
+        factory.register(SciHubPolygonParameterConverter.class, Polygon2D.class);
+        factory.register(DateParameterConverter.class, Date.class);
+        factory.register(DoubleParameterConverter.class, Double.class);
+        converterFactory.put(SciHubDataQuery.class, factory);
     }
 
     SciHubDataQuery(SciHubDataSource source, String sensorName) {
@@ -103,15 +103,15 @@ public class SciHubDataQuery extends DataQuery {
             do {
                 count = 0;
                 List<NameValuePair> params = new ArrayList<>();
-                if (this.source.getConnectionString().contains("dhus")) {
+                /*if (this.source.getConnectionString().contains("dhus")) {
                     params.add(new BasicNameValuePair("limit", String.valueOf(pageSize)));
                     params.add(new BasicNameValuePair("offset", String.valueOf((i - 1) * pageSize)));
-                    params.add(new BasicNameValuePair("filter", query.getValue()));
-                } else {
+                    params.add(new BasicNameValuePair("q", query.getValue()));
+                } else {*/
                     params.add(new BasicNameValuePair("rows", String.valueOf(pageSize)));
                     params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize)));
                     params.add(new BasicNameValuePair("q", query.getValue()));
-                }
+                //}
                 params.add(new BasicNameValuePair("orderby", "beginposition asc"));
                 String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 final boolean hasProcessingDate = "Sentinel2".equals(this.sensorName) || "Sentinel3".equals(this.sensorName);
@@ -124,7 +124,7 @@ public class SciHubDataQuery extends DataQuery {
                             boolean isXml = rawResponse.startsWith("<?xml");
                             if (isXml) {
                                 parser = new XmlResponseParser<>();
-                                ((XmlResponseParser) parser).setHandler(new SciHubXmlResponseHandler("entry"));
+                                ((XmlResponseParser<?>) parser).setHandler(new SciHubXmlResponseHandler("entry"));
                             } else {
                                 parser = new JsonResponseParser<>(new SciHubJsonResponseHandler((SciHubDataSource) this.source));
                             }
@@ -282,6 +282,18 @@ public class SciHubDataQuery extends DataQuery {
             queries.put(UUID.randomUUID().toString(), query.toString());
             query.setLength(0);
         } else {
+            final QueryParameter startDate = this.parameters.get(CommonParameterNames.START_DATE);
+            final QueryParameter endDate = this.parameters.get(CommonParameterNames.END_DATE);
+            // SciHub requires beginDate and endDate to be of form [start,end]
+            // If only the value is set for these parameters, we have to "correct" them
+            if (startDate != null && !startDate.isInterval() && endDate != null) {
+                startDate.setMinValue(startDate.getValue());
+                startDate.setMaxValue(endDate.isInterval() ? endDate.getMaxValue() : endDate.getValue());
+            }
+            if (endDate != null && !endDate.isInterval() && startDate != null) {
+                endDate.setMinValue(startDate.isInterval() ? startDate.getMinValue() : startDate.getValue());
+                endDate.setMaxValue(endDate.getValue());
+            }
             for (String footprint : footprints) {
                 int idx = 0;
                 for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
@@ -308,7 +320,7 @@ public class SciHubDataQuery extends DataQuery {
                                     QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
                                                                                                "footprint",
                                                                                                Polygon2D.fromWKT(footprint));
-                                    query.append(converterFactory.create(fakeParam).stringValue());
+                                    query.append(getParameterValue(fakeParam));
                                 } catch (ConversionException e) {
                                     throw new QueryException(e.getMessage());
                                 }
@@ -375,7 +387,7 @@ public class SciHubDataQuery extends DataQuery {
                             } else if (Date.class.equals(parameter.getType())) {
                                 query.append(getRemoteName(entry.getKey())).append(":[");
                                 try {
-                                    query.append(converterFactory.create(parameter).stringValue());
+                                    query.append(getParameterValue(parameter));
                                 } catch (ConversionException e) {
                                     throw new QueryException(e.getMessage());
                                 }
@@ -383,7 +395,7 @@ public class SciHubDataQuery extends DataQuery {
                             } else {
                                 query.append(getRemoteName(entry.getKey())).append(":");
                                 try {
-                                    query.append(converterFactory.create(parameter).stringValue());
+                                    query.append(getParameterValue(parameter));
                                 } catch (ConversionException e) {
                                     throw new QueryException(e.getMessage());
                                 }
