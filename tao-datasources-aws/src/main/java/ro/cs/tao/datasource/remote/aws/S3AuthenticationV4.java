@@ -104,7 +104,6 @@ class S3AuthenticationV4 {
         }
         try {
             URL s3ServiceURL = new URL(url.getProtocol() + "://" + url.getHost());
-
             HttpURLConnection connection = (HttpURLConnection) s3ServiceURL.openConnection();
             if (connection != null) {
                 connection.connect();

@@ -205,17 +205,16 @@ public class GdalInfoWrapper implements MetadataInspector {
                                 ul.getJsonNumber(1).doubleValue());
                         metadata.setFootprint(polygon2D.toWKT(8));
                     }
-                } else {
-                    extentObject = root.getJsonObject("wgs84Extent");
-                    if (extentObject != null) {
-                        Polygon2D polygon2D = new Polygon2D();
-                        JsonArray points = extentObject.getJsonArray("coordinates").getJsonArray(0);
-                        for (int i = 0; i < points.size(); i++) {
-                            polygon2D.append(points.getJsonArray(i).getJsonNumber(0).doubleValue(),
-                                    points.getJsonArray(i).getJsonNumber(1).doubleValue());
-                        }
-                        metadata.setFootprint(polygon2D.toWKT(8));
+                }
+                extentObject = root.getJsonObject("wgs84Extent");
+                if (extentObject != null) {
+                    Polygon2D polygon2D = new Polygon2D();
+                    JsonArray points = extentObject.getJsonArray("coordinates").getJsonArray(0);
+                    for (int i = 0; i < points.size(); i++) {
+                        polygon2D.append(points.getJsonArray(i).getJsonNumber(0).doubleValue(),
+                                points.getJsonArray(i).getJsonNumber(1).doubleValue());
                     }
+                    metadata.setWgs84footprint(polygon2D.toWKT(8));
                 }
                 JsonArray bandsArray = root.getJsonArray("bands");
                 JsonObject jsonObject = bandsArray.size() > 0 ? bandsArray.getJsonObject(0) : null;
