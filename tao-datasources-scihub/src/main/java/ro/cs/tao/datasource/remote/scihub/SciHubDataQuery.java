@@ -103,15 +103,15 @@ public class SciHubDataQuery extends DataQuery {
             do {
                 count = 0;
                 List<NameValuePair> params = new ArrayList<>();
-                if (this.source.getConnectionString().contains("dhus")) {
+                /*if (this.source.getConnectionString().contains("dhus")) {
                     params.add(new BasicNameValuePair("limit", String.valueOf(pageSize)));
                     params.add(new BasicNameValuePair("offset", String.valueOf((i - 1) * pageSize)));
-                    params.add(new BasicNameValuePair("filter", query.getValue()));
-                } else {
+                    params.add(new BasicNameValuePair("q", query.getValue()));
+                } else {*/
                     params.add(new BasicNameValuePair("rows", String.valueOf(pageSize)));
                     params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize)));
                     params.add(new BasicNameValuePair("q", query.getValue()));
-                }
+                //}
                 params.add(new BasicNameValuePair("orderby", "beginposition asc"));
                 String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 final boolean hasProcessingDate = "Sentinel2".equals(this.sensorName) || "Sentinel3".equals(this.sensorName);
