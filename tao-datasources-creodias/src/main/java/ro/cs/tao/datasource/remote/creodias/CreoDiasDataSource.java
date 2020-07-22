@@ -35,9 +35,12 @@ public class CreoDiasDataSource extends URLDataSource<BaseDataQuery> {
     public CreoDiasDataSource() throws URISyntaxException {
         super("");
         this.connectionStrings = new HashMap<String, String>() {{
-            put("Sentinel1", normalizedURL("s1.search.url"));
-            put("Sentinel2", normalizedURL("s2.search.url"));
-            put("Landsat8", normalizedURL("l8.search.url"));
+            //put("Sentinel1", normalizedURL("s1.search.url"));
+            put("Sentinel1", properties.getProperty("s1.search.url"));
+            //put("Sentinel2", normalizedURL("s2.search.url"));
+            put("Sentinel2", properties.getProperty("s2.search.url"));
+            //put("Landsat8", normalizedURL("l8.search.url"));
+            put("Landsat8", properties.getProperty("l8.search.url"));
         }};
         setParameterProvider(new CreodiasParameterProvider(this));
     }
