@@ -16,22 +16,36 @@
 package ro.cs.tao.datasource.remote.creodias.parsers;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Cosmin Cara
  */
 public class DateAdapter extends XmlAdapter<String, Date> {
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    private static final List<SimpleDateFormat> formats = new ArrayList<SimpleDateFormat>() {{
+        add(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+        add(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+        add(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS'Z'"));
+        add(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'"));
+        add(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSS'Z'"));
+    }};
 
     @Override
     public Date unmarshal(String v) throws Exception {
-        return dateFormat.parse(v);
+        for (SimpleDateFormat format : formats) {
+            try {
+                return format.parse(v);
+            } catch (ParseException ignored) {}
+        }
+        throw new ParseException("Unsupported date format", 0);
     }
 
     @Override
     public String marshal(Date v) throws Exception {
-        return dateFormat.format(v);
+        return formats.get(0).format(v);
     }
 }

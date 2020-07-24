@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class Landsat8JsonResponseHandler implements JSonResponseHandler<EOProduct> {
-    private Logger logger = Logger.getLogger(Sentinel1JsonResponseHandler.class.getName());
+    private Logger logger = Logger.getLogger(Landsat8JsonResponseHandler.class.getName());
 
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter... filters) throws IOException {
