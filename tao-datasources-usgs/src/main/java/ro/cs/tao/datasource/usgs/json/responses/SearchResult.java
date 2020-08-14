@@ -16,7 +16,7 @@ public class SearchResult {
     private Double cloudCover;
     private String metadataUrl;
     private String fgdcMetadataUrl;
-    private LocalDate modifiedDate;
+    private String modifiedDate;
     private String orderUrl;
     private boolean bulkOrdered;
     private boolean ordered;
@@ -122,11 +122,11 @@ public class SearchResult {
         this.fgdcMetadataUrl = fgdcMetadataUrl;
     }
 
-    public LocalDate getModifiedDate() {
+    public String getModifiedDate() {
         return modifiedDate;
     }
 
-    public void setModifiedDate(LocalDate modifiedDate) {
+    public void setModifiedDate(String modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
 
