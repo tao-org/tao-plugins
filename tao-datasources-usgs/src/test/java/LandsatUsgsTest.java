@@ -1,13 +1,20 @@
 import ro.cs.tao.ProgressListener;
+import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.configuration.ConfigurationProvider;
+import ro.cs.tao.configuration.EmptyConfigurationProvider;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
+import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.usgs.USGSDataSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.spi.ServiceRegistry;
+import ro.cs.tao.spi.ServiceRegistryManager;
 
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -23,6 +30,7 @@ import java.util.logging.Logger;
 public class LandsatUsgsTest {
 
     public static void main(String[] args) throws Exception {
+        setup();
         searchLandsat8Test();
         searchNewLandsat8Test();
     }
@@ -32,7 +40,7 @@ public class LandsatUsgsTest {
         for (Handler handler : logger.getHandlers()) {
             handler.setLevel(Level.INFO);
         }
-        DataSource dataSource = new USGSDataSource();
+        DataSource dataSource = getDatasourceRegistry().getService(USGSDataSource.class);
         dataSource.setCredentials("kraftek", "cei7pitici.");
         String[] sensors = dataSource.getSupportedSensors();
 
@@ -54,7 +62,7 @@ public class LandsatUsgsTest {
                                                   "22.8042573604346 43.8379609098684))");
 
         query.addParameter(CommonParameterNames.FOOTPRINT, aoi);
-        query.addParameter("maxClouds", 100.);
+        query.addParameter("maxClouds", 100);
         query.setMaxResults(10);
         List<EOProduct> results = query.execute();
         results.forEach(r -> {
@@ -70,7 +78,7 @@ public class LandsatUsgsTest {
         for (Handler handler : logger.getHandlers()) {
             handler.setLevel(Level.INFO);
         }
-        DataSource dataSource = new ro.cs.tao.datasource.usgs.USGSDataSource();
+        DataSource dataSource = getDatasourceRegistry().getService(USGSDataSource.class);
         dataSource.setCredentials("kraftek", "cei7pitici.");
         String[] sensors = dataSource.getSupportedSensors();
 
@@ -95,7 +103,7 @@ public class LandsatUsgsTest {
         query.addParameter("maxClouds", 90);
         query.setPageSize(20);
         query.setMaxResults(100);
-        System.out.println(String.format("Count returned %d", query.getCount()));
+        System.out.printf("Count returned %d%n", query.getCount());
         List<EOProduct> results = query.execute();
         results.forEach(r -> {
             System.out.println("ID=" + r.getId());
@@ -141,7 +149,21 @@ public class LandsatUsgsTest {
             }
         };
         fetchStrategy.setProgressListener(progressListener);
+        ((DownloadStrategy) fetchStrategy).setDestination(ConfigurationManager.getInstance().getValue("products.location"));
         fetchStrategy.fetch(results.get(0));
+    }
+
+    private static void setup() {
+        ConfigurationProvider configurationProvider = new EmptyConfigurationProvider();
+        final String userHome = System.getProperty("user.home");
+        configurationProvider.setValue("products.location", userHome);
+        configurationProvider.setScriptsFolder(Paths.get(userHome));
+        configurationProvider.setConfigurationFolder(Paths.get(userHome));
+        ConfigurationManager.setConfigurationProvider(configurationProvider);
+    }
+
+    private static ServiceRegistry<DataSource> getDatasourceRegistry() {
+        return ServiceRegistryManager.getInstance().getServiceRegistry(DataSource.class);
     }
 
 }
