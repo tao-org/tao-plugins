@@ -141,7 +141,12 @@ public class SciHubDataQuery extends DataQuery {
                                     ProductHelper productHelper;
                                     for (EOProduct result : tmpResults) {
                                         if (!results.containsKey(result.getName())) {
-                                            productHelper = SentinelProductHelper.create(result.getName());
+                                            try {
+                                                productHelper = SentinelProductHelper.create(result.getName());
+                                            } catch (Exception ex) {
+                                                logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
+                                                continue;
+                                            }
                                             if (isS2) {
                                                 if (result.getAttributeValue("tileid") == null) {
                                                     result.addAttribute("tiles", ((Sentinel2ProductHelper) productHelper).getTileIdentifier());
