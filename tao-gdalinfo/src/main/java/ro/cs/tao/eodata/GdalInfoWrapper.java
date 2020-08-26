@@ -96,6 +96,7 @@ public class GdalInfoWrapper implements MetadataInspector {
         args.add("gdalinfo");
         args.add("--version");
         if (useDocker) {
+            args.add(0, gdalDockerImage);
             args.add(0, "--rm");
             args.add(0, "-t");
             args.add(0, "run");
