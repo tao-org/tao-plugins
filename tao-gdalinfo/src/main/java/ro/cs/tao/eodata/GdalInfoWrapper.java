@@ -27,6 +27,7 @@ import ro.cs.tao.products.landsat.Landsat8MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel1MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel2MetadataInspector;
 import ro.cs.tao.utils.DockerHelper;
+import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.ExecutorType;
@@ -61,9 +62,9 @@ public class GdalInfoWrapper implements MetadataInspector {
         extractHistogram = Boolean.parseBoolean(configurationProvider.getValue("extract.histogram", "false"));
         Logger.getLogger(GdalInfoWrapper.class.getName())
                 .fine(String.format("'gdalinfo' will be run %s. Statistics extraction is %s, histogram extraction is %s",
-                                      useDocker ? "using Docker [" + gdalDockerImage + "]" : "from system path",
-                                      extractStatistics ? "enabled" : "disabled",
-                                      extractHistogram ? "enabled" : "disabled"));
+                                    useDocker ? "using Docker [" + gdalDockerImage + "]" : "from system path",
+                                    extractStatistics ? "enabled" : "disabled",
+                                    extractHistogram ? "enabled" : "disabled"));
         List<String> args = new ArrayList<>();
         args.add("gdalinfo");
         if (extractStatistics) {
@@ -71,6 +72,10 @@ public class GdalInfoWrapper implements MetadataInspector {
         }
         if (extractHistogram) {
             args.add("-hist");
+        }
+        if (supportsWKTArgument()) {
+            args.add("-wkt_format");
+            args.add("WKT1");
         }
         args.add("-json");
         args.add("$FULL_PATH");
@@ -84,6 +89,33 @@ public class GdalInfoWrapper implements MetadataInspector {
         args.add(0, "run");
         args.add(0, "docker");
         gdalOnDocker = args.toArray(new String[0]);
+    }
+
+    private static boolean supportsWKTArgument() {
+        final List<String> args = new ArrayList<>();
+        args.add("gdalinfo");
+        args.add("--version");
+        if (useDocker) {
+            args.add(0, "--rm");
+            args.add(0, "-t");
+            args.add(0, "run");
+            args.add(0, "docker");
+        }
+        try {
+            final Executor<?> executor = ProcessExecutor.create(ExecutorType.PROCESS, InetAddress.getLocalHost().getHostName(), args);
+            final OutputAccumulator consumer = new OutputAccumulator();
+            executor.setOutputConsumer(consumer);
+            if (executor.execute(true) == 0) {
+                final String output = consumer.getOutput();
+                return output != null && output.startsWith("GDAL 3");
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            final Logger logger = Logger.getLogger(GdalInfoWrapper.class.getName());
+            logger.severe(ExceptionUtils.getStackTrace(logger, e));
+            return false;
+        }
     }
 
     public GdalInfoWrapper() { }
