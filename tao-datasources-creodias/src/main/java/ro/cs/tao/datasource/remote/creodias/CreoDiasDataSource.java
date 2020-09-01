@@ -41,12 +41,17 @@ public class CreoDiasDataSource extends URLDataSource<BaseDataQuery> {
             put("Sentinel2", properties.getProperty("s2.search.url"));
             //put("Landsat8", normalizedURL("l8.search.url"));
             put("Landsat8", properties.getProperty("l8.search.url"));
+            put("Login", properties.getProperty("login.url"));
+            put("Download", properties.getProperty("download.url"));
         }};
         setParameterProvider(new CreodiasParameterProvider(this));
     }
 
     @Override
     public String defaultId() { return "Creo DIAS"; }
+
+    @Override
+    public boolean requiresAuthentication() { return true; }
 
     @Override
     public boolean ping() {
