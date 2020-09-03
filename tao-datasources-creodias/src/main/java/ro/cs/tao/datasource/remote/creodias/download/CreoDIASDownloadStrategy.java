@@ -32,11 +32,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Properties;
 
 public class CreoDIASDownloadStrategy extends DownloadStrategy {
-    private static final long DOWNLOAD_TIMEOUT = 30000; // 30s
-    private Timer timeoutTimer;
+    private static final int DOWNLOAD_TIMEOUT = 30000; // 30s
+    //private Timer timeoutTimer;
     private Token apiKey;
 
     public CreoDIASDownloadStrategy(CreoDiasDataSource dataSource, String targetFolder, Properties properties) {
@@ -71,7 +74,7 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("token", token.getAccessToken()));
         productUrl += "?" + URLEncodedUtils.format(params, "UTF-8");
-        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, productUrl, null)) {
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, productUrl, null, null, DOWNLOAD_TIMEOUT)) {
             int statusCode = response.getStatusLine().getStatusCode();
             logger.finest(String.format("%s returned http code %s", productUrl, statusCode));
             switch (statusCode) {
@@ -86,7 +89,7 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy {
                             final String value = header.getValue();
                             int idx = value.indexOf("filename=");
                             if (idx > 0) {
-                                fileName = value.substring(idx + 10);
+                                fileName = value.substring(idx + 9);
                                 extension = fileName.toLowerCase().endsWith(".zip") ? ".zip" : fileName.toLowerCase().endsWith(".tar.gz") ? ".tar.gz" : "";
                             }
                         }
@@ -127,12 +130,12 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy {
                             byte[] buffer = new byte[BUFFER_SIZE];
                             int read;
                             logger.finest("Begin reading from input stream");
-                            if (this.timeoutTimer == null) {
+                            /*if (this.timeoutTimer == null) {
                                 this.timeoutTimer = new Timer("Timeout");
                             }
-                            TimerTask task;
+                            TimerTask task;*/
                             while (!isCancelled() && (read = inputStream.read(buffer)) != -1) {
-                                task = new TimerTask() {
+                                /*task = new TimerTask() {
                                     @Override
                                     public void run() {
                                         logger.warning(String.format("Remote host did not send anything for %d seconds, cancelling download",
@@ -140,11 +143,11 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy {
                                         CreoDIASDownloadStrategy.this.cancel();
                                     }
                                 };
-                                this.timeoutTimer.schedule(task, DOWNLOAD_TIMEOUT);
+                                this.timeoutTimer.schedule(task, DOWNLOAD_TIMEOUT);*/
                                 outputStream.write(ByteBuffer.wrap(buffer, 0, read));
                                 currentProductProgress.add(read);
-                                task.cancel();
-                                this.timeoutTimer.purge();
+                                /*task.cancel();
+                                this.timeoutTimer.purge();*/
                             }
                             outputStream.close();
                             logger.finest("End reading from input stream");
@@ -163,10 +166,10 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy {
                             }
                         } finally {
                             if (outputStream != null && outputStream.isOpen()) outputStream.close();
-                            if (this.timeoutTimer != null) {
+                            /*if (this.timeoutTimer != null) {
                                 this.timeoutTimer.cancel();
                                 this.timeoutTimer = null;
-                            }
+                            }*/
                         }
                         logger.fine(String.format("End download for %s", product.getName()));
                     } finally {
@@ -193,7 +196,7 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy {
         logger.fine(String.format("Begin decompressing %s into %s", archivePath.getFileName(), targetPath));
         Path result = archivePath.toString().endsWith(".tar.gz") ?
                 Zipper.decompressTarGz(archivePath, targetPath, true) :
-                Zipper.decompressZip(archivePath, targetPath, true);
+                Zipper.decompressZipMT(archivePath, targetPath, false, false);
         logger.fine(String.format("Decompression of %s completed",archivePath.getFileName()));
         return result;
     }
