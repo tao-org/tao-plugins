@@ -55,7 +55,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class Landsat8Query extends DataQuery {
 
-    private static final Map<String, Integer> fieldIds;
+    private static final Map<String, String> fieldIds;
     private String apiKey;
 
     static {
@@ -279,14 +279,14 @@ public class Landsat8Query extends DataQuery {
                         break;
                     case CommonParameterNames.PRODUCT:
                         filter = new SearchFilterValue();
-                        filter.setFieldId(fieldIds.get("Landsat Product Identifier"));
+                        filter.setFieldId(Integer.parseInt(fieldIds.get("Landsat Product Identifier")));
                         filter.setOperand("=");
                         filter.setValue(parameter.getValueAsString());
                         request.withFilter(filter);
                         break;
                     case CommonParameterNames.PRODUCT_TYPE:
                         filter = new SearchFilterValue();
-                        filter.setFieldId(fieldIds.get("Data Type Level-1"));
+                        filter.setFieldId(Integer.parseInt(fieldIds.get("Data Type Level-1")));
                         filter.setOperand("=");
                         filter.setValue(parameter.getValueAsString());
                         request.withFilter(filter);
@@ -299,14 +299,14 @@ public class Landsat8Query extends DataQuery {
                         break;
                     case "row":
                         filter = new SearchFilterValue();
-                        filter.setFieldId(fieldIds.get("WRS Row"));
+                        filter.setFieldId(Integer.parseInt(fieldIds.get("WRS Row")));
                         filter.setOperand("=");
                         filter.setValue(parameter.getValueAsString());
                         request.withFilter(filter);
                         break;
                     case "path":
                         filter = new SearchFilterValue();
-                        filter.setFieldId(fieldIds.get("WRS Path"));
+                        filter.setFieldId(Integer.parseInt(fieldIds.get("WRS Path")));
                         filter.setOperand("=");
                         filter.setValue(parameter.getValueAsString());
                         request.withFilter(filter);
@@ -314,12 +314,12 @@ public class Landsat8Query extends DataQuery {
                     case CommonParameterNames.TILE:
                         String pathRow = parameters.get(CommonParameterNames.TILE).getValueAsString();
                         filter = new SearchFilterValue();
-                        filter.setFieldId(fieldIds.get("WRS Path"));
+                        filter.setFieldId(Integer.parseInt(fieldIds.get("WRS Path")));
                         filter.setOperand("=");
                         filter.setValue(pathRow.substring(0, 3));
                         request.withFilter(filter);
                         filter = new SearchFilterValue();
-                        filter.setFieldId(fieldIds.get("WRS Row"));
+                        filter.setFieldId(Integer.parseInt(fieldIds.get("WRS Row")));
                         filter.setOperand("=");
                         filter.setValue(pathRow.substring(3, 6));
                         request.withFilter(filter);
@@ -334,12 +334,12 @@ public class Landsat8Query extends DataQuery {
             for (String pathRow : pathRowFilter) {
                 SearchFilterAnd andFilter = new SearchFilterAnd();
                 filter = new SearchFilterValue();
-                filter.setFieldId(fieldIds.get("WRS Path"));
+                filter.setFieldId(Integer.parseInt(fieldIds.get("WRS Path")));
                 filter.setOperand("=");
                 filter.setValue(pathRow.substring(0, 3));
                 andFilter.addChildFilter(filter);
                 filter = new SearchFilterValue();
-                filter.setFieldId(fieldIds.get("WRS Row"));
+                filter.setFieldId(Integer.parseInt(fieldIds.get("WRS Row")));
                 filter.setOperand("=");
                 filter.setValue(pathRow.substring(3, 6));
                 andFilter.addChildFilter(filter);
