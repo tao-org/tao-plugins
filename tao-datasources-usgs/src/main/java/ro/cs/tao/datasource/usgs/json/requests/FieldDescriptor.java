@@ -6,16 +6,16 @@ import ro.cs.tao.datasource.usgs.json.NameValuePair;
 import java.util.List;
 
 public class FieldDescriptor {
-    private int fieldId;
+    private String fieldId;
     private String name;
     private String fieldLink;
     private List<NameValuePair> valueList;
 
-    public int getFieldId() {
+    public String getFieldId() {
         return fieldId;
     }
 
-    public void setFieldId(int fieldId) {
+    public void setFieldId(String fieldId) {
         this.fieldId = fieldId;
     }
 
