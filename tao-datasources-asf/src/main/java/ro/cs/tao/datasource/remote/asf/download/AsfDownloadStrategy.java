@@ -26,7 +26,10 @@ import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
@@ -92,15 +95,14 @@ public class AsfDownloadStrategy extends DownloadStrategy {
         int responseStatus;
 
         // First set the default cookie manager.
-        CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+        CookieHandler.setDefault(new CookieManager());
         String productDownloadUrl = getProductUrl(product);
 
         try {
             final String token = getAuthenticationToken();
             HttpURLConnection connection = NetUtils.openConnection(productDownloadUrl, token);
-            connection.setInstanceFollowRedirects(false);
+            connection.setInstanceFollowRedirects(true);
             connection.connect();
-            boolean secondRedirect = false;
             do {
                 responseStatus = connection.getResponseCode();
                 switch (responseStatus) {
@@ -108,78 +110,26 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                         connection = NetUtils.openConnection(connection.getURL().toString(), token);
                         connection.setInstanceFollowRedirects(true);
                         connection.connect();
-                        if (secondRedirect) {
-                            return connection;
-                        }
-                        numberOfTries++;
-                        break;
-                    case HttpStatus.SC_MULTIPLE_CHOICES:
-                    case HttpStatus.SC_MOVED_PERMANENTLY:
-                    case HttpStatus.SC_MOVED_TEMPORARILY:
-                    case HttpStatus.SC_SEE_OTHER:
-                        /**
-                         * This may occur if redirect from http to https or vice versa. See:
-                         * https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4620571
-                         *
-                         * HttpURLConnection by design won't automatically redirect from HTTP to HTTPS (or vice versa).
-                         * Thus the fix is to return the server responses for redirect. Check response code and Location header field value
-                         * for redirect information. It's the application's responsibility to follow the redirect.
-                         */
-
-                        // get redirect url from "location" header field
-                        String newUrl = connection.getHeaderField("Location");
-                        // open the new connnection again
-                        secondRedirect = connection.getInstanceFollowRedirects();
-                        connection = NetUtils.openConnection(newUrl, token);
-                        connection.setInstanceFollowRedirects(secondRedirect);
-                        connection.connect();
-                        numberOfTries++;
-                        break;
-                    case HttpStatus.SC_TEMPORARY_REDIRECT:
-                        newUrl = connection.getHeaderField("Location");
-                        // open the new connnection again
-                        connection = NetUtils.openConnection(newUrl, token);
-                        connection.setInstanceFollowRedirects(true);
-                        connection.connect();
-                        numberOfTries++;
-                        break;
-                    case HttpStatus.SC_BAD_REQUEST:
-                        /**
-                         * Workaround.
-                         *
-                         * The reason we get a BAD_REQUEST answer may be the error: “Only one auth mechanism allowed; only the X-Amz-Algorithm query parameter…”
-                         *
-                         * The product download url is redirected many times (to login urs.earthdata.nasa.gov, etc) and some resources
-                         * are hosted to s3.amazonaws.com.
-                         * Amazon API's often give a URL to resource, which gives a redirect URL with 30s life as redirect.
-                         * However, the headers from the original request (which contains the basic authentication) are carried over resulting in this error.
-                         * The redirect is processed with authentication from signed redirect url, and the authentication header.
-                         *
-                         * To solve this issue, we try a second connection to amazon URL (which already contains the authentication token) without providing
-                         * the authentication header.
-                         */
-                        //get the last connection URL (which didn't succeeded).
-                        URL downloadUrl = connection.getURL();
-                        //try to reconnect without providing authentication header
-                        connection = NetUtils.openConnection(downloadUrl.toString());
-                        connection.setInstanceFollowRedirects(true);
-                        connection.connect();
-                        numberOfTries++;
-                        break;
+                        return connection;
                     case HttpStatus.SC_UNAUTHORIZED:
-                        throw new QueryException(String.format("Cannot connect to remote url: %s. Cause: The supplied credentials are invalid!", connection.getURL()));
+                        connection = NetUtils.openConnection(connection.getURL().toString(), token);
+                        connection.setInstanceFollowRedirects(true);
+                        connection.connect();
+                        numberOfTries++;
+                        break;
+                        //throw new QueryException(String.format("Cannot connect to remote url: %s. Cause: The supplied credentials are invalid!", connection.getURL()));
                     default:
                         throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
                                 connection.getResponseCode(), connection.getResponseMessage()));
 
                 }
-            } while (numberOfTries < 10);
+            } while (numberOfTries < 3);
 
         } catch (IOException e) {
             throw new QueryException(String.format("The request was not successful. Reason: %s", e.getMessage()));
         }
 
-        throw new QueryException(String.format("The request was not successful. Reason: Too many redirects!"));
+        throw new QueryException(String.format("The request was not successful. Reason: Too many authentication redirects!"));
     }
 
     protected Path downloadProduct(EOProduct product, HttpURLConnection connection) throws IOException {
