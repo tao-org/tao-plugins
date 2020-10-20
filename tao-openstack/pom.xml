@@ -20,9 +20,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.pacesys</groupId>
-            <artifactId>openstack4j-core</artifactId>
-            <version>3.2.0</version>
+            <groupId>com.github.openstack4j.core</groupId>
+            <artifactId>openstack4j</artifactId>
+            <version>3.8</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.google.guava</groupId>
