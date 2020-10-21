@@ -12,9 +12,9 @@ import org.springframework.core.ResolvableType;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import ro.cs.tao.component.ProcessingComponent;
-import ro.cs.tao.persistence.data.jsonutil.JacksonUtil;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 import ro.cs.tao.services.bridge.spring.SpringContextBridgedServices;
+import ro.cs.tao.utils.JacksonUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
