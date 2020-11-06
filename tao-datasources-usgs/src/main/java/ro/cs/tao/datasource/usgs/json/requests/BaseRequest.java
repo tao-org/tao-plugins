@@ -1,22 +1,17 @@
 package ro.cs.tao.datasource.usgs.json.requests;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public abstract class BaseRequest {
-    private String apiKey;
-    private String datasetName;
 
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
-
-    public String getDatasetName() {
-        return datasetName;
-    }
-
-    public void setDatasetName(String datasetName) {
-        this.datasetName = datasetName;
+    @Override
+    public String toString() {
+        try {
+            return new ObjectMapper().writer().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -1,22 +1,25 @@
 package ro.cs.tao.datasource.usgs.json.requests;
 
+import ro.cs.tao.datasource.usgs.json.types.Download;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class DownloadRequest extends BaseRequest {
-    private String[] entityIds;
-    private String products = "STANDARD";
+    private List<Download> downloads;
 
-    public String[] getEntityIds() {
-        return entityIds;
+    public List<Download> getDownloads() {
+        return downloads;
     }
 
-    public void setEntityIds(String[] entityIds) {
-        this.entityIds = entityIds;
+    public void setDownloads(List<Download> downloads) {
+        this.downloads = downloads;
     }
 
-    public String getProducts() {
-        return products;
-    }
-
-    public void setProducts(String products) {
-        this.products = products;
+    public void addDownload(Download download) {
+        if (this.downloads == null) {
+            this.downloads = new ArrayList<>();
+        }
+        this.downloads.add(download);
     }
 }

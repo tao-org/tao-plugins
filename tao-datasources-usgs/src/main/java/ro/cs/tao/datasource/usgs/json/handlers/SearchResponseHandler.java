@@ -22,6 +22,7 @@ import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.usgs.json.responses.SearchResponse;
 import ro.cs.tao.datasource.usgs.json.responses.SearchResult;
 import ro.cs.tao.datasource.usgs.json.responses.SearchResults;
+import ro.cs.tao.datasource.usgs.json.types.Browse;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
@@ -32,7 +33,9 @@ import ro.cs.tao.products.landsat.Landsat8ProductHelper;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,20 +58,19 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             product.setProductType("Landsat8");
             product.setId(r.getEntityId());
             product.setName(r.getDisplayId());
-            product.setAcquisitionDate(Date.from(r.getAcquisitionDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            product.setAcquisitionDate(Date.from(LocalDateTime.parse(r.getTemporalCoverage().getStartDate(),
+                                                                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.systemDefault()).toInstant()));
             Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = r.getSpatialFootprint().getCoordinates();
+            double[][][] coordinates = r.getSpatialCoverage().getCoordinates();
             for (double[] point : coordinates[0]) {
                 polygon2D.append(point[0], point[1]);
             }
             product.setGeometry(polygon2D.toWKT());
             try {
-                product.setQuicklookLocation(r.getBrowseUrl());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            try {
-                product.setLocation(r.getDownloadUrl());
+                Browse browse = r.getBrowse().stream().filter(b -> "LandsatLook Natural Color Preview Image".equals(b.getBrowseName())).findFirst().orElse(null);
+                if (browse != null) {
+                    product.setQuicklookLocation(browse.getBrowsePath());
+                }
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }

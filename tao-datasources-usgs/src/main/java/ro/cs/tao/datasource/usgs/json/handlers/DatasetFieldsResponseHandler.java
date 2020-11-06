@@ -15,6 +15,7 @@
  */
 package ro.cs.tao.datasource.usgs.json.handlers;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
@@ -31,7 +32,16 @@ public class DatasetFieldsResponseHandler implements JSonResponseHandler<FieldDe
     @Override
     public List<FieldDescriptor> readValues(String content, AttributeFilter...filters) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        DatasetFieldsResponse result = mapper.readValue(content, DatasetFieldsResponse.class);
-        return result.getData();
+        mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
+        DatasetFieldsResponse result = null;
+        try {
+            result = mapper.readValue(content, DatasetFieldsResponse.class);
+            return result.getData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }
