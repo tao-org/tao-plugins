@@ -2,7 +2,7 @@ package ro.cs.tao.datasource.usgs.json.requests;
 
 public class SearchFilter {
     private String filterType;
-    private int fieldId;
+    private String filterId;
 
     public String getFilterType() {
         return filterType;
@@ -12,11 +12,11 @@ public class SearchFilter {
         this.filterType = filterType;
     }
 
-    public int getFieldId() {
-        return fieldId;
+    public String getFilterId() {
+        return filterId;
     }
 
-    public void setFieldId(int fieldId) {
-        this.fieldId = fieldId;
+    public void setFilterId(String filterId) {
+        this.filterId = filterId;
     }
 }
