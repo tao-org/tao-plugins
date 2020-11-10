@@ -1,9 +1,11 @@
 package ro.cs.tao.datasource.usgs.json.requests;
 
+import ro.cs.tao.datasource.usgs.json.types.AcquisitionFilter;
+
 public class SceneFilter {
     private String datasetName;
     private SpatialFilter spatialFilter;
-    private TemporalFilter acquisitionFilter;
+    private AcquisitionFilter acquisitionFilter;
     private CloudCoverFilter cloudCoverFilter;
     private TemporalFilter ingestFilter;
     private int[] seasonalFilter;
@@ -25,11 +27,11 @@ public class SceneFilter {
         this.spatialFilter = spatialFilter;
     }
 
-    public TemporalFilter getAcquisitionFilter() {
+    public AcquisitionFilter getAcquisitionFilter() {
         return acquisitionFilter;
     }
 
-    public void setAcquisitionFilter(TemporalFilter acquisitionFilter) {
+    public void setAcquisitionFilter(AcquisitionFilter acquisitionFilter) {
         this.acquisitionFilter = acquisitionFilter;
     }
 

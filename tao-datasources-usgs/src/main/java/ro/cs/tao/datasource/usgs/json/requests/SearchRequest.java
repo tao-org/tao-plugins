@@ -1,6 +1,7 @@
 package ro.cs.tao.datasource.usgs.json.requests;
 
 import ro.cs.tao.datasource.usgs.json.Point;
+import ro.cs.tao.datasource.usgs.json.types.AcquisitionFilter;
 
 public class SearchRequest extends BaseRequest {
     private String datasetName;
@@ -76,9 +77,9 @@ public class SearchRequest extends BaseRequest {
             this.sceneFilter = new SceneFilter();
         }
         if (this.sceneFilter.getAcquisitionFilter() == null) {
-            this.sceneFilter.setAcquisitionFilter(new TemporalFilter());
+            this.sceneFilter.setAcquisitionFilter(new AcquisitionFilter());
         }
-        this.sceneFilter.getAcquisitionFilter().setStartDate(date);
+        this.sceneFilter.getAcquisitionFilter().setStart(date);
         return this;
     }
 
@@ -87,9 +88,9 @@ public class SearchRequest extends BaseRequest {
             this.sceneFilter = new SceneFilter();
         }
         if (this.sceneFilter.getAcquisitionFilter() == null) {
-            this.sceneFilter.setAcquisitionFilter(new TemporalFilter());
+            this.sceneFilter.setAcquisitionFilter(new AcquisitionFilter());
         }
-        this.sceneFilter.getAcquisitionFilter().setEndDate(date);
+        this.sceneFilter.getAcquisitionFilter().setEnd(date);
         return this;
     }
 

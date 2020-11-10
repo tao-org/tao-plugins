@@ -404,7 +404,7 @@ public class Landsat8Query extends DataQuery {
                     single.add(pr);
                     final SearchRequest request = buildQuery(start, pageSize, single);
                     String queryUrl = buildPostRequestURL("scene-search");
-                    logger.fine(String.format("Executing query for product : %s", queryUrl));
+                    logger.fine(String.format("Executing query for product : %s", request.toString()));
                     try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, queryUrl, "X-Auth-Token", apiKey, request.toString())) {
                         switch (response.getStatusLine().getStatusCode()) {
                             case 200:
