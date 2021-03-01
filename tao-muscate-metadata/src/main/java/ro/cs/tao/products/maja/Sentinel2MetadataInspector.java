@@ -7,6 +7,7 @@ import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.MetadataInspector;
 import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.executors.FileProcessFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -76,5 +77,10 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
             metadata.setFootprint(polygon2D.toWKT(8));
         }
         return metadata;
+    }
+
+    @Override
+    public void setFileProcessFactory(FileProcessFactory factory) {
+
     }
 }

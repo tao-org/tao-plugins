@@ -41,6 +41,7 @@ import ro.cs.tao.persistence.PersistenceException;
 import ro.cs.tao.persistence.UserProvider;
 import ro.cs.tao.serialization.GeometryAdapter;
 import ro.cs.tao.user.User;
+import ro.cs.tao.utils.DateUtils;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -52,7 +53,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.cert.X509Certificate;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -71,7 +72,7 @@ import java.util.logging.Logger;
 public class GeostormClient implements OutputDataHandler<EOProduct> {
 
     private static final Logger logger = Logger.getLogger(GeostormClient.class.getName());
-    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateFormat dateFormatter = DateUtils.getFormatterAtUTC("yyyy-MM-dd");
 
     private RestTemplate restTemplate;
 

@@ -96,6 +96,16 @@
       "required": false,
       "valueSet": ["S1", "S2", "S3", "S4", "S5", "S6", "IW", "EW", "WV"],
       "order": 8
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "granule_list",
+      "label": "Product Name",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 9
     }
   },
   "ALOS": {
@@ -191,6 +201,16 @@
       "required": false,
       "valueSet": ["FBD", "FBS", "PLR", "WB1", "WB2", "DSN"],
       "order": 8
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "granule_list",
+      "label": "Product Name",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 9
     }
   }
 }

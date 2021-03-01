@@ -54,6 +54,8 @@ import java.util.stream.Collectors;
 public class Landsat8Query extends DataQuery {
 
     private static final Map<String, String> fieldIds;
+    private static final String LEVEL1_COLLECTION = "LANDSAT_8_C1";
+    private static final String LEVEL2_COLLECTION = "LANDSAT_OT_C2_L2";
     private String apiKey;
 
     static {
@@ -63,8 +65,8 @@ public class Landsat8Query extends DataQuery {
         fieldIds = new HashMap<>();
     }
 
-    Landsat8Query(USGSDataSource source) {
-        super(source, "Landsat8");
+    Landsat8Query(USGSDataSource source, String mission) {
+        super(source, mission);
     }
 
     @Override
@@ -74,9 +76,9 @@ public class Landsat8Query extends DataQuery {
 
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
-        Set<String> pathRows = getPathRows();
+        //Set<String> pathRows = getPathRows();
         try {
-            return (List<EOProduct>) executeQuery(this.pageNumber, this.pageSize, pathRows, false);
+            return (List<EOProduct>) executeQuery(this.pageNumber, this.pageSize, null, false);
         } catch (Exception e) {
             throw new QueryException(e);
         }
@@ -85,9 +87,9 @@ public class Landsat8Query extends DataQuery {
     @Override
     protected long getCountImpl() {
         long retVal = 0;
-        Set<String> pathRows = getPathRows();
+        //Set<String> pathRows = getPathRows();
         try {
-            retVal = (long) executeQuery(1, 1, pathRows, true);
+            retVal = (long) executeQuery(1, 1, null, true);
         } catch (Exception e) {
             throw new QueryException(e);
         }
@@ -171,7 +173,7 @@ public class Landsat8Query extends DataQuery {
             DatasetFieldsRequest request = new DatasetFieldsRequest();
             request.setDatasetName(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
                                            this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
-                                           "LANDSAT_8_C1");
+                                           LEVEL1_COLLECTION);
             String url = buildPostRequestURL("dataset-filters");
             try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, request.toString())) {
                 switch (response.getStatusLine().getStatusCode()) {
@@ -199,7 +201,7 @@ public class Landsat8Query extends DataQuery {
         DownloadOptions optionsRequest = new DownloadOptions();
         optionsRequest.setDatasetName(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
                 this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
-                "LANDSAT_8_C1");
+                LEVEL1_COLLECTION);
         int size = products.size();
         String[] ids = new String[size];
         for (int i = 0; i < size; i++) {
@@ -215,16 +217,27 @@ public class Landsat8Query extends DataQuery {
                     String body = EntityUtils.toString(response.getEntity());
                     JsonResponseParser<DownloadInfo> parser = new JsonResponseParser<>(new DownloadInfoResponseHandler());
                     downloadInfos = parser.parse(body);
-                    downloadInfos.removeIf(i -> !i.getProductName().endsWith("Data Product"));
+                    downloadInfos.removeIf(i ->
+                            (optionsRequest.getDatasetName().equals(LEVEL1_COLLECTION) && !i.getProductName().endsWith("Data Product"))
+                        || (optionsRequest.getDatasetName().equals(LEVEL2_COLLECTION) && !i.getProductName().endsWith("Product Bundle"))
+                        || (i.getProductName().toLowerCase().contains("metadata")));
                     final Iterator<DownloadInfo> iterator = downloadInfos.iterator();
+                    final Set<String> notAvailable = new HashSet<>();
                     while (iterator.hasNext()) {
                         DownloadInfo info = iterator.next();
-                        if (!"Y".equals(info.getAvailable())) {
-                            products.removeIf(p -> p.getId().equals(info.getEntityId()));
-                            logger.warning(String.format("Product %s is not available for download", info.getId()));
+                        if (!("y".equalsIgnoreCase(info.getAvailable()) || "true".equalsIgnoreCase(info.getAvailable()))) {
+                            notAvailable.add(info.getEntityId());
+                            logger.warning(String.format("Product %s is not available for download system %s",
+                                                         info.getDisplayId(), info.getDownloadSystem()));
                             iterator.remove();
+                        } else {
+                            // it may happen to find duplicates
+                            notAvailable.remove(info.getEntityId());
                         }
+                        products.stream().filter(p -> p.getName().equals(info.getDisplayId())).findFirst().get().setApproximateSize(info.getFilesize());
                     }
+                    products.removeIf(p -> notAvailable.contains(p.getId()));
+                    downloadInfos.removeIf(d -> notAvailable.contains(d.getEntityId()));
                     break;
                 case 401:
                     throw new QueryException("The supplied credentials are invalid!");
@@ -284,7 +297,7 @@ public class Landsat8Query extends DataQuery {
         }
         SearchRequest request = new SearchRequest().withDataSet(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
                 this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
-                "LANDSAT_8_C1");
+                LEVEL1_COLLECTION);
         SearchFilterValue filter;
         Map<String, QueryParameter> parameters = new HashMap<>(this.parameters);
         if ((parameters.containsKey("row") && parameters.containsKey("path")) ||
@@ -317,11 +330,13 @@ public class Landsat8Query extends DataQuery {
                         request.withFilter(filter);
                         break;
                     case CommonParameterNames.PRODUCT_TYPE:
-                        filter = new SearchFilterValue();
-                        filter.setFilterId(fieldIds.get("Data Type Level-1"));
-                        filter.setOperand("=");
-                        filter.setValue(parameter.getValueAsString());
-                        request.withFilter(filter);
+                        if (!LEVEL2_COLLECTION.equals(request.getDatasetName())) {
+                            filter = new SearchFilterValue();
+                            filter.setFilterId(fieldIds.get("Data Type Level-1"));
+                            filter.setOperand("=");
+                            filter.setValue(parameter.getValueAsString());
+                            request.withFilter(filter);
+                        }
                         break;
                     case "minClouds":
                         request.withMinClouds(parameter.getValueAsInt());
@@ -361,7 +376,7 @@ public class Landsat8Query extends DataQuery {
                 e.printStackTrace();
             }
         }
-        if (pathRowFilter != null) {
+        if (pathRowFilter != null && pathRowFilter.size() > 0) {
             SearchFilterOr orFilter = new SearchFilterOr();
             for (String pathRow : pathRowFilter) {
                 SearchFilterAnd andFilter = new SearchFilterAnd();
@@ -404,7 +419,7 @@ public class Landsat8Query extends DataQuery {
                     single.add(pr);
                     final SearchRequest request = buildQuery(start, pageSize, single);
                     String queryUrl = buildPostRequestURL("scene-search");
-                    logger.fine(String.format("Executing query for product : %s", request.toString()));
+                    logger.finest(String.format("Executing query for product : %s", request.toString()));
                     try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, queryUrl, "X-Auth-Token", apiKey, request.toString())) {
                         switch (response.getStatusLine().getStatusCode()) {
                             case 200:
@@ -432,11 +447,14 @@ public class Landsat8Query extends DataQuery {
         } else {
             SearchRequest request = buildQuery(start, pageSize, pathRows);
             String queryUrl = buildPostRequestURL("scene-search");
-            logger.fine("Executing query " + queryUrl);
+            logger.finest("Executing query " + queryUrl + " with payload " + request.toString());
             try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, queryUrl, "X-Auth-Token", apiKey, request.toString())) {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
                         String body = EntityUtils.toString(response.getEntity());
+                        if (body.contains("SERVER_ERROR")) {
+                            throw new QueryException("The request was not successful. Reason: API Server Error");
+                        }
                         ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(), "totalHits");
                         if (!count) {
                             ((List<EOProduct>) results).addAll(parser.parse(body));

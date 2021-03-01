@@ -28,8 +28,8 @@ public class ASFDataSourceTest {
 
     public static void main(String[] args) {
         //test_ping();
-        //Sentinel1_Test();
-        Sentinel1_Filter_Test();
+        Sentinel1_Test();
+        //Sentinel1_Filter_Test();
     }
 
     public static void test_ping() {
@@ -166,6 +166,7 @@ public class ASFDataSourceTest {
                 System.out.println("Attributes ->");
                 r.getAttributes().forEach(a -> System.out.println("\tName='" + a.getName() + "', value='" + a.getValue() + "'"));
             });
+
 
         } catch (Exception e) {
             e.printStackTrace();

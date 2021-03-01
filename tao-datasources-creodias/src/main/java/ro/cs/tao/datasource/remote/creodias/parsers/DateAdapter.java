@@ -15,9 +15,11 @@
  */
 package ro.cs.tao.datasource.remote.creodias.parsers;
 
+import ro.cs.tao.utils.DateUtils;
+
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,17 +28,17 @@ import java.util.List;
  * @author Cosmin Cara
  */
 public class DateAdapter extends XmlAdapter<String, Date> {
-    private static final List<SimpleDateFormat> formats = new ArrayList<SimpleDateFormat>() {{
-        add(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-        add(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"));
-        add(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS'Z'"));
-        add(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'"));
-        add(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSS'Z'"));
+    private static final List<DateFormat> formats = new ArrayList<DateFormat>() {{
+        add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+        add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+        add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SS'Z'"));
+        add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'"));
+        add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSSSS'Z'"));
     }};
 
     @Override
     public Date unmarshal(String v) throws Exception {
-        for (SimpleDateFormat format : formats) {
+        for (DateFormat format : formats) {
             try {
                 return format.parse(v);
             } catch (ParseException ignored) {}

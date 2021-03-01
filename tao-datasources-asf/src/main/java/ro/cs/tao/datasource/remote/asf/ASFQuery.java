@@ -29,12 +29,12 @@ import ro.cs.tao.datasource.remote.asf.handlers.AsfJsonResponseHandler;
 import ro.cs.tao.datasource.remote.asf.parameters.DateParameterConverter;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.utils.DateUtils;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,7 +47,7 @@ import java.util.Map;
  */
 public class ASFQuery extends DataQuery {
 
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+    private static final DateFormat dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
 
     static {
         final ConverterFactory factory = new ConverterFactory();
