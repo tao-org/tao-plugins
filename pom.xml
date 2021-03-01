@@ -26,6 +26,7 @@
         <module>tao-datasources-mundi</module>
         <module>tao-datasources-peps</module>
         <module>tao-datasources-scihub</module>
+        <module>tao-datasources-theia</module>
         <module>tao-datasources-usgs</module>
         <module>tao-drmaa-slurm</module>
         <module>tao-drmaa-torque</module>
@@ -42,11 +43,11 @@
         <module>tao-otb-optimizer</module>
         <module>tao-quota-database</module>
         <module>tao-muscate-metadata</module>
-        <module>tao-datasources-theia</module>
         <module>tao-openstack</module>
         <module>tao-docker-sen2cor</module>
         <module>tao-docker-console</module>
         <module>tao-integration-sen2agri</module>
+        <module>tao-eo-search</module>
     </modules>
 
     <properties>
