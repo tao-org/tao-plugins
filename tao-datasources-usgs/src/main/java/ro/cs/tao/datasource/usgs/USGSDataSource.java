@@ -55,6 +55,6 @@ public class USGSDataSource extends URLDataSource<Landsat8Query> {
 
     @Override
     protected Landsat8Query createQueryImpl(String code) {
-        return new Landsat8Query(this);
+        return new Landsat8Query(this, code);
     }
 }

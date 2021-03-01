@@ -45,7 +45,8 @@ import java.util.Map;
 })
 public class AsfSearchResult {
 
-    @JsonProperty("product_file_id")
+    //@JsonProperty("product_file_id")
+    @JsonProperty("granuleName")
     private String fileId;
     @JsonProperty("productName")
     private String productName;

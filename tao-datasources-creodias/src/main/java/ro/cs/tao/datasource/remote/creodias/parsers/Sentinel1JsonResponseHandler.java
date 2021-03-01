@@ -13,6 +13,7 @@ import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.OrbitDirection;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.utils.ExceptionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,17 +50,25 @@ public class Sentinel1JsonResponseHandler implements JSonResponseHandler<EOProdu
                             final String type = (String) geometry.get("type");
                             switch (type.toLowerCase()) {
                                 case "polygon":
-                                    List<List<List<Double>>> cPoly = (List<List<List<Double>>>) geometry.get("coordinates");
+                                    List<List<List<Object>>> cPoly = (List<List<List<Object>>>) geometry.get("coordinates");
                                     footprint = new Polygon2D();
-                                    for (List<Double> doubles : cPoly.get(0)) {
-                                        footprint.append(doubles.get(0), doubles.get(1));
+                                    for (List<Object> doubles : cPoly.get(0)) {
+                                        // we don't directly cast to Double because Jackson deserializes "0" as an Integer
+                                        final Object x = doubles.get(0);
+                                        final Object y = doubles.get(1);
+                                        footprint.append(x instanceof Double ? (Double) x : Double.valueOf(x.toString()),
+                                                         y instanceof Double ? (Double) y : Double.valueOf(y.toString()));
                                     }
                                     break;
                                 case "multipolygon":
-                                    List<List<List<List<Double>>>> cMultiPoly = (List<List<List<List<Double>>>>) geometry.get("coordinates");
+                                    List<List<List<List<Object>>>> cMultiPoly = (List<List<List<List<Object>>>>) geometry.get("coordinates");
                                     footprint = new Polygon2D();
-                                    for (List<Double> doubles : cMultiPoly.get(0).get(0)) {
-                                        footprint.append(doubles.get(0), doubles.get(1));
+                                    for (List<Object> doubles : cMultiPoly.get(0).get(0)) {
+                                        // we don't directly cast to Double because Jackson deserializes "0" as an Integer
+                                        final Object x = doubles.get(0);
+                                        final Object y = doubles.get(1);
+                                        footprint.append(x instanceof Double ? (Double) x : Double.valueOf(x.toString()),
+                                                y instanceof Double ? (Double) y : Double.valueOf(y.toString()));
                                     }
                                     break;
                                 default:
@@ -83,7 +92,7 @@ public class Sentinel1JsonResponseHandler implements JSonResponseHandler<EOProdu
                 }
             }
         } catch (Exception e) {
-            logger.warning("Error parsing JSON: " + e.getMessage());
+            logger.warning(ExceptionUtils.getStackTrace(logger, e));
         }
         return products;
     }

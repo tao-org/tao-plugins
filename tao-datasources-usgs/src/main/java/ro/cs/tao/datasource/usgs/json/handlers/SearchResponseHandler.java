@@ -15,6 +15,7 @@
  */
 package ro.cs.tao.datasource.usgs.json.handlers;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
@@ -36,7 +37,9 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -47,6 +50,7 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         SearchResponse response = mapper.readValue(content, SearchResponse.class);
         SearchResults responseData = response.getData();
         List<SearchResult> results = responseData.getResults();
@@ -58,8 +62,13 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             product.setProductType("Landsat8");
             product.setId(r.getEntityId());
             product.setName(r.getDisplayId());
-            product.setAcquisitionDate(Date.from(LocalDateTime.parse(r.getTemporalCoverage().getStartDate(),
-                                                                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.systemDefault()).toInstant()));
+            try {
+                product.setAcquisitionDate(Date.from(LocalDateTime.parse(r.getTemporalCoverage().getStartDate(),
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.systemDefault()).toInstant()));
+            } catch (DateTimeParseException e) {
+                product.setAcquisitionDate(Date.from(LocalDateTime.parse(r.getTemporalCoverage().getStartDate(),
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX")).atZone(ZoneId.systemDefault()).toInstant()));
+            }
             Polygon2D polygon2D = new Polygon2D();
             double[][][] coordinates = r.getSpatialCoverage().getCoordinates();
             for (double[] point : coordinates[0]) {
@@ -74,8 +83,12 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
-            Landsat8ProductHelper helper = new Landsat8ProductHelper(product.getName());
-            product.addAttribute("tiles", helper.getPath() + helper.getRow());
+            try {
+                Landsat8ProductHelper helper = new Landsat8ProductHelper(product.getName());
+                product.addAttribute("tiles", helper.getPath() + helper.getRow());
+            } catch (IllegalArgumentException e) {
+                Logger.getLogger(SearchResponseHandler.class.getName()).fine(product.getName() + " is not a Landsat product");
+            }
             return product;
         }).collect(Collectors.toList());
 

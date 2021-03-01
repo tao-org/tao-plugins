@@ -29,16 +29,12 @@ import ro.cs.tao.products.sentinels.Sentinel2MetadataInspector;
 import ro.cs.tao.utils.DockerHelper;
 import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.FileUtilities;
-import ro.cs.tao.utils.executors.Executor;
-import ro.cs.tao.utils.executors.ExecutorType;
-import ro.cs.tao.utils.executors.OutputAccumulator;
-import ro.cs.tao.utils.executors.ProcessExecutor;
+import ro.cs.tao.utils.executors.*;
 
 import javax.json.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -53,6 +49,8 @@ public class GdalInfoWrapper implements MetadataInspector {
     private static final boolean extractHistogram;
     private static final String[] gdalOnPathCmd;
     private static final String[] gdalOnDocker;
+
+    private FileProcessFactory factory;
 
     static {
         final ConfigurationProvider configurationProvider = ConfigurationManager.getInstance();
@@ -122,8 +120,16 @@ public class GdalInfoWrapper implements MetadataInspector {
     public GdalInfoWrapper() { }
 
     @Override
+    public void setFileProcessFactory(FileProcessFactory factory) {
+        this.factory = factory;
+    }
+
+    @Override
     public DecodeStatus decodeQualification(Path productPath) {
-        return productPath == null || !Files.exists(productPath) ? DecodeStatus.UNABLE : DecodeStatus.SUITABLE;
+        if (this.factory == null) {
+            this.factory = FileProcessFactory.createLocal();
+        }
+        return productPath == null || !this.factory.fileManager().exists(productPath) ? DecodeStatus.UNABLE : DecodeStatus.SUITABLE;
     }
 
     @Override
@@ -171,7 +177,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                 JsonObject root = jsonReader.readObject();
                 metadata = new Metadata();
                 metadata.setEntryPoint(productPath.getFileName().toString());
-                metadata.setSize(Files.size(productPath));
+                metadata.setSize(this.factory.fileManager().size(productPath));
                 metadata.setProductType(root.getString("driverLongName"));
                 boolean isNetCDF = "Network Common Data Format".equals(metadata.getProductType());
                 if (isNetCDF) {
@@ -279,22 +285,11 @@ public class GdalInfoWrapper implements MetadataInspector {
                                 break;
                         }
                     }
-                    JsonNumber value = jsonObject.getJsonNumber("minimum");
-                    if (value != null) {
-                        metadata.addStatistic("min", value.doubleValue());
-                    }
-                    value = jsonObject.getJsonNumber("maximum");
-                    if (value != null) {
-                        metadata.addStatistic("max", value.doubleValue());
-                    }
-                    value = jsonObject.getJsonNumber("mean");
-                    if (value != null) {
-                        metadata.addStatistic("mean", value.doubleValue());
-                    }
-                    value = jsonObject.getJsonNumber("stdDev");
-                    if (value != null) {
-                        metadata.addStatistic("stdDev", value.doubleValue());
-                    }
+
+                    metadata.addStatistic("min", getSafeValue(jsonObject, "minimum"));
+                    metadata.addStatistic("max", getSafeValue(jsonObject, "maximum"));
+                    metadata.addStatistic("mean", getSafeValue(jsonObject, "mean"));
+                    metadata.addStatistic("stdDev", getSafeValue(jsonObject, "stdDev"));
                     JsonObject histJson = jsonObject.getJsonObject("histogram");
                     if (histJson != null) {
                         int count = histJson.getInt("count");
@@ -315,8 +310,36 @@ public class GdalInfoWrapper implements MetadataInspector {
             if (reader != null) {
                 reader.close();
             }
+            try {
+                this.factory.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return metadata;
+    }
+
+    private double getSafeValue(JsonObject parent, String name) {
+        double value = Double.NaN;
+        final JsonValue jsonObject = parent.get(name);
+        if (jsonObject.getValueType() == JsonValue.ValueType.STRING) {
+            // special case of NaN and Infinity/-Infinity
+            final String jsonString = parent.getJsonString(name).getString();
+            switch (jsonString.toLowerCase()) {
+                case "nan":
+                    value = Double.NaN;
+                    break;
+                case "infinity":
+                    value = Double.POSITIVE_INFINITY;
+                    break;
+                case "-infinity":
+                    value = Double.NEGATIVE_INFINITY;
+                    break;
+            }
+        } else {
+            value = parent.getJsonNumber(name).doubleValue();
+        }
+        return value;
     }
 
     private Executor<?> initialize(Path path, String[] args) throws IOException {
@@ -328,12 +351,6 @@ public class GdalInfoWrapper implements MetadataInspector {
                               .replace("$FOLDER", realPath.getParent().toString())
                               .replace("$FILE", realPath.getFileName().toString()));
         }
-        try {
-            return ProcessExecutor.create(ExecutorType.PROCESS,
-                                                       InetAddress.getLocalHost().getHostName(),
-                                          arguments);
-        } catch (UnknownHostException e) {
-            throw new IOException(e);
-        }
+        return this.factory.processManager().createExecutor(arguments);
     }
 }

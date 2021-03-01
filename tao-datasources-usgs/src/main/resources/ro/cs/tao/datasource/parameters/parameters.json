@@ -110,5 +110,1105 @@
       "valueSet": ["L1TP", "L1GT", "L1GS"],
       "order": 0
     }
+  },
+  "ECOSTRESS-LTSE": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "ecostress_eco2lste",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "ECOSTRESS-L1BRAD": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "ecostress_eco1brad",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "ECOSTRESS-L1BMAPRAD": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "ecostress_eco1bmaprad",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "ECOSTRESS-CLOUD": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "ecostress_eco2cld",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "ECOSTRESS-ESI": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "ecostress_eco4esiptjpl",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "ECOSTRESS-WUE": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "ecostress_eco4wue",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "Hyperion": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "eo1_hyp_pub",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "processLevel": {
+      "name": "processLevel",
+      "remoteName": "Processing Level Available",
+      "label": "Processing Level",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "required": false,
+      "valueSet": ["", "C", "B", "A"],
+      "order": 0
+    },
+    "cloudCover": {
+      "name": "cloudCover",
+      "remoteName": "Cloud Cover",
+      "label": "Cloud Cover",
+      "type": "java.lang.Integer",
+      "defaultValue": 9,
+      "required": false,
+      "valueSet": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "order": 0
+    },
+    "path": {
+      "name": "path",
+      "remoteName": "Target Path",
+      "label": "Path",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "row": {
+      "name": "row",
+      "remoteName": "Target Row",
+      "label": "Row",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-VI1": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "lpcs_modis_mod13a1",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "horizontalTile": {
+      "name": "horizontalTile",
+      "remoteName": "Horizontal Tile",
+      "label": "Horizontal Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "verticalTile": {
+      "name": "verticalTile",
+      "remoteName": "Vertical Tile",
+      "label": "Vertical Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-VI2": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "lpcs_modis_mod13a2",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "horizontalTile": {
+      "name": "horizontalTile",
+      "remoteName": "Horizontal Tile",
+      "label": "Horizontal Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "verticalTile": {
+      "name": "verticalTile",
+      "remoteName": "Vertical Tile",
+      "label": "Vertical Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-VI3": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "lpcs_modis_mod13a3",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "horizontalTile": {
+      "name": "horizontalTile",
+      "remoteName": "Horizontal Tile",
+      "label": "Horizontal Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "verticalTile": {
+      "name": "verticalTile",
+      "remoteName": "Vertical Tile",
+      "label": "Vertical Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "VIIRS": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "lpcs_viirs_vnp09ga",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "horizontalTile": {
+      "name": "horizontalTile",
+      "remoteName": "Horizontal Tile",
+      "label": "Horizontal Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "verticalTile": {
+      "name": "verticalTile",
+      "remoteName": "Vertical Tile",
+      "label": "Vertical Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-LAI-8": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "modis_mcd15a2h_v6",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "horizontalTile": {
+      "name": "horizontalTile",
+      "remoteName": "Horizontal Tile",
+      "label": "Horizontal Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "verticalTile": {
+      "name": "verticalTile",
+      "remoteName": "Vertical Tile",
+      "label": "Vertical Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-LAI-4": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "modis_mcd15a3h_v6",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "horizontalTile": {
+      "name": "horizontalTile",
+      "remoteName": "Horizontal Tile",
+      "label": "Horizontal Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "verticalTile": {
+      "name": "verticalTile",
+      "remoteName": "Vertical Tile",
+      "label": "Vertical Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-LTSE-1": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "modis_mod11c1_v6",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-LTSE-8": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "modis_mod11c2_v6",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-VI-16-500": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "modis_mod13a1_v6",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "horizontalTile": {
+      "name": "horizontalTile",
+      "remoteName": "Horizontal Tile",
+      "label": "Horizontal Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "verticalTile": {
+      "name": "verticalTile",
+      "remoteName": "Vertical Tile",
+      "label": "Vertical Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-VI-16-250": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "modis_mod13q1_v6",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "horizontalTile": {
+      "name": "horizontalTile",
+      "remoteName": "Horizontal Tile",
+      "label": "Horizontal Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "verticalTile": {
+      "name": "verticalTile",
+      "remoteName": "Vertical Tile",
+      "label": "Vertical Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-BURN-M": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "modis_mcd64a1_v6",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "horizontalTile": {
+      "name": "horizontalTile",
+      "remoteName": "Horizontal Tile Number",
+      "label": "Horizontal Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "verticalTile": {
+      "name": "verticalTile",
+      "remoteName": "Vertical Tile Number",
+      "label": "Vertical Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-FIRE-8": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "modis_mod14a2_v6",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "horizontalTile": {
+      "name": "horizontalTile",
+      "remoteName": "Horizontal Tile",
+      "label": "Horizontal Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "verticalTile": {
+      "name": "verticalTile",
+      "remoteName": "Vertical Tile",
+      "label": "Vertical Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-FIRE-1": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "modis_myd14a1_v6",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "horizontalTile": {
+      "name": "horizontalTile",
+      "remoteName": "Horizontal Tile",
+      "label": "Horizontal Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "verticalTile": {
+      "name": "verticalTile",
+      "remoteName": "Vertical Tile",
+      "label": "Vertical Tile",
+      "type": "java.lang.Integer",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
   }
 }

@@ -3,7 +3,7 @@ package ro.cs.tao.datasource.usgs.json.responses;
 public class Filter {
 
     protected String type;
-    protected String[] options;
+    protected Object options;
 
     public String getType() {
         return type;
@@ -13,11 +13,11 @@ public class Filter {
         this.type = type;
     }
 
-    public String[] getOptions() {
+    public Object getOptions() {
         return options;
     }
 
-    public void setOptions(String[] options) {
+    public void setOptions(Object options) {
         this.options = options;
     }
 }

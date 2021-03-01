@@ -5,10 +5,10 @@ import org.xml.sax.SAXException;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.util.ProductHelper;
+import ro.cs.tao.utils.DateUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 
 abstract class XmlResponseHandler<H extends ProductHelper>
         extends ro.cs.tao.datasource.remote.result.xml.XmlResponseHandler<EOProduct> {
@@ -69,7 +69,7 @@ abstract class XmlResponseHandler<H extends ProductHelper>
                         break;
                     case "sensingStartDate":
                         try {
-                            this.current.setAcquisitionDate(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(elementValue));
+                            this.current.setAcquisitionDate(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(elementValue));
                         } catch (Exception e) {
                             logger.warning(e.getMessage());
                         }
@@ -77,7 +77,7 @@ abstract class XmlResponseHandler<H extends ProductHelper>
                     case "processingDate":
                         if (this.current.getAcquisitionDate() == null) {
                             try {
-                                this.current.setAcquisitionDate(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(elementValue));
+                                this.current.setAcquisitionDate(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(elementValue));
                             } catch (Exception e) {
                                 logger.warning(e.getMessage());
                             }

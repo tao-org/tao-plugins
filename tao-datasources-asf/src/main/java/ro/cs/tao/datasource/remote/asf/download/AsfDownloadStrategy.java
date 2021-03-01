@@ -26,10 +26,7 @@ import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
@@ -95,7 +92,7 @@ public class AsfDownloadStrategy extends DownloadStrategy {
         int responseStatus;
 
         // First set the default cookie manager.
-        CookieHandler.setDefault(new CookieManager());
+        CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
         String productDownloadUrl = getProductUrl(product);
 
         try {
@@ -117,19 +114,17 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                         connection.connect();
                         numberOfTries++;
                         break;
-                        //throw new QueryException(String.format("Cannot connect to remote url: %s. Cause: The supplied credentials are invalid!", connection.getURL()));
                     default:
                         throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
                                 connection.getResponseCode(), connection.getResponseMessage()));
 
                 }
             } while (numberOfTries < 3);
-
         } catch (IOException e) {
             throw new QueryException(String.format("The request was not successful. Reason: %s", e.getMessage()));
         }
 
-        throw new QueryException(String.format("The request was not successful. Reason: Too many authentication redirects!"));
+        throw new QueryException("The request was not successful. Reason: Too many redirects!");
     }
 
     protected Path downloadProduct(EOProduct product, HttpURLConnection connection) throws IOException {
@@ -186,16 +181,17 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                     this.timeoutTimer = new Timer("Timeout");
                 }
                 TimerTask task;
+                final long connTimeout = (connection.getReadTimeout() <= 0 ? DOWNLOAD_TIMEOUT : connection.getReadTimeout());
                 while (!isCancelled() && (read = inputStream.read(buffer)) != -1) {
                     task = new TimerTask() {
                         @Override
                         public void run() {
                             logger.warning(String.format("Remote host did not send anything for %d seconds, cancelling download",
-                                    DOWNLOAD_TIMEOUT / 1000));
+                                    connTimeout / 1000));
                             AsfDownloadStrategy.this.cancel();
                         }
                     };
-                    this.timeoutTimer.schedule(task, DOWNLOAD_TIMEOUT);
+                    this.timeoutTimer.schedule(task, connTimeout);
                     outputStream.write(ByteBuffer.wrap(buffer, 0, read));
                     currentProductProgress.add(read);
                     task.cancel();

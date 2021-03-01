@@ -8,7 +8,7 @@ public class DownloadInfo {
     private String entityId;
     private String datasetId;
     private String available;
-    private int filesize;
+    private long filesize;
     private String productName;
     private String productCode;
     private String bulkAvailable;
@@ -63,11 +63,11 @@ public class DownloadInfo {
         this.available = available;
     }
 
-    public int getFilesize() {
+    public long getFilesize() {
         return filesize;
     }
 
-    public void setFilesize(int filesize) {
+    public void setFilesize(long filesize) {
         this.filesize = filesize;
     }
 

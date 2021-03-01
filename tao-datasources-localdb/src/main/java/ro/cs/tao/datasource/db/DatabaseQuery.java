@@ -47,7 +47,6 @@ public class DatabaseQuery extends DataQuery {
 
     private Logger logger;
 
-
     static {
         ConverterFactory factory = new ConverterFactory();
         factory.register(PolygonParameterConverter.class, Polygon2D.class);
