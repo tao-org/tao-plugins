@@ -46,11 +46,16 @@ import java.util.stream.Collectors;
  * @author Cosmin Cara
  */
 public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
-    @Override
-    public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
+
+    public SearchResponseHandler() {
+        mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
+
+    @Override
+    public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
         SearchResponse response = mapper.readValue(content, SearchResponse.class);
         SearchResults responseData = response.getData();
         List<SearchResult> results = responseData.getResults();
@@ -96,8 +101,6 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
 
     @Override
     public long countValues(String content) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
         SearchResponse response = mapper.readValue(content, SearchResponse.class);
         return response.getData().getTotalHits();
     }
