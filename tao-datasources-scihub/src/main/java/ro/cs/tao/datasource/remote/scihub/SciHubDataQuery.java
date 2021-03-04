@@ -83,6 +83,8 @@ public class SciHubDataQuery extends DataQuery {
         Map<String, String> queries = buildQueriesParams();
         final boolean isS2 = "Sentinel-2".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
         final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
+        final boolean useApiHub = this.parameters.containsKey("useApihub") ?
+                Boolean.parseBoolean(this.parameters.get("useApihub").getValueAsString()) : this.source.useAlternateConnectionString();
         StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
         for (String queryId : queries.keySet()) {
@@ -108,17 +110,11 @@ public class SciHubDataQuery extends DataQuery {
             do {
                 count = 0;
                 List<NameValuePair> params = new ArrayList<>();
-                /*if (this.source.getConnectionString().contains("dhus")) {
-                    params.add(new BasicNameValuePair("limit", String.valueOf(pageSize)));
-                    params.add(new BasicNameValuePair("offset", String.valueOf((i - 1) * pageSize)));
-                    params.add(new BasicNameValuePair("q", query.getValue()));
-                } else {*/
-                    params.add(new BasicNameValuePair("rows", String.valueOf(pageSize)));
-                    params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize)));
-                    params.add(new BasicNameValuePair("q", query.getValue()));
-                //}
+                params.add(new BasicNameValuePair("rows", String.valueOf(pageSize)));
+                params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize)));
+                params.add(new BasicNameValuePair("q", query.getValue()));
                 params.add(new BasicNameValuePair("orderby", "beginposition asc"));
-                String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+                String queryUrl = (useApiHub ? this.source.getConnectionString() : this.source.getAlternateConnectionString()) + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 final boolean hasProcessingDate = "Sentinel2".equals(this.sensorName) || "Sentinel3".equals(this.sensorName);
                 logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
@@ -309,6 +305,9 @@ public class SciHubDataQuery extends DataQuery {
             for (String footprint : footprints) {
                 int idx = 0;
                 for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
+                    if (entry.getKey().equalsIgnoreCase("useapihub")) {
+                        continue;
+                    }
                     QueryParameter parameter = entry.getValue();
                     if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                         throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
