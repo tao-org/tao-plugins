@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.github.openstack4j.core</groupId>
             <artifactId>openstack4j</artifactId>
-            <version>3.8</version>
+            <version>3.9</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.google.guava</groupId>
@@ -31,9 +31,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.pacesys.openstack4j.connectors</groupId>
+            <groupId>com.github.openstack4j.core.connectors</groupId>
             <artifactId>openstack4j-httpclient</artifactId>
-            <version>3.2.0</version>
+            <version>3.9</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.google.guava</groupId>
