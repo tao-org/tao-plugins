@@ -38,7 +38,7 @@ public class ASFDataSourceTest {
             handler.setLevel(Level.INFO);
         }
         ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
-        DataSource<?> dataSource = serviceRegistry.getService(ASFDataSource.class);
+        DataSource<?, ?> dataSource = serviceRegistry.getService(ASFDataSource.class);
         dataSource.setCredentials("vnetoiu", "ASF_x2019");
         if (dataSource.ping()) {
             System.out.println("Ping successful");
@@ -54,7 +54,7 @@ public class ASFDataSourceTest {
                 handler.setLevel(Level.INFO);
             }
             ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
-            DataSource dataSource = serviceRegistry.getService(ASFDataSource.class);
+            DataSource<?, ?> dataSource = serviceRegistry.getService(ASFDataSource.class);
             dataSource.setCredentials("vnetoiu", "ASF_x2019");
             String[] sensors = dataSource.getSupportedSensors();
 
@@ -108,7 +108,7 @@ public class ASFDataSourceTest {
                 handler.setLevel(Level.INFO);
             }
             ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
-            DataSource<?> dataSource = serviceRegistry.getService(ASFDataSource.class);
+            DataSource<?, ?> dataSource = serviceRegistry.getService(ASFDataSource.class);
             dataSource.setCredentials("vnetoiu", "ASF_x2019");
             String[] sensors = dataSource.getSupportedSensors();
             final Map<String, Map<String, Map<String, String>>> filteredParameters = new HashMap<>();
@@ -166,7 +166,6 @@ public class ASFDataSourceTest {
                 System.out.println("Attributes ->");
                 r.getAttributes().forEach(a -> System.out.println("\tName='" + a.getName() + "', value='" + a.getValue() + "'"));
             });
-
 
         } catch (Exception e) {
             e.printStackTrace();

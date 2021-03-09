@@ -10,7 +10,6 @@ import ro.cs.tao.datasource.remote.mundi.sentinel2.Sentinel2DownloadStrategy;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * Created by vnetoiu on 10/22/2019.
@@ -22,7 +21,7 @@ public class MundiParameterProvider extends AbstractParameterProvider {
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
-                    put("Sentinel1", new DownloadStrategy(dataSource, targetFolder, new Properties()));
+                    put("Sentinel1", new DownloadStrategy(dataSource, targetFolder, dataSource.getProperties()));
                     put("Sentinel2", new Sentinel2DownloadStrategy(dataSource, targetFolder));
                     put("Landsat8", new Landsat8Strategy(dataSource, targetFolder));
                 }});

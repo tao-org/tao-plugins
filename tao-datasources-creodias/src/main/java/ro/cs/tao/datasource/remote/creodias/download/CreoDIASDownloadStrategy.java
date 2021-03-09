@@ -2,21 +2,15 @@ package ro.cs.tao.datasource.remote.creodias.download;
 
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.creodias.CreoDiasDataSource;
 import ro.cs.tao.datasource.remote.creodias.model.common.Token;
-import ro.cs.tao.datasource.remote.creodias.parsers.LoginResponseHandler;
-import ro.cs.tao.datasource.remote.result.ResponseParser;
-import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtilities;
@@ -37,7 +31,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Properties;
 
-public class CreoDIASDownloadStrategy extends DownloadStrategy {
+public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
     private static final int DOWNLOAD_TIMEOUT = 30000; // 30s
     //private Timer timeoutTimer;
     private Token apiKey;
@@ -50,6 +44,7 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy {
     protected CreoDIASDownloadStrategy(CreoDIASDownloadStrategy other) {
         super(other);
         this.fetchMode = FetchMode.OVERWRITE;
+        this.apiKey = other.apiKey;
     }
 
     @Override
@@ -69,10 +64,12 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy {
         if (currentProduct == null) {
             currentProduct = product;
         }
-        final Token token = authenticate();
+        if (this.apiKey == null) {
+            this.apiKey = this.dataSource.authenticate();
+        }
         String productUrl = getProductUrl(product);
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("token", token.getAccessToken()));
+        params.add(new BasicNameValuePair("token", this.apiKey.getAccessToken()));
         productUrl += "?" + URLEncodedUtils.format(params, "UTF-8");
         try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, productUrl, null, null, DOWNLOAD_TIMEOUT)) {
             int statusCode = response.getStatusLine().getStatusCode();
@@ -204,45 +201,5 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy {
     @Override
     protected String getMetadataUrl(EOProduct descriptor) {
         throw new RuntimeException("Metadata file not supported for this strategy");
-    }
-
-    private Token authenticate() {
-        if (this.apiKey == null) {
-            UsernamePasswordCredentials credentials = this.dataSource.getCredentials();
-            if (credentials == null) {
-                throw new QueryException(String.format("Credentials not set for %s", this.dataSource.getId()));
-            }
-            List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair("client_id", "CLOUDFERRO_PUBLIC"));
-            params.add(new BasicNameValuePair("username", credentials.getUserName()));
-            params.add(new BasicNameValuePair("password", credentials.getPassword()));
-            params.add(new BasicNameValuePair("grant_type", "password"));
-            final String url = this.dataSource.getConnectionString("Login");
-            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, (Credentials) null, params)) {
-                switch (response.getStatusLine().getStatusCode()) {
-                    case 200:
-                        String body = EntityUtils.toString(response.getEntity());
-                        if (body == null) {
-                            throw new QueryException("Cannot retrieve API key [empty response body]");
-                        }
-                        ResponseParser<Token> parser = new JsonResponseParser<>(new LoginResponseHandler());
-                        final Token token = parser.parseValue(body);
-                        if (token != null) {
-                            this.apiKey = token;
-                        } else {
-                            throw new QueryException(String.format("Cannot retrieve API key [received: %s]", body));
-                        }
-                        break;
-                    case 401:
-                        throw new QueryException("Cannot retrieve API key [401:not authorized]");
-                    default:
-                        throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                response.getStatusLine().getReasonPhrase()));
-                }
-            } catch (Exception ex) {
-                throw new QueryException(ex);
-            }
-        }
-        return this.apiKey;
     }
 }

@@ -26,7 +26,7 @@ import java.util.Properties;
 /**
  * @author Cosmin Cara
  */
-public class SciHubDataSource extends URLDataSource<SciHubDataQuery> {
+public class SciHubDataSource extends URLDataSource<SciHubDataQuery, String> {
     private static final Properties props;
     private static String APIHUB_URL;
     private static String DHUS_URL;
@@ -65,6 +65,14 @@ public class SciHubDataSource extends URLDataSource<SciHubDataQuery> {
     @Override
     public void setCredentials(String username, String password) {
         super.setCredentials(username, password);
+    }
+
+    @Override
+    public String authenticate() throws IOException {
+        if (credentials == null) {
+            throw new IOException("No credentials set");
+        }
+        return NetUtils.getAuthToken(credentials.getUserName(), credentials.getPassword());
     }
 
     @Override

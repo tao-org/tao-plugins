@@ -44,8 +44,6 @@ import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.configuration.EmptyConfigurationProvider;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
-import ro.cs.tao.datasource.DataSourceComponent;
-import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
@@ -71,14 +69,14 @@ import java.util.logging.Logger;
  */
 public class DataSourceTest {
 
-    public static void main(String[] args) throws JsonProcessingException {
+    public static void main(String[] args) {
         setup();
         query_Test();
     }
 
     private static void printParams() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        DataSource<?> dataSource = getDatasourceRegistry().getService(TheiaDataSource.class);
+        DataSource<?, ?> dataSource = getDatasourceRegistry().getService(TheiaDataSource.class);
         System.out.println(mapper.writeValueAsString(dataSource.getSupportedParameters()));
     }
 
@@ -88,7 +86,7 @@ public class DataSourceTest {
             for (Handler handler : logger.getHandlers()) {
                 handler.setLevel(Level.INFO);
             }
-            DataSource<?> dataSource = getDatasourceRegistry().getService(TheiaDataSource.class);
+            DataSource<?, ?> dataSource = getDatasourceRegistry().getService(TheiaDataSource.class);
             dataSource.setCredentials("kraftek@c-s.ro", "cei7pitici.");
             DataQuery query = dataSource.createQuery("Landsat8");
             query.addParameter("collection", "LANDSAT");
@@ -112,43 +110,8 @@ public class DataSourceTest {
                 System.out.println("LOCATION=" + r.getLocation());
                 System.out.println("FOOTPRINT=" + r.getGeometry());
             });
-            DownloadStrategy strategy = (DownloadStrategy) dataSource.getProductFetchStrategy("Landsat8");
-            ProgressListener progressListener = new ProgressListener() {
-                @Override
-                public void started(String taskName) {
-                    System.out.println("Started " + taskName);
-                }
-
-                @Override
-                public void subActivityStarted(String subTaskName) {
-                    System.out.println("Started " + subTaskName);
-                }
-
-                @Override
-                public void subActivityEnded(String subTaskName) {
-                    System.out.println("Completed " + subTaskName);
-                }
-
-                @Override
-                public void ended() {
-                    System.out.println("Done");
-                }
-
-                @Override
-                public void notifyProgress(double progressValue) {
-                    System.out.println("Progress : " + progressValue);
-                }
-
-                @Override
-                public void notifyProgress(String subTaskName, double subTaskProgress) {
-                    System.out.println("Progress: " + subTaskName + "," + subTaskProgress);
-                }
-
-                @Override
-                public void notifyProgress(String subTaskName, double subTaskProgress, double overallProgress) {
-                    System.out.println("Progress: " + overallProgress + " - " + subTaskName + "," + subTaskProgress);
-                }
-            };
+            DownloadStrategy<?> strategy = (DownloadStrategy<?>) dataSource.getProductFetchStrategy("Landsat8");
+            ProgressListener progressListener = new ProgressListener() {};
             strategy.setProgressListener(progressListener);
             strategy.setDestination(ConfigurationManager.getInstance().getValue("products.location"));
             strategy.setFetchMode(FetchMode.OVERWRITE);

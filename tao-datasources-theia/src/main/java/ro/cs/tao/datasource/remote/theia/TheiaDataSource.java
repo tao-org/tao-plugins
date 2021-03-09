@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class TheiaDataSource extends URLDataSource<TheiaDataQuery> {
+public class TheiaDataSource extends URLDataSource<TheiaDataQuery, Header> {
     private static final Properties props;
     private static String LOGIN_URL;
     static String SEARCH_URL;
@@ -56,6 +56,7 @@ public class TheiaDataSource extends URLDataSource<TheiaDataQuery> {
         super.setCredentials(username, password);
     }
 
+    @Override
     public Header authenticate() {
         if (this.authHeader == null) {
             if (this.credentials == null) {

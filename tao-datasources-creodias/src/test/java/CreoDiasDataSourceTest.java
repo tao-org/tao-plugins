@@ -104,7 +104,7 @@ public class CreoDiasDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
-            DataSource<?> dataSource = new CreoDiasDataSource();
+            DataSource<?, ?> dataSource = new CreoDiasDataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery("Sentinel2");
@@ -124,7 +124,7 @@ public class CreoDiasDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
-            DataSource<?> dataSource = new CreoDiasDataSource();
+            DataSource<?, ?> dataSource = new CreoDiasDataSource();
             dataSource.setCredentials("kraftek@gmail.com", "cei7pitici@creodias.");
             String[] sensors = dataSource.getSupportedSensors();
 
@@ -197,7 +197,7 @@ public class CreoDiasDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
-            DataSource<?> dataSource = new CreoDiasDataSource();
+            DataSource<?, ?> dataSource = new CreoDiasDataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery("Sentinel1");
@@ -217,7 +217,7 @@ public class CreoDiasDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel1DataSource.class.getName());
-            DataSource<?> dataSource = new CreoDiasDataSource();
+            DataSource<?, ?> dataSource = new CreoDiasDataSource();
             dataSource.setCredentials("cosmin.cara@c-s.ro", "cei7pitici.");
             String[] sensors = dataSource.getSupportedSensors();
 
@@ -244,7 +244,7 @@ public class CreoDiasDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
-            DataSource<?> dataSource = new CreoDiasDataSource();
+            DataSource<?, ?> dataSource = new CreoDiasDataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery("Landsat8");
@@ -264,7 +264,7 @@ public class CreoDiasDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel1DataSource.class.getName());
-            DataSource<?> dataSource = new CreoDiasDataSource();
+            DataSource<?, ?> dataSource = new CreoDiasDataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery("Landsat8");

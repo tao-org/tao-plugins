@@ -188,8 +188,8 @@ public abstract class BaseDataQuery extends DataQuery {
         List<BasicNameValuePair> query = new ArrayList<>();
         for (String footprint : footprints) {
             int idx = 0;
-            for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
-                QueryParameter parameter = entry.getValue();
+            for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
+                QueryParameter<?> parameter = entry.getValue();
                 if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                     throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
                 }

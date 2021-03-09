@@ -15,8 +15,6 @@
  */
 package ro.cs.tao.datasource.usgs;
 
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.DataQuery;
@@ -27,12 +25,14 @@ import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
-import ro.cs.tao.datasource.usgs.json.handlers.*;
+import ro.cs.tao.datasource.usgs.json.handlers.DatasetFieldsResponseHandler;
+import ro.cs.tao.datasource.usgs.json.handlers.DownloadInfoResponseHandler;
+import ro.cs.tao.datasource.usgs.json.handlers.DownloadResponseHandler;
+import ro.cs.tao.datasource.usgs.json.handlers.SearchResponseHandler;
 import ro.cs.tao.datasource.usgs.json.requests.*;
 import ro.cs.tao.datasource.usgs.json.responses.AvailableDownload;
 import ro.cs.tao.datasource.usgs.json.responses.DownloadInfo;
 import ro.cs.tao.datasource.usgs.json.responses.DownloadResponse;
-import ro.cs.tao.datasource.usgs.json.responses.LoginResponse;
 import ro.cs.tao.datasource.usgs.json.types.Download;
 import ro.cs.tao.datasource.usgs.parameters.USGSDateParameterConverter;
 import ro.cs.tao.eodata.EOProduct;
@@ -120,52 +120,6 @@ public class Landsat8Query extends DataQuery {
             }
         }
         return pathRows;
-    }
-
-    private String authenticate() throws Exception {
-        if (this.apiKey == null) {
-            LoginRequest request = new LoginRequest();
-            UsernamePasswordCredentials credentials = this.source.getCredentials();
-            if (credentials == null) {
-                throw new QueryException(String.format("Credentials not set for %s", this.source.getId()));
-            }
-            request.setUsername(credentials.getUserName());
-            request.setPassword(credentials.getPassword());
-            String url = buildPostRequestURL("login");
-            //List<org.apache.http.NameValuePair> params = new ArrayList<>();
-            //params.add(new BasicNameValuePair("jsonRequest", request.toString()));
-            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, (Credentials) null, request.toString())) {
-                switch (response.getStatusLine().getStatusCode()) {
-                    case 200:
-                        String body = EntityUtils.toString(response.getEntity());
-                        if (body == null) {
-                            throw new QueryException("Cannot retrieve API key [empty response body]");
-                        }
-                        JsonResponseParser<LoginResponse> parser = new JsonResponseParser<>(new LoginResponseHandler());
-                        LoginResponse login = parser.parseValue(body);
-                        if (login == null) {
-                            throw new QueryException("Cannot retrieve API key [empty response body]");
-                        }
-                        if (login.getErrorCode() == null) {
-                            this.apiKey = login.getData();
-                        }
-                        if (this.apiKey == null) {
-                            throw new QueryException(String.format("The API key could not be obtained [requestId:%s,apiVersion:%s,errorCode:%s,error:%s,data:%s",
-                                                                   login.getSessionId(), login.getVersion(), login.getErrorCode(), login.getErrorMessage(), login.getData()));
-                        }
-                        break;
-                    case 401:
-                        throw new QueryException("Cannot retrieve API key [401:not authorized]");
-                    default:
-                        throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                                               response.getStatusLine().getReasonPhrase()));
-                }
-                setupRemoteFields();
-            } catch (Exception ex) {
-                throw new QueryException(ex);
-            }
-        }
-        return this.apiKey;
     }
 
     private void setupRemoteFields() throws Exception {
@@ -404,7 +358,10 @@ public class Landsat8Query extends DataQuery {
     }
 
     private Object executeQuery(int start, int pageSize, Set<String> pathRows, boolean count) throws Exception {
-        String apiKey = authenticate();
+        if (this.apiKey == null) {
+            this.apiKey = ((USGSDataSource) this.source).authenticate();
+            setupRemoteFields();
+        }
         final Object results;
         if (!count) {
             results = new ArrayList<EOProduct>();

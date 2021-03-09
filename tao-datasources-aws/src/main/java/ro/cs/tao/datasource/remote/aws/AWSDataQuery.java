@@ -16,7 +16,6 @@
 package ro.cs.tao.datasource.remote.aws;
 
 import ro.cs.tao.datasource.DataQuery;
-import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.QueryParameter;
@@ -33,7 +32,7 @@ import java.util.Set;
 public class AWSDataQuery extends DataQuery {
     private DataQuery innerQuery;
 
-    AWSDataQuery(DataSource source, String sensorName) {
+    AWSDataQuery(AWSDataSource source, String sensorName) {
         super(source, sensorName);
         switch(sensorName) {
             case "Sentinel2":
@@ -49,7 +48,7 @@ public class AWSDataQuery extends DataQuery {
     }
 
     @Override
-    public QueryParameter addParameter(QueryParameter parameter) {
+    public QueryParameter<?> addParameter(QueryParameter<?> parameter) {
         return innerQuery.addParameter(parameter);
     }
 
@@ -104,12 +103,12 @@ public class AWSDataQuery extends DataQuery {
     }
 
     @Override
-    public <V> QueryParameter createParameter(String name, Class<V> type, V minValue, V maxValue) {
+    public <V> QueryParameter<V> createParameter(String name, Class<V> type, V minValue, V maxValue) {
         return innerQuery.createParameter(name, type, minValue, maxValue);
     }
 
     @Override
-    public <V> QueryParameter createParameter(String name, Class<V> type, V minValue, V maxValue, boolean optional) {
+    public <V> QueryParameter<V> createParameter(String name, Class<V> type, V minValue, V maxValue, boolean optional) {
         return innerQuery.createParameter(name, type, minValue, maxValue, optional);
     }
 
@@ -139,7 +138,7 @@ public class AWSDataQuery extends DataQuery {
     }
 
     @Override
-    public QueryParameter getParameter(String name) {
+    public QueryParameter<?> getParameter(String name) {
         return innerQuery.getParameter(name);
     }
 
@@ -149,7 +148,7 @@ public class AWSDataQuery extends DataQuery {
     }
 
     @Override
-    public Map<String, QueryParameter> getParameters() {
+    public Map<String, QueryParameter<?>> getParameters() {
         return innerQuery.getParameters();
     }
 

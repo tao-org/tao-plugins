@@ -15,6 +15,7 @@
  */
 package ro.cs.tao.datasource.remote.mundi.landsat8;
 
+import org.apache.http.Header;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.mundi.MundiDataSource;
 import ro.cs.tao.datasource.util.Constants;
@@ -35,7 +36,7 @@ import java.util.regex.Matcher;
 /**
  * @author Cosmin Cara
  */
-public class Landsat8Strategy extends DownloadStrategy {
+public class Landsat8Strategy extends DownloadStrategy<Header> {
     private static final Properties properties;
     private static final Set<String> bandFiles = new LinkedHashSet<String>() {{
         add("_B1.TIF");

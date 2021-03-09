@@ -36,7 +36,7 @@ import java.util.Properties;
 /**
  * @author Cosmin Cara
  */
-public class SentinelDownloadStrategy extends DownloadStrategy {
+public class SentinelDownloadStrategy extends DownloadStrategy<String> {
 
     static final String ODATA_XML_PLACEHOLDER = "${xmlname}";
     static final String ODATA_UUID = "${UUID}";
@@ -130,7 +130,7 @@ public class SentinelDownloadStrategy extends DownloadStrategy {
                 }
             }
         }
-        return downloadFile(getProductUrl(product), rootPath, getAuthenticationToken());
+        return downloadFile(getProductUrl(product), rootPath, this.dataSource.authenticate());
     }
 
     @Override

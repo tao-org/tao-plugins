@@ -44,6 +44,16 @@
             <destName>tao-datasources-creodias-${artifact.version}.jar</destName>
         </file>
         <file>
+            <source>../tao-datasources-earthdata/target/tao-datasources-earthdata-${artifact.version}.jar</source>
+            <outputDirectory>modules</outputDirectory>
+            <destName>tao-datasources-earthdata-${artifact.version}.jar</destName>
+        </file>
+        <file>
+            <source>../tao-datasources-eocat/target/tao-datasources-eocat-${artifact.version}.jar</source>
+            <outputDirectory>modules</outputDirectory>
+            <destName>tao-datasources-eocat-${artifact.version}.jar</destName>
+        </file>
+        <file>
             <source>../tao-datasources-fedeo/target/tao-datasources-fedeo-${artifact.version}.jar</source>
             <outputDirectory>modules</outputDirectory>
             <destName>tao-datasources-fedeo-${artifact.version}.jar</destName>

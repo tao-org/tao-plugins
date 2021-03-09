@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
-public class ASFDataSource extends URLDataSource<ASFQuery> {
+public class ASFDataSource extends URLDataSource<ASFQuery, String> {
     private static final Properties props;
     private static String URL;
 
@@ -44,7 +44,16 @@ public class ASFDataSource extends URLDataSource<ASFQuery> {
     }
 
     @Override
+    public String authenticate() throws IOException {
+        if (credentials == null) {
+            throw new IOException("No credentials set");
+        }
+        return NetUtils.getAuthToken(credentials.getUserName(), credentials.getPassword());
+    }
+
+    @Override
     protected ASFQuery createQueryImpl(String sensorName) {
         return new ASFQuery(this, sensorName);
     }
 }
+

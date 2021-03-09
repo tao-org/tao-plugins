@@ -22,7 +22,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.EnumSet;
 import java.util.Properties;
 
-public abstract class AWSStrategy extends DownloadStrategy {
+public abstract class AWSStrategy extends DownloadStrategy<String> {
 
     private static final String START_MESSAGE = "(%s,%s) %s [size: %skB]";
     private static final String COMPLETE_MESSAGE = "(%s,%s) %s [elapsed: %ss]";
