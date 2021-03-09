@@ -36,7 +36,7 @@ public class Landsat8Query extends BaseDataQuery {
     @Override
     protected String[] getFootprintsFromTileParameter() {
         String[] footprints = null;
-        QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
+        QueryParameter<?> tileParameter = this.parameters.get(CommonParameterNames.TILE);
         Object value = tileParameter.getValue();
         if (value != null) {
             if (value.getClass().isArray()) {

@@ -304,7 +304,7 @@ public class SciHubDataQuery extends DataQuery {
             }
             for (String footprint : footprints) {
                 int idx = 0;
-                for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
+                for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
                     if (entry.getKey().equalsIgnoreCase("useapihub")) {
                         continue;
                     }

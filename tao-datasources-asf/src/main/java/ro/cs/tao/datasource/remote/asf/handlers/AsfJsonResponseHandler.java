@@ -81,10 +81,6 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                         //add sensor attribute
                         product.addAttribute("instrumentshortname", instrument);
                     } else {
-                        /*value = r.getProcessingLevel();
-                        if(nonNull(value)) {
-                            product.setProductType(value.toString());
-                        }*/
                         if (S1Pattern.matcher(r.getProductName()).matches()) {
                             product.setProductType("Sentinel1");
                         }

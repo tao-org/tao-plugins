@@ -59,7 +59,7 @@ public class GenerateProductList {
     private static long doSciHubQuery(int year, String footprint, String satellite, String productType) {
         long result = 0;
         try {
-            final DataSource<?> dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
+            final DataSource<?, ?> dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
             dataSource.setCredentials("kraftek", "cei7samurai");
             final DataQuery query = dataSource.createQuery(satellite.replace("-", ""));
             query.addParameter(CommonParameterNames.PLATFORM, satellite);

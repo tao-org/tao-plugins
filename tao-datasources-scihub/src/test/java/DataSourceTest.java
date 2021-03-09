@@ -46,21 +46,12 @@ import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
-import ro.cs.tao.datasource.remote.DownloadStrategy;
-import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
-import ro.cs.tao.utils.async.Parallel;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -76,11 +67,12 @@ import java.util.logging.Logger;
  */
 public class DataSourceTest {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws JsonProcessingException {
         setup();
         //SciHub_Sentinel1_Test();
-        SciHub_Sentinel2_Count_Test();
-        //SciHub_Sentinel2_Test();
+        //SciHub_Sentinel2_Count_Test();
+        SciHub_Sentinel2_APIHUB_Test();
+        //SciHub_Sentinel2_DHUS_Test();
         //printParams();
     }
 
@@ -90,56 +82,48 @@ public class DataSourceTest {
         System.out.println(mapper.writeValueAsString(dataSource.getSupportedParameters()));
     }
 
-    private static void SciHub_Sentinel2_Count_Test() throws IOException {
+    private static void SciHub_Sentinel2_Count_Test() {
         try {
             Logger logger = LogManager.getLogManager().getLogger("");
             for (Handler handler : logger.getHandlers()) {
                 handler.setLevel(Level.INFO);
             }
-            final List<String> lines = Files.readAllLines(Paths.get("C:\\ssd\\s2_tiles.txt"));
-            try (OutputStreamWriter writer =
-                         new OutputStreamWriter(new FileOutputStream(new File("C:\\ssd\\count_by_tile.txt")), StandardCharsets.UTF_8)) {
-                DataSource<?> dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
-                dataSource.setCredentials("kraftek", "cei7samurai");
-                String[] sensors = dataSource.getSupportedSensors();
-                //for (String tile : lines) {
-                Parallel.For(0, lines.size(), i -> {
-                    DataQuery query = dataSource.createQuery(sensors[1]);
-                    query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
-                    QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-                    begin.setMinValue(Date.from(LocalDateTime.of(2019, 1, 1, 0, 0, 0, 0)
-                            .atZone(ZoneId.systemDefault())
-                            .toInstant()));
-                    begin.setMaxValue(Date.from(LocalDateTime.of(2019, 12, 31, 23, 59, 0, 0)
-                            .atZone(ZoneId.systemDefault())
-                            .toInstant()));
-                    query.addParameter(begin);
-                    query.addParameter(CommonParameterNames.PRODUCT_TYPE, "S2MSI1C");
-                    query.addParameter(CommonParameterNames.TILE, lines.get(i));
-                    final String msg = lines.get(i) + ":" + query.getCount();
-                    System.out.println(msg);
-                    synchronized (writer) {
-                        try {
-                            writer.write(msg + "\n");
-                            writer.flush();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
+            DataSource dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
+            dataSource.setCredentials("kraftek", "cei7samurai");
+            String[] sensors = dataSource.getSupportedSensors();
+
+            DataQuery query = dataSource.createQuery(sensors[1]);
+            query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
+            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
+            begin.setMinValue(Date.from(LocalDateTime.of(2016, 2, 1, 0, 0, 0, 0)
+                                                .atZone(ZoneId.systemDefault())
+                                                .toInstant()));
+            begin.setMaxValue(Date.from(LocalDateTime.of(2017, 2, 1, 0, 0, 0, 0)
+                                                .atZone(ZoneId.systemDefault())
+                                                .toInstant()));
+            query.addParameter(begin);
+            Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
+                                                      "24.83885442747927 43.8379609098684," +
+                                                      "24.83885442747927 44.795645304033826," +
+                                                      "22.8042573604346 44.795645304033826," +
+                                                      "22.8042573604346 43.8379609098684))");
+
+            query.addParameter(CommonParameterNames.FOOTPRINT, aoi);
+
+            query.addParameter(CommonParameterNames.CLOUD_COVER, 100.);
+            System.out.println(String.format("Query returned %s",query.getCount()));
         } catch (QueryException e) {
             e.printStackTrace();
         }
     }
 
-    private static void SciHub_Sentinel2_Test() {
+    private static void SciHub_Sentinel2_APIHUB_Test() {
         try {
             Logger logger = LogManager.getLogManager().getLogger("");
             for (Handler handler : logger.getHandlers()) {
                 handler.setLevel(Level.INFO);
             }
-            DataSource<?> dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
+            DataSource<?, ?> dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
             dataSource.setCredentials("kraftek", "cei7samurai");
             String[] sensors = dataSource.getSupportedSensors();
 
@@ -163,8 +147,8 @@ public class DataSourceTest {
 
             query.addParameter(CommonParameterNames.CLOUD_COVER, 100.);
             query.addParameter(CommonParameterNames.PRODUCT_TYPE, "S2MSI2A");
-            query.setPageSize(50);
-            query.setMaxResults(83);
+            query.setPageSize(10);
+            query.setMaxResults(1);
             List<EOProduct> results = query.execute();
             results.forEach(r -> {
                 System.out.println("ID=" + r.getId());
@@ -176,9 +160,62 @@ public class DataSourceTest {
                         .forEach(a -> System.out.println("\tName='" + a.getName() +
                                                                  "', value='" + a.getValue() + "'"));
             });
-            DownloadStrategy strategy = (DownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
+            /*DownloadStrategy strategy = (DownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
             strategy.setFetchMode(FetchMode.OVERWRITE);
-            strategy.fetch(results.get(0));
+            strategy.fetch(results.get(0));*/
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void SciHub_Sentinel2_DHUS_Test() {
+        try {
+            Logger logger = LogManager.getLogManager().getLogger("");
+            for (Handler handler : logger.getHandlers()) {
+                handler.setLevel(Level.INFO);
+            }
+            DataSource<?, ?> dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
+            dataSource.setCredentials("kraftek", "cei7samurai");
+            //dataSource.useAlternateConnectionString(true);
+            String[] sensors = dataSource.getSupportedSensors();
+
+            DataQuery query = dataSource.createQuery(sensors[1]);
+            query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
+            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
+            begin.setMinValue(Date.from(LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0)
+                    .atZone(ZoneId.systemDefault())
+                    .toInstant()));
+            begin.setMaxValue(Date.from(LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0)
+                    .atZone(ZoneId.systemDefault())
+                    .toInstant()));
+            query.addParameter(begin);
+            Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
+                    "24.83885442747927 43.8379609098684," +
+                    "24.83885442747927 44.795645304033826," +
+                    "22.8042573604346 44.795645304033826," +
+                    "22.8042573604346 43.8379609098684))");
+
+            query.addParameter(CommonParameterNames.FOOTPRINT, aoi);
+
+            query.addParameter(CommonParameterNames.CLOUD_COVER, 100.);
+            query.addParameter(CommonParameterNames.PRODUCT_TYPE, "S2MSI2A");
+            query.setPageSize(10);
+            query.setMaxResults(1);
+            query.addParameter("useApihub", false);
+            List<EOProduct> results = query.execute();
+            results.forEach(r -> {
+                System.out.println("ID=" + r.getId());
+                System.out.println("NAME=" + r.getName());
+                System.out.println("LOCATION=" + r.getLocation());
+                System.out.println("FOOTPRINT=" + r.getGeometry());
+                System.out.println("Attributes ->");
+                r.getAttributes()
+                        .forEach(a -> System.out.println("\tName='" + a.getName() +
+                                "', value='" + a.getValue() + "'"));
+            });
+            /*DownloadStrategy strategy = (DownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
+            strategy.setFetchMode(FetchMode.OVERWRITE);
+            strategy.fetch(results.get(0));*/
         } catch (Exception e) {
             e.printStackTrace();
         }

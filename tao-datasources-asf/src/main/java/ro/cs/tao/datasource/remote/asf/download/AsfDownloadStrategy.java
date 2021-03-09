@@ -43,7 +43,7 @@ import java.util.TimerTask;
  *
  * @author Valentin Netoiu
  */
-public class AsfDownloadStrategy extends DownloadStrategy {
+public class AsfDownloadStrategy extends DownloadStrategy<String> {
     private static final String ZIP_EXTENSION = ".zip";
     private static final String TAR_GZ_EXTENSION = ".tar.gz";
     private static final String KMZ_EXTENSION = ".kmz";
@@ -60,7 +60,7 @@ public class AsfDownloadStrategy extends DownloadStrategy {
 
 
     @Override
-    public DownloadStrategy clone() {
+    public AsfDownloadStrategy clone() {
         return new AsfDownloadStrategy(this);
     }
 
@@ -96,7 +96,7 @@ public class AsfDownloadStrategy extends DownloadStrategy {
         String productDownloadUrl = getProductUrl(product);
 
         try {
-            final String token = getAuthenticationToken();
+            final String token = this.dataSource.authenticate();
             HttpURLConnection connection = NetUtils.openConnection(productDownloadUrl, token);
             connection.setInstanceFollowRedirects(true);
             connection.connect();

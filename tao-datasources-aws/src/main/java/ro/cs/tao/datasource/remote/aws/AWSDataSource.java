@@ -34,7 +34,7 @@ import java.util.Scanner;
 /**
  * @author Cosmin Cara
  */
-public class AWSDataSource extends URLDataSource<AWSDataQuery> {
+public class AWSDataSource extends URLDataSource<AWSDataQuery, String> {
     private static String S2_URL;
     private static String S2_TILES_URL;
     private static String L8_URL;
@@ -119,6 +119,11 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery> {
         super.setCredentials(username, password);
         accessKeyId = username;
         secretAccessKey = password;
+    }
+
+    @Override
+    public String authenticate() throws IOException {
+        return null;
     }
 
     @Override

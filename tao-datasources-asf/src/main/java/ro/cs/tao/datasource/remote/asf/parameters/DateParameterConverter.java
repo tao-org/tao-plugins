@@ -15,7 +15,6 @@
  */
 package ro.cs.tao.datasource.remote.asf.parameters;
 
-import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.DefaultParameterConverter;
 import ro.cs.tao.datasource.param.QueryParameter;
 
@@ -31,7 +30,7 @@ public class DateParameterConverter extends DefaultParameterConverter {
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private final DateTimeFormatter dateFormat;
 
-    public DateParameterConverter(QueryParameter parameter) {
+    public DateParameterConverter(QueryParameter<?> parameter) {
         super(parameter);
         if (!Date.class.equals(parameter.getType())) {
             throw new IllegalArgumentException("Invalid parameter type");
@@ -40,7 +39,7 @@ public class DateParameterConverter extends DefaultParameterConverter {
     }
 
     @Override
-    public String stringValue() throws ConversionException {
+    public String stringValue() {
         StringBuilder builder = new StringBuilder();
         LocalDateTime date = ((Date) parameter.getValue()).toInstant()
                 .atZone(ZoneId.systemDefault()).toLocalDateTime();

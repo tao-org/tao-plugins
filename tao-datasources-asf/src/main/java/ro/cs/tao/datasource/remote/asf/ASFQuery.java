@@ -70,7 +70,7 @@ public class ASFQuery extends DataQuery {
     protected List<EOProduct> executeImpl() {
         List<EOProduct> results = new ArrayList<>();
         List<NameValuePair> params = new ArrayList<>();
-        for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
+        for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
             QueryParameter<?> parameter = entry.getValue();
             if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                 throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
