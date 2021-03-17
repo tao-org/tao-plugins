@@ -53,11 +53,8 @@ public class EOCATDataQuery extends DataQuery {
         converterFactory.put(EOCATDataQuery.class, factory);
     }
 
-    private final String collection;
-
-    public EOCATDataQuery(EOCATDataSource source, String sensorName, String collection) {
+    public EOCATDataQuery(EOCATDataSource source, String sensorName) {
         super(source, sensorName);
-        this.collection = collection;
     }
 
     @Override
@@ -105,7 +102,6 @@ public class EOCATDataQuery extends DataQuery {
             queryParams.add(new BasicNameValuePair("maximumRecords", String.valueOf(this.pageSize)));
         }
         queryParams.add(new BasicNameValuePair("startRecord", String.valueOf((this.pageNumber - 1) * this.pageSize + 1)));
-        queryParams.add(new BasicNameValuePair("parentIdentifier", this.collection));
         queryParams.add(new BasicNameValuePair("recordSchema", "om"));
 
         String queryUrl = this.source.getConnectionString() + "request?" + URLEncodedUtils.format(queryParams, "UTF-8").replace("+", "%20");

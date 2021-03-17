@@ -38,7 +38,6 @@ public class FedEODataSourceTest {
         }
         ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
         DataSource dataSource = serviceRegistry.getService(FedEODataSource.class);
-//        dataSource.setCredentials("accessKeyId", "secretAccessKey");
         if (dataSource.ping()) {
             System.out.println("Ping successful");
         } else {
@@ -61,11 +60,9 @@ public class FedEODataSourceTest {
             Map<String, Map<String, DataSourceParameter>> supportedParams = dataSource.getSupportedParameters();
             Map<String, DataSourceParameter> params = supportedParams.get(platform);
 
-            String[] paramsNames = params.keySet().toArray(new String[0]);
-            String[] collections = ((FedEODataSource) dataSource).fetchCollections(platform);
-            String collection = collections[0];
-            ((FedEODataSource) dataSource).setCollection(collection);
+            String collection = (String) params.get("parentIdentifier").getValueSet()[0];
             DataQuery query = dataSource.createQuery(platform);
+            query.addParameter(new QueryParameter<String>(String.class,"parentIdentifier", collection));
             QueryParameter<Date> dateInterval = query.createParameter(CommonParameterNames.START_DATE, Date.class);
             dateInterval.setMinValue(Date.from(LocalDateTime.of(2014, 3, 21, 0, 0, 0, 0)
                     .atZone(ZoneId.systemDefault())
