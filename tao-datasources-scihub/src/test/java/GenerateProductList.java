@@ -3,7 +3,9 @@ import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
+import ro.cs.tao.eodata.EOData;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
 
@@ -13,40 +15,28 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GenerateProductList {
 
     public static void main(String[] args) throws Exception {
-        final Path source = Paths.get("C:\\Users\\kraftek\\Downloads\\data-1587051961378.csv");
-        final int year = 2019;
-        Path destination = Paths.get(String.format("D:\\S1\\s1_products_%d.txt", year));
+        final int year = 2018;
+        Path destination = Paths.get(String.format("C:\\ssd\\s1_products_%d.txt", year));
         Files.deleteIfExists(destination);
         Files.createFile(destination);
-        //final List<String> isoCodes = Files.lines(source).map(l -> l.substring(l.lastIndexOf(',') + 1).replace("\"", "")).collect(Collectors.toList());
-        final List<String> isoCodes = new ArrayList<String>() {{
-           add("GRL");
+        final List<String> tiles = new ArrayList<String>() {{
+           add("17MNU"); add("17MPU"); add("17MQU"); add("17MRU");
         }};
-        try (final Connection connection = openConnection()) {
-            final PreparedStatement statement = connection.prepareStatement("select st_astext(st_convexhull(geom)) from countries where \"iso3\" = ?");
-            for (String isoCode : isoCodes) {
-                System.out.print("Querying for " + isoCode);
-                statement.setString(1, isoCode);
-                final ResultSet resultSet = statement.executeQuery();
-                String footprint = null;
-                while (resultSet.next()) {
-                    footprint = resultSet.getString(1);
-                }
-                final long count = doSciHubQuery(year, footprint, "Sentinel-1", "SLC");
-                System.out.print(" returned " + count + " products\n");
-                Files.write(destination, (count + ",").getBytes(), StandardOpenOption.APPEND);
-            }
+        Polygon2D footprint;
+        Set<String> results = new TreeSet<>();
+        for (String tile : tiles) {
+            System.out.println("Querying for tile " + tile);
+            footprint = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(tile));
+            results.addAll(doSciHubQuery(year, footprint.toWKT(), "Sentinel-1", "SLC"));
+            Files.write(destination, (String.join("\n", results)).getBytes(), StandardOpenOption.APPEND);
         }
         System.exit(0);
     }
@@ -56,8 +46,8 @@ public class GenerateProductList {
         return DriverManager.getConnection("jdbc:postgresql://localhost:5432/sen4cap", "admin", "admin");
     }
 
-    private static long doSciHubQuery(int year, String footprint, String satellite, String productType) {
-        long result = 0;
+    private static List<String> doSciHubQuery(int year, String footprint, String satellite, String productType) {
+        List<String> products = new ArrayList<>();
         try {
             final DataSource<?, ?> dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
             dataSource.setCredentials("kraftek", "cei7samurai");
@@ -74,13 +64,13 @@ public class GenerateProductList {
             query.addParameter(begin);
             final Polygon2D aoi = Polygon2D.fromWKT(footprint);
             query.addParameter(CommonParameterNames.FOOTPRINT, aoi);
-            query.setPageSize(1);
-            query.setMaxResults(1);
-            result = query.getCount();
+            query.setPageSize(50);
+            query.setMaxResults(1000);
+            products.addAll(query.execute().stream().map(EOData::getName).collect(Collectors.toList()));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        return products;
     }
 
     private static ServiceRegistry<DataSource> getDatasourceRegistry() {

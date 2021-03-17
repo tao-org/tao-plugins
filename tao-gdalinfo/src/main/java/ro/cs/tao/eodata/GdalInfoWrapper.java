@@ -28,14 +28,12 @@ import ro.cs.tao.products.sentinels.Sentinel1MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel2MetadataInspector;
 import ro.cs.tao.utils.DockerHelper;
 import ro.cs.tao.utils.ExceptionUtils;
-import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.*;
 
 import javax.json.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.InetAddress;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -153,7 +151,7 @@ public class GdalInfoWrapper implements MetadataInspector {
         if (metadata != null) {
             return metadata;
         }
-        if (Files.isDirectory(productPath)) {
+        if (this.factory.fileManager().isDirectory(productPath)) {
             // gdalinfo would work only on files
             return null;
         }
@@ -305,7 +303,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                 throw new IOException(consumer.getOutput());
             }
         } catch (Exception e) {
-            throw new IOException(e);
+            throw new IOException(e.getMessage() + " [" + consumer.getOutput() + "]");
         } finally {
             if (reader != null) {
                 reader.close();
@@ -327,12 +325,15 @@ public class GdalInfoWrapper implements MetadataInspector {
             final String jsonString = parent.getJsonString(name).getString();
             switch (jsonString.toLowerCase()) {
                 case "nan":
+                case "-nan":
                     value = Double.NaN;
                     break;
                 case "infinity":
+                case "inf":
                     value = Double.POSITIVE_INFINITY;
                     break;
                 case "-infinity":
+                case "-inf":
                     value = Double.NEGATIVE_INFINITY;
                     break;
             }
@@ -342,14 +343,14 @@ public class GdalInfoWrapper implements MetadataInspector {
         return value;
     }
 
-    private Executor<?> initialize(Path path, String[] args) throws IOException {
+    private Executor<?> initialize(Path path, String[] args) {
         List<String> arguments = new ArrayList<>();
         // At least on Windows, docker doesn't handle well folder symlinks in the path
-        Path realPath = FileUtilities.resolveSymLinks(path);
+        //Path realPath = FileUtilities.resolveSymLinks(path);
         for (String arg : args) {
-            arguments.add(arg.replace("$FULL_PATH", realPath.toString())
-                              .replace("$FOLDER", realPath.getParent().toString())
-                              .replace("$FILE", realPath.getFileName().toString()));
+            arguments.add(arg.replace("$FULL_PATH", path.toString())
+                              .replace("$FOLDER", path.getParent().toString())
+                              .replace("$FILE", path.getFileName().toString()));
         }
         return this.factory.processManager().createExecutor(arguments);
     }

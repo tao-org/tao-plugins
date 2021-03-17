@@ -24,6 +24,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.QueryException;
+import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.remote.URLDataSource;
 import ro.cs.tao.datasource.remote.fedeo.auth.FedEOAuthentication;
 import ro.cs.tao.datasource.remote.fedeo.parameters.FedEOParameterProvider;
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class FedEODataSource extends URLDataSource<FedEODataQuery, Header> {
@@ -54,7 +56,6 @@ public class FedEODataSource extends URLDataSource<FedEODataQuery, Header> {
         }
     }
 
-    private String collection = "";
     private FedEOAuthentication authenticationStrategy = null;
 
     public FedEODataSource() throws URISyntaxException {
@@ -96,14 +97,10 @@ public class FedEODataSource extends URLDataSource<FedEODataQuery, Header> {
 
     @Override
     protected FedEODataQuery createQueryImpl(String sensorName) {
-        return new FedEODataQuery(this, sensorName, collection);
+        return new FedEODataQuery(this, sensorName);
     }
 
-    public void setCollection(String collection) {
-        this.collection = collection;
-    }
-
-    public String[] fetchCollections(String platform) {
+    private String[] fetchCollections(String platform) {
         List<String> results = new ArrayList<>();
         List<NameValuePair> queryParams = new ArrayList<>();
         queryParams.add(new BasicNameValuePair("platform", String.valueOf(platform)));
@@ -126,5 +123,18 @@ public class FedEODataSource extends URLDataSource<FedEODataQuery, Header> {
             throw new QueryException(ex);
         }
         return results.toArray(new String[0]);
+    }
+
+    @Override
+    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
+        Map<String, Map<String, DataSourceParameter>> supportedParams = super.getSupportedParameters();
+        for (Map.Entry<String, Map<String, DataSourceParameter>> supportedParam : supportedParams.entrySet()) {
+            DataSourceParameter currentParentIdentifiser = supportedParam.getValue().get("parentIdentifier");
+            Object[] collections = fetchCollections(supportedParam.getKey());
+            DataSourceParameter newParentIdentifiser = new DataSourceParameter(currentParentIdentifiser.getName(), currentParentIdentifiser.getRemoteName(), currentParentIdentifiser.getType(), currentParentIdentifiser.getLabel(), currentParentIdentifiser.getDefaultValue(), true, collections);
+            supportedParam.getValue().replace("parentIdentifier", newParentIdentifiser);
+        }
+        return supportedParams;
+
     }
 }
