@@ -15,6 +15,7 @@
  */
 package ro.cs.tao.datasource.usgs.json.handlers;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
@@ -22,6 +23,7 @@ import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.usgs.json.responses.SearchResponse;
 import ro.cs.tao.datasource.usgs.json.responses.SearchResult;
 import ro.cs.tao.datasource.usgs.json.responses.SearchResults;
+import ro.cs.tao.datasource.usgs.json.types.Browse;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
@@ -32,18 +34,28 @@ import ro.cs.tao.products.landsat.Landsat8ProductHelper;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
  */
 public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
+    private final ObjectMapper mapper;
+
+    public SearchResponseHandler() {
+        mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
+
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
         SearchResponse response = mapper.readValue(content, SearchResponse.class);
         SearchResults responseData = response.getData();
         List<SearchResult> results = responseData.getResults();
@@ -55,25 +67,33 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             product.setProductType("Landsat8");
             product.setId(r.getEntityId());
             product.setName(r.getDisplayId());
-            product.setAcquisitionDate(Date.from(r.getAcquisitionDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            try {
+                product.setAcquisitionDate(Date.from(LocalDateTime.parse(r.getTemporalCoverage().getStartDate(),
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.systemDefault()).toInstant()));
+            } catch (DateTimeParseException e) {
+                product.setAcquisitionDate(Date.from(LocalDateTime.parse(r.getTemporalCoverage().getStartDate(),
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX")).atZone(ZoneId.systemDefault()).toInstant()));
+            }
             Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = r.getSpatialFootprint().getCoordinates();
+            double[][][] coordinates = r.getSpatialCoverage().getCoordinates();
             for (double[] point : coordinates[0]) {
                 polygon2D.append(point[0], point[1]);
             }
             product.setGeometry(polygon2D.toWKT());
             try {
-                product.setQuicklookLocation(r.getBrowseUrl());
+                Browse browse = r.getBrowse().stream().filter(b -> "LandsatLook Natural Color Preview Image".equals(b.getBrowseName())).findFirst().orElse(null);
+                if (browse != null) {
+                    product.setQuicklookLocation(browse.getBrowsePath());
+                }
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
             try {
-                product.setLocation(r.getDownloadUrl());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
+                Landsat8ProductHelper helper = new Landsat8ProductHelper(product.getName());
+                product.addAttribute("tiles", helper.getPath() + helper.getRow());
+            } catch (IllegalArgumentException e) {
+                Logger.getLogger(SearchResponseHandler.class.getName()).fine(product.getName() + " is not a Landsat product");
             }
-            Landsat8ProductHelper helper = new Landsat8ProductHelper(product.getName());
-            product.addAttribute("tiles", helper.getPath() + helper.getRow());
             return product;
         }).collect(Collectors.toList());
 
@@ -81,8 +101,6 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
 
     @Override
     public long countValues(String content) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
         SearchResponse response = mapper.readValue(content, SearchResponse.class);
         return response.getData().getTotalHits();
     }

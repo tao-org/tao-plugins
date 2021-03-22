@@ -209,9 +209,13 @@
       "remoteName": "processingLevel",
       "label": "Processing Level",
       "type": "java.lang.String",
-      "defaultValue": "LEVEL1T",
+      "defaultValue": "LEVEL1TP",
       "required": false,
-      "valueSet": ["LEVEL1GT", "LEVEL1T", "LEVEL1TP"],
+      "valueSet": [
+        "LEVEL1GT",
+        "LEVEL1T",
+        "LEVEL1TP"
+      ],
       "order": 0
     },
     "productType": {
@@ -219,9 +223,23 @@
       "remoteName": "productType",
       "label": "Product Type",
       "type": "java.lang.String",
-      "defaultValue": "L1T",
+      "defaultValue": "L1TP",
       "required": false,
-      "valueSet": ["L1T", "L1GT", "L1TP"],
+      "valueSet": [
+        "L1T",
+        "L1GT",
+        "L1TP"
+      ],
+      "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "productIdentifier",
+      "label": "UTM Tile",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
       "order": 0
     },
     "path": {
@@ -292,6 +310,35 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
+      "order": 0
+    },
+    "status": {
+      "name": "status",
+      "remoteName": "status",
+      "label": "Status",
+      "type": "java.lang.String",
+      "defaultValue": "all",
+      "required": false,
+      "valueSet": [
+        "all",
+        "31",
+        "32",
+        "34",
+        "37",
+        "0"
+      ],
+      "order": 0
+    },
+    "dataset": {
+      "name": "dataset",
+      "remoteName": "dataset",
+      "label": "Dataset",
+      "type": "java.lang.String",
+      "defaultValue": "ESA-DATASET",
+      "required": false,
+      "valueSet": [
+        "ESA-DATASET"
+      ],
       "order": 0
     }
   }

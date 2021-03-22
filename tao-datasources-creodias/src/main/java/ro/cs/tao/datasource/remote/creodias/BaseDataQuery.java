@@ -14,13 +14,15 @@ import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
+import ro.cs.tao.datasource.remote.creodias.model.common.Token;
 import ro.cs.tao.datasource.remote.creodias.sentinel1.Sentinel1Query;
-import ro.cs.tao.datasource.remote.creodias.sentinel2.Sentinel2Query;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.eodata.util.TileExtent;
+import ro.cs.tao.products.landsat.Landsat8TileExtent;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
@@ -35,6 +37,7 @@ import java.util.Map;
 public abstract class BaseDataQuery extends DataQuery {
 
     protected final String connectionString;
+    protected Token apiKey;
 
     protected BaseDataQuery(CreoDiasDataSource source, String sensorName, String connectionString) {
         super(source, sensorName);
@@ -93,6 +96,7 @@ public abstract class BaseDataQuery extends DataQuery {
                 } catch (IOException ex) {
                     throw new QueryException(ex);
                 }
+                sleep();
             }
         }
         logger.info(String.format("Query returned %s products", results.size()));
@@ -131,6 +135,7 @@ public abstract class BaseDataQuery extends DataQuery {
                 } catch (IOException ex) {
                     throw new QueryException(ex);
                 }
+                sleep();
             }
         }
         return count;
@@ -144,11 +149,22 @@ public abstract class BaseDataQuery extends DataQuery {
         if (this.parameters.containsKey(CommonParameterNames.TILE)) {
             QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
             Object value = tileParameter.getValue();
+            TileExtent tileExtent = null;
+            switch (this.sensorName) {
+                case "Sentinel2":
+                    tileExtent = Sentinel2TileExtent.getInstance();
+                    break;
+                case "Landsat8":
+                    tileExtent = Landsat8TileExtent.getInstance();
+                    break;
+                default:
+                    throw new IllegalArgumentException(String.format("Parameter %s is not supported for the sensor %s", CommonParameterNames.TILE, this.sensorName));
+            }
             if (value != null) {
                 if (value.getClass().isArray()) {
                     footprints = new String[Array.getLength(value)];
                     for (int i = 0; i < footprints.length; i++) {
-                        Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(Array.get(value, i).toString()));
+                        Polygon2D polygon = Polygon2D.fromPath2D(tileExtent.getTileExtent(Array.get(value, i).toString()));
                         footprints[i] = polygon.toWKT();
                     }
                 } else {
@@ -157,11 +173,11 @@ public abstract class BaseDataQuery extends DataQuery {
                         String[] values = strVal.substring(1, strVal.length() - 1).split(",");
                         footprints = new String[values.length];
                         for (int i = 0; i < values.length; i++) {
-                            Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(strVal));
+                            Polygon2D polygon = Polygon2D.fromPath2D(tileExtent.getTileExtent(strVal));
                             footprints[i] = polygon.toWKT();
                         }
                     } else {
-                        Polygon2D polygon = Polygon2D.fromPath2D(Sentinel2TileExtent.getInstance().getTileExtent(strVal));
+                        Polygon2D polygon = Polygon2D.fromPath2D(tileExtent.getTileExtent(strVal));
                         footprints = new String[]{polygon.toWKT()};
                     }
                 }
@@ -174,8 +190,8 @@ public abstract class BaseDataQuery extends DataQuery {
         List<BasicNameValuePair> query = new ArrayList<>();
         for (String footprint : footprints) {
             int idx = 0;
-            for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
-                QueryParameter parameter = entry.getValue();
+            for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
+                QueryParameter<?> parameter = entry.getValue();
                 if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                     throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
                 }
@@ -189,7 +205,7 @@ public abstract class BaseDataQuery extends DataQuery {
                         query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.FOOTPRINT), parameter.getValueAsString()));
                         break;
                     case CommonParameterNames.TILE:
-                        if (this instanceof Sentinel2Query) {
+                        if (supports(CommonParameterNames.TILE)) {
                             query.add(new BasicNameValuePair(getRemoteName(CommonParameterNames.TILE), '%' + parameter.getValueAsString() + '%'));
                         } else if (this instanceof Sentinel1Query) {
                             try {

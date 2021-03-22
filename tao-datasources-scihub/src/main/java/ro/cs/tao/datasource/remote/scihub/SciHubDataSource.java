@@ -26,21 +26,24 @@ import java.util.Properties;
 /**
  * @author Cosmin Cara
  */
-public class SciHubDataSource extends URLDataSource<SciHubDataQuery> {
+public class SciHubDataSource extends URLDataSource<SciHubDataQuery, String> {
     private static final Properties props;
-    private static String URL;
+    private static String APIHUB_URL;
+    private static String DHUS_URL;
 
     static {
         props = new Properties();
         try {
             props.load(SciHubDataSource.class.getResourceAsStream("scihub.properties"));
-            URL = props.getProperty("scihub.search.url");
+            APIHUB_URL = props.getProperty("scihub.apihub.url");
+            DHUS_URL = props.getProperty("scihub.dhus.url");
         } catch (IOException ignored) {
         }
     }
 
     public SciHubDataSource() throws URISyntaxException {
-        super(URL);
+        super(APIHUB_URL);
+        this.alternateConnectionString = DHUS_URL;
         setParameterProvider(new SciHubParameterProvider(this));
         this.properties = SciHubDataSource.props;
     }
@@ -53,7 +56,7 @@ public class SciHubDataSource extends URLDataSource<SciHubDataQuery> {
 
     @Override
     public boolean ping() {
-        return NetUtils.isAvailable(URL, credentials.getUserName(), credentials.getPassword());
+        return NetUtils.isAvailable(APIHUB_URL, credentials.getUserName(), credentials.getPassword());
     }
 
     @Override
@@ -62,6 +65,14 @@ public class SciHubDataSource extends URLDataSource<SciHubDataQuery> {
     @Override
     public void setCredentials(String username, String password) {
         super.setCredentials(username, password);
+    }
+
+    @Override
+    public String authenticate() throws IOException {
+        if (credentials == null) {
+            throw new IOException("No credentials set");
+        }
+        return NetUtils.getAuthToken(credentials.getUserName(), credentials.getPassword());
     }
 
     @Override

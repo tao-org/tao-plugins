@@ -96,6 +96,16 @@
       "required": false,
       "valueSet": ["S1", "S2", "S3", "S4", "S5", "S6", "IW", "EW", "WV"],
       "order": 8
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "granule_list",
+      "label": "Product Name",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 9
     }
   },
   "ALOS": {
@@ -191,6 +201,81 @@
       "required": false,
       "valueSet": ["FBD", "FBS", "PLR", "WB1", "WB2", "DSN"],
       "order": 8
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "granule_list",
+      "label": "Product Name",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 9
+    }
+  },
+  "SMAP": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platform",
+      "label": "Satellite",
+      "type": "java.lang.String",
+      "defaultValue": "SMAP",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "start",
+      "label": "Start Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 1
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "end",
+      "label": "End Date",
+      "type": "java.util.Date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 2
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "intersectsWith",
+      "label": "Area of Interest",
+      "type": "ro.cs.tao.eodata.Polygon2D",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 3
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "processingLevel",
+      "label": "Product Type",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["L1A_Radar_RO_HDF5", "L1A_Radar_HDF5", "L1B_S0_LoRes_HDF5", "L1C_S0_HiRes_HDF5"],
+      "order": 4
+    },
+    "orbitDirection": {
+      "name": "orbitDirection",
+      "remoteName": "flightDirection",
+      "label": "Orbit Direction",
+      "type": "java.lang.String",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": [
+        "ASCENDING",
+        "DESCENDING"
+      ],
+      "order": 5
     }
   }
 }

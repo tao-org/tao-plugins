@@ -25,8 +25,7 @@ import java.util.regex.Pattern;
 public class Sentinel3ProductHelper extends ProductHelper {
 
     static final Pattern S3Pattern =
-            //Pattern.compile("(S3[AB])_(OL|SR|SL|ST)_(\\d{1})_(EFR___|ERR___|LFR___|LRR___|SRA___|SRA_A_|SRA_BS|LAN___|RBT___|LST___|SYN___|V10___|VG1___|VGP___)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{4})_(\\d{3})_(\\d{3})______(\\w{3})_(\\w{1})_(\\w{2})_(\\d{3})(?:.SEN3)?");
-            Pattern.compile("(S3[AB])_(OL|SR|SL|ST|SY)_(\\d{1})_(EFR___|ERR___|LFR___|LRR___|SRA___|SRA_A_|SRA_BS|LAN___|RBT___|LST___|SYN___|V10___|VG1___|VGP___)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(((\\d{4})_(\\d{3})_(\\d{3})_(\\d{4}|____))|([\\w_]{17}))_(\\w{3})_(\\w{1})_(\\w{2})_(\\d{3})(?:.SEN3)?");
+            Pattern.compile("(S3[AB_])_(OL|SR|SL|ST|SY|DO|MW|GN|AX)_([012_])_(EFR\\w{3}|CR0\\w{3}|CR1\\w{3}|ERR\\w{3}|RAC\\w{3}|SPC\\w{3}|INS\\w{3}|WFR\\w{3}|WRR\\w{3}|LFR\\w{3}|LRR\\w{3}|ATP\\w{3}|AER\\w{3}|LAP\\w{3}|LVI\\w{3}|SLT\\w{3}|RBT\\w{3}|WCT\\w{3}|WST\\w{3}|LST\\w{3}|MISR__|SYN\\w{3}|VGP\\w{3}|VG1\\w{3}|V10\\w{3}|LAN\\w{3}|WAT\\w{3}|SRA\\w{3}|CAL\\w{3}|FRP\\w{3})_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(((\\d{4})_(\\d{3})_(\\d{3})_(\\d{4}|____))|(\\w{17}))_(\\w{3})_([DFOR])_(NR|ST|NT)_(\\d{3})(?:.SEN3)?");
 
     Sentinel3ProductHelper() { super(); }
 

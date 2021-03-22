@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -39,6 +41,9 @@ import static ro.cs.tao.utils.executors.ByteUnit.MEGABYTE;
  * @author Valentin Netoiu
  */
 public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
+    static final Pattern S1Pattern =
+            Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
+
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -47,7 +52,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
             return Arrays.stream(results[0]).map(r -> {
                 try {
                     EOProduct product = new EOProduct();
-                    product.setProductType(r.getPlatform());
+                    //product.setSatelliteName(r.getPlatform());
                     product.setName(r.getProductName());
                     product.setId(r.getFileId());
                     product.setFormatType(DataFormat.RASTER);
@@ -64,7 +69,6 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                         product.setQuicklookLocation(r.getThumbnailUrl());
                     }
                     product.setApproximateSize(MEGABYTE.value() * (long) Double.parseDouble(r.getSizeMb()));
-
                     //productType read from sensor property
                     String sensor = r.getSensor().trim();
                     if(sensor.contains(" ")){
@@ -77,9 +81,11 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                         //add sensor attribute
                         product.addAttribute("instrumentshortname", instrument);
                     } else {
+                        if (S1Pattern.matcher(r.getProductName()).matches()) {
+                            product.setProductType("Sentinel1");
+                        }
                         product.addAttribute("instrumentshortname", sensor);
                     }
-
                     //add some attributes
                     if(nonNull(r.getFileName())){
                         product.addAttribute("filename", r.getFileName());
@@ -96,6 +102,12 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     if(nonNull(r.getProcessingType())){
                         product.addAttribute("processingtype", r.getProcessingType());
                     }
+                    Object value = r.getAdditionalProperties().get("relativeOrbit");
+                    if (value != null) {
+                        product.addAttribute("relativeOrbit", value.toString());
+                    } else if (product.getName().startsWith("S1")) {
+                        product.addAttribute("relativeOrbit", getRelativeOrbit(product.getName()));
+                    }
 
                     return product;
                 } catch (Exception ex) {
@@ -104,8 +116,21 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                 }
             }).collect(Collectors.toList());
         }
-
         return new ArrayList<>();
+    }
 
+    private String getRelativeOrbit(String productName) {
+        final String value;
+        final Matcher matcher = S1Pattern.matcher(productName);
+        if (matcher.matches()) {
+            int absOrbit = Integer.parseInt(matcher.group(10));
+            value = String.format("%03d",
+                    matcher.group(1).endsWith("A") ?
+                            ((absOrbit - 73) % 175) + 1 :
+                            ((absOrbit - 27) % 175) + 1);
+        } else {
+            value = null;
+        }
+        return value;
     }
 }

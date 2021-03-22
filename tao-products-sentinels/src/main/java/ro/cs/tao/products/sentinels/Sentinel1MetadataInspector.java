@@ -23,6 +23,7 @@ import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.executors.FileProcessFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -43,6 +44,11 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
     private static final String XPATH_SAMPLES = "/product/imageAnnotation/imageInformation/numberOfSamples/text()";
     private static final String XPATH_LINES = "/product/imageAnnotation/imageInformation/numberOfLines/text()";
     private static final String XPATH_BURST_LIST = "/product/swathTiming/burstList/@count";
+
+    @Override
+    public void setFileProcessFactory(FileProcessFactory factory) {
+        //NOOP - only intended for local access
+    }
 
     @Override
     public DecodeStatus decodeQualification(Path productPath) {
@@ -81,15 +87,19 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
         }
         metadata.setOrbitDirection(OrbitDirection.valueOf(getValue(XPATH_ORBIT_DIRECTION)));
         String points = getValue(XPATH_COORDINATES);
-        String[] coords = points.trim().split(" ");
-        Polygon2D polygon2D = new Polygon2D();
-        for (String coord : coords) {
-            polygon2D.append(Double.parseDouble(coord.substring(coord.indexOf(',') + 1)),
-                             Double.parseDouble(coord.substring(0, coord.indexOf(','))));
+        if (points != null) {
+            String[] coords = points.trim().split(" ");
+            Polygon2D polygon2D = new Polygon2D();
+            for (String coord : coords) {
+                polygon2D.append(Double.parseDouble(coord.substring(coord.indexOf(',') + 1)),
+                        Double.parseDouble(coord.substring(0, coord.indexOf(','))));
+            }
+            polygon2D.append(Double.parseDouble(coords[0].substring(coords[0].indexOf(',') + 1)),
+                    Double.parseDouble(coords[0].substring(0, coords[0].indexOf(','))));
+            metadata.setFootprint(polygon2D.toWKT(8));
+        } else {
+            logger.warning(String.format("Cannot extract product footprint from metadata [product=%s,xPath=%s]", productPath, XPATH_COORDINATES));
         }
-        polygon2D.append(Double.parseDouble(coords[0].substring(coords[0].indexOf(',') + 1)),
-                         Double.parseDouble(coords[0].substring(0, coords[0].indexOf(','))));
-        metadata.setFootprint(polygon2D.toWKT(8));
         List<String> checkSums = getValues(XPATH_CHECKSUM);
         for (String checkSum : checkSums) {
             metadata.addControlSum(checkSum);

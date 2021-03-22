@@ -37,6 +37,7 @@ import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
 import ro.cs.tao.serialization.CRSAdapter;
+import ro.cs.tao.utils.DateUtils;
 import ro.cs.tao.utils.HttpMethod;
 
 import javax.json.Json;
@@ -48,7 +49,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -59,10 +59,10 @@ import java.util.stream.Collectors;
  */
 class Sentinel2Query extends DataQuery {
     private static final String S2_SEARCH_URL_SUFFIX = "?delimiter=/&prefix=";
-    private static final String dateFormatString = new SimpleDateFormat("yyyy-MM-dd").toPattern();
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private static final DateTimeFormatter fileDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final DateFormat nameDateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+    private static final String dateFormatString = "yyyy-MM-dd";
+    private static final DateFormat dateFormat = DateUtils.getFormatterAtUTC(dateFormatString);
+    private static final DateTimeFormatter fileDateFormat = DateTimeFormatter.ofPattern(dateFormatString);
+    private static final DateFormat nameDateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
 
     Sentinel2Query(DataSource source) {
         super(source, "Sentinel2");

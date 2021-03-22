@@ -31,6 +31,7 @@ import ro.cs.tao.eodata.util.Conversions;
 import ro.cs.tao.products.landsat.Landsat8ProductHelper;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
 import ro.cs.tao.products.landsat.LandsatProduct;
+import ro.cs.tao.utils.DateUtils;
 import ro.cs.tao.utils.HttpMethod;
 
 import javax.json.Json;
@@ -38,7 +39,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -49,8 +50,9 @@ import java.util.stream.Collectors;
  */
 class Landsat8Query extends DataQuery {
     private static final String L8_SEARCH_URL_SUFFIX = "?delimiter=/&prefix=";
-    private static final DateTimeFormatter fileDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final String datePattern = "yyyy-MM-dd";
+    private static final DateTimeFormatter fileDateFormat = DateTimeFormatter.ofPattern(datePattern);
+    private static final DateFormat dateFormat = DateUtils.getFormatterAtUTC(datePattern);
 
     Landsat8Query(DataSource source) {
         super(source, "Landsat8");
@@ -91,9 +93,9 @@ class Landsat8Query extends DataQuery {
             currentParameter = this.parameters.get(CommonParameterNames.START_DATE);
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
-                    sensingStart = currentParameter.getValueAsFormattedDate(dateFormat.toPattern());
+                    sensingStart = currentParameter.getValueAsFormattedDate(datePattern);
                 } else {
-                    sensingStart = currentParameter.getMinValueAsFormattedDate(dateFormat.toPattern());
+                    sensingStart = currentParameter.getMinValueAsFormattedDate(datePattern);
                 }
             } else {
                 sensingStart = todayDate.minusDays(30).format(fileDateFormat);
@@ -101,9 +103,9 @@ class Landsat8Query extends DataQuery {
             currentParameter = this.parameters.get(CommonParameterNames.END_DATE);
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
-                    sensingEnd = currentParameter.getValueAsFormattedDate(dateFormat.toPattern());
+                    sensingEnd = currentParameter.getValueAsFormattedDate(datePattern);
                 } else {
-                    sensingEnd = currentParameter.getMaxValueAsFormattedDate(dateFormat.toPattern());
+                    sensingEnd = currentParameter.getMaxValueAsFormattedDate(datePattern);
                 }
             } else {
                 sensingEnd = todayDate.format(fileDateFormat);

@@ -3,19 +3,19 @@ package ro.cs.tao.datasource.usgs.json.responses;
 import java.util.List;
 
 public class SearchResults {
-    private int numberReturned;
+    private int recordsReturned;
     private int totalHits;
-    private int firstRecord;
-    private int lastRecord;
+    private int startingNumber;
+    private int numExcluded;
     private int nextRecord;
     private List<SearchResult> results;
 
-    public int getNumberReturned() {
-        return numberReturned;
+    public int getRecordsReturned() {
+        return recordsReturned;
     }
 
-    public void setNumberReturned(int numberReturned) {
-        this.numberReturned = numberReturned;
+    public void setRecordsReturned(int recordsReturned) {
+        this.recordsReturned = recordsReturned;
     }
 
     public int getTotalHits() {
@@ -26,20 +26,20 @@ public class SearchResults {
         this.totalHits = totalHits;
     }
 
-    public int getFirstRecord() {
-        return firstRecord;
+    public int getStartingNumber() {
+        return startingNumber;
     }
 
-    public void setFirstRecord(int firstRecord) {
-        this.firstRecord = firstRecord;
+    public void setStartingNumber(int startingNumber) {
+        this.startingNumber = startingNumber;
     }
 
-    public int getLastRecord() {
-        return lastRecord;
+    public int getNumExcluded() {
+        return numExcluded;
     }
 
-    public void setLastRecord(int lastRecord) {
-        this.lastRecord = lastRecord;
+    public void setNumExcluded(int numExcluded) {
+        this.numExcluded = numExcluded;
     }
 
     public int getNextRecord() {

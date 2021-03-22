@@ -1,13 +1,24 @@
 package ro.cs.tao.datasource.usgs.json.responses;
 
+/**
+ * Base response for USGS API 1.5
+ * @param <T>
+ */
 public class BaseResponse<T> {
-    private String errorCode;
-    private String error;
-    private T data;
-    private String api_version;
-    private String access_level;
-    private String catalog_id;
-    private double executionTime;
+    protected String requestId;
+    protected String errorCode;
+    protected String errorMessage;
+    protected T data;
+    protected String version;
+    protected String sessionId;
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
 
     public String getErrorCode() {
         return errorCode;
@@ -17,12 +28,12 @@ public class BaseResponse<T> {
         this.errorCode = errorCode;
     }
 
-    public String getError() {
-        return error;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public T getData() {
@@ -33,35 +44,19 @@ public class BaseResponse<T> {
         this.data = data;
     }
 
-    public String getApi_version() {
-        return api_version;
+    public String getVersion() {
+        return version;
     }
 
-    public void setApi_version(String api_version) {
-        this.api_version = api_version;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
-    public String getAccess_level() {
-        return access_level;
+    public String getSessionId() {
+        return sessionId;
     }
 
-    public void setAccess_level(String access_level) {
-        this.access_level = access_level;
-    }
-
-    public String getCatalog_id() {
-        return catalog_id;
-    }
-
-    public void setCatalog_id(String catalog_id) {
-        this.catalog_id = catalog_id;
-    }
-
-    public double getExecutionTime() {
-        return executionTime;
-    }
-
-    public void setExecutionTime(double executionTime) {
-        this.executionTime = executionTime;
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 }

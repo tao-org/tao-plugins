@@ -27,18 +27,13 @@ import ro.cs.tao.products.landsat.Landsat8MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel1MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel2MetadataInspector;
 import ro.cs.tao.utils.DockerHelper;
-import ro.cs.tao.utils.FileUtilities;
-import ro.cs.tao.utils.executors.Executor;
-import ro.cs.tao.utils.executors.ExecutorType;
-import ro.cs.tao.utils.executors.OutputAccumulator;
-import ro.cs.tao.utils.executors.ProcessExecutor;
+import ro.cs.tao.utils.ExceptionUtils;
+import ro.cs.tao.utils.executors.*;
 
 import javax.json.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -52,6 +47,8 @@ public class GdalInfoWrapper implements MetadataInspector {
     private static final boolean extractHistogram;
     private static final String[] gdalOnPathCmd;
     private static final String[] gdalOnDocker;
+
+    private FileProcessFactory factory;
 
     static {
         final ConfigurationProvider configurationProvider = ConfigurationManager.getInstance();
@@ -72,6 +69,10 @@ public class GdalInfoWrapper implements MetadataInspector {
         if (extractHistogram) {
             args.add("-hist");
         }
+        if (supportsWKTArgument()) {
+            args.add("-wkt_format");
+            args.add("WKT1");
+        }
         args.add("-json");
         args.add("$FULL_PATH");
         gdalOnPathCmd = args.toArray(new String[0]);
@@ -86,11 +87,47 @@ public class GdalInfoWrapper implements MetadataInspector {
         gdalOnDocker = args.toArray(new String[0]);
     }
 
+    private static boolean supportsWKTArgument() {
+        final List<String> args = new ArrayList<>();
+        args.add("gdalinfo");
+        args.add("--version");
+        if (useDocker) {
+            args.add(0, gdalDockerImage);
+            args.add(0, "--rm");
+            args.add(0, "-t");
+            args.add(0, "run");
+            args.add(0, "docker");
+        }
+        try {
+            final Executor<?> executor = ProcessExecutor.create(ExecutorType.PROCESS, InetAddress.getLocalHost().getHostName(), args);
+            final OutputAccumulator consumer = new OutputAccumulator();
+            executor.setOutputConsumer(consumer);
+            if (executor.execute(true) == 0) {
+                final String output = consumer.getOutput();
+                return output != null && output.startsWith("GDAL 3");
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            final Logger logger = Logger.getLogger(GdalInfoWrapper.class.getName());
+            logger.severe(ExceptionUtils.getStackTrace(logger, e));
+            return false;
+        }
+    }
+
     public GdalInfoWrapper() { }
 
     @Override
+    public void setFileProcessFactory(FileProcessFactory factory) {
+        this.factory = factory;
+    }
+
+    @Override
     public DecodeStatus decodeQualification(Path productPath) {
-        return productPath == null || !Files.exists(productPath) ? DecodeStatus.UNABLE : DecodeStatus.SUITABLE;
+        if (this.factory == null) {
+            this.factory = FileProcessFactory.createLocal();
+        }
+        return productPath == null || !this.factory.fileManager().exists(productPath) ? DecodeStatus.UNABLE : DecodeStatus.SUITABLE;
     }
 
     @Override
@@ -114,7 +151,7 @@ public class GdalInfoWrapper implements MetadataInspector {
         if (metadata != null) {
             return metadata;
         }
-        if (Files.isDirectory(productPath)) {
+        if (this.factory.fileManager().isDirectory(productPath)) {
             // gdalinfo would work only on files
             return null;
         }
@@ -138,7 +175,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                 JsonObject root = jsonReader.readObject();
                 metadata = new Metadata();
                 metadata.setEntryPoint(productPath.getFileName().toString());
-                metadata.setSize(Files.size(productPath));
+                metadata.setSize(this.factory.fileManager().size(productPath));
                 metadata.setProductType(root.getString("driverLongName"));
                 boolean isNetCDF = "Network Common Data Format".equals(metadata.getProductType());
                 if (isNetCDF) {
@@ -246,22 +283,11 @@ public class GdalInfoWrapper implements MetadataInspector {
                                 break;
                         }
                     }
-                    JsonNumber value = jsonObject.getJsonNumber("minimum");
-                    if (value != null) {
-                        metadata.addStatistic("min", value.doubleValue());
-                    }
-                    value = jsonObject.getJsonNumber("maximum");
-                    if (value != null) {
-                        metadata.addStatistic("max", value.doubleValue());
-                    }
-                    value = jsonObject.getJsonNumber("mean");
-                    if (value != null) {
-                        metadata.addStatistic("mean", value.doubleValue());
-                    }
-                    value = jsonObject.getJsonNumber("stdDev");
-                    if (value != null) {
-                        metadata.addStatistic("stdDev", value.doubleValue());
-                    }
+
+                    metadata.addStatistic("min", getSafeValue(jsonObject, "minimum"));
+                    metadata.addStatistic("max", getSafeValue(jsonObject, "maximum"));
+                    metadata.addStatistic("mean", getSafeValue(jsonObject, "mean"));
+                    metadata.addStatistic("stdDev", getSafeValue(jsonObject, "stdDev"));
                     JsonObject histJson = jsonObject.getJsonObject("histogram");
                     if (histJson != null) {
                         int count = histJson.getInt("count");
@@ -277,30 +303,55 @@ public class GdalInfoWrapper implements MetadataInspector {
                 throw new IOException(consumer.getOutput());
             }
         } catch (Exception e) {
-            throw new IOException(e);
+            throw new IOException(e.getMessage() + " [" + consumer.getOutput() + "]");
         } finally {
             if (reader != null) {
                 reader.close();
+            }
+            try {
+                this.factory.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return metadata;
     }
 
-    private Executor<?> initialize(Path path, String[] args) throws IOException {
+    private double getSafeValue(JsonObject parent, String name) {
+        double value = Double.NaN;
+        final JsonValue jsonObject = parent.get(name);
+        if (jsonObject.getValueType() == JsonValue.ValueType.STRING) {
+            // special case of NaN and Infinity/-Infinity
+            final String jsonString = parent.getJsonString(name).getString();
+            switch (jsonString.toLowerCase()) {
+                case "nan":
+                case "-nan":
+                    value = Double.NaN;
+                    break;
+                case "infinity":
+                case "inf":
+                    value = Double.POSITIVE_INFINITY;
+                    break;
+                case "-infinity":
+                case "-inf":
+                    value = Double.NEGATIVE_INFINITY;
+                    break;
+            }
+        } else {
+            value = parent.getJsonNumber(name).doubleValue();
+        }
+        return value;
+    }
+
+    private Executor<?> initialize(Path path, String[] args) {
         List<String> arguments = new ArrayList<>();
         // At least on Windows, docker doesn't handle well folder symlinks in the path
-        Path realPath = FileUtilities.resolveSymLinks(path);
+        //Path realPath = FileUtilities.resolveSymLinks(path);
         for (String arg : args) {
-            arguments.add(arg.replace("$FULL_PATH", realPath.toString())
-                              .replace("$FOLDER", realPath.getParent().toString())
-                              .replace("$FILE", realPath.getFileName().toString()));
+            arguments.add(arg.replace("$FULL_PATH", path.toString())
+                              .replace("$FOLDER", path.getParent().toString())
+                              .replace("$FILE", path.getFileName().toString()));
         }
-        try {
-            return ProcessExecutor.create(ExecutorType.PROCESS,
-                                                       InetAddress.getLocalHost().getHostName(),
-                                          arguments);
-        } catch (UnknownHostException e) {
-            throw new IOException(e);
-        }
+        return this.factory.processManager().createExecutor(arguments);
     }
 }

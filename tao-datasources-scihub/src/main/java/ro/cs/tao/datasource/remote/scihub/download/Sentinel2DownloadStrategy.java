@@ -147,6 +147,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
     @Override
     public Sentinel2DownloadStrategy clone() { return new Sentinel2DownloadStrategy(this); }
 
+    @Override
     public void setFilteredTiles(Set<String> tiles) {
         this.filteredTiles = tiles;
         if (shouldFilterTiles = (tiles != null && tiles.size() > 0)) {
@@ -246,7 +247,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
         String metadataFileName = helper.getMetadataFileName();
         boolean isL1C = helper instanceof L1CProductHelper;
         product.setEntryPoint(metadataFileName);
-        final String token = getAuthenticationToken();
+        final String token = this.dataSource.authenticate();
         if ("13".equals(helper.getVersion())) {
             currentStep = "Archive";
             url = odataArchivePath.replace(ODATA_UUID, product.getId());

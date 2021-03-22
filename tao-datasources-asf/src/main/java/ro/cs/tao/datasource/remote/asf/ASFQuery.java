@@ -33,8 +33,6 @@ import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,8 +44,6 @@ import java.util.Map;
  * @author Valentin Netoiu
  */
 public class ASFQuery extends DataQuery {
-
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 
     static {
         final ConverterFactory factory = new ConverterFactory();
@@ -70,7 +66,7 @@ public class ASFQuery extends DataQuery {
     protected List<EOProduct> executeImpl() {
         List<EOProduct> results = new ArrayList<>();
         List<NameValuePair> params = new ArrayList<>();
-        for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
+        for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
             QueryParameter<?> parameter = entry.getValue();
             if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                 throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));

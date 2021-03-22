@@ -215,8 +215,8 @@ public abstract class BaseDataQuery extends DataQuery {
         }
         for (String footprint : footprints) {
             final List<BasicNameValuePair> query = new ArrayList<>();
-            for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
-                final QueryParameter parameter = entry.getValue();
+            for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
+                final QueryParameter<?> parameter = entry.getValue();
                 if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                     throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
                 }
@@ -240,11 +240,12 @@ public abstract class BaseDataQuery extends DataQuery {
                         }
                         break;
                     case CommonParameterNames.START_DATE:
+                        QueryParameter<Date> casted = (QueryParameter<Date>) parameter;
                         try {
-                            if (parameter.isInterval()) {
-                                parameter.setValue(parameter.getMinValue());
-                                parameter.setMinValue(null);
-                                parameter.setMaxValue(null);
+                            if (casted.isInterval()) {
+                                casted.setValue(casted.getMinValue());
+                                casted.setMinValue(null);
+                                casted.setMaxValue(null);
                             }
                             query.add(new BasicNameValuePair(getRemoteName(entry.getKey()),
                                                              getParameterValue(parameter)));
@@ -253,11 +254,12 @@ public abstract class BaseDataQuery extends DataQuery {
                         }
                         break;
                     case CommonParameterNames.END_DATE:
+                        casted = (QueryParameter<Date>) parameter;
                         try {
-                            if (parameter.isInterval()) {
-                                parameter.setValue(parameter.getMaxValue());
-                                parameter.setMinValue(null);
-                                parameter.setMaxValue(null);
+                            if (casted.isInterval()) {
+                                casted.setValue(casted.getMaxValue());
+                                casted.setMinValue(null);
+                                casted.setMaxValue(null);
                             }
                             query.add(new BasicNameValuePair(getRemoteName(entry.getKey()),
                                                              getParameterValue(parameter)));

@@ -1,45 +1,75 @@
 package ro.cs.tao.datasource.usgs.json.requests;
 
 
-import ro.cs.tao.datasource.usgs.json.NameValuePair;
+import ro.cs.tao.datasource.usgs.json.responses.FieldConfig;
 
-import java.util.List;
+import java.util.Map;
 
+/**
+ * FIeld descriptor bean for USGS API 1.5
+ */
 public class FieldDescriptor {
-    private int fieldId;
-    private String name;
-    private String fieldLink;
-    private List<NameValuePair> valueList;
+    private String id;
+    private String legacyFieldId;
+    private String dictionaryLink;
+    private FieldConfig fieldConfig;
+    private String fieldLabel;
+    private String searchSql;
+    private Map<String, String> valueList;
 
-    public int getFieldId() {
-        return fieldId;
+    public String getId() {
+        return id;
     }
 
-    public void setFieldId(int fieldId) {
-        this.fieldId = fieldId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getLegacyFieldId() {
+        return legacyFieldId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLegacyFieldId(String legacyFieldId) {
+        this.legacyFieldId = legacyFieldId;
     }
 
-    public String getFieldLink() {
-        return fieldLink;
+    public String getDictionaryLink() {
+        return dictionaryLink;
     }
 
-    public void setFieldLink(String fieldLink) {
-        this.fieldLink = fieldLink;
+    public void setDictionaryLink(String dictionaryLink) {
+        this.dictionaryLink = dictionaryLink;
     }
 
-    public List<NameValuePair> getValueList() {
+    public FieldConfig getFieldConfig() {
+        return fieldConfig;
+    }
+
+    public void setFieldConfig(FieldConfig fieldConfig) {
+        this.fieldConfig = fieldConfig;
+    }
+
+    public String getFieldLabel() {
+        return fieldLabel;
+    }
+
+    public void setFieldLabel(String fieldLabel) {
+        this.fieldLabel = fieldLabel;
+    }
+
+    public String getSearchSql() {
+        return searchSql;
+    }
+
+    public void setSearchSql(String searchSql) {
+        this.searchSql = searchSql;
+    }
+
+    public Map<String, String> getValueList() {
         return valueList;
     }
 
-    public void setValueList(List<NameValuePair> valueList) {
+    public void setValueList(Map<String, String> valueList) {
         this.valueList = valueList;
     }
 }

@@ -9,6 +9,7 @@ import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
 import ro.cs.tao.eodata.util.Conversions;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.executors.FileProcessFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -89,5 +90,10 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
             }
         }
         return metadata;
+    }
+
+    @Override
+    public void setFileProcessFactory(FileProcessFactory factory) {
+
     }
 }
