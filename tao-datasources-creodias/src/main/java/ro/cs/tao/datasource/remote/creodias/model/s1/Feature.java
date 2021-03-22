@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import ro.cs.tao.datasource.remote.creodias.model.common.Geometry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +23,7 @@ public class Feature {
     @JsonProperty("id")
     private String id;
     @JsonProperty("geometry")
-    private Geometry geometry;
+    private Object geometry;
     @JsonProperty("properties")
     private Result properties;
     @JsonIgnore
@@ -61,16 +60,16 @@ public class Feature {
     }
 
     @JsonProperty("geometry")
-    public Geometry getGeometry() {
+    public Object getGeometry() {
         return geometry;
     }
 
     @JsonProperty("geometry")
-    public void setGeometry(Geometry geometry) {
+    public void setGeometry(Object geometry) {
         this.geometry = geometry;
     }
 
-    public Feature withGeometry(Geometry geometry) {
+    public Feature withGeometry(String geometry) {
         this.geometry = geometry;
         return this;
     }

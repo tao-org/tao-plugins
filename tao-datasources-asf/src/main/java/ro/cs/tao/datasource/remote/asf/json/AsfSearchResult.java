@@ -45,7 +45,8 @@ import java.util.Map;
 })
 public class AsfSearchResult {
 
-    @JsonProperty("product_file_id")
+    //@JsonProperty("product_file_id")
+    @JsonProperty("granuleName")
     private String fileId;
     @JsonProperty("productName")
     private String productName;
@@ -78,7 +79,7 @@ public class AsfSearchResult {
     @JsonProperty("processingType")
     private String processingType;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private final Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
      * No args constructor for use in serialization

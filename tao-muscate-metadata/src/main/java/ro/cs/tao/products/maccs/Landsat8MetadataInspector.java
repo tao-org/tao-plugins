@@ -6,6 +6,7 @@ import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.executors.FileProcessFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -77,5 +78,10 @@ public class Landsat8MetadataInspector extends XmlMetadataInspector {
         }
 
         return metadata;
+    }
+
+    @Override
+    public void setFileProcessFactory(FileProcessFactory factory) {
+
     }
 }

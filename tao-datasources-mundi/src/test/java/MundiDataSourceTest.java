@@ -36,6 +36,7 @@
  *
  */
 
+import ro.cs.tao.ProgressListener;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.param.CommonParameterNames;
@@ -85,17 +86,43 @@ public class MundiDataSourceTest {
         aoi = new QueryParameter<>(Polygon2D.class, CommonParameterNames.FOOTPRINT);
         aoi.setValue(footprint);
         pageSize = 10;
-        maxResults = 20;
+        maxResults = 1;
         rowTemplate = "ID=%s, NAME=%s, LOCATION=%s";
     }
 
     public static void main(String[] args) {
-        Sentinel2_Count_Test();
+        //supportedSensorsTest();
+        //authenticate();
+        //Sentinel2_Count_Test();
         Sentinel2_Test();
-        Sentinel1_Count_Test();
-        Sentinel1_Test();
-        Landsat8_Count_Test();
-        Landsat8_Test();
+        //Sentinel1_Count_Test();
+        //Sentinel1_Test();
+        //Landsat8_Count_Test();
+        //Landsat8_Test();
+    }
+
+    public static void authenticate() {
+        try {
+            MundiDataSource dataSource = new MundiDataSource();
+            dataSource.setCredentials("user@email.com", "password");
+            dataSource.authenticate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void supportedSensorsTest() {
+        try {
+            Logger logger = LogManager.getLogManager().getLogger("");
+            for (Handler handler : logger.getHandlers()) {
+                handler.setLevel(Level.FINEST);
+            }
+            //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
+            DataSource<?, ?> dataSource = new MundiDataSource();
+            System.out.println(String.join("\n", dataSource.getSupportedSensors()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void Sentinel2_Count_Test() {
@@ -105,14 +132,16 @@ public class MundiDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
-            DataSource dataSource = new MundiDataSource();
+            DataSource<?, ?> dataSource = new MundiDataSource();
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery("Sentinel2");
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
-            System.out.println(String.format("Sentinel2 query returned %s", query.getCount()));
+            query.setPageSize(pageSize);
+            query.setMaxResults(maxResults);
+            System.out.printf("Sentinel2 query returned %s%n", query.getCount());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -125,19 +154,21 @@ public class MundiDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
-            DataSource dataSource = new MundiDataSource();
-            String[] sensors = dataSource.getSupportedSensors();
+            DataSource<?, ?> dataSource = new MundiDataSource();
 
             DataQuery query = dataSource.createQuery("Sentinel2");
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
+            query.setPageSize(pageSize);
+            query.setMaxResults(maxResults);
             List<EOProduct> results = query.execute();
             results.forEach(r -> {
-                System.out.println(String.format(rowTemplate, r.getId(), r.getName(), r.getLocation()));
+                System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation());
             });
-            DownloadStrategy downloadStrategy= (DownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
+            DownloadStrategy<?> downloadStrategy = (DownloadStrategy<?>) dataSource.getProductFetchStrategy("Sentinel2");
             downloadStrategy.setFetchMode(FetchMode.OVERWRITE);
+            downloadStrategy.setProgressListener(new ProgressListener() {});
             Path path = downloadStrategy.fetch(results.get(0));
         } catch (Exception e) {
             e.printStackTrace();
@@ -151,14 +182,15 @@ public class MundiDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
-            DataSource dataSource = new MundiDataSource();
-            String[] sensors = dataSource.getSupportedSensors();
+            DataSource<?, ?> dataSource = new MundiDataSource();
 
             DataQuery query = dataSource.createQuery("Sentinel1");
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
-            System.out.println(String.format("Sentinel1 query returned %s", query.getCount()));
+            query.setPageSize(pageSize);
+            query.setMaxResults(maxResults);
+            System.out.printf("Sentinel1 query returned %s%n", query.getCount());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -171,18 +203,22 @@ public class MundiDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel1DataSource.class.getName());
-            DataSource dataSource = new MundiDataSource();
-            String[] sensors = dataSource.getSupportedSensors();
-
+            DataSource<?, ?> dataSource = new MundiDataSource();
+            dataSource.setCredentials("kraftek@gmail.com", "Cei7pitici.");
             DataQuery query = dataSource.createQuery("Sentinel1");
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
+            query.setPageSize(pageSize);
+            query.setMaxResults(maxResults);
             List<EOProduct> results = query.execute();
             results.forEach(r -> {
-                System.out.println(String.format(rowTemplate, r.getId(), r.getName(), r.getLocation()));
+                System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation());
             });
-            Path path = dataSource.getProductFetchStrategy(sensors[0]).fetch(results.get(0));
+            DownloadStrategy<?> downloadStrategy = (DownloadStrategy<?>) dataSource.getProductFetchStrategy("Sentinel1");
+            downloadStrategy.setFetchMode(FetchMode.OVERWRITE);
+            downloadStrategy.setProgressListener(new ProgressListener() {});
+            Path path = downloadStrategy.fetch(results.get(0));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -195,14 +231,15 @@ public class MundiDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
-            DataSource dataSource = new MundiDataSource();
-            String[] sensors = dataSource.getSupportedSensors();
+            DataSource<?, ?> dataSource = new MundiDataSource();
 
             DataQuery query = dataSource.createQuery("Landsat8");
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
-            System.out.println(String.format("Landsat8 query returned %s", query.getCount()));
+            query.setPageSize(pageSize);
+            query.setMaxResults(maxResults);
+            System.out.printf("Landsat8 query returned %s%n", query.getCount());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -215,18 +252,19 @@ public class MundiDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel1DataSource.class.getName());
-            DataSource dataSource = new MundiDataSource();
-            String[] sensors = dataSource.getSupportedSensors();
+            DataSource<?, ?> dataSource = new MundiDataSource();
 
             DataQuery query = dataSource.createQuery("Landsat8");
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
+            query.setPageSize(pageSize);
+            query.setMaxResults(maxResults);
             List<EOProduct> results = query.execute();
             results.forEach(r -> {
-                System.out.println(String.format(rowTemplate, r.getId(), r.getName(), r.getLocation()));
+                System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation());
             });
-            DownloadStrategy downloadStrategy= (DownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
+            DownloadStrategy<?> downloadStrategy= (DownloadStrategy<?>) dataSource.getProductFetchStrategy("Landsat8");
             downloadStrategy.setFetchMode(FetchMode.OVERWRITE);
             Path path = downloadStrategy.fetch(results.get(0));
         } catch (Exception e) {

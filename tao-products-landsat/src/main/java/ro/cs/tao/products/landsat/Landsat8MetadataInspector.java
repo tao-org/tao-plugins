@@ -21,7 +21,7 @@ import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.MetadataInspector;
-import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.executors.FileProcessFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,12 +30,21 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Landsat8MetadataInspector implements MetadataInspector {
+    private FileProcessFactory factory;
 
     public Landsat8MetadataInspector() { }
 
     @Override
+    public void setFileProcessFactory(FileProcessFactory factory) {
+        this.factory = factory;
+    }
+
+    @Override
     public DecodeStatus decodeQualification(Path productPath) {
-        if (!Files.exists(productPath)) {
+        if (this.factory == null) {
+            this.factory = FileProcessFactory.createLocal();
+        }
+        if (!this.factory.fileManager().exists(productPath)) {
             return DecodeStatus.UNABLE;
         }
         Path productFolderPath = Files.isRegularFile(productPath) ?  productPath.getParent() : productPath;
@@ -49,52 +58,60 @@ public class Landsat8MetadataInspector implements MetadataInspector {
 
     @Override
     public Metadata getMetadata(Path productPath) throws IOException {
-        if (decodeQualification(productPath) == DecodeStatus.UNABLE) {
-            return null;
-        }
-        Path productFolderPath = Files.isRegularFile(productPath) ?  productPath.getParent() : productPath;
-        Landsat8ProductHelper helper = new Landsat8ProductHelper(productFolderPath.getFileName().toString());
-        Metadata metadata = new Metadata();
-        String metadataFileName = helper.getMetadataFileName();
-        metadata.setEntryPoint(metadataFileName);
-        metadata.setPixelType(PixelType.UINT16);
-        metadata.setProductType("Landsat8");
-        metadata.setSensorType(SensorType.OPTICAL);
-        metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
-        metadata.setSize(FileUtilities.folderSize(productFolderPath));
-        double[] currentPoint = new double[2];
-        double[] firstPoint = null;
-        Polygon2D polygon2D = new Polygon2D();
-        String utmZone = null;
-        for (String line : Files.readAllLines(productPath.resolve(helper.getMetadataFileName()))) {
-            if (line.contains("CORNER")) {
-                if (line.contains("LAT")) {
-                    currentPoint[1] = Double.parseDouble(line.substring(line.indexOf("=") + 1).trim());
-                } else if (line.contains("LON")) {
-                    currentPoint[0] = Double.parseDouble(line.substring(line.indexOf("=") + 1).trim());
-                    if (firstPoint == null) {
-                        firstPoint = new double[] { currentPoint[0], currentPoint[1] };
+        try {
+            if (decodeQualification(productPath) == DecodeStatus.UNABLE) {
+                return null;
+            }
+            Path productFolderPath = Files.isRegularFile(productPath) ? productPath.getParent() : productPath;
+            Landsat8ProductHelper helper = new Landsat8ProductHelper(productFolderPath.getFileName().toString());
+            Metadata metadata = new Metadata();
+            String metadataFileName = helper.getMetadataFileName();
+            metadata.setEntryPoint(metadataFileName);
+            metadata.setPixelType(PixelType.UINT16);
+            metadata.setProductType("Landsat8");
+            metadata.setSensorType(SensorType.OPTICAL);
+            metadata.setAquisitionDate(LocalDateTime.parse(helper.getSensingDate(), DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")));
+            metadata.setSize(this.factory.fileManager().size(productFolderPath));
+            double[] currentPoint = new double[2];
+            double[] firstPoint = null;
+            Polygon2D polygon2D = new Polygon2D();
+            String utmZone = null;
+            for (String line : this.factory.fileManager().readAllLines(productPath.resolve(helper.getMetadataFileName()))) {
+                if (line.contains("CORNER")) {
+                    if (line.contains("LAT")) {
+                        currentPoint[1] = Double.parseDouble(line.substring(line.indexOf("=") + 1).trim());
+                    } else if (line.contains("LON")) {
+                        currentPoint[0] = Double.parseDouble(line.substring(line.indexOf("=") + 1).trim());
+                        if (firstPoint == null) {
+                            firstPoint = new double[]{currentPoint[0], currentPoint[1]};
+                        }
+                        polygon2D.append(currentPoint[0], currentPoint[1]);
                     }
-                    polygon2D.append(currentPoint[0], currentPoint[1]);
+                }
+                if (line.contains("PANCHROMATIC_LINES")) {
+                    metadata.setHeight(Integer.parseInt(line.substring(line.indexOf("=") + 1).trim()));
+                }
+                if (line.contains("PANCHROMATIC_SAMPLES")) {
+                    metadata.setWidth(Integer.parseInt(line.substring(line.indexOf("=") + 1).trim()));
+                }
+                if (line.contains("UTM_ZONE")) {
+                    utmZone = line.substring(line.indexOf("=") + 1).trim();
                 }
             }
-            if (line.contains("PANCHROMATIC_LINES")) {
-                metadata.setHeight(Integer.parseInt(line.substring(line.indexOf("=") + 1).trim()));
+            if (firstPoint != null) {
+                polygon2D.append(firstPoint[0], firstPoint[1]);
+                metadata.setFootprint(polygon2D.toWKT(5));
+                if (utmZone != null) {
+                    metadata.setCrs("EPSG:32" + (firstPoint[1] > 0 ? "6" : "7") + utmZone);
+                }
             }
-            if (line.contains("PANCHROMATIC_SAMPLES")) {
-                metadata.setWidth(Integer.parseInt(line.substring(line.indexOf("=") + 1).trim()));
-            }
-            if (line.contains("UTM_ZONE")) {
-                utmZone = line.substring(line.indexOf("=") + 1).trim();
-            }
-        }
-        if (firstPoint != null) {
-            polygon2D.append(firstPoint[0], firstPoint[1]);
-            metadata.setFootprint(polygon2D.toWKT(5));
-            if (utmZone != null) {
-                metadata.setCrs("EPSG:32" + (firstPoint[1] > 0 ? "6" : "7") + utmZone);
+            return metadata;
+        } finally {
+            try {
+                this.factory.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-        return metadata;
     }
 }

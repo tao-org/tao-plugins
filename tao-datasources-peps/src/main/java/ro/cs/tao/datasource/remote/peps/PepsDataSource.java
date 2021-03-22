@@ -17,6 +17,7 @@ package ro.cs.tao.datasource.remote.peps;
 
 import ro.cs.tao.datasource.remote.URLDataSource;
 import ro.cs.tao.datasource.remote.peps.parameters.PepsParameterProvider;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -25,7 +26,7 @@ import java.util.Properties;
 /**
  * @author Cosmin Cara
  */
-public class PepsDataSource extends URLDataSource<PepsDataQuery> {
+public class PepsDataSource extends URLDataSource<PepsDataQuery, String> {
     private static String URL;
 
     static {
@@ -53,6 +54,14 @@ public class PepsDataSource extends URLDataSource<PepsDataQuery> {
     @Override
     public void setCredentials(String username, String password) {
         super.setCredentials(username, password);
+    }
+
+    @Override
+    public String authenticate() throws IOException {
+        if (credentials == null) {
+            throw new IOException("No credentials set");
+        }
+        return NetUtils.getAuthToken(credentials.getUserName(), credentials.getPassword());
     }
 
     @Override

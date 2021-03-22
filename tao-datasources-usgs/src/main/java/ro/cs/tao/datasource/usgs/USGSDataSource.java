@@ -15,8 +15,18 @@
  */
 package ro.cs.tao.datasource.usgs;
 
+import org.apache.http.auth.Credentials;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
+import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.URLDataSource;
+import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
+import ro.cs.tao.datasource.usgs.json.handlers.LoginResponseHandler;
+import ro.cs.tao.datasource.usgs.json.requests.LoginRequest;
+import ro.cs.tao.datasource.usgs.json.responses.LoginResponse;
 import ro.cs.tao.datasource.usgs.parameters.LandsatParameterProvider;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -25,7 +35,7 @@ import java.util.Properties;
 /**
  * @author Cosmin Cara
  */
-public class USGSDataSource extends URLDataSource<Landsat8Query> {
+public class USGSDataSource extends URLDataSource<Landsat8Query, String> {
     private static final Properties props;
     private static String URL;
 
@@ -54,7 +64,50 @@ public class USGSDataSource extends URLDataSource<Landsat8Query> {
     public boolean requiresAuthentication() { return true; }
 
     @Override
+    public String authenticate() {
+        LoginRequest request = new LoginRequest();
+        if (credentials == null) {
+            throw new QueryException(String.format("Credentials not set for %s", getId()));
+        }
+        request.setUsername(credentials.getUserName());
+        request.setPassword(credentials.getPassword());
+        String url = getConnectionString() + "login";
+        //List<org.apache.http.NameValuePair> params = new ArrayList<>();
+        //params.add(new BasicNameValuePair("jsonRequest", request.toString()));
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, (Credentials) null, request.toString())) {
+            switch (response.getStatusLine().getStatusCode()) {
+                case 200:
+                    String body = EntityUtils.toString(response.getEntity());
+                    if (body == null) {
+                        throw new QueryException("Cannot retrieve API key [empty response body]");
+                    }
+                    JsonResponseParser<LoginResponse> parser = new JsonResponseParser<>(new LoginResponseHandler());
+                    LoginResponse login = parser.parseValue(body);
+                    if (login == null) {
+                        throw new QueryException("Cannot retrieve API key [empty response body]");
+                    }
+                    String key = null;
+                    if (login.getErrorCode() == null) {
+                        key = login.getData();
+                    }
+                    if (key == null) {
+                        throw new QueryException(String.format("The API key could not be obtained [requestId:%s,apiVersion:%s,errorCode:%s,error:%s,data:%s",
+                                login.getSessionId(), login.getVersion(), login.getErrorCode(), login.getErrorMessage(), login.getData()));
+                    }
+                    return key;
+                case 401:
+                    throw new QueryException("Cannot retrieve API key [401:not authorized]");
+                default:
+                    throw new QueryException(String.format("The request was not successful. Reason: %s",
+                            response.getStatusLine().getReasonPhrase()));
+            }
+        } catch (Exception ex) {
+            throw new QueryException(ex);
+        }
+    }
+
+    @Override
     protected Landsat8Query createQueryImpl(String code) {
-        return new Landsat8Query(this);
+        return new Landsat8Query(this, code);
     }
 }

@@ -30,13 +30,17 @@ import ro.cs.tao.serialization.DateAdapter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
  */
 public class SciHubJsonResponseHandler implements JSonResponseHandler<EOProduct> {
-    private SciHubDataSource dataSource;
+    static final Pattern S1Pattern =
+            Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
+    private final SciHubDataSource dataSource;
 
     public SciHubJsonResponseHandler(SciHubDataSource dataSource) {
         this.dataSource = dataSource;
@@ -76,11 +80,27 @@ public class SciHubJsonResponseHandler implements JSonResponseHandler<EOProduct>
                         product.addAttribute(cName, c.getValue());
                     }
                 }));
+                product.addAttribute("relativeOrbit", getRelativeOrbit(product.getName()));
                 return product;
             } catch (Exception ex) {
                 ex.printStackTrace();
                 return null;
             }
         }).collect(Collectors.toList());
+    }
+
+    private String getRelativeOrbit(String productName) {
+        final String value;
+        final Matcher matcher = S1Pattern.matcher(productName);
+        if (matcher.matches()) {
+            int absOrbit = Integer.parseInt(matcher.group(10));
+            value = String.format("%03d",
+                                  matcher.group(1).endsWith("A") ?
+                                        ((absOrbit - 73) % 175) + 1 :
+                                        ((absOrbit - 27) % 175) + 1);
+        } else {
+            value = null;
+        }
+        return value;
     }
 }

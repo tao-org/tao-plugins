@@ -23,6 +23,7 @@ import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.XmlMetadataInspector;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.executors.FileProcessFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -124,5 +125,10 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
             metadata.setHeight((int) ((ulyStm.max().orElse(0) - ulyStm.min().orElse(0)) / 10) + 10980);
         }
         return metadata;
+    }
+
+    @Override
+    public void setFileProcessFactory(FileProcessFactory factory) {
+        //NOOP - only intended for local access
     }
 }

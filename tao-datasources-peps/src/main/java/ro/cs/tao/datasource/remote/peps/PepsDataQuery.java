@@ -21,7 +21,6 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.DataQuery;
-import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
@@ -60,7 +59,7 @@ public class PepsDataQuery extends DataQuery {
 
     private PepsDataQuery() { super(); }
 
-    PepsDataQuery(DataSource source, String sensorName) {
+    PepsDataQuery(PepsDataSource source, String sensorName) {
         super(source, sensorName);
     }
 
@@ -69,8 +68,8 @@ public class PepsDataQuery extends DataQuery {
         List<EOProduct> results = new ArrayList<>();
         List<NameValuePair> params = new ArrayList<>();
         Collection collection = Collection.S2ST;
-        for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
-            QueryParameter parameter = entry.getValue();
+        for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
+            QueryParameter<?> parameter = entry.getValue();
             if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                 throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
             }

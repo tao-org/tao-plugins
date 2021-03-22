@@ -38,7 +38,7 @@ import java.util.Properties;
 /**
  * @author Cosmin Cara
  */
-public class PepsDownloadStrategy extends DownloadStrategy {
+public class PepsDownloadStrategy extends DownloadStrategy<String> {
     private static final Properties properties;
     private int retries;
 
@@ -102,7 +102,7 @@ public class PepsDownloadStrategy extends DownloadStrategy {
                 }
                 break;
             case AVAILABLE:
-                productFile = downloadFile(getProductUrl(product), rootPath, getAuthenticationToken());
+                productFile = downloadFile(getProductUrl(product), rootPath, this.dataSource.authenticate());
                 break;
         }
         if (productFile != null) {

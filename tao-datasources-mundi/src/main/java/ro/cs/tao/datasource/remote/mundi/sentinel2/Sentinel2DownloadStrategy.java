@@ -15,6 +15,7 @@
  */
 package ro.cs.tao.datasource.remote.mundi.sentinel2;
 
+import org.apache.http.Header;
 import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.mundi.MundiDataSource;
@@ -41,7 +42,7 @@ import java.util.stream.Collectors;
 /**
  * @author Cosmin Cara
  */
-public class Sentinel2DownloadStrategy extends DownloadStrategy {
+public class Sentinel2DownloadStrategy extends DownloadStrategy<Header> {
     private static final Properties properties;
     private static final Set<String> l1cBandFiles = new LinkedHashSet<String>() {{
         add("B01.jp2");

@@ -27,8 +27,8 @@ public class AWSDataSourceTest {
 
     public static void main(String[] args) {
 //        test_ping();
-        Sentinel2_Test();
-//        Landsat8_Test();
+        //Sentinel2_Test();
+        Landsat8_Test();
     }
 
     public static void test_ping() {
@@ -37,6 +37,7 @@ public class AWSDataSourceTest {
             handler.setLevel(Level.INFO);
         }
         ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
+        //DataSource dataSource = DataSourceManager.getInstance().createInstance("Landsat8", "THEIA");
         DataSource dataSource = serviceRegistry.getService(AWSDataSource.class);
         dataSource.setCredentials("accessKeyId", "secretAccessKey");
         if (dataSource.ping()) {

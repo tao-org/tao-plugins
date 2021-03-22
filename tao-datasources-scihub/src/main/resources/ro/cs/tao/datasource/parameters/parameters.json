@@ -128,6 +128,16 @@
       "required": false,
       "valueSet": null,
       "order": 10
+    },
+    "useApihub": {
+      "name": "useApiHub",
+      "remoteName": "",
+      "label": null,
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "required": false,
+      "valueSet": null,
+      "order": 11
     }
   },
   "Sentinel2": {
@@ -243,6 +253,16 @@
       "required": false,
       "valueSet": null,
       "order": 10
+    },
+    "useApihub": {
+      "name": "useApiHub",
+      "remoteName": "",
+      "label": null,
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "required": false,
+      "valueSet": null,
+      "order": 11
     }
   },
   "Sentinel3": {
@@ -367,6 +387,16 @@
       "defaultValue": null,
       "required": false,
       "valueSet": ["L1", "L2"],
+      "order": 11
+    },
+    "useApihub": {
+      "name": "useApiHub",
+      "remoteName": "",
+      "label": null,
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "required": false,
+      "valueSet": null,
       "order": 11
     }
   }

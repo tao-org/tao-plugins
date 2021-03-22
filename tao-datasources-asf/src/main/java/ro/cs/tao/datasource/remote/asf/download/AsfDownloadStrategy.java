@@ -43,7 +43,7 @@ import java.util.TimerTask;
  *
  * @author Valentin Netoiu
  */
-public class AsfDownloadStrategy extends DownloadStrategy {
+public class AsfDownloadStrategy extends DownloadStrategy<String> {
     private static final String ZIP_EXTENSION = ".zip";
     private static final String TAR_GZ_EXTENSION = ".tar.gz";
     private static final String KMZ_EXTENSION = ".kmz";
@@ -60,7 +60,7 @@ public class AsfDownloadStrategy extends DownloadStrategy {
 
 
     @Override
-    public DownloadStrategy clone() {
+    public AsfDownloadStrategy clone() {
         return new AsfDownloadStrategy(this);
     }
 
@@ -96,12 +96,10 @@ public class AsfDownloadStrategy extends DownloadStrategy {
         String productDownloadUrl = getProductUrl(product);
 
         try {
-            //1. connect to product download URL and follow all redirects
-            final String token = getAuthenticationToken();
+            final String token = this.dataSource.authenticate();
             HttpURLConnection connection = NetUtils.openConnection(productDownloadUrl, token);
-            connection.setInstanceFollowRedirects(false);
+            connection.setInstanceFollowRedirects(true);
             connection.connect();
-            boolean secondRedirect = false;
             do {
                 responseStatus = connection.getResponseCode();
                 switch (responseStatus) {
@@ -109,77 +107,24 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                         connection = NetUtils.openConnection(connection.getURL().toString(), token);
                         connection.setInstanceFollowRedirects(true);
                         connection.connect();
-                        if (secondRedirect) {
-                            return connection;
-                        }
-                        numberOfTries++;
-                        break;
-                    case HttpStatus.SC_MULTIPLE_CHOICES:
-                    case HttpStatus.SC_MOVED_PERMANENTLY:
-                    case HttpStatus.SC_MOVED_TEMPORARILY:
-                    case HttpStatus.SC_SEE_OTHER:
-                        /**
-                         * This may occur if redirect from http to https or vice versa. See:
-                         * https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4620571
-                         *
-                         * HttpURLConnection by design won't automatically redirect from HTTP to HTTPS (or vice versa).
-                         * Thus the fix is to return the server responses for redirect. Check response code and Location header field value
-                         * for redirect information. It's the application's responsibility to follow the redirect.
-                         */
-
-                        // get redirect url from "location" header field
-                        String newUrl = connection.getHeaderField("Location");
-                        // open the new connnection again
-                        secondRedirect = connection.getInstanceFollowRedirects();
-                        connection = NetUtils.openConnection(newUrl, token);
-                        connection.setInstanceFollowRedirects(secondRedirect);
-                        connection.connect();
-                        numberOfTries++;
-                        break;
-                    case HttpStatus.SC_TEMPORARY_REDIRECT:
-                        newUrl = connection.getHeaderField("Location");
-                        // open the new connnection again
-                        connection = NetUtils.openConnection(newUrl, token);
-                        connection.setInstanceFollowRedirects(true);
-                        connection.connect();
-                        numberOfTries++;
-                        break;
-                    case HttpStatus.SC_BAD_REQUEST:
-                        /**
-                         * Workaround.
-                         *
-                         * The reason we get a BAD_REQUEST answer may be the error: “Only one auth mechanism allowed; only the X-Amz-Algorithm query parameter…”
-                         *
-                         * The product download url is redirected many times (to login urs.earthdata.nasa.gov, etc) and some resources
-                         * are hosted to s3.amazonaws.com.
-                         * Amazon API's often give a URL to resource, which gives a redirect URL with 30s life as redirect.
-                         * However, the headers from the original request (which contains the basic authentication) are carried over resulting in this error.
-                         * The redirect is processed with authentication from signed redirect url, and the authentication header.
-                         *
-                         * To solve this issue, we try a second connection to amazon URL (which already contains the authentication token) without providing
-                         * the authentication header.
-                         */
-                        //get the last connection URL (which didn't succeeded).
-                        URL downloadUrl = connection.getURL();
-                        //try to reconnect without providing authentication header
-                        connection = NetUtils.openConnection(downloadUrl.toString());
-                        connection.setInstanceFollowRedirects(true);
-                        connection.connect();
-                        numberOfTries++;
-                        break;
+                        return connection;
                     case HttpStatus.SC_UNAUTHORIZED:
-                        throw new QueryException(String.format("Cannot connect to remote url: %s. Cause: The supplied credentials are invalid!", connection.getURL()));
+                        connection = NetUtils.openConnection(connection.getURL().toString(), token);
+                        connection.setInstanceFollowRedirects(true);
+                        connection.connect();
+                        numberOfTries++;
+                        break;
                     default:
                         throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
                                 connection.getResponseCode(), connection.getResponseMessage()));
 
                 }
-            } while (numberOfTries < 10);
+            } while (numberOfTries < 3);
         } catch (IOException e) {
             throw new QueryException(String.format("The request was not successful. Reason: %s", e.getMessage()));
         }
 
-        throw new QueryException(String.format("The request was not successful. Reason: Too many redirects!"));
+        throw new QueryException("The request was not successful. Reason: Too many redirects!");
     }
 
     protected Path downloadProduct(EOProduct product, HttpURLConnection connection) throws IOException {
@@ -236,16 +181,17 @@ public class AsfDownloadStrategy extends DownloadStrategy {
                     this.timeoutTimer = new Timer("Timeout");
                 }
                 TimerTask task;
+                final long connTimeout = (connection.getReadTimeout() <= 0 ? DOWNLOAD_TIMEOUT : connection.getReadTimeout());
                 while (!isCancelled() && (read = inputStream.read(buffer)) != -1) {
                     task = new TimerTask() {
                         @Override
                         public void run() {
                             logger.warning(String.format("Remote host did not send anything for %d seconds, cancelling download",
-                                    DOWNLOAD_TIMEOUT / 1000));
+                                    connTimeout / 1000));
                             AsfDownloadStrategy.this.cancel();
                         }
                     };
-                    this.timeoutTimer.schedule(task, DOWNLOAD_TIMEOUT);
+                    this.timeoutTimer.schedule(task, connTimeout);
                     outputStream.write(ByteBuffer.wrap(buffer, 0, read));
                     currentProductProgress.add(read);
                     task.cancel();

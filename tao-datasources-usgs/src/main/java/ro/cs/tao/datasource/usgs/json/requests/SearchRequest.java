@@ -1,31 +1,29 @@
 package ro.cs.tao.datasource.usgs.json.requests;
 
 import ro.cs.tao.datasource.usgs.json.Point;
+import ro.cs.tao.datasource.usgs.json.types.AcquisitionFilter;
 
 public class SearchRequest extends BaseRequest {
-    private SpatialFilter spatialFilter;
-    private TemporalFilter temporalFilter;
-    private int minCloudCover = 0;
-    private int maxCloudCover = 100;
-    private SearchFilter additionalCriteria;
+    private String datasetName;
+    private SceneFilter sceneFilter;
+    //private SearchFilter additionalCriteria;
     private int maxResults = 10;
     private int startingNumber = 1;
-    private String sortOrder = "ASC";
+    private String sortDirection = "ASC";
 
-    public SpatialFilter getSpatialFilter() { return spatialFilter; }
-    private void setSpatialFilter(SpatialFilter spatialFilter) { this.spatialFilter = spatialFilter; }
+    public String getDatasetName() {
+        return datasetName;
+    }
 
-    public TemporalFilter getTemporalFilter() { return temporalFilter; }
-    private void setTemporalFilter(TemporalFilter temporalFilter) { this.temporalFilter = temporalFilter; }
+    private void setDatasetName(String datasetName) {
+        this.datasetName = datasetName;
+    }
 
-    public int getMinCloudCover() { return minCloudCover; }
-    private void setMinCloudCover(int minCloudCover) { this.minCloudCover = minCloudCover; }
+    public SceneFilter getSceneFilter() { return sceneFilter; }
+    private void setSceneFilter(SceneFilter sceneFilter) { this.sceneFilter = sceneFilter; }
 
-    public int getMaxCloudCover() { return maxCloudCover; }
-    private void setMaxCloudCover(int maxCloudCover) { this.maxCloudCover = maxCloudCover; }
-
-    public SearchFilter getAdditionalCriteria() { return additionalCriteria; }
-    private void setAdditionalCriteria(SearchFilter additionalCriteria) { this.additionalCriteria = additionalCriteria; }
+    /*public SearchFilter getAdditionalCriteria() { return additionalCriteria; }
+    private void setAdditionalCriteria(SearchFilter additionalCriteria) { this.additionalCriteria = additionalCriteria; }*/
 
     public int getMaxResults() { return maxResults; }
     private void setMaxResults(int maxResults) { this.maxResults = maxResults; }
@@ -33,27 +31,18 @@ public class SearchRequest extends BaseRequest {
     public int getStartingNumber() { return startingNumber; }
     private void setStartingNumber(int startingNumber) { this.startingNumber = startingNumber; }
 
-    public String getSortOrder() { return sortOrder; }
-    private void setSortOrder(String sortOrder) { this.sortOrder = sortOrder; }
+    public String getSortDirection() { return sortDirection; }
+    private void setSortDirection(String sortDirection) { this.sortDirection = sortDirection; }
 
     private void addFilter(SearchFilter filter) {
-        if (this.additionalCriteria == null) {
-            this.additionalCriteria = filter;
-        } else {
-            if (this.additionalCriteria instanceof SearchFilterAnd) {
-                ((SearchFilterAnd) this.additionalCriteria).addChildFilter(filter);
-            } else {
-                SearchFilter existing = this.additionalCriteria;
-                this.additionalCriteria = new SearchFilterAnd();
-                ((SearchFilterAnd) this.additionalCriteria).addChildFilter(existing);
-                ((SearchFilterAnd) this.additionalCriteria).addChildFilter(filter);
-            }
+        if (this.sceneFilter == null) {
+            this.sceneFilter = new SceneFilter();
         }
-    }
-
-    public SearchRequest withAPIKey(String apiKey) {
-        setApiKey(apiKey);
-        return this;
+        if (this.sceneFilter.getMetadataFilter() == null) {
+            this.sceneFilter.setMetadataFilter(new SearchFilterAnd());
+        }
+        final SearchFilterAnd metadataFilter = (SearchFilterAnd) this.sceneFilter.getMetadataFilter();
+        metadataFilter.addChildFilter(filter);
     }
 
     public SearchRequest withDataSet(String dataset) {
@@ -62,44 +51,70 @@ public class SearchRequest extends BaseRequest {
     }
 
     public SearchRequest withLowerLeft(double longitude, double latitude) {
-        if (this.spatialFilter == null) {
-            this.spatialFilter = new SpatialFilter();
+        if (this.sceneFilter == null) {
+            this.sceneFilter = new SceneFilter();
         }
-        this.spatialFilter.setLowerLeft(new Point(latitude, longitude));
+        if (this.sceneFilter.getSpatialFilter() == null) {
+            this.sceneFilter.setSpatialFilter(new SpatialFilter());
+        }
+        this.sceneFilter.getSpatialFilter().setLowerLeft(new Point(latitude, longitude));
         return this;
     }
 
     public SearchRequest withUpperRight(double longitude, double latitude) {
-        if (this.spatialFilter == null) {
-            this.spatialFilter = new SpatialFilter();
+        if (this.sceneFilter == null) {
+            this.sceneFilter = new SceneFilter();
         }
-        this.spatialFilter.setUpperRight(new Point(latitude, longitude));
+        if (this.sceneFilter.getSpatialFilter() == null) {
+            this.sceneFilter.setSpatialFilter(new SpatialFilter());
+        }
+        this.sceneFilter.getSpatialFilter().setUpperRight(new Point(latitude, longitude));
         return this;
     }
 
     public SearchRequest withStartDate(String date) {
-        if (this.temporalFilter == null) {
-            this.temporalFilter = new TemporalFilter();
+        if (this.sceneFilter == null) {
+            this.sceneFilter = new SceneFilter();
         }
-        this.temporalFilter.setStartDate(date);
+        if (this.sceneFilter.getAcquisitionFilter() == null) {
+            this.sceneFilter.setAcquisitionFilter(new AcquisitionFilter());
+        }
+        this.sceneFilter.getAcquisitionFilter().setStart(date);
         return this;
     }
 
     public SearchRequest withEndDate(String date) {
-        if (this.temporalFilter == null) {
-            this.temporalFilter = new TemporalFilter();
+        if (this.sceneFilter == null) {
+            this.sceneFilter = new SceneFilter();
         }
-        this.temporalFilter.setEndDate(date);
+        if (this.sceneFilter.getAcquisitionFilter() == null) {
+            this.sceneFilter.setAcquisitionFilter(new AcquisitionFilter());
+        }
+        this.sceneFilter.getAcquisitionFilter().setEnd(date);
         return this;
     }
 
     public SearchRequest withMinClouds(int clouds) {
-        setMinCloudCover(clouds);
+        if (this.sceneFilter == null) {
+            this.sceneFilter = new SceneFilter();
+        }
+        if (this.sceneFilter.getCloudCoverFilter() == null) {
+            this.sceneFilter.setCloudCoverFilter(new CloudCoverFilter());
+        }
+        this.sceneFilter.getCloudCoverFilter().setIncludeUnknown(false);
+        this.sceneFilter.getCloudCoverFilter().setMin(clouds);
         return this;
     }
 
     public SearchRequest withMaxClouds(int clouds) {
-        setMaxCloudCover(clouds);
+        if (this.sceneFilter == null) {
+            this.sceneFilter = new SceneFilter();
+        }
+        if (this.sceneFilter.getCloudCoverFilter() == null) {
+            this.sceneFilter.setCloudCoverFilter(new CloudCoverFilter());
+        }
+        this.sceneFilter.getCloudCoverFilter().setIncludeUnknown(false);
+        this.sceneFilter.getCloudCoverFilter().setMax(clouds);
         return this;
     }
 
@@ -114,7 +129,7 @@ public class SearchRequest extends BaseRequest {
     }
 
     public SearchRequest sortDirection(String sort) {
-        setSortOrder(sort);
+        setSortDirection(sort);
         return this;
     }
 

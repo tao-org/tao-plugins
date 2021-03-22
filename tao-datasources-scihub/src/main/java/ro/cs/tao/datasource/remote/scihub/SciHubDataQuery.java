@@ -41,22 +41,26 @@ import ro.cs.tao.eodata.util.ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
+import ro.cs.tao.utils.DateUtils;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
  */
 public class SciHubDataQuery extends DataQuery {
+    static final Pattern S1Pattern =
+            Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
 
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+    private static final DateFormat dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
 
     private final String sensorName;
 
@@ -78,6 +82,9 @@ public class SciHubDataQuery extends DataQuery {
         Map<String, EOProduct> results = new LinkedHashMap<>();
         Map<String, String> queries = buildQueriesParams();
         final boolean isS2 = "Sentinel-2".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
+        final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
+        final boolean useApiHub = this.parameters.containsKey("useApihub") ?
+                Boolean.parseBoolean(this.parameters.get("useApihub").getValueAsString()) : this.source.useAlternateConnectionString();
         StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
         for (String queryId : queries.keySet()) {
@@ -103,17 +110,11 @@ public class SciHubDataQuery extends DataQuery {
             do {
                 count = 0;
                 List<NameValuePair> params = new ArrayList<>();
-                /*if (this.source.getConnectionString().contains("dhus")) {
-                    params.add(new BasicNameValuePair("limit", String.valueOf(pageSize)));
-                    params.add(new BasicNameValuePair("offset", String.valueOf((i - 1) * pageSize)));
-                    params.add(new BasicNameValuePair("q", query.getValue()));
-                } else {*/
-                    params.add(new BasicNameValuePair("rows", String.valueOf(pageSize)));
-                    params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize)));
-                    params.add(new BasicNameValuePair("q", query.getValue()));
-                //}
+                params.add(new BasicNameValuePair("rows", String.valueOf(pageSize)));
+                params.add(new BasicNameValuePair("start", String.valueOf((i - 1) * pageSize)));
+                params.add(new BasicNameValuePair("q", query.getValue()));
                 params.add(new BasicNameValuePair("orderby", "beginposition asc"));
-                String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+                String queryUrl = (useApiHub ? this.source.getConnectionString() : this.source.getAlternateConnectionString()) + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 final boolean hasProcessingDate = "Sentinel2".equals(this.sensorName) || "Sentinel3".equals(this.sensorName);
                 logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
@@ -141,13 +142,20 @@ public class SciHubDataQuery extends DataQuery {
                                     ProductHelper productHelper;
                                     for (EOProduct result : tmpResults) {
                                         if (!results.containsKey(result.getName())) {
-                                            productHelper = SentinelProductHelper.create(result.getName());
+                                            try {
+                                                productHelper = SentinelProductHelper.create(result.getName());
+                                            } catch (Exception ex) {
+                                                logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
+                                                continue;
+                                            }
                                             if (isS2) {
                                                 if (result.getAttributeValue("tileid") == null) {
                                                     result.addAttribute("tiles", ((Sentinel2ProductHelper) productHelper).getTileIdentifier());
                                                 } else {
                                                     result.addAttribute("tiles", result.getAttributeValue("tileid"));
                                                 }
+                                            } else if (isS1) {
+                                                result.addAttribute("relativeOrbit", getRelativeOrbit(result.getName()));
                                             }
                                             if (hasProcessingDate) {
                                                 String dateString = productHelper.getProcessingDate();
@@ -175,6 +183,7 @@ public class SciHubDataQuery extends DataQuery {
                     throw new QueryException(ex);
                 }
                 i++;
+                sleep();
             } while (this.pageNumber == -1 && count > 0 && results.size() < actualLimit);
         }
         logger.info(String.format("Query {%s-%s} returned %s products", this.source.getId(), this.sensorName, results.size()));
@@ -221,6 +230,7 @@ public class SciHubDataQuery extends DataQuery {
                 } catch (IOException ex) {
                     throw new QueryException(ex);
                 }
+                sleep();
             }
         }
         return count;
@@ -296,7 +306,10 @@ public class SciHubDataQuery extends DataQuery {
             }
             for (String footprint : footprints) {
                 int idx = 0;
-                for (Map.Entry<String, QueryParameter> entry : this.parameters.entrySet()) {
+                for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
+                    if (entry.getKey().equalsIgnoreCase("useapihub")) {
+                        continue;
+                    }
                     QueryParameter parameter = entry.getValue();
                     if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                         throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
@@ -411,24 +424,18 @@ public class SciHubDataQuery extends DataQuery {
         return queries;
     }
 
-   /* private String[] splitMultiPolygon(String wkt) {
-        String[] polygons = null;
-        try {
-            WKTReader reader = new WKTReader();
-            Geometry geometry = reader.read(wkt);
-            if (geometry instanceof MultiPolygon) {
-                MultiPolygon mPolygon = (MultiPolygon) geometry;
-                int n = mPolygon.getNumGeometries();
-                polygons = new String[n];
-                for (int i = 0; i < n; i++) {
-                    polygons[i] = mPolygon.getGeometryN(i).toText();
-                }
-            } else {
-                polygons = new String[] { wkt };
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
+    private String getRelativeOrbit(String productName) {
+        final String value;
+        final Matcher matcher = S1Pattern.matcher(productName);
+        if (matcher.matches()) {
+            int absOrbit = Integer.parseInt(matcher.group(10));
+            value = String.format("%03d",
+                    matcher.group(1).endsWith("A") ?
+                            ((absOrbit - 73) % 175) + 1 :
+                            ((absOrbit - 27) % 175) + 1);
+        } else {
+            value = null;
         }
-        return polygons;
-    }*/
+        return value;
+    }
 }

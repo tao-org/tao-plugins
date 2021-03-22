@@ -15,11 +15,7 @@
  */
 package ro.cs.tao.datasource.usgs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
@@ -29,13 +25,15 @@ import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
-import ro.cs.tao.datasource.usgs.json.NameValuePair;
 import ro.cs.tao.datasource.usgs.json.handlers.DatasetFieldsResponseHandler;
+import ro.cs.tao.datasource.usgs.json.handlers.DownloadInfoResponseHandler;
 import ro.cs.tao.datasource.usgs.json.handlers.DownloadResponseHandler;
-import ro.cs.tao.datasource.usgs.json.handlers.LoginResponseHandler;
 import ro.cs.tao.datasource.usgs.json.handlers.SearchResponseHandler;
 import ro.cs.tao.datasource.usgs.json.requests.*;
-import ro.cs.tao.datasource.usgs.json.responses.LoginResponse;
+import ro.cs.tao.datasource.usgs.json.responses.AvailableDownload;
+import ro.cs.tao.datasource.usgs.json.responses.DownloadInfo;
+import ro.cs.tao.datasource.usgs.json.responses.DownloadResponse;
+import ro.cs.tao.datasource.usgs.json.types.Download;
 import ro.cs.tao.datasource.usgs.parameters.USGSDateParameterConverter;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
@@ -46,16 +44,18 @@ import ro.cs.tao.utils.StringUtilities;
 
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
  */
 public class Landsat8Query extends DataQuery {
 
-    private static final Map<String, Integer> fieldIds;
+    private static final Map<String, String> fieldIds;
+    private static final String LEVEL1_COLLECTION = "LANDSAT_8_C1";
+    private static final String LEVEL2_COLLECTION = "LANDSAT_OT_C2_L2";
     private String apiKey;
 
     static {
@@ -65,8 +65,8 @@ public class Landsat8Query extends DataQuery {
         fieldIds = new HashMap<>();
     }
 
-    Landsat8Query(USGSDataSource source) {
-        super(source, "Landsat8");
+    Landsat8Query(USGSDataSource source, String mission) {
+        super(source, mission);
     }
 
     @Override
@@ -76,9 +76,9 @@ public class Landsat8Query extends DataQuery {
 
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
-        Set<String> pathRows = getPathRows();
+        //Set<String> pathRows = getPathRows();
         try {
-            return (List<EOProduct>) executeQuery(this.pageNumber, this.pageSize, pathRows, false);
+            return (List<EOProduct>) executeQuery(this.pageNumber, this.pageSize, null, false);
         } catch (Exception e) {
             throw new QueryException(e);
         }
@@ -87,9 +87,9 @@ public class Landsat8Query extends DataQuery {
     @Override
     protected long getCountImpl() {
         long retVal = 0;
-        Set<String> pathRows = getPathRows();
+        //Set<String> pathRows = getPathRows();
         try {
-            retVal = (long) executeQuery(1, 1, pathRows, true);
+            retVal = (long) executeQuery(1, 1, null, true);
         } catch (Exception e) {
             throw new QueryException(e);
         }
@@ -122,69 +122,21 @@ public class Landsat8Query extends DataQuery {
         return pathRows;
     }
 
-    private String authenticate() throws Exception {
-        if (this.apiKey == null) {
-            LoginRequest request = new LoginRequest();
-            UsernamePasswordCredentials credentials = this.source.getCredentials();
-            if (credentials == null) {
-                throw new QueryException(String.format("Credentials not set for %s", this.source.getId()));
-            }
-            request.setUsername(credentials.getUserName());
-            request.setPassword(credentials.getPassword());
-            String url = buildPostRequestURL("login");
-            List<org.apache.http.NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair("jsonRequest", request.toString()));
-            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, (Credentials) null, params)) {
-                switch (response.getStatusLine().getStatusCode()) {
-                    case 200:
-                        String body = EntityUtils.toString(response.getEntity());
-                        if (body == null) {
-                            throw new QueryException("Cannot retrieve API key [empty response body]");
-                        }
-                        JsonResponseParser<LoginResponse> parser = new JsonResponseParser<>(new LoginResponseHandler());
-                        LoginResponse login = parser.parseValue(body);
-                        if (login == null) {
-                            throw new QueryException("Cannot retrieve API key [empty response body]");
-                        }
-                        if (login.getErrorCode() == null) {
-                            this.apiKey = login.getData();
-                        }
-                        if (this.apiKey == null) {
-                            throw new QueryException(String.format("The API key could not be obtained [catalogId:%s,apiVersion:%s,errorCode:%s,error:%s,data:%s",
-                                                                   login.getCatalog_id(), login.getApi_version(), login.getErrorCode(), login.getError(), login.getData()));
-                        }
-                        break;
-                    case 401:
-                        throw new QueryException("Cannot retrieve API key [401:not authorized]");
-                    default:
-                        throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                                               response.getStatusLine().getReasonPhrase()));
-                }
-                setupRemoteFields();
-            } catch (Exception ex) {
-                throw new QueryException(ex);
-            }
-        }
-        return this.apiKey;
-    }
-
     private void setupRemoteFields() throws Exception {
         if (fieldIds.size() == 0) {
-            String apiKey = authenticate();
             DatasetFieldsRequest request = new DatasetFieldsRequest();
-            request.setApiKey(apiKey);
             request.setDatasetName(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
                                            this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
-                                           "LANDSAT_8_C1");
-            String url = buildGetRequestURL("datasetfields", request);
-            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, url, null)) {
+                                           LEVEL1_COLLECTION);
+            String url = buildPostRequestURL("dataset-filters");
+            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, request.toString())) {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
                         String body = EntityUtils.toString(response.getEntity());
                         JsonResponseParser<FieldDescriptor> parser = new JsonResponseParser<>(new DatasetFieldsResponseHandler());
                         List<FieldDescriptor> params = parser.parse(body);
                         for (FieldDescriptor param : params) {
-                            fieldIds.put(param.getName(), param.getFieldId());
+                            fieldIds.put(param.getFieldLabel(), param.getId());
                         }
                         break;
                     case 401:
@@ -199,60 +151,107 @@ public class Landsat8Query extends DataQuery {
         }
     }
 
-    private List<EOProduct> resolveDownloadUrls(List<EOProduct> products) throws Exception {
-        String apiKey = authenticate();
-        DownloadRequest request = new DownloadRequest();
-        request.setApiKey(apiKey);
-        request.setDatasetName(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
-                                       this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
-                                       "LANDSAT_8_C1");
+    private List<DownloadInfo> getDownloadInfos(List<EOProduct> products) {
+        DownloadOptions optionsRequest = new DownloadOptions();
+        optionsRequest.setDatasetName(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
+                this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
+                LEVEL1_COLLECTION);
         int size = products.size();
-        Map<String, Integer> indices = new HashMap<>(size);
         String[] ids = new String[size];
         for (int i = 0; i < size; i++) {
             ids[i] = products.get(i).getId();
-            indices.put(ids[i], i);
         }
-        request.setEntityIds(ids);
-        String url = buildGetRequestURL("download", request);
-        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, url, null)) {
+        optionsRequest.setEntityIds(String.join(",", ids));
+        String url = buildPostRequestURL("download-options");
+        List<DownloadInfo> downloadInfos = null;
+        try (CloseableHttpResponse response =
+                     NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, optionsRequest.toString())) {
             switch (response.getStatusLine().getStatusCode()) {
                 case 200:
                     String body = EntityUtils.toString(response.getEntity());
-                    JsonResponseParser<NameValuePair> parser = new JsonResponseParser<>(new DownloadResponseHandler());
-                    List<NameValuePair> params = parser.parse(body);
-                    for (NameValuePair param : params) {
-                        products.get(indices.get(param.getName())).setLocation(param.getValue());
+                    JsonResponseParser<DownloadInfo> parser = new JsonResponseParser<>(new DownloadInfoResponseHandler());
+                    downloadInfos = parser.parse(body);
+                    downloadInfos.removeIf(i ->
+                            (optionsRequest.getDatasetName().equals(LEVEL1_COLLECTION) && !i.getProductName().endsWith("Data Product"))
+                        || (optionsRequest.getDatasetName().equals(LEVEL2_COLLECTION) && !i.getProductName().endsWith("Product Bundle"))
+                        || (i.getProductName().toLowerCase().contains("metadata")));
+                    final Iterator<DownloadInfo> iterator = downloadInfos.iterator();
+                    final Set<String> notAvailable = new HashSet<>();
+                    while (iterator.hasNext()) {
+                        DownloadInfo info = iterator.next();
+                        if (!("y".equalsIgnoreCase(info.getAvailable()) || "true".equalsIgnoreCase(info.getAvailable()))) {
+                            notAvailable.add(info.getEntityId());
+                            logger.warning(String.format("Product %s is not available for download system %s",
+                                                         info.getDisplayId(), info.getDownloadSystem()));
+                            iterator.remove();
+                        } else {
+                            // it may happen to find duplicates
+                            notAvailable.remove(info.getEntityId());
+                        }
+                        products.stream().filter(p -> p.getName().equals(info.getDisplayId())).findFirst().get().setApproximateSize(info.getFilesize());
+                    }
+                    products.removeIf(p -> notAvailable.contains(p.getId()));
+                    downloadInfos.removeIf(d -> notAvailable.contains(d.getEntityId()));
+                    break;
+                case 401:
+                    throw new QueryException("The supplied credentials are invalid!");
+                default:
+                    throw new QueryException(String.format("The request was not successful. Reason: %s",
+                            response.getStatusLine().getReasonPhrase()));
+            }
+        } catch (Exception ex) {
+            throw new QueryException(ex);
+        }
+        return downloadInfos;
+    }
+
+    private void fillDownloadUrls(List<EOProduct> products, List<DownloadInfo> downloadInfos) {
+        final DownloadRequest downloadRequest = new DownloadRequest();
+        downloadRequest.setDownloads(downloadInfos.stream()
+                .map(i -> new Download() {{ setEntityId(i.getEntityId()); setProductId(i.getId()); }})
+                .collect(Collectors.toList()));
+        String url = buildPostRequestURL("download-request");
+        try (CloseableHttpResponse lastOne =
+                     NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, downloadRequest.toString())) {
+            switch (lastOne.getStatusLine().getStatusCode()) {
+                case 200:
+                    String body = EntityUtils.toString(lastOne.getEntity());
+                    JsonResponseParser<DownloadResponse> parser = new JsonResponseParser<>(new DownloadResponseHandler());
+                    DownloadResponse resp = parser.parseValue(body);
+                    if (resp != null) {
+                        List<AvailableDownload> downloads = resp.getData().getAvailableDownloads();
+                        if (downloads == null || downloads.size() == 0) {
+                            downloads = resp.getData().getPreparingDownloads();
+                        }
+                        if (downloads != null) {
+                            for (int i = 0; i < downloads.size(); i++) {
+                                products.get(i).setLocation(downloads.get(i).getUrl());
+                            }
+                        }
                     }
                     break;
                 case 401:
                     throw new QueryException("The supplied credentials are invalid!");
                 default:
                     throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                                           response.getStatusLine().getReasonPhrase()));
+                            lastOne.getStatusLine().getReasonPhrase()));
             }
         } catch (Exception ex) {
             throw new QueryException(ex);
         }
-        return products;
     }
 
-    private String buildGetRequestURL(String operation, Object jsonRequest) throws Exception {
-        return this.source.getConnectionString()
-                + operation + "?jsonRequest="
-                + URLEncoder.encode(new ObjectMapper().writer().writeValueAsString(jsonRequest), "UTF-8");
-    }
-
-    private String buildPostRequestURL(String operation) throws Exception {
+    private String buildPostRequestURL(String operation) {
         return this.source.getConnectionString() + operation;
     }
 
-    private String buildQueryUrl(int pgNumber, int pgSize, Set<String> pathRowFilter) throws Exception {
+    private SearchRequest buildQuery(int pgNumber, int pgSize, Set<String> pathRowFilter) throws Exception {
         if (!this.parameters.containsKey(CommonParameterNames.PLATFORM)) {
             addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }
-        String apiKey = authenticate();
-        SearchRequest request = new SearchRequest().withAPIKey(apiKey);
+        SearchRequest request = new SearchRequest().withDataSet(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
+                this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
+                LEVEL1_COLLECTION);
         SearchFilterValue filter;
         Map<String, QueryParameter> parameters = new HashMap<>(this.parameters);
         if ((parameters.containsKey("row") && parameters.containsKey("path")) ||
@@ -279,17 +278,19 @@ public class Landsat8Query extends DataQuery {
                         break;
                     case CommonParameterNames.PRODUCT:
                         filter = new SearchFilterValue();
-                        filter.setFieldId(fieldIds.get("Landsat Product Identifier"));
+                        filter.setFilterId(fieldIds.get("Landsat Product Identifier"));
                         filter.setOperand("=");
                         filter.setValue(parameter.getValueAsString());
                         request.withFilter(filter);
                         break;
                     case CommonParameterNames.PRODUCT_TYPE:
-                        filter = new SearchFilterValue();
-                        filter.setFieldId(fieldIds.get("Data Type Level-1"));
-                        filter.setOperand("=");
-                        filter.setValue(parameter.getValueAsString());
-                        request.withFilter(filter);
+                        if (!LEVEL2_COLLECTION.equals(request.getDatasetName())) {
+                            filter = new SearchFilterValue();
+                            filter.setFilterId(fieldIds.get("Data Type Level-1"));
+                            filter.setOperand("=");
+                            filter.setValue(parameter.getValueAsString());
+                            request.withFilter(filter);
+                        }
                         break;
                     case "minClouds":
                         request.withMinClouds(parameter.getValueAsInt());
@@ -299,14 +300,14 @@ public class Landsat8Query extends DataQuery {
                         break;
                     case "row":
                         filter = new SearchFilterValue();
-                        filter.setFieldId(fieldIds.get("WRS Row"));
+                        filter.setFilterId(fieldIds.get("WRS Row"));
                         filter.setOperand("=");
                         filter.setValue(parameter.getValueAsString());
                         request.withFilter(filter);
                         break;
                     case "path":
                         filter = new SearchFilterValue();
-                        filter.setFieldId(fieldIds.get("WRS Path"));
+                        filter.setFilterId(fieldIds.get("WRS Path"));
                         filter.setOperand("=");
                         filter.setValue(parameter.getValueAsString());
                         request.withFilter(filter);
@@ -314,12 +315,12 @@ public class Landsat8Query extends DataQuery {
                     case CommonParameterNames.TILE:
                         String pathRow = parameters.get(CommonParameterNames.TILE).getValueAsString();
                         filter = new SearchFilterValue();
-                        filter.setFieldId(fieldIds.get("WRS Path"));
+                        filter.setFilterId(fieldIds.get("WRS Path"));
                         filter.setOperand("=");
                         filter.setValue(pathRow.substring(0, 3));
                         request.withFilter(filter);
                         filter = new SearchFilterValue();
-                        filter.setFieldId(fieldIds.get("WRS Row"));
+                        filter.setFilterId(fieldIds.get("WRS Row"));
                         filter.setOperand("=");
                         filter.setValue(pathRow.substring(3, 6));
                         request.withFilter(filter);
@@ -329,17 +330,17 @@ public class Landsat8Query extends DataQuery {
                 e.printStackTrace();
             }
         }
-        if (pathRowFilter != null) {
+        if (pathRowFilter != null && pathRowFilter.size() > 0) {
             SearchFilterOr orFilter = new SearchFilterOr();
             for (String pathRow : pathRowFilter) {
                 SearchFilterAnd andFilter = new SearchFilterAnd();
                 filter = new SearchFilterValue();
-                filter.setFieldId(fieldIds.get("WRS Path"));
+                filter.setFilterId(fieldIds.get("WRS Path"));
                 filter.setOperand("=");
                 filter.setValue(pathRow.substring(0, 3));
                 andFilter.addChildFilter(filter);
                 filter = new SearchFilterValue();
-                filter.setFieldId(fieldIds.get("WRS Row"));
+                filter.setFilterId(fieldIds.get("WRS Row"));
                 filter.setOperand("=");
                 filter.setValue(pathRow.substring(3, 6));
                 andFilter.addChildFilter(filter);
@@ -353,10 +354,14 @@ public class Landsat8Query extends DataQuery {
         } else {
             request.withMaxResults(Math.max(this.limit, pgSize));
         }
-        return buildGetRequestURL("search", request);
+        return request;
     }
 
     private Object executeQuery(int start, int pageSize, Set<String> pathRows, boolean count) throws Exception {
+        if (this.apiKey == null) {
+            this.apiKey = ((USGSDataSource) this.source).authenticate();
+            setupRemoteFields();
+        }
         final Object results;
         if (!count) {
             results = new ArrayList<EOProduct>();
@@ -369,13 +374,14 @@ public class Landsat8Query extends DataQuery {
                 try {
                     single.clear();
                     single.add(pr);
-                    String queryUrl = buildQueryUrl(start, pageSize, single);
-                    logger.fine(String.format("Executing query for product : %s", queryUrl));
-                    try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, null)) {
+                    final SearchRequest request = buildQuery(start, pageSize, single);
+                    String queryUrl = buildPostRequestURL("scene-search");
+                    logger.finest(String.format("Executing query for product : %s", request.toString()));
+                    try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, queryUrl, "X-Auth-Token", apiKey, request.toString())) {
                         switch (response.getStatusLine().getStatusCode()) {
                             case 200:
                                 String body = EntityUtils.toString(response.getEntity());
-                                ResponseParser parser = new JsonResponseParser<>(new SearchResponseHandler(), "totalHits");
+                                ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(), "totalHits");
                                 if (!count) {
                                     ((List<EOProduct>) results).addAll(parser.parse(body));
                                 } else {
@@ -391,18 +397,23 @@ public class Landsat8Query extends DataQuery {
                     } catch (IOException ex) {
                         throw new QueryException(ex);
                     }
+                    sleep();
                 } catch (Exception e) {
                     throw new QueryException(e);
                 }
             });
         } else {
-            String queryUrl = buildQueryUrl(start, pageSize, pathRows);
-            logger.fine("Executing query " + queryUrl);
-            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, null)) {
+            SearchRequest request = buildQuery(start, pageSize, pathRows);
+            String queryUrl = buildPostRequestURL("scene-search");
+            logger.finest("Executing query " + queryUrl + " with payload " + request.toString());
+            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, queryUrl, "X-Auth-Token", apiKey, request.toString())) {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
                         String body = EntityUtils.toString(response.getEntity());
-                        ResponseParser parser = new JsonResponseParser<>(new SearchResponseHandler(), "totalHits");
+                        if (body.contains("SERVER_ERROR")) {
+                            throw new QueryException("The request was not successful. Reason: API Server Error");
+                        }
+                        ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(), "totalHits");
                         if (!count) {
                             ((List<EOProduct>) results).addAll(parser.parse(body));
                         } else {
@@ -415,6 +426,7 @@ public class Landsat8Query extends DataQuery {
                         throw new QueryException(String.format("The request was not successful. Reason: %s",
                                 response.getStatusLine().getReasonPhrase()));
                 }
+                sleep();
             } catch (IOException ex) {
                 throw new QueryException(ex);
             }
@@ -426,7 +438,7 @@ public class Landsat8Query extends DataQuery {
                 trimmed.subList(this.limit, currentSize).clear();
             }
             if (trimmed.size() > 0) {
-                resolveDownloadUrls((List<EOProduct>) results);
+                fillDownloadUrls(trimmed, getDownloadInfos(trimmed));
             }
         }
         logger.info(String.format("Query returned %s products",

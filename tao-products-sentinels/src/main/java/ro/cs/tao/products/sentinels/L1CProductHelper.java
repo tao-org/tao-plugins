@@ -15,8 +15,10 @@
  */
 package ro.cs.tao.products.sentinels;
 
+import ro.cs.tao.utils.DateUtils;
+
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -186,7 +188,7 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
         if (this.oldFormat) {
             String[] granuleTokens = getTokens(TileV13, granuleIdentifier, null);
             String[] productTokens = getTokens(ProductV13, prodName, null);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+            DateFormat dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
             String dateStart = "", dateEnd = "";
             try {
                 Date date1 = dateFormat.parse(productTokens[7].substring(1, productTokens[7].length()));

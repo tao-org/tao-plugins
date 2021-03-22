@@ -23,6 +23,7 @@ import ro.cs.tao.datasource.db.parameters.DatabaseParameterProvider;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterProvider;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -34,7 +35,7 @@ import java.util.logging.Logger;
  *
  * @author Cosmin Cara
  */
-public class DatabaseSource extends AbstractDataSource<DatabaseQuery> {
+public class DatabaseSource extends AbstractDataSource<DatabaseQuery, Void> {
     public static final String PRODUCTS_TABLE = "product.raster_data_product";
     public static final String PRODUCT_PARAMS_TABLE = "product.data_product_attributes";
     private final String dbUser;
@@ -92,6 +93,11 @@ public class DatabaseSource extends AbstractDataSource<DatabaseQuery> {
     @Override
     public void setCredentials(String username, String password) {
         // no-op
+    }
+
+    @Override
+    public Void authenticate() throws IOException {
+        return null;
     }
 
     @Override

@@ -1,9 +1,11 @@
 package ro.cs.tao.datasource.usgs.json.requests;
 
-public class LoginRequest {
+/**
+ * Login request bean for USGS API 1.5
+ */
+public class LoginRequest extends BaseRequest{
     private String username;
     private String password;
-    private String catalogId = "EE";
 
     public String getUsername() {
         return username;
@@ -21,18 +23,4 @@ public class LoginRequest {
         this.password = password;
     }
 
-    public String getCatalogId() {
-        return catalogId;
-    }
-
-    public void setCatalogId(String catalogId) {
-        this.catalogId = catalogId;
-    }
-
-    @Override
-    public String toString() {
-        return "{ \"username\":\"" + username + "\", " +
-                "\"password\":\"" + password + "\", " +
-                "\"catalogId\":\"" + catalogId + "\" }";
-    }
 }
