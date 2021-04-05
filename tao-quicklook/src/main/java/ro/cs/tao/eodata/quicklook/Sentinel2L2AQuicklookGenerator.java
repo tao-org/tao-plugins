@@ -6,7 +6,6 @@ import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.OutputAccumulator;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -57,26 +56,24 @@ public class Sentinel2L2AQuicklookGenerator extends BaseQuicklookGenerator<Path>
             } catch (IllegalArgumentException ex) {
                 continue;
             }
-            Path realPath = null;
             try {
                 // At least on Windows, docker doesn't handle well folder symlinks in the path
-                realPath = FileUtilities.resolveSymLinks(productFile);
-                realPath = realPath.resolve("GRANULE");
-                realPath = Files.list(realPath).findFirst().orElse(null);
-                if (realPath == null) {
+                productFile = productFile.resolve("GRANULE");
+                productFile = this.factory.fileManager().list(productFile).stream().findFirst().orElse(null);
+                if (productFile == null) {
                     continue;
                 }
-                realPath = realPath.resolve("QI_DATA")
+                productFile = productFile.resolve("QI_DATA")
                             .resolve("T" + helper.getTileIdentifier() + "_" + helper.getSensingDate() + "_PVI.jp2");
-                Executor<?> executor = initialize(realPath, useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
+                Executor<?> executor = initialize(productFile, useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
                 if (executor != null) {
                     executor.setOutputConsumer(consumer);
                     int code;
                     if ((code = executor.execute(false)) == 0) {
-                        realPath = Paths.get(realPath.toString() + extension);
+                        productFile = Paths.get(productFile.toString() + extension);
                     } else {
                         logger.warning(String.format("Quicklook for %s was not created (return code: %d, output: %s)",
-                                                     realPath.getFileName(), code, consumer.getOutput()));
+                                productFile.getFileName(), code, consumer.getOutput()));
                     }
                 } else {
                     logger.warning(String.format("Quicklooks not supported for %s files", FileUtilities.getExtension(productFile)));
@@ -84,7 +81,7 @@ public class Sentinel2L2AQuicklookGenerator extends BaseQuicklookGenerator<Path>
             } catch (Exception e) {
                 logger.severe(String.format("Cannot create quicklook for %s. Reason: %s", productFile, e.getMessage()));
             }
-            results.add(realPath);
+            results.add(productFile);
         }
         return results;
     }

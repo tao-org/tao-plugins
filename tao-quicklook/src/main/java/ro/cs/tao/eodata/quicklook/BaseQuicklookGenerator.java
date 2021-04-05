@@ -7,12 +7,9 @@ import ro.cs.tao.eodata.OutputDataHandler;
 import ro.cs.tao.utils.DockerHelper;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.Executor;
-import ro.cs.tao.utils.executors.ExecutorType;
-import ro.cs.tao.utils.executors.ProcessExecutor;
+import ro.cs.tao.utils.executors.FileProcessFactory;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Logger;
@@ -27,6 +24,7 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
     private final boolean canCreate;
     protected final Set<String> extensions;
     protected final String extension;
+    protected FileProcessFactory factory;
 
     static {
         ConfigurationProvider configurationManager = ConfigurationManager.getInstance();
@@ -42,6 +40,11 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
         extensions = getSupportedExtensions();
         extension = getExtension();
         canCreate = driverMap.containsKey(extension);
+    }
+
+    @Override
+    public void setFileProcessFactory(FileProcessFactory factory) {
+        this.factory = factory;
     }
 
     @Override
@@ -68,13 +71,10 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
                     .replace("$FOLDER", productPath.getParent().toString())
                     .replace("$FILE", productPath.getFileName().toString()));
         }
-        try {
-            return ProcessExecutor.create(ExecutorType.PROCESS,
-                    InetAddress.getLocalHost().getHostName(),
-                    arguments);
-        } catch (UnknownHostException e) {
-            throw new IOException(e);
+        if (this.factory == null) {
+            this.factory = FileProcessFactory.createLocal();
         }
+        return this.factory.processManager().createExecutor(arguments);
     }
 
     protected String[] getGDALCommandLineOnPath() {
