@@ -23,6 +23,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.remote.URLDataSource;
@@ -30,19 +31,19 @@ import ro.cs.tao.datasource.remote.fedeo.auth.FedEOAuthentication;
 import ro.cs.tao.datasource.remote.fedeo.parameters.FedEOParameterProvider;
 import ro.cs.tao.datasource.remote.fedeo.xml.FedEOCollectionXmlResponseHandler;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
+import ro.cs.tao.spi.ServiceRegistry;
+import ro.cs.tao.spi.ServiceRegistryManager;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public class FedEODataSource extends URLDataSource<FedEODataQuery, Header> {
 
     private static String URL;
+    private static final Map<String, Map<String, DataSourceParameter>> SUPPORTED_PARAMETERS = new HashMap<>();
 
     static {
         Properties props = new Properties();
@@ -52,6 +53,7 @@ public class FedEODataSource extends URLDataSource<FedEODataQuery, Header> {
             if (!URL.endsWith("/")) {
                 URL += "/";
             }
+            new Thread(FedEODataSource::computeSupportedParameters).start();
         } catch (IOException ignored) {
         }
     }
@@ -61,6 +63,13 @@ public class FedEODataSource extends URLDataSource<FedEODataQuery, Header> {
     public FedEODataSource() throws URISyntaxException {
         super(URL);
         setParameterProvider(new FedEOParameterProvider(this, URL + "description.xml"));
+    }
+
+    private static void computeSupportedParameters() {
+        ServiceRegistry<DataSource> serviceRegistry = ServiceRegistryManager.getInstance().getServiceRegistry(DataSource.class);
+        FedEODataSource fedEODataSource = (FedEODataSource) serviceRegistry.getService(FedEODataSource.class);
+        Map<String, Map<String, DataSourceParameter>> supportedParams = fedEODataSource.getSupportedParams();
+        SUPPORTED_PARAMETERS.putAll(supportedParams);
     }
 
     @Override
@@ -79,11 +88,6 @@ public class FedEODataSource extends URLDataSource<FedEODataQuery, Header> {
     }
 
     @Override
-    public void setCredentials(String username, String password) {
-        super.setCredentials(username, password);
-    }
-
-    @Override
     public Header authenticate() throws IOException {
         if (credentials == null) {
             throw new IOException("No credentials set");
@@ -91,7 +95,6 @@ public class FedEODataSource extends URLDataSource<FedEODataQuery, Header> {
         if (authenticationStrategy == null) {
             authenticationStrategy = new FedEOAuthentication(this.credentials);
         }
-        ;
         return new BasicHeader(authenticationStrategy.getAuthenticationTokenName(), authenticationStrategy.getAuthenticationTokenValue());
     }
 
@@ -101,7 +104,7 @@ public class FedEODataSource extends URLDataSource<FedEODataQuery, Header> {
     }
 
     private String[] fetchCollections(String platform) {
-        List<String> results = new ArrayList<>();
+        List<String> results;
         List<NameValuePair> queryParams = new ArrayList<>();
         queryParams.add(new BasicNameValuePair("platform", String.valueOf(platform)));
         queryParams.add(new BasicNameValuePair("maximumRecords", String.valueOf("50")));
@@ -127,6 +130,10 @@ public class FedEODataSource extends URLDataSource<FedEODataQuery, Header> {
 
     @Override
     public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
+        return SUPPORTED_PARAMETERS;
+    }
+
+    private Map<String, Map<String, DataSourceParameter>> getSupportedParams() {
         Map<String, Map<String, DataSourceParameter>> supportedParams = super.getSupportedParameters();
         for (Map.Entry<String, Map<String, DataSourceParameter>> supportedParam : supportedParams.entrySet()) {
             DataSourceParameter currentParentIdentifiser = supportedParam.getValue().get("parentIdentifier");
@@ -135,6 +142,5 @@ public class FedEODataSource extends URLDataSource<FedEODataQuery, Header> {
             supportedParam.getValue().replace("parentIdentifier", newParentIdentifiser);
         }
         return supportedParams;
-
     }
 }

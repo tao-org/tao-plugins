@@ -58,6 +58,13 @@ public class FedEODataSourceTest {
             String platform = platforms[112];
 
             Map<String, Map<String, DataSourceParameter>> supportedParams = dataSource.getSupportedParameters();
+
+            synchronized (supportedParams) {
+                while (supportedParams.isEmpty()) {
+                    supportedParams.wait(100);
+                }
+            }
+
             Map<String, DataSourceParameter> params = supportedParams.get(platform);
 
             String collection = (String) params.get("parentIdentifier").getValueSet()[0];

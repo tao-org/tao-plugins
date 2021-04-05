@@ -19,11 +19,9 @@ package ro.cs.tao.eodata.quicklook;
 import ro.cs.tao.eodata.DataHandlingException;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.DockerHelper;
-import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.OutputAccumulator;
 
-import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -83,10 +81,10 @@ public class EOProductQuicklookGenerator extends BaseQuicklookGenerator<EOProduc
         }};
     }
 
-    @Override
+    /*@Override
     protected Executor<?> initialize(Path productPath, String[] args) throws IOException {
         // At least on Windows, docker doesn't handle well folder symlinks in the path
         Path realPath = FileUtilities.resolveSymLinks(productPath);
         return super.initialize(realPath, args);
-    }
+    }*/
 }

@@ -36,19 +36,16 @@ public class GenericQuicklookGenerator extends BaseQuicklookGenerator<Path> {
         final OutputAccumulator consumer = new OutputAccumulator();
         final List<Path> results = new ArrayList<>();
         for (Path productFile : list) {
-            Path realPath = null;
             try {
-                // At least on Windows, docker doesn't handle well folder symlinks in the path
-                realPath = FileUtilities.resolveSymLinks(productFile);
-                Executor<?> executor = initialize(realPath, useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
+                Executor<?> executor = initialize(productFile, useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
                 if (executor != null) {
                     executor.setOutputConsumer(consumer);
                     int code;
                     if ((code = executor.execute(false)) == 0) {
-                        realPath = Paths.get(realPath.toString() + extension);
+                        productFile = Paths.get(productFile.toString() + extension);
                     } else {
                         logger.warning(String.format("Quicklook for %s was not created (return code: %d, output: %s)",
-                                realPath.getFileName(), code, consumer.getOutput()));
+                                productFile.getFileName(), code, consumer.getOutput()));
                     }
                 } else {
                     logger.warning(String.format("Quicklooks not supported for %s files", FileUtilities.getExtension(productFile)));
@@ -56,7 +53,7 @@ public class GenericQuicklookGenerator extends BaseQuicklookGenerator<Path> {
             } catch (Exception e) {
                 logger.severe(String.format("Cannot create quicklook for %s. Reason: %s", productFile, e.getMessage()));
             }
-            results.add(realPath);
+            results.add(productFile);
         }
         return results;
     }
