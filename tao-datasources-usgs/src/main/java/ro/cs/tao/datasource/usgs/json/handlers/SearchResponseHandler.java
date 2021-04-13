@@ -124,8 +124,9 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             Landsat8ProductHelper helper = new Landsat8ProductHelper(product.getName());
             product.addAttribute("tiles", helper.getPath() + helper.getRow());
         } catch (IllegalArgumentException e) {
-            Logger.getLogger(SearchResponseHandler.class.getName()).fine(product.getName() + " is not a Landsat product");
+            Logger.getLogger(SearchResponseHandler.class.getName()).finest(product.getName() + " is not a Landsat product");
         }
+        product.addAttribute("downloadable", result.getOptions() != null ? String.valueOf(result.getOptions().isDownload()) : "true");
         return product;
     }
 
