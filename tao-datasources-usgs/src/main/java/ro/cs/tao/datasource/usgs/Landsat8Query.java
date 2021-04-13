@@ -46,6 +46,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -56,6 +57,7 @@ public class Landsat8Query extends DataQuery {
     private static final Map<String, String> fieldIds;
     private static final String LEVEL1_COLLECTION = "LANDSAT_8_C1";
     private static final String LEVEL2_COLLECTION = "LANDSAT_OT_C2_L2";
+    private static final Set<String> formats = new HashSet<String>() {{ add("geotiff"); add("hdf"); add("netcdf"); }};
     private String apiKey;
 
     static {
@@ -171,10 +173,16 @@ public class Landsat8Query extends DataQuery {
                     String body = EntityUtils.toString(response.getEntity());
                     JsonResponseParser<DownloadInfo> parser = new JsonResponseParser<>(new DownloadInfoResponseHandler());
                     downloadInfos = parser.parse(body);
+                    if (downloadInfos == null) {
+                        return null;
+                    }
                     downloadInfos.removeIf(i ->
                             (optionsRequest.getDatasetName().equals(LEVEL1_COLLECTION) && !i.getProductName().endsWith("Data Product"))
                         || (optionsRequest.getDatasetName().equals(LEVEL2_COLLECTION) && !i.getProductName().endsWith("Product Bundle"))
                         || (i.getProductName().toLowerCase().contains("metadata")));
+                    if (this.sensorName.equalsIgnoreCase("Hyperion")) {
+                        downloadInfos.removeIf(i -> formats.stream().noneMatch(f -> i.getProductName().toLowerCase().contains(f)));
+                    }
                     final Iterator<DownloadInfo> iterator = downloadInfos.iterator();
                     final Set<String> notAvailable = new HashSet<>();
                     while (iterator.hasNext()) {
@@ -202,42 +210,49 @@ public class Landsat8Query extends DataQuery {
         } catch (Exception ex) {
             throw new QueryException(ex);
         }
-        return downloadInfos;
+        // deduplicate if multiple occurences of the same product
+        return new ArrayList<>(downloadInfos.stream().collect(Collectors.toMap(DownloadInfo::getEntityId, Function.identity(), (e1, e2) -> e2, LinkedHashMap::new)).values());
+        //return downloadInfos;
     }
 
     private void fillDownloadUrls(List<EOProduct> products, List<DownloadInfo> downloadInfos) {
-        final DownloadRequest downloadRequest = new DownloadRequest();
-        downloadRequest.setDownloads(downloadInfos.stream()
-                .map(i -> new Download() {{ setEntityId(i.getEntityId()); setProductId(i.getId()); }})
-                .collect(Collectors.toList()));
-        String url = buildPostRequestURL("download-request");
-        try (CloseableHttpResponse lastOne =
-                     NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, downloadRequest.toString())) {
-            switch (lastOne.getStatusLine().getStatusCode()) {
-                case 200:
-                    String body = EntityUtils.toString(lastOne.getEntity());
-                    JsonResponseParser<DownloadResponse> parser = new JsonResponseParser<>(new DownloadResponseHandler());
-                    DownloadResponse resp = parser.parseValue(body);
-                    if (resp != null) {
-                        List<AvailableDownload> downloads = resp.getData().getAvailableDownloads();
-                        if (downloads == null || downloads.size() == 0) {
-                            downloads = resp.getData().getPreparingDownloads();
-                        }
-                        if (downloads != null) {
-                            for (int i = 0; i < downloads.size(); i++) {
-                                products.get(i).setLocation(downloads.get(i).getUrl());
+        if (downloadInfos != null) {
+            final DownloadRequest downloadRequest = new DownloadRequest();
+            downloadRequest.setDownloads(downloadInfos.stream()
+                    .map(i -> new Download() {{
+                        setEntityId(i.getEntityId());
+                        setProductId(i.getId());
+                    }})
+                    .collect(Collectors.toList()));
+            String url = buildPostRequestURL("download-request");
+            try (CloseableHttpResponse lastOne =
+                         NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, downloadRequest.toString())) {
+                switch (lastOne.getStatusLine().getStatusCode()) {
+                    case 200:
+                        String body = EntityUtils.toString(lastOne.getEntity());
+                        JsonResponseParser<DownloadResponse> parser = new JsonResponseParser<>(new DownloadResponseHandler());
+                        DownloadResponse resp = parser.parseValue(body);
+                        if (resp != null) {
+                            List<AvailableDownload> downloads = resp.getData().getAvailableDownloads();
+                            if (downloads == null || downloads.size() == 0) {
+                                downloads = resp.getData().getPreparingDownloads();
+                            }
+                            if (downloads != null) {
+                                for (int i = 0; i < downloads.size(); i++) {
+                                    products.get(i).setLocation(downloads.get(i).getUrl());
+                                }
                             }
                         }
-                    }
-                    break;
-                case 401:
-                    throw new QueryException("The supplied credentials are invalid!");
-                default:
-                    throw new QueryException(String.format("The request was not successful. Reason: %s",
-                            lastOne.getStatusLine().getReasonPhrase()));
+                        break;
+                    case 401:
+                        throw new QueryException("The supplied credentials are invalid!");
+                    default:
+                        throw new QueryException(String.format("The request was not successful. Reason: %s",
+                                lastOne.getStatusLine().getReasonPhrase()));
+                }
+            } catch (Exception ex) {
+                throw new QueryException(ex);
             }
-        } catch (Exception ex) {
-            throw new QueryException(ex);
         }
     }
 
