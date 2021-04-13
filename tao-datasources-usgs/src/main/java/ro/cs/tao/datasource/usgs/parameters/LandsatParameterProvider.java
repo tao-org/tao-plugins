@@ -20,6 +20,7 @@ import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
 import ro.cs.tao.datasource.remote.SimpleArchiveDownloadStrategy;
 import ro.cs.tao.datasource.usgs.USGSDataSource;
+import ro.cs.tao.datasource.usgs.download.Landsat8Strategy;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +36,8 @@ public class LandsatParameterProvider extends AbstractParameterProvider {
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
-                    put("Landsat8", new SimpleArchiveDownloadStrategy(dataSource, targetFolder, new Properties()));
+                    put("Landsat8", new Landsat8Strategy(dataSource, targetFolder, new Properties()));
+//                    put("ECOSTRESS-LTSE", new SimpleArchiveDownloadStrategy(dataSource, targetFolder, new Properties()));
                 }});
     }
 
