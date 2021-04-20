@@ -10,11 +10,14 @@ import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.usgs.USGSDataSource;
+import ro.cs.tao.datasource.usgs.download.EcostressStrategy;
 import ro.cs.tao.datasource.usgs.download.Landsat8Strategy;
+import ro.cs.tao.datasource.usgs.download.ModisStrategy;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -37,7 +40,7 @@ public class LandsatUsgsTest {
         setup();
         downloadTest();
 //        searchLandsat8Test();
-        //searchNewLandsat8Test();
+//        searchNewLandsat8Test();
     }
 
     static void downloadTest() throws IOException {
@@ -46,21 +49,13 @@ public class LandsatUsgsTest {
             handler.setLevel(Level.INFO);
         }
         DataSource<?, ?> dataSource = getDatasourceRegistry().getService(USGSDataSource.class);
-        dataSource.setCredentials("kraftek", "cei7pitici.");
+//        dataSource.setCredentials("kraftek", "cei7pitici.");
+        dataSource.setCredentials("lidia901", "USGS_Password1");
         String[] sensors = dataSource.getSupportedSensors();
-
-//        DataQuery query = dataSource.createQuery("Landsat8");
-//        DataQuery query = dataSource.createQuery("ECOSTRESS-WUE");
-//        DataQuery query = dataSource.createQuery("MODIS-BURN-M");
-
-// TODO: not working, index out of bounds
-        //DataQuery query = dataSource.createQuery("Hyperion");
-
-// TODO: not working, downloadInfos is null
-        DataQuery query = dataSource.createQuery("MODIS-VI1");
-//        DataQuery query = dataSource.createQuery("MODIS-VI2");
-//        DataQuery query = dataSource.createQuery("MODIS-VI3");
-//        DataQuery query = dataSource.createQuery("VIIRS");
+//        String sensor = "ECOSTRESS-WUE";
+        String sensor = "MODIS-FIRE-8";
+//        String sensor = "Landsat8";
+        DataQuery query = dataSource.createQuery(sensor);
 
         QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
         begin.setValue(Date.from(LocalDateTime.of(2020, 11, 1, 0, 0, 0, 0)
@@ -90,7 +85,9 @@ public class LandsatUsgsTest {
             System.out.println("QUICK LOOK=" + r.getQuicklookLocation());
         });
 
-        /*final Landsat8Strategy strategy = (Landsat8Strategy) dataSource.getProductFetchStrategy(sensors[0]);
+//        final Landsat8Strategy strategy = (Landsat8Strategy) dataSource.getProductFetchStrategy(sensor);
+//        final EcostressStrategy strategy = (EcostressStrategy) dataSource.getProductFetchStrategy(sensor);
+        final ModisStrategy strategy = (ModisStrategy) dataSource.getProductFetchStrategy(sensor);
 
         ProgressListener progressListener = new ProgressListener() {
             @Override
@@ -139,7 +136,7 @@ public class LandsatUsgsTest {
             } else {
                 System.out.println("Product not downloaded");
             }
-        }*/
+        }
     }
 
     static void searchLandsat8Test() throws Exception {

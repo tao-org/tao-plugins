@@ -106,6 +106,10 @@ public class USGSDataSource extends URLDataSource<Landsat8Query, String> {
         }
     }
 
+    public String getEarthDataToken() {
+        return NetUtils.getAuthToken(credentials.getUserName(), credentials.getPassword());
+    }
+
     @Override
     protected Landsat8Query createQueryImpl(String code) {
         return new Landsat8Query(this, code);

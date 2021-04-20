@@ -20,7 +20,9 @@ import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
 import ro.cs.tao.datasource.remote.SimpleArchiveDownloadStrategy;
 import ro.cs.tao.datasource.usgs.USGSDataSource;
+import ro.cs.tao.datasource.usgs.download.EcostressStrategy;
 import ro.cs.tao.datasource.usgs.download.Landsat8Strategy;
+import ro.cs.tao.datasource.usgs.download.ModisStrategy;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,7 +39,23 @@ public class LandsatParameterProvider extends AbstractParameterProvider {
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
                     put("Landsat8", new Landsat8Strategy(dataSource, targetFolder, new Properties()));
-//                    put("ECOSTRESS-LTSE", new SimpleArchiveDownloadStrategy(dataSource, targetFolder, new Properties()));
+                    put("VIIRS", new Landsat8Strategy(dataSource, targetFolder, new Properties()));
+                    put("Hyperion", new Landsat8Strategy(dataSource, targetFolder, new Properties()));
+                    put("ECOSTRESS-LTSE", new EcostressStrategy(dataSource, targetFolder, new Properties()));
+                    put("ECOSTRESS-L1BRAD", new EcostressStrategy(dataSource, targetFolder, new Properties()));
+                    put("ECOSTRESS-L1BMAPRAD", new EcostressStrategy(dataSource, targetFolder, new Properties()));
+                    put("ECOSTRESS-CLOUD", new EcostressStrategy(dataSource, targetFolder, new Properties()));
+                    put("ECOSTRESS-ESI", new EcostressStrategy(dataSource, targetFolder, new Properties()));
+                    put("ECOSTRESS-WUE", new EcostressStrategy(dataSource, targetFolder, new Properties()));
+                    put("MODIS-LAI-8", new ModisStrategy(dataSource, targetFolder, new Properties()));
+                    put("MODIS-LAI-4", new ModisStrategy(dataSource, targetFolder, new Properties()));
+                    put("MODIS-LTSE-1", new ModisStrategy(dataSource, targetFolder, new Properties()));
+                    put("MODIS-LTSE-8", new ModisStrategy(dataSource, targetFolder, new Properties()));
+                    put("MODIS-VI-16-500", new ModisStrategy(dataSource, targetFolder, new Properties()));
+                    put("MODIS-VI-16-250", new ModisStrategy(dataSource, targetFolder, new Properties()));
+                    put("MODIS-BURN-M", new ModisStrategy(dataSource, targetFolder, new Properties()));
+                    put("MODIS-FIRE-8", new ModisStrategy(dataSource, targetFolder, new Properties()));
+                    put("MODIS-FIRE-1", new ModisStrategy(dataSource, targetFolder, new Properties()));
                 }});
     }
 
