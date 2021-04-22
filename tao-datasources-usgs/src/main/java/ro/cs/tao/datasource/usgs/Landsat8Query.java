@@ -273,6 +273,11 @@ public class Landsat8Query extends DataQuery {
              parameters.containsKey(CommonParameterNames.TILE)) {
             parameters.remove(CommonParameterNames.FOOTPRINT);
         }
+        if (parameters.containsKey("earthDataUsername") && parameters.containsKey("earthDataPassword")) {
+            String username = parameters.get("earthDataUsername").getValueAsString();
+            String password = parameters.get("earthDataPassword").getValueAsString();
+            ((USGSDataSource) this.source).setEarthDataCredentials(username, password);
+        }
         for (QueryParameter<?> parameter : parameters.values()) {
             try {
                 switch (parameter.getName()) {
@@ -452,6 +457,7 @@ public class Landsat8Query extends DataQuery {
             }
             if (trimmed.size() > 0) {
                 fillDownloadUrls(trimmed, getDownloadInfos(trimmed));
+                trimmed.removeIf(p -> p.getLocation() == null);
             }
         }
         logger.info(String.format("Query returned %s products",
