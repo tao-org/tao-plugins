@@ -39,8 +39,8 @@ public class EcostressStrategy extends SimpleArchiveDownloadStrategy {
     }
 
     @Override
-    public SimpleArchiveDownloadStrategy clone() {
-        return super.clone();
+    public EcostressStrategy clone() {
+        return new EcostressStrategy(this);
     }
 
     @Override

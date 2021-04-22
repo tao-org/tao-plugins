@@ -39,8 +39,8 @@ public class ModisStrategy extends SimpleArchiveDownloadStrategy {
     }
 
     @Override
-    public SimpleArchiveDownloadStrategy clone() {
-        return super.clone();
+    public ModisStrategy clone() {
+        return new ModisStrategy(this);
     }
 
     @Override
