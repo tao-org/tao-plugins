@@ -104,7 +104,7 @@ public class FedEODataQuery extends DataQuery {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
                         XmlResponseParser<EOProduct> parser = new XmlResponseParser<>();
-                        parser.setHandler(new FedEOXmlResponseHandler("entry"));
+                        parser.setHandler(new FedEOXmlResponseHandler("entry", this.sensorName));
                         tmpResults = parser.parse(EntityUtils.toString(response.getEntity()));
                         if (tmpResults != null) {
                             results.addAll(tmpResults);
