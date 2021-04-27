@@ -31,9 +31,11 @@ import java.net.URISyntaxException;
 public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
 
     private String identifiedElement;
+    private final String collection;
 
-    public FedEOXmlResponseHandler(String recordElementName) {
+    public FedEOXmlResponseHandler(String recordElementName, String collection) {
         super(EOProduct.class, recordElementName);
+        this.collection = collection;
     }
 
     @Override
@@ -104,6 +106,7 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                     case "platform":
                         this.current.setProductType(elementValue);
                         this.current.addAttribute(this.identifiedElement, elementValue);
+                        this.current.addAttribute("collection", this.collection);
                         break;
                     case "instrument":
                         this.current.addAttribute(this.identifiedElement, elementValue);
