@@ -112,26 +112,6 @@
     }
   },
   "ECOSTRESS-LTSE": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -174,26 +154,6 @@
     }
   },
   "ECOSTRESS-L1BRAD": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -236,26 +196,6 @@
     }
   },
   "ECOSTRESS-L1BMAPRAD": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -298,26 +238,6 @@
     }
   },
   "ECOSTRESS-CLOUD": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -360,26 +280,6 @@
     }
   },
   "ECOSTRESS-ESI": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -422,26 +322,6 @@
     }
   },
   "ECOSTRESS-WUE": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -566,26 +446,6 @@
     }
   },
   "MODIS-VI1": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -648,26 +508,6 @@
     }
   },
   "MODIS-VI2": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -730,26 +570,6 @@
     }
   },
   "MODIS-VI3": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -874,26 +694,6 @@
     }
   },
   "MODIS-LAI-8": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -956,26 +756,6 @@
     }
   },
   "MODIS-LAI-4": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -1038,26 +818,6 @@
     }
   },
   "MODIS-LTSE-1": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -1100,26 +860,6 @@
     }
   },
   "MODIS-LTSE-8": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -1162,26 +902,6 @@
     }
   },
   "MODIS-VI-16-500": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -1244,26 +964,6 @@
     }
   },
   "MODIS-VI-16-250": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -1326,26 +1026,6 @@
     }
   },
   "MODIS-BURN-M": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -1408,26 +1088,6 @@
     }
   },
   "MODIS-FIRE-8": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -1490,26 +1150,6 @@
     }
   },
   "MODIS-FIRE-1": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "java.lang.String",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",

@@ -16,9 +16,10 @@
 
 package ro.cs.tao.datasource.remote.eocat.parameters;
 
+import org.apache.commons.lang3.StringUtils;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
-import ro.cs.tao.datasource.opensearch.OpenSearchParameterProvider;
+import ro.cs.tao.datasource.param.AbstractParameterProvider;
 import ro.cs.tao.datasource.remote.eocat.EOCATDataSource;
 import ro.cs.tao.datasource.remote.eocat.download.EOCATDownloadStrategy;
 
@@ -26,22 +27,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class EOCATParameterProvider extends OpenSearchParameterProvider {
+public class EOCATParameterProvider extends AbstractParameterProvider {
 
-    public EOCATParameterProvider(EOCATDataSource dataSource, String url) {
-        super(url);
-        this.endpointType = "application/atom+xml";
+    public EOCATParameterProvider(EOCATDataSource dataSource) {
+        super();
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         this.productFetchers = new HashMap<>();
         String[] sensors = getSupportedSensors();
         for (String sensor : sensors) {
-            this.productFetchers.put(sensor, new EOCATDownloadStrategy(dataSource, targetFolder, new Properties()));
+            this.productFetchers.put(StringUtils.capitalize(sensor.replace("-", "")), new EOCATDownloadStrategy(dataSource, targetFolder, new Properties()));
         }
-    }
-
-    @Override
-    protected String sensorParameterName() {
-        return "platform";
     }
 
     @Override

@@ -23,26 +23,28 @@ import ro.cs.tao.datasource.remote.result.xml.XmlResponseHandler;
  */
 public class FedEOCollectionXmlResponseHandler extends XmlResponseHandler<String> {
 
-    private static final String IDENTIFIER = "identifier";
+    private static final String LINK = "link";
+    private static final String TARGET_ATTRIBUTE_REL_VALUE = "search";
 
-    public FedEOCollectionXmlResponseHandler(String recordElementName) {
+    FedEOCollectionXmlResponseHandler(String recordElementName) {
         super(String.class, recordElementName);
     }
 
     @Override
     protected void handleStartElement(String qName, Attributes attributes) {
-
+        if (this.current != null && qName.contentEquals(LINK) && attributes.getValue(2) != null && attributes.getValue(2).contentEquals(TARGET_ATTRIBUTE_REL_VALUE)) {
+            String searchURL = attributes.getValue(0);
+            String collectionName = searchURL.replaceAll("[\\s\\S]*parentIdentifier=(.*?)((&[\\s\\S]*)|$)", "$1");
+            if (!collectionName.isEmpty()) {
+                this.current = collectionName;
+            }
+        }
     }
 
     @Override
     protected void handleEndElement(String qName) {
-        final String elementValue = buffer.toString();
-        switch (qName) {
-            case IDENTIFIER:
-                this.current = elementValue;
-                break;
-            default:
-                break;
+        if (this.recordElement.contentEquals(qName) && this.current != null && this.current.isEmpty()) {
+            this.current = null;
         }
     }
 }

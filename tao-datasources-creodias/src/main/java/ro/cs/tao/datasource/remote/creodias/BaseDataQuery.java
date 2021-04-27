@@ -96,6 +96,7 @@ public abstract class BaseDataQuery extends DataQuery {
                 } catch (IOException ex) {
                     throw new QueryException(ex);
                 }
+                sleep();
             }
         }
         logger.info(String.format("Query returned %s products", results.size()));
@@ -134,6 +135,7 @@ public abstract class BaseDataQuery extends DataQuery {
                 } catch (IOException ex) {
                     throw new QueryException(ex);
                 }
+                sleep();
             }
         }
         return count;
@@ -185,9 +187,8 @@ public abstract class BaseDataQuery extends DataQuery {
             String wkt = ((Polygon2D) this.parameters.get(CommonParameterNames.FOOTPRINT).getValue()).toWKT();
             footprints = splitMultiPolygon(wkt);
         }
-        List<BasicNameValuePair> query = new ArrayList<>();
         for (String footprint : footprints) {
-            int idx = 0;
+            final List<BasicNameValuePair> query = new ArrayList<>();
             for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
                 QueryParameter<?> parameter = entry.getValue();
                 if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
@@ -252,7 +253,6 @@ public abstract class BaseDataQuery extends DataQuery {
                             }
                         }
                 }
-                idx++;
             }
             queries.add(query);
         }

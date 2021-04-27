@@ -21,6 +21,7 @@ import org.apache.http.NameValuePair;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.eocat.EOCATDataSource;
+import ro.cs.tao.datasource.remote.eocat.auth.EOCATAuthentication;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtilities;
@@ -85,10 +86,6 @@ public class EOCATDownloadStrategy extends DownloadStrategy<Header> {
         return downloadProduct(product, connection);
     }
 
-    private String fetchSessionDataKey() {
-        return "";
-    }
-
     protected HttpURLConnection getConnectionForProduct(EOProduct product) {
         int responseStatus;
 
@@ -96,6 +93,9 @@ public class EOCATDownloadStrategy extends DownloadStrategy<Header> {
         CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
         String productDownloadUrl = getProductUrl(product);
         try {
+            Properties authProperties = new Properties();
+            authProperties.setProperty(EOCATAuthentication.DOWNLOAD_URL_PROPERTY_NAME, productDownloadUrl);
+            this.dataSource.setAdditionalProperties(authProperties);
             final Header authHeader = this.dataSource.authenticate();
             if (authHeader == null) {
                 throw new IOException("Invalid credentials");
