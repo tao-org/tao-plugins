@@ -38,6 +38,8 @@ import java.util.Properties;
 public class USGSDataSource extends URLDataSource<Landsat8Query, String> {
     private static final Properties props;
     private static String URL;
+    private static String earthDataUsername;
+    private static String earthDataPassword;
 
     static {
         props = new Properties();
@@ -104,6 +106,15 @@ public class USGSDataSource extends URLDataSource<Landsat8Query, String> {
         } catch (Exception ex) {
             throw new QueryException(ex);
         }
+    }
+
+    public void setEarthDataCredentials(String username, String password) {
+        earthDataUsername = username;
+        earthDataPassword = password;
+    }
+
+    public String getEarthDataToken() {
+        return NetUtils.getAuthToken(earthDataUsername, earthDataPassword);
     }
 
     @Override

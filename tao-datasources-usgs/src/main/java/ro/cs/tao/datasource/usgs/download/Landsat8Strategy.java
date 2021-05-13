@@ -38,8 +38,8 @@ public class Landsat8Strategy extends SimpleArchiveDownloadStrategy {
     }
 
     @Override
-    public SimpleArchiveDownloadStrategy clone() {
-        return super.clone();
+    public Landsat8Strategy clone() {
+        return new Landsat8Strategy(this);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class Landsat8Strategy extends SimpleArchiveDownloadStrategy {
         Path productFile;
         try {
             String productUrl = getProductUrl(product);
-            String extension = getExtensionFromUrl(productUrl);
+            String extension = getExtensionFromUrl(productUrl).isEmpty() ? TAR_GZ_EXTENSION : getExtensionFromUrl(productUrl);
             boolean isArchive = !extension.isEmpty() &&
                     (extension.equalsIgnoreCase(ZIP_EXTENSION) ||
                             extension.equalsIgnoreCase(TAR_GZ_EXTENSION) ||
