@@ -1,0 +1,41 @@
+#cloud-config
+
+system_info:
+  default_user:
+    name: openstack
+    gecos: Openstack default cloud user
+    groups: wheel,adm,systemd-journal
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    shell: /bin/bash
+    ssh_pwauth: True
+    lock_passwd: False
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDB9hSCHTmiSAStb9TM9cO6aeuDcIBWMp8Kx5K9MilTMK5LShC1KYK7laMZEp28FjG7GAmUYIIGbypFZHQktOUJ9vJNUTYEwYhFlc5pYdxRSoXPtw0/IX+9K8qz5Rdx1CNoJdbBBf2WYpgc7jgphR9kt58r8Vo8EtqtEvdzTpyvr1q8vBXS6yUHsl5CBOw1xeMFO624xL3/Jqj2rGKluciPBUUFu1yZTqn5f0IIBkGpjXo7Dvnl0aGXSk6fO1rKiNm045nlDLwDEvtDgwD+kbPfVr2C1lHtQXdgDp0FG+hutZ/i7mo/5sPhsYXWnk9e02Ad9kXuU7GbKdPCNNoz6xU5 Generated-by-Nova
+
+users:
+  - default
+  - name: sen2agri
+    gecos: Sen2agri cloud user
+    groups: wheel,adm,systemd-journal
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    shell: /bin/bash
+    ssh_pwauth: True
+    lock_passwd: False
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDB9hSCHTmiSAStb9TM9cO6aeuDcIBWMp8Kx5K9MilTMK5LShC1KYK7laMZEp28FjG7GAmUYIIGbypFZHQktOUJ9vJNUTYEwYhFlc5pYdxRSoXPtw0/IX+9K8qz5Rdx1CNoJdbBBf2WYpgc7jgphR9kt58r8Vo8EtqtEvdzTpyvr1q8vBXS6yUHsl5CBOw1xeMFO624xL3/Jqj2rGKluciPBUUFu1yZTqn5f0IIBkGpjXo7Dvnl0aGXSk6fO1rKiNm045nlDLwDEvtDgwD+kbPfVr2C1lHtQXdgDp0FG+hutZ/i7mo/5sPhsYXWnk9e02Ad9kXuU7GbKdPCNNoz6xU5 Generated-by-Nova
+
+chpasswd:
+  list: |
+    root:root
+    openstack:openstack
+    sen2agri:sen2agri
+  expire: False
+
+runcmd:
+  - sed -i -e '/^[# ]*PermitRootLogin/s/^.*$//' /etc/ssh/sshd_config
+  - sed -i -e '/^[# ]*PasswordAuthentication/s/^.*$//' /etc/ssh/sshd_config
+  - sed -i -e '/^[# ]*PermitEmptyPasswords/s/^.*$//' /etc/ssh/sshd_config
+  - sed -i -e '$aPermitRootLogin no' /etc/ssh/sshd_config
+  - sed -i -e '$aPasswordAuthentication yes' /etc/ssh/sshd_config
+  - sed -i -e '$aPermitEmptyPasswords no' /etc/ssh/sshd_config
+  - systemctl restart sshd
