@@ -3,6 +3,7 @@ package ro.cs.tao.datasource.remote.earthdata;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
 
 import javax.json.Json;
@@ -32,7 +33,6 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
                 JsonObject jsonObject = jsonArray.getJsonObject(i);
                 EOProduct result = new EOProduct();
                 result.setId(jsonObject.getString("id"));
-
                 result.setFormatType(DataFormat.RASTER);
                 JsonArray links = jsonObject.getJsonArray("links");
                 for (int indexLink = 0; indexLink < links.size() ; indexLink++){
@@ -47,6 +47,7 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
                         break;
                     }
                 }
+                result.setGeometry(createFootprint(jsonObject));
                 result.setApproximateSize((long)Float.parseFloat(jsonObject.getString("granule_size")));
                 result.setProductType(jsonObject.getString("original_format"));
                 if (hasDownloadLink) {
@@ -66,5 +67,35 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
         } else {
             return fileName;
         }
+    }
+
+    private String createFootprint(JsonObject jsonObject) {
+        Polygon2D footprint = new Polygon2D();
+        if (jsonObject.getJsonArray("boxes").size() > 0) {
+            String coordinates = jsonObject.getJsonArray("boxes").getString(0).replace("\"", "");
+            String points[] = coordinates.split("\\s");
+            int length = points.length;
+            if (length == 4) {
+                double latMin = Double.parseDouble(points[0]);
+                double lonMin = Double.parseDouble(points[1]);
+                double latMax = Double.parseDouble(points[2]);
+                double lonMax = Double.parseDouble(points[3]);
+                footprint.append(latMin, lonMin);
+                footprint.append(latMin, lonMax);
+                footprint.append(latMax, lonMax);
+                footprint.append(latMax, lonMin);
+                footprint.append(latMin, lonMin);
+            } else {
+                double currentCoordinate;
+                double nextCoordinate;
+                for (int j = 0; j < length - 1; j++) {
+                    currentCoordinate = Double.parseDouble(points[j].trim());
+                    nextCoordinate = Double.parseDouble(points[j+1].trim());
+                    j++;
+                    footprint.append(currentCoordinate, nextCoordinate);
+                }
+            }
+        }
+        return footprint.toWKT();
     }
 }
