@@ -1,0 +1,31 @@
+#cloud-config
+
+system_info:
+  default_user:
+    name: sen2agri
+    gecos: Sen2agri default cloud user
+    groups: wheel,adm,systemd-journal
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    shell: /bin/bash
+    ssh_pwauth: True
+    lock_passwd: False
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzbdDpcHKq/IyWYDJ7E7UiT/0y0sDUVZY1yhuNW1n2nidqG6yB2otE0id/dlJ/RLyBcOUntwTizWo6JfHkZ9zXXhHMdVMKW8gM8yydyaAdyaGPXCXFwnR3AoP8q9tol0Y38zVDDnsBWWEAnhsDYiQAxdC4Lpb6U6s7CXtinHuqxFDlokQS0CVnHfOqAeh0J09oRWzhpGSyy2qlg+66hJshTs9eZJCX+TtKdnilms65Ay5lRgpsFHhZsUoQ/sjWl6+7f6Vag5HBo3ht4PRSL944TI2Ysqe+OUM3lxUvJNqO87eQCGtjcjxnEfpYOKqgwUPGRV/eRpoKnZrBqrpW4h4f Generated-by-Nova
+
+users:
+  - default
+
+chpasswd:
+  list: |
+    root:root
+    sen2agri:sen2agri
+  expire: False
+
+runcmd:
+  - sed -i -e '/^[# ]*PermitRootLogin/s/^.*$//' /etc/ssh/sshd_config
+  - sed -i -e '/^[# ]*PasswordAuthentication/s/^.*$//' /etc/ssh/sshd_config
+  - sed -i -e '/^[# ]*PermitEmptyPasswords/s/^.*$//' /etc/ssh/sshd_config
+  - sed -i -e '$aPermitRootLogin yes' /etc/ssh/sshd_config
+  - sed -i -e '$aPasswordAuthentication yes' /etc/ssh/sshd_config
+  - sed -i -e '$aPermitEmptyPasswords no' /etc/ssh/sshd_config
+  - systemctl restart sshd
