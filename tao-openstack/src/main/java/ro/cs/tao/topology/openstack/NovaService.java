@@ -43,8 +43,11 @@ import java.util.stream.Collectors;
  * @author Cosmin Cara
  */
 public class NovaService implements NodeProvider {
-    private static final int WAIT_TIMEOUT = 1000 * 30;
-    private final Logger logger = Logger.getLogger(NovaService.class.getName());
+
+    private static final Logger logger = Logger.getLogger(NovaService.class.getName());
+
+    private static final int WAIT_TIMEOUT_MILLISECONDS = 60 * 1000;
+
     private Server master;
 
     protected OSClient.OSClientV3 client;
@@ -177,7 +180,7 @@ public class NovaService implements NodeProvider {
                     .blockDevice(hddCreate)
                     .addAdminPass(node.getUserPass())
                     .build();
-            server = serverService.bootAndWaitActive(newServer, WAIT_TIMEOUT);
+            server = serverService.bootAndWaitActive(newServer, WAIT_TIMEOUT_MILLISECONDS);
             if (server == null) {
                 throw new TopologyException("OpenStack node was not created");
             }
@@ -379,8 +382,6 @@ public class NovaService implements NodeProvider {
         return node;
     }
 
-    private static final int WAIT_TIMEOUT_MILLISECONDS = 60 * 1000;
-
     private Server findServerByName(String serverName) {
         List<? extends Server> servers = this.client.compute().servers().list();
         for (Server server : servers) {
@@ -516,10 +517,6 @@ public class NovaService implements NodeProvider {
             }
         }
         return null;
-    }
-
-    protected String getKeyPairName() {
-        return "demo-ssh-key";
     }
 
     public static String getServerFloatingIP(Server server) {
