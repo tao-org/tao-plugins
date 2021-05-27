@@ -117,13 +117,29 @@ public class NovaService implements NodeProvider {
 
     @Override
     public List<NodeDescription> listNodes() throws TopologyException {
+        return listNodes(null); // 'null' => throw exception if the floating ip address is missing
+    }
+
+    public List<NodeDescription> listNodes(Boolean addNodeWithoutFloatingIpAddress) {
         checkAuthenticate();
 
-        final List<? extends Server> servers = this.client.compute().servers().list();
+        List<? extends Server> servers = this.client.compute().servers().list();
         List<NodeDescription> remoteNodes = new ArrayList<>();
         if (servers != null) {
             for (Server server : servers) {
-                remoteNodes.add(convert(server));
+                NodeDescription node = convert(server);
+                boolean canAddNode = true;
+                if (node.getId() == null) {
+                    // the node has not assigned a floating ip address
+                    if (addNodeWithoutFloatingIpAddress == null) {
+                        throw new IllegalArgumentException("The Openstack server '" + server.getName()+"' does not contain the floating IP address.");
+                    } else {
+                        canAddNode = addNodeWithoutFloatingIpAddress.booleanValue();
+                    }
+                }
+                if (canAddNode) {
+                    remoteNodes.add(node);
+                }
             }
         }
         return remoteNodes;
@@ -519,7 +535,7 @@ public class NovaService implements NodeProvider {
         return null;
     }
 
-    public static String getServerFloatingIP(Server server) {
+    protected static String getServerFloatingIP(Server server) {
         for (List<? extends Address> addresses : server.getAddresses().getAddresses().values()) {
             for (Address address : addresses) {
                 if (address.getType().equalsIgnoreCase("floating")) {
@@ -527,7 +543,7 @@ public class NovaService implements NodeProvider {
                 }
             }
         }
-        throw new IllegalArgumentException("The Openstack server '" + server.getName()+"' does not contain the floating IP address.");
+        return null;
     }
 
 
