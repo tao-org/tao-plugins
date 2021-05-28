@@ -29,25 +29,29 @@ public class CloudConfigHelper {
         addNewLine(1, "- default");
     }
 
-    public void addDefaultUser(String userName, String groupName) {
+    public void addDefaultUser(String userName, String groupName, String sshPublicKeyContent) {
         addNewLine();
         addNewLine(0, "system_info:");
         addNewLine(1, "default_user:");
         addNewLine(2, "name: " + userName);
         addNewLine(2, "gecos: " + "Default user");
         addNewLine(2, "primary_group: " + groupName);
-        addNewLine(2, "groups: " + "wheel,adm,systemd-journal");
+        //addNewLine(2, "groups: " + "wheel,adm,systemd-journal");
         addNewLine(2, "sudo: " + "[\"ALL=(ALL) NOPASSWD:ALL\"]");
         addNewLine(2, "shell: " + "/bin/bash");
         addNewLine(2, "ssh_pwauth: " + "True");
         addNewLine(2, "lock_passwd: " + "False");
+        if (sshPublicKeyContent != null) {
+            addNewLine(2, "ssh_authorized_keys: ");
+            addNewLine(3, "- " + sshPublicKeyContent);
+        }
     }
 
-    public void addChangeUserPasswords(String username, String password) {
+    public void addChangeUserPasswords(String rootPassword, String username, String password) {
         addNewLine();
         addNewLine(0, "chpasswd:");
         addNewLine(1, "list: |");
-        addNewLine(2, "root" + ":" + "root");
+        addNewLine(2, "root" + ":" + rootPassword);
         addNewLine(2, username + ":" + password);
         addNewLine(1, "expire" + ": " + "False");
     }
