@@ -580,7 +580,7 @@ public class NovaService implements NodeProvider {
     }
 
     public static String buildCloudConfig(String userName, String password, Integer userId, String groupName, Integer groupId,
-                                          boolean permitRootLogin, boolean passwordAuthentication) {
+                                          String sshPublicKeyContent, boolean permitRootLogin, boolean passwordAuthentication) {
 
         List<String> commands = new ArrayList<>();
 
@@ -604,9 +604,9 @@ public class NovaService implements NodeProvider {
 
         CloudConfigHelper cloudConfigHelper = new CloudConfigHelper();
         cloudConfigHelper.addGroupUser(groupName);
-        cloudConfigHelper.addDefaultUser(userName, groupName);
+        cloudConfigHelper.addDefaultUser(userName, groupName, sshPublicKeyContent);
         cloudConfigHelper.addDefaultUserToUsers();
-        cloudConfigHelper.addChangeUserPasswords(userName, password);
+        cloudConfigHelper.addChangeUserPasswords("root", userName, password);
 
 //        cloudConfigHelper.addNoUsers();
 //        cloudConfigHelper.addChangeUserPasswords("root", "root");
