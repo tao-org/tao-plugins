@@ -83,6 +83,7 @@ public class EOCATXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                     this.current.setId(elementValue);
                     this.current.setName(elementValue);
                     this.current.setPixelType(PixelType.UINT16);
+                    this.current.setSensorType(SensorType.UNKNOWN);
                 }
                 break;
             case "beginPosition":

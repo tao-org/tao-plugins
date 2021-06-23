@@ -105,11 +105,15 @@ public class EOCATDownloadStrategy extends DownloadStrategy<Header> {
             connection.setInstanceFollowRedirects(false);
             connection.connect();
             responseStatus = connection.getResponseCode();
-            if (responseStatus == HttpStatus.SC_OK) {
-                return connection;
-            } else {
-                throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
-                        connection.getResponseCode(), connection.getResponseMessage()));
+            switch (responseStatus){
+                case HttpStatus.SC_OK:
+                    return connection;
+                case HttpStatus.SC_ACCEPTED:
+                    throw new QueryException(String.format("The request was successful. response code: %d: The download will be ready soon. Try again later.",
+                            connection.getResponseCode()));
+                default:
+                    throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
+                            connection.getResponseCode(), connection.getResponseMessage()));
             }
         } catch (IOException e) {
             throw new QueryException(String.format("The request was not successful. Reason: %s", e.getMessage()));
