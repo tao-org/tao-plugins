@@ -38,7 +38,8 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-api</artifactId>
-            <version>${geotools.version}</version>
+            <!--<version>${geotools.version}</version>-->
+            <version>20.3</version>
         </dependency>
     </dependencies>
 
