@@ -50,6 +50,7 @@
         <module>tao-docker-console</module>
         <module>tao-integration-sen2agri</module>
         <module>tao-eo-search</module>
+        <module>tao-keycloak</module>
     </modules>
 
     <properties>
