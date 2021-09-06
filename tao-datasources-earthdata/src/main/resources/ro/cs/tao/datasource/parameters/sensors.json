@@ -1,0 +1,154 @@
+{
+  "SMAP-SPL3SMP": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL3SMP_E": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL4SMGP": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-NSIDC-0738": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL1BTB": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL1CTB": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL1CTB_E": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL2SMA": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL2SMAP": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": ""
+  },
+  "SMAP-SPL2SMAP_S": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL2SMP": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL2SMP_E": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL3SMA": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL3SMAP": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL4CMDL": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL4SMAU": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "SMAP-SPL4SMLM": {
+    "mission": "SMAP",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "IceSAT-2-ATL08V3": {
+    "mission": "IceSAT-2",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "IceSAT-2-ATL08V2": {
+    "mission": "IceSAT-2",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "IceSAT-2-ATL13V3": {
+    "mission": "IceSAT-2",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "IceSAT-2-ATL13V2": {
+    "mission": "IceSAT-2",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "GEDI": {
+    "mission": "GEDI",
+    "sensorType": "RADAR",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  }
+}

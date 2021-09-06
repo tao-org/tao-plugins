@@ -25,6 +25,7 @@
         <module>tao-datasources-eocat</module>
         <module>tao-datasources-fedeo</module>
         <module>tao-datasources-localdb</module>
+        <module>tao-datasources-lsa</module>
         <module>tao-datasources-mundi</module>
         <module>tao-datasources-peps</module>
         <module>tao-datasources-scihub</module>

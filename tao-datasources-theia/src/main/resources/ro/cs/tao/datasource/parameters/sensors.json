@@ -1,0 +1,30 @@
+{
+  "Landsat8": {
+    "mission": "Landsat8",
+    "sensorType": "OPTICAL",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "Sentinel2": {
+    "mission": "Sentinel2",
+    "sensorType": "OPTICAL",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "Pleiades": {
+    "mission": "Pleiades",
+    "sensorType": "OPTICAL",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "Venus": {
+    "mission": "Venus",
+    "sensorType": "OPTICAL",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  }
+}
