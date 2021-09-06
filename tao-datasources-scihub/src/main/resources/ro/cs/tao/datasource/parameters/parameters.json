@@ -129,7 +129,7 @@
       "valueSet": null,
       "order": 10
     },
-    "useApihub": {
+    "useApiHub": {
       "name": "useApiHub",
       "remoteName": "",
       "label": null,
@@ -254,7 +254,7 @@
       "valueSet": null,
       "order": 10
     },
-    "useApihub": {
+    "useApiHub": {
       "name": "useApiHub",
       "remoteName": "",
       "label": null,
@@ -389,7 +389,7 @@
       "valueSet": ["L1", "L2"],
       "order": 11
     },
-    "useApihub": {
+    "useApiHub": {
       "name": "useApiHub",
       "remoteName": "",
       "label": null,

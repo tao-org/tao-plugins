@@ -83,8 +83,8 @@ public class SciHubDataQuery extends DataQuery {
         Map<String, String> queries = buildQueriesParams();
         final boolean isS2 = "Sentinel-2".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
         final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
-        final boolean useApiHub = this.parameters.containsKey("useApihub") ?
-                Boolean.parseBoolean(this.parameters.get("useApihub").getValueAsString()) : this.source.useAlternateConnectionString();
+        final boolean useApiHub = this.parameters.containsKey("useApiHub") ?
+                Boolean.parseBoolean(this.parameters.get("useApiHub").getValueAsString()) : this.source.useAlternateConnectionString();
         StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
         for (String queryId : queries.keySet()) {

@@ -1,10 +1,10 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 LABEL maintainer="tao@c-s.ro" \
-       description="Prepare a SNAP 7.0 EO processing environment with commonly used tools."
+       description="Prepare a SNAP 8.0 EO processing environment with commonly used tools."
 
 # Environment
-ENV SNAP_VERSION	7.0
+ENV SNAP_VERSION	8.0
 ENV DEBIAN_FRONTEND noninteractive
 #ENV JAVA_HOME       /usr/lib/jvm/java-8-oracle
 #ENV LANG            en_US.UTF-8
@@ -30,15 +30,15 @@ RUN apt install wget -y
 #apt-get clean all
 
 # Install SNAP 6.0
-RUN wget http://step.esa.int/downloads/7.0/installers/esa-snap_sentinel_unix_7_0.sh && \
-     chmod +x esa-snap_sentinel_unix_7_0.sh && \
-     ./esa-snap_sentinel_unix_7_0.sh -q && \
+RUN wget http://step.esa.int/downloads/8.0/installers/esa-snap_sentinel_unix_8_0.sh && \
+     chmod +x esa-snap_sentinel_unix_8_0.sh && \
+     ./esa-snap_sentinel_unix_8_0.sh -q && \
      ### update snap
      #snap --nosplash --nogui --modules --update-all
-     rm -f esa-snap_sentinel_unix_7_0.sh
+     rm -f esa-snap_sentinel_unix_8_0.sh
 
 # Install additional tools
-RUN apt -y install gdal-bin python-gdal python3-gdal
+#RUN apt -y install gdal-bin python-gdal python3-gdal
 
 #ENV LD_LIBRARY_PATH=/usr/lib/jvm/java-8-oracle/lib/
 ENV LD_LIBRARY_PATH=/opt/snap/jre/lib/

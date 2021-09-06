@@ -1,0 +1,149 @@
+{
+  "Landsat8": {
+    "mission": "Landsat8",
+    "sensorType": "OPTICAL",
+    "description": "",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "ECOSTRESS-LTSE": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "Land Surface Temperature and Emissivity",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "ECOSTRESS-L1BRAD": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "Radiance",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "ECOSTRESS-L1BMAPRAD": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "Projected Radiance",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "ECOSTRESS-CLOUD": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "Cloud Mask",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "ECOSTRESS-ESI": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "Evaporative Stress Index",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "ECOSTRESS-WUE": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "Water Use Efficiency",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "Hyperion": {
+    "mission": "Hyperion",
+    "sensorType": "OPTICAL",
+    "description": "Hyperspectral imagery",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "MODIS-VI1": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "Vegetation Indices 1",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "MODIS-VI2": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "Vegetation Indices 2",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "MODIS-VI3": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "Vegetation Indices 3",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "VIIRS": {
+    "mission": "SNPP",
+    "sensorType": "OPTICAL",
+    "description": "Aerosols (Aerosol optical thickness, Aerosol particle size parameter, Suspended matter), Imagery and Clouds (Imagery, Cloud mask, Cloud optical thickness, Cloud effective particle size parameter, Cloud top parameters, Cloud base height, Cloud cover/layers), Land (Active Fires, Land surface Albedo, Land surface temperature, Ice surface temperature, Snow ice characterization, Snow cover/depth, Vegetation index, Surface type), Ocean (Sea surface temperature, Ocean color)",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "MODIS-LAI-8": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "Leaf Area Index 8-days",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "MODIS-LAI-4": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "Leaf Area Index 4-days",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "MODIS-LTSE-1": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "Daily Land Surface Temperature and Emissivity Daily",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "MODIS-LTSE-8": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "Daily Land Surface Temperature and Emissivity 8 Day Average",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "MODIS-VI-16-500": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "Vegetation Indices 16-Day Average at 500m",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "MODIS-VI-16-250": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "Vegetation Indices 16-Day Average at 250m",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "MODIS-BURN-M": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "Burned Area Monthly Average",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "MODIS-FIRE-8": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "Fire Products 8-day Average",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  },
+  "MODIS-FIRE-1": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "Fire Products Daily",
+    "temporalCoverage": "",
+    "spatialCoverage": ""
+  }
+}
