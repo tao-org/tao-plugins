@@ -3,21 +3,21 @@
     "mission": "Sentinel1",
     "sensorType": "RADAR",
     "description": "NASA’s provision of the complete ESA Sentinel-1 synthetic aperture radar (SAR) data archive through the ASF DAAC is by agreement between the U.S. State Department and the European Commission (EC)",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "temporalCoverage": "2014-10-04 - now",
+    "spatialCoverage": "Global"
   },
   "ALOS": {
     "mission": "ALOS",
     "sensorType": "RADAR",
     "description": "ALOS/PALSAR/AVNIR-2 and ALOS-2 ScanSARdata products provided by JAXA",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "temporalCoverage": "2006 - 2011",
+    "spatialCoverage": "The Americas, Antarctica, and select global sites"
   },
   "SMAP": {
     "mission": "SMAP",
     "sensorType": "RADAR",
     "description": "Provides global measurements of soil moisture and its freeze-thaw state. SMAP measures the amount of water in the top 5 cm (2 inches) of soil everywhere on the Earth’s surface every three days",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "temporalCoverage": "2015-04-15 - 2015-07-07",
+    "spatialCoverage": "Global"
   }
 }
