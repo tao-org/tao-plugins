@@ -2,29 +2,29 @@
   "Landsat8": {
     "mission": "Landsat8",
     "sensorType": "OPTICAL",
-    "description": "",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "Landsat 8 measurements directly serve NASA research in the focus areas of climate, carbon cycle, ecosystems, water cycle, biogeochemistry, and Earth surface/interior.",
+    "temporalCoverage": "2017-03 - now",
+    "spatialCoverage": "France"
   },
   "Sentinel2": {
     "mission": "Sentinel2",
     "sensorType": "OPTICAL",
-    "description": "",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The Sentinel-2 mission systematically acquires data over land and coastal areas in a band of latitude extending from 56° South (Isla Hornos, Cape Horn, South America) to 84° North (above Greenland).",
+    "temporalCoverage": "2005 - now",
+    "spatialCoverage": "France and others zones in the world"
   },
   "Pleiades": {
     "mission": "Pleiades",
     "sensorType": "OPTICAL",
-    "description": "",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "Pleaides Satellite. Pléiades is an environment-focused constellation (consisting of two satellites, referred to as 1A and 1B) from CNES of France, which were launched on 17 December 2011 (Pleiades 1A) and 2 December 2012 (Pleiades 1B).",
+    "temporalCoverage": "2012 -2014",
+    "spatialCoverage": "Fracce"
   },
   "Venus": {
     "mission": "Venus",
     "sensorType": "OPTICAL",
-    "description": "",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "Vegetation and Environment monitoring on a New Micro-Satellite is a near polar sun-synchronous orbit microsatellite. It is a joint project of the Israeli Space Agency and CNES.",
+    "temporalCoverage": "2017 - now",
+    "spatialCoverage": "110 sites"
   }
 }
