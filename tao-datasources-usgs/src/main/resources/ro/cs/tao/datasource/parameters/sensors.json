@@ -2,148 +2,148 @@
   "Landsat8": {
     "mission": "Landsat8",
     "sensorType": "OPTICAL",
-    "description": "",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "Landsat 8 measurements directly serve NASA research in the focus areas of climate, carbon cycle, ecosystems, water cycle, biogeochemistry, and Earth surface/interior.",
+    "temporalCoverage": "2020-09-21 - now",
+    "spatialCoverage": "Global"
   },
   "ECOSTRESS-LTSE": {
     "mission": "ECOSTRESS",
     "sensorType": "OPTICAL",
-    "description": "Land Surface Temperature and Emissivity",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The ECO2LSTE data product provides atmospherically corrected land surface temperature and emissivity (LST&E) values derived from five thermal infrared (TIR) bands.",
+    "temporalCoverage": "2020-10-01 - now",
+    "spatialCoverage": "Global"
   },
   "ECOSTRESS-L1BRAD": {
     "mission": "ECOSTRESS",
     "sensorType": "OPTICAL",
-    "description": "Radiance",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The ECO1BRAD data product contains layers of radiance values for the five TIR bands, DN values for the SWIR band, associated data quality indicators, and ancillary data.",
+    "temporalCoverage": "2020-09-21 - now",
+    "spatialCoverage": "Global"
   },
   "ECOSTRESS-L1BMAPRAD": {
     "mission": "ECOSTRESS",
     "sensorType": "OPTICAL",
-    "description": "Projected Radiance",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The ECO1BMAPRAD 1 data product contains data layers including the radiance values for the five thermal infrared (TIR) bands, digital number (DN) values for the shortwave infrared (SWIR) band, associated data quality indicators, latitude and longitude values, solar and view geometry information, and surface height.",
+    "temporalCoverage": "2020-09-21 - now",
+    "spatialCoverage": "Global"
   },
   "ECOSTRESS-CLOUD": {
     "mission": "ECOSTRESS",
     "sensorType": "OPTICAL",
-    "description": "Cloud Mask",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The ECO2CLD data product provides a cloud mask that can be used to determine cloud cover for the ECO1BRAD, ECO2LSTE, ECO3ETPTJPL, ECO4ESIPTJPL, and ECO4WUE data products.",
+    "temporalCoverage": "2020-09-21 - now",
+    "spatialCoverage": "Global"
   },
   "ECOSTRESS-ESI": {
     "mission": "ECOSTRESS",
     "sensorType": "OPTICAL",
-    "description": "Evaporative Stress Index",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The ECO4ESIPTJPL data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm.",
+    "temporalCoverage": "2020-09-21 - now",
+    "spatialCoverage": "Global"
   },
   "ECOSTRESS-WUE": {
     "mission": "ECOSTRESS",
     "sensorType": "OPTICAL",
-    "description": "Water Use Efficiency",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The ECO4WUE Data product provides Water Use Efficiency (WUE) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm described in the ECOSTRESS Level 4 WUE Algorithm Theoretical Basis Document (ATBD). WUE is the ratio of carbon stored by plants to water evaporated by plants.",
+    "temporalCoverage": "2020-09-21 - now",
+    "spatialCoverage": "Global"
   },
   "Hyperion": {
     "mission": "Hyperion",
     "sensorType": "OPTICAL",
-    "description": "Hyperspectral imagery",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "Hyperion collects 220 unique spectral channels ranging from 0.357 to 2.576 micrometers with a 10-nm bandwidth. The instrument operates in a pushbroom fashion, with a spatial resolution of 30 meters for all bands.",
+    "temporalCoverage": "2002-05-07 - 2017-03-12",
+    "spatialCoverage": "Global"
   },
   "MODIS-VI1": {
     "mission": "MODIS",
     "sensorType": "OPTICAL",
-    "description": "Vegetation Indices 1",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The MOD13A1 Version 6 product provides Vegetation Index (VI) values at a per pixel basis at 500 meter (m) spatial resolution.",
+    "temporalCoverage": "2015-12-08 - now",
+    "spatialCoverage": "Global"
   },
   "MODIS-VI2": {
     "mission": "MODIS",
     "sensorType": "OPTICAL",
-    "description": "Vegetation Indices 2",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The MOD13A2 Version 6 product provides Vegetation Index (VI) values at a per pixel basis at 1 kilometer (km) spatial resolution.",
+    "temporalCoverage": "2015-12-08 - now",
+    "spatialCoverage": "Global"
   },
   "MODIS-VI3": {
     "mission": "MODIS",
     "sensorType": "OPTICAL",
-    "description": "Vegetation Indices 3",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The Terra Moderate Resolution Imaging Spectroradiometer (MODIS) Vegetation Indices (MOD13A3) Version 6 data are provided monthly at 1 kilometer (km) spatial resolution as a gridded Level 3 product in the sinusoidal projection.",
+    "temporalCoverage": "2015-12-05 - now",
+    "spatialCoverage": "Global"
   },
   "VIIRS": {
     "mission": "SNPP",
     "sensorType": "OPTICAL",
-    "description": "Aerosols (Aerosol optical thickness, Aerosol particle size parameter, Suspended matter), Imagery and Clouds (Imagery, Cloud mask, Cloud optical thickness, Cloud effective particle size parameter, Cloud top parameters, Cloud base height, Cloud cover/layers), Land (Active Fires, Land surface Albedo, Land surface temperature, Ice surface temperature, Snow ice characterization, Snow cover/depth, Vegetation index, Surface type), Ocean (Sea surface temperature, Ocean color)",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The Visible Infrared Imaging Radiometer Suite (VIIRS) daily surface reflectance (VNP09GA) Version 1 product provides an estimate of land surface reflectance from the Suomi National Polar-Orbiting Partnership (Suomi NPP) VIIRS sensor.",
+    "temporalCoverage": "2017-06-14 - now",
+    "spatialCoverage": "Global"
   },
   "MODIS-LAI-8": {
     "mission": "MODIS",
     "sensorType": "OPTICAL",
-    "description": "Leaf Area Index 8-days",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The MCD15A2H Version 6 Moderate Resolution Imaging Spectroradiometer (MODIS) Level 4, Combined Fraction of Photosynthetically Active Radiation (FPAR), and Leaf Area Index (LAI) product is an 8-day composite dataset with 500 meter pixel size.",
+    "temporalCoverage": "2015-12-23 - now",
+    "spatialCoverage": "Global"
   },
   "MODIS-LAI-4": {
     "mission": "MODIS",
     "sensorType": "OPTICAL",
-    "description": "Leaf Area Index 4-days",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The MCD15A3H Version 6 Moderate Resolution Imaging Spectroradiometer (MODIS) Level 4, Combined Fraction of Photosynthetically Active Radiation (FPAR), and Leaf Area Index (LAI) product is a 4-day composite data set with 500 meter pixel size.",
+    "temporalCoverage": "2015-12-19 - now",
+    "spatialCoverage": "Global"
   },
   "MODIS-LTSE-1": {
     "mission": "MODIS",
     "sensorType": "OPTICAL",
-    "description": "Daily Land Surface Temperature and Emissivity Daily",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The MOD11C1 Version 6 product provides daily Land Surface Temperature and Emissivity (LST&E) values in a 0.05 degree (5,600 meters at the equator) latitude/longitude Climate Modeling Grid (CMG).",
+    "temporalCoverage": "2015-11-12 - now",
+    "spatialCoverage": "Global"
   },
   "MODIS-LTSE-8": {
     "mission": "MODIS",
     "sensorType": "OPTICAL",
-    "description": "Daily Land Surface Temperature and Emissivity 8 Day Average",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The MOD11C2 Version 6 product provides Land Surface Temperature and Emissivity (LST&E) values in a 0.05 degree (5,600 meters at the equator) latitude/longitude Climate Modeling Grid (CMG).",
+    "temporalCoverage": "2015-11-12 - now",
+    "spatialCoverage": "Global"
   },
   "MODIS-VI-16-500": {
     "mission": "MODIS",
     "sensorType": "OPTICAL",
-    "description": "Vegetation Indices 16-Day Average at 500m",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The MOD13A1 Version 6 product provides Vegetation Index (VI) values at a per pixel basis at 500 meter (m) spatial resolution.",
+    "temporalCoverage": "2015-12-08 - now",
+    "spatialCoverage": "Global"
   },
   "MODIS-VI-16-250": {
     "mission": "MODIS",
     "sensorType": "OPTICAL",
-    "description": "Vegetation Indices 16-Day Average at 250m",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The Terra Moderate Resolution Imaging Spectroradiometer (MODIS) Vegetation Indices (MOD13Q1) Version 6 data are generated every 16 days at 250 meter (m) spatial resolution as a Level 3 product.",
+    "temporalCoverage": "2015-12-08 - now",
+    "spatialCoverage": "Global"
   },
   "MODIS-BURN-M": {
     "mission": "MODIS",
     "sensorType": "OPTICAL",
-    "description": "Burned Area Monthly Average",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The Terra and Aqua combined MCD64A1 Version 6 Burned Area data product is a monthly, global gridded 500 meter (m) product containing per-pixel burned-area and quality information.",
+    "temporalCoverage": "2017-05-16 - now",
+    "spatialCoverage": "Global"
   },
   "MODIS-FIRE-8": {
     "mission": "MODIS",
     "sensorType": "OPTICAL",
-    "description": "Fire Products 8-day Average",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The Terra Moderate Resolution Imaging Spectroradiometer (MODIS) Thermal Anomalies and Fire 8-Day (MOD14A2) Version 6 data are generated at 1 kilometer (km) spatial resolultion as a Level 3 product.",
+    "temporalCoverage": "2016-01-22 - now",
+    "spatialCoverage": "Global"
   },
   "MODIS-FIRE-1": {
     "mission": "MODIS",
     "sensorType": "OPTICAL",
-    "description": "Fire Products Daily",
-    "temporalCoverage": "",
-    "spatialCoverage": ""
+    "description": "The Aqua Moderate Resolution Imaging Spectroradiometer (MODIS) Thermal Anomalies and Fire Daily (MYD14A1) Version 6 data are generated every eight days at 1 kilometer (km) spatial resolultion as a Level 3 product.",
+    "temporalCoverage": "2016-01-23 - now",
+    "spatialCoverage": "Global"
   }
 }
