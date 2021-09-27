@@ -435,133 +435,133 @@
   },
   "ERS-1 (CEDA-CCI)": {
     "mission": "ERS-1 (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The ERS-1 satellite launched on 17 July 1991 and carried a Synthetic Aperture Radar (SAR). It operated in parallel with another instrument – the Wind Scatterometer (WS). The ERS-1 mission ended on 10 March 2000, far exceeding its expected lifespan.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ERS-1 (IMM)": {
     "mission": "ERS-1 (IMM)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The ERS-1 satellite launched on 17 July 1991 and carried a Synthetic Aperture Radar (SAR). It operated in parallel with another instrument – the Wind Scatterometer (WS). The ERS-1 mission ended on 10 March 2000, far exceeding its expected lifespan.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ERS-1 (NASA_CMR)": {
     "mission": "ERS-1 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The ERS-1 satellite launched on 17 July 1991 and carried a Synthetic Aperture Radar (SAR). It operated in parallel with another instrument – the Wind Scatterometer (WS). The ERS-1 mission ended on 10 March 2000, far exceeding its expected lifespan.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ERS-1 (no_named_collections_set_1)": {
     "mission": "ERS-1 (no_named_collections_set_1)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The ERS-1 satellite launched on 17 July 1991 and carried a Synthetic Aperture Radar (SAR). It operated in parallel with another instrument – the Wind Scatterometer (WS). The ERS-1 mission ended on 10 March 2000, far exceeding its expected lifespan.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ERS-1 (OPS)": {
     "mission": "ERS-1 (OPS)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The ERS-1 satellite launched on 17 July 1991 and carried a Synthetic Aperture Radar (SAR). It operated in parallel with another instrument – the Wind Scatterometer (WS). The ERS-1 mission ended on 10 March 2000, far exceeding its expected lifespan.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ERS-1 (SAR)": {
     "mission": "ERS-1 (SAR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The ERS-1 satellite launched on 17 July 1991 and carried a Synthetic Aperture Radar (SAR). It operated in parallel with another instrument – the Wind Scatterometer (WS). The ERS-1 mission ended on 10 March 2000, far exceeding its expected lifespan.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ERS-2 (CEDA-CCI)": {
     "mission": "ERS-2 (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The ERS-2 Satellite launched on 21 April 1995, providing continuity for ERS-1, carrying a Synthetic Aperture Radar (SAR). The last ERS-2 SAR data was acquired on 4 July 2011 and the ERS-2 mission itself ended on 5 September 2011.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ERS-2 (EOP)": {
     "mission": "ERS-2 (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The ERS-2 Satellite launched on 21 April 1995, providing continuity for ERS-1, carrying a Synthetic Aperture Radar (SAR). The last ERS-2 SAR data was acquired on 4 July 2011 and the ERS-2 mission itself ended on 5 September 2011.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ERS-2 (IMM)": {
     "mission": "ERS-2 (IMM)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The ERS-2 Satellite launched on 21 April 1995, providing continuity for ERS-1, carrying a Synthetic Aperture Radar (SAR). The last ERS-2 SAR data was acquired on 4 July 2011 and the ERS-2 mission itself ended on 5 September 2011.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ERS-2 (NASA_CMR)": {
     "mission": "ERS-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The ERS-2 Satellite launched on 21 April 1995, providing continuity for ERS-1, carrying a Synthetic Aperture Radar (SAR). The last ERS-2 SAR data was acquired on 4 July 2011 and the ERS-2 mission itself ended on 5 September 2011.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ERS-2 (SAR)": {
     "mission": "ERS-2 (SAR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The ERS-2 Satellite launched on 21 April 1995, providing continuity for ERS-1, carrying a Synthetic Aperture Radar (SAR). The last ERS-2 SAR data was acquired on 4 July 2011 and the ERS-2 mission itself ended on 5 September 2011.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "FireBIRD (EOWEB)": {
     "mission": "FireBIRD (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "FIREBIRD (Focused Investigations of Relativistic Electron Burst Intensity, Range, and Dynamics) is a CubeSat dual satellite mission examining the spatial scale and spatial temporal ambiguity of magnetospheric microbursts. The project is a three-year cross-disciplinary team collaboration between researchers at the University of New Hampshire, Montana State University, Los Alamos National Laboratory, and the Aerospace Corporation.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "FORMOSAT-2 (EOP)": {
     "mission": "FORMOSAT-2 (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "ROCSat-2 is an NSPO (National Space Program Office) of Taiwan Earth imaging satellite with the objective to collect high-resolution panchromatic (2 m) and multispectral (8 m) imagery for a great variety of applications such as in land use, agriculture and forestry, environmental monitoring, natural disaster evaluation, and in support of research interests, in particular with the ISUAL instrument.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "FY-3B (NASA_CMR)": {
     "mission": "FY-3B (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The FY-3 series of CMA/NSMC (China Meteorological Administration/National Satellite Meteorological Center) represents the second generation of Chinese polar-orbiting meteorological satellites (follow-on of FY-1 series).",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GALILEO (NASA_CMR)": {
     "mission": "GALILEO (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Galileo is a global navigation satellite system (GNSS) that went live in 2016. One of the aims of Galileo is to provide an independent high-precision positioning system so European nations do not have to rely on the US GPS, or the Russian GLONASS systems, which could be disabled or degraded by their operators at any time.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GCOM-W1 (CEDA-CCI)": {
     "mission": "GCOM-W1 (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GCOM-W1 (Global Change Observation Mission-Water), a Japanese satellite, was launched from Tanegashima on 17 May 2012",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GCOM-W1 (JAXA_CATS-I)": {
     "mission": "GCOM-W1 (JAXA_CATS-I)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GCOM-W1 (Global Change Observation Mission-Water), a Japanese satellite, was launched from Tanegashima on 17 May 2012",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GCOM-W1 (NASA_CMR)": {
     "mission": "GCOM-W1 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GCOM-W1 (Global Change Observation Mission-Water), a Japanese satellite, was launched from Tanegashima on 17 May 2012",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GCOM-W1 (NASA_CWIC)": {
     "mission": "GCOM-W1 (NASA_CWIC)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GCOM-W1 (Global Change Observation Mission-Water), a Japanese satellite, was launched from Tanegashima on 17 May 2012",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
@@ -582,1911 +582,1911 @@
   },
   "GMS-1 (NASA_CMR)": {
     "mission": "GMS-1 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Geostationary Meteorological Satellite (GMS) was Japan's contribution to the international GARP (Global Atmospheric Research Program). One major objective of GARP was to obtain synoptic global meteorological data sets for 1 year's duration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GMS-2 (NASA_CMR)": {
     "mission": "GMS-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Geostationary Meteorological Satellite (GMS) was Japan's contribution to the international GARP (Global Atmospheric Research Program). One major objective of GARP was to obtain synoptic global meteorological data sets for 1 year's duration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GMS-3 (NASA_CMR)": {
     "mission": "GMS-3 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Geostationary Meteorological Satellite (GMS) was Japan's contribution to the international GARP (Global Atmospheric Research Program). One major objective of GARP was to obtain synoptic global meteorological data sets for 1 year's duration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GMS-4 (NASA_CMR)": {
     "mission": "GMS-4 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Geostationary Meteorological Satellite (GMS) was Japan's contribution to the international GARP (Global Atmospheric Research Program). One major objective of GARP was to obtain synoptic global meteorological data sets for 1 year's duration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GMS-5 (NASA_CMR)": {
     "mission": "GMS-5 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Geostationary Meteorological Satellite (GMS) was Japan's contribution to the international GARP (Global Atmospheric Research Program). One major objective of GARP was to obtain synoptic global meteorological data sets for 1 year's duration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOCE (NASA_CMR)": {
     "mission": "GOCE (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Gravity Field and Steady-State Ocean Circulation Explorer is measuring Earth's gravity field and model the geoid with extremely high accuracy. It was launched on 17 March 2009. The mission ended on 11 November 2013 after a planned destructive re-entry into the atmosphere.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOES-10 (NASA_CMR)": {
     "mission": "GOES-10 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GOES-10, known as GOES-K before becoming operational, was an American weather satellite, which formed part of the US National Oceanic and Atmospheric Administration's Geostationary Operational Environmental Satellite system.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOES-11 (NASA_CMR)": {
     "mission": "GOES-11 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GOES-11, known as GOES-L before becoming operational, is an American weather satellite, which is part of the US National Oceanic and Atmospheric Administration's Geostationary Operational Environmental Satellite system. It was launched in 2000, and operated at the GOES-WEST position, providing coverage of the west coast of the United States, until December 6, 2011.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOES-12 (NASA_CMR)": {
     "mission": "GOES-12 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GOES-12, known as GOES-M before becoming operational, is an American weather satellite, which is part of the US National Oceanic and Atmospheric Administration's Geostationary Operational Environmental Satellite system.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOES-13 (NASA_CMR)": {
     "mission": "GOES-13 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "EWS-G1 is a weather satellite of the U.S. Space Force, formerly GOES-13 and part of the National Oceanic and Atmospheric Administration's Geostationary Operational Environmental Satellite system. On 14 April 2010, GOES-13 became the operational weather satellite for GOES-East.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOES-14 (NASA_CMR)": {
     "mission": "GOES-14 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GOES-14, known as GOES-O prior to reaching its operational orbit, is an American weather satellite, which is part of the US National Oceanic and Atmospheric Administration's Geostationary Operational Environmental Satellite system.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOES-15 (NASA_CMR)": {
     "mission": "GOES-15 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GOES-15, previously known as GOES-P, is an American weather satellite, which forms part of the Geostationary Operational Environmental Satellite system operated by the U.S. National Oceanic and Atmospheric Administration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOES-5 (NASA_CMR)": {
     "mission": "GOES-5 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GOES-5, known as GOES-E before becoming operational, was a geostationary weather satellite which was operated by the United States National Oceanic and Atmospheric Administration as part of the Geostationary Operational Environmental Satellite system.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOES-6 (NASA_CMR)": {
     "mission": "GOES-6 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GOES-6 was a geostationary weather satellite which was operated by the United States National Oceanic and Atmospheric Administration as part of the Geostationary Operational Environmental Satellite system.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOES-7 (NASA_CMR)": {
     "mission": "GOES-7 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GOES-7, known as GOES-H before becoming operational, is an American satellite. It was originally built as a weather satellite, and formed part of the US National Oceanic and Atmospheric Administration's Geostationary Operational Environmental Satellite system.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOES-7 (NASA_CWIC)": {
     "mission": "GOES-7 (NASA_CWIC)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GOES-7, known as GOES-H before becoming operational, is an American satellite. It was originally built as a weather satellite, and formed part of the US National Oceanic and Atmospheric Administration's Geostationary Operational Environmental Satellite system.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOES-8 (NASA_CMR)": {
     "mission": "GOES-8 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GOES-8, known as GOES-I before becoming operational, was an American weather satellite, which formed part of the US National Oceanic and Atmospheric Administration's Geostationary Operational Environmental Satellite system.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOES-9 (NASA_CMR)": {
     "mission": "GOES-9 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "GOES-9, known as GOES-J before becoming operational, was an American weather satellite, which formed part of the U.S. National Oceanic and Atmospheric Administration's Geostationary Operational Environmental Satellite system.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOSAT (CEDA-CCI)": {
     "mission": "GOSAT (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Greenhouse Gases Observing Satellite, also known as Ibuki, is an Earth observation satellite and the world's first satellite dedicated to greenhouse gas monitoring. It measures the densities of carbon dioxide and methane from 56,000 locations on the Earth's atmosphere.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GOSAT (NASA_CMR)": {
     "mission": "GOSAT (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Greenhouse Gases Observing Satellite, also known as Ibuki, is an Earth observation satellite and the world's first satellite dedicated to greenhouse gas monitoring. It measures the densities of carbon dioxide and methane from 56,000 locations on the Earth's atmosphere.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GPM (JAXA_CATS-I)": {
     "mission": "GPM (JAXA_CATS-I)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Global Precipitation Measurement (GPM) mission is an international network of satellites that provide next-generation global observations of rain and snow. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GPM (NASA_CMR)": {
     "mission": "GPM (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Global Precipitation Measurement (GPM) mission is an international network of satellites that provide next-generation global observations of rain and snow. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "GRACE (NASA_CMR)": {
     "mission": "GRACE (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Gravity Recovery and Climate Experiment was a joint mission of NASA and the German Aerospace Center. Twin satellites took detailed measurements of Earth's gravity field anomalies from its launch in March 2002 to the end of its science mission in October 2017.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ICEYE (NASA_CMR)": {
     "mission": "ICEYE (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The ICEYE Satellite Constellation is capable of imaging any location on Earth, day and night, regardless of cloud cover.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IKONOS (EOP)": {
     "mission": "IKONOS (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IKONOS was a commercial Earth observation satellite, and was the first to collect publicly available high-resolution imagery at 1- and 4-meter resolution. It collected multispectral and panchromatic imagery.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IKONOS (ESA)": {
     "mission": "IKONOS (ESA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IKONOS was a commercial Earth observation satellite, and was the first to collect publicly available high-resolution imagery at 1- and 4-meter resolution. It collected multispectral and panchromatic imagery.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IKONOS (NASA_CMR)": {
     "mission": "IKONOS (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IKONOS was a commercial Earth observation satellite, and was the first to collect publicly available high-resolution imagery at 1- and 4-meter resolution. It collected multispectral and panchromatic imagery.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IKONOS-2 (ESA)": {
     "mission": "IKONOS-2 (ESA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Ikonos-2 is a commercial high-resolution imaging satellite of DigitalGlobe, Longmont, CO, USA, providing high-resolution imagery on a commercial basis. With Ikonos-2, a new era of 1 m spatial resolution imagery began for spaceborne instruments in the field of civil Earth observation.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS (EOWEB)": {
     "mission": "IRS (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS is the integrated Low Earth Orbit element of India's NNRMS (National Natural Resources Management System) with the objective to provide a long-term spaceborne operational capability to India for the observation and management of the country's natural resources.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS (Image2006)": {
     "mission": "IRS (Image2006)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS is the integrated Low Earth Orbit element of India's NNRMS (National Natural Resources Management System) with the objective to provide a long-term spaceborne operational capability to India for the observation and management of the country's natural resources.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS (IRS-1)": {
     "mission": "IRS (IRS-1)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS is the integrated Low Earth Orbit element of India's NNRMS (National Natural Resources Management System) with the objective to provide a long-term spaceborne operational capability to India for the observation and management of the country's natural resources.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS-1C (EOWEB)": {
     "mission": "IRS-1C (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS-1C was an Earth-imaging satellite from the Indian Space Research Organisation (ISRO) which launched on 28 December 1995 and ceased operations in 2007.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS-1C (IRS-1)": {
     "mission": "IRS-1C (IRS-1)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS-1C was an Earth-imaging satellite from the Indian Space Research Organisation (ISRO) which launched on 28 December 1995 and ceased operations in 2007.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS-1C (NASA_CMR)": {
     "mission": "IRS-1C (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS-1C was an Earth-imaging satellite from the Indian Space Research Organisation (ISRO) which launched on 28 December 1995 and ceased operations in 2007.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS-1D (EOWEB)": {
     "mission": "IRS-1D (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS-1D was an Earth-imaging satellite from the Indian Space Research Organisation (ISRO) which launched on 29 September 1997 and ceased operations in 2010.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS-1D (IRS-1)": {
     "mission": "IRS-1D (IRS-1)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS-1D was an Earth-imaging satellite from the Indian Space Research Organisation (ISRO) which launched on 29 September 1997 and ceased operations in 2010.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS-1D (NASA_CMR)": {
     "mission": "IRS-1D (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS-1D was an Earth-imaging satellite from the Indian Space Research Organisation (ISRO) which launched on 29 September 1997 and ceased operations in 2010.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS-P5 (EOWEB)": {
     "mission": "IRS-P5 (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS-P5 (also known as Cartosat-1) is an Indian Earth-imaging satellite which launched on 5 May 2005 and remains operational. It is operated by the Indian Space Research Organisation (ISRO) and its applications are focused on mapping India.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS-P5 (NASA_CMR)": {
     "mission": "IRS-P5 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS-P5 (also known as Cartosat-1) is an Indian Earth-imaging satellite which launched on 5 May 2005 and remains operational. It is operated by the Indian Space Research Organisation (ISRO) and its applications are focused on mapping India.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS-P6 (EOWEB)": {
     "mission": "IRS-P6 (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS-P6 is an Earth observation mission within the IRS (Indian Remote-Sensing Satellite) series of ISRO (Indian Space Research Organization), Bangalore, India. The overall objectives of the IRS-P6 mission (ResourceSat-1) are to provide continued remote sensing data services on an operational basis for integrated land and water resources management. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS-P6 (Image2006)": {
     "mission": "IRS-P6 (Image2006)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS-P6 is an Earth observation mission within the IRS (Indian Remote-Sensing Satellite) series of ISRO (Indian Space Research Organization), Bangalore, India. The overall objectives of the IRS-P6 mission (ResourceSat-1) are to provide continued remote sensing data services on an operational basis for integrated land and water resources management. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS-P6 (NASA_CMR)": {
     "mission": "IRS-P6 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS-P6 is an Earth observation mission within the IRS (Indian Remote-Sensing Satellite) series of ISRO (Indian Space Research Organization), Bangalore, India. The overall objectives of the IRS-P6 mission (ResourceSat-1) are to provide continued remote sensing data services on an operational basis for integrated land and water resources management. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "IRS-R2 (EOWEB)": {
     "mission": "IRS-R2 (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "IRS-R2 (ResourceSat-2) is an environmental satellite from the Indian Space Research Organisation (ISRO) which launched on 20 April 2011 and remains operational.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ISS (EOWEB)": {
     "mission": "ISS (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The International Space Station is a modular space station in low Earth orbit. It is a multinational collaborative project involving five participating space agencies: NASA, Roscosmos, JAXA, ESA, and CSA.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ISS (NASA_CMR)": {
     "mission": "ISS (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The International Space Station is a modular space station in low Earth orbit. It is a multinational collaborative project involving five participating space agencies: NASA, Roscosmos, JAXA, ESA, and CSA.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Jason-1 (CEDA-CCI)": {
     "mission": "Jason-1 (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Jason-1 Earth satellite mapped sea level, wind speed and wave height for more than 95 percent of Earth's ice-free ocean, provided new insights into ocean circulation, tracked our rising seas and enabled more accurate weather, ocean and climate forecasts. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Jason-1 (NASA_CMR)": {
     "mission": "Jason-1 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Jason-1 Earth satellite mapped sea level, wind speed and wave height for more than 95 percent of Earth's ice-free ocean, provided new insights into ocean circulation, tracked our rising seas and enabled more accurate weather, ocean and climate forecasts. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Jason-2 (NASA_CMR)": {
     "mission": "Jason-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Jason 2 was an Earth satellite designed to make observations of ocean topography for investigations into sea-level rise and the relationship between ocean circulation and climate change. The satellite also provided data on the forces behind such large-scale climate phenomena as El Niño and La Niña.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "JERS-1 (NASA_CMR)": {
     "mission": "JERS-1 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Jason 2 was an Earth satellite designed to make observations of ocean topography for investigations into sea-level rise and the relationship between ocean circulation and climate change. The satellite also provided data on the forces behind such large-scale climate phenomena as El Niño and La Niña.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "JERS-1 (OPS)": {
     "mission": "JERS-1 (OPS)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Jason 2 was an Earth satellite designed to make observations of ocean topography for investigations into sea-level rise and the relationship between ocean circulation and climate change. The satellite also provided data on the forces behind such large-scale climate phenomena as El Niño and La Niña.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "JERS-1 (SAR)": {
     "mission": "JERS-1 (SAR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The JERS-1 Optical System (OPS) has a temporal extent from 13.08.1992 to 08.10.1998. The products provide information about the state of the vegetation, glaciers/ice sheets and about oceans (namely, ocean waves).",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "KANOPUS_V1 (EOP)": {
     "mission": "KANOPUS_V1 (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Kanopus-V is an Earth observation minisatellite mission of the Russian Space Agency, Roskosmos and ROSHYDROMET/Planeta. The overall objective is to monitor Earth's surface, the atmosphere, ionosphere, and magnetosphere to detect and study the probability of strong earthquake occurrence. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "KOMPSAT-2 (ESA)": {
     "mission": "KOMPSAT-2 (ESA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "KOMPSAT-2 (also referred to as Arirang-2 by South Korea) was developed by KARI (Korea Aerospace Research Institute) to continue the observation program of the KOMPSAT-1 mission. The main mission objectives of the KOMPSAT-2 are to provide a surveillance capability for large-scale disasters by acquiring high-resolution imagery for GIS (Geographic Information Systems) applications.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "KOMPSAT-2 (NASA_CMR)": {
     "mission": "KOMPSAT-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "KOMPSAT-2 (also referred to as Arirang-2 by South Korea) was developed by KARI (Korea Aerospace Research Institute) to continue the observation program of the KOMPSAT-1 mission. The main mission objectives of the KOMPSAT-2 are to provide a surveillance capability for large-scale disasters by acquiring high-resolution imagery for GIS (Geographic Information Systems) applications.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "KOMPSAT-2 (TropForest)": {
     "mission": "KOMPSAT-2 (TropForest)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "KOMPSAT-2 (also referred to as Arirang-2 by South Korea) was developed by KARI (Korea Aerospace Research Institute) to continue the observation program of the KOMPSAT-1 mission. The main mission objectives of the KOMPSAT-2 are to provide a surveillance capability for large-scale disasters by acquiring high-resolution imagery for GIS (Geographic Information Systems) applications.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-1 (NASA_CMR)": {
     "mission": "Landsat-1 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "On July 23, 1972, the Earth Resources Technology Satellite (ERTS-1) was launched into space, being the first Earth-observing satellite launched to monitor and study our planet's landmasses. In 1975 it was renamed Landsat 1.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-2 (NASA_CMR)": {
     "mission": "Landsat-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 2 was launched on January 22, 1975. Originally named ERTS-B (Earth Resource Technology Satellite B), the spacecraft was renamed Landsat 2 before launch. On February 25, 1982 after seven years of service, Landsat 2 was removed from operations due to yaw control problems.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-3 (NASA_CMR)": {
     "mission": "Landsat-3 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 3 (originally named Landsat C) was launched into space on March 5, 1978. The objective of Landsat 3 was to extend the period of space-acquired Earth imagery, started by Landsat 1 and Landsat 2.The satellite was placed in standby mode on March 31, 1983 and decommissioned on September 7, 1983. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-4 (NASA_CMR)": {
     "mission": "Landsat-4 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 4 was launched on July 16, 1982. With an updated design than the previous three missions, the satellite carried the Multispectral Scanner (MSS) as well as the new Thematic Mapper (TM) instruments. The sensors onboard the satellite collected data until late 1993, and the satellite was decommissioned on June 15, 2001.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-5 (CNES_THEIA)": {
     "mission": "Landsat-5 (CNES_THEIA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 5 was launched on March 1, 1984, and like Landsat 4, carried the Multispectral Scanner (MSS) and the Thematic Mapper (TM) instruments. Landsat 5 delivered Earth imaging data nearly 29 years - and set a Guinness World Record For 'Longest Operating Earth Observation Satellite', before being decommissioned on June 5, 2013. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-5 (NASA_CMR)": {
     "mission": "Landsat-5 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 5 was launched on March 1, 1984, and like Landsat 4, carried the Multispectral Scanner (MSS) and the Thematic Mapper (TM) instruments. Landsat 5 delivered Earth imaging data nearly 29 years - and set a Guinness World Record For 'Longest Operating Earth Observation Satellite', before being decommissioned on June 5, 2013. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-5 (NASA_CWIC)": {
     "mission": "Landsat-5 (NASA_CWIC)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 5 was launched on March 1, 1984, and like Landsat 4, carried the Multispectral Scanner (MSS) and the Thematic Mapper (TM) instruments. Landsat 5 delivered Earth imaging data nearly 29 years - and set a Guinness World Record For 'Longest Operating Earth Observation Satellite', before being decommissioned on June 5, 2013. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-5 (TM)": {
     "mission": "Landsat-5 (TM)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 5 was launched on March 1, 1984, and like Landsat 4, carried the Multispectral Scanner (MSS) and the Thematic Mapper (TM) instruments. Landsat 5 delivered Earth imaging data nearly 29 years - and set a Guinness World Record For 'Longest Operating Earth Observation Satellite', before being decommissioned on June 5, 2013. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-7 (CNES_THEIA)": {
     "mission": "Landsat-7 (CNES_THEIA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 7 was launched on April 15, 1999. The satellite carries the Enhanced Thematic Mapper (ETM+) sensor. Since June 2003, the sensor has acquired and delivered data with data gaps caused by the Scan Line Corrector (SLC) failure.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-7 (ETM)": {
     "mission": "Landsat-7 (ETM)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 7 was launched on April 15, 1999. The satellite carries the Enhanced Thematic Mapper (ETM+) sensor. Since June 2003, the sensor has acquired and delivered data with data gaps caused by the Scan Line Corrector (SLC) failure.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-7 (NASA_CMR)": {
     "mission": "Landsat-7 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 7 was launched on April 15, 1999. The satellite carries the Enhanced Thematic Mapper (ETM+) sensor. Since June 2003, the sensor has acquired and delivered data with data gaps caused by the Scan Line Corrector (SLC) failure.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-7 (NASA_CWIC)": {
     "mission": "Landsat-7 (NASA_CWIC)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 7 was launched on April 15, 1999. The satellite carries the Enhanced Thematic Mapper (ETM+) sensor. Since June 2003, the sensor has acquired and delivered data with data gaps caused by the Scan Line Corrector (SLC) failure.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-8 (CNES_THEIA)": {
     "mission": "Landsat-8 (CNES_THEIA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 8 (formally the Landsat Data Continuity Mission, LDCM) was launched on February 11, 2013. Landsat 8 is the most recently launched Landsat satellite and carries the Operational Land Imager (OLI) and the Thermal Infrared Sensor (TIRS) instruments.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-8 (IPT)": {
     "mission": "Landsat-8 (IPT)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 8 (formally the Landsat Data Continuity Mission, LDCM) was launched on February 11, 2013. Landsat 8 is the most recently launched Landsat satellite and carries the Operational Land Imager (OLI) and the Thermal Infrared Sensor (TIRS) instruments.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-8 (NASA_CMR)": {
     "mission": "Landsat-8 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 8 (formally the Landsat Data Continuity Mission, LDCM) was launched on February 11, 2013. Landsat 8 is the most recently launched Landsat satellite and carries the Operational Land Imager (OLI) and the Thermal Infrared Sensor (TIRS) instruments.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Landsat-8 (SENTINEL-HUB)": {
     "mission": "Landsat-8 (SENTINEL-HUB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Landsat 8 (formally the Landsat Data Continuity Mission, LDCM) was launched on February 11, 2013. Landsat 8 is the most recently launched Landsat satellite and carries the Operational Land Imager (OLI) and the Thermal Infrared Sensor (TIRS) instruments.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Megha-Tropiques (JAXA_CATS-I)": {
     "mission": "Megha-Tropiques (JAXA_CATS-I)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Megha-Tropiques is an Indo-French Joint Satellite Mission for studying the water cycle and energy exchanges in the tropics. The main objective of this mission is to understand the life cycle of convective systems that influence the tropical weather and climate and their role in associated energy and moisture budget of the atmosphere in tropical regions.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "METEOR-3M (EOP)": {
     "mission": "METEOR-3M (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Meteor-3M spacecraft series represented a follow-up to the Meteor-3 series to provide a modernization of Russia's national meteorological satellite system. The overall objective is environmental monitoring.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "METEOR-3M (NASA_CMR)": {
     "mission": "METEOR-3M (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Meteor-3M spacecraft series represented a follow-up to the Meteor-3 series to provide a modernization of Russia's national meteorological satellite system. The overall objective is environmental monitoring.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Meteosat-10 (NASA_CMR)": {
     "mission": "Meteosat-10 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-10 was launched on July 2012 and its lifetime is expected to end in 2030. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Meteosat-11 (NASA_CMR)": {
     "mission": "Meteosat-11 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-11 was launched on July 2015 and its lifetime is expected to end in 2033. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Meteosat-2 (NASA_CMR)": {
     "mission": "Meteosat-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-2 was launched on June 1981 and retired on August 1988.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Meteosat-3 (NASA_CMR)": {
     "mission": "Meteosat-3 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-3 was launched on June 1988 and retired on May 1995.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Meteosat-3 (NASA_CWIC)": {
     "mission": "Meteosat-3 (NASA_CWIC)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-3 was launched on June 1988 and retired on May 1995.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Meteosat-4 (NASA_CMR)": {
     "mission": "Meteosat-4 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-4 was launched on March 1989 and retired on November 1995.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Meteosat-4 (NASA_CWIC)": {
     "mission": "Meteosat-4 (NASA_CWIC)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-4 was launched on March 1989 and retired on November 1995.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Meteosat-5 (NASA_CMR)": {
     "mission": "Meteosat-5 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-5 was launched on March 1991 and retired on April 2007.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Meteosat-5 (NASA_CWIC)": {
     "mission": "Meteosat-5 (NASA_CWIC)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-5 was launched on March 1991 and retired on April 2007.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Meteosat-6 (NASA_CMR)": {
     "mission": "Meteosat-6 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-6 was launched on November 1993 and retired on April 2011.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Meteosat-7 (NASA_CMR)": {
     "mission": "Meteosat-7 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-7 was launched on September 1997 and retired on March 2017.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Meteosat-8 (NASA_CMR)": {
     "mission": "Meteosat-8 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-8 was launched on August 2002 and its lifetime is expected to end in 2022. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Meteosat-9 (NASA_CMR)": {
     "mission": "Meteosat-9 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-9 was launched on December 2005 and its lifetime is expected to end in 2025. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Metop-A (95c6d610-ba36-11de-8a39-0800200c9a66)": {
     "mission": "Metop-A (95c6d610-ba36-11de-8a39-0800200c9a66)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Meteosat-9 was launched on December 2005 and its lifetime is expected to end in 2025. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Metop-A (CEDA-CCI)": {
     "mission": "Metop-A (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "MetOp-A is Europe’s first polar orbiting satellite dedicated to meteorology. Operating at a much lower altitude than geostationary satellites, MetOp-A compliments meteorological satellites of NOAA and other organizations.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Metop-A (EUM_DAT_METOP)": {
     "mission": "Metop-A (EUM_DAT_METOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "MetOp-A is Europe’s first polar orbiting satellite dedicated to meteorology. Operating at a much lower altitude than geostationary satellites, MetOp-A compliments meteorological satellites of NOAA and other organizations.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Metop-A (JAXA_CATS-I)": {
     "mission": "Metop-A (JAXA_CATS-I)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "MetOp-A is Europe’s first polar orbiting satellite dedicated to meteorology. Operating at a much lower altitude than geostationary satellites, MetOp-A compliments meteorological satellites of NOAA and other organizations.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Metop-A (NASA_CMR)": {
     "mission": "Metop-A (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "MetOp-A is Europe’s first polar orbiting satellite dedicated to meteorology. Operating at a much lower altitude than geostationary satellites, MetOp-A compliments meteorological satellites of NOAA and other organizations.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Metop-B (95c6d610-ba36-11de-8a39-0800200c9a66)": {
     "mission": "Metop-B (95c6d610-ba36-11de-8a39-0800200c9a66)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "MetOp-A is Europe’s first polar orbiting satellite dedicated to meteorology. Operating at a much lower altitude than geostationary satellites, MetOp-A compliments meteorological satellites of NOAA and other organizations.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Metop-B (CEDA-CCI)": {
     "mission": "Metop-B (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Metop B was launched in September 2012 and contains the same payload as Metop A. Metop B is the current operational Metop satellite and will be declared the primary backup satellite once Metop C is operational.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Metop-B (EUM_DAT_METOP)": {
     "mission": "Metop-B (EUM_DAT_METOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Metop B was launched in September 2012 and contains the same payload as Metop A. Metop B is the current operational Metop satellite and will be declared the primary backup satellite once Metop C is operational.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Metop-B (JAXA_CATS-I)": {
     "mission": "Metop-B (JAXA_CATS-I)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Metop B was launched in September 2012 and contains the same payload as Metop A. Metop B is the current operational Metop satellite and will be declared the primary backup satellite once Metop C is operational.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Metop-B (NASA_CMR)": {
     "mission": "Metop-B (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Metop B was launched in September 2012 and contains the same payload as Metop A. Metop B is the current operational Metop satellite and will be declared the primary backup satellite once Metop C is operational.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Metop-C (NASA_CMR)": {
     "mission": "Metop-C (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Metop-C satellite launched on November 7, 2018 and is the third and final satellite in its series. It was preceded by Metop-A and Metop-B, which launched in 2006 and 2012 respectively. The Metop satellites are polar orbiting meteorological missions that provide detailed observations of the atmosphere, oceans and land. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "MFG (EUM_DAT_MFG)": {
     "mission": "MFG (EUM_DAT_MFG)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Vectors at all heights below the tropopause, derived from the Meteosat First Generation (MFG) IR channel by tracking the motion of clouds. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "MONITOR-E (EOP)": {
     "mission": "MONITOR-E (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Monitor-E is a Russian Earth observation mission of KhSC on a small-class generic satellite series. The mission is intended for use in various remote sensing, communications, and space research applications.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "MONITOR-E (NASA_CMR)": {
     "mission": "MONITOR-E (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Monitor-E is a Russian Earth observation mission of KhSC on a small-class generic satellite series. The mission is intended for use in various remote sensing, communications, and space research applications.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "MSG (EUM_DAT_MSG)": {
     "mission": "MSG (EUM_DAT_MSG)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Meteosat Second Generation (MSG) satellites are operated as a two-satellite system returning detailed imagery of Europe, Africa and parts of the Atlantic and Indian Ocean every 15 minutes, for operational use by meteorologists.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "MSG (NASA_CMR)": {
     "mission": "MSG (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Meteosat Second Generation (MSG) satellites are operated as a two-satellite system returning detailed imagery of Europe, Africa and parts of the Atlantic and Indian Ocean every 15 minutes, for operational use by meteorologists.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "MTSAT-1R (NASA_CMR)": {
     "mission": "MTSAT-1R (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "MTSAT-1R was launched on February 2005 and its meteorological service provision started on June 2005. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "MTSAT-2 (NASA_CMR)": {
     "mission": "MTSAT-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "MTSAT-2 was launchet on Febaruary 2006. The meteorological payload was placed into standby mode (summer of 2006) until the end of the 5 year MTSAT-1R mission, around 2010. The spacecraft became prime on July 1, 2010 for meteorological services.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NigeriaSat-1 (NASA_CMR)": {
     "mission": "NigeriaSat-1 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Nigeriasat-1 is a low earth orbit micro satellite for disaster monitoring looking spacecraft, 5-year target design life-span orbit 700km.NigeriaSat-1 is one of five satellites in a network called the Disaster Monitoring Constellation (DMC).",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Nimbus-4 (NASA_CMR)": {
     "mission": "Nimbus-4 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Nimbus 4, the fourth in a series of second-generation meteorological research-and-development satellites, was designed to serve as a stabilized, earth-oriented platform for the testing of advanced meteorological sensor systems and for collecting meteorological data.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Nimbus-7 (NASA_CMR)": {
     "mission": "Nimbus-7 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Nimbus 7 research-and-development satellite served as a stabilized, earth-oriented platform for the testing of advanced systems used to sense and collect data in the pollution, oceanographic, and meteorological disciplines.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA (CEDA-CCI)": {
     "mission": "NOAA (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The NOAA Satellite and Information Service provides timely access to global environmental data from satellites and other sources to monitor and understand our dynamic Earth. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA (EOWEB)": {
     "mission": "NOAA (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The NOAA Satellite and Information Service provides timely access to global environmental data from satellites and other sources to monitor and understand our dynamic Earth. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA (JAXA_CATS-I)": {
     "mission": "NOAA (JAXA_CATS-I)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The NOAA Satellite and Information Service provides timely access to global environmental data from satellites and other sources to monitor and understand our dynamic Earth. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA (NASA_CMR_EO_EUM_DAT_MULT)": {
     "mission": "NOAA (NASA_CMR_EO_EUM_DAT_MULT)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The NOAA Satellite and Information Service provides timely access to global environmental data from satellites and other sources to monitor and understand our dynamic Earth. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA POES (NASA_CMR)": {
     "mission": "NOAA POES (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The POES satellite system offers the advantage of daily global coverage, by making nearly polar orbits 14 times per day approximately 520 miles above the surface of the Earth.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-10 (NASA_CMR)": {
     "mission": "NOAA-10 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-10, known as NOAA-G before launch, was an American weather satellite operated by the National Oceanic and Atmospheric Administration for use in the National Environmental Satellite Data and Information Service. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-10 (NASA_CWIC)": {
     "mission": "NOAA-10 (NASA_CWIC)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-10, known as NOAA-G before launch, was an American weather satellite operated by the National Oceanic and Atmospheric Administration for use in the National Environmental Satellite Data and Information Service. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-11 (EOWEB)": {
     "mission": "NOAA-11 (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA 11 was a third-generation operational meteorological satellite for use in the National Operational Environmental Satellite System (NOESS) and for support of the Global Atmospheric Research Program (GARP) during 1978-84. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-11 (NASA_CMR)": {
     "mission": "NOAA-11 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA 11 was a third-generation operational meteorological satellite for use in the National Operational Environmental Satellite System (NOESS) and for support of the Global Atmospheric Research Program (GARP) during 1978-84. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-11 (NASA_CWIC)": {
     "mission": "NOAA-11 (NASA_CWIC)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA 11 was a third-generation operational meteorological satellite for use in the National Operational Environmental Satellite System (NOESS) and for support of the Global Atmospheric Research Program (GARP) during 1978-84. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-12 (CEDA-CCI)": {
     "mission": "NOAA-12 (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-12, also kown as NOAA-D before launch, was an American weather satellite operated by National Oceanic and Atmospheric Administration, an operational meteorological satellite for use in the National Environmental Satellite, Data, and Information Service.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-12 (NASA_CMR)": {
     "mission": "NOAA-12 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-12, also kown as NOAA-D before launch, was an American weather satellite operated by National Oceanic and Atmospheric Administration, an operational meteorological satellite for use in the National Environmental Satellite, Data, and Information Service.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-14 (CEDA-CCI)": {
     "mission": "NOAA-14 (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-14, also known as NOAA-J before launch, was a American weather satellite operated by the National Oceanic and Atmospheric Administration. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-14 (EOWEB)": {
     "mission": "NOAA-14 (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-14, also known as NOAA-J before launch, was a American weather satellite operated by the National Oceanic and Atmospheric Administration. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-14 (NASA_CMR)": {
     "mission": "NOAA-14 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-14, also known as NOAA-J before launch, was a American weather satellite operated by the National Oceanic and Atmospheric Administration. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-15 (CEDA-CCI)": {
     "mission": "NOAA-15 (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-15, also known as NOAA-K before launch, is an operational, polar-orbiting of the NASA-provided Television Infrared Observation Satellite series of weather forecasting satellite operated by National Oceanic and Atmospheric Administration. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-15 (NASA_CMR)": {
     "mission": "NOAA-15 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-15, also known as NOAA-K before launch, is an operational, polar-orbiting of the NASA-provided Television Infrared Observation Satellite series of weather forecasting satellite operated by National Oceanic and Atmospheric Administration. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-16 (CEDA-CCI)": {
     "mission": "NOAA-16 (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-16, also known as NOAA-L before launch, was an operational, polar orbiting, weather satellite series operated by the National Environmental Satellite Service of the National Oceanic and Atmospheric Administration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-16 (EOWEB)": {
     "mission": "NOAA-16 (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-16, also known as NOAA-L before launch, was an operational, polar orbiting, weather satellite series operated by the National Environmental Satellite Service of the National Oceanic and Atmospheric Administration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-16 (NASA_CMR)": {
     "mission": "NOAA-16 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-16, also known as NOAA-L before launch, was an operational, polar orbiting, weather satellite series operated by the National Environmental Satellite Service of the National Oceanic and Atmospheric Administration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-17 (CEDA-CCI)": {
     "mission": "NOAA-17 (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-17, also known as NOAA-M before launch, was an operational, polar orbiting, weather satellite series operated by the National Environmental Satellite Service of the National Oceanic and Atmospheric Administration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-17 (EOWEB)": {
     "mission": "NOAA-17 (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-17, also known as NOAA-M before launch, was an operational, polar orbiting, weather satellite series operated by the National Environmental Satellite Service of the National Oceanic and Atmospheric Administration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-17 (NASA_CMR)": {
     "mission": "NOAA-17 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-17, also known as NOAA-M before launch, was an operational, polar orbiting, weather satellite series operated by the National Environmental Satellite Service of the National Oceanic and Atmospheric Administration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-18 (CEDA-CCI)": {
     "mission": "NOAA-18 (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-18, also known as NOAA-N before launch, was an operational, polar orbiting, weather satellite series operated by the National Environmental Satellite Service of the National Oceanic and Atmospheric Administration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-18 (EOWEB)": {
     "mission": "NOAA-18 (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-18, also known as NOAA-N before launch, was an operational, polar orbiting, weather satellite series operated by the National Environmental Satellite Service of the National Oceanic and Atmospheric Administration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-18 (JAXA_CATS-I)": {
     "mission": "NOAA-18 (JAXA_CATS-I)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-18, also known as NOAA-N before launch, was an operational, polar orbiting, weather satellite series operated by the National Environmental Satellite Service of the National Oceanic and Atmospheric Administration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-18 (NASA_CMR)": {
     "mission": "NOAA-18 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-18, also known as NOAA-N before launch, was an operational, polar orbiting, weather satellite series operated by the National Environmental Satellite Service of the National Oceanic and Atmospheric Administration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-19 (EOWEB)": {
     "mission": "NOAA-19 (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-18, also known as NOAA-N before launch, was an operational, polar orbiting, weather satellite series operated by the National Environmental Satellite Service of the National Oceanic and Atmospheric Administration.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-19 (JAXA_CATS-I)": {
     "mission": "NOAA-19 (JAXA_CATS-I)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-19, known as NOAA-N' before launch, is the last of the American National Oceanic and Atmospheric Administration series of weather satellites. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-19 (NASA_CMR)": {
     "mission": "NOAA-19 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-19, known as NOAA-N' before launch, is the last of the American National Oceanic and Atmospheric Administration series of weather satellites. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-2 (NASA_CMR)": {
     "mission": "NOAA-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-2, also known as ITOS-D was a weather satellite operated by the National Oceanic and Atmospheric Administration. It was part of a series of satellites called ITOS, or improved TIROS. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-3 (NASA_CMR)": {
     "mission": "NOAA-3 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-3, also known as ITOS-F was a weather satellite operated by the National Oceanic and Atmospheric Administration. It was part of a series of satellites called ITOS, or improved TIROS.It was deactivated by NOAA on August 1976.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-4 (NASA_CMR)": {
     "mission": "NOAA-4 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-4, also known as ITOS-G was a weather satellite operated by the National Oceanic and Atmospheric Administration. It was part of a series of satellites called ITOS, or improved TIROS.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-5 (NASA_CMR)": {
     "mission": "NOAA-5 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-5, also known as ITOS-H was a weather satellite operated by the National Oceanic and Atmospheric Administration. It was part of a series of satellites called ITOS, or improved TIROS, being the last of the series.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-6 (NASA_CMR)": {
     "mission": "NOAA-6 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-6, known as NOAA-A before launch, was an American operational weather satellite for use in the National Operational Environmental Satellite System and for the support of the Global Atmospheric Research Program during 1978-1984.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-7 (NASA_CMR)": {
     "mission": "NOAA-7 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA-7, also known as NOAA-C before launch, was an American operational weather satellite for use in the National Operational Environmental Satellite System and for the support of the Global Atmospheric Research Program during 1978-1984.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-8 (NASA_CMR)": {
     "mission": "NOAA-8 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA 8 was a third-generation operational meteorological satellite for use in the National Environmental Satellite Data and Information Service (NESDIS) of NOAA. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-9 (NASA_CMR)": {
     "mission": "NOAA-9 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA 9 was a third-generation operational meteorological satellite. The satellite design provided an economical and stable sun-synchronous platform for advanced operational instruments to measure the earth's atmosphere, its surface and cloud cover, and the near-space environment.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "NOAA-9 (NASA_CWIC)": {
     "mission": "NOAA-9 (NASA_CWIC)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "NOAA 9 was a third-generation operational meteorological satellite. The satellite design provided an economical and stable sun-synchronous platform for advanced operational instruments to measure the earth's atmosphere, its surface and cloud cover, and the near-space environment.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "OceanSat-2 (NRT)": {
     "mission": "OceanSat-2 (NRT)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The ISRO (Indian Space Research Organization) spacecraft OceanSat-2 is envisaged to provide service continuity for the operational users of OCM (Ocean Color Monitor) data as well as to enhance the application potential in other areas.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "ODIN (CEDA-CCI)": {
     "mission": "ODIN (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Odin is a Swedish satellite working in two disciplines: astrophysics and aeronomy, and it was named after Odin of Norse mythology. Within the field of astrophysics, Odin was used until the spring of 2007 aiding in the study of star formation.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "OrbView-2 (CEDA-CCI)": {
     "mission": "OrbView-2 (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "OrbView-2 is an imaging satellite, developed, owned, managed and operated by Orbital Imaging Corporation (OrbImage) of Dulles, VA. The overall objective of the OrbView-2/SeaWiFS mission is to provide quantitative data on global ocean bio-optical properties to the Earth science community. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "OrbView-2 (NASA_CMR)": {
     "mission": "OrbView-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "OrbView-2 is an imaging satellite, developed, owned, managed and operated by Orbital Imaging Corporation (OrbImage) of Dulles, VA. The overall objective of the OrbView-2/SeaWiFS mission is to provide quantitative data on global ocean bio-optical properties to the Earth science community. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "PARASOL (NASA_CMR)": {
     "mission": "PARASOL (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "PARASOL was a French-built Earth observing research satellite. It carried an instrument called POLDER which studied the radiative and microphysical properties of clouds and aerosols.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "PlanetScope (NASA_CMR)": {
     "mission": "PlanetScope (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "PlanetScope, operated by Planet, is a constellation of approximately 130 satellites, able to image the entire land surface of the Earth every day (a daily collection capacity of 200 million km²/day).",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "PLEIADES (CNES_THEIA)": {
     "mission": "PLEIADES (CNES_THEIA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Pléiades is an environment-focused constellation (consisting of two satellites, referred to as 1A and 1B) from CNES of France, which were launched on 17 December 2011 (Pleiades 1A) and 2 December 2012 (Pleiades 1B). The constellation remains operational.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "PLEIADES (PESA)": {
     "mission": "PLEIADES (PESA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Pléiades is an environment-focused constellation (consisting of two satellites, referred to as 1A and 1B) from CNES of France, which were launched on 17 December 2011 (Pleiades 1A) and 2 December 2012 (Pleiades 1B). The constellation remains operational.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Pleiades-1A (PESA)": {
     "mission": "Pleiades-1A (PESA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Pleiades-1A satellite is capable of providing orthorectified color data at 0.5-meter resolution (roughly comparable to GeoEye-1) and revisiting any point on Earth as it covers a total of 1 million square kilometers (approximately 386,102 square miles) daily. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Pleiades-1B (PESA)": {
     "mission": "Pleiades-1B (PESA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Pleiades-1B satellite sensor was successfully launched on December 2, 2012. Built by AIRBUS Defence & Space, the satellite was launched from a Soyuz launcher at the European Space Centre in French Guiana.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "PROBA-1 (CHRIS)": {
     "mission": "PROBA-1 (CHRIS)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Pleiades-1B satellite sensor was successfully launched on December 2, 2012. Built by AIRBUS Defence & Space, the satellite was launched from a Soyuz launcher at the European Space Centre in French Guiana.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "PROBA-1 (HRC)": {
     "mission": "PROBA-1 (HRC)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Project for On-Board Autonomy-1 (PROBA-1) was originally a technology demonstration mission of the European Space Agency, started in mid-1998 and funded within the frame of ESA's General Support Technology Programme. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "PROBA-1 (NASA_CMR)": {
     "mission": "PROBA-1 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Project for On-Board Autonomy-1 (PROBA-1) was originally a technology demonstration mission of the European Space Agency, started in mid-1998 and funded within the frame of ESA's General Support Technology Programme. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "PROBA-V (NASA_CMR)": {
     "mission": "PROBA-V (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "PROBA-V launched on 7 May 2013, is a miniaturised ESA satellite tasked with a full-scale mission to map land cover and vegetation growth across the entire planet every two days.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "PROBA-V (no_named_collections_set_1)": {
     "mission": "PROBA-V (no_named_collections_set_1)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "PROBA-V launched on 7 May 2013, is a miniaturised ESA satellite tasked with a full-scale mission to map land cover and vegetation growth across the entire planet every two days.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "PROBA-V (VITO)": {
     "mission": "PROBA-V (VITO)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "PROBA-V launched on 7 May 2013, is a miniaturised ESA satellite tasked with a full-scale mission to map land cover and vegetation growth across the entire planet every two days.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "QUICKBIRD (EOP)": {
     "mission": "QUICKBIRD (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "DigitalGlobe's QuickBird satellite sensor was successfully launched October 18, 2001. This satellite was an excellent source of environmental data useful for analyses of changes in land usage, agricultural and forest climates.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "QUICKBIRD (NASA_CMR)": {
     "mission": "QUICKBIRD (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "QuickBird-2 was an Earth-imaging satellite of DigitalGlobe Inc. of the United States which launched in October 2001 and ceased operations in 2015. Alongside its high-resolution commercial-focused imagery, QuickBird could be used to analyse changes in land usage, agriculture and forests. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "QuickBird-2 (NASA_CMR)": {
     "mission": "QuickBird-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "QuickBird-2 was an Earth-imaging satellite of DigitalGlobe Inc. of the United States which launched in October 2001 and ceased operations in 2015. Alongside its high-resolution commercial-focused imagery, QuickBird could be used to analyse changes in land usage, agriculture and forests. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "QuikSCAT (NASA_CMR)": {
     "mission": "QuikSCAT (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The NASA QuikSCAT (Quick Scatterometer) was an Earth observation satellite carrying the SeaWinds scatterometer. Its primary mission was to measure the surface wind speed and direction over the ice-free global oceans. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "RADARSAT-1 (NASA_CMR)": {
     "mission": "RADARSAT-1 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "RADARSAT-1 was Canada's first commercial Earth observation satellite. It utilized synthetic aperture radar to obtain images of the Earth's surface to manage natural resources and monitor global climate change.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "RADARSAT-2 (NASA_CMR)": {
     "mission": "RADARSAT-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The RADARSAT-2 satellite mission offers powerful technical advancements that enhances marine surveillance, ice monitoring, disaster management, environmental monitoring, resource management and mapping in Canada and around the world. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "RapidEye (EOP)": {
     "mission": "RapidEye (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "RapidEye is a constellation of five identical satellites owned and operated by Planet, and launched on 29 August 2008. The constellation was deactivated on March 31st, 2020 but Planet still offers data archive.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "RapidEye (NASA_CMR)": {
     "mission": "RapidEye (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "RapidEye is a constellation of five identical satellites owned and operated by Planet, and launched on 29 August 2008. The constellation was deactivated on March 31st, 2020 but Planet still offers data archive.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "RapidEye (no_named_collections_set_1)": {
     "mission": "RapidEye (no_named_collections_set_1)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "RapidEye is a constellation of five identical satellites owned and operated by Planet, and launched on 29 August 2008. The constellation was deactivated on March 31st, 2020 but Planet still offers data archive.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "RESURS-DK1 (EOP)": {
     "mission": "RESURS-DK1 (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Resurs-DK No.1, also called Resurs-DK1, is a commercial Earth observation satellite capable of transmitting high-resolution imagery to the ground stations as it passes overhead.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "RESURS-P1 (EOP)": {
     "mission": "RESURS-P1 (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Resurs-P is a series of Russian commercial Earth observation satellites capable of acquiring high-resolution imagery. The spacecraft is operated by Roscosmos as a replacement of the Resurs-DK No.1 satellite.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "RESURS-P2 (EOP)": {
     "mission": "RESURS-P2 (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Resurs-P2 is a Russian commercial earth observation satellite capable of acquiring high-resolution imagery (resolution up to 1.0 m). The spacecraft will be operated by Roscosmos along with the Resurs-P No.1 satellite. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SARAL (CEDA-CCI)": {
     "mission": "SARAL (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SARAL is a cooperative altimetry technology mission of ISRO (Indian Space Research Organization) and CNES (Space Agency of France). The overall objectives are to realize precise, repetitive global measurements of sea surface height, significant wave heights and wind speed.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SARAL (NASA_CMR)": {
     "mission": "SARAL (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SARAL is a cooperative altimetry technology mission of ISRO (Indian Space Research Organization) and CNES (Space Agency of France). The overall objectives are to realize precise, repetitive global measurements of sea surface height, significant wave heights and wind speed.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SCISAT-1 (CEDA-CCI)": {
     "mission": "SCISAT-1 (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SCISAT-1 is a Canadian satellite designed to make observations of the Earth's atmosphere. Its main instruments are an optical Fourier transform infrared spectrometer, the ACE-FTS Instrument, and an ultraviolet spectrophotometer, MAESTRO.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Seasat (SeaSESA)": {
     "mission": "Seasat (SeaSESA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Seasat was the first Earth-orbiting satellite designed for remote sensing of the Earth's oceans and had on board one of the first spaceborne synthetic-aperture radar (SAR).",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1 (CNES_PEPS)": {
     "mission": "Sentinel-1 (CNES_PEPS)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1 is the first of the Copernicus Programme satellite constellation conducted by the European Space Agency. This mission is composed of a constellation of two satellites, Sentinel-1A and Sentinel-1B, which share the same orbital plane.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1 (ESA_SCIHUB)": {
     "mission": "Sentinel-1 (ESA_SCIHUB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1 is the first of the Copernicus Programme satellite constellation conducted by the European Space Agency. This mission is composed of a constellation of two satellites, Sentinel-1A and Sentinel-1B, which share the same orbital plane.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1 (IPT)": {
     "mission": "Sentinel-1 (IPT)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1 is the first of the Copernicus Programme satellite constellation conducted by the European Space Agency. This mission is composed of a constellation of two satellites, Sentinel-1A and Sentinel-1B, which share the same orbital plane.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1 (no_named_collections_set_1)": {
     "mission": "Sentinel-1 (no_named_collections_set_1)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1 is the first of the Copernicus Programme satellite constellation conducted by the European Space Agency. This mission is composed of a constellation of two satellites, Sentinel-1A and Sentinel-1B, which share the same orbital plane.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1 (no_named_collections_set_2)": {
     "mission": "Sentinel-1 (no_named_collections_set_2)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1 is the first of the Copernicus Programme satellite constellation conducted by the European Space Agency. This mission is composed of a constellation of two satellites, Sentinel-1A and Sentinel-1B, which share the same orbital plane.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1 (VITO)": {
     "mission": "Sentinel-1 (VITO)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1 is the first of the Copernicus Programme satellite constellation conducted by the European Space Agency. This mission is composed of a constellation of two satellites, Sentinel-1A and Sentinel-1B, which share the same orbital plane.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1A (CNES_PEPS)": {
     "mission": "Sentinel-1A (CNES_PEPS)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1A is a European radar imaging satellite launched in 2014. It will track many aspects of our environment, from detecting and tracking oil spills and mapping sea ice to monitoring movement in land surfaces and mapping changes in the way land is used. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1A (ESA_SCIHUB)": {
     "mission": "Sentinel-1A (ESA_SCIHUB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1A is a European radar imaging satellite launched in 2014. It will track many aspects of our environment, from detecting and tracking oil spills and mapping sea ice to monitoring movement in land surfaces and mapping changes in the way land is used. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1A (IPT)": {
     "mission": "Sentinel-1A (IPT)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1A is a European radar imaging satellite launched in 2014. It will track many aspects of our environment, from detecting and tracking oil spills and mapping sea ice to monitoring movement in land surfaces and mapping changes in the way land is used. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1A (NASA_CMR)": {
     "mission": "Sentinel-1A (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1A is a European radar imaging satellite launched in 2014. It will track many aspects of our environment, from detecting and tracking oil spills and mapping sea ice to monitoring movement in land surfaces and mapping changes in the way land is used. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1A (no_named_collections_set_1)": {
     "mission": "Sentinel-1A (no_named_collections_set_1)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1A is a European radar imaging satellite launched in 2014. It will track many aspects of our environment, from detecting and tracking oil spills and mapping sea ice to monitoring movement in land surfaces and mapping changes in the way land is used. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1A (VITO)": {
     "mission": "Sentinel-1A (VITO)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1A is a European radar imaging satellite launched in 2014. It will track many aspects of our environment, from detecting and tracking oil spills and mapping sea ice to monitoring movement in land surfaces and mapping changes in the way land is used. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1B (ESA_SCIHUB)": {
     "mission": "Sentinel-1B (ESA_SCIHUB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1AB tracks many aspects of our environment, from detecting and tracking oil spills and mapping sea ice to monitoring movement in land surfaces and mapping changes in the way land is used. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1B (IPT)": {
     "mission": "Sentinel-1B (IPT)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1AB tracks many aspects of our environment, from detecting and tracking oil spills and mapping sea ice to monitoring movement in land surfaces and mapping changes in the way land is used. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1B (NASA_CMR)": {
     "mission": "Sentinel-1B (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1AB tracks many aspects of our environment, from detecting and tracking oil spills and mapping sea ice to monitoring movement in land surfaces and mapping changes in the way land is used. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1B (no_named_collections_set_1)": {
     "mission": "Sentinel-1B (no_named_collections_set_1)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1AB tracks many aspects of our environment, from detecting and tracking oil spills and mapping sea ice to monitoring movement in land surfaces and mapping changes in the way land is used. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1B (no_named_collections_set_2)": {
     "mission": "Sentinel-1B (no_named_collections_set_2)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1AB tracks many aspects of our environment, from detecting and tracking oil spills and mapping sea ice to monitoring movement in land surfaces and mapping changes in the way land is used. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-1B (VITO)": {
     "mission": "Sentinel-1B (VITO)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-1AB tracks many aspects of our environment, from detecting and tracking oil spills and mapping sea ice to monitoring movement in land surfaces and mapping changes in the way land is used. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-2 (CNES_PEPS)": {
     "mission": "Sentinel-2 (CNES_PEPS)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-2 is an Earth observation mission from the Copernicus Programme that systematically acquires optical imagery at high spatial resolution over land and coastal waters.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-2 (ESA_SCIHUB)": {
     "mission": "Sentinel-2 (ESA_SCIHUB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-2 is an Earth observation mission from the Copernicus Programme that systematically acquires optical imagery at high spatial resolution over land and coastal waters.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-2 (IPT)": {
     "mission": "Sentinel-2 (IPT)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-2 is an Earth observation mission from the Copernicus Programme that systematically acquires optical imagery at high spatial resolution over land and coastal waters.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-2 (no_named_collections_set_1)": {
     "mission": "Sentinel-2 (no_named_collections_set_1)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-2 is an Earth observation mission from the Copernicus Programme that systematically acquires optical imagery at high spatial resolution over land and coastal waters.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-2 (SENTINEL-HUB)": {
     "mission": "Sentinel-2 (SENTINEL-HUB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-2 is an Earth observation mission from the Copernicus Programme that systematically acquires optical imagery at high spatial resolution over land and coastal waters.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-2 (VITO)": {
     "mission": "Sentinel-2 (VITO)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-2 is an Earth observation mission from the Copernicus Programme that systematically acquires optical imagery at high spatial resolution over land and coastal waters.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-3 (CMEMS_MERCATOR)": {
     "mission": "Sentinel-3 (CMEMS_MERCATOR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-3 is an Earth observation satellite series developed by the European Space Agency as part of the Copernicus Programme. It currently consists of 2 satellites: Sentinel-3A and Sentinel-3B. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-3 (ESA_SCIHUB)": {
     "mission": "Sentinel-3 (ESA_SCIHUB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-3 is an Earth observation satellite series developed by the European Space Agency as part of the Copernicus Programme. It currently consists of 2 satellites: Sentinel-3A and Sentinel-3B. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-3 (NASA_CMR_EO_EUM_DAT_SENTINEL-3)": {
     "mission": "Sentinel-3 (NASA_CMR_EO_EUM_DAT_SENTINEL-3)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-3 is an Earth observation satellite series developed by the European Space Agency as part of the Copernicus Programme. It currently consists of 2 satellites: Sentinel-3A and Sentinel-3B. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-3A (NASA_CMR)": {
     "mission": "Sentinel-3A (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-3A is a European Space Agency Earth observation satellite dedicated to oceanography which launched on 16 February 2016. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-3B (NASA_CMR)": {
     "mission": "Sentinel-3B (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Sentinel-3B is a European Space Agency Earth observation satellite dedicated to oceanography which launched on 25 April 2018. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-5P (ESA_SCIHUB_PREOPS)": {
     "mission": "Sentinel-5P (ESA_SCIHUB_PREOPS)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Copernicus Sentinel-5 Precursor mission is the first Copernicus mission dedicated to monitoring our atmosphere. The main objective of the Copernicus Sentinel-5P mission is to perform atmospheric measurements with high spatio-temporal resolution, to be used for air quality, ozone & UV radiation, and climate monitoring & forecasting.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-5P (NASA_CMR)": {
     "mission": "Sentinel-5P (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Copernicus Sentinel-5 Precursor mission is the first Copernicus mission dedicated to monitoring our atmosphere. The main objective of the Copernicus Sentinel-5P mission is to perform atmospheric measurements with high spatio-temporal resolution, to be used for air quality, ozone & UV radiation, and climate monitoring & forecasting.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "Sentinel-5P (VITO)": {
     "mission": "Sentinel-5P (VITO)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Copernicus Sentinel-5 Precursor mission is the first Copernicus mission dedicated to monitoring our atmosphere. The main objective of the Copernicus Sentinel-5P mission is to perform atmospheric measurements with high spatio-temporal resolution, to be used for air quality, ozone & UV radiation, and climate monitoring & forecasting.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SkySat (NASA_CMR)": {
     "mission": "SkySat (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SkySat is a constellation of 21 high-resolution Earth imaging satellites owned and operated by the commercial company Planet. SkySat-1 was launched in 2013 and a launch programme has followed.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SMOS (NASA_CMR)": {
     "mission": "SMOS (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Soil Moisture Ocean Salinity (SMOS) mission of European Space Agency (ESA) is the first ever satellite mission designated for soil moisture observation.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SMOS (no_named_collections_set_1)": {
     "mission": "SMOS (no_named_collections_set_1)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Soil Moisture Ocean Salinity (SMOS) mission of European Space Agency (ESA) is the first ever satellite mission designated for soil moisture observation.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SMOS (SMOS)": {
     "mission": "SMOS (SMOS)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Soil Moisture Ocean Salinity (SMOS) mission of European Space Agency (ESA) is the first ever satellite mission designated for soil moisture observation.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SMS-1 (NASA_CMR)": {
     "mission": "SMS-1 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The SMS 1 was a NASA-developed, NOAA-operated spacecraft. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SMS-2 (NASA_CMR)": {
     "mission": "SMS-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The SMS 2 was a NASA-developed, NOAA-operated spacecraft. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SORCE (NASA_CMR)": {
     "mission": "SORCE (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The Solar Radiation and Climate Experiment (SORCE) is a NASA-sponsored satellite mission that is providing state-of-the-art measurements of incoming x-ray, ultraviolet, visible, near-infrared, and total solar radiation.The measurements provided by SORCE specifically address long-term climate change, natural variability and enhanced climate prediction, and atmospheric ozone and UV-B radiation.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT (CNES_TAKE5)": {
     "mission": "SPOT (CNES_TAKE5)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT is a commercial high-resolution optical Earth imaging satellite system operating from space.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT (CNES_THEIA)": {
     "mission": "SPOT (CNES_THEIA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT is a commercial high-resolution optical Earth imaging satellite system operating from space.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT (EOP)": {
     "mission": "SPOT (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT is a commercial high-resolution optical Earth imaging satellite system operating from space.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT (Image2006)": {
     "mission": "SPOT (Image2006)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT is a commercial high-resolution optical Earth imaging satellite system operating from space.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT (SPOT)": {
     "mission": "SPOT (SPOT)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT is a commercial high-resolution optical Earth imaging satellite system operating from space.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT (VITO)": {
     "mission": "SPOT (VITO)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT is a commercial high-resolution optical Earth imaging satellite system operating from space.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 1 (CNES_THEIA)": {
     "mission": "SPOT 1 (CNES_THEIA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 1 launched February 22, 1986 with 10 panchromatic and 20 meter multispectral picture resolution capability. Withdrawn December 31, 1990.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 1 (SPOT1-5)": {
     "mission": "SPOT 1 (SPOT1-5)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 1 launched February 22, 1986 with 10 panchromatic and 20 meter multispectral picture resolution capability. Withdrawn December 31, 1990.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 2 (CNES_THEIA)": {
     "mission": "SPOT 2 (CNES_THEIA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 2 launched January 22, 1990 and deorbited in July 2009.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 2 (SPOT1-5)": {
     "mission": "SPOT 2 (SPOT1-5)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 2 launched January 22, 1990 and deorbited in July 2009.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 3 (SPOT1-5)": {
     "mission": "SPOT 3 (SPOT1-5)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 3 launched September 26, 1993. Stopped functioning November 14, 1997.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 4 (CNES_TAKE5)": {
     "mission": "SPOT 4 (CNES_TAKE5)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 4 launched March 24, 1998. Stopped functioning July, 2013.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 4 (CNES_THEIA)": {
     "mission": "SPOT 4 (CNES_THEIA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 4 launched March 24, 1998. Stopped functioning July, 2013.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 4 (Image2006)": {
     "mission": "SPOT 4 (Image2006)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 4 launched March 24, 1998. Stopped functioning July, 2013.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 4 (SPOT1-5)": {
     "mission": "SPOT 4 (SPOT1-5)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 4 launched March 24, 1998. Stopped functioning July, 2013.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 4 (VITO)": {
     "mission": "SPOT 4 (VITO)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 4 launched March 24, 1998. Stopped functioning July, 2013.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 5 (CNES_TAKE5)": {
     "mission": "SPOT 5 (CNES_TAKE5)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 5 launched May 4, 2002 with 2.5 m, 5 m and 10 m capability. Stopped functioning March 31, 2015.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 5 (CNES_THEIA)": {
     "mission": "SPOT 5 (CNES_THEIA)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 5 launched May 4, 2002 with 2.5 m, 5 m and 10 m capability. Stopped functioning March 31, 2015.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 5 (EOP)": {
     "mission": "SPOT 5 (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 5 launched May 4, 2002 with 2.5 m, 5 m and 10 m capability. Stopped functioning March 31, 2015.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 5 (Image2006)": {
     "mission": "SPOT 5 (Image2006)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 5 launched May 4, 2002 with 2.5 m, 5 m and 10 m capability. Stopped functioning March 31, 2015.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 5 (SPOT1-5)": {
     "mission": "SPOT 5 (SPOT1-5)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 5 launched May 4, 2002 with 2.5 m, 5 m and 10 m capability. Stopped functioning March 31, 2015.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 5 (VITO)": {
     "mission": "SPOT 5 (VITO)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 5 launched May 4, 2002 with 2.5 m, 5 m and 10 m capability. Stopped functioning March 31, 2015.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 6 (Image2006)": {
     "mission": "SPOT 6 (Image2006)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT-6 is an optical imaging satellite capable of imaging the Earth with a resolution of 1.5 meter panchromatic and 6 meter multispectral (blue, green, red, near-IR) and will offer imaging products to customers in defense, agriculture, deforestation, environmental monitoring, coastal surveillance, engineering, oil, gas and mining industries.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 6 (SPOT-6)": {
     "mission": "SPOT 6 (SPOT-6)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT-6 is an optical imaging satellite capable of imaging the Earth with a resolution of 1.5 meter panchromatic and 6 meter multispectral (blue, green, red, near-IR) and will offer imaging products to customers in defense, agriculture, deforestation, environmental monitoring, coastal surveillance, engineering, oil, gas and mining industries.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT 7 (SPOT-6)": {
     "mission": "SPOT 7 (SPOT-6)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 7 satellite was designed to continue SPOT-5 mission in obtaining wide-swath high-resolution imagery.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT-2 (NASA_CMR)": {
     "mission": "SPOT-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 2 launched January 22, 1990 and deorbited in July 2009.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT-4 (NASA_CMR)": {
     "mission": "SPOT-4 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 4 launched March 24, 1998. Stopped functioning July, 2013.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SPOT-5 (NASA_CMR)": {
     "mission": "SPOT-5 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "SPOT 5 launched May 4, 2002 with 2.5 m, 5 m and 10 m capability. Stopped functioning March 31, 2015.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SUOMI-NPP (JAXA_CATS-I)": {
     "mission": "SUOMI-NPP (JAXA_CATS-I)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Suomi National Polar-orbiting Partnership, formerly known as the NPOESS Preparatory Project, will serve as a bridge between the EOS satellites and the forthcoming series of Joint Polar Satellite System (JPSS) satellites. Suomi NPP represents a critical first step in building this next-generation satellite system. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SUOMI-NPP (NASA_CMR)": {
     "mission": "SUOMI-NPP (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Suomi National Polar-orbiting Partnership, formerly known as the NPOESS Preparatory Project, will serve as a bridge between the EOS satellites and the forthcoming series of Joint Polar Satellite System (JPSS) satellites. Suomi NPP represents a critical first step in building this next-generation satellite system. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "SUOMI-NPP (NASA_CWIC)": {
     "mission": "SUOMI-NPP (NASA_CWIC)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Suomi National Polar-orbiting Partnership, formerly known as the NPOESS Preparatory Project, will serve as a bridge between the EOS satellites and the forthcoming series of Joint Polar Satellite System (JPSS) satellites. Suomi NPP represents a critical first step in building this next-generation satellite system. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TanDEM-X (EOWEB)": {
     "mission": "TanDEM-X (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": " TSX/TanDEM-X is a high-resolution interferometric SAR mission. The primary goal of the innovative TanDEM-X/TerraSAR-X constellation is the generation of a global, consistent, timely and high-precision DEM (Digital Elevation Model), corresponding to the HRTI-3 (High Resolution Terrain.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TanDEM-X (NASA_CMR)": {
     "mission": "TanDEM-X (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": " TSX/TanDEM-X is a high-resolution interferometric SAR mission. The primary goal of the innovative TanDEM-X/TerraSAR-X constellation is the generation of a global, consistent, timely and high-precision DEM (Digital Elevation Model), corresponding to the HRTI-3 (High Resolution Terrain.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TERRA (CEDA-CCI)": {
     "mission": "TERRA (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Terra is a multi-national, NASA scientific research satellite in a Sun-synchronous orbit around the Earth that takes simultaneous measurements of Earth's atmosphere, land, and water to understand how Earth is changing and to identify the consequences for life on Earth.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TERRA (EOP)": {
     "mission": "TERRA (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Terra is a multi-national, NASA scientific research satellite in a Sun-synchronous orbit around the Earth that takes simultaneous measurements of Earth's atmosphere, land, and water to understand how Earth is changing and to identify the consequences for life on Earth.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TERRA (EOWEB)": {
     "mission": "TERRA (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Terra is a multi-national, NASA scientific research satellite in a Sun-synchronous orbit around the Earth that takes simultaneous measurements of Earth's atmosphere, land, and water to understand how Earth is changing and to identify the consequences for life on Earth.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TERRA (NASA_CMR)": {
     "mission": "TERRA (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Terra is a multi-national, NASA scientific research satellite in a Sun-synchronous orbit around the Earth that takes simultaneous measurements of Earth's atmosphere, land, and water to understand how Earth is changing and to identify the consequences for life on Earth.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TERRA (NASA_CWIC)": {
     "mission": "TERRA (NASA_CWIC)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Terra is a multi-national, NASA scientific research satellite in a Sun-synchronous orbit around the Earth that takes simultaneous measurements of Earth's atmosphere, land, and water to understand how Earth is changing and to identify the consequences for life on Earth.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TerraSAR-X (EOWEB)": {
     "mission": "TerraSAR-X (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "TerraSAR-X1 (also referred to as TSX or TSX-1) is a German SAR satellite mission for scientific and commercial applications (national project). ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TerraSAR-X (NASA_CMR)": {
     "mission": "TerraSAR-X (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "TerraSAR-X1 (also referred to as TSX or TSX-1) is a German SAR satellite mission for scientific and commercial applications (national project). ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TET-1 (EOWEB)": {
     "mission": "TET-1 (EOWEB)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "TET-1 (Technologie Erprobungs Träger-1) is a German technology demonstration microsatellite of DLR (German Aerospace Center) within its OOV (On-Orbit Verification) program. The overall objective is to provide industry and research institutes with adequate means for the in-flight validation of space technology. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TET-1 (NASA_CMR)": {
     "mission": "TET-1 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "TET-1 (Technologie Erprobungs Träger-1) is a German technology demonstration microsatellite of DLR (German Aerospace Center) within its OOV (On-Orbit Verification) program. The overall objective is to provide industry and research institutes with adequate means for the in-flight validation of space technology. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TIROS-N (NASA_CMR)": {
     "mission": "TIROS-N (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "The TIROS Program (Television Infrared Observation Satellite) was NASA's first experimental step to determine if satellites could be useful in the study of the Earth. The goal was to improve satellite applications for Earth-bound decisions, such as should we evacuate the coast because of the hurricane?.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TOPEX POSEIDON (CEDA-CCI)": {
     "mission": "TOPEX POSEIDON (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Topography Experiment (TOPEX)/Poseidon monitored global ocean circulation, improved global climate predictions, and tracked El Niño conditions and ocean eddies.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TOPEX/POSEIDON (CEDA-CCI)": {
     "mission": "TOPEX/POSEIDON (CEDA-CCI)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Topography Experiment (TOPEX)/Poseidon monitored global ocean circulation, improved global climate predictions, and tracked El Niño conditions and ocean eddies.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TOPEX/POSEIDON (NASA_CMR)": {
     "mission": "TOPEX/POSEIDON (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "Topography Experiment (TOPEX)/Poseidon monitored global ocean circulation, improved global climate predictions, and tracked El Niño conditions and ocean eddies.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TRMM (JAXA_CATS-I)": {
     "mission": "TRMM (JAXA_CATS-I)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "TRMM was a research satellite in operation from 1997 to 2015, designed to improve our understanding of the distribution and variability of precipitation within the tropics as part of the water cycle in the current climate system. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "TRMM (NASA_CMR)": {
     "mission": "TRMM (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "TRMM was a research satellite in operation from 1997 to 2015, designed to improve our understanding of the distribution and variability of precipitation within the tropics as part of the water cycle in the current climate system. ",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "UARS (NASA_CMR)": {
     "mission": "UARS (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "UARS measured ozone and chemical compounds found in the ozone layer which affect ozone chemistry and processes, and also measured winds and temperatures in the stratosphere as well as the energy input from the Sun. Together, these help define the role of the upper atmosphere in climate and climate variability.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "WorldView-1 (EOP)": {
     "mission": "WorldView-1 (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "WorldView-1 is an environment-monitoring satellite from DigitalGlobe of the United States which launched on 18 September 2007 and remains operational.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "WorldView-1 (NASA_CMR)": {
     "mission": "WorldView-1 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "WorldView-1 is an environment-monitoring satellite from DigitalGlobe of the United States which launched on 18 September 2007 and remains operational.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "WorldView-2 (EOP)": {
     "mission": "WorldView-2 (EOP)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "WorldView-2 is an imaging and environment-monitoring satellite from DigitalGlobe of the United States which launched on 8 October 2009 and remains operational.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "WorldView-2 (NASA_CMR)": {
     "mission": "WorldView-2 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "WorldView-2 is an imaging and environment-monitoring satellite from DigitalGlobe of the United States which launched on 8 October 2009 and remains operational.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "WorldView-2 (WorldV-2)": {
     "mission": "WorldView-2 (WorldV-2)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "WorldView-2 is an imaging and environment-monitoring satellite from DigitalGlobe of the United States which launched on 8 October 2009 and remains operational.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
   },
   "WorldView-3 (NASA_CMR)": {
     "mission": "WorldView-3 (NASA_CMR)",
-    "sensorType": "",
+    "sensorType": "UNKNOWN",
     "description": "WorldView-3 is an imaging and environment-monitoring satellite from DigitalGlobe of the United States which launched on August 13 2014 and remains operational. It is very similar to WorldView-2 but positioned in a lower orbit.",
     "temporalCoverage": "from ",
     "spatialCoverage": ""
