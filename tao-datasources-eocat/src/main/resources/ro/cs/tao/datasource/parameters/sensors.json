@@ -3,294 +3,294 @@
     "mission": "ALOS-1",
     "sensorType": "RADAR",
     "description": "The ALOS-1/PALSAR_FBS_FBD_PLR mission was launched on January 24, 2006. The spacecraft suffered a power failure in late April 2011 and could not be recovered by the project. ALOS-1/PALSAR_FBS_FBD_PLR produced 5 years of observational data available in following modes: FBS, single polarisation (HH or VV), swath 40-70km, resolution 10m, FBD, double polarisation (HH/HV or VV/VH), swath 40-70km, resolution 10m and PLR, with four polarisations simultaneously: swath 30km, resolution 30m.",
-    "temporalCoverage": "2006-05-02 - 2011-04-14",
+    "temporalCoverage": "from 2006-05-02 to 2011-04-14",
     "spatialCoverage": "Europe, Africa and the Middle East"
   },
   "ALOS-1 (TropForest)": {
     "mission": "ALOS-1",
     "sensorType": "RADAR",
     "description": "Satellite data acquisitions (ALOS AVNIR-2, DEIMOS-1 SLIM6, KOMPSAT-2 MSC) performed during year 2009 and 2010, for the Tropical Latin America (excluding Mexico) and for the Tropical South and Southeast Asia (excluding China).",
-    "temporalCoverage": "2006-05-02 - 2011-04-14",
+    "temporalCoverage": "from 2006-05-02 to 2011-04-14",
     "spatialCoverage": "Tropical Latin America, Tropical South and Southeast Asia (excluding Mexico and China)"
   },
   "CryoSat-2 (products)": {
     "mission": "CryoSat-2",
-    "sensorType": "RADAR",
+    "sensorType": "ALTIMETRIC",
     "description": "CryoSat-2 is a European Space Agency environmental research satellite which was launched in April 2010. It provides scientists with data about the polar ice caps and tracks changes in the thickness of the ice with a resolution of about 1.3 centimetres.",
-    "temporalCoverage": "2010-04-08 - now",
+    "temporalCoverage": "from 2010-04-08 to present",
     "spatialCoverage": "World"
   },
   "Deimos-1 (D-1)": {
     "mission": "Deimos-1",
     "sensorType": "RADAR",
     "description": "Deimos-1 is a Spanish Earth imaging satellite which is operated by Deimos Imaging who commercializes its imagery directly but also has distribution agreements with other entities like Astrium GEO and DMC International Imaging.",
-    "temporalCoverage": "2009-08-01 - now",
+    "temporalCoverage": "from 2009-08-01 to present",
     "spatialCoverage": "World"
   },
   "Deimos-1 (TropForest)": {
     "mission": "Deimos-1",
     "sensorType": "RADAR",
     "description": "Satellite data acquisitions (ALOS AVNIR-2, DEIMOS-1 SLIM6, KOMPSAT-2 MSC) performed during year 2009 and 2010, for the Tropical Latin America (excluding Mexico) and for the Tropical South and Southeast Asia (excluding China).",
-    "temporalCoverage": "2009-08-01 - 2011-08-09",
+    "temporalCoverage": "from 2009-08-01 to 2011-08-09",
     "spatialCoverage": "Tropical Latin America, Tropical South and Southeast Asia (excluding Mexico and China)"
   },
   "Deimos-2 (D-1)": {
     "mission": "Deimos-2",
     "sensorType": "OPTICAL",
     "description": "Deimos-2 is an Earth-imaging satellite built for Elecnor Deimos of Spain which launched 19 June 2014 and remains operational.",
-    "temporalCoverage": "2014-07-01 - now",
+    "temporalCoverage": "from 2014-07-01 to present",
     "spatialCoverage": "World"
   },
   "ERS-1 (IMM)": {
     "mission": "ERS-1",
     "sensorType": "RADAR",
     "description": "The ERS-1 satellite launched on 17 July 1991 and carried a Synthetic Aperture Radar (SAR). It operated in parallel with another instrument – the Wind Scatterometer (WS). The ERS-1 mission ended on 10 March 2000, far exceeding its expected lifespan.",
-    "temporalCoverage": "1991-07-27 - 2000-03-10",
+    "temporalCoverage": "from 1991-07-27 to 2000-03-10",
     "spatialCoverage": "World"
   },
   "ERS-1 (SAR)": {
     "mission": "ERS-1",
     "sensorType": "RADAR",
     "description": "The ERS-1 satellite launched on 17 July 1991 and carried a Synthetic Aperture Radar (SAR). It operated in parallel with another instrument – the Wind Scatterometer (WS). The ERS-1 mission ended on 10 March 2000, far exceeding its expected lifespan.",
-    "temporalCoverage": "1991-07-27 - 2000-03-10",
+    "temporalCoverage": "from 1991-07-27 to 2000-03-10",
     "spatialCoverage": "World"
   },
   "ERS-2 (IMM)": {
     "mission": "ERS-2",
     "sensorType": "RADAR",
     "description": "The ERS-2 Satellite launched on 21 April 1995, providing continuity for ERS-1, carrying a Synthetic Aperture Radar (SAR). The last ERS-2 SAR data was acquired on 4 July 2011 and the ERS-2 mission itself ended on 5 September 2011.",
-    "temporalCoverage": "1995-04-21 - 2011-07-04",
+    "temporalCoverage": "from 1995-04-21 to 2011-07-04",
     "spatialCoverage": "World"
   },
   "ERS-2 (SAR)": {
     "mission": "ERS-2",
     "sensorType": "RADAR",
     "description": "The ERS-2 Satellite launched on 21 April 1995, providing continuity for ERS-1, carrying a Synthetic Aperture Radar (SAR). The last ERS-2 SAR data was acquired on 4 July 2011 and the ERS-2 mission itself ended on 5 September 2011.",
-    "temporalCoverage": "1995-04-21 - 2011-07-04",
+    "temporalCoverage": "from 1995-04-21 to 2011-07-04",
     "spatialCoverage": "World"
   },
   "Envisat (no_named_collections_set_1)": {
     "mission": "Envisat",
     "sensorType": "RADAR",
     "description": "Envisat (Environmental Satellite) is a large inactive Earth-observing satellite which is still in orbit. Operated by the European Space Agency (ESA), it was the world's largest civilian Earth observation satellite.",
-    "temporalCoverage": "2002-04-29 - 2012-04-08",
+    "temporalCoverage": "from 2002-04-29 to 2012-04-08",
     "spatialCoverage": "World"
   },
   "Envisat (MER)": {
     "mission": "Envisat",
     "sensorType": "RADAR",
     "description": "MERIS was a programmable spectrometer on the Envisat mission, operating in the solar reflective spectral range. It was operational throughout the Envisat mission lifetime, from 2002 to 2012, and the first data from the instrument was available from May 2002.",
-    "temporalCoverage": "2002-04-29 - 2012-04-08",
+    "temporalCoverage": "from 2002-04-29 to 2012-04-08",
     "spatialCoverage": "World"
   },
   "Envisat (no_named_collections_set_2)": {
     "mission": "Envisat",
     "sensorType": "RADAR",
     "description": "Envisat (Environmental Satellite) is a large inactive Earth-observing satellite which is still in orbit. Operated by the European Space Agency (ESA), it was the world's largest civilian Earth observation satellite.",
-    "temporalCoverage": "2002-04-29 - 2012-04-08",
+    "temporalCoverage": "from 2002-04-29 to 2012-04-08",
     "spatialCoverage": "World"
   },
   "IKONOS-2 (ESA)": {
     "mission": "IKONOS-2",
     "sensorType": "OPTICAL",
     "description": "IKONOS was a commercial Earth observation satellite, and was the first to collect publicly available high-resolution imagery at 1- and 4-meter resolution. It collected multispectral and panchromatic imagery.",
-    "temporalCoverage": "2000-12-25 - 2008-12-09",
+    "temporalCoverage": "from 2000-12-25 to 2008-12-09",
     "spatialCoverage": "Europe, North Africa, Middle East"
   },
   "IRS-1C (IRS-1)": {
     "mission": "IRS-1C",
     "sensorType": "OPTICAL",
     "description": "IRS-1C was an Earth-imaging satellite from the Indian Space Research Organisation (ISRO) which launched on 28 December 1995 and ceased operations in 2007.",
-    "temporalCoverage": "1996-06-25 - 2004-10-28",
+    "temporalCoverage": "from 1996-06-25 to 2004-10-28",
     "spatialCoverage": "Europe, Africa"
   },
   "IRS-1D (IRS-1)": {
     "mission": "IRS-1D",
     "sensorType": "OPTICAL",
     "description": "IRS-1D was an Earth-imaging satellite from the Indian Space Research Organisation (ISRO) which launched on 29 September 1997 and ceased operations in 2010.",
-    "temporalCoverage": "1996-06-25 - 2004-10-28",
+    "temporalCoverage": "from 1996-06-25 to 2004-10-28",
     "spatialCoverage": "Europe, Africa"
   },
   "IRS-P6 (Image2006)": {
     "mission": "IRS-P6",
     "sensorType": "OPTICAL",
     "description": "IRS-P6 is an Earth observation mission within the IRS (Indian Remote-Sensing Satellite) series. The overall objectives of the IRS-P6 mission (ResourceSat-1) are to provide continued remote sensing data services on an operational basis for integrated land and water resources management.",
-    "temporalCoverage": "03-02-2005 - 2007-11-08",
+    "temporalCoverage": "from 03-02-2005 - 2007-11-08",
     "spatialCoverage": "Europe"
   },
   "JERS-1 (OPS)": {
     "mission": "JERS-1",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "The JERS-1 Optical System (OPS) is composed of a Very Near Infrared Radiometer (VNIR) and a Short Wave Infrared Radiometer (SWIR). The instrument has 8 observable spectral bands from visible to short wave infrared.",
-    "temporalCoverage": "1992-08-13 - 1998-10-08",
+    "temporalCoverage": "from 1992-08-13 to 1998-10-08",
     "spatialCoverage": "World"
   },
   "JERS-1 (SAR)": {
     "mission": "JERS-1",
     "sensorType": "RADAR",
     "description": "JERS-1 carried an early example of a SAR instrument. It was an L-band(HH polarisation) synthetic aperture radar.",
-    "temporalCoverage": "1992-07-13 - 1998-10-08",
+    "temporalCoverage": "from 1992-07-13 to 1998-10-08",
     "spatialCoverage": "World"
   },
   "KOMPSAT-2 (ESA)": {
     "mission": "KOMPSAT-2",
     "sensorType": "OPTICAL",
     "description": "Kompsat-2 ESA archive collection is composed by bundle (Panchromatic and Multispectral separated images) products from the Multi-Spectral Camera (MSC) onboard KOMPSAT-2 acquired from 2007 to 2014: 1m resolution for PAN, 4m resolution for MS.",
-    "temporalCoverage": "2007-04-18 - 2014-03-21",
+    "temporalCoverage": "from 2007-04-18 to 2014-03-21",
     "spatialCoverage": "World"
   },
   "KOMPSAT-2 (TropForest)": {
     "mission": "KOMPSAT-2",
     "sensorType": "OPTICAL",
     "description": "Satellite data acquisitions (ALOS AVNIR-2, DEIMOS-1 SLIM6, KOMPSAT-2 MSC) performed during year 2009 and 2010, for the Tropical Latin America (excluding Mexico) and for the Tropical South and Southeast Asia (excluding China).",
-    "temporalCoverage": "2007-04-18 - 2014-03-21",
+    "temporalCoverage": "from 2007-04-18 to 2014-03-21",
     "spatialCoverage": "Tropical Latin America, Tropical South and Southeast Asia (excluding Mexico and China)"
   },
   "Landsat-5 (TM)": {
     "mission": "Landsat-5",
     "sensorType": "OPTICAL",
     "description": "Landsat 5 delivered Earth imaging data nearly 29 years - and set a Guinness World Record For 'Longest Operating Earth Observation Satellite', before being decommissioned on June 5, 2013.",
-    "temporalCoverage": "1984-04-06 - 2011-11-16",
+    "temporalCoverage": "from 1984-04-06 to 2011-11-16",
     "spatialCoverage": "Europe, North Africa, Middle East"
   },
   "Landsat-7 (ETM)": {
     "mission": "Landsat-7",
     "sensorType": "OPTICAL",
     "description": "The primary new features on Landsat 7 are a panchromatic band with 15 m spatial resolution, an on-board full aperture solar calibrator, 5% absolute radiometric calibration and a thermal IR channel with a four-fold improvement in spatial resolution over TM.",
-    "temporalCoverage": "1999-07-09 - 2003-12-31",
+    "temporalCoverage": "from 1999-07-09 to 2003-12-31",
     "spatialCoverage": "Europe, North Africa, Middle East"
   },
   "OceanSat-2 (NRT)": {
     "mission": "OceanSat-2",
     "sensorType": "OPTICAL",
     "description": "Oceansat-2 is the second Indian satellite built primarily for ocean applications.",
-    "temporalCoverage": "2015-10-27 - now",
+    "temporalCoverage": "from 2015-10-27 to present",
     "spatialCoverage": "Europe"
   },
   "PROBA-1 (CHRIS)": {
     "mission": "PROBA-1",
     "sensorType": "OPTICAL",
     "description": "The Compact High Resolution Imaging Spectrometer (CHRIS), onboard the PROBA -1 (Project for On-Board Autonomy-1) mission was launched on 22 October 2001. CHRIS acquires 17 to 34 metre spatial resolution data across a programmable selection of up to 63 spectral bands, at five different viewing angles.",
-    "temporalCoverage": "2002-05-14 - now",
+    "temporalCoverage": "from 2002-05-14 to present",
     "spatialCoverage": "World"
   },
   "PROBA-1 (HRC)": {
     "mission": "PROBA-1",
     "sensorType": "OPTICAL",
     "description": "The High Resolution Camera (HRC) is a black and white camera with a miniaturised telescope, which was launched on board ESA's PROBA-1 satellite on 22 October 2001, and is primarily intended for technology, educational and general public information purposes.",
-    "temporalCoverage": "2002-10-10 - now",
+    "temporalCoverage": "from 2002-10-10 to present",
     "spatialCoverage": "World"
   },
   "Pleiades-1A (PESA)": {
     "mission": "Pleiades-1A",
     "sensorType": "OPTICAL",
     "description": "The Pleiades-1A spacecraft was launched on December 17, 2011 on a Soyuz ST launcher (with Fregat upper stage) from Europe's spaceport in Kourou, French Guiana (launch provider: Arianespace). Pleiades-1A provide the coverage of Earth's surface with a repeat cycle of 26 days.",
-    "temporalCoverage": "2012-01-01 - now",
+    "temporalCoverage": "from 2012-01-01 to present",
     "spatialCoverage": "World"
   },
   "Pleiades-1B (PESA)": {
     "mission": "Pleiades-1B",
     "sensorType": "OPTICAL",
     "description": "The Pleiades-1B spacecraft was launched on December 02, 2012 (UTC) on a Soyuz STA/Fregat launcher from Europe's spaceport in Kourou, French Guiana (launch provider: Arianespace). Pleiades-1B provide the coverage of Earth's surface with a repeat cycle of 26 days.",
-    "temporalCoverage": "2012-01-01 - now",
+    "temporalCoverage": "from 2012-01-01 to present",
     "spatialCoverage": "World"
   },
   "RapidEye (no_named_collections_set_1)": {
     "mission": "RapidEye",
     "sensorType": "OPTICAL",
     "description": "RapidEye is a constellation of five identical satellites owned and operated by Planet, and launched on 29 August 2008. The constellation was deactivated on March 31st, 2020 but Planet still offers data archive.",
-    "temporalCoverage": "2009-02-22 - now",
+    "temporalCoverage": "from 2009-02-22 to present",
     "spatialCoverage": "World"
   },
   "SMOS (SMOS)": {
     "mission": "SMOS",
-    "sensorType": "OPTICAL",
+    "sensorType": "PASSIVE_MICROWAVE",
     "description": "The Soil Moisture and Ocean Salinity (SMOS) mission, launched on 2 November 2009, is one of the European Space Agency's Earth Explorer missions, which form the science and research element of the Living Planet Programme.",
-    "temporalCoverage": "2010-01-12 - now",
+    "temporalCoverage": "from 2010-01-12 to present",
     "spatialCoverage": "World"
   },
   "SMOS (no_named_collections_set_1)": {
     "mission": "SMOS",
-    "sensorType": "OPTICAL",
+    "sensorType": "PASSIVE_MICROWAVE",
     "description": "Soil Moisture Ocean Salinity (SMOS) mission of European Space Agency (ESA) is the first ever satellite mission designated for soil moisture observation.",
-    "temporalCoverage": "2010-01-12 - now",
+    "temporalCoverage": "from 2010-01-12 to present",
     "spatialCoverage": "World"
   },
   "SPOT 1 (SPOT1-5)": {
     "mission": "SPOT 1",
     "sensorType": "OPTICAL",
     "description": "SPOT 1, with 2 HRV instruments on board, had a swath of 60 km km and oblique viewing capability of 27° on each side of the local vertical. The instruments were able to acquire 1 panchromatic band (10 m) and 3 multispectral bands (20 m).",
-    "temporalCoverage": "1986-04-01 - 2015-09-15",
+    "temporalCoverage": "from 1986-04-01 to 2015-09-15",
     "spatialCoverage": "World"
   },
   "SPOT 2 (SPOT1-5)": {
     "mission": "SPOT 2",
     "sensorType": "OPTICAL",
     "description": "SPOT 2 joined SPOT 1 in orbit on January 22, 1990, on the Ariane 4 maiden flight",
-    "temporalCoverage": "1986-04-01 - 2015-09-15",
+    "temporalCoverage": "from 1986-04-01 to 2015-09-15",
     "spatialCoverage": "World"
   },
   "SPOT 3 (SPOT1-5)": {
     "mission": "SPOT 3",
     "sensorType": "OPTICAL",
     "description": "SPOT 3 launched September 26, 1993. Stopped functioning November 14, 1997.",
-    "temporalCoverage": "1986-04-01 - 2015-09-15",
+    "temporalCoverage": "from 1986-04-01 to 2015-09-15",
     "spatialCoverage": "World"
   },
   "SPOT 4 (Image2006)": {
     "mission": "SPOT 4",
     "sensorType": "OPTICAL",
     "description": "The Image 2006 collection is a SPOT-4, SPOT-5 and ResourceSat-1 (also known as IRS-P6) cloud free coverage over 38 European countries in 2006 (from February 2005 to November 2007).",
-    "temporalCoverage": "2005-02-03 - 2007-11-08",
+    "temporalCoverage": "from 2005-02-03 to 2007-11-08",
     "spatialCoverage": "Europe"
   },
   "SPOT 4 (SPOT1-5)": {
     "mission": "SPOT 4",
     "sensorType": "OPTICAL",
     "description": "SPOT 4 launched March 24, 1998 and stopped functioning July, 2013.",
-    "temporalCoverage": "1993-09-25 - 2007-11-08",
+    "temporalCoverage": "from 1993-09-25 to 2007-11-08",
     "spatialCoverage": "Europe"
   },
   "SPOT 5 (Image2006)": {
     "mission": "SPOT 5",
     "sensorType": "OPTICAL",
     "description": "The Image 2006 collection is a SPOT-4, SPOT-5 and ResourceSat-1 (also known as IRS-P6) cloud free coverage over 38 European countries in 2006 (from February 2005 to November 2007).",
-    "temporalCoverage": "2005-02-03 - 2007-11-08",
+    "temporalCoverage": "from 2005-02-03 to 2007-11-08",
     "spatialCoverage": "Europe"
   },
   "SPOT 5 (SPOT1-5)": {
     "mission": "SPOT 5",
     "sensorType": "OPTICAL",
     "description": "SPOT 5 was launched on May 4, 2002 and has the goal to ensure continuity of services for customers and to improve the quality of data and images by anticipating changes in market requirements.",
-    "temporalCoverage": "2002-05-04 - 2015-09-15",
+    "temporalCoverage": "from 2002-05-04 to 2015-09-15",
     "spatialCoverage": "Europe"
   },
   "SPOT 6 (SPOT-6)": {
     "mission": "SPOT 6",
     "sensorType": "OPTICAL",
     "description": "SPOT 6 was launched by India's Polar Satellite Launch Vehicle on 9 September 2012, while SPOT 7 was launched on 30 June 2014. They form a constellation of Earth-imaging satellites designed to provide continuity of high-resolution, wide-swath data up to 2024.",
-    "temporalCoverage": "2012-10-01 - now",
+    "temporalCoverage": "from 2012-10-01 to present",
     "spatialCoverage": "World"
   },
   "SPOT 7 (SPOT-6)": {
     "mission": "SPOT 7",
     "sensorType": "OPTICAL",
     "description": "SPOT 7 satellite was designed to continue SPOT-5 mission in obtaining wide-swath high-resolution imagery.",
-    "temporalCoverage": "2012-10-01 - now",
+    "temporalCoverage": "from 2012-10-01 to present",
     "spatialCoverage": "World"
   },
   "WorldView-2 (WorldV-2)": {
     "mission": "WorldView-2",
     "sensorType": "OPTICAL",
     "description": "WorldView-2 is an imaging and environment-monitoring satellite from DigitalGlobe of the United States which launched on 8 October 2009 and remains operational.",
-    "temporalCoverage": "2010-07-20 - 2015-07-19",
+    "temporalCoverage": "from 2010-07-20 to 2015-07-19",
     "spatialCoverage": "Europe"
   },
   "seasat (SeaSESA)": {
     "mission": "seasat",
     "sensorType": "RADAR",
     "description": "Seasat was the first Earth-orbiting satellite designed for remote sensing of the Earth's oceans and had on board one of the first spaceborne synthetic-aperture radar (SAR).",
-    "temporalCoverage": "1978-07-13 - 1978-10-10",
+    "temporalCoverage": "from 1978-07-13 to 1978-10-10",
     "spatialCoverage": "Europe"
   }
 }

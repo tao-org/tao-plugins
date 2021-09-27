@@ -3,14 +3,14 @@
     "mission": "Landsat8",
     "sensorType": "OPTICAL",
     "description": "Landsat 8 measurements directly serve NASA research in the focus areas of climate, carbon cycle, ecosystems, water cycle, biogeochemistry, and Earth surface/interior.",
-    "temporalCoverage": "2008 - now",
+    "temporalCoverage": "from 2008 to present",
     "spatialCoverage": "Global"
   },
   "Sentinel2": {
     "mission": "Sentinel2",
     "sensorType": "OPTICAL",
     "description": "The Sentinel-2 mission systematically acquires data over land and coastal areas in a band of latitude extending from 56° South (Isla Hornos, Cape Horn, South America) to 84° North (above Greenland).",
-    "temporalCoverage": "2015-06 - now",
+    "temporalCoverage": "from 2015-06 to present",
     "spatialCoverage": "Global"
   }
 }
