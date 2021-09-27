@@ -3,14 +3,14 @@
     "mission": "Sentinel1",
     "sensorType": "RADAR",
     "description": "Luxemburg Sentinel-1 Archive",
-    "temporalCoverage": "2014 to present",
+    "temporalCoverage": "from 2014 to present",
     "spatialCoverage": "Global"
   },
   "Sentinel2": {
     "mission": "Sentinel2",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "Luxemburg Sentinel-2 Archive",
-    "temporalCoverage": "2015 to present",
+    "temporalCoverage": "from 2015 to present",
     "spatialCoverage": "Global"
   }
 }
