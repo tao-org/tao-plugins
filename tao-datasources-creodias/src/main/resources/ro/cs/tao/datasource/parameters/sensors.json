@@ -2,22 +2,22 @@
   "Sentinel1": {
     "mission": "Sentinel1",
     "sensorType": "RADAR",
-    "description": "The Sentinel-1 is equipped with twin polar orbiting satellites designed to provide a spatial data for environment and security warranting, global economic and business growth.",
-    "temporalCoverage": "from 2014-04-03 to present",
+    "description": "The collection consists of all Sentinel-1 GRD Level 1 products covering whole observation area (global) since 2014-10-03. Observation modes included: WV (since 2014-10-03), EV (since 2014-10-03). Level-1 Ground Range Detected (GRD) products consist of focused SAR data that has been detected, multi-looked and projected to ground range using an Earth ellipsoid model.",
+    "temporalCoverage": "from 2014 to present",
     "spatialCoverage": "Global"
   },
   "Sentinel2": {
     "mission": "Sentinel2",
     "sensorType": "OPTICAL",
-    "description": "The Sentinel-2 mission systematically acquires data over land and coastal areas in a band of latitude extending from 56° South (Isla Hornos, Cape Horn, South America) to 84° North (above Greenland).",
-    "temporalCoverage": "from 2015-07-23 to present",
+    "description": "The collection consists of all Sentinel-2 Level 1 products covering whole observation area (global) since 2016-10-18. The Sentinel-2 is a wide-swath, high-resolution, multi-spectral imaging mission, supporting Copernicus Land Monitoring studies, including the monitoring of vegetation, soil and water cover, as well as observation of inland waterways and coastal areas.",
+    "temporalCoverage": "from 2015 to present",
     "spatialCoverage": "Global"
   },
   "Landsat8": {
     "mission": "Landsat8",
     "sensorType": "OPTICAL",
-    "description": "Landsat 8 measurements directly serve NASA research in the focus areas of climate, carbon cycle, ecosystems, water cycle, biogeochemistry, and Earth surface/interior.",
-    "temporalCoverage": "from 2013-03-24 to present",
+    "description": "The collection consists of all Landsat-8 Level 1 products covering whole observation area (global) since 2013-03-24. Landsat 8 carries two push-broom instruments: The Operational Land Imager (OLI) and the Thermal Infrared Sensor (TIRS).",
+    "temporalCoverage": "from 2013 to present",
     "spatialCoverage": "Global"
   }
 }
