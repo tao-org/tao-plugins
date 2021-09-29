@@ -2,22 +2,22 @@
   "Sentinel1": {
     "mission": "Sentinel1",
     "sensorType": "RADAR",
-    "description": "The Sentinel-1 is equipped with twin polar orbiting satellites designed to provide a spatial data for environment and security warranting, global economic and business growth.",
-    "temporalCoverage": "from 2014-10-04 to present",
+    "description": "The Open Access Hub provides complete, free and open access to Sentinel-1, Sentinel-2, Sentinel-3 and Sentinel-5P user products. The Sentinel-1 acquisitions zones with the related mode and polarisation are defined on a cyclic (12 days) basis in the observation scenarios.",
+    "temporalCoverage": "every 6 days (from 2014)",
     "spatialCoverage": "Global"
   },
   "Sentinel2": {
     "mission": "Sentinel2",
     "sensorType": "OPTICAL",
-    "description": "The Sentinel-2 mission systematically acquires data over land and coastal areas in a band of latitude extending from 56° South (Isla Hornos, Cape Horn, South America) to 84° North (above Greenland).",
-    "temporalCoverage": "from 2015-06-29 to present",
+    "description": "The Open Access Hub provides complete, free and open access to Sentinel-1, Sentinel-2, Sentinel-3 and Sentinel-5P user products. The Sentinel-2 data offer for the Open Access Hub will consist of Level-1C and Level-2A user products.",
+    "temporalCoverage": "every 5 days (from 2015)",
     "spatialCoverage": "Global"
   },
   "Sentinel3": {
     "mission": "Sentinel3",
     "sensorType": "OPTICAL",
-    "description": "SENTINEL-3 is an ocean and land mission composed of three versatile satellites (SENTINEL-3A, SENTINEL-3B and SENTINEL-3C). The mission provides data continuity for the ERS, ENVISAT and SPOT satellites.",
-    "temporalCoverage": "from 2016-07 to present",
+    "description": "The Open Access Hub provides complete, free and open access to Sentinel-1, Sentinel-2, Sentinel-3 and Sentinel-5P user products. The Sentinel-3 data offer for the Open Access Hub will consist of Level-1 and Level-2 Land user products for the OLCI, SLSTR and SRAL instruments.",
+    "temporalCoverage": "daily (from 2016)",
     "spatialCoverage": "Global"
   }
 }
