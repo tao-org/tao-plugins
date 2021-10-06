@@ -1,0 +1,43 @@
+[
+	{
+		"id": "gdal_to_xarray",
+		"label": "Convert to Zarr",
+		"version": "1.0.0",
+		"description": "Converts raster data to Zarr format",
+		"authors": "Lidia Baciu, Laurentiu Nicola",
+		"copyright": "(C) 2021",
+		"nodeAffinity": "Any",
+		"sources": [
+			{
+				"id": null,
+				"parentId": "gdal_to_xarray",
+				"name": "input",
+				"cardinality": 1,
+				"dataDescriptor": {
+					"formatType": "RASTER"
+				}
+			}
+		],
+		"targets": [
+			{
+				"id": null,
+				"parentId": "gdal_translate",
+				"name": "out",
+				"dataDescriptor": {
+					"formatType": "FOLDER",
+					"formatName": "Zarr",
+					"location": "output_zarr"
+				}
+			}
+		],
+		"containerId": "e0426b19-50cf-460b-aa25-840ad6e8dd36",
+		"fileLocation": "gdal_to_xarray.py",
+		"workingDirectory": ".",
+		"templateType": "VELOCITY",
+		"multiThread": false,
+		"visibility": "SYSTEM",
+		"active": true,
+		"parameterDescriptors": [ ],
+		"templatecontents": "-input\n$input\n-out\n$out"
+	}
+]

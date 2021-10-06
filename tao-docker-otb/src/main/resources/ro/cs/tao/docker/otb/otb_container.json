@@ -1,7 +1,7 @@
 {
 	"id": "690d6747-7b76-4290-bb5d-87d775b5d23a",
-	"name": "otb-6-4-0",
-	"description": "OTB 6.4.0 Container",
+	"name": "otb-7-3-0",
+	"description": "OTB 7.3.0 Container",
 	"tag": "latest",
 	"applicationPath": null,
 	"applications": [
@@ -71,11 +71,6 @@
 			"memoryRequirements": 2048
 		},
 		{
-			"path": "otbcli_ComputePolylineFeatureFromImage",
-			"name": "ComputePolylineFeatureFromImage",
-			"memoryRequirements": 2048
-		},
-		{
 			"path": "otbcli_ConcatenateImages",
 			"name": "ConcatenateImages",
 			"memoryRequirements": 2048
@@ -96,11 +91,6 @@
 			"memoryRequirements": 2048
 		},
 		{
-			"path": "otbcli_Convert",
-			"name": "Convert",
-			"memoryRequirements": 2048
-		},
-		{
 			"path": "otbcli_ConvertCartoToGeoPoint",
 			"name": "ConvertCartoToGeoPoint",
 			"memoryRequirements": 2048
@@ -108,11 +98,6 @@
 		{
 			"path": "otbcli_ConvertSensorToGeoPoint",
 			"name": "ConvertSensorToGeoPoint",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_DEMConvert",
-			"name": "DEMConvert",
 			"memoryRequirements": 2048
 		},
 		{
@@ -141,11 +126,6 @@
 			"memoryRequirements": 2048
 		},
 		{
-			"path": "otbcli_DSFuzzyModelEstimation",
-			"name": "DSFuzzyModelEstimation",
-			"memoryRequirements": 2048
-		},
-		{
 			"path": "otbcli_DynamicConvert",
 			"name": "DynamicConvert",
 			"memoryRequirements": 2048
@@ -156,8 +136,18 @@
 			"memoryRequirements": 2048
 		},
 		{
+			"path": "otbcli_EndmemberNumberEstimation",
+			"name": "EndmemberNumberEstimation",
+			"memoryRequirements": 2048
+		},
+		{
 			"path": "otbcli_ExtractROI",
 			"name": "ExtractROI",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_FastNLMeans",
+			"name": "FastNLMeans",
 			"memoryRequirements": 2048
 		},
 		{
@@ -221,8 +211,18 @@
 			"memoryRequirements": 2048
 		},
 		{
+			"path": "otbcli_ImageDimensionalityReduction",
+			"name": "ImageDimensionalityReduction",
+			"memoryRequirements": 2048
+		},
+		{
 			"path": "otbcli_ImageEnvelope",
 			"name": "ImageEnvelope",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_ImageRegression",
+			"name": "ImageRegression",
 			"memoryRequirements": 2048
 		},
 		{
@@ -248,6 +248,11 @@
 		{
 			"path": "otbcli_LocalStatisticExtraction",
 			"name": "LocalStatisticExtraction",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_LocalRxDetection",
+			"name": "LocalRxDetection",
 			"memoryRequirements": 2048
 		},
 		{
@@ -306,6 +311,16 @@
 			"memoryRequirements": 2048
 		},
 		{
+			"path": "otbcli_MultitempFilteringFilter",
+			"name": "MultitempFilteringFilter",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_MultitempFilteringOutcore",
+			"name": "MultitempFilteringOutcore",
+			"memoryRequirements": 2048
+		},
+		{
 			"path": "otbcli_MultivariateAlterationDetector",
 			"name": "MultivariateAlterationDetector",
 			"memoryRequirements": 2048
@@ -346,6 +361,11 @@
 			"memoryRequirements": 2048
 		},
 		{
+			"path": "otbcli_PantexTextureExtraction",
+			"name": "PantexTextureExtraction",
+			"memoryRequirements": 2048
+		},
+		{
 			"path": "otbcli_PixelValue",
 			"name": "PixelValue",
 			"memoryRequirements": 2048
@@ -353,16 +373,6 @@
 		{
 			"path": "otbcli_PolygonClassStatistics",
 			"name": "PolygonClassStatistics",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_PredictGMMApp",
-			"name": "PredictGMMApp",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_PredictRegression",
-			"name": "PredictRegression",
 			"memoryRequirements": 2048
 		},
 		{
@@ -396,8 +406,178 @@
 			"memoryRequirements": 2048
 		},
 		{
+			"path": "otbcli_ResetMargin",
+			"name": "ResetMargin",
+			"memoryRequirements": 2048
+		},
+		{
 			"path": "otbcli_RigidTransformResample",
 			"name": "RigidTransformResample",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARAddBandInterferogram",
+			"name": "SARAddBandInterferogram",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARAltAmbig",
+			"name": "SARAltAmbig",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARAmplitudeEstimation",
+			"name": "SARAmplitudeEstimation",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARBurstExtraction",
+			"name": "SARBurstExtraction",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARCalibration",
+			"name": "SARCalibration",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARCartesianMeanEstimation",
+			"name": "SARCartesianMeanEstimation",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARCoRegistration",
+			"name": "SARCoRegistration",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARCompensatedComplex",
+			"name": "SARCompensatedComplex",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARConcatenateBursts",
+			"name": "SARConcatenateBursts",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARCorrectionGrid",
+			"name": "SARCorrectionGrid",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARCorrelationGrid",
+			"name": "SARCorrelationGrid",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARCorrelationRough",
+			"name": "SARCorrelationRough",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARDEMGrid",
+			"name": "SARDEMGrid",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARDEMProjection",
+			"name": "SARDEMProjection",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARDEMToAmplitude",
+			"name": "SARDEMToAmplitude",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARDeburst",
+			"name": "SARDeburst",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARDecompositions",
+			"name": "SARDecompositions",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARDeramp",
+			"name": "SARDeramp",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARDoppler0",
+			"name": "SARDoppler0",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARESD",
+			"name": "SARESD",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARFineDeformationGrid",
+			"name": "SARFineDeformationGrid",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARFineMetadata",
+			"name": "SARFineMetadata",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARGridOffset",
+			"name": "SARGridOffset",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARGridStatistics",
+			"name": "SARGridStatistics",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARInterferogram",
+			"name": "SARInterferogram",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARMetadataCorrection",
+			"name": "SARMetadataCorrection",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARMultiLook",
+			"name": "SARMultiLook",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SAROrthoInterferogram",
+			"name": "SAROrthoInterferogram",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARPhaseFiltering",
+			"name": "SARPhaseFiltering",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARPolarMatrixConvert",
+			"name": "SARPolarMatrixConvert",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARPolarSynth",
+			"name": "SARPolarSynth",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARRobustInterferogram",
+			"name": "SARRobustInterferogram",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_SARTopographicPhase",
+			"name": "SARTopographicPhase",
 			"memoryRequirements": 2048
 		},
 		{
@@ -413,31 +593,6 @@
 		{
 			"path": "otbcli_SampleSelection",
 			"name": "SampleSelection",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_SARCalibration",
-			"name": "SARCalibration",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_SARDeburst",
-			"name": "SARDeburst",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_SARDecompositions",
-			"name": "SARDecompositions",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_SARPolarMatrixConvert",
-			"name": "SARPolarMatrixConvert",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_SARPolarSynth",
-			"name": "SARPolarSynth",
 			"memoryRequirements": 2048
 		},
 		{
@@ -461,6 +616,11 @@
 			"memoryRequirements": 2048
 		},
 		{
+			"path": "otbcli_SpectralAngleClassification",
+			"name": "SpectralAngleClassification",
+			"memoryRequirements": 2048
+		},
+		{
 			"path": "otbcli_SplitImage",
 			"name": "SplitImage",
 			"memoryRequirements": 2048
@@ -481,23 +641,28 @@
 			"memoryRequirements": 2048
 		},
 		{
+			"path": "otbcli_Synthetize",
+			"name": "Synthetize",
+			"memoryRequirements": 2048
+		},
+		{
 			"path": "otbcli_TileFusion",
 			"name": "TileFusion",
 			"memoryRequirements": 2048
 		},
 		{
-			"path": "otbcli_TrainGMMApp",
-			"name": "TrainGMMApp",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_TrainGMMSelectionApp",
-			"name": "TrainGMMSelectionApp",
+			"path": "otbcli_TrainDimensionalityReduction",
+			"name": "TrainDimensionalityReduction",
 			"memoryRequirements": 2048
 		},
 		{
 			"path": "otbcli_TrainImagesClassifier",
 			"name": "TrainImagesClassifier",
+			"memoryRequirements": 2048
+		},
+		{
+			"path": "otbcli_TrainImagesRegression",
+			"name": "TrainImagesRegression",
 			"memoryRequirements": 2048
 		},
 		{
@@ -511,13 +676,18 @@
 			"memoryRequirements": 2048
 		},
 		{
+			"path": "otbcli_TrainVectorRegression",
+			"name": "TrainVectorRegression",
+			"memoryRequirements": 2048
+		},
+		{
 			"path": "otbcli_VectorClassifier",
 			"name": "VectorClassifier",
 			"memoryRequirements": 2048
 		},
 		{
-			"path": "otbcli_VectorDataDSValidation",
-			"name": "VectorDataDSValidation",
+			"path": "otbcli_VectorDimensionalityReduction",
+			"name": "VectorDimensionalityReduction",
 			"memoryRequirements": 2048
 		},
 		{
@@ -541,13 +711,18 @@
 			"memoryRequirements": 2048
 		},
 		{
+			"path": "otbcli_VectorRegression",
+			"name": "VectorRegression",
+			"memoryRequirements": 2048
+		},
+		{
 			"path": "otbcli_VertexComponentAnalysis",
 			"name": "VertexComponentAnalysis",
 			"memoryRequirements": 2048
 		},
 		{
-			"path": "gdal_translate.exe",
-			"name": "GDALTranslate",
+			"path": "otbcli_ZonalStatistics",
+			"name": "ZonalStatistics",
 			"memoryRequirements": 2048
 		}
 	]
