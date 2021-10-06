@@ -19,7 +19,7 @@ import java.util.UUID;
 public class GdalImageInstaller extends BaseImageInstaller {
     @Override
     protected String getContainerName() {
-        return "gdal-2-3-2";
+        return "gdal-3-3-2";
     }
 
     @Override

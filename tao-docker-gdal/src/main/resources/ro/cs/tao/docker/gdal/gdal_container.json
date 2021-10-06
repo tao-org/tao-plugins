@@ -1,8 +1,8 @@
 {
 	"id": "0c95867b-3235-419a-8a4a-4a52c1853ee8",
-	"name": "gdal-2-3-2",
-	"description": "GDAL 2.3.2 Container",
-	"tag": "latest",
+	"name": "gdal-3-3-2",
+	"description": "GDAL 3.3.2 Container",
+	"tag": "alpine-normal-3.3.2",
 	"applicationPath": null,
 	"formatNameParameter": "-f",
 	"format": [
