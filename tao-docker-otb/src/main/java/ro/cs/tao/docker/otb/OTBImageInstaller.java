@@ -34,13 +34,13 @@ import java.util.UUID;
 
 public class OTBImageInstaller extends BaseImageInstaller {
     @Override
-    protected String getContainerName() { return "otb-6-4-0"; }
+    protected String getContainerName() { return "otb-7-3-0"; }
 
     @Override
     protected String getDescription() { return "OTB"; }
 
     @Override
-    protected String getPathInContainer() { return "/opt/OTB-6.4.0-Linux64/bin"; }
+    protected String getPathInContainer() { return "/opt/OTB-7.3.0-Linux64/bin"; }
 
     @Override
     protected String getPathInSystem() {

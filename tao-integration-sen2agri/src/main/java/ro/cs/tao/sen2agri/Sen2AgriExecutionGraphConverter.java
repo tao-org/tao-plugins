@@ -17,7 +17,6 @@ import ro.cs.tao.services.base.WorkflowBuilderBase;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 import ro.cs.tao.services.bridge.spring.SpringContextBridgedServices;
 import ro.cs.tao.services.utils.WorkflowUtilities;
-import ro.cs.tao.topology.docker.BaseImageInstaller;
 import ro.cs.tao.topology.docker.DockerManager;
 import ro.cs.tao.workflow.ExternalGraphConverter;
 import ro.cs.tao.workflow.WorkflowDescriptor;
@@ -26,7 +25,6 @@ import ro.cs.tao.workflow.WorkflowNodeGroupDescriptor;
 import ro.cs.tao.workflow.enums.ComponentType;
 import ro.cs.tao.workflow.enums.TransitionBehavior;
 
-import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -316,15 +314,6 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
             container.setName(this.dockerContainer.getName());
             container.setDescription(this.dockerContainer.getDescription() == null ? "External container" : this.dockerContainer.getDescription());
             container.setTag(this.dockerContainer.getTag() != null ? this.dockerContainer.getTag() : "external");
-            try {
-                for (Application app : BaseImageInstaller.readCommonContainerDescriptor().getApplications()) {
-                    if ("Copy".equals(app.getName()) || "Move".equals(app.getName()) || "Delete".equals(app.getName())) {
-                        container.addApplication(app);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         Application application = container.getApplications().stream().filter(a -> a.getName().equals(name)).findFirst().orElse(null);
         if (application == null) {
@@ -341,21 +330,6 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
                 this.dockerContainer = containerProvider.save(container);
             } else {
                 this.dockerContainer = containerProvider.update(container);
-            }
-        }
-        if (notExists) {
-            try {
-                final ProcessingComponent[] components = BaseImageInstaller.readCommonComponentsDescriptors();
-                for (ProcessingComponent component : components) {
-                    component.setId(UUID.randomUUID().toString());
-                    component.getSources().forEach(s -> s.setParentId(component.getId()));
-                    component.getTargets().forEach(t -> t.setParentId(component.getId()));
-                    component.setContainerId(container.getId());
-                    component.setTransient(true);
-                    componentProvider.save(component);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
         ProcessingComponent component = componentProvider.get(name, container.getId());

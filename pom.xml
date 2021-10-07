@@ -52,6 +52,7 @@
         <module>tao-integration-sen2agri</module>
         <module>tao-eo-search</module>
         <module>tao-keycloak</module>
+        <module>tao-docker-zarr</module>
     </modules>
 
     <properties>

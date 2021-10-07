@@ -1,0 +1,5 @@
+xarray==0.19.*
+numpy==1.21.*
+zarr==2.9.*
+pyproj==3.2.*
+dask==2021.9.*

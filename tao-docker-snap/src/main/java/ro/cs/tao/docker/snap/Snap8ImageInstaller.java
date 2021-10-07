@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Snap8ImageInstaller extends BaseImageInstaller {
 
     @Override
-    protected String getContainerName() { return "snap-8-0-0"; }
+    protected String getContainerName() { return "snap-8"; }
 
     @Override
     protected String getDescription() { return "SNAP"; }
