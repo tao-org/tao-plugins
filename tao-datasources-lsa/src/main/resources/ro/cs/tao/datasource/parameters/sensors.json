@@ -10,7 +10,7 @@
     "mission": "Sentinel2",
     "sensorType": "OPTICAL",
     "description": "Luxemburg Sentinel-2 Archive",
-    "temporalCoverage": "from 2015 to present",
+    "temporalCoverage": "from 2015 to 2018",
     "spatialCoverage": "Global"
   }
 }
