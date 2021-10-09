@@ -2,29 +2,29 @@
   "Landsat8": {
     "mission": "Landsat8",
     "sensorType": "OPTICAL",
-    "description": "Landsat 8 measurements directly serve NASA research in the focus areas of climate, carbon cycle, ecosystems, water cycle, biogeochemistry, and Earth surface/interior.",
+    "description": "Project Landsat-8",
     "temporalCoverage": "from 2013 to present",
-    "spatialCoverage": "France"
+    "spatialCoverage": "Africa, Europe, North America, Oceania, Seven seas (open ocean), South America"
   },
   "Sentinel2": {
     "mission": "Sentinel2",
     "sensorType": "OPTICAL",
-    "description": "The Sentinel-2 mission systematically acquires data over land and coastal areas in a band of latitude extending from 56° South (Isla Hornos, Cape Horn, South America) to 84° North (above Greenland).",
+    "description": "SENTINEL2",
     "temporalCoverage": "from 2015 to present",
-    "spatialCoverage": "France and others zones in the world"
+    "spatialCoverage": "Africa, Asia, Europe, North America, Oceania, Seven seas (open ocean), South America"
   },
   "Pleiades": {
     "mission": "Pleiades",
     "sensorType": "OPTICAL",
-    "description": "Pleaides Satellite. Pléiades is an environment-focused constellation (consisting of two satellites, referred to as 1A and 1B) from CNES of France, which were launched on 17 December 2011 (Pleiades 1A) and 2 December 2012 (Pleiades 1B).",
-    "temporalCoverage": "from 2012 -2014",
-    "spatialCoverage": "Fracce"
+    "description": "The Pleiades 'User Thematic Commissioning' project follows the Orfeo preparatory program designed to prepare the institutional and scientific community in the use of very high resolution images provided by the Pleiades satellites. It took place from 2012 until mid-2014, with the aim to validate and consolidate the results of the preparatory program. In this context, numerous images were acquired and can be shared within French institutional users. Data are in the official distribution format DIMAP-V2 and the level of preocessing is either PRIMARY or ORTHO.",
+    "temporalCoverage": "from 2012 to 2014",
+    "spatialCoverage": "Africa, Asia, Europe, North America, Oceania, Seven seas (open ocean), South America"
   },
   "Venus": {
     "mission": "Venus",
     "sensorType": "OPTICAL",
-    "description": "Vegetation and Environment monitoring on a New Micro-Satellite is a near polar sun-synchronous orbit microsatellite. It is a joint project of the Israeli Space Agency and CNES.",
-    "temporalCoverage": "from 2017 to present",
-    "spatialCoverage": "110 sites"
+    "description": "Project Venµs.",
+    "temporalCoverage": "from 2017 to 2020",
+    "spatialCoverage": "Africa, Antarctica, Asia, Europe, North America, Oceania, South America"
   }
 }
