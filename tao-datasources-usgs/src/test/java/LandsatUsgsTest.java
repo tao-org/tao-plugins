@@ -4,27 +4,20 @@ import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.configuration.EmptyConfigurationProvider;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
-import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
-import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.usgs.USGSDataSource;
-import ro.cs.tao.datasource.usgs.download.EcostressStrategy;
-import ro.cs.tao.datasource.usgs.download.Landsat8Strategy;
 import ro.cs.tao.datasource.usgs.download.ModisStrategy;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
-import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -57,15 +50,11 @@ public class LandsatUsgsTest {
 //        String sensor = "Landsat8";
         DataQuery query = dataSource.createQuery(sensor);
 
-        QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-        begin.setValue(Date.from(LocalDateTime.of(2020, 11, 1, 0, 0, 0, 0)
-                .atZone(ZoneId.systemDefault())
-                .toInstant()));
+        QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
+        begin.setValue(LocalDateTime.of(2020, 11, 1, 0, 0, 0, 0));
         query.addParameter(begin);
-        QueryParameter<Date> end = query.createParameter(CommonParameterNames.END_DATE, Date.class);
-        end.setValue(Date.from(LocalDateTime.of(2020, 12, 31, 0, 0, 0, 0)
-                .atZone(ZoneId.systemDefault())
-                .toInstant()));
+        QueryParameter<LocalDateTime> end = query.createParameter(CommonParameterNames.END_DATE, LocalDateTime.class);
+        end.setValue(LocalDateTime.of(2020, 12, 31, 0, 0, 0, 0));
         query.addParameter(end);
         Polygon2D aoi = Polygon2D.fromWKT("POLYGON((0.5688037328 42.426901687,1.9031483158 42.4474430295,1.9199728398 41.4586816132,0.6060608364 41.438836285,0.5688037328 42.426901687))");
 
@@ -149,15 +138,11 @@ public class LandsatUsgsTest {
         String[] sensors = dataSource.getSupportedSensors();
 
         DataQuery query = dataSource.createQuery("Landsat8");
-        QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-        begin.setValue(Date.from(LocalDateTime.of(2020, 11, 1, 0, 0, 0, 0)
-                                            .atZone(ZoneId.systemDefault())
-                                            .toInstant()));
+        QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
+        begin.setValue(LocalDateTime.of(2020, 11, 1, 0, 0, 0, 0));
         query.addParameter(begin);
-        QueryParameter<Date> end = query.createParameter(CommonParameterNames.END_DATE, Date.class);
-        end.setValue(Date.from(LocalDateTime.of(2020, 12, 31, 0, 0, 0, 0)
-                                            .atZone(ZoneId.systemDefault())
-                                            .toInstant()));
+        QueryParameter<LocalDateTime> end = query.createParameter(CommonParameterNames.END_DATE, LocalDateTime.class);
+        end.setValue(LocalDateTime.of(2020, 12, 31, 0, 0, 0, 0));
         query.addParameter(end);
         Polygon2D aoi = Polygon2D.fromWKT("POLYGON((0.5688037328 42.426901687,1.9031483158 42.4474430295,1.9199728398 41.4586816132,0.6060608364 41.438836285,0.5688037328 42.426901687))");
 
@@ -186,15 +171,11 @@ public class LandsatUsgsTest {
         String[] sensors = dataSource.getSupportedSensors();
 
         DataQuery query = dataSource.createQuery("Landsat8");
-        QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-        begin.setValue(Date.from(LocalDateTime.of(2019, 1, 1, 0, 0, 0, 0)
-                .atZone(ZoneId.systemDefault())
-                .toInstant()));
+        QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
+        begin.setValue(LocalDateTime.of(2019, 1, 1, 0, 0, 0, 0));
         query.addParameter(begin);
-        QueryParameter<Date> end = query.createParameter(CommonParameterNames.END_DATE, Date.class);
-        end.setValue(Date.from(LocalDateTime.of(2019, 12, 31, 0, 0, 0, 0)
-                .atZone(ZoneId.systemDefault())
-                .toInstant()));
+        QueryParameter<LocalDateTime> end = query.createParameter(CommonParameterNames.END_DATE, LocalDateTime.class);
+        end.setValue(LocalDateTime.of(2019, 12, 31, 0, 0, 0, 0));
         query.addParameter(end);
         Polygon2D aoi = Polygon2D.fromWKT("POLYGON((0.5688037328 42.426901687,1.9031483158 42.4474430295,1.9199728398 41.4586816132,0.6060608364 41.438836285,0.5688037328 42.426901687))");
 

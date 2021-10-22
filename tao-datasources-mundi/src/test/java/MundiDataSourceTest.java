@@ -51,8 +51,6 @@ import ro.cs.tao.spi.ServiceRegistryManager;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -64,22 +62,18 @@ import java.util.logging.Logger;
  */
 public class MundiDataSourceTest {
 
-    private static final QueryParameter<Date> begin;
-    private static final QueryParameter<Date> end;
+    private static final QueryParameter<LocalDateTime> begin;
+    private static final QueryParameter<LocalDateTime> end;
     private static final QueryParameter<Polygon2D> aoi;
     private static final int pageSize;
     private static final int maxResults;
     private static final String rowTemplate;
 
     static {
-        begin = new QueryParameter<>(Date.class, CommonParameterNames.START_DATE);
-        begin.setValue(Date.from(LocalDateTime.of(2018, 9, 1, 0, 0, 0, 0)
-                                         .atZone(ZoneId.systemDefault())
-                                         .toInstant()));
-        end = new QueryParameter<>(Date.class, CommonParameterNames.END_DATE);
-        end.setValue(Date.from(LocalDateTime.of(2018, 9, 30, 0, 0, 0, 0)
-                                       .atZone(ZoneId.systemDefault())
-                                       .toInstant()));
+        begin = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.START_DATE);
+        begin.setValue(LocalDateTime.of(2018, 9, 1, 0, 0, 0, 0));
+        end = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.END_DATE);
+        end.setValue(LocalDateTime.of(2018, 9, 30, 0, 0, 0, 0));
         Polygon2D footprint = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684,24.83885442747927 43.8379609098684," +
                                                         "24.83885442747927 44.795645304033826,22.8042573604346 44.795645304033826," +
                                                         "22.8042573604346 43.8379609098684))");

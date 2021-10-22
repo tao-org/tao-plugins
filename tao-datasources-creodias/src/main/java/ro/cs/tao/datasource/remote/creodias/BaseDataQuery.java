@@ -29,8 +29,8 @@ import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -239,7 +239,7 @@ public abstract class BaseDataQuery extends DataQuery {
                                 builder.setLength(builder.length() - 1);
                             }
                             query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), builder.toString()));
-                        } else if (Date.class.equals(parameter.getType())) {
+                        } else if (LocalDateTime.class.equals(parameter.getType())) {
                             try {
                                 query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), getParameterValue(parameter)));
                             } catch (ConversionException e) {

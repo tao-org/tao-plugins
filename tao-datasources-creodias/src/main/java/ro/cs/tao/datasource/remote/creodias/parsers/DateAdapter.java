@@ -18,17 +18,18 @@ package ro.cs.tao.datasource.remote.creodias.parsers;
 import ro.cs.tao.utils.DateUtils;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import java.text.DateFormat;
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
  * @author Cosmin Cara
  */
-public class DateAdapter extends XmlAdapter<String, Date> {
-    private static final List<DateFormat> formats = new ArrayList<DateFormat>() {{
+public class DateAdapter extends XmlAdapter<String, LocalDateTime> {
+    private static final List<DateTimeFormatter> formats = new ArrayList<DateTimeFormatter>() {{
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss'Z'"));
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SS'Z'"));
@@ -37,17 +38,17 @@ public class DateAdapter extends XmlAdapter<String, Date> {
     }};
 
     @Override
-    public Date unmarshal(String v) throws Exception {
-        for (DateFormat format : formats) {
+    public LocalDateTime unmarshal(String v) throws Exception {
+        for (DateTimeFormatter format : formats) {
             try {
-                return format.parse(v);
-            } catch (ParseException ignored) {}
+                return LocalDateTime.parse(v, format);
+            } catch (DateTimeParseException ignored) {}
         }
         throw new ParseException("Unsupported date format", 0);
     }
 
     @Override
-    public String marshal(Date v) throws Exception {
+    public String marshal(LocalDateTime v) throws Exception {
         return formats.get(0).format(v);
     }
 }

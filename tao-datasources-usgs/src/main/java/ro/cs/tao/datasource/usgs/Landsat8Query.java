@@ -44,6 +44,7 @@ import ro.cs.tao.utils.StringUtilities;
 
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
@@ -62,7 +63,7 @@ public class Landsat8Query extends DataQuery {
 
     static {
         ConverterFactory factory = new ConverterFactory();
-        factory.register(USGSDateParameterConverter.class, Date.class);
+        factory.register(USGSDateParameterConverter.class, LocalDateTime.class);
         converterFactory.put(Landsat8Query.class, factory);
         fieldIds = new HashMap<>();
     }

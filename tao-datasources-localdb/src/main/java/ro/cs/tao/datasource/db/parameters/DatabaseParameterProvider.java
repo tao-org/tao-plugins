@@ -30,6 +30,7 @@ import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -63,7 +64,7 @@ public class DatabaseParameterProvider implements ParameterProvider {
                             put(parameter.getKeyOne(), parameter.getKeyTwo());
                             parameter = ParameterProvider.createParameter("sensorType", "sensor_type_id", "Sensor Type", SensorType.class);
                             put(parameter.getKeyOne(), parameter.getKeyTwo());
-                            parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "acquisition_date", "Acquisition Date", Date.class);
+                            parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "acquisition_date", "Acquisition Date", LocalDateTime.class);
                             put(parameter.getKeyOne(), parameter.getKeyTwo());
                             parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "product_type", "Satellite", String.class, sensor);
                             put(parameter.getKeyOne(), parameter.getKeyTwo());

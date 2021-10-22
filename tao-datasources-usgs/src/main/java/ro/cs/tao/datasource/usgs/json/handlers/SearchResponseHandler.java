@@ -33,9 +33,7 @@ import ro.cs.tao.products.landsat.Landsat8ProductHelper;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.Date;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -47,6 +45,9 @@ import java.util.stream.Collectors;
  * @author Cosmin Cara
  */
 public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
+    private static final DateTimeFormatter firstFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter secondFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX");
+
     private final ObjectMapper mapper;
     private final Pattern LANDSAT8 = Pattern.compile("LC08_.*");
     private final Pattern ECOSTRESS = Pattern.compile(".*(LSTE|ECOSTRESS|CLOUD|WUE|ESI).*");
@@ -98,11 +99,9 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         product.setId(result.getEntityId());
         product.setName(result.getDisplayId());
         try {
-            product.setAcquisitionDate(Date.from(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.systemDefault()).toInstant()));
+            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
         } catch (DateTimeParseException e) {
-            product.setAcquisitionDate(Date.from(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX")).atZone(ZoneId.systemDefault()).toInstant()));
+            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
         }
         if (result.getSpatialCoverage() != null) {
             Polygon2D polygon2D = new Polygon2D();
@@ -139,11 +138,9 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         product.setId(result.getEntityId());
         product.setName(result.getDisplayId());
         try {
-            product.setAcquisitionDate(Date.from(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.systemDefault()).toInstant()));
+            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
         } catch (DateTimeParseException e) {
-            product.setAcquisitionDate(Date.from(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX")).atZone(ZoneId.systemDefault()).toInstant()));
+            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
         }
         if (result.getSpatialCoverage() != null) {
             Polygon2D polygon2D = new Polygon2D();
@@ -173,11 +170,9 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         product.setId(result.getEntityId());
         product.setName(result.getDisplayId());
         try {
-            product.setAcquisitionDate(Date.from(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.systemDefault()).toInstant()));
+            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
         } catch (DateTimeParseException e) {
-            product.setAcquisitionDate(Date.from(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX")).atZone(ZoneId.systemDefault()).toInstant()));
+            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
         }
         if (result.getSpatialCoverage() != null) {
             Polygon2D polygon2D = new Polygon2D();
@@ -207,11 +202,9 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         product.setId(result.getEntityId());
         product.setName(result.getDisplayId());
         try {
-            product.setAcquisitionDate(Date.from(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.systemDefault()).toInstant()));
+            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
         } catch (DateTimeParseException e) {
-            product.setAcquisitionDate(Date.from(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX")).atZone(ZoneId.systemDefault()).toInstant()));
+            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
         }
         if (result.getSpatialCoverage() != null) {
             Polygon2D polygon2D = new Polygon2D();
@@ -241,11 +234,9 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         product.setId(result.getEntityId());
         product.setName(result.getDisplayId());
         try {
-            product.setAcquisitionDate(Date.from(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.systemDefault()).toInstant()));
+            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
         } catch (DateTimeParseException e) {
-            product.setAcquisitionDate(Date.from(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX")).atZone(ZoneId.systemDefault()).toInstant()));
+            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
         }
         if (result.getSpatialCoverage() != null) {
             Polygon2D polygon2D = new Polygon2D();

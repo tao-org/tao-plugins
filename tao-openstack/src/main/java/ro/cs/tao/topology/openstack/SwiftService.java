@@ -1,6 +1,7 @@
 package ro.cs.tao.topology.openstack;
 
 import org.openstack4j.api.exceptions.AuthenticationException;
+import org.openstack4j.api.storage.ObjectStorageContainerService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.common.Payloads;
 import org.openstack4j.model.storage.object.SwiftObject;
@@ -17,14 +18,39 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class ObjectStorageService {
+public class SwiftService {
     private final Logger logger;
     private org.openstack4j.api.storage.ObjectStorageService objectStorageService;
 
-    public ObjectStorageService() {
-        this.logger = Logger.getLogger(ObjectStorageService.class.getName());
+    public SwiftService() {
+        this.logger = Logger.getLogger(SwiftService.class.getName());
     }
 
+    public String createFolder(String name, String containerName) throws IOException {
+        if (name == null) {
+            throw new IllegalArgumentException("[name] is null");
+        }
+        if (!Paths.get(name).isAbsolute()) {
+            throw new IllegalArgumentException("[name] must be an absolute paht");
+        }
+        if (StringUtilities.isNullOrEmpty(containerName)) {
+            throw new IllegalArgumentException("[containerName] is null or empty");
+        }
+        authenticate();
+        try {
+            final ObjectStorageContainerService containerService = this.objectStorageService.containers();
+            final ActionResponse actionResponse = containerService.create(containerName);
+            if (actionResponse != null && !actionResponse.isSuccess()) {
+                throw new IOException(String.format("Failed to connect to container %s. Response code: %d; fault: %s",
+                                                    containerName, actionResponse.getCode(), actionResponse.getFault()));
+            } else {
+                logger.finest(String.format("Connected to container %s", containerName));
+            }
+            return containerService.createPath(containerName, name);
+        } catch (Exception ex) {
+            throw new IOException(String.format("Cannot create path %s in container. Reason: %s", name, ex.getMessage()));
+        }
+    }
 
     public String copy(Path source, String containerName) throws IOException {
         if (source == null) {
