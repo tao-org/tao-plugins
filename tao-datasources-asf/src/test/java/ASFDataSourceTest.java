@@ -13,8 +13,10 @@ import ro.cs.tao.spi.ServiceRegistryManager;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -59,10 +61,8 @@ public class ASFDataSourceTest {
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[0]);
-            QueryParameter<Date> begin = query.createParameter("startDate", Date.class);
-            begin.setValue(Date.from(LocalDateTime.of(2019, 8, 1, 0, 0, 0, 0)
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()));
+            QueryParameter<LocalDateTime> begin = query.createParameter("startDate", LocalDateTime.class);
+            begin.setValue(LocalDateTime.of(2019, 8, 1, 0, 0, 0, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((20.928955 43.213214," +
                     "30.953979 43.213214," +
@@ -141,10 +141,8 @@ public class ASFDataSourceTest {
             }
             System.out.println(builder.toString());
             DataQuery query = dataSource.createQuery(sensors[0]);
-            QueryParameter<Date> begin = query.createParameter("startDate", Date.class);
-            begin.setValue(Date.from(LocalDateTime.of(2019, 8, 1, 0, 0, 0, 0)
-                                             .atZone(ZoneId.systemDefault())
-                                             .toInstant()));
+            QueryParameter<LocalDateTime> begin = query.createParameter("startDate", LocalDateTime.class);
+            begin.setValue(LocalDateTime.of(2019, 8, 1, 0, 0, 0, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((20.928955 43.213214," +
                                                       "30.953979 43.213214," +

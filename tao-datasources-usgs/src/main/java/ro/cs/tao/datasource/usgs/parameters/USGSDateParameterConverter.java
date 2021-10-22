@@ -21,16 +21,14 @@ import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 /**
  * @author Cosmin Cara
  */
 public class USGSDateParameterConverter extends DateParameterConverter {
     private static final String DATE_FORMAT = "yyyy-MM-dd";
-    public USGSDateParameterConverter(QueryParameter parameter) {
+    public USGSDateParameterConverter(QueryParameter<LocalDateTime> parameter) {
         super(parameter);
         this.dateFormat = DateTimeFormatter.ofPattern(DATE_FORMAT);
     }
@@ -42,10 +40,9 @@ public class USGSDateParameterConverter extends DateParameterConverter {
         } else if (parameter.isInterval() && CommonParameterNames.END_DATE.equals(parameter.getName())) {
             return parameter.getMaxValueAsFormattedDate(DATE_FORMAT);
         }
-        Date minValue = (Date) parameter.getValue();
+        LocalDateTime minValue = parameter.getValue();
         if (minValue != null) {
-            LocalDateTime minDate = minValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            return minDate.format(dateFormat);
+            return minValue.format(dateFormat);
         } else {
             return null;
         }

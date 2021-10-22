@@ -53,7 +53,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.cert.X509Certificate;
-import java.text.DateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -72,7 +72,7 @@ import java.util.logging.Logger;
 public class GeostormClient implements OutputDataHandler<EOProduct> {
 
     private static final Logger logger = Logger.getLogger(GeostormClient.class.getName());
-    private static final DateFormat dateFormatter = DateUtils.getFormatterAtUTC("yyyy-MM-dd");
+    private static final DateTimeFormatter dateFormatter = DateUtils.getFormatterAtUTC("yyyy-MM-dd");
 
     private RestTemplate restTemplate;
 

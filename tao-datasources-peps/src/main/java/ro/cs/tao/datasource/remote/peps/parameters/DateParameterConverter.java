@@ -20,20 +20,18 @@ import ro.cs.tao.datasource.converters.DefaultParameterConverter;
 import ro.cs.tao.datasource.param.QueryParameter;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 /**
  * @author Cosmin Cara
  */
-public class DateParameterConverter extends DefaultParameterConverter {
+public class DateParameterConverter extends DefaultParameterConverter<LocalDateTime> {
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private final DateTimeFormatter dateFormat;
 
-    public DateParameterConverter(QueryParameter parameter) {
+    public DateParameterConverter(QueryParameter<LocalDateTime> parameter) {
         super(parameter);
-        if (!Date.class.equals(parameter.getType())) {
+        if (!LocalDateTime.class.equals(parameter.getType())) {
             throw new IllegalArgumentException("Invalid parameter type");
         }
         dateFormat = DateTimeFormatter.ofPattern(DATE_FORMAT);
@@ -41,10 +39,6 @@ public class DateParameterConverter extends DefaultParameterConverter {
 
     @Override
     public String stringValue() throws ConversionException {
-        StringBuilder builder = new StringBuilder();
-        LocalDateTime date = ((Date) parameter.getValue()).toInstant()
-                .atZone(ZoneId.systemDefault()).toLocalDateTime();
-        builder.append(date.format(dateFormat));
-        return builder.toString();
+        return parameter.getValue().format(dateFormat);
     }
 }

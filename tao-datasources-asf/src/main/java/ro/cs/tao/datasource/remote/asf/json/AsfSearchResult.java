@@ -17,7 +17,7 @@ package ro.cs.tao.datasource.remote.asf.json;
 
 import com.fasterxml.jackson.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,9 +63,9 @@ public class AsfSearchResult {
     @JsonProperty("browse")
     private String browseUrl;
     @JsonProperty("sceneDate")
-    private Date sceneDate;
+    private LocalDateTime sceneDate;
     @JsonProperty("processingDate")
-    private Date processingDate;
+    private LocalDateTime processingDate;
     @JsonProperty("sizeMB")
     private String sizeMb;
     @JsonProperty("fileName")
@@ -152,15 +152,15 @@ public class AsfSearchResult {
         this.browseUrl = browseUrl;
     }
 
-    public Date getSceneDate() { return sceneDate; }
+    public LocalDateTime getSceneDate() { return sceneDate; }
 
-    public void setSceneDate(Date sceneDate) { this.sceneDate = sceneDate; }
+    public void setSceneDate(LocalDateTime sceneDate) { this.sceneDate = sceneDate; }
 
-    public Date getProcessingDate() {
+    public LocalDateTime getProcessingDate() {
         return processingDate;
     }
 
-    public void setProcessingDate(Date processingDate) {
+    public void setProcessingDate(LocalDateTime processingDate) {
         this.processingDate = processingDate;
     }
 

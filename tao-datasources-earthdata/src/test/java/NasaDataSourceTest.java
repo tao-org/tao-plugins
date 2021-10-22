@@ -12,8 +12,6 @@ import ro.cs.tao.spi.ServiceRegistryManager;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -22,28 +20,20 @@ import java.util.logging.Logger;
 
 public class NasaDataSourceTest {
 
-    private static final QueryParameter<Date> begin;
-    private static final QueryParameter<Date> end;
+    private static final QueryParameter<LocalDateTime> begin;
+    private static final QueryParameter<LocalDateTime> end;
     private static final QueryParameter<Polygon2D> aoi;
 
     static {
-        begin = new QueryParameter<>(Date.class, CommonParameterNames.START_DATE);
-        end = new QueryParameter<>(Date.class, CommonParameterNames.END_DATE);
-        begin.setMinValue(Date.from(LocalDateTime.of(2020, 2, 1, 0, 0, 0, 0)
-                .atZone(ZoneId.systemDefault())
-                .toInstant()));
-        begin.setMaxValue(Date.from(LocalDateTime.of(2020, 2, 2, 23, 59, 59, 0)
-                .atZone(ZoneId.systemDefault())
-                .toInstant()));
+        begin = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.START_DATE);
+        end = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.END_DATE);
+        begin.setMinValue(LocalDateTime.of(2020, 2, 1, 0, 0, 0, 0));
+        begin.setMaxValue(LocalDateTime.of(2020, 2, 2, 23, 59, 59, 0));
 //            begin.setValue(Date.from(LocalDateTime.of(2020, 2, 1, 0, 0, 0, 0)
 //                    .atZone(ZoneId.systemDefault())
 //                    .toInstant()));
-        end.setMinValue(Date.from(LocalDateTime.of(2020, 2, 1, 0, 0, 0, 0)
-                .atZone(ZoneId.systemDefault())
-                .toInstant()));
-        end.setMaxValue(Date.from(LocalDateTime.of(2020, 2, 2, 23, 59, 59, 0)
-                .atZone(ZoneId.systemDefault())
-                .toInstant()));
+        end.setMinValue(LocalDateTime.of(2020, 2, 1, 0, 0, 0, 0));
+        end.setMaxValue(LocalDateTime.of(2020, 2, 2, 23, 59, 59, 0));
 //            end.setValue(Date.from(LocalDateTime.of(2020, 2, 2, 23, 59, 59, 0)
 //                    .atZone(ZoneId.systemDefault())
 //                    .toInstant()));

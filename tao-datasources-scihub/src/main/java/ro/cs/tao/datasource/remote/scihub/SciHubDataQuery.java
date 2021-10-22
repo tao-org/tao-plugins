@@ -47,7 +47,9 @@ import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,14 +62,14 @@ public class SciHubDataQuery extends DataQuery {
     static final Pattern S1Pattern =
             Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
 
-    private static final DateFormat dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
+    private static final DateTimeFormatter dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
 
     private final String sensorName;
 
     static {
         final ConverterFactory factory = new ConverterFactory();
         factory.register(SciHubPolygonParameterConverter.class, Polygon2D.class);
-        factory.register(DateParameterConverter.class, Date.class);
+        factory.register(DateParameterConverter.class, LocalDateTime.class);
         factory.register(DoubleParameterConverter.class, Double.class);
         converterFactory.put(SciHubDataQuery.class, factory);
     }
@@ -161,8 +163,8 @@ public class SciHubDataQuery extends DataQuery {
                                                 String dateString = productHelper.getProcessingDate();
                                                 if (dateString != null) {
                                                     try {
-                                                        result.setProcessingDate(dateFormat.parse(dateString));
-                                                    } catch (java.text.ParseException ignored) {
+                                                        result.setProcessingDate(LocalDateTime.parse(dateString, dateFormat));
+                                                    } catch (DateTimeParseException ignored) {
                                                     }
                                                 }
                                             }
@@ -395,7 +397,7 @@ public class SciHubDataQuery extends DataQuery {
                                     query = new StringBuilder(query.substring(0, query.length() - 4));
                                 }
                                 query.append(")");
-                            } else if (Date.class.equals(parameter.getType())) {
+                            } else if (LocalDateTime.class.equals(parameter.getType())) {
                                 query.append(getRemoteName(entry.getKey())).append(":[");
                                 try {
                                     query.append(getParameterValue(parameter));

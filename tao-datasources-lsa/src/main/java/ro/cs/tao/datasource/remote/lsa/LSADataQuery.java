@@ -35,8 +35,8 @@ import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +46,7 @@ public class LSADataQuery extends DataQuery {
 
     static {
         final ConverterFactory factory = new ConverterFactory();
-        factory.register(LSADateParameterConverter.class, Date.class);
+        factory.register(LSADateParameterConverter.class, LocalDateTime.class);
         converterFactory.put(LSADataQuery.class, factory);
     }
 

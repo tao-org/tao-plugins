@@ -16,8 +16,6 @@ import ro.cs.tao.spi.ServiceRegistryManager;
 import java.net.URI;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -66,10 +64,8 @@ public class LSADataSourceTest {
         component.setUserCredentials("kraftek", "cei7pitici.");
         final DataQuery query = component.createQuery();
         query.addParameter("productType", productType);
-        final QueryParameter<Date> begin = query.createParameter("startDate", Date.class);
-        begin.setValue(Date.from(LocalDateTime.of(2021, 8, 1, 0, 0, 0, 0)
-                .atZone(ZoneId.systemDefault())
-                .toInstant()));
+        final QueryParameter<LocalDateTime> begin = query.createParameter("startDate", LocalDateTime.class);
+        begin.setValue(LocalDateTime.of(2021, 8, 1, 0, 0, 0, 0));
         query.addParameter(begin);
         final Polygon2D aoi = Polygon2D.fromWKT("POLYGON((21.99462890625 47.109375," +
                 "27.22412109375 47.1533203125," +

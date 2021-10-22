@@ -17,8 +17,8 @@ import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +27,7 @@ public class TheiaDataQuery extends DataQuery {
     static {
         ConverterFactory factory = new ConverterFactory();
         factory.register(PolygonParameterConverter.class, Polygon2D.class);
-        factory.register(DateParameterConverter.class, Date.class);
+        factory.register(DateParameterConverter.class, LocalDateTime.class);
         factory.register(RangeParameterConverter.class, Double.class);
         converterFactory.put(TheiaDataQuery.class, factory);
     }

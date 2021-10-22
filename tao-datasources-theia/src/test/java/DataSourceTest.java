@@ -56,8 +56,6 @@ import ro.cs.tao.spi.ServiceRegistryManager;
 
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -90,13 +88,9 @@ public class DataSourceTest {
             dataSource.setCredentials("kraftek@c-s.ro", "cei7pitici.");
             DataQuery query = dataSource.createQuery("Landsat8");
             query.addParameter("collection", "LANDSAT");
-            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
+            QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
+            begin.setMinValue(LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0));
+            begin.setMaxValue(LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((-0.0941841235145851 47.76641577395455,-0.02387001418917634 44.20164248362536,6.655817485810821 44.25202844462507,5.390190340043613 47.908004837800206,-0.0941841235145851 47.76641577395455))");
 

@@ -54,8 +54,6 @@ import ro.cs.tao.spi.ServiceRegistryManager;
 
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -69,9 +67,9 @@ public class DataSourceTest {
 
     public static void main(String[] args) throws JsonProcessingException {
         setup();
-        //SciHub_Sentinel1_Test();
+        SciHub_Sentinel1_Test();
         //SciHub_Sentinel2_Count_Test();
-        SciHub_Sentinel2_APIHUB_Test();
+        //SciHub_Sentinel2_APIHUB_Test();
         //SciHub_Sentinel2_DHUS_Test();
         //printParams();
     }
@@ -94,13 +92,9 @@ public class DataSourceTest {
 
             DataQuery query = dataSource.createQuery(sensors[1]);
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
-            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(2016, 2, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(2017, 2, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
+            QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
+            begin.setMinValue(LocalDateTime.of(2016, 2, 1, 0, 0, 0, 0));
+            begin.setMaxValue(LocalDateTime.of(2017, 2, 1, 0, 0, 0, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
                                                       "24.83885442747927 43.8379609098684," +
@@ -129,13 +123,9 @@ public class DataSourceTest {
 
             DataQuery query = dataSource.createQuery(sensors[1]);
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
-            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
+            QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
+            begin.setMinValue(LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0));
+            begin.setMaxValue(LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
                                                       "24.83885442747927 43.8379609098684," +
@@ -181,13 +171,9 @@ public class DataSourceTest {
 
             DataQuery query = dataSource.createQuery(sensors[1]);
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
-            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0)
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0)
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()));
+            QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
+            begin.setMinValue(LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0));
+            begin.setMaxValue(LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
                     "24.83885442747927 43.8379609098684," +
@@ -234,13 +220,9 @@ public class DataSourceTest {
 
             DataQuery query = dataSource.createQuery(sensors[0]);
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-1");
-            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(2019, 11, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(2019, 12, 15, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
+            QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
+            begin.setMinValue(LocalDateTime.of(2019, 11, 1, 0, 0, 0, 0));
+            begin.setMaxValue(LocalDateTime.of(2019, 12, 15, 0, 0, 0, 0));
             query.addParameter(begin);
             query.addParameter(CommonParameterNames.POLARISATION, "VV");
             query.addParameter("sensorOperationalMode", "IW");

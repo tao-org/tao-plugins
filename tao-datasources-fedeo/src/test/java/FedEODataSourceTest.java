@@ -13,9 +13,7 @@ import ro.cs.tao.spi.ServiceRegistryManager;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
@@ -69,12 +67,8 @@ public class FedEODataSourceTest {
         String collection = (String) params.get("parentIdentifier").getValueSet()[collectionIndex];
         DataQuery query = dataSource.createQuery(platform);
         query.addParameter(new QueryParameter<>(String.class, "parentIdentifier", collection));
-        query.addParameter(CommonParameterNames.START_DATE, Date.from(LocalDateTime.of(2011, 3, 21, 0, 0, 0, 0)
-                .atZone(ZoneId.systemDefault())
-                .toInstant()));
-        query.addParameter(CommonParameterNames.END_DATE, Date.from(LocalDateTime.of(2021, 3, 22, 0, 0, 0, 0)
-                .atZone(ZoneId.systemDefault())
-                .toInstant()));
+        query.addParameter(CommonParameterNames.START_DATE, LocalDateTime.of(2011, 3, 21, 0, 0, 0, 0));
+        query.addParameter(CommonParameterNames.END_DATE, LocalDateTime.of(2021, 3, 22, 0, 0, 0, 0));
         Polygon2D aoi = Polygon2D.fromWKT("POLYGON((28.7037 44.1142,20.4266 44.1142,20.4266 49.0227,28.7037 49.0227,28.7037 44.1142))");
         query.addParameter(CommonParameterNames.FOOTPRINT, aoi);
         query.setPageSize(10);
@@ -141,14 +135,10 @@ public class FedEODataSourceTest {
                     DataQuery query = dataSource.createQuery(platform);
                     query.addParameter(new QueryParameter<>(String.class, "parentIdentifier", collection));
                     if (params.containsKey(CommonParameterNames.START_DATE)) {
-                        query.addParameter(CommonParameterNames.START_DATE, Date.from(LocalDateTime.of(2011, 3, 21, 0, 0, 0, 0)
-                                .atZone(ZoneId.systemDefault())
-                                .toInstant()));
+                        query.addParameter(CommonParameterNames.START_DATE, LocalDateTime.of(2011, 3, 21, 0, 0, 0, 0));
                     }
                     if (params.containsKey(CommonParameterNames.END_DATE)) {
-                        query.addParameter(CommonParameterNames.END_DATE, Date.from(LocalDateTime.of(2021, 3, 22, 0, 0, 0, 0)
-                                .atZone(ZoneId.systemDefault())
-                                .toInstant()));
+                        query.addParameter(CommonParameterNames.END_DATE, LocalDateTime.of(2021, 3, 22, 0, 0, 0, 0));
                     }
                     if (params.containsKey(CommonParameterNames.FOOTPRINT)) {
                         Polygon2D aoi = Polygon2D.fromWKT("POLYGON((28.7037 44.1142,20.4266 44.1142,20.4266 49.0227,28.7037 49.0227,28.7037 44.1142))");

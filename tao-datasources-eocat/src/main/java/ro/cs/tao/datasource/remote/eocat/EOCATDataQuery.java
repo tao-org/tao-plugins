@@ -34,8 +34,8 @@ import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +45,7 @@ public class EOCATDataQuery extends DataQuery {
 
     static {
         final ConverterFactory factory = new ConverterFactory();
-        factory.register(EOCATDateParameterConverter.class, Date.class);
+        factory.register(EOCATDateParameterConverter.class, LocalDateTime.class);
         converterFactory.put(EOCATDataQuery.class, factory);
     }
 

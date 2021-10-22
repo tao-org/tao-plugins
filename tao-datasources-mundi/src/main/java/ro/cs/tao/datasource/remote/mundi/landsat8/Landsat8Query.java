@@ -11,13 +11,13 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
 
 import java.lang.reflect.Array;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Landsat8Query extends BaseDataQuery {
 
     static {
         ConverterFactory factory = new ConverterFactory();
-        factory.register(SimpleDateParameterConverter.class, Date.class);
+        factory.register(SimpleDateParameterConverter.class, LocalDateTime.class);
         converterFactory.put(Landsat8Query.class, factory);
     }
 

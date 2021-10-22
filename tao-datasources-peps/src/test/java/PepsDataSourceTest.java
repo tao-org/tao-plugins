@@ -13,8 +13,6 @@ import ro.cs.tao.spi.ServiceRegistryManager;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -46,15 +44,11 @@ public class PepsDataSourceTest {
             query.addParameter("collection", Collection.S2ST.toString());
             query.addParameter("platformName", "S2A");
 
-            QueryParameter<Date> begin = query.createParameter("startDate", Date.class);
-            begin.setValue(Date.from(LocalDateTime.of(2017, 12, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
+            QueryParameter<LocalDateTime> begin = query.createParameter("startDate", LocalDateTime.class);
+            begin.setValue(LocalDateTime.of(2017, 12, 1, 0, 0, 0, 0));
             query.addParameter(begin);
-            QueryParameter<Date> end = query.createParameter("endDate", Date.class);
-            end.setValue(Date.from(LocalDateTime.of(2017, 12, 6, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
+            QueryParameter<LocalDateTime> end = query.createParameter("endDate", LocalDateTime.class);
+            end.setValue(LocalDateTime.of(2017, 12, 6, 0, 0, 0, 0));
             query.addParameter(end);
             /*Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
                                                       "24.83885442747927 43.8379609098684," +

@@ -16,8 +16,10 @@ import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class GenerateProductList {
@@ -54,13 +56,9 @@ public class GenerateProductList {
             final DataQuery query = dataSource.createQuery(satellite.replace("-", ""));
             query.addParameter(CommonParameterNames.PLATFORM, satellite);
             query.addParameter(CommonParameterNames.PRODUCT_TYPE, productType);
-            final QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(year, 1, 1, 0, 0, 0, 0)
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(year, 12, 31, 23, 59, 59, 0)
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()));
+            final QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
+            begin.setMinValue(LocalDateTime.of(year, 1, 1, 0, 0, 0, 0));
+            begin.setMaxValue(LocalDateTime.of(year, 12, 31, 23, 59, 59, 0));
             query.addParameter(begin);
             final Polygon2D aoi = Polygon2D.fromWKT(footprint);
             query.addParameter(CommonParameterNames.FOOTPRINT, aoi);

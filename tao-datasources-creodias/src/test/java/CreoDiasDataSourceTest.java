@@ -51,8 +51,6 @@ import ro.cs.tao.spi.ServiceRegistryManager;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -64,22 +62,18 @@ import java.util.logging.Logger;
  */
 public class CreoDiasDataSourceTest {
 
-    private static final QueryParameter<Date> begin;
-    private static final QueryParameter<Date> end;
+    private static final QueryParameter<LocalDateTime> begin;
+    private static final QueryParameter<LocalDateTime> end;
     private static final QueryParameter<Polygon2D> aoi;
     private static final int pageSize;
     private static final int maxResults;
     private static final String rowTemplate;
 
     static {
-        begin = new QueryParameter<>(Date.class, CommonParameterNames.START_DATE);
-        begin.setValue(Date.from(LocalDateTime.of(2019, 5, 21, 0, 0, 0, 0)
-                                         .atZone(ZoneId.systemDefault())
-                                         .toInstant()));
-        end = new QueryParameter<>(Date.class, CommonParameterNames.END_DATE);
-        end.setValue(Date.from(LocalDateTime.of(2019, 10, 1, 23, 59, 59, 0)
-                                       .atZone(ZoneId.systemDefault())
-                                       .toInstant()));
+        begin = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.START_DATE);
+        begin.setValue(LocalDateTime.of(2019, 5, 21, 0, 0, 0, 0));
+        end = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.END_DATE);
+        end.setValue(LocalDateTime.of(2019, 10, 1, 23, 59, 59, 0));
         Polygon2D footprint = Polygon2D.fromWKT("POLYGON((4.67 53.134,5.964 53.108,5.839 51.44,4.608 51.463,4.67 53.134))");
         aoi = new QueryParameter<>(Polygon2D.class, CommonParameterNames.FOOTPRINT);
         aoi.setValue(footprint);
