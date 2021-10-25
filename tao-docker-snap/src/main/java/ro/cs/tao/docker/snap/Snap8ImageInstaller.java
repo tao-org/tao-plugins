@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Snap8ImageInstaller extends BaseImageInstaller {
 
     @Override
-    protected String getContainerName() { return "snap-8"; }
+    protected String getContainerName() { return "snap-8-0-0"; }
 
     @Override
     protected String getDescription() { return "SNAP"; }
@@ -29,6 +29,11 @@ public class Snap8ImageInstaller extends BaseImageInstaller {
     protected String getPathInSystem() {
         Path path = findInPath(SystemUtils.IS_OS_WINDOWS ? "gpt.exe" : "gpt");
         return path != null ? path.getParent().toString() : null;
+    }
+
+    @Override
+    protected String[] additionalResources() {
+        return new String[] { "update_snap.sh" };
     }
 
     @Override

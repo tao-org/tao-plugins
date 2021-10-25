@@ -51,7 +51,7 @@
 			{
 				"id": "dualCoefficientsFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "AVERAGE_POLAR_DUAL_VIEW",
 				"description": "Coefficient file for the dual-view SST",
 				"label": "PdualCoefficientsFile",
@@ -61,7 +61,7 @@
 			{
 				"id": "dualMaskExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "!cloud_flags_nadir.LAND and !cloud_flags_nadir.CLOUDY and !cloud_flags_nadir.SUN_GLINT and !cloud_flags_fward.LAND and !cloud_flags_fward.CLOUDY and !cloud_flags_fward.SUN_GLINT",
 				"description": "ROI-mask used for the dual-view SST",
 				"label": "PdualMaskExpression",
@@ -79,7 +79,7 @@
 			{
 				"id": "nadirCoefficientsFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "AVERAGE_POLAR_SINGLE_VIEW",
 				"description": "Coefficient file for the nadir-view SST",
 				"label": "PnadirCoefficientsFile",
@@ -89,7 +89,7 @@
 			{
 				"id": "nadirMaskExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "!cloud_flags_nadir.LAND and !cloud_flags_nadir.CLOUDY and !cloud_flags_nadir.SUN_GLINT",
 				"description": "ROI-mask used for the nadir-view SST",
 				"label": "PnadirMaskExpression",
@@ -150,7 +150,7 @@
 			{
 				"id": "L1BCharacterisationFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "L1B characterisation file is needed to specify first forward pixel and first nadir pixel",
 				"label": "PL1BCharacterisationFile",
@@ -228,7 +228,7 @@
 			{
 				"id": "targetWindowSizeInMeter",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 50,
 				"description": "Target window size",
 				"label": "PtargetWindowSizeInMeter",
@@ -315,7 +315,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -324,7 +324,7 @@
 			{
 				"id": "demResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BICUBIC_INTERPOLATION",
 				"description": "Sets parameter 'demResamplingMethod' to <string>",
 				"label": "PdemResamplingMethod",
@@ -333,7 +333,7 @@
 			{
 				"id": "externalDEMFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'externalDEMFile' to <file>",
 				"label": "PexternalDEMFile",
@@ -351,7 +351,7 @@
 			{
 				"id": "elevationBandName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "elevation",
 				"description": "The elevation band name",
 				"label": "PelevationBandName",
@@ -420,7 +420,7 @@
 			{
 				"id": "resamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "NEAREST_NEIGHBOUR",
 				"description": "Sets parameter 'resamplingMethod' to <string>",
 				"label": "PresamplingMethod",
@@ -472,7 +472,7 @@
 			{
 				"id": "climatologiesFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "A product to read climatology data from. Only required if the aerosol type shall be retrieved. If not provided, a default product will be written to the local aux data directory",
 				"label": "PclimatologiesFile",
@@ -553,7 +553,7 @@
 			{
 				"id": "pathToLut",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Full path to S2 Lookup Table",
 				"label": "PpathToLut",
@@ -562,7 +562,7 @@
 			{
 				"id": "scale",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 20,
 				"description": "The downscaling factor for AOT retrieval grid. E.g. 20 for S2 60m --> 1.2km",
 				"label": "Pscale",
@@ -571,7 +571,7 @@
 			{
 				"id": "nameOfAODDefault",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "If given, AOD default values will be taken from the source products's raster data node with this name",
 				"label": "PnameOfAODDefault",
@@ -632,7 +632,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -684,7 +684,7 @@
 			{
 				"id": "orbitType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Sentinel Precise (Auto Download)",
 				"description": "Sets parameter 'orbitType' to <string>",
 				"label": "PorbitType",
@@ -694,7 +694,7 @@
 			{
 				"id": "polyDegree",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 3,
 				"description": "Sets parameter 'polyDegree' to <int>",
 				"label": "PpolyDegree",
@@ -755,7 +755,7 @@
 			{
 				"id": "tcwvExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "30.0",
 				"description": "TCWV value to use in SST retrieval",
 				"label": "PtcwvExpression",
@@ -773,7 +773,7 @@
 			{
 				"id": "asdiCoefficientsFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "ASDI_AATSR",
 				"description": "Coefficient file for ASDI",
 				"label": "PasdiCoefficientsFile",
@@ -783,7 +783,7 @@
 			{
 				"id": "asdiMaskExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "ROI-mask used for the ASDI",
 				"label": "PasdiMaskExpression",
@@ -801,7 +801,7 @@
 			{
 				"id": "dualCoefficientsFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "ARC_D2_AATSR",
 				"description": "Coefficient file for the dual-view SST",
 				"label": "PdualCoefficientsFile",
@@ -811,7 +811,7 @@
 			{
 				"id": "dualMaskExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "ROI-mask used for the dual-view SST",
 				"label": "PdualMaskExpression",
@@ -829,7 +829,7 @@
 			{
 				"id": "nadirCoefficientsFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "ARC_N2_AATSR",
 				"description": "Coefficient file for the nadir-view SST",
 				"label": "PnadirCoefficientsFile",
@@ -839,7 +839,7 @@
 			{
 				"id": "nadirMaskExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "ROI-mask used for the nadir-view SST",
 				"label": "PnadirMaskExpression",
@@ -900,7 +900,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -914,7 +914,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -928,7 +928,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -980,7 +980,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the ARVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -989,7 +989,7 @@
 			{
 				"id": "blueSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The blue band for the ARVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PblueSourceBand",
@@ -998,7 +998,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the ARVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -1050,7 +1050,7 @@
 			{
 				"id": "fftLength",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 256,
 				"description": "Length of filtering window",
 				"label": "PfftLength",
@@ -1060,7 +1060,7 @@
 			{
 				"id": "aziFilterOverlap",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 0,
 				"description": "Overlap between filtering windows in azimuth direction [lines]",
 				"label": "PaziFilterOverlap",
@@ -1123,7 +1123,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -1132,7 +1132,7 @@
 			{
 				"id": "demResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BICUBIC_INTERPOLATION",
 				"description": "Sets parameter 'demResamplingMethod' to <string>",
 				"label": "PdemResamplingMethod",
@@ -1141,7 +1141,7 @@
 			{
 				"id": "externalDEMFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'externalDEMFile' to <file>",
 				"label": "PexternalDEMFile",
@@ -1159,7 +1159,7 @@
 			{
 				"id": "resamplingType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BISINC_5_POINT_INTERPOLATION",
 				"description": "The method to be used when resampling the slave grid onto the master grid",
 				"label": "PresamplingType",
@@ -1325,7 +1325,7 @@
 			{
 				"id": "bandNamePattern",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Band name regular expression pattern",
 				"label": "PbandNamePattern",
@@ -1377,7 +1377,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -1391,7 +1391,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -1405,7 +1405,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -1448,7 +1448,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the BI2 computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -1457,7 +1457,7 @@
 			{
 				"id": "greenSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The green band for the BI2 computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PgreenSourceBand",
@@ -1466,7 +1466,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the BI2 computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -1518,7 +1518,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -1532,7 +1532,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -1546,7 +1546,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -1580,7 +1580,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the BI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -1589,7 +1589,7 @@
 			{
 				"id": "greenSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The green band for the BI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PgreenSourceBand",
@@ -1732,7 +1732,7 @@
 			{
 				"id": "tomsomiStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiStartProduct",
@@ -1741,7 +1741,7 @@
 			{
 				"id": "tomsomiEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiEndProduct",
@@ -1750,7 +1750,7 @@
 			{
 				"id": "ncepStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepStartProduct",
@@ -1759,7 +1759,7 @@
 			{
 				"id": "ncepEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepEndProduct",
@@ -1769,7 +1769,7 @@
 			{
 				"id": "validPixelExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "water_confidence_mid || water_confidence_high",
 				"description": "Defines the pixels which are valid for processing",
 				"label": "PvalidPixelExpression",
@@ -1886,7 +1886,7 @@
 			{
 				"id": "atmosphericAuxDataPath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Path to the atmospheric auxiliary data directory",
 				"label": "PatmosphericAuxDataPath",
@@ -1895,7 +1895,7 @@
 			{
 				"id": "alternativeNNPath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Path to an alternative set of neuronal nets",
 				"label": "PalternativeNNPath",
@@ -1904,7 +1904,7 @@
 			{
 				"id": "netSet",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "C2RCC-Nets",
 				"description": "Set of neuronal nets for algorithm",
 				"label": "PnetSet",
@@ -2077,7 +2077,7 @@
 			{
 				"id": "tomsomiStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiStartProduct",
@@ -2086,7 +2086,7 @@
 			{
 				"id": "tomsomiEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiEndProduct",
@@ -2095,7 +2095,7 @@
 			{
 				"id": "ncepStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepStartProduct",
@@ -2104,7 +2104,7 @@
 			{
 				"id": "ncepEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepEndProduct",
@@ -2114,7 +2114,7 @@
 			{
 				"id": "validPixelExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "!l1_flags.INVALID && !l1_flags.LAND_OCEAN",
 				"description": "Defines the pixels which are valid for processing",
 				"label": "PvalidPixelExpression",
@@ -2222,7 +2222,7 @@
 			{
 				"id": "atmosphericAuxDataPath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Path to the atmospheric auxiliary data directory",
 				"label": "PatmosphericAuxDataPath",
@@ -2231,7 +2231,7 @@
 			{
 				"id": "alternativeNNPath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Path to an alternative set of neuronal nets",
 				"label": "PalternativeNNPath",
@@ -2240,7 +2240,7 @@
 			{
 				"id": "netSet",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "C2RCC-Nets",
 				"description": "Set of neuronal nets for algorithm",
 				"label": "PnetSet",
@@ -2431,7 +2431,7 @@
 			{
 				"id": "tomsomiStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiStartProduct",
@@ -2440,7 +2440,7 @@
 			{
 				"id": "tomsomiEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiEndProduct",
@@ -2449,7 +2449,7 @@
 			{
 				"id": "ncepStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepStartProduct",
@@ -2458,7 +2458,7 @@
 			{
 				"id": "ncepEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepEndProduct",
@@ -2468,7 +2468,7 @@
 			{
 				"id": "validPixelExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "!quality_flags.invalid && (!quality_flags.land || quality_flags.fresh_inland_water)",
 				"description": "Defines the pixels which are valid for processing",
 				"label": "PvalidPixelExpression",
@@ -2576,7 +2576,7 @@
 			{
 				"id": "atmosphericAuxDataPath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Path to the atmospheric auxiliary data directory",
 				"label": "PatmosphericAuxDataPath",
@@ -2585,7 +2585,7 @@
 			{
 				"id": "alternativeNNPath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Path to an alternative set of neuronal nets",
 				"label": "PalternativeNNPath",
@@ -2594,7 +2594,7 @@
 			{
 				"id": "netSet",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "C2RCC-Nets",
 				"description": "Set of neuronal nets for algorithm",
 				"label": "PnetSet",
@@ -2776,7 +2776,7 @@
 			{
 				"id": "tomsomiStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiStartProduct",
@@ -2785,7 +2785,7 @@
 			{
 				"id": "tomsomiEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiEndProduct",
@@ -2794,7 +2794,7 @@
 			{
 				"id": "ncepStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepStartProduct",
@@ -2803,7 +2803,7 @@
 			{
 				"id": "ncepEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepEndProduct",
@@ -2813,7 +2813,7 @@
 			{
 				"id": "validPixelExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "!(l2_flags.LAND ||  max(rhot_412,max(rhot_443,max(rhot_488,max(rhot_531,max(rhot_547,max(rhot_555,max(rhot_667,max(rhot_678,max(rhot_748,rhot_869)))))))))>0.25)",
 				"description": "Defines the pixels which are valid for processing",
 				"label": "PvalidPixelExpression",
@@ -2858,7 +2858,7 @@
 			{
 				"id": "atmosphericAuxDataPath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Path to the atmospheric auxiliary data directory",
 				"label": "PatmosphericAuxDataPath",
@@ -2937,7 +2937,7 @@
 			{
 				"id": "tomsomiStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiStartProduct",
@@ -2946,7 +2946,7 @@
 			{
 				"id": "tomsomiEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiEndProduct",
@@ -2955,7 +2955,7 @@
 			{
 				"id": "ncepStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepStartProduct",
@@ -2964,7 +2964,7 @@
 			{
 				"id": "ncepEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepEndProduct",
@@ -2974,7 +2974,7 @@
 			{
 				"id": "validPixelExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B8 > 0 && B8 < 0.1",
 				"description": "Defines the pixels which are valid for processing",
 				"label": "PvalidPixelExpression",
@@ -3091,7 +3091,7 @@
 			{
 				"id": "atmosphericAuxDataPath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Path to the atmospheric auxiliary data directory",
 				"label": "PatmosphericAuxDataPath",
@@ -3100,7 +3100,7 @@
 			{
 				"id": "alternativeNNPath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Path to an alternative set of neuronal nets",
 				"label": "PalternativeNNPath",
@@ -3109,7 +3109,7 @@
 			{
 				"id": "netSet",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "C2RCC-Nets",
 				"description": "Set of neuronal nets for algorithm",
 				"label": "PnetSet",
@@ -3282,7 +3282,7 @@
 			{
 				"id": "tomsomiStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiStartProduct",
@@ -3291,7 +3291,7 @@
 			{
 				"id": "tomsomiEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiEndProduct",
@@ -3300,7 +3300,7 @@
 			{
 				"id": "ncepStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepStartProduct",
@@ -3309,7 +3309,7 @@
 			{
 				"id": "ncepEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepEndProduct",
@@ -3319,7 +3319,7 @@
 			{
 				"id": "validPixelExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "!quality_flags.invalid && (!quality_flags.land || quality_flags.fresh_inland_water)",
 				"description": "Defines the pixels which are valid for processing",
 				"label": "PvalidPixelExpression",
@@ -3427,7 +3427,7 @@
 			{
 				"id": "atmosphericAuxDataPath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Path to the atmospheric auxiliary data directory",
 				"label": "PatmosphericAuxDataPath",
@@ -3436,7 +3436,7 @@
 			{
 				"id": "alternativeNNPath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Path to an alternative set of neuronal nets",
 				"label": "PalternativeNNPath",
@@ -3614,7 +3614,7 @@
 			{
 				"id": "tomsomiStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiStartProduct",
@@ -3623,7 +3623,7 @@
 			{
 				"id": "tomsomiEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiEndProduct",
@@ -3632,7 +3632,7 @@
 			{
 				"id": "ncepStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure.",
 				"label": "SncepStartProduct",
@@ -3641,7 +3641,7 @@
 			{
 				"id": "ncepEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepEndProduct",
@@ -3651,7 +3651,7 @@
 			{
 				"id": "validPixelExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "!(l2_flags.LAND || rhot_865 > 0.25)",
 				"description": "Defines the pixels which are valid for processing",
 				"label": "PvalidPixelExpression",
@@ -3696,7 +3696,7 @@
 			{
 				"id": "atmosphericAuxDataPath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Path to the atmospheric auxiliary data directory.",
 				"label": "PatmosphericAuxDataPath",
@@ -3766,7 +3766,7 @@
 			{
 				"id": "tomsomiStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiStartProduct",
@@ -3775,7 +3775,7 @@
 			{
 				"id": "tomsomiEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing ozone values for ozone interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "StomsomiEndProduct",
@@ -3784,7 +3784,7 @@
 			{
 				"id": "ncepStartProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepStartProduct",
@@ -3793,7 +3793,7 @@
 			{
 				"id": "ncepEndProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second product providing air pressure values for pressure interpolation. Use either the TOMSOMI and NCEP products or the atmosphericAuxdataPath to as source for ozone and air pressure",
 				"label": "SncepEndProduct",
@@ -3803,7 +3803,7 @@
 			{
 				"id": "validPixelExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "!(l2_flags.LAND || rhot_862 > 0.25)",
 				"description": "Defines the pixels which are valid for processing",
 				"label": "PvalidPixelExpression",
@@ -3848,7 +3848,7 @@
 			{
 				"id": "atmosphericAuxDataPath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Path to the atmospheric auxiliary data directory",
 				"label": "PatmosphericAuxDataPath",
@@ -3928,7 +3928,7 @@
 			{
 				"id": "auxFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Latest Auxiliary File",
 				"description": "The auxiliary file",
 				"label": "PauxFile",
@@ -3942,7 +3942,7 @@
 			{
 				"id": "externalAuxFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The antenna elevation pattern gain auxiliary data file",
 				"label": "PexternalAuxFile",
@@ -4188,7 +4188,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -4202,7 +4202,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -4216,7 +4216,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -4250,7 +4250,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the CI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -4259,7 +4259,7 @@
 			{
 				"id": "greenSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The green band for the CI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PgreenSourceBand",
@@ -4354,7 +4354,7 @@
 			{
 				"id": "cohWinAz",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 10,
 				"description": "Size of coherence estimation window in Azimuth direction",
 				"label": "PcohWinAz",
@@ -4364,7 +4364,7 @@
 			{
 				"id": "cohWinRg",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 10,
 				"description": "Size of coherence estimation window in Range direction",
 				"label": "PcohWinRg",
@@ -4383,7 +4383,7 @@
 			{
 				"id": "srpPolynomialDegree",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 5,
 				"description": "Order of 'Flat earth phase' polynomial",
 				"label": "PsrpPolynomialDegree",
@@ -4393,7 +4393,7 @@
 			{
 				"id": "srpNumberPoints",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 501,
 				"description": "Number of points for the 'flat earth phase' polynomial estimation",
 				"label": "PsrpNumberPoints",
@@ -4403,7 +4403,7 @@
 			{
 				"id": "orbitDegree",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 3,
 				"description": "Degree of orbit (polynomial) interpolator",
 				"label": "PorbitDegree",
@@ -4431,7 +4431,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -4440,7 +4440,7 @@
 			{
 				"id": "externalDEMFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'externalDEMFile' to <file>",
 				"label": "PexternalDEMFile",
@@ -4467,7 +4467,7 @@
 			{
 				"id": "tileExtensionPercent",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "100",
 				"description": "Define extension of tile for DEM simulation (optimization parameter)",
 				"label": "PtileExtensionPercent",
@@ -4509,7 +4509,7 @@
 			{
 				"id": "master",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The source product which serves as master",
 				"label": "Smaster",
@@ -4518,7 +4518,7 @@
 			{
 				"id": "slave",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The source product which serves as slave",
 				"label": "Sslave",
@@ -4528,7 +4528,7 @@
 			{
 				"id": "targetProductType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "COLLOCATED",
 				"description": "The product type string for the target product (informal)",
 				"label": "PtargetProductType",
@@ -4555,7 +4555,7 @@
 			{
 				"id": "masterComponentPattern",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "${ORIGINAL_NAME}_M",
 				"description": "The text pattern to be used when renaming master components",
 				"label": "PmasterComponentPattern",
@@ -4564,7 +4564,7 @@
 			{
 				"id": "slaveComponentPattern",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "${ORIGINAL_NAME}_S",
 				"description": "The text pattern to be used when renaming slave components",
 				"label": "PslaveComponentPattern",
@@ -4573,7 +4573,7 @@
 			{
 				"id": "resamplingType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "NEAREST_NEIGHBOUR",
 				"description": "The method to be used when resampling the slave grid onto the master grid",
 				"label": "PresamplingType",
@@ -4635,7 +4635,7 @@
 			{
 				"id": "targetDataType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "uint8",
 				"description": "Sets parameter 'targetDataType' to <string>",
 				"label": "PtargetDataType",
@@ -4654,7 +4654,7 @@
 			{
 				"id": "targetScalingStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Linear (between 95% clipped histogram)",
 				"description": "Sets parameter 'targetScalingStr' to <string>",
 				"label": "PtargetScalingStr",
@@ -4741,7 +4741,7 @@
 			{
 				"id": "resamplingType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "NONE",
 				"description": "The method to be used when resampling the slave grid onto the master grid",
 				"label": "PresamplingType",
@@ -4750,7 +4750,7 @@
 			{
 				"id": "extent",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Master",
 				"description": "The output image extents",
 				"label": "Pextent",
@@ -4764,7 +4764,7 @@
 			{
 				"id": "initialOffsetMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Orbit",
 				"description": "Method to be used in computation of initial offset between master and slave",
 				"label": "PinitialOffsetMethod",
@@ -4821,7 +4821,7 @@
 			{
 				"id": "numGCPtoGenerate",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 200,
 				"description": "The number of GCPs to use in a grid",
 				"label": "PnumGCPtoGenerate",
@@ -4830,7 +4830,7 @@
 			{
 				"id": "coarseRegistrationWindowWidth",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "128",
 				"description": "Sets parameter 'coarseRegistrationWindowWidth' to <string>",
 				"label": "PcoarseRegistrationWindowWidth",
@@ -4848,7 +4848,7 @@
 			{
 				"id": "coarseRegistrationWindowHeight",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "128",
 				"description": "Sets parameter 'coarseRegistrationWindowHeight' to <string>",
 				"label": "PcoarseRegistrationWindowHeight",
@@ -4866,7 +4866,7 @@
 			{
 				"id": "rowInterpFactor",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "2",
 				"description": "Sets parameter 'rowInterpFactor' to <string>",
 				"label": "ProwInterpFactor",
@@ -4881,7 +4881,7 @@
 			{
 				"id": "columnInterpFactor",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "2",
 				"description": "Sets parameter 'columnInterpFactor' to <string>",
 				"label": "PcolumnInterpFactor",
@@ -4896,7 +4896,7 @@
 			{
 				"id": "maxIteration",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 10,
 				"description": "The maximum number of iterations",
 				"label": "PmaxIteration",
@@ -4933,7 +4933,7 @@
 			{
 				"id": "fineRegistrationWindowWidth",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "32",
 				"description": "Sets parameter 'fineRegistrationWindowWidth' to <string>",
 				"label": "PfineRegistrationWindowWidth",
@@ -4951,7 +4951,7 @@
 			{
 				"id": "fineRegistrationWindowHeight",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "32",
 				"description": "Sets parameter 'fineRegistrationWindowHeight' to <string>",
 				"label": "PfineRegistrationWindowHeight",
@@ -4969,7 +4969,7 @@
 			{
 				"id": "fineRegistrationWindowAccAzimuth",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "16",
 				"description": "Sets parameter 'fineRegistrationWindowAccAzimuth' to <string>",
 				"label": "PfineRegistrationWindowAccAzimuth",
@@ -4986,7 +4986,7 @@
 			{
 				"id": "fineRegistrationWindowAccRange",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "16",
 				"description": "Sets parameter 'fineRegistrationWindowAccRange' to <string>",
 				"label": "PfineRegistrationWindowAccRange",
@@ -5003,7 +5003,7 @@
 			{
 				"id": "fineRegistrationOversampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "16",
 				"description": "Sets parameter 'fineRegistrationOversampling' to <string>",
 				"label": "PfineRegistrationOversampling",
@@ -5020,7 +5020,7 @@
 			{
 				"id": "coherenceWindowSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 3,
 				"description": "The coherence window size",
 				"label": "PcoherenceWindowSize",
@@ -5110,7 +5110,7 @@
 			{
 				"id": "warpPolynomialOrder",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "The order of polynomial function",
 				"label": "PwarpPolynomialOrder",
@@ -5120,7 +5120,7 @@
 			{
 				"id": "interpolationMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Cubic convolution (6 points)",
 				"description": "Sets parameter 'interpolationMethod' to <string>",
 				"label": "PinterpolationMethod",
@@ -5136,7 +5136,7 @@
 			{
 				"id": "targetGeometry",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "ERS",
 				"description": "Sets parameter 'targetGeometry' to <string>",
 				"label": "PtargetGeometry",
@@ -5193,7 +5193,7 @@
 			{
 				"id": "subSwath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SS1",
 				"description": "Sets parameter 'subSwath' to <string>",
 				"label": "PsubSwath",
@@ -5271,7 +5271,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -5280,7 +5280,7 @@
 			{
 				"id": "demResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BICUBIC_INTERPOLATION",
 				"description": "Sets parameter 'demResamplingMethod' to <string>",
 				"label": "PdemResamplingMethod",
@@ -5289,7 +5289,7 @@
 			{
 				"id": "externalDEMFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'externalDEMFile' to <file>",
 				"label": "PexternalDEMFile",
@@ -5307,7 +5307,7 @@
 			{
 				"id": "resamplingType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BISINC_5_POINT_INTERPOLATION",
 				"description": "The method to be used when resampling the slave grid onto the master grid",
 				"label": "PresamplingType",
@@ -5316,7 +5316,7 @@
 			{
 				"id": "tileExtensionPercent",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 50,
 				"description": "Define tile extension percentage",
 				"label": "PtileExtensionPercent",
@@ -5396,7 +5396,7 @@
 			{
 				"id": "cohWinSize",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "5",
 				"description": "Sets parameter 'cohWinSize' to <string>",
 				"label": "PcohWinSize",
@@ -5455,7 +5455,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -5469,7 +5469,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -5483,7 +5483,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -5517,7 +5517,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the DVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -5526,7 +5526,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the DVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -5630,7 +5630,7 @@
 			{
 				"id": "imgResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BILINEAR_INTERPOLATION",
 				"description": "Sets parameter 'imgResamplingMethod' to <string>",
 				"label": "PimgResamplingMethod",
@@ -5644,7 +5644,7 @@
 			{
 				"id": "mapProjection",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "WGS84(DD)",
 				"description": "The coordinate reference system in well known text format",
 				"label": "PmapProjection",
@@ -5706,7 +5706,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -5715,7 +5715,7 @@
 			{
 				"id": "externalDEMFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'externalDEMFile' to <file>",
 				"label": "PexternalDEMFile",
@@ -5742,7 +5742,7 @@
 			{
 				"id": "demResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BILINEAR_INTERPOLATION",
 				"description": "Sets parameter 'demResamplingMethod' to <string>",
 				"label": "PdemResamplingMethod",
@@ -5761,7 +5761,7 @@
 			{
 				"id": "imgResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BILINEAR_INTERPOLATION",
 				"description": "Sets parameter 'imgResamplingMethod' to <string>",
 				"label": "PimgResamplingMethod",
@@ -5797,7 +5797,7 @@
 			{
 				"id": "mapProjection",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "WGS84(DD)",
 				"description": " The coordinate reference system in well known text format",
 				"label": "PmapProjection",
@@ -5941,7 +5941,7 @@
 			{
 				"id": "incidenceAngleForSigma0",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Use projected local incidence angle from DEM",
 				"description": "Sets parameter 'incidenceAngleForSigma0' to <string>",
 				"label": "PincidenceAngleForSigma0",
@@ -5955,7 +5955,7 @@
 			{
 				"id": "incidenceAngleForGamma0",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Use projected local incidence angle from DEM",
 				"description": "Sets parameter 'incidenceAngleForGamma0' to <string>",
 				"label": "PincidenceAngleForGamma0",
@@ -5969,7 +5969,7 @@
 			{
 				"id": "auxFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Latest Auxiliary File",
 				"description": "The auxiliary file",
 				"label": "PauxFile",
@@ -5983,7 +5983,7 @@
 			{
 				"id": "externalAuxFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": " The antenna elevation pattern gain auxiliary data file",
 				"label": "PexternalAuxFile",
@@ -6036,7 +6036,7 @@
 			{
 				"id": "clusterCount",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 14,
 				"description": "Number of clusters",
 				"label": "PclusterCount",
@@ -6046,7 +6046,7 @@
 			{
 				"id": "iterationCount",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 30,
 				"description": "Number of iterations",
 				"label": "PiterationCount",
@@ -6055,7 +6055,7 @@
 			{
 				"id": "randomSeed",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 31415,
 				"description": "Seed for the random generator, used for initialising the algorithm",
 				"label": "PrandomSeed",
@@ -6073,7 +6073,7 @@
 			{
 				"id": "roiMaskName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name of the ROI-Mask that should be used",
 				"label": "ProiMaskName",
@@ -6135,7 +6135,7 @@
 			{
 				"id": "fineWinWidthStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "512",
 				"description": "Sets parameter 'fineWinWidthStr' to <string>",
 				"label": "PfineWinWidthStr",
@@ -6153,7 +6153,7 @@
 			{
 				"id": "fineWinHeightStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "512",
 				"description": "Sets parameter 'fineWinHeightStr' to <string>",
 				"label": "PfineWinHeightStr",
@@ -6171,7 +6171,7 @@
 			{
 				"id": "fineWinAccAzimuth",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "16",
 				"description": "Sets parameter 'fineWinAccAzimuth' to <string>",
 				"label": "PfineWinAccAzimuth",
@@ -6188,7 +6188,7 @@
 			{
 				"id": "fineWinAccRange",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "16",
 				"description": "Sets parameter 'fineWinAccRange' to <string>",
 				"label": "PfineWinAccRange",
@@ -6205,7 +6205,7 @@
 			{
 				"id": "fineWinOversampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "128",
 				"description": "Sets parameter 'fineWinOversampling' to <string>",
 				"label": "PfineWinOversampling",
@@ -6238,7 +6238,7 @@
 			{
 				"id": "numBlocksPerOverlap",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 10,
 				"description": "The number of windows per overlap for ESD",
 				"label": "PnumBlocksPerOverlap",
@@ -6443,7 +6443,7 @@
 			{
 				"id": "lowerBaselineBandName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name for the lower wavelength band defining the baseline",
 				"label": "PlowerBaselineBandName",
@@ -6452,7 +6452,7 @@
 			{
 				"id": "upperBaselineBandName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name of the upper wavelength band defining the baseline",
 				"label": "PupperBaselineBandName",
@@ -6461,7 +6461,7 @@
 			{
 				"id": "signalBandName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name of the signal band, i.e. the band for which the baseline height is calculated",
 				"label": "PsignalBandName",
@@ -6470,7 +6470,7 @@
 			{
 				"id": "lineHeightBandName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": " The name of the line height band in the target product",
 				"label": "PlineHeightBandName",
@@ -6488,7 +6488,7 @@
 			{
 				"id": "slopeBandName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name of the slope band in the target product",
 				"label": "PslopeBandName",
@@ -6497,7 +6497,7 @@
 			{
 				"id": "maskExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "A ROI-mask expression used to identify pixels of interest",
 				"label": "PmaskExpression",
@@ -6577,7 +6577,7 @@
 			{
 				"id": "flipType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Vertical",
 				"description": "Sets parameter 'flipType' to <string>",
 				"label": "PflipType",
@@ -6680,7 +6680,7 @@
 			{
 				"id": "expression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "not l1_flags.GLINT_RISK and not l1_flags.BRIGHT and not l1_flags.INVALID and not l1_flags.SUSPECT",
 				"description": "Band maths expression which defines valid pixels. If the expression is empty,all pixels will be considered",
 				"label": "Pexpression",
@@ -6751,7 +6751,7 @@
 			{
 				"id": "validExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "An expression to filter which pixel are considered",
 				"label": "PvalidExpression",
@@ -6760,7 +6760,7 @@
 			{
 				"id": "reflectanceNamePattern",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The used reflectance band names must match the given pattern. Useful, if there is more then one spectrum in the product",
 				"label": "PreflectanceNamePattern",
@@ -6769,7 +6769,7 @@
 			{
 				"id": "instrument",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "AUTO_DETECT",
 				"description": "The instrument to compute FU for",
 				"label": "Pinstrument",
@@ -6831,7 +6831,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -6845,7 +6845,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -6859,7 +6859,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -6893,7 +6893,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the GEMI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -6902,7 +6902,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the GEMI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -6955,7 +6955,7 @@
 			{
 				"id": "mergingCostCriterion",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Baatz & Schape",
 				"description": "The method to compute the region merging",
 				"label": "PmergingCostCriterion",
@@ -6969,7 +6969,7 @@
 			{
 				"id": "regionMergingCriterion",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Local Mutual Best Fitting",
 				"description": "The method to check the region merging",
 				"label": "PregionMergingCriterion",
@@ -6982,7 +6982,7 @@
 			{
 				"id": "totalIterationsForSecondSegmentation",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 50,
 				"description": "The total number of iterations",
 				"label": "PtotalIterationsForSecondSegmentation",
@@ -7080,7 +7080,7 @@
 			{
 				"id": "windowSizeStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "9x9",
 				"description": "Sets parameter 'windowSizeStr' to <string>",
 				"label": "PwindowSizeStr",
@@ -7095,7 +7095,7 @@
 			{
 				"id": "angleStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "ALL",
 				"description": "Sets parameter 'angleStr' to <string>",
 				"label": "PangleStr",
@@ -7111,7 +7111,7 @@
 			{
 				"id": "quantizerStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Probabilistic Quantizer",
 				"description": "Sets parameter 'quantizerStr' to <string>",
 				"label": "PquantizerStr",
@@ -7124,7 +7124,7 @@
 			{
 				"id": "quantizationLevelsStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "32",
 				"description": "Sets parameter 'quantizationLevelsStr' to <string>",
 				"label": "PquantizationLevelsStr",
@@ -7140,7 +7140,7 @@
 			{
 				"id": "displacement",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 4,
 				"description": "Pixel displacement",
 				"label": "Pdisplacement",
@@ -7284,7 +7284,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -7298,7 +7298,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -7312,7 +7312,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -7346,7 +7346,7 @@
 			{
 				"id": "greenSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The green band for the GNDVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PgreenSourceBand",
@@ -7355,7 +7355,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the GNDVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -7417,7 +7417,7 @@
 			{
 				"id": "FFTSizeString",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "64",
 				"description": "Sets parameter 'FFTSizeString' to <string>",
 				"label": "PFFTSizeString",
@@ -7432,7 +7432,7 @@
 			{
 				"id": "windowSizeString",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "3",
 				"description": "Sets parameter 'windowSizeString' to <string>",
 				"label": "PwindowSizeString",
@@ -7683,7 +7683,7 @@
 			{
 				"id": "cloudBufferWidth",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "The width of a cloud 'safety buffer' around a pixel which was classified as cloudy",
 				"label": "PcloudBufferWidth",
@@ -7737,7 +7737,7 @@
 			{
 				"id": "cloudBufferWidth",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "The width of a cloud 'safety buffer' around a pixel which was classified as cloudy",
 				"label": "PcloudBufferWidth",
@@ -7756,7 +7756,7 @@
 			{
 				"id": "nnSelector",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "ALL",
 				"description": "The Neural Net which will be applied",
 				"label": "PnnSelector",
@@ -7971,7 +7971,7 @@
 			{
 				"id": "radianceBandPrefix",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "L_",
 				"description": "Prefix of input radiance or reflectance bands",
 				"label": "PradianceBandPrefix",
@@ -7985,7 +7985,7 @@
 			{
 				"id": "cloudBufferWidth",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1,
 				"description": "Sets parameter 'cloudBufferWidth' to <int>",
 				"label": "PcloudBufferWidth",
@@ -7994,7 +7994,7 @@
 			{
 				"id": "waterMaskResolution",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 50,
 				"description": "Resolution in m/pixel",
 				"label": "PwaterMaskResolution",
@@ -8120,7 +8120,7 @@
 			{
 				"id": "cloudBufferWidth",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "The width of the 'safety buffer' around a pixel identified as cloudy",
 				"label": "PcloudBufferWidth",
@@ -8172,7 +8172,7 @@
 			{
 				"id": "l1cProduct",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The Sentinel-2 MSI L1C product",
 				"label": "Sl1cProduct",
@@ -8218,7 +8218,7 @@
 			{
 				"id": "cloudBufferWidth",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "The width of the 'safety buffer' around a pixel identified as cloudy",
 				"label": "PcloudBufferWidth",
@@ -8255,7 +8255,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -8390,7 +8390,7 @@
 			{
 				"id": "cloudBufferWidth",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "The width of a cloud 'safety buffer' around a pixel which was classified as cloudy",
 				"label": "PcloudBufferWidth",
@@ -8572,7 +8572,7 @@
 			{
 				"id": "cloudBufferWidth",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "The width of a cloud 'safety buffer' around a pixel which was classified as cloudy",
 				"label": "PcloudBufferWidth",
@@ -8644,7 +8644,7 @@
 			{
 				"id": "cloudBufferWidth",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1,
 				"description": "Sets parameter 'cloudBufferWidth' to <int>",
 				"label": "PcloudBufferWidth",
@@ -8653,7 +8653,7 @@
 			{
 				"id": "waterMaskResolution",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 50,
 				"description": "Resolution in m/pixel",
 				"label": "PwaterMaskResolution",
@@ -8707,7 +8707,7 @@
 			{
 				"id": "cloudFlaggingStrength",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "CLOUD_CONSERVATIVE",
 				"description": "trength of cloud flagging. In case of 'CLOUD_CONSERVATIVE', more pixels might be flagged as cloud",
 				"label": "PcloudFlaggingStrength",
@@ -8720,7 +8720,7 @@
 			{
 				"id": "cloudBufferWidth",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1,
 				"description": "Sets parameter 'cloudBufferWidth' to <int>",
 				"label": "PcloudBufferWidth",
@@ -8729,7 +8729,7 @@
 			{
 				"id": "waterMaskResolution",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 150,
 				"description": "Resolution of used land-water mask in meters per pixel",
 				"label": "PwaterMaskResolution",
@@ -8846,7 +8846,7 @@
 			{
 				"id": "selectedFilterName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'selectedFilterName' to <string>",
 				"label": "PselectedFilterName",
@@ -8855,7 +8855,7 @@
 			{
 				"id": "userDefinedKernelFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The kernel file",
 				"label": "PuserDefinedKernelFile",
@@ -8908,7 +8908,7 @@
 			{
 				"id": "vectorFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'vectorFile' to <file>",
 				"label": "PvectorFile",
@@ -9021,7 +9021,7 @@
 			{
 				"id": "srpPolynomialDegree",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 5,
 				"description": "Order of 'Flat earth phase' polynomial",
 				"label": "PsrpPolynomialDegree",
@@ -9031,7 +9031,7 @@
 			{
 				"id": "srpNumberPoints",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 501,
 				"description": "Number of points for the 'flat earth phase' polynomial estimation",
 				"label": "PsrpNumberPoints",
@@ -9041,7 +9041,7 @@
 			{
 				"id": "orbitDegree",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 3,
 				"description": "Degree of orbit (polynomial) interpolator",
 				"label": "PorbitDegree",
@@ -9060,7 +9060,7 @@
 			{
 				"id": "cohWinAz",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 10,
 				"description": "Size of coherence estimation window in Azimuth direction",
 				"label": "PcohWinAz",
@@ -9069,7 +9069,7 @@
 			{
 				"id": "cohWinRg",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 10,
 				"description": "Size of coherence estimation window in Range direction",
 				"label": "PcohWinRg",
@@ -9096,7 +9096,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -9105,7 +9105,7 @@
 			{
 				"id": "externalDEMFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'externalDEMFile' to <file>",
 				"label": "PexternalDEMFile",
@@ -9132,7 +9132,7 @@
 			{
 				"id": "tileExtensionPercent",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "100",
 				"description": "Define extension of tile for DEM simulation (optimization parameter)",
 				"label": "PtileExtensionPercent",
@@ -9203,7 +9203,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -9217,7 +9217,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -9231,7 +9231,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -9265,7 +9265,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the IPVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -9274,7 +9274,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the IPVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -9327,7 +9327,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -9341,7 +9341,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -9355,7 +9355,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -9407,7 +9407,7 @@
 			{
 				"id": "redSourceBand4",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B4",
 				"description": "The red band (B4) for the IRECI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand4",
@@ -9416,7 +9416,7 @@
 			{
 				"id": "redSourceBand5",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B5",
 				"description": "The red band (B5) for the IRECI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand5",
@@ -9425,7 +9425,7 @@
 			{
 				"id": "redSourceBand6",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B6",
 				"description": "The red band (B6) for the IRECI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand6",
@@ -9434,7 +9434,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the IRECI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -9486,7 +9486,7 @@
 			{
 				"id": "numNeighbours",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 5,
 				"description": "The number of neighbours",
 				"label": "PnumNeighbours",
@@ -9495,7 +9495,7 @@
 			{
 				"id": "numTrainSamples",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 5000,
 				"description": "The number of training samples",
 				"label": "PnumTrainSamples",
@@ -9504,7 +9504,7 @@
 			{
 				"id": "savedClassifierName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The saved classifier name",
 				"label": "PsavedClassifierName",
@@ -9549,7 +9549,7 @@
 			{
 				"id": "classLevels",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 101,
 				"description": "Quantization class levels for raster training",
 				"label": "PclassLevels",
@@ -9594,7 +9594,7 @@
 			{
 				"id": "labelSource",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "'VectorNodeName' or specific Attribute name",
 				"label": "PlabelSource",
@@ -9621,7 +9621,7 @@
 			{
 				"id": "minPowerSetSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "Minimum size of the power set of features",
 				"label": "PminPowerSetSize",
@@ -9630,7 +9630,7 @@
 			{
 				"id": "maxPowerSetSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 7,
 				"description": "Maximum size of the power set of features",
 				"label": "PmaxPowerSetSize",
@@ -9683,7 +9683,7 @@
 			{
 				"id": "clusterCount",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 14,
 				"description": "Number of clusters",
 				"label": "PclusterCount",
@@ -9693,7 +9693,7 @@
 			{
 				"id": "iterationCount",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 30,
 				"description": "Number of iterations",
 				"label": "PiterationCount",
@@ -9702,7 +9702,7 @@
 			{
 				"id": "randomSeed",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 31415,
 				"description": "Seed for the random generator, used for initialising the algorithm",
 				"label": "PrandomSeed",
@@ -9720,7 +9720,7 @@
 			{
 				"id": "roiMaskName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name of the ROI-Mask that should be used",
 				"label": "ProiMaskName",
@@ -9772,7 +9772,7 @@
 			{
 				"id": "numNeighbours",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 5,
 				"description": "The number of neighbours",
 				"label": "PnumNeighbours",
@@ -9781,7 +9781,7 @@
 			{
 				"id": "numTrainSamples",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 5000,
 				"description": "he number of training samples",
 				"label": "PnumTrainSamples",
@@ -9790,7 +9790,7 @@
 			{
 				"id": "savedClassifierName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The saved classifier name",
 				"label": "PsavedClassifierName",
@@ -9835,7 +9835,7 @@
 			{
 				"id": "classLevels",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 101,
 				"description": "Quantization class levels for raster training",
 				"label": "PclassLevels",
@@ -9880,7 +9880,7 @@
 			{
 				"id": "labelSource",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "'VectorNodeName' or specific Attribute name",
 				"label": "PlabelSource",
@@ -9907,7 +9907,7 @@
 			{
 				"id": "minPowerSetSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "Minimum size of the power set of features",
 				"label": "PminPowerSetSize",
@@ -9916,7 +9916,7 @@
 			{
 				"id": "maxPowerSetSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 7,
 				"description": "Maximum size of the power set of features",
 				"label": "PmaxPowerSetSize",
@@ -9978,7 +9978,7 @@
 			{
 				"id": "landCoverBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Land cover band",
 				"label": "PlandCoverBand",
@@ -9996,7 +9996,7 @@
 			{
 				"id": "validPixelExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Valid pixel expression",
 				"label": "PvalidPixelExpression",
@@ -10085,7 +10085,7 @@
 			{
 				"id": "geometry",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'geometry' to <string>",
 				"label": "Pgeometry",
@@ -10103,7 +10103,7 @@
 			{
 				"id": "shorelineExtension",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 0,
 				"description": "Sets parameter 'shorelineExtension' to <integer>",
 				"label": "PshorelineExtension",
@@ -10156,7 +10156,7 @@
 			{
 				"id": "resolution",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 50,
 				"description": "Specifies on which resolution the water mask shall be based",
 				"label": "Presolution",
@@ -10166,7 +10166,7 @@
 			{
 				"id": "subSamplingFactorX",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1,
 				"description": "Specifies the factor between the resolution of the source product and the watermask in x direction. A value of '1' means no subsampling at all",
 				"label": "PsubSamplingFactorX",
@@ -10175,7 +10175,7 @@
 			{
 				"id": "subSamplingFactorY",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1,
 				"description": "Specifies the factor between the resolution of the source product and the watermask iny direction. A value of '1' means no subsampling at all",
 				"label": "PsubSamplingFactorY",
@@ -10280,7 +10280,7 @@
 			{
 				"id": "numTrainSamples",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 5000,
 				"description": "The number of training samples",
 				"label": "PnumTrainSamples",
@@ -10289,7 +10289,7 @@
 			{
 				"id": "savedClassifierName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The saved classifier name",
 				"label": "PsavedClassifierName",
@@ -10334,7 +10334,7 @@
 			{
 				"id": "classLevels",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 101,
 				"description": "Quantization class levels for raster training",
 				"label": "PclassLevels",
@@ -10379,7 +10379,7 @@
 			{
 				"id": "labelSource",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "'VectorNodeName' or specific Attribute name",
 				"label": "PlabelSource",
@@ -10406,7 +10406,7 @@
 			{
 				"id": "minPowerSetSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "Minimum size of the power set of features",
 				"label": "PminPowerSetSize",
@@ -10415,7 +10415,7 @@
 			{
 				"id": "maxPowerSetSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 7,
 				"description": "Maximum size of the power set of features",
 				"label": "PmaxPowerSetSize",
@@ -10468,7 +10468,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -10482,7 +10482,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -10496,7 +10496,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -10539,7 +10539,7 @@
 			{
 				"id": "red1SourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The first red band for the MCARI computation. Choose B4 for Sentinel-2. If not provided, the operator will try to find the best fitting band",
 				"label": "Pred1SourceBand",
@@ -10548,7 +10548,7 @@
 			{
 				"id": "red2SourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The second red band for the MCARI computation. Choose B5 for Sentinel-2. If not provided, the operator will try to find the best fitting band",
 				"label": "Pred2SourceBand",
@@ -10557,7 +10557,7 @@
 			{
 				"id": "greenSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The green band for the MCARI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PgreenSourceBand",
@@ -10610,7 +10610,7 @@
 			{
 				"id": "lowerBaselineBandName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name for the lower wavelength band defining the baseline",
 				"label": "PlowerBaselineBandName",
@@ -10619,7 +10619,7 @@
 			{
 				"id": "upperBaselineBandName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name of the upper wavelength band defining the baseline",
 				"label": "PupperBaselineBandName",
@@ -10628,7 +10628,7 @@
 			{
 				"id": "signalBandName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name of the signal band, i.e. the band for which the baseline height is calculated",
 				"label": "PsignalBandName",
@@ -10637,7 +10637,7 @@
 			{
 				"id": "lineHeightBandName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name of the MCI band in the target product",
 				"label": "PlineHeightBandName",
@@ -10655,7 +10655,7 @@
 			{
 				"id": "slopeBandName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name of the slope band in the target product",
 				"label": "PslopeBandName",
@@ -10664,7 +10664,7 @@
 			{
 				"id": "maskExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "A ROI-mask expression used to identify pixels of interest",
 				"label": "PmaskExpression",
@@ -10744,7 +10744,7 @@
 			{
 				"id": "sourceRacFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The radiometric correction auxiliary file for the source product. The default 'MER_RAC_AXVIEC20050708_135553_20021224_121445_20041213_220000'",
 				"label": "PsourceRacFile",
@@ -10753,7 +10753,7 @@
 			{
 				"id": "targetRacFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The radiometric correction auxiliary file for the target product. The default 'MER_RAC_AXVACR20091016_154511_20021224_121445_20041213_220000'",
 				"label": "PtargetRacFile",
@@ -10780,7 +10780,7 @@
 			{
 				"id": "reproVersion",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "AUTO_DETECT",
 				"description": "The version of the reprocessing the product comes from. Is only used if equalisation is enabled",
 				"label": "PreproVersion",
@@ -10836,7 +10836,7 @@
 			{
 				"id": "n1",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The N1 file which is used as a template",
 				"label": "Sn1",
@@ -10845,7 +10845,7 @@
 			{
 				"id": "input",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The source product provides the data to be written into the patched file",
 				"label": "Sinput",
@@ -10864,7 +10864,7 @@
 			{
 				"id": "patchedFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The file to which the patched L1b product is written",
 				"label": "PpatchedFile",
@@ -10916,7 +10916,7 @@
 			{
 				"id": "numTrainSamples",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 5000,
 				"description": "The number of training samples",
 				"label": "PnumTrainSamples",
@@ -10925,7 +10925,7 @@
 			{
 				"id": "savedClassifierName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The saved classifier name",
 				"label": "PsavedClassifierName",
@@ -10970,7 +10970,7 @@
 			{
 				"id": "classLevels",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 101,
 				"description": "Quantization class levels for raster training",
 				"label": "PclassLevels",
@@ -11015,7 +11015,7 @@
 			{
 				"id": "labelSource",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "'VectorNodeName' or specific Attribute name",
 				"label": "PlabelSource",
@@ -11042,7 +11042,7 @@
 			{
 				"id": "minPowerSetSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "Minimum size of the power set of features",
 				"label": "PminPowerSetSize",
@@ -11051,7 +11051,7 @@
 			{
 				"id": "maxPowerSetSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 7,
 				"description": "Maximum size of the power set of features",
 				"label": "PmaxPowerSetSize",
@@ -11104,7 +11104,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -11118,7 +11118,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -11132,7 +11132,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -11166,7 +11166,7 @@
 			{
 				"id": "greenSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The green band for the MNDWI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PgreenSourceBand",
@@ -11175,7 +11175,7 @@
 			{
 				"id": "mirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The mid-infrared band for the MNDWI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PmirSourceBand",
@@ -11228,7 +11228,7 @@
 			{
 				"id": "validPixelExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Expression defining pixels considered for processing. If not set, all valid pixels over water are processed",
 				"label": "PvalidPixelExpression",
@@ -11316,7 +11316,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -11341,7 +11341,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the MSAVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -11359,7 +11359,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the MSAVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -11377,7 +11377,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -11391,7 +11391,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -11449,7 +11449,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -11463,7 +11463,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -11477,7 +11477,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -11511,7 +11511,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the MSAVI2 computation. If not provided, the operator will try to find the best fitting band.",
 				"label": "PredSourceBand",
@@ -11520,7 +11520,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the MSAVI2 computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -11573,7 +11573,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -11587,7 +11587,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -11601,7 +11601,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -11644,7 +11644,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the MSAVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -11653,7 +11653,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the MSAVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -11706,7 +11706,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -11720,7 +11720,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -11734,7 +11734,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -11777,7 +11777,7 @@
 			{
 				"id": "redSourceBand4",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B4",
 				"description": "The red band (B4) for the MTCI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand4",
@@ -11786,7 +11786,7 @@
 			{
 				"id": "redSourceBand5",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B5",
 				"description": "The red band (B5) for the MTCI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand5",
@@ -11795,7 +11795,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the MTCI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -11857,7 +11857,7 @@
 			{
 				"id": "filter",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Lee Sigma",
 				"description": "The kernel y dimension",
 				"label": "Pfilter",
@@ -11877,7 +11877,7 @@
 			{
 				"id": "filterSizeX",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 3,
 				"description": "The kernel x dimension",
 				"label": "PfilterSizeX",
@@ -11887,7 +11887,7 @@
 			{
 				"id": "filterSizeY",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 3,
 				"description": "The kernel y dimension",
 				"label": "PfilterSizeY",
@@ -11897,7 +11897,7 @@
 			{
 				"id": "dampingFactor",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "The damping factor (Frost filter only)",
 				"label": "PdampingFactor",
@@ -11925,7 +11925,7 @@
 			{
 				"id": "numLooksStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "1",
 				"description": "Sets parameter 'numLooksStr' to <string>",
 				"label": "PnumLooksStr",
@@ -11940,7 +11940,7 @@
 			{
 				"id": "windowSize",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "7x7",
 				"description": "Sets parameter 'windowSize' to <string>",
 				"label": "PwindowSize",
@@ -11958,7 +11958,7 @@
 			{
 				"id": "targetWindowSizeStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "3x3",
 				"description": "Sets parameter 'targetWindowSizeStr' to <string>",
 				"label": "PtargetWindowSizeStr",
@@ -11971,7 +11971,7 @@
 			{
 				"id": "sigmaStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "0.9",
 				"description": "Sets parameter 'sigmaStr' to <string>",
 				"label": "PsigmaStr",
@@ -11987,7 +11987,7 @@
 			{
 				"id": "anSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 50,
 				"description": "The Adaptive Neighbourhood size",
 				"label": "PanSize",
@@ -12050,7 +12050,7 @@
 			{
 				"id": "nRgLooks",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1,
 				"description": "The user defined number of range looks",
 				"label": "PnRgLooks",
@@ -12059,7 +12059,7 @@
 			{
 				"id": "nAzLooks",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1,
 				"description": "The user defined number of azimuth looks",
 				"label": "PnAzLooks",
@@ -12130,7 +12130,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -12144,7 +12144,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -12158,7 +12158,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -12192,7 +12192,7 @@
 			{
 				"id": "redSourceBand4",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B4",
 				"description": "The red band (B4) for the NDI45 computation. If not provided, the operator will try to find the best fitting band.",
 				"label": "PredSourceBand4",
@@ -12201,7 +12201,7 @@
 			{
 				"id": "redSourceBand5",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B5",
 				"description": "The red band (B5) for the NDI45 computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand5",
@@ -12254,7 +12254,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -12268,7 +12268,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -12282,7 +12282,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -12316,7 +12316,7 @@
 			{
 				"id": "greenSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The green band for the NDPI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PgreenSourceBand",
@@ -12325,7 +12325,7 @@
 			{
 				"id": "swirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The the short-wave infrared band-I for the NDPI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PswirSourceBand",
@@ -12378,7 +12378,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -12392,7 +12392,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -12406,7 +12406,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -12440,7 +12440,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the NDTI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -12449,7 +12449,7 @@
 			{
 				"id": "greenSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The green band for the NDTI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PgreenSourceBand",
@@ -12510,7 +12510,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the NDVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -12528,7 +12528,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the NDVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -12599,7 +12599,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the NDVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -12608,7 +12608,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the NDVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -12661,7 +12661,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -12675,7 +12675,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -12689,7 +12689,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -12723,7 +12723,7 @@
 			{
 				"id": "greenSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The green band for the NDWI2 computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PgreenSourceBand",
@@ -12732,7 +12732,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the NDWI2 computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -12785,7 +12785,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -12799,7 +12799,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -12813,7 +12813,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -12847,7 +12847,7 @@
 			{
 				"id": "mirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The mid-infrared band for the NDWI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PmirSourceBand",
@@ -12856,7 +12856,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the NDWI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -12971,7 +12971,7 @@
 			{
 				"id": "gridAzimuthSpacing",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 40,
 				"description": "The output grid azimuth spacing in pixels",
 				"label": "PgridAzimuthSpacing",
@@ -12980,7 +12980,7 @@
 			{
 				"id": "gridRangeSpacing",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 40,
 				"description": "The output grid range spacing in pixels",
 				"label": "PgridRangeSpacing",
@@ -12989,7 +12989,7 @@
 			{
 				"id": "registrationWindowWidth",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "128",
 				"description": "Sets parameter 'registrationWindowWidth' to <string>",
 				"label": "PregistrationWindowWidth",
@@ -13007,7 +13007,7 @@
 			{
 				"id": "registrationWindowHeight",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "128",
 				"description": "Sets parameter 'registrationWindowHeight' to <string>",
 				"label": "PregistrationWindowHeight",
@@ -13034,7 +13034,7 @@
 			{
 				"id": "averageBoxSize",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "5",
 				"description": "Sets parameter 'averageBoxSize' to <string>",
 				"label": "PaverageBoxSize",
@@ -13058,7 +13058,7 @@
 			{
 				"id": "radius",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 4,
 				"description": "Radius for Hole-Filling",
 				"label": "Pradius",
@@ -13067,7 +13067,7 @@
 			{
 				"id": "resamplingType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BICUBIC_INTERPOLATION",
 				"description": "Methods for velocity interpolation",
 				"label": "PresamplingType",
@@ -13101,7 +13101,7 @@
 			{
 				"id": "roiVector",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'roiVector' to <string>",
 				"label": "ProiVector",
@@ -13216,7 +13216,7 @@
 			{
 				"id": "backgroundWindowSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 13,
 				"description": "Background window size",
 				"label": "PbackgroundWindowSize",
@@ -13287,7 +13287,7 @@
 			{
 				"id": "outputImageBy",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Ratio",
 				"description": "Sets parameter 'outputImageBy' to <string>",
 				"label": "PoutputImageBy",
@@ -13301,7 +13301,7 @@
 			{
 				"id": "targetImageHeight",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1000,
 				"description": "The row dimension of the output image",
 				"label": "PtargetImageHeight",
@@ -13310,7 +13310,7 @@
 			{
 				"id": "targetImageWidth",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1000,
 				"description": "The col dimension of the output image",
 				"label": "PtargetImageWidth",
@@ -13408,7 +13408,7 @@
 			{
 				"id": "owtType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "COASTAL",
 				"description": "Sets parameter 'owtType' to <oWT_TYPE>",
 				"label": "PowtType",
@@ -13417,7 +13417,7 @@
 			{
 				"id": "reflectancesPrefix",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "reflec",
 				"description": "Sets parameter 'reflectancesPrefix' to <string>",
 				"label": "PreflectancesPrefix",
@@ -13426,7 +13426,7 @@
 			{
 				"id": "inputReflectanceIs",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "RADIANCE_REFLECTANCES",
 				"description": "Sets parameter 'inputReflectanceIs' to <reflectanceEnum>",
 				"label": "PinputReflectanceIs",
@@ -13496,7 +13496,7 @@
 			{
 				"id": "componentCount",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": -1,
 				"description": "The maximum number of principal components to compute",
 				"label": "PcomponentCount",
@@ -13505,7 +13505,7 @@
 			{
 				"id": "roiMaskName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name of the ROI mask that should be used",
 				"label": "ProiMaskName",
@@ -13574,7 +13574,7 @@
 			{
 				"id": "targetDir",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The directory to which the stitched product shall be written",
 				"label": "PtargetDir",
@@ -13626,7 +13626,7 @@
 			{
 				"id": "method",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "goldstein",
 				"description": "Select filtering method",
 				"label": "Pmethod",
@@ -13649,7 +13649,7 @@
 			{
 				"id": "blockSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 32,
 				"description": "Size of data blocks for filtering",
 				"label": "PblockSize",
@@ -13659,7 +13659,7 @@
 			{
 				"id": "overlap",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 8,
 				"description": "Half of overlap between consecutive filtering tiles",
 				"label": "Poverlap",
@@ -13669,7 +13669,7 @@
 			{
 				"id": "kernelInput",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "1 2 3 2 1",
 				"description": "Set of pre-defined kernels for filtering",
 				"label": "PkernelInput",
@@ -13769,7 +13769,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -13778,7 +13778,7 @@
 			{
 				"id": "demResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BILINEAR_INTERPOLATION",
 				"description": "Sets parameter 'demResamplingMethod' to <string>",
 				"label": "PdemResamplingMethod",
@@ -13787,7 +13787,7 @@
 			{
 				"id": "externalDEMFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'externalDEMFile' to <file>",
 				"label": "PexternalDEMFile",
@@ -13848,7 +13848,7 @@
 			{
 				"id": "nPoints",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 200,
 				"description": "Number of points for evaluation of flat earth phase at different altitudes",
 				"label": "PnPoints",
@@ -13858,7 +13858,7 @@
 			{
 				"id": "nHeights",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 3,
 				"description": "Number of height samples in range [0,5000)",
 				"label": "PnHeights",
@@ -13868,7 +13868,7 @@
 			{
 				"id": "degree1D",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "Degree of the 1D polynomial to fit reference phase through",
 				"label": "Pdegree1D",
@@ -13878,7 +13878,7 @@
 			{
 				"id": "degree2D",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 5,
 				"description": "Degree of the 2D polynomial to fit reference phase through",
 				"label": "Pdegree2D",
@@ -13888,7 +13888,7 @@
 			{
 				"id": "orbitDegree",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 3,
 				"description": "Degree of orbit (polynomial) interpolator",
 				"label": "PorbitDegree",
@@ -13950,7 +13950,7 @@
 			{
 				"id": "selectEigenvaluesBy",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Eigenvalue Threshold",
 				"description": "Sets parameter 'selectEigenvaluesBy' to <string>",
 				"label": "PselectEigenvaluesBy",
@@ -13972,7 +13972,7 @@
 			{
 				"id": "numPCA",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1,
 				"description": "The number of PCA images output",
 				"label": "PnumPCA",
@@ -14085,7 +14085,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -14099,7 +14099,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -14113,7 +14113,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -14147,7 +14147,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the PSSRa computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -14156,7 +14156,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the PSSRa computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -14208,7 +14208,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -14222,7 +14222,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -14236,7 +14236,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -14279,7 +14279,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the PVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -14288,7 +14288,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the PVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -14340,7 +14340,7 @@
 			{
 				"id": "sensor",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "OLCI",
 				"description": "The sensor",
 				"label": "Psensor",
@@ -14354,7 +14354,7 @@
 			{
 				"id": "conversionMode",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "RAD_TO_REFL",
 				"description": "Conversion mode: from rad to refl, or backwards",
 				"label": "PconversionMode",
@@ -14436,7 +14436,7 @@
 			{
 				"id": "treeCount",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 10,
 				"description": "The number of trees",
 				"label": "PtreeCount",
@@ -14445,7 +14445,7 @@
 			{
 				"id": "numTrainSamples",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 50000,
 				"description": "The number of training samples",
 				"label": "PnumTrainSamples",
@@ -14454,7 +14454,7 @@
 			{
 				"id": "savedClassifierName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The saved classifier name",
 				"label": "PsavedClassifierName",
@@ -14499,7 +14499,7 @@
 			{
 				"id": "classLevels",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 101,
 				"description": "Quantization class levels for raster training",
 				"label": "PclassLevels",
@@ -14544,7 +14544,7 @@
 			{
 				"id": "labelSource",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "'VectorNodeName' or specific Attribute name",
 				"label": "PlabelSource",
@@ -14571,7 +14571,7 @@
 			{
 				"id": "minPowerSetSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "Minimum size of the power set of features",
 				"label": "PminPowerSetSize",
@@ -14580,7 +14580,7 @@
 			{
 				"id": "maxPowerSetSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 7,
 				"description": "Maximum size of the power set of features",
 				"label": "PmaxPowerSetSize",
@@ -14632,7 +14632,7 @@
 			{
 				"id": "fftLength",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 8,
 				"description": "Length of filtering window",
 				"label": "PfftLength",
@@ -14652,7 +14652,7 @@
 			{
 				"id": "nlMean",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 15,
 				"description": "Input value for (walking) mean averaging to reduce noise",
 				"label": "PnlMean",
@@ -14672,7 +14672,7 @@
 			{
 				"id": "ovsmpFactor",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1,
 				"description": "Oversampling factor (in range only)",
 				"label": "PovsmpFactor",
@@ -14788,7 +14788,7 @@
 			{
 				"id": "s2MsiTargetResolution",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 20,
 				"description": "Sets parameter 's2MsiTargetResolution' to <int>",
 				"label": "Ps2MsiTargetResolution",
@@ -14849,7 +14849,7 @@
 			{
 				"id": "file",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The file from which the data product is read",
 				"label": "Pfile",
@@ -14858,7 +14858,7 @@
 			{
 				"id": "formatName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "An (optional) format name",
 				"label": "PformatName",
@@ -14998,7 +14998,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -15012,7 +15012,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -15026,7 +15026,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -15078,7 +15078,7 @@
 			{
 				"id": "redSourceBand4",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B4",
 				"description": "The red band (B4) for the REIP computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand4",
@@ -15087,7 +15087,7 @@
 			{
 				"id": "redSourceBand5",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B5",
 				"description": "The red band (B5) for the REIP computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand5",
@@ -15096,7 +15096,7 @@
 			{
 				"id": "redSourceBand6",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B6",
 				"description": "The red band (B6) for the REIP computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand6",
@@ -15105,7 +15105,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the REIP computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -15166,7 +15166,7 @@
 			{
 				"id": "borderLimit",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 500,
 				"description": "The border margin limit",
 				"label": "PborderLimit",
@@ -15279,7 +15279,7 @@
 			{
 				"id": "note",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Replace the metadata of the first product with that of the second",
 				"description": "Sets parameter 'note' to <string>",
 				"label": "Pnote",
@@ -15330,7 +15330,7 @@
 			{
 				"id": "collocateWith",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The source product will be collocated with this product",
 				"label": "ScollocateWith",
@@ -15340,7 +15340,7 @@
 			{
 				"id": "wktFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "A file which contains the target Coordinate Reference System in WKT format",
 				"label": "PwktFile",
@@ -15349,7 +15349,7 @@
 			{
 				"id": "crs",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "A text specifying the target Coordinate Reference System, either in WKT or as an authority code",
 				"label": "Pcrs",
@@ -15358,7 +15358,7 @@
 			{
 				"id": "resampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for resampling of floating-point raster data",
 				"label": "Presampling",
@@ -15417,7 +15417,7 @@
 			{
 				"id": "pixelSizeX",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": null,
 				"description": "The pixel size in X direction given in CRS units",
 				"label": "PpixelSizeX",
@@ -15426,7 +15426,7 @@
 			{
 				"id": "pixelSizeY",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": null,
 				"description": "The pixel size in Y direction given in CRS units.",
 				"label": "PpixelSizeY",
@@ -15435,7 +15435,7 @@
 			{
 				"id": "width",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": null,
 				"description": "The width of the target product",
 				"label": "Pwidth",
@@ -15444,7 +15444,7 @@
 			{
 				"id": "height",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": null,
 				"description": "The height of the target product",
 				"label": "Pheight",
@@ -15453,7 +15453,7 @@
 			{
 				"id": "tileSizeX",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": null,
 				"description": "The tile size in X direction",
 				"label": "PtileSizeX",
@@ -15462,7 +15462,7 @@
 			{
 				"id": "tileSizeY",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": null,
 				"description": "The tile size in Y direction",
 				"label": "PtileSizeY",
@@ -15480,7 +15480,7 @@
 			{
 				"id": "elevationModelName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name of the elevation model for the orthorectification. If not given tie-point data is used",
 				"label": "PelevationModelName",
@@ -15559,7 +15559,7 @@
 			{
 				"id": "referenceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name of the reference band",
 				"label": "PreferenceBand",
@@ -15568,7 +15568,7 @@
 			{
 				"id": "targetWidth",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": null,
 				"description": "The width that all bands of the target product shall have",
 				"label": "PtargetWidth",
@@ -15577,7 +15577,7 @@
 			{
 				"id": "targetHeight",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": null,
 				"description": "The height that all bands of the target product shall have",
 				"label": "PtargetHeight",
@@ -15586,7 +15586,7 @@
 			{
 				"id": "targetResolution",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": null,
 				"description": "The resolution that all bands of the target product shall have",
 				"label": "PtargetResolution",
@@ -15595,7 +15595,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -15609,7 +15609,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -15625,7 +15625,7 @@
 			{
 				"id": "flagDownsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution) of flags",
 				"label": "PflagDownsampling",
@@ -15693,7 +15693,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -15707,7 +15707,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -15721,7 +15721,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -15755,7 +15755,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the RI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -15764,7 +15764,7 @@
 			{
 				"id": "greenSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The green band for the RI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PgreenSourceBand",
@@ -15816,7 +15816,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -15830,7 +15830,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -15844,7 +15844,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -15878,7 +15878,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the RVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -15887,7 +15887,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the RVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -15970,7 +15970,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -15995,7 +15995,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the S2REP computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -16031,7 +16031,7 @@
 			{
 				"id": "redSourceBand4",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B4",
 				"description": "The red band (B4) for the S2REP computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand4",
@@ -16040,7 +16040,7 @@
 			{
 				"id": "redSourceBand5",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B5",
 				"description": "The red band (B5) for the S2REP computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand5",
@@ -16049,7 +16049,7 @@
 			{
 				"id": "redSourceBand6",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B6",
 				"description": "The red band (B6) for the S2REP computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand6",
@@ -16058,7 +16058,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -16072,7 +16072,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -16129,7 +16129,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -16143,7 +16143,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -16157,7 +16157,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -16209,7 +16209,7 @@
 			{
 				"id": "redSourceBand4",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B4",
 				"description": "The red band (B4) for the S2REP computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand4",
@@ -16218,7 +16218,7 @@
 			{
 				"id": "redSourceBand5",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B5",
 				"description": "The red band (B5) for the S2REP computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand5",
@@ -16227,7 +16227,7 @@
 			{
 				"id": "redSourceBand6",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "B6",
 				"description": "The red band (B6) for the S2REP computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand6",
@@ -16236,7 +16236,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the S2REP computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -16288,7 +16288,7 @@
 			{
 				"id": "resolution",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "60",
 				"description": "resolution",
 				"label": "Presolution",
@@ -16302,7 +16302,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Bilinear",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -16316,7 +16316,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Mean",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -16332,7 +16332,7 @@
 			{
 				"id": "flagDownsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution) of flags",
 				"label": "PflagDownsampling",
@@ -16409,7 +16409,7 @@
 			{
 				"id": "resamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "NEAREST_NEIGHBOUR",
 				"description": "The method to be used when resampling the slave grid onto the master grid",
 				"label": "PresamplingMethod",
@@ -16459,7 +16459,7 @@
 			{
 				"id": "sceneWidth",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 0,
 				"description": "Target width",
 				"label": "PsceneWidth",
@@ -16468,7 +16468,7 @@
 			{
 				"id": "sceneHeight",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 0,
 				"description": "Target height",
 				"label": "PsceneHeight",
@@ -16477,7 +16477,7 @@
 			{
 				"id": "feather",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 0,
 				"description": "Feather amount around source image",
 				"label": "Pfeather",
@@ -16486,7 +16486,7 @@
 			{
 				"id": "maxIterations",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 5000,
 				"description": "Maximum number of iterations",
 				"label": "PmaxIterations",
@@ -16556,7 +16556,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -16565,7 +16565,7 @@
 			{
 				"id": "demResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BICUBIC_INTERPOLATION",
 				"description": "Sets parameter 'demResamplingMethod' to <string>",
 				"label": "PdemResamplingMethod",
@@ -16574,7 +16574,7 @@
 			{
 				"id": "externalDEMFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'externalDEMFile' to <file>",
 				"label": "PexternalDEMFile",
@@ -16662,7 +16662,7 @@
 			{
 				"id": "warpPolynomialOrder",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1,
 				"description": "The order of WARP polynomial function",
 				"label": "PwarpPolynomialOrder",
@@ -16672,7 +16672,7 @@
 			{
 				"id": "imgResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BILINEAR_INTERPOLATION",
 				"description": "Sets parameter 'imgResamplingMethod' to <string>",
 				"label": "PimgResamplingMethod",
@@ -16704,7 +16704,7 @@
 			{
 				"id": "mapProjection",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The coordinate reference system in well known text format",
 				"label": "PmapProjection",
@@ -16830,7 +16830,7 @@
 			{
 				"id": "incidenceAngleForSigma0",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Use projected local incidence angle from DEM",
 				"description": "Sets parameter 'incidenceAngleForSigma0' to <string>",
 				"label": "PincidenceAngleForSigma0",
@@ -16844,7 +16844,7 @@
 			{
 				"id": "incidenceAngleForGamma0",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Use projected local incidence angle from DEM",
 				"description": "Sets parameter 'incidenceAngleForGamma0' to <string>",
 				"label": "PincidenceAngleForGamma0",
@@ -16858,7 +16858,7 @@
 			{
 				"id": "auxFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Latest Auxiliary File",
 				"description": "The auxiliary file",
 				"label": "PauxFile",
@@ -16872,7 +16872,7 @@
 			{
 				"id": "externalAuxFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The antenne elevation pattern gain auxiliary data file",
 				"label": "PexternalAuxFile",
@@ -16942,7 +16942,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -16956,7 +16956,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -16970,7 +16970,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -17013,7 +17013,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the SAVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -17022,7 +17022,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the SAVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -17231,7 +17231,7 @@
 			{
 				"id": "aerosolType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "CONTINENTAL",
 				"description": "Aerosol type",
 				"label": "PaerosolType",
@@ -17249,7 +17249,7 @@
 			{
 				"id": "maskExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Mask expression for the whole view (MERIS) or the nadir view (AATSR)",
 				"label": "PmaskExpression",
@@ -17258,7 +17258,7 @@
 			{
 				"id": "maskExpressionForward",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Mask expression for the forward view (AATSR only)",
 				"label": "PmaskExpressionForward",
@@ -17319,7 +17319,7 @@
 			{
 				"id": "targetFolder",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The output folder to which the data product is written",
 				"label": "PtargetFolder",
@@ -17328,7 +17328,7 @@
 			{
 				"id": "statCostMode",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "DEFO",
 				"description": "Size of coherence estimation window in Azimuth direction",
 				"label": "PstatCostMode",
@@ -17343,7 +17343,7 @@
 			{
 				"id": "initMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "MST",
 				"description": "Algorithm used for initialization of the wrapped phase values",
 				"label": "PinitMethod",
@@ -17356,7 +17356,7 @@
 			{
 				"id": "numberOfTileRows",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 10,
 				"description": "Divide the image into tiles and process in parallel. Set to 1 for single tiled",
 				"label": "PnumberOfTileRows",
@@ -17365,7 +17365,7 @@
 			{
 				"id": "numberOfTileCols",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 10,
 				"description": "Divide the image into tiles and process in parallel. Set to 1 for single tiled",
 				"label": "PnumberOfTileCols",
@@ -17374,7 +17374,7 @@
 			{
 				"id": "numberOfProcessors",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 4,
 				"description": "Number of concurrent processing threads. Set to 1 for single threaded",
 				"label": "PnumberOfProcessors",
@@ -17383,7 +17383,7 @@
 			{
 				"id": "rowOverlap",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 0,
 				"description": "Overlap, in pixels, between neighbouring tiles",
 				"label": "ProwOverlap",
@@ -17392,7 +17392,7 @@
 			{
 				"id": "colOverlap",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 0,
 				"description": "Overlap, in pixels, between neighbouring tiles",
 				"label": "PcolOverlap",
@@ -17401,7 +17401,7 @@
 			{
 				"id": "tileCostThreshold",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 500,
 				"description": "Cost threshold to use for determining boundaries of reliable regions (long, dimensionless; scaled according to other cost constants)",
 				"label": "PtileCostThreshold",
@@ -17513,7 +17513,7 @@
 			{
 				"id": "windowSizeStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "15x15",
 				"description": "Sets parameter 'windowSizeStr' to <string>",
 				"label": "PwindowSizeStr",
@@ -17584,7 +17584,7 @@
 			{
 				"id": "filter",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Lee Sigma",
 				"description": "Sets parameter 'filter' to <string>",
 				"label": "Pfilter",
@@ -17604,7 +17604,7 @@
 			{
 				"id": "filterSizeX",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 3,
 				"description": "The kernel x dimension",
 				"label": "PfilterSizeX",
@@ -17614,7 +17614,7 @@
 			{
 				"id": "filterSizeY",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 3,
 				"description": "The kernel y dimension",
 				"label": "PfilterSizeY",
@@ -17624,7 +17624,7 @@
 			{
 				"id": "dampingFactor",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "The damping factor (Frost filter only)",
 				"label": "PdampingFactor",
@@ -17652,7 +17652,7 @@
 			{
 				"id": "numLooksStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "1",
 				"description": "Sets parameter 'numLooksStr' to <string>",
 				"label": "PnumLooksStr",
@@ -17667,7 +17667,7 @@
 			{
 				"id": "windowSize",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "7x7",
 				"description": "Sets parameter 'windowSize' to <string>",
 				"label": "PwindowSize",
@@ -17685,7 +17685,7 @@
 			{
 				"id": "targetWindowSizeStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "3x3",
 				"description": "Sets parameter 'targetWindowSizeStr' to <string>",
 				"label": "PtargetWindowSizeStr",
@@ -17698,7 +17698,7 @@
 			{
 				"id": "sigmaStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "0.9",
 				"description": "Sets parameter 'sigmaStr' to <string>",
 				"label": "PsigmaStr",
@@ -17714,7 +17714,7 @@
 			{
 				"id": "anSize",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 50,
 				"description": "The Adaptive Neighbourhood size",
 				"label": "PanSize",
@@ -17776,7 +17776,7 @@
 			{
 				"id": "warpPolynomialOrder",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 4,
 				"description": "The order of WARP polynomial function",
 				"label": "PwarpPolynomialOrder",
@@ -17786,7 +17786,7 @@
 			{
 				"id": "interpolationMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Linear interpolation",
 				"description": "Sets parameter 'interpolationMethod' to <string>",
 				"label": "PinterpolationMethod",
@@ -17845,7 +17845,7 @@
 			{
 				"id": "statistic",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Mean Average",
 				"description": "Sets parameter 'statistic' to <string>",
 				"label": "Pstatistic",
@@ -17904,7 +17904,7 @@
 			{
 				"id": "targetFolder",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "target",
 				"description": "The output folder to which the data product is written",
 				"label": "PtargetFolder",
@@ -17913,7 +17913,7 @@
 			{
 				"id": "formatName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BEAM-DIMAP",
 				"description": "The name of the output file format",
 				"label": "PformatName",
@@ -17965,7 +17965,7 @@
 			{
 				"id": "targetFolder",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The output folder to which the data product is written",
 				"label": "PtargetFolder",
@@ -18016,7 +18016,7 @@
 			{
 				"id": "graphFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'graphFile' to <file>",
 				"label": "PgraphFile",
@@ -18077,7 +18077,7 @@
 			{
 				"id": "region",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The subset region in pixel coordinates",
 				"label": "Pregion",
@@ -18086,7 +18086,7 @@
 			{
 				"id": "geoRegion",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The subset region in geographical coordinates using WKT-format",
 				"label": "PgeoRegion",
@@ -18095,7 +18095,7 @@
 			{
 				"id": "subSamplingX",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1,
 				"description": "The pixel sub-sampling step in X (horizontal image direction)",
 				"label": "PsubSamplingX",
@@ -18104,7 +18104,7 @@
 			{
 				"id": "subSamplingY",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1,
 				"description": "The pixel sub-sampling step in Y (vertical image direction)",
 				"label": "PsubSamplingY",
@@ -18191,7 +18191,7 @@
 			{
 				"id": "startDate",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The start date",
 				"label": "PstartDate",
@@ -18200,7 +18200,7 @@
 			{
 				"id": "endDate",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The end date",
 				"label": "PendDate",
@@ -18218,7 +18218,7 @@
 			{
 				"id": "timeSeriesOutputDir",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The output directory for the intermediate time series product. If not given, the time series product will be written to the working directory",
 				"label": "PtimeSeriesOutputDir",
@@ -18227,7 +18227,7 @@
 			{
 				"id": "crs",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "EPSG:4326",
 				"description": "A text specifying the target Coordinate Reference System, either in WKT or as an authority code",
 				"label": "Pcrs",
@@ -18236,7 +18236,7 @@
 			{
 				"id": "resampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for resampling of floating-point raster data, if source products must be reprojected to the target CRS algorithm",
 				"label": "Presampling",
@@ -18304,7 +18304,7 @@
 			{
 				"id": "sourceBandName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The name of the band in the source products. Either this or 'bandMathsExpression' must be provided",
 				"label": "PsourceBandName",
@@ -18313,7 +18313,7 @@
 			{
 				"id": "bandMathsExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "A band maths expression serving as input band. Either this or 'sourceBandName' must be provided",
 				"label": "PbandMathsExpression",
@@ -18322,7 +18322,7 @@
 			{
 				"id": "percentileBandNamePrefix",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "If given, this is the percentile band name prefix",
 				"label": "PpercentileBandNamePrefix",
@@ -18331,7 +18331,7 @@
 			{
 				"id": "validPixelExpression",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "true",
 				"description": "The valid pixel expression serving as criterion for whether to consider pixels for computation",
 				"label": "PvalidPixelExpression",
@@ -18349,7 +18349,7 @@
 			{
 				"id": "gapFillingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "gapFillingLinearInterpolation",
 				"description": "The gap filling method for percentile calculation",
 				"label": "PgapFillingMethod",
@@ -18434,7 +18434,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -18443,7 +18443,7 @@
 			{
 				"id": "externalDEMFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'externalDEMFile' to <file>",
 				"label": "PexternalDEMFile",
@@ -18470,7 +18470,7 @@
 			{
 				"id": "demResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BILINEAR_INTERPOLATION",
 				"description": "Sets parameter 'demResamplingMethod' to <string>",
 				"label": "PdemResamplingMethod",
@@ -18489,7 +18489,7 @@
 			{
 				"id": "imgResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BILINEAR_INTERPOLATION",
 				"description": "Sets parameter 'imgResamplingMethod' to <string>",
 				"label": "PimgResamplingMethod",
@@ -18525,7 +18525,7 @@
 			{
 				"id": "mapProjection",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "WGS84(DD)",
 				"description": "The coordinate reference system in well known text format",
 				"label": "PmapProjection",
@@ -18669,7 +18669,7 @@
 			{
 				"id": "incidenceAngleForSigma0",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Use projected local incidence angle from DEM",
 				"description": "Sets parameter 'incidenceAngleForSigma0' to <string>",
 				"label": "PincidenceAngleForSigma0",
@@ -18683,7 +18683,7 @@
 			{
 				"id": "incidenceAngleForGamma0",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Use projected local incidence angle from DEM",
 				"description": "Sets parameter 'incidenceAngleForGamma0' to <string>",
 				"label": "PincidenceAngleForGamma0",
@@ -18697,7 +18697,7 @@
 			{
 				"id": "auxFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Latest Auxiliary File",
 				"description": "The auxiliary file",
 				"label": "PauxFile",
@@ -18711,7 +18711,7 @@
 			{
 				"id": "externalAuxFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The antenne elevation pattern gain auxiliary data file",
 				"label": "PexternalAuxFile",
@@ -18772,7 +18772,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 1Sec HGT",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -18781,7 +18781,7 @@
 			{
 				"id": "demResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BICUBIC_INTERPOLATION",
 				"description": "Sets parameter 'demResamplingMethod' to <string>",
 				"label": "PdemResamplingMethod",
@@ -18790,7 +18790,7 @@
 			{
 				"id": "externalDEMFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'externalDEMFile' to <file>",
 				"label": "PexternalDEMFile",
@@ -18869,7 +18869,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -18885,7 +18885,7 @@
 			{
 				"id": "demResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "NEAREST_NEIGHBOUR",
 				"description": "Sets parameter 'demResamplingMethod' to <string>",
 				"label": "PdemResamplingMethod",
@@ -18901,7 +18901,7 @@
 			{
 				"id": "externalDEMFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'externalDEMFile' to <file>",
 				"label": "PexternalDEMFile",
@@ -18919,7 +18919,7 @@
 			{
 				"id": "windowSizeStr",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "15x15",
 				"description": "Sets parameter 'windowSizeStr' to <string>",
 				"label": "PwindowSizeStr",
@@ -19058,7 +19058,7 @@
 			{
 				"id": "orbitDegree",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 3,
 				"description": "Degree of orbit interpolation polynomial",
 				"label": "PorbitDegree",
@@ -19111,7 +19111,7 @@
 			{
 				"id": "file",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The output file to which the data product is written",
 				"label": "Pfile",
@@ -19120,7 +19120,7 @@
 			{
 				"id": "formatName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BEAM-DIMAP",
 				"description": "The name of the output file format",
 				"label": "PformatName",
@@ -19129,7 +19129,7 @@
 			{
 				"id": "divisionBy",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Tiles",
 				"description": "How to divide the tiles",
 				"label": "PdivisionBy",
@@ -19142,7 +19142,7 @@
 			{
 				"id": "numberOfTiles",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "4",
 				"description": "The number of output tiles",
 				"label": "PnumberOfTiles",
@@ -19161,7 +19161,7 @@
 			{
 				"id": "pixelSizeX",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 200,
 				"description": "Tile pixel size",
 				"label": "PpixelSizeX",
@@ -19170,7 +19170,7 @@
 			{
 				"id": "pixelSizeY",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 200,
 				"description": "Tile pixel size",
 				"label": "PpixelSizeY",
@@ -19222,7 +19222,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -19236,7 +19236,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -19250,7 +19250,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -19284,7 +19284,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the TNDVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -19293,7 +19293,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the TNDVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -19345,7 +19345,7 @@
 			{
 				"id": "orbitDegree",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 3,
 				"description": "Degree of orbit interpolation polynomial",
 				"label": "PorbitDegree",
@@ -19355,7 +19355,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -19364,7 +19364,7 @@
 			{
 				"id": "externalDEMFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'externalDEMFile' to <file>",
 				"label": "PexternalDEMFile",
@@ -19382,7 +19382,7 @@
 			{
 				"id": "tileExtensionPercent",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "100",
 				"description": "Define extension of tile for DEM simulation (optimization parameter)",
 				"label": "PtileExtensionPercent",
@@ -19574,7 +19574,7 @@
 			{
 				"id": "subswath",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The list of source bands",
 				"label": "Psubswath",
@@ -19583,7 +19583,7 @@
 			{
 				"id": "firstBurstIndex",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1,
 				"description": "The first burst index",
 				"label": "PfirstBurstIndex",
@@ -19592,7 +19592,7 @@
 			{
 				"id": "lastBurstIndex",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 9999,
 				"description": "The last burst index",
 				"label": "PlastBurstIndex",
@@ -19601,7 +19601,7 @@
 			{
 				"id": "wktAoi",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "WKT polygon to be used for selecting bursts",
 				"label": "PwktAoi",
@@ -19662,7 +19662,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the TSAVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -19671,7 +19671,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -19685,7 +19685,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -19699,7 +19699,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -19724,7 +19724,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the TSAVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -19812,7 +19812,7 @@
 			{
 				"id": "method",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "LowPass Filtering",
 				"description": "Sets parameter 'method' to <string>",
 				"label": "Pmethod",
@@ -19825,7 +19825,7 @@
 			{
 				"id": "filterSize",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "3x3",
 				"description": "Sets parameter 'filterSize' to <string>",
 				"label": "PfilterSize",
@@ -19839,7 +19839,7 @@
 			{
 				"id": "subSamplingX",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "Sets parameter 'subSamplingX' to <int>",
 				"label": "PsubSamplingX",
@@ -19848,7 +19848,7 @@
 			{
 				"id": "subSamplingY",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "Sets parameter 'subSamplingY' to <int>",
 				"label": "PsubSamplingY",
@@ -19857,7 +19857,7 @@
 			{
 				"id": "outputImageBy",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Ratio",
 				"description": "Sets parameter 'outputImageBy' to <string>",
 				"label": "PoutputImageBy",
@@ -19871,7 +19871,7 @@
 			{
 				"id": "targetImageHeight",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1000,
 				"description": "The row dimension of the output image",
 				"label": "PtargetImageHeight",
@@ -19880,7 +19880,7 @@
 			{
 				"id": "targetImageWidth",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 1000,
 				"description": "The col dimension of the output image",
 				"label": "PtargetImageWidth",
@@ -19968,7 +19968,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -19984,7 +19984,7 @@
 			{
 				"id": "demResamplingMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BICUBIC_INTERPOLATION",
 				"description": "Sets parameter 'demResamplingMethod' to <string>",
 				"label": "PdemResamplingMethod",
@@ -19993,7 +19993,7 @@
 			{
 				"id": "externalDEMFile",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Sets parameter 'externalDEMFile' to <file>",
 				"label": "PexternalDEMFile",
@@ -20072,7 +20072,7 @@
 			{
 				"id": "demName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "SRTM 3Sec",
 				"description": "The digital elevation model",
 				"label": "PdemName",
@@ -20081,7 +20081,7 @@
 			{
 				"id": "warpPolynomialOrder",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": 2,
 				"description": "The order of WARP polynomial function",
 				"label": "PwarpPolynomialOrder",
@@ -20091,7 +20091,7 @@
 			{
 				"id": "interpolationMethod",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Cubic convolution (6 points)",
 				"description": "Sets parameter 'interpolationMethod' to <string>",
 				"label": "PinterpolationMethod",
@@ -20201,7 +20201,7 @@
 			{
 				"id": "redSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The red band for the WDVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PredSourceBand",
@@ -20210,7 +20210,7 @@
 			{
 				"id": "resampleType",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "None",
 				"description": "If selected bands differ in size, the resample method used before computing the index",
 				"label": "PresampleType",
@@ -20224,7 +20224,7 @@
 			{
 				"id": "upsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "Nearest",
 				"description": "The method used for interpolation (upsampling to a finer resolution)",
 				"label": "Pupsampling",
@@ -20238,7 +20238,7 @@
 			{
 				"id": "downsampling",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "First",
 				"description": "The method used for aggregation (downsampling to a coarser resolution)",
 				"label": "Pdownsampling",
@@ -20263,7 +20263,7 @@
 			{
 				"id": "nirSourceBand",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The near-infrared band for the WDVI computation. If not provided, the operator will try to find the best fitting band",
 				"label": "PnirSourceBand",
@@ -20385,7 +20385,7 @@
 			{
 				"id": "file",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "The output file to which the data product is written",
 				"label": "Pfile",
@@ -20394,7 +20394,7 @@
 			{
 				"id": "formatName",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "BEAM-DIMAP",
 				"description": "The name of the output file format",
 				"label": "PformatName",

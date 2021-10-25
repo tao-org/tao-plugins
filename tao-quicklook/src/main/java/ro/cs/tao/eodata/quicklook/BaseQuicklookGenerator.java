@@ -28,7 +28,7 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
 
     static {
         ConfigurationProvider configurationManager = ConfigurationManager.getInstance();
-        useDocker = Boolean.parseBoolean(configurationManager.getValue("plugins.use.docker", "false")) && DockerHelper.isDockerFound();
+        useDocker = "docker".equals(configurationManager.getValue("plugins.use", "")) && DockerHelper.isDockerFound();
         gdalDockerImage = configurationManager.getValue("docker.gdal.image", "geodata/gdal");
         Logger.getLogger(GenericQuicklookGenerator.class.getName())
                 .fine(String.format("'gdal_translate' will be run %s", useDocker ? "using Docker [" + gdalDockerImage + "]" : "from command line"));

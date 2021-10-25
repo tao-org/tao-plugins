@@ -84,7 +84,7 @@
       "name": "tileId",
       "remoteName": "row_path",
       "label": "Row and Path",
-      "type": "[Ljava.lang.String;",
+      "type": "string[]",
       "defaultValue": null,
       "required": false,
       "valueSet": null,
