@@ -53,7 +53,7 @@ public class GdalInfoWrapper implements MetadataInspector {
     static {
         final ConfigurationProvider configurationProvider = ConfigurationManager.getInstance();
         gdalDockerImage = configurationProvider.getValue("docker.gdal.image", "geodata/gdal");
-        useDocker = Boolean.parseBoolean(configurationProvider.getValue("plugins.use.docker", "false")) && DockerHelper.isDockerFound();
+        useDocker = "docker".equals(configurationProvider.getValue("plugins.use", "")) && DockerHelper.isDockerFound();
         extractStatistics = Boolean.parseBoolean(configurationProvider.getValue("extract.statistics", "true"));
         extractHistogram = Boolean.parseBoolean(configurationProvider.getValue("extract.histogram", "false"));
         Logger.getLogger(GdalInfoWrapper.class.getName())

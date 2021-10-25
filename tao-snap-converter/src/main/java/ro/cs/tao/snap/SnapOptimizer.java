@@ -53,7 +53,7 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
     @Override
     public ProcessingComponent createAggregatedComponent(ProcessingComponent... sources) throws AggregationException {
         ProcessingComponent aggregator = new ProcessingComponent();
-        final String newId = "snap-aggregated-component-" + UUID.randomUUID().toString();
+        final String newId = "snap-aggregated-component-" + UUID.randomUUID();
         aggregator.setId(newId);
         aggregator.setLabel(newId);
         aggregator.setVersion("1.0");

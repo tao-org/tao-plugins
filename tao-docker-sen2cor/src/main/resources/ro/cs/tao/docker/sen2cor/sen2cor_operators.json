@@ -42,7 +42,7 @@
 			{
 				"id": "mode",
 				"type": "REGULAR",
-				"dataType": string,
+				"dataType": "string",
 				"defaultValue": "process_tile",
 				"description": "Mode",
 				"label": "mode",
@@ -52,7 +52,7 @@
 			{
 				"id": "resolution",
 				"type": "REGULAR",
-				"dataType": int,
+				"dataType": "int",
 				"defaultValue": "20",
 				"description": "Target resolution, can be 10, 20 or 60m.",
 				"label": "Resolution",
