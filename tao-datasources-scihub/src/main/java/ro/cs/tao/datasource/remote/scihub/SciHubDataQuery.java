@@ -248,7 +248,7 @@ public class SciHubDataQuery extends DataQuery {
         final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
         final boolean canUseTileParameter = this.parameters.containsKey(CommonParameterNames.TILE) && !isS1;
         if (this.parameters.containsKey(CommonParameterNames.TILE) && !isS1) {
-            final QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
+            final QueryParameter<?> tileParameter = this.parameters.get(CommonParameterNames.TILE);
             final Object value = tileParameter.getValue();
             if (value != null) {
                 if (value.getClass().isArray()) {
@@ -384,27 +384,29 @@ public class SciHubDataQuery extends DataQuery {
                             break;
                         default:
                             if (parameter.getType().isArray()) {
-                                query.append("(");
-                                Object values = parameter.getValue();
-                                int length = Array.getLength(values);
-                                for (int i = 0; i < length; i++) {
-                                    query.append(Array.get(values, i).toString());
-                                    if (i < length - 1) {
-                                        query.append(" OR ");
+                                if (LocalDateTime.class.equals(parameter.getType().getComponentType())) {
+                                    query.append(getRemoteName(entry.getKey())).append(":[");
+                                    try {
+                                        query.append(getParameterValue(parameter));
+                                    } catch (ConversionException e) {
+                                        throw new QueryException(e.getMessage());
                                     }
+                                    query.append("]");
+                                } else {
+                                    query.append("(");
+                                    Object values = parameter.getValue();
+                                    int length = Array.getLength(values);
+                                    for (int i = 0; i < length; i++) {
+                                        query.append(Array.get(values, i).toString());
+                                        if (i < length - 1) {
+                                            query.append(" OR ");
+                                        }
+                                    }
+                                    if (length > 1) {
+                                        query = new StringBuilder(query.substring(0, query.length() - 4));
+                                    }
+                                    query.append(")");
                                 }
-                                if (length > 1) {
-                                    query = new StringBuilder(query.substring(0, query.length() - 4));
-                                }
-                                query.append(")");
-                            } else if (LocalDateTime.class.equals(parameter.getType())) {
-                                query.append(getRemoteName(entry.getKey())).append(":[");
-                                try {
-                                    query.append(getParameterValue(parameter));
-                                } catch (ConversionException e) {
-                                    throw new QueryException(e.getMessage());
-                                }
-                                query.append("]");
                             } else {
                                 query.append(getRemoteName(entry.getKey())).append(":");
                                 try {
