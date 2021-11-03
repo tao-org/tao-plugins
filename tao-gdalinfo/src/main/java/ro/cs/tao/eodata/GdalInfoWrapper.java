@@ -320,13 +320,12 @@ public class GdalInfoWrapper implements MetadataInspector {
     private double getSafeValue(JsonObject parent, String name) {
         double value = Double.NaN;
         final JsonValue jsonObject = parent.get(name);
-        if (jsonObject.getValueType() == JsonValue.ValueType.STRING) {
+        if (jsonObject != null && jsonObject.getValueType() == JsonValue.ValueType.STRING) {
             // special case of NaN and Infinity/-Infinity
             final String jsonString = parent.getJsonString(name).getString();
             switch (jsonString.toLowerCase()) {
                 case "nan":
                 case "-nan":
-                    value = Double.NaN;
                     break;
                 case "infinity":
                 case "inf":
@@ -338,7 +337,10 @@ public class GdalInfoWrapper implements MetadataInspector {
                     break;
             }
         } else {
-            value = parent.getJsonNumber(name).doubleValue();
+            final JsonNumber jsonNumber = parent.getJsonNumber(name);
+            if (jsonNumber != null) {
+                value = jsonNumber.doubleValue();
+            }
         }
         return value;
     }
