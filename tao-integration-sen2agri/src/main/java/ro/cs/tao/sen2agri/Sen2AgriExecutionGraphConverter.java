@@ -7,8 +7,9 @@ import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.component.template.TemplateType;
 import ro.cs.tao.docker.Application;
 import ro.cs.tao.docker.Container;
+import ro.cs.tao.docker.DockerVolumeMap;
+import ro.cs.tao.docker.ExecutionConfiguration;
 import ro.cs.tao.eodata.enums.DataFormat;
-import ro.cs.tao.execution.ExecutionConfiguration;
 import ro.cs.tao.persistence.*;
 import ro.cs.tao.sen2agri.model.ExternalGraph;
 import ro.cs.tao.sen2agri.model.ExternalStep;
@@ -129,16 +130,11 @@ public class Sen2AgriExecutionGraphConverter implements ExternalGraphConverter {
                 final String outputFolder = externalGraph.getOutputFolder();
                 final String temporaryFolder = externalGraph.getTemporaryFolder();
                 final String configFolder = externalGraph.getConfigurationFolder();
-                final String tempMount = ExecutionConfiguration.getDockerNodeTempMount();
-                final String cfgMount = ExecutionConfiguration.getDockerNodeConfigMount();
+                final DockerVolumeMap volumeMap = ExecutionConfiguration.getWorkerContainerVolumeMap();
                 final boolean shouldMoveOrCopy = outputFolder != null && !outputFolder.equals(temporaryFolder);
-                if (cfgMount != null) {
-                    replacements.put(configFolder, cfgMount.substring((cfgMount.indexOf(":") + 1)));
-                }
+                replacements.put(configFolder, volumeMap.getContainerConfigurationFolder());
                 if (shouldMoveOrCopy && temporaryFolder != null) {
-                    if (tempMount != null) {
-                        replacements.put(temporaryFolder, tempMount.substring(tempMount.indexOf(":") + 1));
-                    }
+                    replacements.put(temporaryFolder, volumeMap.getContainerTemporaryFolder());
                 }
                 for (ExternalTask task : tasks) {
                     final WorkflowNodeDescriptor node = convert(workflow, task, replacements);

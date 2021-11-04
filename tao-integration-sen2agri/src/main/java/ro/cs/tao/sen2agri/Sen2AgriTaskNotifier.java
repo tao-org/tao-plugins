@@ -2,7 +2,7 @@ package ro.cs.tao.sen2agri;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import ro.cs.tao.execution.ExecutionConfiguration;
+import ro.cs.tao.docker.ExecutionConfiguration;
 import ro.cs.tao.execution.callback.CallbackClient;
 import ro.cs.tao.execution.callback.CallbackClientFactory;
 import ro.cs.tao.execution.callback.EndpointDescriptor;
