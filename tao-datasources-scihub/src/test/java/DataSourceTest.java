@@ -67,9 +67,9 @@ public class DataSourceTest {
 
     public static void main(String[] args) throws JsonProcessingException {
         setup();
-        SciHub_Sentinel1_Test();
+        //SciHub_Sentinel1_Test();
         //SciHub_Sentinel2_Count_Test();
-        //SciHub_Sentinel2_APIHUB_Test();
+        SciHub_Sentinel2_APIHUB_Test();
         //SciHub_Sentinel2_DHUS_Test();
         //printParams();
     }
@@ -92,9 +92,12 @@ public class DataSourceTest {
 
             DataQuery query = dataSource.createQuery(sensors[1]);
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
-            QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
-            begin.setMinValue(LocalDateTime.of(2016, 2, 1, 0, 0, 0, 0));
-            begin.setMaxValue(LocalDateTime.of(2017, 2, 1, 0, 0, 0, 0));
+            Class clazz = LocalDateTime.class;
+            query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
+            QueryParameter begin = query.createParameter(CommonParameterNames.START_DATE,
+                                                         clazz,
+                                                         LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0),
+                                                         LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
                                                       "24.83885442747927 43.8379609098684," +
@@ -123,9 +126,11 @@ public class DataSourceTest {
 
             DataQuery query = dataSource.createQuery(sensors[1]);
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
-            QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
-            begin.setMinValue(LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0));
-            begin.setMaxValue(LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0));
+            Class clazz = LocalDateTime[].class;
+            QueryParameter begin = query.createParameter(CommonParameterNames.START_DATE,
+                                                         clazz,
+                                                         LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0),
+                                                         LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
                                                       "24.83885442747927 43.8379609098684," +
@@ -170,10 +175,12 @@ public class DataSourceTest {
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[1]);
+            Class clazz = LocalDateTime[].class;
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
-            QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
-            begin.setMinValue(LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0));
-            begin.setMaxValue(LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0));
+            QueryParameter begin = query.createParameter(CommonParameterNames.START_DATE,
+                                                         clazz,
+                                                         LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0),
+                                                         LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
                     "24.83885442747927 43.8379609098684," +
@@ -220,9 +227,11 @@ public class DataSourceTest {
 
             DataQuery query = dataSource.createQuery(sensors[0]);
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-1");
-            QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
-            begin.setMinValue(LocalDateTime.of(2019, 11, 1, 0, 0, 0, 0));
-            begin.setMaxValue(LocalDateTime.of(2019, 12, 15, 0, 0, 0, 0));
+            Class clazz = LocalDateTime[].class;
+            QueryParameter begin = query.createParameter(CommonParameterNames.START_DATE,
+                                                         clazz,
+                                                         LocalDateTime.of(2019, 11, 1, 0, 0, 0, 0),
+                                                         LocalDateTime.of(2019, 12, 15, 0, 0, 0, 0));
             query.addParameter(begin);
             query.addParameter(CommonParameterNames.POLARISATION, "VV");
             query.addParameter("sensorOperationalMode", "IW");
