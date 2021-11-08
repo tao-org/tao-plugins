@@ -1,11 +1,11 @@
 [
 	{
 		"id": "gdal_to_xarray",
-		"label": "Convert to Zarr",
+		"label": "Zarr Converter",
 		"version": "1.0.0",
 		"description": "Converts raster data to Zarr format",
 		"authors": "Lidia Baciu, Laurentiu Nicola",
-		"copyright": "(C) 2021",
+		"copyright": "(C) 2021 CS GROUP ROMANIA",
 		"nodeAffinity": "Any",
 		"sources": [
 			{
@@ -37,7 +37,45 @@
 		"multiThread": false,
 		"visibility": "SYSTEM",
 		"active": true,
-		"parameterDescriptors": [ ],
-		"templatecontents": "-input\n$input\n-out\n$out"
+		"parameterDescriptors": [
+			{
+				"id": "date",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "The date of the input product as yyyy-MM-ddTHH:mm:ss",
+				"label": "date",
+				"notNull": true
+			},
+			{
+				"id": "bandName",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Name of the band in the output product",
+				"label": "band-name",
+				"notNull": false
+			},
+			{
+				"id": "scale",
+				"type": "REGULAR",
+				"dataType": "double",
+				"defaultValue": 1,
+				"description": "The scaling to be applied to the input values. Default is 1",
+				"label": "scale",
+				"notNull": false
+			}
+		,
+			{
+				"id": "offset",
+				"type": "REGULAR",
+				"dataType": "double",
+				"defaultValue": 0,
+				"description": "The offset to be applied to the input values. Default is 0",
+				"label": "offset",
+				"notNull": false
+			}
+		],
+		"templatecontents": "--input\n$input\n--out\n$out--date\n$date\n--band-name\n$bandName\n--scale\n$scale\n--offset\n$offset"
 	}
 ]
