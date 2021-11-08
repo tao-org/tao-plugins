@@ -1,21 +1,14 @@
 #!/usr/bin/env python
 
 import argparse
-from datetime import datetime
 import numpy as np
-from osgeo import gdal
+from osgeo import gdal, osr
 import os
-import pandas as pd
 import pyproj
-import re
 import shutil
 from typing import Dict, Any, Tuple, List, Union
+from datetime import datetime
 import xarray as xr
-
-DEBUG = False
-SENTINEL_1_BACKSCATTER = "SENTINEL_1_BACKSCATTER"
-SENTINEL_1_COHERENCE = "SENTINEL_1_COHERENCE"
-SENTINEL_2_LAI = "SENTINEL_2_LAI"
 
 
 DEFAULT_METADATA = dict(
@@ -57,31 +50,6 @@ class Dataset(object):
         return attrs
 
 
-    def get_data_vars(self):
-        data_vars = dict()
-        x_name, y_name = self.product.xy_names
-        height, width = self.product.xy_size
-        dims = (self.time_name, y_name, x_name)
-        shape = (self.time_periods, height, width)
-        if DEBUG:
-            print(f"Data vars dimensions: {dims}")
-            print(f"Data vars shape: {shape}")
-        self.variables = self.product.get_variables(shape)
-        if self.variables:
-            for var_name, _, var_value, attrs in self.variables:
-                if self.product.crs is not None:
-                    attrs['grid_mapping'] = 'crs'
-                data_vars[var_name] = xr.DataArray(
-                    var_value,
-                    dims=dims,
-                    attrs=attrs
-                )
-        crs = self.product.crs
-        if crs is not None:
-            data_vars['crs'] = xr.DataArray(0, attrs=crs.to_cf()).astype(self.product.crs_dtype)
-        return data_vars
-
-
     def get_time_coverage_attrs(self):
         return dict(
             time_coverage_start=str(self.time_start),
@@ -89,7 +57,7 @@ class Dataset(object):
 
 
     def get_dataset(self):
-        data_vars = self.get_data_vars()
+        data_vars = self.product.get_variables(self.time_name, self.time_periods)
         coords = dict()
         time_coords = self.get_time_coordinate()
         xy_coords = self.product.get_xy_coordinates()
@@ -105,9 +73,9 @@ class Dataset(object):
 
         y_name, x_name = self.product.xy_names
         chunks = {
+            'time': 1,
             y_name: 'auto',
             x_name: 'auto',
-            'time': 1,
         }
         if self.product.xy_tile_size is not None:
             x_tile_size, y_tile_size = self.product.xy_tile_size
@@ -121,23 +89,36 @@ class Dataset(object):
 
     def write_dataset(self, file_path: str):
         dataset = self.get_dataset()
-        if DEBUG:
-            print(f'Writing {file_path}...')
-            print(dataset)
         dataset.to_zarr(file_path)
-        shutil.make_archive(file_path, "zip", file_path)
+        # shutil.make_archive(file_path, "zip", file_path)
+        # shutil.rmtree(file_path)
 
 
 class Product(object):
-    def __init__(self, input, type, date):
+    def __init__(self, input, type, date, fill, scale, offset, units):
         self.input = input
+        self.fill = fill
         self.type = type
         self.date = date
+        self.scale = scale
+        self.offset = offset
+        self.units = units
+
+        # Raster info
+        self.raster = gdal.Open(self.input, gdal.GA_ReadOnly)
+        self.crs = pyproj.crs.CRS.from_wkt(self.raster.GetProjectionRef())
+        self.axis = self._get_axis_info()
+        self.xy_size = (self.raster.RasterXSize, self.raster.RasterYSize)
+        geotransform = self.raster.GetGeoTransform()
+        self.xy_res = (geotransform[1], geotransform[5])
+        self.xy_start = (geotransform[0], geotransform[3])
+        self.xy_names = (self.axis['X'].name, self.axis['Y'].name)
+        self.xy_units = (self.axis['X'].unit, self.axis['Y'].unit)
+
         # Default values
         self.xy_tile_size: Union[int, Tuple[int, int]] = (1024, 1024)
         self.xy_dtype: np.dtype = 'float32'
         self.crs_dtype: np.dtype = 'int32'
-        self.crs: Union[str, pyproj.CRS] = None
 
     def _get_axis_info(self):
         cs_to_cf = self.crs.cs_to_cf()
@@ -145,28 +126,39 @@ class Product(object):
         for item in cs_to_cf:
             axis = Axis(item)
             items[axis.axis] = axis
-        if DEBUG:
-            print(f"Axis information: {items}")
         return items
 
-    def get_variables(self, shape):
-        band_values = self.raster.GetRasterBand(1).ReadAsArray()
-        # print(band_values.dtype)
+    def get_variables(self, time_name, time_periods):
+        raster_band = self.raster.GetRasterBand(1)
+        band_values = raster_band.ReadAsArray()
+        x_name, y_name = self.xy_names
+        height, width = self.xy_size
+        dims = (time_name, y_name, x_name)
+        shape = (time_periods, height, width)
+        band_name = self.type.lower()
         band_reshaped = band_values.reshape(shape)
-        variables = [
-            (
-                'band_1',
-                'float32',
-                band_reshaped,
-                dict(
-                    long_name='Band 1',
-                    #...
-                )
-            ),
-        ]
-        if DEBUG:
-            print(f"Variables: {variables}")
-        return variables
+        crs = self.crs
+        data_vars = {}
+
+        var_attributes = {
+            "long_name": band_name,
+            "units": str(self.units)
+        }
+        fill = self.fill or raster_band.GetNoDataValue()
+        if fill is not None:
+            var_attributes["_FillValue"] = float(fill)
+        if self.scale is not None:
+            band_values = band_values
+            var_attributes["scale_factor"] = 1/float(self.scale)
+        if self.offset is not None:
+            var_attributes["add_offset"] = float(self.offset)
+
+        if crs is not None:
+            var_attributes['grid_mapping'] = 'crs'
+            data_vars['crs'] = xr.DataArray(0, attrs=crs.to_cf()).astype(self.crs_dtype)
+        data_vars[band_name] = xr.DataArray(band_reshaped, dims=dims, attrs=var_attributes)
+
+        return data_vars
 
     def get_xy_coordinates(self):
         width, height = self.xy_size
@@ -195,9 +187,46 @@ class Product(object):
         y_var.attrs.update(long_name=y_long_name, standard_name=y_standard_name)
 
         xy_coordinates = {y_name : y_var, x_name : x_var}
-        if DEBUG:
-            print(f"XY Coordinates {xy_coordinates}")
         return xy_coordinates
+
+    def _reproj_coords(self, coords, src_srs, tgt_srs):
+        trans_coords = []
+        transform = osr.CoordinateTransformation(src_srs, tgt_srs)
+        for x, y in coords:
+            x, y, z = transform.TransformPoint(x, y)
+            trans_coords.append([x, y])
+        return trans_coords
+
+    def _get_extent(self, gt, cols, rows):
+        ext = []
+        x_arr = [0, cols]
+        y_arr = [0, rows]
+
+        for px in x_arr:
+            for py in y_arr:
+                x = gt[0] + px * gt[1] + py * gt[2]
+                y = gt[3] + px * gt[4] + py * gt[5]
+                ext.append([x, y])
+            y_arr.reverse()
+        return ext
+
+    def get_footprint(self):
+        (size_x, size_y) = self.xy_size
+        geo_transform = self.raster.GetGeoTransform()
+        extent = self._get_extent(geo_transform, size_x, size_y)
+
+        source_srs = osr.SpatialReference()
+        source_srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        source_srs.ImportFromWkt(self.raster.GetProjection())
+
+        crs = source_srs.ExportToWkt()
+
+        target_srs = osr.SpatialReference()
+        target_srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        target_srs.ImportFromEPSG(4326)
+
+        wgs84_extent = self._reproj_coords(extent, source_srs, target_srs)
+        return (np.array(wgs84_extent), np.array(extent), crs)
 
     def get_geospatial_attrs(self):
         width, height = self.xy_size
@@ -231,18 +260,29 @@ class Product(object):
                 geospatial_lat_resolution=y_res,
             )
         else:
+            (wgs84_extent, _, _) = self.get_footprint()
+            longitude = wgs84_extent[:, 0]
+            latitude = wgs84_extent[:, 1]
+            # Latitude/Longitude attributes
+            attrs.update(
+                geospatial_lon_units="degrees_east",
+                geospatial_lon_max=longitude.max(),
+                geospatial_lon_min=longitude.min(),
+                geospatial_lat_units="degrees_north",
+                geospatial_lat_max=latitude.max(),
+                geospatial_lat_min=latitude.min(),
+            )
+            # X/Y attributes
             attrs.update(
                 geospatial_x_units=x_units,
-                geospatial_x_min=x_start,
                 geospatial_x_max=x_end,
+                geospatial_x_min=x_start,
                 geospatial_x_resolution=x_res,
                 geospatial_y_units=y_units,
-                geospatial_y_min=y_start,
                 geospatial_y_max=y_end,
+                geospatial_y_min=y_start,
                 geospatial_y_resolution=y_res,
             )
-        if DEBUG:
-            print(f"Geospatial attributes: {attrs}")
         return attrs
 
 
@@ -257,82 +297,52 @@ class Axis(object):
         else:
             self.name = axis['axis'].lower()
 
-class Sentinel2Product(Product):
-    def __init__(self, input, type, date):
-        super().__init__(input, type, date)
-        self.raster = gdal.Open(self.input, gdal.GA_ReadOnly)
-        self.crs = pyproj.crs.CRS.from_wkt(self.raster.GetProjectionRef())
-        self.axis = self._get_axis_info()
-        self.xy_size = (self.raster.RasterXSize, self.raster.RasterYSize)
-        geotransform = self.raster.GetGeoTransform()
-        self.xy_res = (geotransform[1], geotransform[5])
-        self.xy_start = (geotransform[0], geotransform[3])
-        self.xy_names = (self.axis['X'].name, self.axis['Y'].name)
-        self.xy_units = (self.axis['X'].unit, self.axis['Y'].unit)
-
-    @staticmethod
-    def get_S2_product(path):
-        filename = os.path.basename(path)
-        # '2010-01-01T00:00:00'
-        product_search = re.search(".*_A(\d{8})T(\d{6})_\w.*", filename)
-        if product_search:
-            date_product = datetime.strptime(product_search.group(1), "%Y%m%d").strftime("%Y-%m-%d")
-            time_product = datetime.strptime(product_search.group(2), "%H%M%S").strftime("%H:%M:%S")
-            date_string = date_product + 'T' + time_product
-            date = datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S")
-            if DEBUG:
-                print(f"Found date {date} in {filename}")
-        if re.search("^S2[A-Z]*_L3(A|B)_\w.*", filename):
-            return Sentinel2Product(path, SENTINEL_2_LAI, date)
-        return None
-
-
-
-class Sentinel1Product(Product):
-    def __init__(self, input, type, date):
-        super().__init__(input, type, date)
-        self.raster = gdal.Open(self.input, gdal.GA_ReadOnly)
-        self.crs = pyproj.crs.CRS.from_wkt(self.raster.GetProjectionRef())
-        self.axis = self._get_axis_info()
-        self.xy_size = (self.raster.RasterXSize, self.raster.RasterYSize)
-        geotransform = self.raster.GetGeoTransform()
-        self.xy_res = (geotransform[1], geotransform[5])
-        self.xy_start = (geotransform[0], geotransform[3])
-        self.xy_names = (self.axis['X'].name, self.axis['Y'].name)
-        self.xy_units = (self.axis['X'].unit, self.axis['Y'].unit)
-
-
-    @staticmethod
-    def get_S1_product(path):
-        filename = os.path.basename(path)
-        # '2010-01-01T00:00:00'
-        product_search = re.search(".*_(\d{8})T(\d{6})_\w.*", filename)
-        if product_search:
-            date_product = datetime.strptime(product_search.group(1), "%Y%m%d").strftime("%Y-%m-%d")
-            time_product = datetime.strptime(product_search.group(2), "%H%M%S").strftime("%H:%M:%S")
-            date_string = date_product + 'T' + time_product
-            date = datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S")
-            if DEBUG:
-                print(f"Found date {date} in {filename}")
-        if re.search("^S1[A-Z]_L2_BCK_\w.*", filename):
-            return Sentinel1Product(path, SENTINEL_1_BACKSCATTER, date)
-        if re.search("^S1[A-Z]_L2_COH_\w.*", filename):
-            return Sentinel1Product(path, SENTINEL_1_COHERENCE, date)
-        return None
-
 
 parser = argparse.ArgumentParser(description="Launcher GDAL to Zarr convertor")
-parser.add_argument('-input', required=True)
-parser.add_argument('-out', required=True)
-parser.add_argument('-name', required=True)
+parser.add_argument('--input', required=True)
+parser.add_argument('--out', required=True)
+parser.add_argument('--band-name', required=False)
+parser.add_argument('--date', required=True)
+parser.add_argument('--fill', required=False)
+parser.add_argument('--scale', required=False)
+parser.add_argument('--offset', required=False)
+parser.add_argument('--units', required=False, default=1)
 args = parser.parse_args()
 
 # Parameters checking
 input = args.input
-output = os.path.join(args.out, args.name) + '.zarr'
+output = args.out
+date = args.date
+band_name = args.band_name
+scale = args.scale
+fill = args.fill
+offset = args.offset
+units = args.units
 
-product = Sentinel1Product.get_S1_product(input) or Sentinel2Product.get_S2_product(input)
-if DEBUG:
-    print(f"Identified product of type {type(product)}")
+filename = os.path.basename(input)
+(name, ext) = os.path.splitext(filename)
+
+if not band_name:
+    band_name = name
+
+product_date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")
+
+# if os.path.exists(output):
+#     if os.path.isdir(output):
+#         output_name = name + '.zarr'
+#         output_path = os.path.join(output, output_name)
+#     else:
+#         (output_name, ext) = os.path.splitext(output)
+#         if ext.lower() != '.zarr':
+#             raise Exception(f"The output {output} must be zarr compatible.")
+#         else:
+#             output_path = output
+# else:
+#     # Create the parent directory
+#     os.makedirs(os.path.dirname(output), exist_ok=True)
+#     (output_name, ext) = os.path.splitext(output)
+#     if not ext
+
+product = Product(input, band_name, product_date, fill, scale, offset, units)
 dataset = Dataset(product)
 dataset.write_dataset(output)
