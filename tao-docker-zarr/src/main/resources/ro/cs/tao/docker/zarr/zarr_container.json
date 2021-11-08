@@ -9,7 +9,7 @@
 	"applications": [
 		{
 			"path": "gdal_to_xarray.py",
-			"name": "Zarr Converter",
+			"name": "gdal_to_xarray",
 			"memoryRequirements": 8192
 		}
 	]
