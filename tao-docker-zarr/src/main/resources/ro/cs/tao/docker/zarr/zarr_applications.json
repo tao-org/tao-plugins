@@ -76,6 +76,6 @@
 				"notNull": false
 			}
 		],
-		"templatecontents": "--input\n$input\n--out\n$out--date\n$date\n--band-name\n$bandName\n--scale\n$scale\n--offset\n$offset"
+		"templatecontents": "--input\n$input\n--out\n$out\n--date\n$date\n--band-name\n$bandName\n--scale\n$scale\n--offset\n$offset"
 	}
 ]
