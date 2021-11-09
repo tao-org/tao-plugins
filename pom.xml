@@ -53,6 +53,7 @@
         <module>tao-eo-search</module>
         <module>tao-keycloak</module>
         <module>tao-docker-zarr</module>
+        <module>tao-zarr-metadata</module>
     </modules>
 
     <properties>

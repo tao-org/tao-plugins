@@ -16,8 +16,10 @@
 
 package ro.cs.tao.eodata.quicklook;
 
+import org.apache.commons.lang3.StringUtils;
 import ro.cs.tao.eodata.DataHandlingException;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.utils.DockerHelper;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.OutputAccumulator;
@@ -51,20 +53,27 @@ public class EOProductQuicklookGenerator extends BaseQuicklookGenerator<EOProduc
         final OutputAccumulator consumer = new OutputAccumulator();
         for (EOProduct product : list) {
             try {
-                consumer.reset();
-                Path productPath = Paths.get(URI.create(product.getLocation())).resolve(product.getEntryPoint());
-                Executor<?> executor = initialize(productPath, DockerHelper.isDockerFound() ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
-                if (executor != null) {
-                    executor.setOutputConsumer(consumer);
-                    int code;
-                    if ((code = executor.execute(false)) == 0) {
-                        product.setQuicklookLocation(Paths.get(productPath.toString() + extension).toString());
+                if (DataFormat.RASTER.equals(product.getFormatType())) {
+                    consumer.reset();
+                    final String entryPoint = product.getEntryPoint();
+                    if (StringUtils.isNotEmpty(entryPoint)) {
+                        Path productPath = Paths.get(URI.create(product.getLocation())).resolve(entryPoint);
+                        Executor<?> executor = initialize(productPath, DockerHelper.isDockerFound() ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
+                        if (executor != null) {
+                            executor.setOutputConsumer(consumer);
+                            int code;
+                            if ((code = executor.execute(false)) == 0) {
+                                product.setQuicklookLocation(Paths.get(productPath.toString() + extension).toString());
+                            } else {
+                                logger.warning(String.format("Quicklook for product %s was not created (return code: %d, output: %s)",
+                                        product.getName(), code, consumer.getOutput()));
+                            }
+                        } else {
+                            logger.warning(String.format("Automated quicklooks not supported for %s products", product.getProductType()));
+                        }
                     } else {
-                        logger.warning(String.format("Quicklook for product %s was not created (return code: %d, output: %s)",
-                                                     product.getName(), code, consumer.getOutput()));
+                        logger.warning(String.format("Automated quicklooks not supported for %s products", product.getProductType()));
                     }
-                } else {
-                    logger.warning(String.format("Automated quicklooks not supported for %s products", product.getProductType()));
                 }
             } catch (Exception e) {
                 logger.severe(String.format("Cannot create quicklook for product %s. Reason: %s",
