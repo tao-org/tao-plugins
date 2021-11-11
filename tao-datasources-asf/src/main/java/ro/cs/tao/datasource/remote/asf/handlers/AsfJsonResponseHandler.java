@@ -16,6 +16,7 @@
 package ro.cs.tao.datasource.remote.asf.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ro.cs.tao.datasource.remote.asf.json.AsfSearchResult;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
@@ -47,6 +48,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
         AsfSearchResult[][] results = mapper.readValue(content, AsfSearchResult[][].class);
         if(results.length > 0){
             return Arrays.stream(results[0]).map(r -> {
