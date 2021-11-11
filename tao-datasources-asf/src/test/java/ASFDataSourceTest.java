@@ -1,4 +1,3 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.param.DataSourceParameter;
@@ -8,6 +7,7 @@ import ro.cs.tao.datasource.remote.asf.ASFDataSource;
 import ro.cs.tao.datasource.remote.asf.download.AsfDownloadStrategy;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.serialization.JsonMapper;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
 
@@ -124,7 +124,7 @@ public class ASFDataSourceTest {
             productType.put("GRD_FD", "GRD_FD");
             productType.put("SLC", "SLC");
             productType.put("OCN", "Funny name");
-            System.out.println(new ObjectMapper().writer().writeValueAsString(filteredParameters));
+            System.out.println(JsonMapper.instance().writer().writeValueAsString(filteredParameters));
             dataSource.setFilteredParameters(filteredParameters);
             final Map<String, Map<String, DataSourceParameter>> supportedParameters = dataSource.getSupportedParameters();
             final Map<String, DataSourceParameter> parameterMap = supportedParameters.get(sensors[0]);

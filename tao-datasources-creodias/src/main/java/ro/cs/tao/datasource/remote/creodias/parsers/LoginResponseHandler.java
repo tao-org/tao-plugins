@@ -1,9 +1,9 @@
 package ro.cs.tao.datasource.remote.creodias.parsers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.creodias.model.common.Token;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
+import ro.cs.tao.serialization.JsonMapper;
 
 import java.util.logging.Logger;
 
@@ -13,8 +13,7 @@ public class LoginResponseHandler implements JSonResponseHandler<Token> {
     @Override
     public Token readValue(String content, AttributeFilter... filters) {
         try {
-            final ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(content, Token.class);
+            return JsonMapper.instance().readValue(content, Token.class);
         } catch (Exception e) {
             logger.warning("Error parsing JSON: " + e.getMessage());
             return null;

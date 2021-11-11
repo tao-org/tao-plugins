@@ -1,12 +1,12 @@
 package ro.cs.tao.keycloak;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.keycloak.RSATokenVerifier;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.common.VerificationException;
 import org.keycloak.representations.idm.UserRepresentation;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.security.TokenProvider;
+import ro.cs.tao.serialization.JsonMapper;
 import ro.cs.tao.user.User;
 import ro.cs.tao.user.UserPreference;
 
@@ -79,9 +79,8 @@ public class KeycloakClient implements TokenProvider {
         if (realmKey == null) {
             synchronized (lock) {
                 try {
-                    ObjectMapper om = new ObjectMapper();
                     @SuppressWarnings("unchecked")
-                    Map<String, Object> realmInfo = om.readValue(new URL(this.realmUrl).openStream(), Map.class);
+                    Map<String, Object> realmInfo = JsonMapper.instance().readValue(new URL(this.realmUrl).openStream(), Map.class);
                     realmKey = toPublicKey((String) realmInfo.get("public_key"));
                     if (realmKey == null) {
                         logger.severe("Cannot obtain public key from " + this.realmUrl);

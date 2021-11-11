@@ -1,7 +1,5 @@
 package ro.cs.tao.datasource.remote.creodias.parsers;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.creodias.model.s2.Feature;
 import ro.cs.tao.datasource.remote.creodias.model.s2.Result;
 import ro.cs.tao.datasource.remote.creodias.model.s2.ResultSet;
@@ -15,6 +13,7 @@ import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.eodata.util.ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
+import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,11 +26,9 @@ public class Sentinel2JsonResponseHandler implements JSonResponseHandler<EOProdu
 
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter... filters) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
         List<EOProduct> products = new ArrayList<>();
         try {
-            ResultSet results = mapper.readValue(content, ResultSet.class);
+            ResultSet results = JsonMapper.instance().readValue(content, ResultSet.class);
             List<Feature> features = results.getFeatures();
             if (features != null) {
                 ProductHelper productHelper;
@@ -100,9 +97,7 @@ public class Sentinel2JsonResponseHandler implements JSonResponseHandler<EOProdu
 
     @Override
     public long countValues(String content) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
-        ResultSet results = mapper.readValue(content, ResultSet.class);
+        ResultSet results = JsonMapper.instance().readValue(content, ResultSet.class);
         return results != null ? results.getProperties().getTotalResults().longValue() : 0;
     }
 }

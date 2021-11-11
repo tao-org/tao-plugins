@@ -1,9 +1,9 @@
 package ro.cs.tao.datasource.usgs.json.handlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.usgs.json.responses.DownloadResponse;
+import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,8 +16,7 @@ public class DownloadResponseHandler  implements JSonResponseHandler<DownloadRes
 
     @Override
     public DownloadResponse readValue(String content, AttributeFilter... filters) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        DownloadResponse response = mapper.readValue(content, DownloadResponse.class);
+        DownloadResponse response = JsonMapper.instance().readValue(content, DownloadResponse.class);
         final String error = response.getErrorMessage();
         if (response.getData() == null) {
             throw new IOException(error != null ? error : "No data [error: null]");

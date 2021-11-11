@@ -15,8 +15,6 @@
  */
 package ro.cs.tao.datasource.remote.asf.handlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ro.cs.tao.datasource.remote.asf.json.AsfSearchResult;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
@@ -24,6 +22,7 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,9 +46,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
 
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        AsfSearchResult[][] results = mapper.readValue(content, AsfSearchResult[][].class);
+        AsfSearchResult[][] results = JsonMapper.instance().readValue(content, AsfSearchResult[][].class);
         if(results.length > 0){
             return Arrays.stream(results[0]).map(r -> {
                 try {

@@ -1,7 +1,5 @@
 package ro.cs.tao.datasource.remote.creodias.parsers;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.creodias.model.s1.Feature;
 import ro.cs.tao.datasource.remote.creodias.model.s1.Result;
 import ro.cs.tao.datasource.remote.creodias.model.s1.ResultSet;
@@ -13,6 +11,7 @@ import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.OrbitDirection;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.serialization.JsonMapper;
 import ro.cs.tao.utils.ExceptionUtils;
 
 import java.io.IOException;
@@ -26,11 +25,9 @@ public class Sentinel1JsonResponseHandler implements JSonResponseHandler<EOProdu
 
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter... filters) throws IOException {
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
         List<EOProduct> products = new ArrayList<>();
         try {
-            final ResultSet results = mapper.readValue(content, ResultSet.class);
+            final ResultSet results = JsonMapper.instance().readValue(content, ResultSet.class);
             final List<Feature> features = results.getFeatures();
             if (features != null) {
                 for (Feature feature : features) {
@@ -99,9 +96,7 @@ public class Sentinel1JsonResponseHandler implements JSonResponseHandler<EOProdu
 
     @Override
     public long countValues(String content) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
-        ResultSet results = mapper.readValue(content, ResultSet.class);
+        ResultSet results = JsonMapper.instance().readValue(content, ResultSet.class);
         return results != null ? results.getProperties().getTotalResults().longValue() : 0;
     }
 }
