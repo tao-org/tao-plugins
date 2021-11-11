@@ -15,9 +15,6 @@
  */
 package ro.cs.tao.datasource.usgs.json.handlers;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.usgs.json.responses.SearchResponse;
@@ -30,6 +27,7 @@ import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.products.landsat.Landsat8ProductHelper;
+import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -48,7 +46,6 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
     private static final DateTimeFormatter firstFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormatter secondFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX");
 
-    private final ObjectMapper mapper;
     private final Pattern LANDSAT8 = Pattern.compile("LC08_.*");
     private final Pattern ECOSTRESS = Pattern.compile(".*(LSTE|ECOSTRESS|CLOUD|WUE|ESI).*");
     private final Pattern MODIS = Pattern.compile("(MOD|MCD|MYD).*");
@@ -56,14 +53,11 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
     private final Pattern VIIRS = Pattern.compile("VN.*");
 
     public SearchResponseHandler() {
-        mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
-        SearchResponse response = mapper.readValue(content, SearchResponse.class);
+        SearchResponse response = JsonMapper.instance().readValue(content, SearchResponse.class);
         SearchResults responseData = response.getData();
         List<SearchResult> results = responseData.getResults();
         return results.stream().map(r -> {
@@ -86,7 +80,7 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
 
     @Override
     public long countValues(String content) throws IOException {
-        SearchResponse response = mapper.readValue(content, SearchResponse.class);
+        SearchResponse response = JsonMapper.instance().readValue(content, SearchResponse.class);
         return response.getData().getTotalHits();
     }
 
