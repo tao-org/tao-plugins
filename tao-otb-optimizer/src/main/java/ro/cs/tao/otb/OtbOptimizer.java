@@ -37,7 +37,7 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
     protected ProcessingComponent createAggregatedComponent(ProcessingComponent... sources) throws AggregationException {
         ProcessingComponent component = new ProcessingComponent();
 
-        final String newId = "otb-aggregated-component-" + UUID.randomUUID().toString();
+        final String newId = "otb-aggregated-component-" + UUID.randomUUID();
 
         component.setId(newId);
         component.setLabel(newId);
@@ -49,7 +49,7 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
         component.setWorkingDirectory(sources[0].getWorkingDirectory());
 
         Template template = new BasicTemplate();
-        template.setName(newId + " template");
+        template.setName(newId + "_template");
         template.setTemplateType(TemplateType.VELOCITY);
 
         component.setTemplate(template);
