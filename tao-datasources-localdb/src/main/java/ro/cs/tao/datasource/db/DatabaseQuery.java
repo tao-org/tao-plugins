@@ -85,6 +85,11 @@ public class DatabaseQuery extends DataQuery {
                     if (parameter.getType().isArray()) {
                         query.append(getRemoteName(parameter.getName())).append(" IN (");
                         Object value = parameter.getValue();
+                        if (!value.getClass().isArray()) {
+                            // the value should be a string on the form "[a,b,..]"
+                            String strValue = (String) value;
+                            value = strValue.substring(1, strValue.length() - 1).split(",");
+                        }
                         Object[] arrayValue;
                         int length;
                         try {
