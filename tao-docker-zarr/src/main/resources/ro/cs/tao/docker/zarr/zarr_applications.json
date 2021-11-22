@@ -1,6 +1,6 @@
 [
 	{
-		"id": "gdal_to_xarray",
+		"id": "zarr_convert",
 		"label": "Zarr Converter",
 		"version": "1.0.0",
 		"description": "Converts raster data to Zarr format",
@@ -10,7 +10,7 @@
 		"sources": [
 			{
 				"id": null,
-				"parentId": "gdal_to_xarray",
+				"parentId": "zarr_convert",
 				"name": "input",
 				"cardinality": 1,
 				"dataDescriptor": {
@@ -21,7 +21,7 @@
 		"targets": [
 			{
 				"id": null,
-				"parentId": "gdal_translate",
+				"parentId": "zarr_convert",
 				"name": "out",
 				"dataDescriptor": {
 					"formatType": "FOLDER",
@@ -50,10 +50,10 @@
 			{
 				"id": "bandName",
 				"type": "REGULAR",
-				"dataType": "string",
+				"dataType": "string[]",
 				"defaultValue": null,
-				"description": "Name of the band in the output product",
-				"label": "band-name",
+				"description": "Name of the bands in the output product",
+				"label": "band-names",
 				"notNull": false
 			},
 			{
@@ -64,8 +64,7 @@
 				"description": "The scaling to be applied to the input values. Default is 1",
 				"label": "scale",
 				"notNull": false
-			}
-		,
+			},
 			{
 				"id": "offset",
 				"type": "REGULAR",
@@ -74,8 +73,26 @@
 				"description": "The offset to be applied to the input values. Default is 0",
 				"label": "offset",
 				"notNull": false
+			},
+			{
+				"id": "fill",
+				"type": "REGULAR",
+				"dataType": "double",
+				"defaultValue": 0,
+				"description": "The offset to be applied to the input values. Default is 0",
+				"label": "fill",
+				"notNull": false
+			},
+			{
+				"id": "units",
+				"type": "REGULAR",
+				"dataType": "int",
+				"defaultValue": 1,
+				"description": "The offset to be applied to the input values. Default is 0",
+				"label": "units",
+				"notNull": false
 			}
 		],
-		"templatecontents": "--input\n$input\n--out\n$out\n--date\n$date\n--band-name\n$bandName\n--scale\n$scale\n--offset\n$offset"
+		"templatecontents": "--input\n$input\n--out\n$out\n--date\n$date\n--band-names\n$bandNames\n--scale\n$scale\n--offset\n$offset\n--fill\n$fill\n--units\n$units"
 	}
 ]

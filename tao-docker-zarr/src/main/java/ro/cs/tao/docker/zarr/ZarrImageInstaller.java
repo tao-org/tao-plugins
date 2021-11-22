@@ -38,9 +38,8 @@ public class ZarrImageInstaller extends BaseImageInstaller {
     @Override
     protected String[] additionalResources() {
         return new String[] {
-            "gdal_to_xarray.py",
-            "requirements.txt",
-            "union_zarrs.py"
+                "gdal_to_xarray.py", "requirements.txt", "union_zarrs.py", "compute_products.py",
+                "db_reader.py", "launcher.py", "launcher_union.py", "stack_products.py", "union_chunks.py"
         };
     }
 

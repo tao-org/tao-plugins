@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import numpy as np
@@ -6,6 +6,7 @@ import os
 import json
 import blosc
 import shutil
+import multiprocessing.dummy
 import itertools
 
 ZARRAY_FILE = '.zarray'
@@ -17,14 +18,24 @@ ZMETADATA = '.zmetadata'
 CHUNKS = 'chunks'
 COMPRESSOR = 'compressor'
 SHAPE = 'shape'
+DTYPE = 'dtype'
+
+# Modes
+BAND_APPEND = "BAND_APPEND"
+CHUNK_APPEND = "CHUNK_APPEND"
+UNION_MODE = "UNION_MODE"
 
 class Variable(object):
-    def __init__(self, path, name, shape, chunk, cname):
-        self.path = path
+    def __init__(self, in_path, out_path, name, shape, chunk, cname, dtype):
+        self.in_path = in_path
+        self.out_path = out_path
         self.name = name
         self.shape = shape
         self.chunk = chunk
         self.cname = cname
+        self.dtype = dtype
+        self.mode = None
+        self.z_axis = 0
 
     def __str__(self):
         return self.name + " " + self.path
@@ -34,6 +45,10 @@ class VariableCollection(object):
         self.variables = []
 
     def add(self, variable):
+        """Add only the variables whose name has not been encountered yet.
+        Args:
+            variable (Variable): object containing all the properties of an xarray.DataArray
+        """
         should_add = True
         for v in self.variables:
             if v.name == variable.name:
@@ -58,23 +73,39 @@ class Metadata(object):
             files = os.listdir(path)
             for f in files:
                 if f[0] != '.' and f != 'time':
-                    (chunk, shape, cname) = self.read_zarray(os.path.join(path, f))
-                    variable = Variable(os.path.join(path, f), f, shape, chunk, cname)
+                    (chunk, shape, cname, dtype) = self.read_zarray(os.path.join(path, f))
+                    var_path = os.path.join(path, f)
+                    var_out_path = os.path.join(self.out_ds_path, f)
+                    variable = Variable(var_path, var_out_path, f, shape, chunk, cname, dtype)
+                    if os.path.exists(var_out_path):
+                        variable.mode = CHUNK_APPEND
+                    else:
+                        # os.mkdir(var_out_path)
+                        shutil.copytree(var_path, var_out_path)
+                        variable.mode = BAND_APPEND
+
                     self.variable_collection.add(variable)
-        return self.variable_collection.variables
+
+        vars_list = self.variable_collection.variables
+        variables = [v for v in vars_list if len(v.shape) != 3]
+        variables_3D = [v for v in vars_list if len(v.shape) == 3]
+        return (variables, variables_3D)
 
 
     def read_zarray(self, path):
+        dtype = None
         metadata_file = os.path.join(path, ZARRAY_FILE)
         cname = None
         with open(metadata_file, 'r') as f:
             metadata = json.load(f)
             if COMPRESSOR in metadata and metadata[COMPRESSOR]:
                 cname = metadata[COMPRESSOR]['cname']
-        return (metadata[CHUNKS], metadata[SHAPE], cname)
+            mdtype = metadata[DTYPE]
+        dtype = mdtype[1:] if not mdtype[0].isalpha() else mdtype
+        return (metadata[CHUNKS], metadata[SHAPE], cname, dtype)
 
-    def handle_time_metadata(self, in_path, out_path, shape, time_chunk, is_write):
-        if is_write:
+    def handle_time_metadata(self, in_path, out_path, shape, time_chunk):
+        if not self.is_append:
             # Copy .zattrs as it is
             shutil.copy(os.path.join(in_path, ZATTRS_FILE), os.path.join(out_path, ZATTRS_FILE))
             # print(f"Copied the .zattrs file from {os.path.join(in_path, ZATTRS_FILE)} to {os.path.join(out_path, ZATTRS_FILE)}")
@@ -92,22 +123,19 @@ class Metadata(object):
         # print(f"Metadata now: {metadata}")
 
 
-    def handle_variable_metadata(self, variable_path, variable_name, shape):
-        # Handle zattrs
-        if not self.is_append:
-            shutil.copy(os.path.join(variable_path, ZATTRS_FILE), os.path.join(self.out_ds_path, variable_name, ZATTRS_FILE))
+    def handle_variable_metadata(self, variable):
+        if variable.mode == BAND_APPEND:
+            shutil.copy(os.path.join(variable.in_path, ZARRAY_FILE), variable.out_path)
+            shutil.copy(os.path.join(variable.in_path, ZATTRS_FILE), os.path.join(variable.out_path, ZATTRS_FILE))
 
         # Handle .zarray
-        with open(os.path.join(variable_path, ZARRAY_FILE), 'r') as f:
-            metadata = json.load(f)
+        # with open(os.path.join(variable.in_path, ZARRAY_FILE), 'r') as f:
+        #     metadata = json.load(f)
 
-        out_path = os.path.join(self.out_ds_path, variable_name, ZARRAY_FILE)
-        if not self.is_append:
-            shutil.copy(os.path.join(variable_path, ZARRAY_FILE), out_path)
-
+        out_path = os.path.join(variable.out_path, ZARRAY_FILE)
         with open(out_path, 'r+') as f:
-            meta = json.load(f)
-            metadata[SHAPE][0] = int(shape)
+            metadata = json.load(f)
+            metadata[SHAPE][0] = int(variable.z_axis)
             metadata[CHUNKS][0] = int(self.time_chunks)
             f.seek(0)
             json.dump(metadata, f, indent=4, sort_keys=True)
@@ -158,7 +186,10 @@ class Metadata(object):
 
         with open(zattrs_path, 'r+') as m:
             metadata = json.load(m)
-            metadata['sources'] = [os.path.basename(f) for f in self.paths]
+            if 'sources' in metadata:
+                metadata['sources'] += [os.path.basename(f) for f in self.paths]
+            else:
+                metadata['sources'] = [os.path.basename(f) for f in self.paths]
             m.seek(0)
             json.dump(metadata, m, indent=4, sort_keys=True)
             m.truncate()
@@ -173,14 +204,11 @@ class Union(object):
         self.chunk_shape = (1024, 1024)
         self.metadata = metadata
 
-    def _get_vars(self, ref_ds):
-        return [f for f in os.listdir(ref_ds) if f[0] != '.' and f != 'time']
-
-    def _read_chunk(self, in_path, shape):
+    def _read_chunk(self, in_path, shape, dtype):
         with open(in_path, 'rb') as f:
             data = f.read()
             decompressed = blosc.decompress(data)
-            x = np.frombuffer(decompressed, dtype='i2').reshape(shape)
+            x = np.frombuffer(decompressed, dtype=dtype).reshape(shape)
         return x
 
     def read_times(self, inputs):
@@ -192,15 +220,15 @@ class Union(object):
             # print(dirname)
             if dirname != 'time':
                 ref_path = os.path.join(path, 'time')
-                (_, shape, cname) = self.metadata.read_zarray(ref_path)
+                (_, shape, _, dtype) = self.metadata.read_zarray(ref_path)
             else:
                 ref_path = path
-                (_, shape, cname) = self.metadata.read_zarray(path)
+                (_, shape, _, dtype) = self.metadata.read_zarray(path)
             time_axis += shape[0]
             # Joining '0' too because it's the only chunk of time
             time_path = os.path.join(ref_path, '0')
-            time_shape = (shape[0]*4, )
-            chunk_in = self._read_chunk(time_path, time_shape)
+            time_shape = shape[0]
+            chunk_in = self._read_chunk(time_path, time_shape, dtype)
             times += [chunk_in]
         times = np.array(times)
         return (times, time_axis)
@@ -209,23 +237,28 @@ class Union(object):
         out_path = os.path.join(self.out_ds_path, 'time')
         (times, time_axis) = self.read_times(self.paths)
 
-        is_write = False
-        if not os.path.exists(out_path):
+        if not self.metadata.is_append:
             os.mkdir(out_path)
             metadata_path = os.path.join(self.paths[0], 'time')
-            (_, shape, cname) = self.metadata.read_zarray(metadata_path)
-            is_write = True
+            (_, shape, cname, _) = self.metadata.read_zarray(metadata_path)
         else:
             metadata_path = out_path
-            (_, shape, cname) = self.metadata.read_zarray(metadata_path)
+            (_, shape, cname, _) = self.metadata.read_zarray(metadata_path)
             (times_exist, _) = self.read_times([out_path])
             times = np.concatenate((times, times_exist), axis=None)
             time_axis += shape[0]
 
-        times = times.reshape(time_axis, 4)
+        times = times.reshape(time_axis)
         print(f"Times before unique: {times}")
         time_np = np.unique(times, axis=0)
         print(f"Times: {time_np}")
+
+
+        # TODO: verify check for time
+        if np.any(np.diff(time_np.astype('int64')) <= 0):
+            raise Exception('Cannot compute union due to time not being monotonically increasing.')
+
+
         time_shape = np.shape(time_np)
         if len(time_shape) == 1:
             time_np = np.array(time_np)
@@ -241,13 +274,14 @@ class Union(object):
 
         # Writing the time values to the output ds
         with open(chunk_path, 'wb') as f:
-            compressed = blosc.compress(time_out, typesize=2, cname=cname)
+            compressed = blosc.compress(time_out, cname=cname)
             f.write(compressed)
+        # print(time_axis)
 
-        self.metadata.handle_time_metadata(metadata_path, out_path, time_axis, self.metadata.time_chunks, is_write)
+        # self.metadata.handle_time_metadata(metadata_path, out_path, time_axis, self.metadata.time_chunks)
+        self.metadata.handle_time_metadata(metadata_path, out_path, np.shape(time_np)[0], self.metadata.time_chunks)
 
     def _group_inputs(self, var_name):
-        # n = self.metadata.time_chunks
         groups = []
         group = []
         for p in self.paths:
@@ -257,75 +291,62 @@ class Union(object):
                 if len(group) == self.metadata.time_chunks:
                     groups += [group]
                     group = []
-        if len(group) > 0:
+        if group:
             groups += [group]
-        # chunks = [self.paths[x: x+n] for x in range(0, len(self.paths), n)]
-        print(groups)
         return groups
 
+    def _process_chunks(self, groups, var, c, max_shape):
+        z_axis = var.shape[0] + 1 if var.mode == CHUNK_APPEND else 0
+        for group in groups:
+            out = np.zeros(shape=(len(group), var.chunk[1], var.chunk[2]), dtype='int16')
+            # TODO: change this so split's not necessary anymore
+            (_, old_y, old_x) = (c.split('.')[0], c.split('.')[1], c.split('.')[2])
+            new_filename = f"{z_axis}.{old_y}.{old_x}"
+            for index, file in enumerate(group):
+                # TODO: get from the metadata the fillvalue and check if the chunk is practically non-existing.
+                chunk_path = os.path.join(file, var.name, c)
+                if os.path.exists(chunk_path):
+                    chunk_in = self._read_chunk(chunk_path, self.chunk_shape, var.dtype)
+                else:
+                    chunk_in = np.zeros(self.chunk_shape, dtype=var.dtype)
+                out[index, :, :] = chunk_in
+            out_bytes = out.tobytes()
+            chunk_out = blosc.compress(out_bytes, typesize=2, cname=var.cname)
+            chunk_out_path = os.path.join(var.out_path, new_filename)
+            with open(chunk_out_path, 'wb') as f:
+                f.write(chunk_out)
+            z_axis += 1
+
+        if z_axis >= max_shape:
+            max_shape = z_axis
+
+        return (var, max_shape)
 
     def _handle_chunks(self, variables):
+        pool = multiprocessing.dummy.Pool()
+        res = []
         for var in variables:
-            var_name = var.name
-            groups = self._group_inputs(var_name)
-            # var_in_path = os.path.join(self.metadata.ref, var_name)
-            var_in_path = var.path
-            print(var_in_path)
-            (chunks, shape, cname) = (var.chunk, var.shape, var.cname)
-            var_out_path = os.path.join(self.out_ds_path, var_name)
-            if not os.path.exists(var_out_path):
-                os.mkdir(var_out_path)
-
-            # (chunks, shape, cname) = self.metadata.read_zarray(var_in_path)
-            chunk_files = [f for f in os.listdir(var_in_path) if f[0] != '.']
+            groups = self._group_inputs(var.name)
+            chunk_files = [f for f in os.listdir(var.in_path) if f[0] != '.']
             max_shape = 0
             for c in chunk_files:
-                if self.metadata.is_append:
-                    z_axis = shape[0] + 1
-                else:
-                    z_axis = 0
-                for group in groups:
-                    out = np.zeros(shape=(len(group), chunks[1], chunks[2]), dtype='int16')
-                    (old_z, old_y, old_x) = (c.split('.')[0], c.split('.')[1], c.split('.')[2])
-                    new_filename = f"{z_axis}.{old_y}.{old_x}"
-                    for index, file in enumerate(group):
-                        chunk_path = os.path.join(file, var_name, c)
-                        if os.path.exists(chunk_path):
-                            chunk_in = self._read_chunk(chunk_path, self.chunk_shape)
-                            out[index, :, :] = chunk_in
-                    out_bytes = out.tobytes()
-                    chunk_out = blosc.compress(out_bytes, typesize=2, cname=cname)
-                    chunk_out_path = os.path.join(var_out_path, new_filename)
-                    with open(chunk_out_path, 'wb') as f:
-                        f.write(chunk_out)
-                    z_axis += 1
-                if z_axis >= max_shape:
-                    max_shape = z_axis
+                res.append(pool.apply_async(self._process_chunks, (groups, var, c, max_shape)))
+        pool.close()
 
-                self.metadata.handle_variable_metadata(var_in_path, var_name, max_shape)
+        for r in res:
+            (var, max_shape) = r.get()
+            var.z_axis = max_shape
+            if var.mode != BAND_APPEND:
+                self.metadata.handle_variable_metadata(var)
 
-
-
-    def _handle_variables(self, variables):
-        if self.metadata.is_append:
-            return
-
-        for var in variables:
-            path = os.path.join(self.metadata.ref, var.name)
-            shutil.copytree(path, os.path.join(self.out_ds_path, var.name))
+        pool.join()
 
 
     def compute(self):
-        vars_list = self.metadata.get_vars()
-        # (variables, variables_3D) = self.metadata.get_vars()
-        variables = [v for v in vars_list if len(v.shape) != 3]
-        variables_3D = [v for v in vars_list if len(v.shape) == 3]
-
+        (_, variables_3D) = self.metadata.get_vars()
         # Handle variables
         self._handle_time()
-        self._handle_variables(variables)
         self._handle_chunks(variables_3D)
-
         self.metadata.handle_global_metadata()
 
 
@@ -339,9 +360,14 @@ paths = args.inputs
 output_path=args.out
 time = int(args.time)
 
+print(f"Inputs paths: {paths}")
+print(f"Output path is {output_path}")
 
 if not os.path.exists(output_path):
-    os.mkdir(output_path)
+    try:
+        os.mkdir(output_path)
+    except OSError as exc:
+        print(f"Can't create destination directory {output_path}")
     metadata = Metadata(paths, output_path, paths[0], False, time)
 else:
     metadata = Metadata(paths, output_path, output_path, True, time)
