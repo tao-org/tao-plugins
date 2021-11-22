@@ -25,7 +25,6 @@ import ro.cs.tao.datasource.remote.lsa.LSADataSource;
 import ro.cs.tao.datasource.remote.lsa.auth.LSAAuthentication;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
-import ro.cs.tao.products.sentinels.SentinelProductHelper;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
@@ -205,7 +204,7 @@ public class LSADownloadStrategy extends DownloadStrategy<Header> {
                 }
                 try {
                     product.setLocation(productFile.toUri().toString());
-                    product.setEntryPoint(SentinelProductHelper.create(product.getName()).getMetadataFileName());
+                    //product.setEntryPoint(SentinelProductHelper.create(product.getName()).getMetadataFileName());
                 } catch (URISyntaxException e) {
                     logger.severe(e.getMessage());
                 }
