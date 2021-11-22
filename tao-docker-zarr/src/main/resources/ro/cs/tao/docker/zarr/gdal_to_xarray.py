@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import numpy as np
@@ -37,8 +37,7 @@ class Dataset(object):
         time_var = xr.DataArray([self.time_start], dims=self.time_name)
         time_var.encoding['units'] = self.time_units
         time_var.encoding['calendar'] = self.time_calendar
-        time_coordinate = {self.time_name : time_var}
-        return time_coordinate
+        return {self.time_name : time_var}
 
 
     def get_metadata(self):
@@ -58,7 +57,7 @@ class Dataset(object):
 
     def get_dataset(self):
         data_vars = self.product.get_variables(self.time_name, self.time_periods)
-        coords = dict()
+        coords = {}
         time_coords = self.get_time_coordinate()
         xy_coords = self.product.get_xy_coordinates()
         coords.update(time_coords)
@@ -95,10 +94,10 @@ class Dataset(object):
 
 
 class Product(object):
-    def __init__(self, input, type, date, fill, scale, offset, units):
+    def __init__(self, input, band_names, date, fill, scale, offset, units):
         self.input = input
         self.fill = fill
-        self.type = type
+        self.band_names = band_names
         self.date = date
         self.scale = scale
         self.offset = offset
@@ -129,34 +128,48 @@ class Product(object):
         return items
 
     def get_variables(self, time_name, time_periods):
-        raster_band = self.raster.GetRasterBand(1)
-        band_values = raster_band.ReadAsArray()
+        data_vars = {}
         x_name, y_name = self.xy_names
-        height, width = self.xy_size
+        width, height = self.xy_size
         dims = (time_name, y_name, x_name)
         shape = (time_periods, height, width)
-        band_name = self.type.lower()
-        band_reshaped = band_values.reshape(shape)
+
         crs = self.crs
-        data_vars = {}
-
-        var_attributes = {
-            "long_name": band_name,
-            "units": str(self.units)
-        }
-        fill = self.fill or raster_band.GetNoDataValue()
-        if fill is not None:
-            var_attributes["_FillValue"] = float(fill)
-        if self.scale is not None:
-            band_values = band_values
-            var_attributes["scale_factor"] = 1/float(self.scale)
-        if self.offset is not None:
-            var_attributes["add_offset"] = float(self.offset)
-
         if crs is not None:
-            var_attributes['grid_mapping'] = 'crs'
             data_vars['crs'] = xr.DataArray(0, attrs=crs.to_cf()).astype(self.crs_dtype)
-        data_vars[band_name] = xr.DataArray(band_reshaped, dims=dims, attrs=var_attributes)
+
+        nb_bands = self.raster.RasterCount
+
+        if not self.band_names:
+            band_names = ["_".join(["band", str(i)]) for i in range(1, nb_bands+1)]
+        else:
+            band_names = self.band_names
+
+        for band_index in range(1, len(band_names)+1):
+            raster_band = self.raster.GetRasterBand(band_index)
+            band_name = band_names[band_index-1].lower()
+            band_values = raster_band.ReadAsArray()
+            band_reshaped = band_values.reshape(shape)
+
+            var_attributes = {
+                "long_name": band_name,
+                "standard_name": band_name,
+                "units": str(self.units)
+            }
+
+            fill = self.fill or raster_band.GetNoDataValue()
+            if fill is not None:
+                var_attributes["_FillValue"] = float(fill)
+            if self.scale is not None:
+                band_values = band_values
+                var_attributes["scale_factor"] = 1/float(self.scale)
+            if self.offset is not None:
+                var_attributes["add_offset"] = float(self.offset)
+
+            if crs is not None:
+                var_attributes['grid_mapping'] = 'crs'
+
+            data_vars[band_name] = xr.DataArray(band_reshaped, dims=dims, attrs=var_attributes)
 
         return data_vars
 
@@ -186,8 +199,7 @@ class Product(object):
         x_var.attrs.update(long_name=x_long_name, standard_name=x_standard_name)
         y_var.attrs.update(long_name=y_long_name, standard_name=y_standard_name)
 
-        xy_coordinates = {y_name : y_var, x_name : x_var}
-        return xy_coordinates
+        return {y_name : y_var, x_name : x_var}
 
     def _reproj_coords(self, coords, src_srs, tgt_srs):
         trans_coords = []
@@ -239,7 +251,7 @@ class Product(object):
         x_units, y_units = self.xy_units
 
         attrs = dict(
-            geospatial_bounds_crs=self.crs.to_wkt(),
+            geospatial_bounds_crs=self.crs.to_wkt(pyproj.enums.WktVersion.WKT1_GDAL),
             geospatial_bounds=f'POLYGON(('
                             f'{x_start} {y_start}, '
                             f'{x_start} {y_end}, '
@@ -301,7 +313,7 @@ class Axis(object):
 parser = argparse.ArgumentParser(description="Launcher GDAL to Zarr convertor")
 parser.add_argument('--input', required=True)
 parser.add_argument('--out', required=True)
-parser.add_argument('--band-name', required=False)
+parser.add_argument('--band-names', required=False, type=str, nargs="+")
 parser.add_argument('--date', required=True)
 parser.add_argument('--fill', required=False)
 parser.add_argument('--scale', required=False)
@@ -313,7 +325,8 @@ args = parser.parse_args()
 input = args.input
 output = args.out
 date = args.date
-band_name = args.band_name
+# band_name = args.band_name
+band_names = args.band_names
 scale = args.scale
 fill = args.fill
 offset = args.offset
@@ -321,9 +334,6 @@ units = args.units
 
 filename = os.path.basename(input)
 (name, ext) = os.path.splitext(filename)
-
-if not band_name:
-    band_name = name
 
 product_date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")
 
@@ -343,6 +353,6 @@ product_date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")
 #     (output_name, ext) = os.path.splitext(output)
 #     if not ext
 
-product = Product(input, band_name, product_date, fill, scale, offset, units)
+product = Product(input, band_names, product_date, fill, scale, offset, units)
 dataset = Dataset(product)
 dataset.write_dataset(output)
