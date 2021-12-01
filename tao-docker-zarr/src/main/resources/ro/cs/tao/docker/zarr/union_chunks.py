@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
 import argparse
+import blosc
+import json
+import multiprocessing.dummy
 import numpy as np
 import os
-import json
-import blosc
 import shutil
-import multiprocessing.dummy
-import itertools
 
 ZARRAY_FILE = '.zarray'
 ZATTRS_FILE = '.zattrs'

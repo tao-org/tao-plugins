@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
 import argparse
-import sqlite3
-import psycopg2
-import os
-import re
-from lxml import etree
-import docker
-from datetime import datetime
 import configparser
+import docker
+import os
+import psycopg2
+import re
+import sqlite3
+from datetime import datetime
+from lxml import etree
 
 DOCKER_IMAGE = "sen4x/gdal_to_xarray:0.1"
 

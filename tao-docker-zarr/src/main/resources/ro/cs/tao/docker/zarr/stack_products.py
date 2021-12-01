@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 import argparse
+import docker
+import itertools
+import logging
+import numpy as np
 import os
 import shutil
-import subprocess
 import sqlite3
-import logging
-import itertools
 import xarray as xr
-import numpy as np
-import docker
 
 DOCKER_IMAGE = "sen4x/gdal_to_xarray:0.1"
 
