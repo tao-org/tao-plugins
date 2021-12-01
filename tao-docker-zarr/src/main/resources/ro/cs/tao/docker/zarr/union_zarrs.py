@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
 import argparse
+import os
 import xarray as xr
 from datetime import datetime
-import os
-import shutil
 
 EPOCH = "seconds since 2000-01-01T00:00:00"
 

@@ -2,14 +2,12 @@
 
 import argparse
 import numpy as np
-from osgeo import gdal, osr
 import os
 import pyproj
-import shutil
-from typing import Dict, Any, Tuple, List, Union
-from datetime import datetime
 import xarray as xr
-
+from datetime import datetime
+from osgeo import gdal, osr
+from typing import Dict, Any, Tuple, List, Union
 
 DEFAULT_METADATA = dict(
     Conventions="CF-1.7",

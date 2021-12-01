@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 import argparse
+import os
 import subprocess
 from datetime import datetime
-import os
 
 DATE_FORMAT = "%Y-%m-%d"
 start_time = datetime.now()

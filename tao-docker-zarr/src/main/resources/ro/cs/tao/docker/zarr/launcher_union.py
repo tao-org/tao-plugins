@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
 import argparse
-import subprocess
 import datetime
 import os
-
+import subprocess
 
 start_time = datetime.datetime.now()
 
