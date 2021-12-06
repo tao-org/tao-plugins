@@ -68,8 +68,8 @@ public class DataSourceTest {
     public static void main(String[] args) throws JsonProcessingException {
         setup();
         //SciHub_Sentinel1_Test();
-        //SciHub_Sentinel2_Count_Test();
-        SciHub_Sentinel2_APIHUB_Test();
+        SciHub_Sentinel2_Count_Test();
+        //SciHub_Sentinel2_APIHUB_Test();
         //SciHub_Sentinel2_DHUS_Test();
         //printParams();
     }
@@ -96,8 +96,8 @@ public class DataSourceTest {
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
             QueryParameter begin = query.createParameter(CommonParameterNames.START_DATE,
                                                          clazz,
-                                                         LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0),
-                                                         LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0));
+                                                         LocalDateTime.of(2020, 1, 1, 0, 0, 0, 0),
+                                                         LocalDateTime.of(2020, 12, 31, 23, 59, 59, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
                                                       "24.83885442747927 43.8379609098684," +
