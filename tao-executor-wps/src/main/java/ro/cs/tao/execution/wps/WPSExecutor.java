@@ -17,7 +17,7 @@ import ro.cs.tao.execution.model.ExecutionStatus;
 import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.model.WPSExecutionTask;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
-import ro.cs.tao.persistence.data.jsonutil.JacksonUtil;
+import ro.cs.tao.utils.JacksonUtil;
 
 import java.net.URL;
 import java.time.LocalDateTime;
