@@ -29,6 +29,7 @@ import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,6 +71,7 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
         aggregator.setVisibility(ProcessingComponentVisibility.USER);
         aggregator.setNodeAffinity("Any");
         aggregator.setMultiThread(true);
+        aggregator.setParallelism(Arrays.stream(sources).mapToInt(ProcessingComponent::getParallelism).max().getAsInt());
         aggregator.setActive(true);
         aggregator.setContainerId(sources[0].getContainerId());
         //Path graphPath = Paths.get(SystemVariable.USER_WORKSPACE.value(), newId + ".xml");
