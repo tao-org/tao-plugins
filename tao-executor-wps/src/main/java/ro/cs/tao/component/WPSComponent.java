@@ -20,20 +20,6 @@ public class WPSComponent extends TaoComponent {
 
     public WPSComponent() { }
 
-    private WPSComponent(WPSComponent source) throws CloneNotSupportedException {
-        this.remoteAddress = source.remoteAddress;
-        this.capabilityName = source.capabilityName;
-        if (source.parameters != null) {
-            this.parameters = new ArrayList<>();
-            for (ParameterDescriptor parameterDescriptor : source.parameters) {
-                this.parameters.add(parameterDescriptor.clone());
-            }
-        }
-        this.visibility = source.visibility;
-        this.active = source.active;
-        this.owner = source.owner;
-    }
-
     public String getRemoteAddress() {
         return remoteAddress;
     }
@@ -86,7 +72,7 @@ public class WPSComponent extends TaoComponent {
     }
 
     /**
-     * Validates the parameter values agains the parameter descriptors.
+     * Validates the parameter values against the parameter descriptors.
      */
     public void validate(Map<String, Object> parameterValues) throws ValidationException {
         if (parameterValues != null) {
@@ -102,6 +88,45 @@ public class WPSComponent extends TaoComponent {
 
     @Override
     public WPSComponent clone() throws CloneNotSupportedException {
-        return new WPSComponent(this);
+        final WPSComponent cloned = new WPSComponent();
+        cloned.label = this.label + " (copy)";
+        cloned.version = this.version;
+        cloned.description = this.description;
+        cloned.authors = this.authors;
+        cloned.copyright = this.copyright;
+        cloned.nodeAffinity = this.nodeAffinity;
+        cloned.remoteAddress = this.remoteAddress;
+        cloned.capabilityName = this.capabilityName;
+        if (this.parameters != null) {
+            cloned.parameters = new ArrayList<>();
+            for (ParameterDescriptor parameterDescriptor : this.parameters) {
+                cloned.parameters.add(parameterDescriptor.clone());
+            }
+        }
+        cloned.visibility = this.visibility;
+        cloned.active = this.active;
+        cloned.owner = this.owner;
+        if (this.sources != null) {
+            List<SourceDescriptor> clonedSources = new ArrayList<>(this.sources.size());
+            for (SourceDescriptor sourceDescriptor : this.sources) {
+                SourceDescriptor dClone = sourceDescriptor.clone();
+                dClone.setParentId(cloned.getId());
+                clonedSources.add(dClone);
+            }
+            cloned.setSources(clonedSources);
+        }
+        if (this.targets != null) {
+            List<TargetDescriptor> clonedTargets = new ArrayList<>(this.targets.size());
+            for (TargetDescriptor targetDescriptor : this.targets) {
+                TargetDescriptor dClone = targetDescriptor.clone();
+                dClone.setParentId(cloned.getId());
+                clonedTargets.add(dClone);
+            }
+            cloned.setTargets(clonedTargets);
+        }
+        if (this.tags != null) {
+            cloned.tags = new ArrayList<>(this.tags);
+        }
+        return cloned;
     }
 }
