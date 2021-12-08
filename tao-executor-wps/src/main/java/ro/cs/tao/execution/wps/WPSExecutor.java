@@ -57,7 +57,8 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
             logger.fine(String.format("Successfully submitted task with id %s", task.getResourceId()));
             final WPSComponent wpsComponent = task.getComponent();
             final String address = wpsComponent.getRemoteAddress();
-            task.setExecutionNodeHostName(address);
+            final URL url = new URL(address);
+            task.setExecutionNodeHostName(url.getHost());
             task.setStartTime(LocalDateTime.now());
             changeTaskStatus(task, ExecutionStatus.RUNNING);
             List<Variable> values = task.getInputParameterValues();
@@ -72,7 +73,6 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
             if (input.size() == 0) {
                 throw new ExecutionException("Invalid input data for the task");
             }
-            final URL url = new URL(address);
             final WebProcessingService wps = this.webServicesMap.computeIfAbsent(address,
                                                  addr -> {
                                                     try {
