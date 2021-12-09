@@ -71,7 +71,7 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
         aggregator.setVisibility(ProcessingComponentVisibility.USER);
         aggregator.setNodeAffinity("Any");
         aggregator.setMultiThread(true);
-        aggregator.setParallelism(Arrays.stream(sources).mapToInt(ProcessingComponent::getParallelism).max().getAsInt());
+        aggregator.setParallelism(Arrays.stream(sources).mapToInt(ProcessingComponent::getParallelism).min().getAsInt());
         aggregator.setActive(true);
         aggregator.setContainerId(sources[0].getContainerId());
         //Path graphPath = Paths.get(SystemVariable.USER_WORKSPACE.value(), newId + ".xml");

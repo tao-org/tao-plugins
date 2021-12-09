@@ -58,7 +58,7 @@ public class ZarrImageInstaller extends BaseImageInstaller {
                 app.setName(app.getName());
                 app.setPath(appPath);
             });
-            zarrContainer.setLogo(readContainerLogo("ro/cs/tao/docker/zarr/zarr_logo.png"));
+            zarrContainer.setLogo(readContainerLogo("zarr_logo.png"));
             zarrContainer = this.containerProvider.save(zarrContainer);
         } catch (Exception e) {
             logger.severe(e.getMessage());
