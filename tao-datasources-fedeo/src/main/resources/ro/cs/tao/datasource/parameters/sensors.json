@@ -212,7 +212,7 @@
   "CryoSat-2 (CMEMS_MERCATOR)": {
     "mission": "CryoSat-2",
     "sensorType": "ALTIMETRIC",
-    "description": "'''Short description:''' Altimeter satellite gridded Sea Level Anomalies (SLA) computed with respect to a twenty-year [1993, 2012] mean. The SLA is estimated by Optimal Interpolation, merging the measurement from the different altimeter missions available (see QUID document or http://duacs.cls.fr [http://duacs.cls.fr] pages for processing details). The product gives additional variables (i.e. Absolute Dynamic Topography and geostrophic currents (absolute and anomalies)).This product is processed by the DUACS multimission altimeter data processing system. It serves in near-real time the main operational oceanography and climate forecasting centers in Europe and worldwide. It processes data from all altimeter missions: Jason-3, Sentinel-3A, HY-2A, Saral/AltiKa, Cryosat-2, Jason-2, Jason-1, T/P, ENVISAT, GFO, ERS1/2. It provides a consistent and homogeneous catalogue of products for varied applications, both for near real time applications and offline studies. To produce maps of Sea Level Anomalies (SLA) and Absolute Dynamic Topography (ADT) in delayed-time (REPROCESSED), the system uses the along-track altimeter missions from products called SEALEVEL*_PHY_L3_REP_OBSERVATIONS_008_*. Finally an Optimal Interpolation is made merging all the flying satellites in order to compute gridded SLA and ADT. The geostrophic currents are derived from sla (geostrophic velocities anomalies, ugosa and vgosa variables) and from adt (absolute geostrophic velicities, ugos and vgos variables). Note that the gridded products can be visualized on the LAS (Live Access Data) Aviso+ web page (http://www.aviso.altimetry.fr/en/data/data-access/las-live-access-server.html [http://www.aviso.altimetry.fr/en/data/data-access/las-live-access-server.html])",
+    "description": "'Short description:' Altimeter satellite gridded Sea Level Anomalies (SLA) computed with respect to a twenty-year [1993, 2012] mean. The SLA is estimated by Optimal Interpolation, merging the measurement from the different altimeter missions available (see QUID document or http://duacs.cls.fr [http://duacs.cls.fr] pages for processing details). The product gives additional variables (i.e. Absolute Dynamic Topography and geostrophic currents (absolute and anomalies)).This product is processed by the DUACS multimission altimeter data processing system. It serves in near-real time the main operational oceanography and climate forecasting centers in Europe and worldwide. It processes data from all altimeter missions: Jason-3, Sentinel-3A, HY-2A, Saral/AltiKa, Cryosat-2, Jason-2, Jason-1, T/P, ENVISAT, GFO, ERS1/2. It provides a consistent and homogeneous catalogue of products for varied applications, both for near real time applications and offline studies. To produce maps of Sea Level Anomalies (SLA) and Absolute Dynamic Topography (ADT) in delayed-time (REPROCESSED), the system uses the along-track altimeter missions from products called SEALEVEL*_PHY_L3_REP_OBSERVATIONS_008_*. Finally an Optimal Interpolation is made merging all the flying satellites in order to compute gridded SLA and ADT. The geostrophic currents are derived from sla (geostrophic velocities anomalies, ugosa and vgosa variables) and from adt (absolute geostrophic velicities, ugos and vgos variables). Note that the gridded products can be visualized on the LAS (Live Access Data) Aviso+ web page (http://www.aviso.altimetry.fr/en/data/data-access/las-live-access-server.html [http://www.aviso.altimetry.fr/en/data/data-access/las-live-access-server.html])",
     "temporalCoverage": "from 1993 to 2020",
     "spatialCoverage": "Global"
   },
@@ -394,7 +394,7 @@
   "Envisat (CMEMS_MERCATOR)": {
     "mission": "Envisat",
     "sensorType": "RADAR",
-    "description": "'''Short description:''' Altimeter satellite gridded Sea Level Anomalies (SLA) computed with respect to a twenty-year [1993, 2012] mean. The SLA is estimated by Optimal Interpolation, merging the measurement from the different altimeter missions available (see QUID document or http://duacs.cls.fr [http://duacs.cls.fr] pages for processing details). The product gives additional variables (i.e. Absolute Dynamic Topography and geostrophic currents (absolute and anomalies)).This product is processed by the DUACS multimission altimeter data processing system. It serves in near-real time the main operational oceanography and climate forecasting centers in Europe and worldwide. It processes data from all altimeter missions: Jason-3, Sentinel-3A, HY-2A, Saral/AltiKa, Cryosat-2, Jason-2, Jason-1, T/P, ENVISAT, GFO, ERS1/2. It provides a consistent and homogeneous catalogue of products for varied applications, both for near real time applications and offline studies. To produce maps of Sea Level Anomalies (SLA) and Absolute Dynamic Topography (ADT) in delayed-time (REPROCESSED), the system uses the along-track altimeter missions from products called SEALEVEL*_PHY_L3_REP_OBSERVATIONS_008_*. Finally an Optimal Interpolation is made merging all the flying satellites in order to compute gridded SLA and ADT. The geostrophic currents are derived from sla (geostrophic velocities anomalies, ugosa and vgosa variables) and from adt (absolute geostrophic velicities, ugos and vgos variables). Note that the gridded products can be visualized on the LAS (Live Access Data) Aviso+ web page (http://www.aviso.altimetry.fr/en/data/data-access/las-live-access-server.html [http://www.aviso.altimetry.fr/en/data/data-access/las-live-access-server.html])",
+    "description": "'Short description:' Altimeter satellite gridded Sea Level Anomalies (SLA) computed with respect to a twenty-year [1993, 2012] mean. The SLA is estimated by Optimal Interpolation, merging the measurement from the different altimeter missions available (see QUID document or http://duacs.cls.fr [http://duacs.cls.fr] pages for processing details). The product gives additional variables (i.e. Absolute Dynamic Topography and geostrophic currents (absolute and anomalies)).This product is processed by the DUACS multimission altimeter data processing system. It serves in near-real time the main operational oceanography and climate forecasting centers in Europe and worldwide. It processes data from all altimeter missions: Jason-3, Sentinel-3A, HY-2A, Saral/AltiKa, Cryosat-2, Jason-2, Jason-1, T/P, ENVISAT, GFO, ERS1/2. It provides a consistent and homogeneous catalogue of products for varied applications, both for near real time applications and offline studies. To produce maps of Sea Level Anomalies (SLA) and Absolute Dynamic Topography (ADT) in delayed-time (REPROCESSED), the system uses the along-track altimeter missions from products called SEALEVEL*_PHY_L3_REP_OBSERVATIONS_008_*. Finally an Optimal Interpolation is made merging all the flying satellites in order to compute gridded SLA and ADT. The geostrophic currents are derived from sla (geostrophic velocities anomalies, ugosa and vgosa variables) and from adt (absolute geostrophic velicities, ugos and vgos variables). Note that the gridded products can be visualized on the LAS (Live Access Data) Aviso+ web page (http://www.aviso.altimetry.fr/en/data/data-access/las-live-access-server.html [http://www.aviso.altimetry.fr/en/data/data-access/las-live-access-server.html])",
     "temporalCoverage": "from 1993 to 2020",
     "spatialCoverage": "Global"
   },
@@ -967,112 +967,112 @@
   },
   "Landsat-1 (NASA_CMR)": {
     "mission": "Landsat-1",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "A set of MSS images from Landsat satellites 1, 2, 4 and 5 covering the dates of 21-Aug-1972 to 05-Sep-1988.  ",
     "temporalCoverage": "from 1972 to 1988",
     "spatialCoverage": "Global"
   },
   "Landsat-2 (NASA_CMR)": {
     "mission": "Landsat-2",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "A set of MSS images from Landsat satellites 1, 2, 4 and 5 covering the dates of 21-Aug-1972 to 05-Sep-1988.  ",
     "temporalCoverage": "from 1972 to 1988",
     "spatialCoverage": "Global"
   },
   "Landsat-3 (NASA_CMR)": {
     "mission": "Landsat-3",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "Abstract: The Landsat Multispectral Scanner (MSS) was a sensor onboard Landsats 1 through 5 and acquired images of the Earth nearly continuously from July 1972 to October 1992, with an 18-day repeat cycle for Landsats 1 through 3 and a 16-day repeat cycle for Landsats 4 and 5. A limited amount of images have been acquired through January 2013. Landsat MSS image data consist of four spectral bands (band designations), although the specific band designations changed between Landsats 1-3 and Landsats 4-5. The resolution for all bands of 79 m, and approximate scene size is 170 km north-south by 185 km east-west (106 mi by 115 miles). Landsat Collection 1 provides a quality-controlled selection of radiometrically calibrated and consistently geolocated data; particular geodetic accuracy and error tolerances are specified to align pixels for time series analysis through the full Landsat record. More details about the Landsat Collections can be found at https://landsat.usgs.gov/landsat-collections.",
     "temporalCoverage": "from 1972 to 2013",
     "spatialCoverage": "Global"
   },
   "Landsat-4 (NASA_CMR)": {
     "mission": "Landsat-4",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "This data set provides the location and extent of surface water (open water not including vegetated wetlands) for the entire Boreal and Tundra regions of North America for three epochs, centered on 1991, 2001, and 2011. Each of the products were generated with at least three years of ice-free Landsat imagery. The data are at 30-m resolution and were derived from time series of Landsat 4 and 5 Thematic Mapper (TM) data and Landsat 7 Enhanced Thematic Mapper (ETM+) covering all of Alaska and all provinces of Canada. The overall goal was to generate a map of the nominal extent of water for a given epoch, where nominal is neither the maximum nor the minimum but rather a representative extent for that time period.",
     "temporalCoverage": "from 1990 to 2012",
     "spatialCoverage": "Global"
   },
   "Landsat-5 (CNES_THEIA)": {
     "mission": "Landsat-5",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "Reflectance Landsat images (Level 2A) processed by the Theia Land Data Center (http://www.theia-land.fr) for the CNES French Space Agency (http://www.cnes.fr). The processing center developed by CNES uses the MACCS prototype L2A chain developed and designed by CESBIO. LANDSAT 8 L1T Input data come from USGS (http://earthexplorer.usgs.gov) that we would like to thank for releasing freely the LANDSAT 8 datasets.",
     "temporalCoverage": "from 1978 to present",
     "spatialCoverage": "Global"
   },
   "Landsat-5 (NASA_CMR)": {
     "mission": "Landsat-5",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "This dataset provides estimated annual aboveground biomass (AGB) density for live woody (tree and shrub) species and corresponding standard errors at a 30 m spatial resolution for the boreal forest biome portion of the Core Study Domain of NASA's Arctic-Boreal Vulnerability Experiment (ABoVE) Project (Alaska and Canada) over the time period 1984-2014. The data were derived from a time series of Landsat-5 and Landsat-7 surface reflectance imagery and full-waveform lidar returns from the Geoscience Laser Altimeter System (GLAS) flown onboard IceSAT from 2004 to 2008. The Change Detection and Classification (CCDC) model-fitting algorithm was used to estimate the seasonal variability in surface reflectance, and AGB density data were produced by applying allometric equations to the GLAS lidar data. A Gradient Boosted Machines machine learning algorithm was used to predict annual AGB density across the study domain given the seasonal variability in surface reflectance and other predictors. The data received statistical smoothing to reduce noise and uncertainty was estimated at the pixel level. These data contribute to the characterization of how biomass stocks are responding to climate and disturbance in boreal forests.",
     "temporalCoverage": "from 1984 to 2014",
     "spatialCoverage": "Global"
   },
   "Landsat-5 (NASA_CWIC)": {
     "mission": "Landsat-5",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "Existing 30-m land cover Thematic Mapper classification by CCRS was aggregated and reprocessed and are now available at multiple resolutions (10x5 minutes and 30 minutes).",
     "temporalCoverage": "from 1994 to 1995",
     "spatialCoverage": "Global"
   },
   "Landsat-5 (TM)": {
     "mission": "Landsat-5",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "This dataset contains all the Landsat 5 Thematic Mapper high-quality ortho-rectified L1T dataset acquired by ESA over the Fucino, Matera, Kiruna and Maspalomas visibility masks, as well as campaign data over Malindi, Bishkek, Chetumal, Libreville and O'Higgins. The acquired Landsat TM scene covers approximately 183 x 172.8 km. A standard full scene is nominally centred on the intersection between a path and row (the actual image centre can vary by up to 100m). A full image is composed of 6920 pixels x 5760 lines and each band requires 40 Mbytes of storage space (uncompressed) at 30m spatial resolution in the VIS, NIR and SWIR as well as 120m in the TIR spectral range.",
     "temporalCoverage": "from 1984 to 2011",
     "spatialCoverage": "Global"
   },
   "Landsat-7 (CNES_THEIA)": {
     "mission": "Landsat-7",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "Reflectance Landsat images (Level 2A) processed by the Theia Land Data Center (http://www.theia-land.fr) for the CNES French Space Agency (http://www.cnes.fr). The processing center developed by CNES uses the MACCS prototype L2A chain developed and designed by CESBIO. LANDSAT 8 L1T Input data come from USGS (http://earthexplorer.usgs.gov) that we would like to thank for releasing freely the LANDSAT 8 datasets.",
     "temporalCoverage": "from 1978 to present",
     "spatialCoverage": "Global"
   },
   "Landsat-7 (ETM)": {
     "mission": "Landsat-7",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "This dataset contains all the Landsat 7 Enhanced Thematic Mapper high-quality ortho-rectified L1T dataset (or L1Gt where not enough GCPs are available) over Kiruna, Maspalomas, Matera and Neustrelitz visibility masks. The Landsat 7 ETM+ scenes typically covers 185 x 170 km. A standard full scene is nominally centred on the intersection between a Path and Row (the actual image centre can vary by up to 100m). Each band requires 50MB (uncompressed), and Band 8 requires 200MB (panchromatic band with resolution of 15m opposed to 30m).",
     "temporalCoverage": "from 1999 to 2003",
     "spatialCoverage": "Global"
   },
   "Landsat-7 (NASA_CMR)": {
     "mission": "Landsat-7",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "This dataset provides estimated annual aboveground biomass (AGB) density for live woody (tree and shrub) species and corresponding standard errors at a 30 m spatial resolution for the boreal forest biome portion of the Core Study Domain of NASA's Arctic-Boreal Vulnerability Experiment (ABoVE) Project (Alaska and Canada) over the time period 1984-2014. The data were derived from a time series of Landsat-5 and Landsat-7 surface reflectance imagery and full-waveform lidar returns from the Geoscience Laser Altimeter System (GLAS) flown onboard IceSAT from 2004 to 2008. The Change Detection and Classification (CCDC) model-fitting algorithm was used to estimate the seasonal variability in surface reflectance, and AGB density data were produced by applying allometric equations to the GLAS lidar data. A Gradient Boosted Machines machine learning algorithm was used to predict annual AGB density across the study domain given the seasonal variability in surface reflectance and other predictors. The data received statistical smoothing to reduce noise and uncertainty was estimated at the pixel level. These data contribute to the characterization of how biomass stocks are responding to climate and disturbance in boreal forests.",
     "temporalCoverage": "from 1984 to 2014",
     "spatialCoverage": "Global"
   },
   "Landsat-7 (NASA_CWIC)": {
     "mission": "Landsat-7",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "The BigFoot project gathered leaf area index (LAI) data for nine EOS Land Validation Sites located from Alaska to Brazil from 2000 to 2003. Each site is representative of one or two distinct biomes, including the Arctic tundra; boreal evergreen needleleaf forest; temperate cropland, grassland, evergreen needleleaf forest, and deciduous broadleaf forest; desert grassland and shrubland; and tropical evergreen broadleaf forest. LAI was measured at plots within each site for at least two years using standard direct and optical methods at each site. BigFoot was funded by NASA's Terrestrial Ecology Program.",
     "temporalCoverage": "from 2000 to 2003",
     "spatialCoverage": "Global"
   },
   "Landsat-8 (CNES_THEIA)": {
     "mission": "Landsat-8",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "Reflectance Landsat images (Level 2A) processed by the Theia Land Data Center (http://www.theia-land.fr) for the CNES French Space Agency (http://www.cnes.fr). The processing center developed by CNES uses the MACCS prototype L2A chain developed and designed by CESBIO. LANDSAT 8 L1T Input data come from USGS (http://earthexplorer.usgs.gov) that we would like to thank for releasing freely the LANDSAT 8 datasets.",
     "temporalCoverage": "from 1978 to present",
     "spatialCoverage": "Global"
   },
   "Landsat-8 (IPT)": {
     "mission": "Landsat-8",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": " Landsat-8 products stored in the catalog provided by the Earth Observation Innovative Platform Testbed Poland. Landsat 8 level 1 products combine data from the 2 Landsat instruments; OLI and TIRS. The level 1 products generated can be either L1T or L1gT. Level 1T data products consist of radiometrically corrected image data derived from L0 data scaled to at-aperture spectral radiance or reflectance that are resampled for registration to a cartographic projection (referenced to the WGS84, G873 or current version). The L1T product is orthorectified, and corrected for terrain relief. The geometric corrections use observatory ephemeris data and ground control points; DEM data is used to correct for terrain relief. Geometrically corrected products L1gT data products consist of L0 product data with systematic radiometric, geometric and terrain corrections applied and resampled for registration to a cartographic projection, referenced to the WGS84, G873, or current version. L1gT data products assume the use of on-board positional information or definitive ephemeris, as well as the use of controlled elevation data to correct for parallax errors. In case of insufficient GCP, caused by extensive snow/cloud cover, which makes the orthorectification impossible, products of this level are produced instead of L1T. ",
     "temporalCoverage": "from 2013 to present",
     "spatialCoverage": "Global"
   },
   "Landsat-8 (NASA_CMR)": {
     "mission": "Landsat-8",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "This dataset provides maps at 30-m resolution of landscape surface burn severity (surface litter and soil organic layers) from the 2014-2015 fires in the Northwest Territories and Northern Alberta, Canada. The maps were derived from Landsat 8 Operational Land Imager/Thermal Infrared Sensor (OLI/TIRS) imagery and two separate multiple linear regression models trained with field data; one for the Plains and a second for the Shield ecoregion. Field observations were used to estimate area burned in each of five severity classes (unburned, singed, light, moderate, severely burned) in six stratified randomly selected plots of 10 x 10-m in size across a 1-ha site. Using this five class scale a burn severity index (BSI) for each 1-ha site was calculated using multiple weighted and averaged field parameters. Pre- and post-fire phenologically paired Landsat 8 images were used to model the five discrete severity classes using midpoints as breaks.",
     "temporalCoverage": "from 2014 to 2015",
     "spatialCoverage": "Global"
   },
   "Landsat-8 (SENTINEL-HUB)": {
     "mission": "Landsat-8",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": " Landsat8 products stored in the catalog provided by SINERGISE SENTINEL Hub. The Landsat program is the longest running enterprise for acquisition of satellite imagery of Earth, running from 1972.The most recent, Landsat 8, was launched on February 11, 2013. The images are a unique resource for global change research and applications in agriculture, cartography, geology, forestry, regional planning, surveillance and education. Landsat 8 data has eight spectral bands with spatial resolutions ranging from 15 to 60 meters; the temporal resolution is 16 days. ",
     "temporalCoverage": "from 2013 to present",
     "spatialCoverage": "Global"
@@ -1625,14 +1625,14 @@
   },
   "OrbView-2 (CEDA-CCI)": {
     "mission": "OrbView-2",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "The ESA Ocean Colour CCI project has produced global level 3 binned multi-sensor time-series of satellite ocean-colour data with a particular focus for use in climate studies.This dataset contains their Version 3.1 inherent optical properties (IOP) product (in mg/m3) on a sinusoidal projection at approximately 4 km spatial resolution and at a number of time resolutions (daily, 5-day, 8-day and monthly composites). Note, the IOP data are also included in the 'All Products' dataset. The inherent optical properties (IOP) dataset consists of the total absorption and particle backscattering coefficients, and, additionally, the fraction of detrital &amp; dissolved organic matter absorption and phytoplankton absorption. The total absorption (units m-1), the total backscattering (m-1), the absorption by detrital and coloured dissolved organic matter, the backscattering by particulate matter, and the absorption by phytoplankton share the same spatial resolution of ~4 km. The values of IOP are reported for the standard SeaWiFS wavelengths (412, 443, 490, 510, 555, 670nm). This data product is on a sinusoidal equal-area grid projection, matching the NASA standard level 3 binned projection. The default number of latitude rows is 4320, which results in a vertical bin cell size of approximately 4 km. The number of longitude columns varies according to the latitude, which permits the equal area property. Unlike the NASA format, where the bin cells that do not contain any data are omitted, the CCI format retains all cells and simply marks empty cells with a NetCDF fill value. (A separate dataset is also available for data on a geographic projection.)",
     "temporalCoverage": "from 1997 to 2016",
     "spatialCoverage": "Global"
   },
   "OrbView-2 (NASA_CMR)": {
     "mission": "OrbView-2",
-    "sensorType": "RADAR",
+    "sensorType": "OPTICAL",
     "description": "ADAM enables generating typical monthly variations of the global Earth surface reflectance at 0.1° spatial resolution (Plate Carree projection) and over the spectral range 240-4000nm. The ADAM product is made of gridded monthly mean climatologies over land and ocean surfaces, and of a companion API toolkit that enables the calculation of hyperspectral (at 1 nm resolution over the whole 240-4000 nm spectral range) and multidirectional reflectances (i.e. in any illumination/viewing geometry) depending on user choices. The ADAM climatologies that feed the ADAM calculation tools are: For ocean: monthly chlorophyll concentration derived from SeaWiFS-OrbView-2 (1999-2009); it is used to compute the water column reflectance (which shows large spectral variations in the visible, but is insignificant in the near and mid infrared). monthly wind speed derived from SeaWinds-QuikSCAT-(1999-2009); it is used to calculate the ocean glint reflectance. For land: monthly normalized surface reflectances in the 7 MODIS narrow spectral bands derived from FondsdeSol processing chain of MOD09A1 products (derived from Aqua and Terra observations), on which relies the modelling of the hyperspectral/multidirectional surface (soil/vegetation/snow) reflectance. uncertainty variance-covariance matrix for the 7 spectral bands associated to the normalized surface reflectance. For sea-ice: Sea ice pixels (masked in the original MOD09A1 products) have been accounted for by a gap-filling approach relying on the spatial-temporal distribution of sea ice coverage provided by the CryoClim climatology for year 2005.",
     "temporalCoverage": "from 2005 to 2005",
     "spatialCoverage": "Global"
@@ -2004,7 +2004,7 @@
   "Sentinel-3 (CMEMS_MERCATOR)": {
     "mission": "Sentinel-3",
     "sensorType": "OPTICAL",
-    "description": "'''Short description:''' Altimeter satellite gridded Sea Level Anomalies (SLA) computed with respect to a twenty-year [1993, 2012] mean. The SLA is estimated by Optimal Interpolation, merging the measurement from the different altimeter missions available (see QUID document or http://duacs.cls.fr [http://duacs.cls.fr] pages for processing details). The product gives additional variables (i.e. Absolute Dynamic Topography and geostrophic currents (absolute and anomalies)).This product is processed by the DUACS multimission altimeter data processing system. It serves in near-real time the main operational oceanography and climate forecasting centers in Europe and worldwide. It processes data from all altimeter missions: Jason-3, Sentinel-3A, HY-2A, Saral/AltiKa, Cryosat-2, Jason-2, Jason-1, T/P, ENVISAT, GFO, ERS1/2. It provides a consistent and homogeneous catalogue of products for varied applications, both for near real time applications and offline studies. To produce maps of Sea Level Anomalies (SLA) and Absolute Dynamic Topography (ADT) in delayed-time (REPROCESSED), the system uses the along-track altimeter missions from products called SEALEVEL*_PHY_L3_REP_OBSERVATIONS_008_*. Finally an Optimal Interpolation is made merging all the flying satellites in order to compute gridded SLA and ADT. The geostrophic currents are derived from sla (geostrophic velocities anomalies, ugosa and vgosa variables) and from adt (absolute geostrophic velicities, ugos and vgos variables). Note that the gridded products can be visualized on the LAS (Live Access Data) Aviso+ web page (http://www.aviso.altimetry.fr/en/data/data-access/las-live-access-server.html [http://www.aviso.altimetry.fr/en/data/data-access/las-live-access-server.html])",
+    "description": "'Short description:' Altimeter satellite gridded Sea Level Anomalies (SLA) computed with respect to a twenty-year [1993, 2012] mean. The SLA is estimated by Optimal Interpolation, merging the measurement from the different altimeter missions available (see QUID document or http://duacs.cls.fr [http://duacs.cls.fr] pages for processing details). The product gives additional variables (i.e. Absolute Dynamic Topography and geostrophic currents (absolute and anomalies)).This product is processed by the DUACS multimission altimeter data processing system. It serves in near-real time the main operational oceanography and climate forecasting centers in Europe and worldwide. It processes data from all altimeter missions: Jason-3, Sentinel-3A, HY-2A, Saral/AltiKa, Cryosat-2, Jason-2, Jason-1, T/P, ENVISAT, GFO, ERS1/2. It provides a consistent and homogeneous catalogue of products for varied applications, both for near real time applications and offline studies. To produce maps of Sea Level Anomalies (SLA) and Absolute Dynamic Topography (ADT) in delayed-time (REPROCESSED), the system uses the along-track altimeter missions from products called SEALEVEL*_PHY_L3_REP_OBSERVATIONS_008_*. Finally an Optimal Interpolation is made merging all the flying satellites in order to compute gridded SLA and ADT. The geostrophic currents are derived from sla (geostrophic velocities anomalies, ugosa and vgosa variables) and from adt (absolute geostrophic velicities, ugos and vgos variables). Note that the gridded products can be visualized on the LAS (Live Access Data) Aviso+ web page (http://www.aviso.altimetry.fr/en/data/data-access/las-live-access-server.html [http://www.aviso.altimetry.fr/en/data/data-access/las-live-access-server.html])",
     "temporalCoverage": "from 1993 to 2020",
     "spatialCoverage": "Global"
   },
