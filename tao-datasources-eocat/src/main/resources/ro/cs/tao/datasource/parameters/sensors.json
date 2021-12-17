@@ -286,8 +286,8 @@
     "temporalCoverage": "from 2010 to 2015",
     "spatialCoverage": "Europe"
   },
-  "seasat (SeaSESA)": {
-    "mission": "seasat",
+  "SeaSAT (SeaSESA)": {
+    "mission": "SeaSAT",
     "sensorType": "RADAR",
     "description": "This collection gives access to the complete SEASAT dataset acquired by ESA and mainly covers Europe. The dataset comprises some of the first ever SAR data recorded for scientific purposes, reprocessed with the most recent processor. The Level-1 products are available as: •",
     "temporalCoverage": "from 1978 to 1978",
