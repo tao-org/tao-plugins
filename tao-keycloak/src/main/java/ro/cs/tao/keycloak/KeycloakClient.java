@@ -27,8 +27,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -89,15 +87,7 @@ public class KeycloakClient implements TokenProvider {
         final User user;
         if (list != null && list.size() == 1) {
             final UserRepresentation profile = list.get(0);
-            user = new User();
-            user.setUsername(username);
-            user.setPassword(password);
-            user.setExternal(true);
-            user.setFirstName(profile.getFirstName());
-            user.setLastName(profile.getLastName());
-            user.setEmail(profile.getEmail());
-            user.setOrganization("n/a");
-            user.setCreated(Instant.ofEpochMilli(profile.getCreatedTimestamp()).atZone(ZoneId.systemDefault()).toLocalDateTime());
+            user = new KeycloakUserAdapter().toTaoUser(profile);
             user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
         } else {
             user = null;
