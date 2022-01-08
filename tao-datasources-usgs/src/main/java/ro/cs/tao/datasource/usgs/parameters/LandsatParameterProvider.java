@@ -18,7 +18,6 @@ package ro.cs.tao.datasource.usgs.parameters;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
-import ro.cs.tao.datasource.remote.SimpleArchiveDownloadStrategy;
 import ro.cs.tao.datasource.usgs.USGSDataSource;
 import ro.cs.tao.datasource.usgs.download.EcostressStrategy;
 import ro.cs.tao.datasource.usgs.download.Landsat8Strategy;
@@ -39,6 +38,9 @@ public class LandsatParameterProvider extends AbstractParameterProvider {
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
                     put("Landsat8", new Landsat8Strategy(dataSource, targetFolder, new Properties()));
+                    put("Landsat7", new Landsat8Strategy(dataSource, targetFolder, new Properties()));
+                    put("Landsat5", new Landsat8Strategy(dataSource, targetFolder, new Properties()));
+                    put("Landsat4", new Landsat8Strategy(dataSource, targetFolder, new Properties()));
                     put("VIIRS", new Landsat8Strategy(dataSource, targetFolder, new Properties()));
                     put("HYPERION", new Landsat8Strategy(dataSource, targetFolder, new Properties()));
                     put("ECOSTRESS", new EcostressStrategy(dataSource, targetFolder, new Properties()));
