@@ -1,5 +1,6 @@
 package ro.cs.tao.keycloak;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.RSATokenVerifier;
@@ -10,29 +11,34 @@ import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
+import org.keycloak.authorization.client.util.Http;
 import org.keycloak.common.VerificationException;
+import org.keycloak.jose.jws.JWSHeader;
+import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.authorization.AuthorizationRequest;
 import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.security.Token;
 import ro.cs.tao.security.TokenProvider;
-import ro.cs.tao.serialization.JsonMapper;
 import ro.cs.tao.user.User;
 import ro.cs.tao.user.UserPreference;
 
 import javax.ws.rs.core.Response;
+import java.math.BigInteger;
 import java.net.URL;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 public class KeycloakClient implements TokenProvider {
     private static final Logger logger = Logger.getLogger(KeycloakClient.class.getName());
-    private static PublicKey realmKey;
+    private static Map<String, PublicKey> realmKeys;
     private static final Object lock = new Object();
 
     private final String realm;
@@ -42,6 +48,7 @@ public class KeycloakClient implements TokenProvider {
     private final String clientSecret;
     private final String adminUser;
     private final String adminPwd;
+    private BiConsumer<Token, String> tokenKeeper;
 
     public KeycloakClient() {
         this(ConfigurationManager.getInstance().getValue(Keys.AUTH_SERVER_URL),
@@ -70,24 +77,43 @@ public class KeycloakClient implements TokenProvider {
         this.adminPwd = admPwd;
     }
 
+    public void setTokenKeeper(BiConsumer<Token, String> tokenKeeper) {
+        this.tokenKeeper = tokenKeeper;
+    }
+
     @Override
-    public String newToken(String user, String password) {
-        return checkLoginCredentials(user, password).getPreferences().get(0).getValue();
+    public Token newToken(String user, String password) {
+        final AuthzClient authClient = getAuthClient();
+        final AuthorizationRequest request = new AuthorizationRequest();
+        request.addPermission("taoclient");
+        final AccessTokenResponse response = authClient.obtainAccessToken(user, password);
+        return new Token(response.getToken(), response.getRefreshToken(), (int) response.getExpiresIn());
+    }
+
+    @Override
+    public Token newToken(String refreshToken) {
+        return refreshToken(refreshToken);
     }
 
     public User checkLoginCredentials(final String username, final String password) {
         final AuthzClient authClient = getAuthClient();
         final AuthorizationRequest request = new AuthorizationRequest();
         request.addPermission("taoclient");
-        final String token = authClient.obtainAccessToken(username, password).getToken();
+        final AccessTokenResponse tokenResponse = authClient.obtainAccessToken(username, password);
+        final String token = tokenResponse.getToken();
         if (token == null) {
             throw new RuntimeException("Invalid credentials supplied");
+        }
+        if (this.tokenKeeper != null) {
+            this.tokenKeeper.accept(new Token(tokenResponse.getToken(), tokenResponse.getRefreshToken(), (int) tokenResponse.getExpiresIn()),
+                                    username);
         }
         final List<UserRepresentation> list = getAdminClient().realm(this.realm).users().search(username, true);
         final User user;
         if (list != null && list.size() == 1) {
             final UserRepresentation profile = list.get(0);
             user = new KeycloakUserAdapter().toTaoUser(profile);
+            user.setPassword(password);
             user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
         } else {
             user = null;
@@ -161,44 +187,60 @@ public class KeycloakClient implements TokenProvider {
     }
 
     @Override
-    public boolean validateToken(String token) {
-        if (realmKey == null) {
+    public boolean validate(String token) {
+        if (token == null) return false;
+        RSATokenVerifier verifier = RSATokenVerifier.create(token);
+        if (realmKeys == null) {
             synchronized (lock) {
+                realmKeys = new HashMap<>();
                 try {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> realmInfo = JsonMapper.instance().readValue(new URL(this.realmUrl).openStream(), Map.class);
-                    realmKey = toPublicKey((String) realmInfo.get("public_key"));
-                    if (realmKey == null) {
-                        logger.severe("Cannot obtain public key from " + this.realmUrl);
-                    }
+                    retrievePublicKeyFromCertsEndpoint(verifier.getHeader());
                 } catch (Exception e) {
                     logger.severe(e.getMessage());
                 }
             }
         }
-        if (realmKey != null && token != null) {
-            RSATokenVerifier verifier = RSATokenVerifier.create(token);
-            try {
-                verifier.realmUrl(this.realmUrl)
-                        .publicKey(realmKey)
-                        .verify();
-                return true;
-            } catch (VerificationException e) {
-                logger.severe("Verification of token " + token + " failed!");
-                return false;
-            }
+        try {
+            verifier.realmUrl(this.realmUrl)
+                    .publicKey(realmKeys.get(verifier.getHeader().getKeyId()))
+                    .verify();
+            return true;
+        } catch (VerificationException e) {
+            logger.severe("Verification of token " + token + " failed!");
         }
         return false;
     }
 
-    private PublicKey toPublicKey(String publicKeyString) {
+    private PublicKey toPublicKey(Map<String, Object> keyInfo) {
         try {
-            byte[] publicBytes = Base64.getDecoder().decode(publicKeyString);
-            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicBytes);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            return keyFactory.generatePublic(keySpec);
+            String modulusBase64 = (String) keyInfo.get("n");
+            String exponentBase64 = (String) keyInfo.get("e");
+
+            // see org.keycloak.jose.jwk.JWKBuilder#rs256
+            Base64.Decoder urlDecoder = Base64.getUrlDecoder();
+            BigInteger modulus = new BigInteger(1, urlDecoder.decode(modulusBase64));
+            BigInteger publicExponent = new BigInteger(1, urlDecoder.decode(exponentBase64));
+
+            return keyFactory.generatePublic(new RSAPublicKeySpec(modulus, publicExponent));
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             return null;
+        }
+    }
+
+    private void retrievePublicKeyFromCertsEndpoint(JWSHeader jwsHeader) {
+        try {
+            ObjectMapper om = new ObjectMapper();
+            @SuppressWarnings("unchecked")
+            Map<String, Object> certInfos = om.readValue(new URL(this.realmUrl + "/protocol/openid-connect/certs").openStream(), Map.class);
+
+            List<Map<String, Object>> keys = (List<Map<String, Object>>) certInfos.get("keys");
+
+            for (Map<String, Object> key : keys) {
+                realmKeys.put((String) key.get("kid"), toPublicKey(key));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -216,5 +258,24 @@ public class KeycloakClient implements TokenProvider {
         Configuration configuration = new Configuration(this.authUrl, this.realm, this.clientId,
                 new HashMap<String, Object>() {{ put("secret", clientSecret); }}, null);
         return AuthzClient.create(configuration);
+    }
+
+    private Token refreshToken(String refreshToken) {
+        final Configuration configuration = new Configuration(this.authUrl, this.realm, this.clientId,
+                                                        new HashMap<String, Object>() {{ put("secret", clientSecret); }}, null);
+        final Http http = new Http(configuration, (params, headers) -> {});
+        final String url = this.realmUrl + "/protocol/openid-connect/token";
+        final AccessTokenResponse response = http.<AccessTokenResponse>post(url)
+                .authentication()
+                .client()
+                .form()
+                .param("grant_type", "refresh_token")
+                .param("refresh_token", refreshToken)
+                .param("client_id", clientId)
+                .param("client_secret", clientSecret)
+                .response()
+                .json(AccessTokenResponse.class)
+                .execute();
+        return new Token(response.getToken(), response.getRefreshToken(), (int) response.getExpiresIn());
     }
 }

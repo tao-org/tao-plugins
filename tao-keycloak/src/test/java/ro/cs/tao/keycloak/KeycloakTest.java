@@ -17,18 +17,20 @@ public class KeycloakTest {
         final KeycloakClient client = new KeycloakClient(url, realm, appClient, secret, admin, pwd);
         User user;
         final ObjectMapper mapper = new ObjectMapper();
-        try {
+        /*try {
             user = client.checkLoginCredentials("taouser", "taopassword");
             System.out.println(user == null ? "Invalid credentials" : mapper.writeValueAsString(user));
         } catch (Exception e) {
-        }
-        user = client.checkLoginCredentials(admin, pwd);
+        }*/
+        /*user = client.checkLoginCredentials(admin, pwd);
         System.out.println(mapper.writeValueAsString(user));
-        client.removeUser("avl1");
-        user = client.createUser("avl1", "avl", "kraftek@gmail.com", "AVL", "User #1");
-        System.out.println(mapper.writeValueAsString(user));
+        client.removeUser("avl1");*/
+        /*user = client.createUser("avl1", "avl", "kraftek@gmail.com", "AVL", "User #1");
+        System.out.println(mapper.writeValueAsString(user));*/
         user = client.checkLoginCredentials("avl1", "avl");
         System.out.println(mapper.writeValueAsString(user));
+        final String token = user.getPreferences().get(0).getValue();
+        System.out.println(client.validate(token) ? "Token valid" : "Cannot validate token");
         System.exit(0);
     }
 }
