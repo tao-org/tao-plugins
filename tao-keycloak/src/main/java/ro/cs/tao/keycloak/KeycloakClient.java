@@ -22,7 +22,6 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.security.Token;
 import ro.cs.tao.security.TokenProvider;
 import ro.cs.tao.user.User;
-import ro.cs.tao.user.UserPreference;
 
 import javax.ws.rs.core.Response;
 import java.math.BigInteger;
@@ -114,7 +113,7 @@ public class KeycloakClient implements TokenProvider {
             final UserRepresentation profile = list.get(0);
             user = new KeycloakUserAdapter().toTaoUser(profile);
             user.setPassword(password);
-            user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
+            //user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
         } else {
             user = null;
         }
