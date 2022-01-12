@@ -33,8 +33,10 @@ public class DateAdapter extends XmlAdapter<String, LocalDateTime> {
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss'Z'"));
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SS'Z'"));
+        add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'"));
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSSSS'Z'"));
+        add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"));
     }};
 
     @Override
