@@ -29,8 +29,8 @@ public class KeycloakTest {
         System.out.println(mapper.writeValueAsString(user));*/
         user = client.checkLoginCredentials("avl1", "avl");
         System.out.println(mapper.writeValueAsString(user));
-        final String token = user.getPreferences().get(0).getValue();
-        System.out.println(client.validate(token) ? "Token valid" : "Cannot validate token");
+        //final String token = user.getPreferences().get(0).getValue();
+        //System.out.println(client.validate(token) ? "Token valid" : "Cannot validate token");
         System.exit(0);
     }
 }
