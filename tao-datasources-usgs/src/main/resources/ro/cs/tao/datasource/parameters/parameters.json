@@ -447,7 +447,7 @@
       "order": 0
     }
   },
-  "ECOSTRESS-LTSE": {
+  "ECOSTRESS-BGEO": {
     "earthDataUsername" : {
       "name": "earthDataUsername",
       "remoteName": "earthDataUsername",
@@ -473,69 +473,7 @@
       "remoteName": "datasetName",
       "label": "Dataset",
       "type": "string",
-      "defaultValue": "ecostress_eco2lste",
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "startDate": {
-      "name": "startDate",
-      "remoteName": "startDate",
-      "label": "Start Date",
-      "type": "date",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "endDate": {
-      "name": "endDate",
-      "remoteName": "endDate",
-      "label": "End Date",
-      "type": "date",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "footprint": {
-      "name": "footprint",
-      "remoteName": "spatialFilter",
-      "label": "Area of Interest",
-      "type": "polygon",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    }
-  },
-  "ECOSTRESS-L1BRAD": {
-    "earthDataUsername" : {
-      "name": "earthDataUsername",
-      "remoteName": "earthDataUsername",
-      "label": "EarthData username",
-      "type": "string",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "earthDataPassword" : {
-      "name": "earthDataPassword",
-      "remoteName": "earthDataPassword",
-      "label": "EarthData password",
-      "type": "string",
-      "defaultValue": null,
-      "required": true,
-      "valueSet": null,
-      "order": 0
-    },
-    "platformName": {
-      "name": "platformName",
-      "remoteName": "datasetName",
-      "label": "Dataset",
-      "type": "string",
-      "defaultValue": "ecostress_eco1brad",
+      "defaultValue": "ecostress_eco1bgeo",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -633,6 +571,68 @@
       "order": 0
     }
   },
+  "ECOSTRESS-L1BRAD": {
+    "earthDataUsername" : {
+      "name": "earthDataUsername",
+      "remoteName": "earthDataUsername",
+      "label": "EarthData username",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "earthDataPassword" : {
+      "name": "earthDataPassword",
+      "remoteName": "earthDataPassword",
+      "label": "EarthData password",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "string",
+      "defaultValue": "ecostress_eco1brad",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
   "ECOSTRESS-CLOUD": {
     "earthDataUsername" : {
       "name": "earthDataUsername",
@@ -660,6 +660,378 @@
       "label": "Dataset",
       "type": "string",
       "defaultValue": "ecostress_eco2cld",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "ECOSTRESS-LTSE": {
+    "earthDataUsername" : {
+      "name": "earthDataUsername",
+      "remoteName": "earthDataUsername",
+      "label": "EarthData username",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "earthDataPassword" : {
+      "name": "earthDataPassword",
+      "remoteName": "earthDataPassword",
+      "label": "EarthData password",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "string",
+      "defaultValue": "ecostress_eco2lste",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "ECOSTRESS-ESIPTJPL": {
+    "earthDataUsername" : {
+      "name": "earthDataUsername",
+      "remoteName": "earthDataUsername",
+      "label": "EarthData username",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "earthDataPassword" : {
+      "name": "earthDataPassword",
+      "remoteName": "earthDataPassword",
+      "label": "EarthData password",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "string",
+      "defaultValue": "ecostress_eco4esiptjpl",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "ECOSTRESS-L3ETALEXIU": {
+    "earthDataUsername" : {
+      "name": "earthDataUsername",
+      "remoteName": "earthDataUsername",
+      "label": "EarthData username",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "earthDataPassword" : {
+      "name": "earthDataPassword",
+      "remoteName": "earthDataPassword",
+      "label": "EarthData password",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "string",
+      "defaultValue": "ecostress_eco3etalexi",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "ECOSTRESS-ETPTJPL": {
+    "earthDataUsername" : {
+      "name": "earthDataUsername",
+      "remoteName": "earthDataUsername",
+      "label": "EarthData username",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "earthDataPassword" : {
+      "name": "earthDataPassword",
+      "remoteName": "earthDataPassword",
+      "label": "EarthData password",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "string",
+      "defaultValue": "ecostress_eco3etptjpl",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "ECOSTRESS-ANCQA": {
+    "earthDataUsername" : {
+      "name": "earthDataUsername",
+      "remoteName": "earthDataUsername",
+      "label": "EarthData username",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "earthDataPassword" : {
+      "name": "earthDataPassword",
+      "remoteName": "earthDataPassword",
+      "label": "EarthData password",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "string",
+      "defaultValue": "ecostress_eco3ancqa",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "ECOSTRESS-L4ESIALEXIU": {
+    "earthDataUsername" : {
+      "name": "earthDataUsername",
+      "remoteName": "earthDataUsername",
+      "label": "EarthData username",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "earthDataPassword" : {
+      "name": "earthDataPassword",
+      "remoteName": "earthDataPassword",
+      "label": "EarthData password",
+      "type": "string",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 0
+    },
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "string",
+      "defaultValue": "ecostress_eco4esialexiu",
       "required": false,
       "valueSet": null,
       "order": 0

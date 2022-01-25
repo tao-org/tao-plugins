@@ -54,6 +54,7 @@
         <module>tao-keycloak</module>
         <module>tao-docker-zarr</module>
         <module>tao-zarr-metadata</module>
+        <module>tao-aws</module>
     </modules>
 
     <properties>
