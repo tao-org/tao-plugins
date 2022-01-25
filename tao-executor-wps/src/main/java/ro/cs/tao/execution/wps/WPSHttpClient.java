@@ -1,0 +1,132 @@
+package ro.cs.tao.execution.wps;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.geotools.http.HTTPResponse;
+import org.geotools.http.SimpleHttpClient;
+import org.geotools.util.Base64;
+import org.geotools.util.factory.GeoTools;
+import ro.cs.tao.component.WPSAuthentication;
+import ro.cs.tao.services.commons.ServiceResponse;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.logging.Logger;
+
+public class WPSHttpClient extends SimpleHttpClient {
+    private final Logger logger = Logger.getLogger(WPSHttpClient.class.getName());
+    private final WPSAuthentication authentication;
+
+    public WPSHttpClient(WPSAuthentication authentication) {
+        super();
+        this.authentication = authentication;
+        if (this.authentication != null) {
+            setUser(this.authentication.getUser());
+            setPassword(this.authentication.getPassword());
+        }
+    }
+
+    @Override
+    public HTTPResponse get(URL url, Map<String, String> headers) throws IOException {
+        logger.finest("URL is " + url);
+
+        URLConnection connection = openConnection(url);
+        if (connection instanceof HttpURLConnection) {
+            ((HttpURLConnection) connection).setRequestMethod("GET");
+        }
+
+        // Set User-Agent to a good default
+        connection.addRequestProperty("User-Agent", "GeoTools HTTPClient (" + GeoTools.getVersion() + ")");
+        if (headers != null) {
+            for (Map.Entry<String, String> headerNameValue : headers.entrySet()) {
+                connection.addRequestProperty(headerNameValue.getKey(), headerNameValue.getValue());
+            }
+        }
+
+        connection.connect();
+
+        return new SimpleHTTPResponse(connection);
+    }
+
+    @Override
+    public HTTPResponse post(URL url, InputStream postContent, String postContentType) throws IOException {
+        URLConnection connection = openConnection(url);
+        if (connection instanceof HttpURLConnection) {
+            ((HttpURLConnection) connection).setRequestMethod("POST");
+        }
+        connection.setDoOutput(true);
+        if (postContentType != null) {
+            connection.setRequestProperty("Content-type", postContentType);
+        }
+
+        connection.connect();
+
+        try (OutputStream outputStream = connection.getOutputStream()) {
+            byte[] buff = new byte[512];
+            int count;
+            while ((count = postContent.read(buff)) > -1) {
+                outputStream.write(buff, 0, count);
+            }
+            outputStream.flush();
+        }
+
+        return new SimpleHTTPResponse(connection);
+    }
+
+    private URLConnection openConnection(URL finalURL) throws IOException {
+        URLConnection connection = finalURL.openConnection();
+        final boolean http = connection instanceof HttpURLConnection;
+        // mind, connect timeout is in seconds
+        if (http && getConnectTimeout() > 0) {
+            connection.setConnectTimeout(1000 * getConnectTimeout());
+        }
+        if (http && getReadTimeout() > 0) {
+            connection.setReadTimeout(1000 * getReadTimeout());
+        }
+
+        final String username = getUser();
+        final String password = getPassword();
+
+        if (http && username != null && password != null) {
+            switch (this.authentication.getType()) {
+                case BASIC:
+                    String userpassword = username + ":" + password;
+                    String encodedAuthorization =
+                            Base64.encodeBytes(
+                                    userpassword.getBytes(StandardCharsets.UTF_8), Base64.DONT_BREAK_LINES);
+                    connection.setRequestProperty("Authorization", "Basic " + encodedAuthorization);
+                    break;
+                case TOKEN:
+                    connection.setRequestProperty(this.authentication.getAuthHeader(), doLogin());
+                    break;
+            }
+        }
+        return connection;
+    }
+
+    private String doLogin() throws IOException {
+        URLConnection connection = new URL(this.authentication.getLoginUrl()).openConnection();
+        ((HttpURLConnection) connection).setRequestMethod("POST");
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+        try (DataOutputStream out = new DataOutputStream(connection.getOutputStream())) {
+            final String content = "user=" + URLEncoder.encode(getUser(), "UTF-8") + "&password=" + URLEncoder.encode(getPassword(), "UTF-8");
+            out.writeBytes(content);
+            out.flush();
+        }
+        final StringBuilder builder = new StringBuilder();
+        String line;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            while ((line = reader.readLine()) != null) {
+                builder.append(line);
+            }
+        }
+        final ServiceResponse response = new ObjectMapper().readerFor(ServiceResponse.class).readValue(builder.toString());
+        return (String) response.getData();
+    }
+}
