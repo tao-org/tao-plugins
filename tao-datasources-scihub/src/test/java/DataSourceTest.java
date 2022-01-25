@@ -93,7 +93,6 @@ public class DataSourceTest {
             DataQuery query = dataSource.createQuery(sensors[1]);
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
             Class clazz = LocalDateTime.class;
-            query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
             QueryParameter begin = query.createParameter(CommonParameterNames.START_DATE,
                                                          clazz,
                                                          LocalDateTime.of(2020, 1, 1, 0, 0, 0, 0),
