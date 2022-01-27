@@ -34,7 +34,9 @@ import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -45,9 +47,13 @@ import java.util.stream.Collectors;
 public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
     private static final DateTimeFormatter firstFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormatter secondFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX");
+    private static final Set<String> quickLookElements = new HashSet<String>() {{
+        add("LandsatLook Natural Color Preview Image");
+        add("Thermal Browse");
+    }};
 
-    private final Pattern LANDSAT8 = Pattern.compile("LC08_.*");
-    private final Pattern ECOSTRESS = Pattern.compile(".*(LSTE|ECOSTRESS|CLOUD|WUE|ESI).*");
+    private final Pattern LANDSAT8 = Pattern.compile("L[CT]08_.*");
+    private final Pattern ECOSTRESS = Pattern.compile(".*(BGEO|L1BRAD|L1BMAPRAD|ESIPTJPL|L3ETALEXIU|ETPTJPL|ANCQA|L4ESIALEXIU|LSTE|ECOSTRESS|CLOUD|WUE|ESI).*");
     private final Pattern MODIS = Pattern.compile("(MOD|MCD|MYD).*");
     private final Pattern HYPERION = Pattern.compile("EO.H.*");
     private final Pattern VIIRS = Pattern.compile("VN.*");
@@ -106,7 +112,7 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             product.setGeometry(polygon2D.toWKT());
         }
         try {
-            Browse browse = result.getBrowse().stream().filter(b -> "LandsatLook Natural Color Preview Image".equals(b.getBrowseName())).findFirst().orElse(null);
+            Browse browse = result.getBrowse().stream().filter(b -> quickLookElements.contains(b.getBrowseName())).findFirst().orElse(null);
             if (browse != null) {
                 product.setQuicklookLocation(browse.getBrowsePath());
             }

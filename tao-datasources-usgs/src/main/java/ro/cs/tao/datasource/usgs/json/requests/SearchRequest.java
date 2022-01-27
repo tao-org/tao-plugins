@@ -6,7 +6,7 @@ import ro.cs.tao.datasource.usgs.json.types.AcquisitionFilter;
 public class SearchRequest extends BaseRequest {
     private String datasetName;
     private SceneFilter sceneFilter;
-    //private SearchFilter additionalCriteria;
+    private SearchFilter metadataFilter;
     private int maxResults = 10;
     private int startingNumber = 1;
     private String sortDirection = "ASC";
@@ -35,13 +35,10 @@ public class SearchRequest extends BaseRequest {
     private void setSortDirection(String sortDirection) { this.sortDirection = sortDirection; }
 
     private void addFilter(SearchFilter filter) {
-        if (this.sceneFilter == null) {
-            this.sceneFilter = new SceneFilter();
+        if (this.metadataFilter == null) {
+            this.metadataFilter = new SearchFilterAnd();
         }
-        if (this.sceneFilter.getMetadataFilter() == null) {
-            this.sceneFilter.setMetadataFilter(new SearchFilterAnd());
-        }
-        final SearchFilterAnd metadataFilter = (SearchFilterAnd) this.sceneFilter.getMetadataFilter();
+        final SearchFilterAnd metadataFilter = (SearchFilterAnd) this.metadataFilter;
         metadataFilter.addChildFilter(filter);
     }
 

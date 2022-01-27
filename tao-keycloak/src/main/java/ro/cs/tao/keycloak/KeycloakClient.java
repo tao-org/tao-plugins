@@ -80,6 +80,10 @@ public class KeycloakClient implements TokenProvider {
         this.tokenKeeper = tokenKeeper;
     }
 
+    public String getAdminUser() {
+        return adminUser;
+    }
+
     @Override
     public Token newToken(String user, String password) {
         final AuthzClient authClient = getAuthClient();

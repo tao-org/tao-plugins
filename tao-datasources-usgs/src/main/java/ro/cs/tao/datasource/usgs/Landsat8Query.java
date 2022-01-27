@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
 public class Landsat8Query extends DataQuery {
 
     private static final Map<String, String> fieldIds;
-    private static final String LEVEL1_COLLECTION = "LANDSAT_8_C1";
+    private static final String LEVEL1_COLLECTION = "LANDSAT_OT_C2_L1";
     private static final String LEVEL2_COLLECTION = "LANDSAT_OT_C2_L2";
     private static final Set<String> formats = new HashSet<String>() {{ add("geotiff"); add("hdf"); add("netcdf"); }};
     private String apiKey;

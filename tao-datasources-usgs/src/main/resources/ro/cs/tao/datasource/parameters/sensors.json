@@ -27,6 +27,13 @@
     "temporalCoverage": "from 1972-07-25 to 2013-01-07",
     "spatialCoverage": "Global"
   },
+  "ECOSTRESS-BGEO": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO2LSTE Version 1 data product provides atmospherically corrected land surface temperature and emissivity (LST&E) values derived from five thermal infrared (TIR) bands. The ECO2LSTE data product was derived using a physics-based Temperature/Emissivity Separation (TES) algorithm. The ECO2LSTE is provided as swath data and has a spatial resolution of 70 meters (m). The corresponding ECO1BGEO data product is required to georeference the ECO2LSTE data product.\r\n\r\nThe ECO2LSTE Version 1 data product contains layers of LST, emissivity for bands 1 through 5, quality control for LST&E, LST error, emissivity error for bands 1 through 5, wideband emissivity, and Precipitable Water Vapor (PWV). For acquisitions after May 15, 2019, data products contain data values for TIR bands 2, 4 and 5 only. TIR bands 1 and 3 contain fill values to accommodate direct streaming of data from the ISS.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
   "ECOSTRESS-LTSE": {
     "mission": "ECOSTRESS",
     "sensorType": "OPTICAL",
@@ -52,6 +59,41 @@
     "mission": "ECOSTRESS",
     "sensorType": "OPTICAL",
     "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\nThe ECO2CLD Version 1 data product provides a cloud mask that can be used to determine cloud cover for the ECO1BRAD, ECO2LSTE, ECO3ETPTJPL, ECO4ESIPTJPL, and ECO4WUE data products. The ECOSTRESS Level 2 cloud product is derived using the five calibrated thermal bands in a multispectral cloud-conservative thresholding approach. The corresponding ECO1BGEO data product is required to georeference the ECO2CLD data product.\r\nThe ECO2CLD Version 1 data product contains a single cloud mask layer.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-ESIPTJPL": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-L3ETALEXIU": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-ETPTJPL": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-ANCQA": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-L4ESIALEXIU": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
     "temporalCoverage": "from 2018 to present",
     "spatialCoverage": "Global"
   },
