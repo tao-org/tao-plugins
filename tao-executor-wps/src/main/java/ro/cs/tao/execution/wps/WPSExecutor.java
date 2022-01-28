@@ -76,7 +76,9 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
             final WebProcessingService wps = this.webServicesMap.computeIfAbsent(address,
                                                  addr -> {
                                                     try {
-                                                        return new WebProcessingService(url);
+                                                        return new WebProcessingService(url,
+                                                                                        new WPSHttpClient(wpsComponent.getAuthentication()),
+                                                                                        null);
                                                     } catch (Exception e) {
                                                         e.printStackTrace();
                                                     }
