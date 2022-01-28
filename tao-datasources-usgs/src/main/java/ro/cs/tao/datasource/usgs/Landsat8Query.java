@@ -56,8 +56,9 @@ import java.util.stream.Collectors;
 public class Landsat8Query extends DataQuery {
 
     private static final Map<String, String> fieldIds;
-    private static final String LEVEL1_COLLECTION = "LANDSAT_OT_C2_L1";
-    private static final String LEVEL2_COLLECTION = "LANDSAT_OT_C2_L2";
+    private static final String C2_LEVEL1_COLLECTION = "landsat_ot_c2_l1";
+    private static final String C1_LEVEL1_COLLECTION = "landsat_8_c1";
+    private static final String C2_LEVEL2_COLLECTION = "landsat_ot_c2_l2";
     private static final Set<String> formats = new HashSet<String>() {{ add("geotiff"); add("hdf"); add("netcdf"); }};
     private String apiKey;
 
@@ -130,7 +131,7 @@ public class Landsat8Query extends DataQuery {
             DatasetFieldsRequest request = new DatasetFieldsRequest();
             request.setDatasetName(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
                                            this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
-                                           LEVEL1_COLLECTION);
+                                           C2_LEVEL1_COLLECTION);
             String url = buildPostRequestURL("dataset-filters");
             try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, request.toString())) {
                 switch (response.getStatusLine().getStatusCode()) {
@@ -158,7 +159,7 @@ public class Landsat8Query extends DataQuery {
         DownloadOptions optionsRequest = new DownloadOptions();
         optionsRequest.setDatasetName(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
                 this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
-                LEVEL1_COLLECTION);
+                                              C2_LEVEL1_COLLECTION);
         int size = products.size();
         String[] ids = new String[size];
         for (int i = 0; i < size; i++) {
@@ -178,8 +179,9 @@ public class Landsat8Query extends DataQuery {
                         return null;
                     }
                     downloadInfos.removeIf(i ->
-                            (optionsRequest.getDatasetName().equals(LEVEL1_COLLECTION) && !i.getProductName().endsWith("Data Product"))
-                        || (optionsRequest.getDatasetName().equals(LEVEL2_COLLECTION) && !i.getProductName().endsWith("Product Bundle"))
+                            (optionsRequest.getDatasetName().equals(C1_LEVEL1_COLLECTION) && !i.getProductName().endsWith("Data Product"))
+                        || (optionsRequest.getDatasetName().equals(C2_LEVEL1_COLLECTION) && !i.getProductName().endsWith("Product Bundle"))
+                        || (optionsRequest.getDatasetName().equals(C2_LEVEL2_COLLECTION) && !i.getProductName().endsWith("Product Bundle"))
                         || (i.getProductName().toLowerCase().contains("metadata")));
                     if (this.sensorName.equalsIgnoreCase("Hyperion")) {
                         downloadInfos.removeIf(i -> formats.stream().noneMatch(f -> i.getProductName().toLowerCase().contains(f)));
@@ -267,7 +269,7 @@ public class Landsat8Query extends DataQuery {
         }
         SearchRequest request = new SearchRequest().withDataSet(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
                 this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
-                LEVEL1_COLLECTION);
+                                                                        C2_LEVEL1_COLLECTION);
         SearchFilterValue filter;
         Map<String, QueryParameter> parameters = new HashMap<>(this.parameters);
         if ((parameters.containsKey("row") && parameters.containsKey("path")) ||
@@ -305,7 +307,7 @@ public class Landsat8Query extends DataQuery {
                         request.withFilter(filter);
                         break;
                     case CommonParameterNames.PRODUCT_TYPE:
-                        if (!LEVEL2_COLLECTION.equals(request.getDatasetName())) {
+                        if (!C2_LEVEL2_COLLECTION.equals(request.getDatasetName())) {
                             filter = new SearchFilterValue();
                             filter.setFilterId(fieldIds.get("Data Type Level-1"));
                             filter.setOperand("=");
