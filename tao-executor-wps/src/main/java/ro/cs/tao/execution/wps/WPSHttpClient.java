@@ -127,6 +127,14 @@ public class WPSHttpClient extends SimpleHttpClient {
             }
         }
         final ServiceResponse response = new ObjectMapper().readerFor(ServiceResponse.class).readValue(builder.toString());
-        return (String) response.getData();
+        final Object data = response.getData();
+        if (data instanceof String) {
+            return (String) data;
+        } else {
+            final Map.Entry<String, String> entry = ((Map<String, String>) data).entrySet().stream()
+                    .filter(e -> e.getKey().toLowerCase().contains("token"))
+                    .findFirst().orElse(null);
+            return entry != null ? entry.getValue() : null;
+        }
     }
 }
