@@ -13,6 +13,13 @@
     "temporalCoverage": "from 2015 to present",
     "spatialCoverage": "Global"
   },
+  "Sentinel3": {
+    "mission": "Sentinel3",
+    "sensorType": "OPTICAL",
+    "description": "The collection consists of all Sentinel-3 Level 1 and Level 2 products covering whole observation area (global) since 2016. Sentinel-3 carries 5 instruments, among which: the Ocean and Land Colour Instrument (OLCI), the Sea and Land Surface Temperature Radiometer (SLSTR) and the SAR Radar Altimeter (SRAL).",
+    "temporalCoverage": "from 2016 to present",
+    "spatialCoverage": "Global"
+  },
   "Landsat8": {
     "mission": "Landsat8",
     "sensorType": "OPTICAL",

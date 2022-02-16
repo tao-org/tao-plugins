@@ -203,6 +203,118 @@
       "order":0
     }
   },
+  "Sentinel3": {
+    "instrument": {
+      "name": "instrument",
+      "remoteName": "instrument",
+      "label": "Instrument",
+      "type": "string",
+      "defaultValue": "OL",
+      "required": false,
+      "valueSet": ["SL", "OL", "SR"],
+      "order": 0
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": "EFR",
+      "required": false,
+      "valueSet": ["EFR", "EO", "ERR", "LAN", "LFR", "LRR", "LST", "RBT", "SRA", "SRA_A", "SRA_BS", "WAT", "WFR", "WRR", "WST"],
+      "order": 1
+    },
+    "processingLevel": {
+      "name": "processingLevel",
+      "remoteName": "processingLevel",
+      "label": "Processing Level",
+      "type": "string",
+      "defaultValue": "LEVEL1",
+      "required": false,
+      "valueSet": ["LEVEL1", "LEVEL2"],
+      "order": 2
+    },
+    "relativeOrbit": {
+      "name": "relativeOrbit",
+      "remoteName": "orbitNumber",
+      "label": "Relative Orbit",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 6
+    },
+    "orbitDirection": {
+      "name": "orbitDirection",
+      "remoteName": "orbitDirection",
+      "label": "Orbit Direction",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["ascending", "descending"],
+      "order": 7
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 3
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "completionDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 4
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "geometry",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 5
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "productIdentifier",
+      "label": "Product Name",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 9
+    },
+    "platform": {
+      "name": "platform",
+      "remoteName": "platform",
+      "label": "Platform",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["S3A", "S3B"],
+      "order": 8
+    },
+    "status" : {
+      "name":"status",
+      "remoteName":"status",
+      "label": "Status",
+      "type": "string",
+      "defaultValue":"all",
+      "required":false,
+      "valueSet":["all","31","32","34","37","0"],
+      "order": 10
+    }
+  },
   "Landsat8": {
     "processingLevel": {
       "name": "processingLevel",

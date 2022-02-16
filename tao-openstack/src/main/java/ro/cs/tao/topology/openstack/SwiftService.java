@@ -9,13 +9,19 @@ import org.openstack4j.model.storage.object.options.ObjectListOptions;
 import org.openstack4j.model.storage.object.options.ObjectPutOptions;
 import ro.cs.tao.topology.TopologyException;
 import ro.cs.tao.topology.openstack.commons.OpenStackSession;
+import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class SwiftService {
@@ -65,7 +71,7 @@ public class SwiftService {
         authenticate();
         final List<Path> paths;
         if (Files.isDirectory(source)) {
-            paths = list(source);
+            paths = FileUtilities.listTree(source);
         } else {
             paths = new ArrayList<Path>() {{ add(source); }};
         }
@@ -159,23 +165,5 @@ public class SwiftService {
                 throw new TopologyException(String.format("OpenStack authentication failed. Reason: %s", ex.getMessage()));
             }
         }
-    }
-
-    private List<Path> list(Path source) throws IOException {
-        final List<Path> files = new LinkedList<>();
-        Files.walkFileTree(source, EnumSet.noneOf(FileVisitOption.class), 16,
-                           new SimpleFileVisitor<Path>() {
-                               @Override
-                               public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                                   files.add(dir);
-                                   return super.preVisitDirectory(dir, attrs);
-                               }
-                               @Override
-                               public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                                   files.add(file);
-                                   return super.visitFile(file, attrs);
-                               }
-                           });
-        return files;
     }
 }
