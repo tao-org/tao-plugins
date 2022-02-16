@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class Sentinel2JsonResponseHandler implements JSonResponseHandler<EOProduct> {
-    private Logger logger = Logger.getLogger(Sentinel2JsonResponseHandler.class.getName());
+    private final Logger logger = Logger.getLogger(Sentinel2JsonResponseHandler.class.getName());
 
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter... filters) throws IOException {
@@ -80,6 +80,7 @@ public class Sentinel2JsonResponseHandler implements JSonResponseHandler<EOProdu
                         product.setProductType("Sentinel2");
                         product.setLocation(result.getProductIdentifier());
                         product.setAcquisitionDate(new DateAdapter().unmarshal(result.getStartDate()));
+                        product.setQuicklookLocation(result.getThumbnail());
                         product.addAttribute("cloudcoverpercentage", String.valueOf(result.getCloudCover()));
                         productHelper = SentinelProductHelper.create(result.getTitle());
                         product.addAttribute("tiles", ((Sentinel2ProductHelper) productHelper).getTileIdentifier());

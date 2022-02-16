@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class Sentinel1JsonResponseHandler implements JSonResponseHandler<EOProduct> {
-    private Logger logger = Logger.getLogger(Sentinel1JsonResponseHandler.class.getName());
+    private final Logger logger = Logger.getLogger(Sentinel1JsonResponseHandler.class.getName());
 
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter... filters) throws IOException {
@@ -79,6 +79,7 @@ public class Sentinel1JsonResponseHandler implements JSonResponseHandler<EOProdu
                         product.setProductType("Sentinel1");
                         product.setLocation(result.getProductIdentifier());
                         product.setAcquisitionDate(new DateAdapter().unmarshal(result.getStartDate()));
+                        product.setQuicklookLocation(result.getThumbnail());
                         product.addAttribute("orbitdirection",
                                 ("ascending".equals(result.getOrbitDirection()) ?
                                         OrbitDirection.ASCENDING : OrbitDirection.DESCENDING).name());

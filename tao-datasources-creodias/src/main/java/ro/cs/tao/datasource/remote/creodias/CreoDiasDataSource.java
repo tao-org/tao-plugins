@@ -13,6 +13,7 @@ import ro.cs.tao.datasource.remote.creodias.parameters.CreodiasParameterProvider
 import ro.cs.tao.datasource.remote.creodias.parsers.LoginResponseHandler;
 import ro.cs.tao.datasource.remote.creodias.sentinel1.Sentinel1Query;
 import ro.cs.tao.datasource.remote.creodias.sentinel2.Sentinel2Query;
+import ro.cs.tao.datasource.remote.creodias.sentinel3.Sentinel3Query;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.utils.HttpMethod;
@@ -49,6 +50,7 @@ public class CreoDiasDataSource extends URLDataSource<BaseDataQuery, Token> {
             //put("Sentinel2", normalizedURL("s2.search.url"));
             put("Sentinel2", properties.getProperty("s2.search.url"));
             //put("Landsat8", normalizedURL("l8.search.url"));
+            put("Sentinel3", properties.getProperty("s3.search.url"));
             put("Landsat8", properties.getProperty("l8.search.url"));
             put("Login", properties.getProperty("login.url"));
             put("Download", properties.getProperty("download.url"));
@@ -125,6 +127,9 @@ public class CreoDiasDataSource extends URLDataSource<BaseDataQuery, Token> {
                 break;
             case "Sentinel2":
                 query = new Sentinel2Query(this, sensorName, this.connectionStrings.get(sensorName));
+                break;
+            case "Sentinel3":
+                query = new Sentinel3Query(this, sensorName, this.connectionStrings.get(sensorName));
                 break;
             case "Landsat8":
                 query = new Landsat8Query(this, sensorName, this.connectionStrings.get(sensorName));

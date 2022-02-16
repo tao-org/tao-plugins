@@ -83,7 +83,7 @@ public class Result {
     @JsonProperty("quicklook")
     private Object quicklook;
     @JsonProperty("thumbnail")
-    private Object thumbnail;
+    private String thumbnail;
     @JsonProperty("updated")
     private String updated;
     @JsonProperty("published")
@@ -378,16 +378,16 @@ public class Result {
     }
 
     @JsonProperty("thumbnail")
-    public Object getThumbnail() {
+    public String getThumbnail() {
         return thumbnail;
     }
 
     @JsonProperty("thumbnail")
-    public void setThumbnail(Object thumbnail) {
+    public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
     }
 
-    public Result withThumbnail(Object thumbnail) {
+    public Result withThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
         return this;
     }
