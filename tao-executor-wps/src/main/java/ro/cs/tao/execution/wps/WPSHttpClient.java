@@ -8,12 +8,19 @@ import org.geotools.util.factory.GeoTools;
 import ro.cs.tao.component.WPSAuthentication;
 import ro.cs.tao.services.commons.ServiceResponse;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -34,7 +41,7 @@ public class WPSHttpClient extends SimpleHttpClient {
     public HTTPResponse get(URL url, Map<String, String> headers) throws IOException {
         logger.finest("URL is " + url);
 
-        URLConnection connection = openConnection(url);
+        URLConnection connection = openAuthConnection(url);
         if (connection instanceof HttpURLConnection) {
             ((HttpURLConnection) connection).setRequestMethod("GET");
         }
@@ -54,7 +61,7 @@ public class WPSHttpClient extends SimpleHttpClient {
 
     @Override
     public HTTPResponse post(URL url, InputStream postContent, String postContentType) throws IOException {
-        URLConnection connection = openConnection(url);
+        URLConnection connection = openAuthConnection(url);
         if (connection instanceof HttpURLConnection) {
             ((HttpURLConnection) connection).setRequestMethod("POST");
         }
@@ -87,11 +94,22 @@ public class WPSHttpClient extends SimpleHttpClient {
         if (http && getReadTimeout() > 0) {
             connection.setReadTimeout(1000 * getReadTimeout());
         }
+        if (http && finalURL.getProtocol().equalsIgnoreCase("https")) {
+            try {
+                applySelfSignedLocalhostFix((HttpsURLConnection) connection);
+            } catch (NoSuchAlgorithmException | KeyManagementException e) {
+                throw new IOException(e);
+            }
+        }
+        return connection;
+    }
 
+    private URLConnection openAuthConnection(URL finalURL) throws IOException {
+        URLConnection connection = openConnection(finalURL);
         final String username = getUser();
         final String password = getPassword();
 
-        if (http && username != null && password != null) {
+        if (connection instanceof HttpURLConnection && username != null && password != null) {
             switch (this.authentication.getType()) {
                 case BASIC:
                     String userpassword = username + ":" + password;
@@ -109,7 +127,7 @@ public class WPSHttpClient extends SimpleHttpClient {
     }
 
     private String doLogin() throws IOException {
-        URLConnection connection = new URL(this.authentication.getLoginUrl()).openConnection();
+        URLConnection connection = openConnection(new URL(this.authentication.getLoginUrl()));
         ((HttpURLConnection) connection).setRequestMethod("POST");
         connection.setDoInput(true);
         connection.setDoOutput(true);
@@ -136,5 +154,31 @@ public class WPSHttpClient extends SimpleHttpClient {
                     .findFirst().orElse(null);
             return entry != null ? entry.getValue() : null;
         }
+    }
+
+    private HttpsURLConnection applySelfSignedLocalhostFix(HttpsURLConnection connection) throws NoSuchAlgorithmException, KeyManagementException {
+        final TrustManager[] trustAllCerts = new TrustManager[] {
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {  }
+
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {  }
+
+                }
+        };
+
+        final SSLContext sc = SSLContext.getInstance("TLS");
+        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        connection.setSSLSocketFactory(sc.getSocketFactory());
+
+        // Install the all-trusting host verifier
+        connection.setHostnameVerifier((hostname, session) -> true);
+        /*
+         * end of the fix
+         */
+        return  connection;
     }
 }

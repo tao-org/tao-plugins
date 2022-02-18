@@ -7,21 +7,21 @@ import org.openstack4j.model.common.Payloads;
 import org.openstack4j.model.storage.object.SwiftObject;
 import org.openstack4j.model.storage.object.options.ObjectListOptions;
 import org.openstack4j.model.storage.object.options.ObjectPutOptions;
+import ro.cs.tao.security.SessionStore;
 import ro.cs.tao.topology.TopologyException;
 import ro.cs.tao.topology.openstack.commons.OpenStackSession;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class SwiftService {
@@ -37,7 +37,7 @@ public class SwiftService {
             throw new IllegalArgumentException("[name] is null");
         }
         if (!Paths.get(name).isAbsolute()) {
-            throw new IllegalArgumentException("[name] must be an absolute paht");
+            throw new IllegalArgumentException("[name] must be an absolute path");
         }
         if (StringUtilities.isNullOrEmpty(containerName)) {
             throw new IllegalArgumentException("[containerName] is null or empty");
@@ -56,6 +56,44 @@ public class SwiftService {
         } catch (Exception ex) {
             throw new IOException(String.format("Cannot create path %s in container. Reason: %s", name, ex.getMessage()));
         }
+    }
+
+    public List<? extends SwiftObject> list(String path, String container) {
+        if (path == null) {
+            throw new IllegalArgumentException("[path] is null");
+        }
+        if (StringUtilities.isNullOrEmpty(container)) {
+            throw new IllegalArgumentException("[container] is null or empty");
+        }
+        authenticate();
+        return this.objectStorageService.objects().list(container, ObjectListOptions.create().path(path));
+    }
+
+    public void upload(String filePath, byte[] contents, String container, String description) {
+        if (filePath == null) {
+            throw new IllegalArgumentException("[file] is null");
+        }
+        if (StringUtilities.isNullOrEmpty(container)) {
+            throw new IllegalArgumentException("[container] is null or empty");
+        }
+        authenticate();
+        final Map<String, String> metadata = new HashMap<>();
+        metadata.put("description", description);
+        metadata.put("copied_by", SessionStore.currentContext().getPrincipal().getName());
+        this.objectStorageService.objects().put(container, filePath,
+                                                Payloads.create(new ByteArrayInputStream(contents)),
+                                                ObjectPutOptions.create().metadata(metadata));
+    }
+
+    public InputStream download(String file, String container) {
+        if (file == null) {
+            throw new IllegalArgumentException("[file] is null");
+        }
+        if (StringUtilities.isNullOrEmpty(container)) {
+            throw new IllegalArgumentException("[container] is null or empty");
+        }
+        authenticate();
+        return this.objectStorageService.objects().get(container, file).download().getInputStream();
     }
 
     public String copy(Path source, String containerName) throws IOException {

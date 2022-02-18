@@ -27,14 +27,14 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class S3Client implements StorageService<byte[]> {
+public class S3StorageService implements StorageService<byte[]> {
     private String region;
     private String accessKey;
     private String secretKey;
     private String defaultBucket;
     private AmazonS3 client;
 
-    public S3Client() {
+    public S3StorageService() {
         final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
         this.region = cfgProvider.getValue("aws.region", null);
         this.accessKey = cfgProvider.getValue("aws.access.key", null);
@@ -56,6 +56,11 @@ public class S3Client implements StorageService<byte[]> {
 
     public void setDefaultBucket(String defaultBucket) {
         this.defaultBucket = defaultBucket;
+    }
+
+    @Override
+    public boolean isIntendedFor(String protocol) {
+        return "s3".equalsIgnoreCase(protocol);
     }
 
     @Override
@@ -290,8 +295,8 @@ public class S3Client implements StorageService<byte[]> {
     }
 
     @Override
-    public S3Client clone() throws CloneNotSupportedException {
-        final S3Client clone = new S3Client();
+    public S3StorageService clone() throws CloneNotSupportedException {
+        final S3StorageService clone = new S3StorageService();
         clone.region = this.region;
         clone.accessKey = this.accessKey;
         clone.secretKey = this.secretKey;
