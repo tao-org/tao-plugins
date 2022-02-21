@@ -65,7 +65,7 @@ public class TaoLdapClient {
         User user = null;
         try {
             DirContext ctx = new InitialDirContext(ldapEnv);
-            logger.fine("Login successful for user " + username);
+            logger.fine("User " + username + " logged in");
             final StringBuilder dn = new StringBuilder();
             if (userDomain != null) {
                 final String[] tokens = userDomain.split("\\.");
@@ -88,7 +88,13 @@ public class TaoLdapClient {
                 user.setFirstName(attrs.get("givenname").get().toString());
                 user.setLastName(attrs.get("sn").get().toString());
                 user.setEmail(attrs.get("mail").get().toString());
-                user.setPhone(attrs.get("telephonenumber").get().toString());
+                final Attribute telephonenumber = attrs.get("telephonenumber");
+                if (telephonenumber != null) {
+                    final Object telObj = telephonenumber.get();
+                    if (telObj != null) {
+                        user.setPhone(telObj.toString());
+                    }
+                }
                 user.setOrganization("n/a");
                 user.setCreated(LocalDateTime.now());
             }

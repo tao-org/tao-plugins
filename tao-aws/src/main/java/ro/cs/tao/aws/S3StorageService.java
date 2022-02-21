@@ -28,6 +28,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class S3StorageService implements StorageService<byte[]> {
+    private static final String PROTOCOL = "s3";
     private String region;
     private String accessKey;
     private String secretKey;
@@ -60,7 +61,7 @@ public class S3StorageService implements StorageService<byte[]> {
 
     @Override
     public boolean isIntendedFor(String protocol) {
-        return "s3".equalsIgnoreCase(protocol);
+        return PROTOCOL.equalsIgnoreCase(protocol);
     }
 
     @Override
@@ -341,14 +342,14 @@ public class S3StorageService implements StorageService<byte[]> {
         ObjectListing objects = this.client.listObjects(request);
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
-                final FileObject fileObject = new FileObject(request.getBucketName() + "/" + commonPrefix, true, 0);
+                final FileObject fileObject = new FileObject(PROTOCOL, request.getBucketName() + "/" + commonPrefix, true, 0);
                 fileObject.addAttribute("remotePath", "s3://" + fileObject.getRelativePath());
                 files.add(fileObject);
             }
             if (objects.getObjectSummaries() != null) {
                 while (true) {
                     for (S3ObjectSummary summary : objects.getObjectSummaries()) {
-                        final FileObject fileObject = new FileObject(request.getBucketName() + "/" + summary.getKey(), false, summary.getSize());
+                        final FileObject fileObject = new FileObject(PROTOCOL, request.getBucketName() + "/" + summary.getKey(), false, summary.getSize());
                         fileObject.addAttribute("remotePath", "s3://" + fileObject.getRelativePath());
                         files.add(fileObject);
                     }
@@ -367,7 +368,7 @@ public class S3StorageService implements StorageService<byte[]> {
         final List<FileObject> results = new ArrayList<>();
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
-                final FileObject fileObject = new FileObject(request.getBucketName() + "/" + commonPrefix, true, 0);
+                final FileObject fileObject = new FileObject(PROTOCOL, request.getBucketName() + "/" + commonPrefix, true, 0);
                 fileObject.addAttribute("remotePath", "s3://" + fileObject.getRelativePath());
                 results.add(fileObject);
             }
@@ -375,7 +376,7 @@ public class S3StorageService implements StorageService<byte[]> {
             if (objectSummaries != null) {
                 for (int i = 0; i < objectSummaries.size(); i++) {
                     final S3ObjectSummary summary = objectSummaries.get(i);
-                    final FileObject fileObject = new FileObject(request.getBucketName() + "/" + summary.getKey(), false, summary.getSize());
+                    final FileObject fileObject = new FileObject(PROTOCOL, request.getBucketName() + "/" + summary.getKey(), false, summary.getSize());
                     fileObject.addAttribute("remotePath", "s3://" + fileObject.getRelativePath());
                     if (objects.isTruncated() && i == objectSummaries.size() - 1) {
                         fileObject.addAttribute("nextMarker", objects.getNextMarker());
@@ -398,14 +399,14 @@ public class S3StorageService implements StorageService<byte[]> {
         ObjectListing objects = this.client.listObjects(request);
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
-                final FileObject folder = new FileObject(request.getBucketName() + "/" + commonPrefix, true, 0);
+                final FileObject folder = new FileObject(PROTOCOL, request.getBucketName() + "/" + commonPrefix, true, 0);
                 files.add(folder);
                 files.addAll(traverse(folder.getRelativePath()));
             }
             if (objects.getObjectSummaries() != null) {
                 while (true) {
                     for (S3ObjectSummary summary : objects.getObjectSummaries()) {
-                        files.add(new FileObject(request.getBucketName() + "/" + summary.getKey(), false, summary.getSize()));
+                        files.add(new FileObject(PROTOCOL, request.getBucketName() + "/" + summary.getKey(), false, summary.getSize()));
                     }
                     if (!objects.isTruncated()) {
                         break;
