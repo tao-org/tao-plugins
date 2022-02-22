@@ -67,8 +67,8 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
         }
         List<String> arguments = new ArrayList<>();
         for (String arg : args) {
-            arguments.add(arg.replace("$FULL_PATH", productPath.toString())
-                    .replace("$FOLDER", productPath.getParent().toString())
+            arguments.add(arg.replace("$FULL_PATH", FileUtilities.asUnixPath(productPath, false))
+                    .replace("$FOLDER", FileUtilities.asUnixPath(productPath.getParent(), false))
                     .replace("$FILE", productPath.getFileName().toString()));
         }
         if (this.factory == null) {

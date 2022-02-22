@@ -4,6 +4,7 @@ import ro.cs.tao.user.User;
 import ro.cs.tao.user.UserModelAdapter;
 
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import java.time.LocalDateTime;
 
@@ -16,10 +17,22 @@ public class LdapUserAdapter implements UserModelAdapter<Attributes> {
                 user = new User();
                 user.setUsername(attrs.get("samAccountName").get().toString());
                 user.setExternal(true);
-                user.setFirstName(attrs.get("givenname").get().toString());
-                user.setLastName(attrs.get("sn").get().toString());
-                user.setEmail(attrs.get("mail").get().toString());
-                user.setPhone(attrs.get("telephonenumber").get().toString());
+                Attribute attribute = attrs.get("givenname");
+                if (attribute != null) {
+                    user.setFirstName(String.valueOf(attribute.get()));
+                }
+                attribute = attrs.get("sn");
+                if (attribute != null) {
+                    user.setLastName(String.valueOf(attribute.get()));
+                }
+                attribute = attrs.get("mail");
+                if (attribute != null) {
+                    user.setEmail(String.valueOf(attribute.get()));
+                }
+                attribute = attrs.get("telephonenumber");
+                if (attribute != null) {
+                    user.setPhone(String.valueOf(attribute.get()));
+                }
                 user.setOrganization("n/a");
                 user.setCreated(LocalDateTime.now());
             } catch (NamingException e) {
