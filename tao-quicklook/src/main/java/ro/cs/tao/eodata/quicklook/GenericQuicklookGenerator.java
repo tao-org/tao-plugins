@@ -41,6 +41,7 @@ public class GenericQuicklookGenerator extends BaseQuicklookGenerator<Path> {
                 if (executor != null) {
                     executor.setOutputConsumer(consumer);
                     int code;
+                    logger.fine("Trying to create quicklook for " + productFile);
                     if ((code = executor.execute(false)) == 0) {
                         productFile = Paths.get(productFile.toString() + extension);
                     } else {

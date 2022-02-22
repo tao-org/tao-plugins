@@ -24,9 +24,7 @@ import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.*;
-import java.time.LocalDateTime;
 import java.util.Hashtable;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -80,29 +78,13 @@ public class TaoLdapClient {
             cons.setReturningAttributes(attrIDs);
             NamingEnumeration<SearchResult> answer = ctx.search(dn.toString(), "samAccountName=" + simpleUserName, cons);
             if (answer.hasMore()) {
-                user = new User();
-                Attributes attrs = answer.next().getAttributes();
-                user.setUsername(username);
-                //user.setPassword(Crypto.encrypt(password, username));
-                user.setExternal(true);
-                user.setFirstName(attrs.get("givenname").get().toString());
-                user.setLastName(attrs.get("sn").get().toString());
-                user.setEmail(attrs.get("mail").get().toString());
-                final Attribute telephonenumber = attrs.get("telephonenumber");
-                if (telephonenumber != null) {
-                    final Object telObj = telephonenumber.get();
-                    if (telObj != null) {
-                        user.setPhone(telObj.toString());
-                    }
-                }
-                user.setOrganization("n/a");
-                user.setCreated(LocalDateTime.now());
+                final Attributes attrs = answer.next().getAttributes();
+                user = new LdapUserAdapter().toTaoUser(attrs);
             }
         } catch (AuthenticationException e) {
-            logger.fine("Invalid login credentials!");
-            logger.log(Level.FINE, e.getMessage());
+            logger.warning("Invalid login credentials! [" + e.getMessage() + "]");
         } catch (NamingException e) {
-            logger.log(Level.SEVERE, e.getMessage());
+            logger.severe(e.getMessage());
         }
         return user;
     }
