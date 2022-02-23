@@ -74,7 +74,7 @@ public class TaoLdapClient {
             }
             SearchControls cons = new SearchControls();
             cons.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            String[] attrIDs = {"distinguishedName", "sn", "givenname", "mail", "telephonenumber"};
+            String[] attrIDs = {"samAccountName", "distinguishedName", "sn", "givenname", "mail", "telephonenumber"};
             cons.setReturningAttributes(attrIDs);
             NamingEnumeration<SearchResult> answer = ctx.search(dn.toString(), "samAccountName=" + simpleUserName, cons);
             if (answer.hasMore()) {
