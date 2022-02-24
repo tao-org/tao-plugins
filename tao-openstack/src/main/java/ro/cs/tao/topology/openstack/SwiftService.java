@@ -27,9 +27,18 @@ import java.util.logging.Logger;
 public class SwiftService {
     private final Logger logger;
     private org.openstack4j.api.storage.ObjectStorageService objectStorageService;
+    private Map<String, String> parameters;
 
     public SwiftService() {
         this.logger = Logger.getLogger(SwiftService.class.getName());
+    }
+
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
     }
 
     public String createFolder(String name, String containerName) throws IOException {
@@ -198,7 +207,7 @@ public class SwiftService {
     private void authenticate() {
         if (this.objectStorageService == null) {
             try {
-                this.objectStorageService = OpenStackSession.objectStorageService();
+                this.objectStorageService = OpenStackSession.objectStorageService(parameters);
             } catch (AuthenticationException ex) {
                 throw new TopologyException(String.format("OpenStack authentication failed. Reason: %s", ex.getMessage()));
             }
