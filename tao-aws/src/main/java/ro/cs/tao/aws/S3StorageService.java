@@ -7,8 +7,6 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
-import ro.cs.tao.configuration.ConfigurationManager;
-import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.security.SessionStore;
 import ro.cs.tao.services.interfaces.StorageService;
 import ro.cs.tao.services.model.FileObject;
@@ -23,12 +21,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class S3StorageService implements StorageService<byte[]> {
     private static final String PROTOCOL = "s3";
+    public static final String AWS_REGION = "aws.region";
+    public static final String AWS_ACCESS_KEY = "aws.access.key";
+    public static final String AWS_SECRET_KEY = "aws.secret.key";
+    public static final String AWS_BUCKET = "aws.bucket";
     private String region;
     private String accessKey;
     private String secretKey;
@@ -36,32 +39,38 @@ public class S3StorageService implements StorageService<byte[]> {
     private AmazonS3 client;
 
     public S3StorageService() {
-        final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
-        this.region = cfgProvider.getValue("aws.region", null);
-        this.accessKey = cfgProvider.getValue("aws.access.key", null);
-        this.secretKey = cfgProvider.getValue("aws.secret.key", null);
-        this.defaultBucket = cfgProvider.getValue("aws.bucket", null);
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public void setAccessKey(String accessKey) {
-        this.accessKey = accessKey;
-    }
-
-    public void setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
-    }
-
-    public void setDefaultBucket(String defaultBucket) {
-        this.defaultBucket = defaultBucket;
     }
 
     @Override
     public boolean isIntendedFor(String protocol) {
         return PROTOCOL.equalsIgnoreCase(protocol);
+    }
+
+    @Override
+    public void setup(Map<String, String> parameters) {
+        if (parameters == null) {
+            throw new IllegalArgumentException("[parameters] Cannot be null");
+        }
+        String value = parameters.get(AWS_REGION);
+        if (StringUtilities.isNullOrEmpty(value)) {
+            throw new IllegalArgumentException("[parameters] '" + AWS_REGION + "' cannot be empty");
+        }
+        this.region = value;
+        value = parameters.get(AWS_ACCESS_KEY);
+        if (StringUtilities.isNullOrEmpty(value)) {
+            throw new IllegalArgumentException("[parameters] " + AWS_ACCESS_KEY + " cannot be empty");
+        }
+        this.accessKey = value;
+        value = parameters.get(AWS_SECRET_KEY);
+        if (StringUtilities.isNullOrEmpty(value)) {
+            throw new IllegalArgumentException("[parameters] " + AWS_SECRET_KEY + " cannot be empty");
+        }
+        this.secretKey = value;
+        value = parameters.get(AWS_BUCKET);
+        if (StringUtilities.isNullOrEmpty(value)) {
+            throw new IllegalArgumentException("[parameters] " + AWS_BUCKET + " cannot be empty");
+        }
+        this.defaultBucket = value;
     }
 
     @Override
