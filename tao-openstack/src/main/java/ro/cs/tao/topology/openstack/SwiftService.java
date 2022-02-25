@@ -9,6 +9,7 @@ import org.openstack4j.model.storage.object.options.ObjectListOptions;
 import org.openstack4j.model.storage.object.options.ObjectPutOptions;
 import ro.cs.tao.security.SessionStore;
 import ro.cs.tao.topology.TopologyException;
+import ro.cs.tao.topology.openstack.commons.Constants;
 import ro.cs.tao.topology.openstack.commons.OpenStackSession;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
@@ -28,6 +29,7 @@ public class SwiftService {
     private final Logger logger;
     private org.openstack4j.api.storage.ObjectStorageService objectStorageService;
     private Map<String, String> parameters;
+    private int pageLimit = 1000;
 
     public SwiftService() {
         this.logger = Logger.getLogger(SwiftService.class.getName());
@@ -39,6 +41,12 @@ public class SwiftService {
 
     public void setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
+        if (parameters != null) {
+            String limit = parameters.get(Constants.OPENSTACK_PAGE_LIMIT);
+            if (limit != null) {
+                this.pageLimit = Integer.parseInt(limit);
+            }
+        }
     }
 
     public String createFolder(String name, String containerName) throws IOException {
@@ -67,7 +75,7 @@ public class SwiftService {
         }
     }
 
-    public List<? extends SwiftObject> list(String path, String container) {
+    public List<? extends SwiftObject> list(String path, String container, String lastItem) {
         if (path == null) {
             throw new IllegalArgumentException("[path] is null");
         }
@@ -75,7 +83,12 @@ public class SwiftService {
             throw new IllegalArgumentException("[container] is null or empty");
         }
         authenticate();
-        return this.objectStorageService.objects().list(container, ObjectListOptions.create().path(path));
+        final ObjectListOptions options = ObjectListOptions.create().path(path);
+        if (lastItem != null) {
+            options.marker(lastItem);
+        }
+        options.limit(this.pageLimit);
+        return this.objectStorageService.objects().list(container, options);
     }
 
     public void upload(String filePath, byte[] contents, String container, String description) {

@@ -32,11 +32,13 @@ public class S3StorageService implements StorageService<byte[]> {
     public static final String AWS_ACCESS_KEY = "aws.access.key";
     public static final String AWS_SECRET_KEY = "aws.secret.key";
     public static final String AWS_BUCKET = "aws.bucket";
+    public static final String AWS_PAGE_LIMIT = "page.limit";
     private String region;
     private String accessKey;
     private String secretKey;
     private String defaultBucket;
     private AmazonS3 client;
+    private int pageLimit = 1000;
 
     public S3StorageService() {
     }
@@ -71,6 +73,10 @@ public class S3StorageService implements StorageService<byte[]> {
             throw new IllegalArgumentException("[parameters] " + AWS_BUCKET + " cannot be empty");
         }
         this.defaultBucket = value;
+        value = parameters.get(AWS_PAGE_LIMIT);
+        if (!StringUtilities.isNullOrEmpty(value)) {
+            this.pageLimit = Integer.parseInt(value);
+        }
     }
 
     @Override
@@ -208,6 +214,7 @@ public class S3StorageService implements StorageService<byte[]> {
             request.setBucketName(bucketName);
             request.setDelimiter("/");
             request.setMarker("/");
+            request.setMaxKeys(this.pageLimit);
             return list(request);
         } catch (AmazonServiceException e) {
             throw new IOException(e);
@@ -215,7 +222,7 @@ public class S3StorageService implements StorageService<byte[]> {
     }
 
     @Override
-    public List<FileObject> listFiles(Path fromPath, Set<Path> exclusions) throws IOException {
+    public List<FileObject> listFiles(Path fromPath, Set<Path> exclusions, Path lastItem) throws IOException {
         if (fromPath.isAbsolute()) {
             throw new IllegalArgumentException("Path should be relative to the S3 bucket (including the bucket name)");
         }
@@ -232,8 +239,14 @@ public class S3StorageService implements StorageService<byte[]> {
                 final Path markerPath = exclusions.iterator().next();
                 request.setMarker(markerPath.subpath(1, markerPath.getNameCount()).toString().replace("\\", "/") + "/");
             }
-            final String relativePath = fromPath.subpath(1, fromPath.getNameCount()).toString().replace("\\", "/") + "/";
+            final String relativePath = fromPath.getNameCount() > 1
+                    ? fromPath.subpath(1, fromPath.getNameCount()).toString().replace("\\", "/") + "/"
+                    : "";
             request.setPrefix(relativePath);
+            if (lastItem != null) {
+                request.setMarker(lastItem.subpath(1, lastItem.getNameCount()).toString().replace("\\", "/") + "/");
+            }
+            request.setMaxKeys(this.pageLimit);
             return exclusions == null ? list(request) : singlePage(request);
         } catch (AmazonServiceException e) {
             throw new IOException(e);

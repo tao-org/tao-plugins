@@ -15,4 +15,5 @@ public class Constants {
     public static final String OPENSTACK_PRIVATE_NETWORK = "openstack.private.network";
     public static final String OPENSTACK_DATA_NETWORK = "openstack.eodata.network";
     public static final String OPENSTACK_OS_IMAGE = "openstack.default.image";
+    public static final String OPENSTACK_PAGE_LIMIT = "page.limit";
 }
