@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ObjectStorageService implements StorageService<byte[]> {
+public class ObjectStorageService implements StorageService<byte[], InputStream> {
     private static final String PROTOCOL = "swift";
 
     private final SwiftService swiftService;
@@ -63,6 +63,20 @@ public class ObjectStorageService implements StorageService<byte[]> {
         final String bucket = path.getName(0).toString();
         final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
         this.swiftService.upload(relativePath, object, bucket, description);
+    }
+
+    @Override
+    public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
+        if (stream == null) {
+            throw new IllegalArgumentException("[stream] Null stream");
+        }
+        final Path path = Paths.get(relativeFolder);
+        if (path.isAbsolute()) {
+            throw new IllegalArgumentException("[relativeFolder] Path should be relative to the S3 bucket (including the bucket name)");
+        }
+        final String bucket = path.getName(0).toString();
+        final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
+        this.swiftService.upload(relativePath, stream, bucket, description);
     }
 
     @Override
@@ -126,7 +140,7 @@ public class ObjectStorageService implements StorageService<byte[]> {
     }
 
     @Override
-    public Object download(Path path) throws IOException {
+    public InputStream download(Path path) throws IOException {
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("Path should be relative to the S3 bucket (including the bucket name)");
         }

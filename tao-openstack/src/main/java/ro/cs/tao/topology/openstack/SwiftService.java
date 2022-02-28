@@ -107,6 +107,22 @@ public class SwiftService {
                                                 ObjectPutOptions.create().metadata(metadata));
     }
 
+    public void upload(String filePath, InputStream stream, String container, String description) {
+        if (filePath == null) {
+            throw new IllegalArgumentException("[file] is null");
+        }
+        if (StringUtilities.isNullOrEmpty(container)) {
+            throw new IllegalArgumentException("[container] is null or empty");
+        }
+        authenticate();
+        final Map<String, String> metadata = new HashMap<>();
+        metadata.put("description", description);
+        metadata.put("copied_by", SessionStore.currentContext().getPrincipal().getName());
+        this.objectStorageService.objects().put(container, filePath,
+                                                Payloads.create(stream),
+                                                ObjectPutOptions.create().metadata(metadata));
+    }
+
     public InputStream download(String file, String container) {
         if (file == null) {
             throw new IllegalArgumentException("[file] is null");

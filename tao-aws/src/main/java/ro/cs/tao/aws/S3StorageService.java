@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class S3StorageService implements StorageService<byte[]> {
+public class S3StorageService implements StorageService<byte[], S3ObjectInputStream> {
     private static final String PROTOCOL = "s3";
     public static final String AWS_REGION = "aws.region";
     public static final String AWS_ACCESS_KEY = "aws.access.key";
@@ -123,6 +123,37 @@ public class S3StorageService implements StorageService<byte[]> {
             metadata.addUserMetadata("copied_by", SessionStore.currentContext().getPrincipal().getName());
             metadata.setContentLength(object.length);
             PutObjectRequest request = new PutObjectRequest(bucket, relativePath, is, metadata);
+            request.setStorageClass(StorageClass.Standard);
+            request.setCannedAcl(CannedAccessControlList.BucketOwnerFullControl);
+            this.client.putObject(request);
+        } catch (AmazonServiceException e) {
+            throw new IOException(e);
+        }
+    }
+
+    @Override
+    public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
+        if (stream == null) {
+            throw new IllegalArgumentException("[stream] Null stream");
+        }
+        final Path path = Paths.get(relativeFolder);
+        if (path.isAbsolute()) {
+            throw new IllegalArgumentException("[relativeFolder] Path should be relative to the S3 bucket (including the bucket name)");
+        }
+        if (this.client == null) {
+            this.client = buildClient();
+        }
+        final String bucket = path.getName(0).toString();
+        final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
+        try {
+            ensureBucketExists(bucket);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.addUserMetadata("description", description);
+            metadata.addUserMetadata("copied_by", SessionStore.currentContext().getPrincipal().getName());
+            if (length > 0) {
+                metadata.setContentLength(length);
+            }
+            PutObjectRequest request = new PutObjectRequest(bucket, relativePath, stream, metadata);
             request.setStorageClass(StorageClass.Standard);
             request.setCannedAcl(CannedAccessControlList.BucketOwnerFullControl);
             this.client.putObject(request);
@@ -264,7 +295,7 @@ public class S3StorageService implements StorageService<byte[]> {
     }
 
     @Override
-    public Object download(Path path) throws IOException {
+    public S3ObjectInputStream download(Path path) throws IOException {
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("Path should be relative to the S3 bucket (including the bucket name)");
         }
