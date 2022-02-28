@@ -28,12 +28,12 @@ public class TestAWSS3 {
             System.out.println(fileObject.getRelativePath() + ", folder? " + fileObject.isFolder() + ", size " + fileObject.getSize());
         }
         relativePath = "s2/";
-        list = client.listFiles(Paths.get(bucket + "/" + relativePath), null);
+        list = client.listFiles(Paths.get(bucket + "/" + relativePath), null, null);
         for (FileObject fileObject : list) {
             relativePath = fileObject.getRelativePath();
             System.out.println(fileObject.getRelativePath() + ", folder? " + fileObject.isFolder() + ", size " + fileObject.getSize());
         }
-        list = client.listFiles(Paths.get(bucket + "/" + relativePath), null);
+        list = client.listFiles(Paths.get(bucket + "/" + relativePath), null, null);
         for (FileObject fileObject : list) {
             System.out.println(fileObject.getRelativePath() + ", folder? " + fileObject.isFolder() + ", size " + fileObject.getSize());
         }
