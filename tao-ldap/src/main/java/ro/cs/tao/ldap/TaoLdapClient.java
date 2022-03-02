@@ -63,7 +63,7 @@ public class TaoLdapClient {
         User user = null;
         try {
             DirContext ctx = new InitialDirContext(ldapEnv);
-            logger.fine("User " + username + " logged in");
+            logger.finest("LDAP login: " + username);
             final StringBuilder dn = new StringBuilder();
             if (userDomain != null) {
                 final String[] tokens = userDomain.split("\\.");
