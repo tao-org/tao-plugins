@@ -1,29 +1,36 @@
 {
+  "Landsat9": {
+    "mission": "Landsat9",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
+  },
   "Landsat8": {
     "mission": "Landsat8",
     "sensorType": "OPTICAL",
-    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
     "temporalCoverage": "from 2013 to present",
     "spatialCoverage": "Global"
   },
   "Landsat7": {
     "mission": "Landsat7",
     "sensorType": "OPTICAL",
-    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
     "temporalCoverage": "from 1999-05-28 to present",
     "spatialCoverage": "Global"
   },
   "Landsat5": {
     "mission": "Landsat 4-5",
     "sensorType": "OPTICAL",
-    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
     "temporalCoverage": "from 1982-08-22 to 2012-05-05",
     "spatialCoverage": "Global"
   },
   "Landsat4": {
     "mission": "Landsat 1-5",
     "sensorType": "OPTICAL",
-    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
     "temporalCoverage": "from 1972-07-25 to 2013-01-07",
     "spatialCoverage": "Global"
   },

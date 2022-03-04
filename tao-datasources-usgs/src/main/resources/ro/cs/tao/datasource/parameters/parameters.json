@@ -1,4 +1,116 @@
 {
+  "Landsat9": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "datasetName",
+      "label": "Dataset",
+      "type": "string",
+      "defaultValue": "landsat_ot_c2_l1",
+      "required": false,
+      "valueSet": ["landsat_ot_c2_l1","landsat_ot_c2_l2"],
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "spatialFilter",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "minClouds": {
+      "name": "minClouds",
+      "remoteName": "minCloudCover",
+      "label": "Minimum Cloud Cover",
+      "type": "int",
+      "defaultValue": 0,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "maxClouds": {
+      "name": "maxClouds",
+      "remoteName": "maxCloudCover",
+      "label": "Maximum Cloud Cover",
+      "type": "int",
+      "defaultValue": 100,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "row": {
+      "name": "row",
+      "remoteName": "WRS Row",
+      "label": "Row",
+      "type": "int",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "path": {
+      "name": "path",
+      "remoteName": "WRS Path",
+      "label": "Path",
+      "type": "int",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "row_path",
+      "label": "Row and Path",
+      "type": "string[]",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "Landsat Product Identifier",
+      "label": "Product",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "Data Type Level-1",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": "L1TP",
+      "required": false,
+      "valueSet": ["L1TP", "L1GT", "L1GS"],
+      "order": 0
+    }
+  },
   "Landsat8": {
     "platformName": {
       "name": "platformName",

@@ -8,7 +8,7 @@ import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.usgs.USGSDataSource;
-import ro.cs.tao.datasource.usgs.download.ModisStrategy;
+import ro.cs.tao.datasource.usgs.download.Landsat8Strategy;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
@@ -42,12 +42,12 @@ public class LandsatUsgsTest {
             handler.setLevel(Level.INFO);
         }
         DataSource<?, ?> dataSource = getDatasourceRegistry().getService(USGSDataSource.class);
-//        dataSource.setCredentials("kraftek", "cei7pitici.");
-        dataSource.setCredentials("lidia901", "USGS_Password1");
+        dataSource.setCredentials("kraftek", "cei7pitici.");
+//        dataSource.setCredentials("lidia901", "USGS_Password1");
         String[] sensors = dataSource.getSupportedSensors();
 //        String sensor = "ECOSTRESS-WUE";
-        String sensor = "MODIS-FIRE-8";
-//        String sensor = "Landsat8";
+//        String sensor = "MODIS-FIRE-8";
+        String sensor = "Landsat8";
         DataQuery query = dataSource.createQuery(sensor);
 
         QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
@@ -60,7 +60,7 @@ public class LandsatUsgsTest {
 
         query.addParameter(CommonParameterNames.FOOTPRINT, aoi);
 //        query.addParameter(CommonParameterNames.PRODUCT, "LC08_L1TP_199024_20201026_20201026_01_RT");
-//        query.addParameter(CommonParameterNames.PLATFORM, "LANDSAT_8_C1");
+        query.addParameter(CommonParameterNames.PLATFORM, "landsat_ot_c2_l1");
 //        query.addParameter(CommonParameterNames.PRODUCT_TYPE, "L1TP");
 //        query.addParameter("maxClouds", 100);
         query.setMaxResults(5);
@@ -74,9 +74,9 @@ public class LandsatUsgsTest {
             System.out.println("QUICK LOOK=" + r.getQuicklookLocation());
         });
 
-//        final Landsat8Strategy strategy = (Landsat8Strategy) dataSource.getProductFetchStrategy(sensor);
+        final Landsat8Strategy strategy = (Landsat8Strategy) dataSource.getProductFetchStrategy(sensor);
 //        final EcostressStrategy strategy = (EcostressStrategy) dataSource.getProductFetchStrategy(sensor);
-        final ModisStrategy strategy = (ModisStrategy) dataSource.getProductFetchStrategy(sensor);
+        //final ModisStrategy strategy = (ModisStrategy) dataSource.getProductFetchStrategy(sensor);
 
         ProgressListener progressListener = new ProgressListener() {
             @Override
