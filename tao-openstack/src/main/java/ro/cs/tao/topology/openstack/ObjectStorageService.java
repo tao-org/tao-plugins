@@ -130,6 +130,13 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
+    public List<FileObject> listTree(Path fromPath) throws IOException {
+        final List<FileObject> results = new ArrayList<>();
+        traverse(fromPath.toString(), null, results);
+        return results;
+    }
+
+    @Override
     public List<FileObject> getWorkflowResults(long workflowId) throws IOException {
         throw new UnsupportedOperationException("Not implemented for OpenStack Swift");
     }
@@ -155,7 +162,8 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
             throw new IllegalArgumentException("Path should be relative to the S3 bucket (including the bucket name)");
         }
         final String bucket = root.getName(0).toString();
-        final List<FileObject> keys = traverse(root.toString(), null);
+        final List<FileObject> keys = new ArrayList<>();
+        traverse(root.toString(), null, keys);
         ZipEntry entry = null;
         for (FileObject current : keys) {
             final Path currentPath = Paths.get(current.getRelativePath());
@@ -193,7 +201,7 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
         final List<? extends SwiftObject> objects = this.swiftService.list(relativePath, bucket, lastItem != null ? lastItem.toString() : null);
         if (objects != null) {
             objects.forEach(object -> {
-                final String oPath = bucket + "/" + object.getDirectoryName() + (!object.isDirectory() ? "/" + object.getName() : "");
+                final String oPath = bucket + "/" + (object.isDirectory() ? object.getDirectoryName() : object.getName());
                 if (exclusions == null || exclusions.stream().noneMatch(oPath::startsWith)) {
                     final FileObject fileObject = new FileObject(PROTOCOL, oPath, object.isDirectory(), object.getSizeInBytes());
                     fileObject.addAttribute("remotePath", "swift://" + fileObject.getRelativePath());
@@ -204,25 +212,25 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
         return files;
     }
 
-    private List<FileObject> traverse(String fromPath, Set<String> exclusions) {
+    private void traverse(String fromPath, Set<String> exclusions, List<FileObject> files) {
         final Path path = Paths.get(fromPath);
         final String bucket = path.getName(0).toString();
-        final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
-        final List<FileObject> files = new ArrayList<>();
+        final String relativePath = path.getNameCount() > 1
+                ? path.subpath(1, path.getNameCount()).toString().replace("\\", "/")
+                : "";
         List<? extends SwiftObject> objects = this.swiftService.list(relativePath, bucket, null);
         if (objects != null) {
             for (SwiftObject object : objects) {
-                final String oPath = bucket + "/" + object.getDirectoryName() + (!object.isDirectory() ? "/" + object.getName() : "");
+                final String oPath = bucket + "/" + (object.isDirectory() ? object.getDirectoryName() : object.getName());
                 if (exclusions == null || exclusions.stream().noneMatch(oPath::startsWith)) {
                     final FileObject fileObject = new FileObject(PROTOCOL, oPath, object.isDirectory(), object.getSizeInBytes());
                     fileObject.addAttribute("remotePath", "swift://" + fileObject.getRelativePath());
                     files.add(fileObject);
                     if (object.isDirectory()) {
-                        files.addAll(traverse(fileObject.getRelativePath(), exclusions));
+                        traverse(fileObject.getRelativePath(), exclusions, files);
                     }
                 }
             }
         }
-        return files;
     }
 }
