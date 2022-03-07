@@ -285,6 +285,23 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     @Override
+    public List<FileObject> listTree(Path fromPath) throws IOException {
+        if (fromPath.isAbsolute()) {
+            throw new IllegalArgumentException("Path should be relative to the S3 bucket (including the bucket name)");
+        }
+        if (this.client == null) {
+            this.client = buildClient();
+        }
+        try {
+            final List<FileObject> files = new ArrayList<>();
+            traverse(fromPath.toString(), files);
+            return files;
+        } catch (AmazonServiceException e) {
+            throw new IOException(e);
+        }
+    }
+
+    @Override
     public List<FileObject> getWorkflowResults(long workflowId) throws IOException {
         throw new UnsupportedOperationException("Not implemented for AWS S3");
     }
@@ -322,8 +339,9 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             this.client = buildClient();
         }
         final String bucket = root.getName(0).toString();
-        final List<FileObject> keys = traverse(root.toString());
-        ZipEntry entry = null;
+        final List<FileObject> keys = new ArrayList<>();
+        traverse(root.toString(), keys);
+        ZipEntry entry;
         for (FileObject current : keys) {
             final Path currentPath = Paths.get(current.getRelativePath());
             if (!current.isFolder()) {
@@ -441,20 +459,19 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         return results;
     }
 
-    private List<FileObject> traverse(String fromPath) {
+    private void traverse(String fromPath, List<FileObject> files) {
         ListObjectsRequest request = new ListObjectsRequest();
         final Path path = Paths.get(fromPath);
         request.setBucketName(path.getName(0).toString());
         request.setDelimiter("/");
         final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/") + "/";
         request.setPrefix(relativePath);
-        final List<FileObject> files = new ArrayList<>();
         ObjectListing objects = this.client.listObjects(request);
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
                 final FileObject folder = new FileObject(PROTOCOL, request.getBucketName() + "/" + commonPrefix, true, 0);
                 files.add(folder);
-                files.addAll(traverse(folder.getRelativePath()));
+                traverse(folder.getRelativePath(), files);
             }
             if (objects.getObjectSummaries() != null) {
                 while (true) {
@@ -468,6 +485,5 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 }
             }
         }
-        return files;
     }
 }
