@@ -85,6 +85,17 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
+    public boolean exists(String path) throws Exception {
+        final Path filePath = Paths.get(path);
+        if (filePath.isAbsolute()) {
+            throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
+        }
+        final String bucket = filePath.getName(0).toString();
+        final String relativePath = filePath.subpath(1, filePath.getNameCount()).toString().replace("\\", "/");
+        return this.swiftService.exists(relativePath, bucket);
+    }
+
+    @Override
     public void remove(String name) throws IOException {
         final Path path = Paths.get(name);
         if (path.isAbsolute()) {

@@ -168,6 +168,26 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     @Override
+    public boolean exists(String path) throws Exception {
+        final Path filePath = Paths.get(path);
+        if (filePath.isAbsolute()) {
+            throw new IllegalArgumentException("Path should be relative to the S3 bucket (including the bucket name)");
+        }
+        if (this.client == null) {
+            this.client = buildClient();
+        }
+        try {
+            final String bucket = filePath.getName(0).toString();
+            final String relativePath = filePath.subpath(1, filePath.getNameCount()).toString().replace("\\", "/");
+            GetObjectRequest request = new GetObjectRequest(bucket, relativePath);
+            final S3Object object = this.client.getObject(request);
+            return object != null;
+        } catch (AmazonServiceException e) {
+            return false;
+        }
+    }
+
+    @Override
     public void remove(String name) throws IOException {
         final Path path = Paths.get(name);
         if (path.isAbsolute()) {

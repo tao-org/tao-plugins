@@ -75,6 +75,18 @@ public class SwiftService {
         }
     }
 
+    public boolean exists(String path, String container) {
+        if (path == null) {
+            throw new IllegalArgumentException("[path] is null");
+        }
+        if (StringUtilities.isNullOrEmpty(container)) {
+            throw new IllegalArgumentException("[container] is null or empty");
+        }
+        authenticate();
+        final SwiftObject object = this.objectStorageService.objects().get(container, path);
+        return object != null;
+    }
+
     public List<? extends SwiftObject> list(String path, String container, String lastItem) {
         if (path == null) {
             throw new IllegalArgumentException("[path] is null");
