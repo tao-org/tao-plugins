@@ -40,9 +40,15 @@ public class ShellInABoxContainer extends BaseStandaloneInstaller {
         // -e SHELLINABOX_DISABLE_SSL=1
         // -e SHELLINABOX_DEFAULT=host
         return new ArrayList<String>() {{
-            add("--name"); add("websshshell"); add("-p"); add("4200:4200");
+            add("--rm"); add("--name"); add("webshell"); add("-p"); add("4200:4200");
+            add("-e"); add("SHELLINABOX_SERVICE_HOST=host");
+            add("-e"); add("SHELLINABOX_SERVICE_WHO=who");
+            add("-e"); add("SHELLINABOX_SERVICE_LOCAL=local");
             add("-e"); add("SHELLINABOX_ALLOW_SUDO=1");
+            add("-e"); add("SHELLINABOX_USER=siabuser");
+            add("-e"); add("SHELLINABOX_PASSWORD=siabpassword");
             add("-e"); add("SHELLINABOX_DISABLE_SSL=1");
+            add("-e"); add("SHELLINABOX_DEFAULT=host");
         }};
     }
 }
