@@ -10,13 +10,16 @@ import org.geotools.data.wps.response.ExecuteProcessResponse;
 import org.geotools.process.Process;
 import ro.cs.tao.component.TaoComponent;
 import ro.cs.tao.component.Variable;
+import ro.cs.tao.component.WPSAuthentication;
 import ro.cs.tao.component.WPSComponent;
+import ro.cs.tao.docker.Container;
 import ro.cs.tao.execution.ExecutionException;
 import ro.cs.tao.execution.Executor;
 import ro.cs.tao.execution.model.ExecutionStatus;
 import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.model.WPSExecutionTask;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
+import ro.cs.tao.persistence.WPSAuthenticationProvider;
 import ro.cs.tao.utils.JacksonUtil;
 
 import java.net.URL;
@@ -32,10 +35,17 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
 
     //private WPSComponent wpsComponent;
     private static ExecutionTaskProvider taskProvider;
+    private static WPSAuthenticationProvider authenticationProvider;
     private final Map<String, WebProcessingService> webServicesMap;
     private final ExecutorService backgroundWorker;
 
-    public static void setTaskProvider(ExecutionTaskProvider provider) { taskProvider = provider; }
+    public static void setTaskProvider(ExecutionTaskProvider provider) {
+        WPSExecutor.taskProvider = provider;
+    }
+
+    public static void setAuthenticationProvider(WPSAuthenticationProvider authenticationProvider) {
+        WPSExecutor.authenticationProvider = authenticationProvider;
+    }
 
     public WPSExecutor() {
         this.webServicesMap = new HashMap<>();
@@ -56,6 +66,8 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
             task.setResourceId(UUID.randomUUID().toString());
             logger.fine(String.format("Successfully submitted task with id %s", task.getResourceId()));
             final WPSComponent wpsComponent = task.getComponent();
+            final Container service = wpsComponent.getService();
+            final WPSAuthentication authentication = authenticationProvider.get(service.getId());
             final String address = wpsComponent.getRemoteAddress();
             final URL url = new URL(address);
             task.setExecutionNodeHostName(url.getHost());
@@ -77,7 +89,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
                                                  addr -> {
                                                     try {
                                                         return new WebProcessingService(url,
-                                                                                        new WPSHttpClient(wpsComponent.getAuthentication()),
+                                                                                        new WPSHttpClient(authentication),
                                                                                         null);
                                                     } catch (Exception e) {
                                                         e.printStackTrace();
@@ -132,7 +144,10 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
                 try {
                     final WPSExecutionTask wpsTask = (WPSExecutionTask) task;
                     final WPSComponent wpsComponent = wpsTask.getComponent();
-                    WebProcessingService wps = new WebProcessingService(new URL(wpsComponent.getRemoteAddress()));
+                    final Container service = wpsComponent.getService();
+                    final WPSAuthentication authentication = authenticationProvider.get(service.getId());
+                    WebProcessingService wps = new WebProcessingService(new URL(wpsComponent.getRemoteAddress()),
+                                                                        new WPSHttpClient(authentication), null);
                     final ExecuteProcessResponse response = wps.issueStatusRequest(new URL(wpsComponent.getRemoteAddress() + "?service=WPS&request=GetStatus"));
                     // Checking for Exceptions and Status...
                     final ExceptionReportType exceptionResponse = response.getExceptionResponse();
