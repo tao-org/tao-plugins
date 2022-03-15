@@ -5,17 +5,15 @@ import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.DataSourceComponent;
 import ro.cs.tao.datasource.ProductStatusListener;
-import ro.cs.tao.datasource.param.QueryParameter;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.lsa.LSADataSource;
 import ro.cs.tao.eodata.EOProduct;
-import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
 
 import java.net.URI;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -63,7 +61,7 @@ public class LSADataSourceTest {
         final DataSourceComponent component = new DataSourceComponent(sensor, dataSource.getId());
         component.setUserCredentials("kraftek", "cei7pitici.");
         final DataQuery query = component.createQuery();
-        query.addParameter("productType", productType);
+        /*query.addParameter("productType", productType);
         final QueryParameter<LocalDateTime> begin = query.createParameter("startDate", LocalDateTime.class);
         begin.setValue(LocalDateTime.of(2021, 8, 1, 0, 0, 0, 0));
         query.addParameter(begin);
@@ -74,7 +72,8 @@ public class LSADataSourceTest {
                 "21.99462890625 47.109375))");
         query.addParameter("footprint", aoi);
         query.setPageSize(10);
-        query.setPageNumber(1);
+        query.setPageNumber(1);*/
+        query.addParameter(CommonParameterNames.PRODUCT, "S2B_MSIL2A_20201231T105349_N0214_R051_T31UFS_20201231T130556");
         final long count = query.getCount();
         System.out.println("\n\nFound " + count + " products.\nFetching list with first 10 " + dataSource.getId() + " products (maximum)\n");
         final List<EOProduct> results = query.execute();
@@ -186,7 +185,7 @@ public class LSADataSourceTest {
     private static void sentinel2Test(DataSource dataSource) {
         String sentinel2Platform = getPlatformName(dataSource, 1);
         List<EOProduct> searchResults = test_search(dataSource, sentinel2Platform, "S2_MSIL2A");
-        testDownload(dataSource, sentinel2Platform, searchResults);
+        //testDownload(dataSource, sentinel2Platform, searchResults);
     }
 
     private static ServiceRegistry<DataSource> getServiceRegistry() {

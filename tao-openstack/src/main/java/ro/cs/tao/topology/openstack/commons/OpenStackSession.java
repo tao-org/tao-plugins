@@ -71,6 +71,9 @@ public class OpenStackSession {
     }
 
     public static OpenStackSession getInstance(Map<String, String> parameters) {
+        if (parameters == null) {
+            throw new IllegalArgumentException("OpenStack client not configured");
+        }
         final String domain = parameters.get(Constants.OPENSTACK_DOMAIN);
         if (domain == null || domain.isEmpty()) {
             throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_DOMAIN));
