@@ -16,7 +16,7 @@
       "label": "Start Date",
       "type": "date",
       "defaultValue": null,
-      "required": true,
+      "required": false,
       "valueSet": null,
       "order": 1
     },
@@ -36,7 +36,7 @@
       "label": "Area of Interest",
       "type": "polygon",
       "defaultValue": null,
-      "required": true,
+      "required": false,
       "valueSet": null,
       "order": 3
     },
@@ -109,8 +109,8 @@
       ],
       "order": 8
     },
-    "productName": {
-      "name": "productName",
+    "productIdentifier": {
+      "name": "productIdentifier",
       "remoteName": "uid",
       "label": "Product Name",
       "type": "string",
@@ -137,7 +137,7 @@
       "label": "Start Date",
       "type": "date",
       "defaultValue": null,
-      "required": true,
+      "required": false,
       "valueSet": null,
       "order": 1
     },
@@ -157,7 +157,7 @@
       "label": "Area of Interest",
       "type": "polygon",
       "defaultValue": null,
-      "required": true,
+      "required": false,
       "valueSet": null,
       "order": 3
     },
@@ -220,8 +220,8 @@
         "Descending"],
       "order": 8
     },
-    "productName": {
-      "name": "productName",
+    "productIdentifier": {
+      "name": "productIdentifier",
       "remoteName": "uid",
       "label": "Product Name",
       "type": "string",

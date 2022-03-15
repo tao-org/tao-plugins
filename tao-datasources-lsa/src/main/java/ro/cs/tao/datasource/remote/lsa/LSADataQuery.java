@@ -25,6 +25,7 @@ import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.lsa.parameters.LSADateParameterConverter;
 import ro.cs.tao.datasource.remote.lsa.xml.LSAXmlResponseHandler;
@@ -85,8 +86,10 @@ public class LSADataQuery extends DataQuery {
                 throw new QueryException(e.getMessage());
             }
         }
-
-
+        if (parameters.containsKey(CommonParameterNames.PRODUCT)) {
+            final String remoteName = getRemoteName(CommonParameterNames.PRODUCT);
+            params.removeIf(p -> !remoteName.equals(p.getName()));
+        }
         List<EOProduct> tmpResults;
         final List<NameValuePair> queryParams = new ArrayList<>(params);
         final long nrProductsFound = this.getCount();
