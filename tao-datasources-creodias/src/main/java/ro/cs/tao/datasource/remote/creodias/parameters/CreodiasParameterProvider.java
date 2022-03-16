@@ -23,6 +23,7 @@ public class CreodiasParameterProvider extends AbstractParameterProvider {
                     put("Sentinel1", new CreoDIASDownloadStrategy(dataSource, targetFolder, new Properties()));
                     //put("Sentinel2", new NoDownloadStrategy(dataSource, targetFolder, new Properties()));
                     put("Sentinel2", new CreoDIASDownloadStrategy(dataSource, targetFolder, new Properties()));
+                    put("Sentinel3", new CreoDIASDownloadStrategy(dataSource, targetFolder, new Properties()));
                     //put("Landsat8", new NoDownloadStrategy(dataSource, targetFolder, new Properties()));
                     put("Landsat8", new CreoDIASDownloadStrategy(dataSource, targetFolder, new Properties()));
                 }});
