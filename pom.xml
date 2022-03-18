@@ -55,6 +55,7 @@
         <module>tao-docker-zarr</module>
         <module>tao-zarr-metadata</module>
         <module>tao-aws</module>
+        <module>tao-datasources-era</module>
     </modules>
 
     <properties>
