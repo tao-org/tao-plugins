@@ -1,10 +1,13 @@
 package ro.cs.tao.topology.openstack;
 
 import org.openstack4j.model.storage.object.SwiftObject;
+import ro.cs.tao.ListenableInputStream;
+import ro.cs.tao.ProgressListener;
 import ro.cs.tao.services.interfaces.StorageService;
 import ro.cs.tao.services.model.FileObject;
 import ro.cs.tao.utils.FileUtilities;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +25,8 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     private static final String PROTOCOL = "swift";
 
     private final SwiftService swiftService;
+
+    private ProgressListener progressListener;
 
     public ObjectStorageService() {
         this.swiftService = new SwiftService();
@@ -62,7 +67,9 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
         }
         final String bucket = path.getName(0).toString();
         final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
-        this.swiftService.upload(relativePath, object, bucket, description);
+        InputStream toPass = this.progressListener != null
+                ? new ListenableInputStream(new ByteArrayInputStream(object), this.progressListener) : new ByteArrayInputStream(object);
+        this.swiftService.upload(relativePath, toPass, bucket, description);
     }
 
     @Override
@@ -76,7 +83,9 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
         }
         final String bucket = path.getName(0).toString();
         final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
-        this.swiftService.upload(relativePath, stream, bucket, description);
+        InputStream toPass = this.progressListener != null
+                ? new ListenableInputStream(stream, this.progressListener) : stream;
+        this.swiftService.upload(relativePath, toPass, bucket, description);
     }
 
     @Override
@@ -197,6 +206,11 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
                 }
             }
         }
+    }
+
+    @Override
+    public void setProgressListener(ProgressListener listener) {
+        this.progressListener = listener;
     }
 
     private List<FileObject> list(String folderRelativePath, Set<String> exclusions, Path lastItem) {
