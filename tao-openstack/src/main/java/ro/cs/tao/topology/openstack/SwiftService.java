@@ -2,6 +2,7 @@ package ro.cs.tao.topology.openstack;
 
 import org.openstack4j.api.exceptions.AuthenticationException;
 import org.openstack4j.api.storage.ObjectStorageContainerService;
+import org.openstack4j.api.storage.ObjectStorageService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.common.Payloads;
 import org.openstack4j.model.storage.object.SwiftObject;
@@ -27,8 +28,7 @@ import java.util.logging.Logger;
 
 public class SwiftService {
     private final Logger logger;
-    private org.openstack4j.api.storage.ObjectStorageService objectStorageService;
-    private Map<String, String> parameters;
+        private Map<String, String> parameters;
     private int pageLimit = 1000;
 
     public SwiftService() {
@@ -59,9 +59,9 @@ public class SwiftService {
         if (StringUtilities.isNullOrEmpty(containerName)) {
             throw new IllegalArgumentException("[containerName] is null or empty");
         }
-        authenticate();
+        final ObjectStorageService objectStorageService = authenticate();
         try {
-            final ObjectStorageContainerService containerService = this.objectStorageService.containers();
+            final ObjectStorageContainerService containerService = objectStorageService.containers();
             final ActionResponse actionResponse = containerService.create(containerName);
             if (actionResponse != null && !actionResponse.isSuccess()) {
                 throw new IOException(String.format("Failed to connect to container %s. Response code: %d; fault: %s",
@@ -82,8 +82,8 @@ public class SwiftService {
         if (StringUtilities.isNullOrEmpty(container)) {
             throw new IllegalArgumentException("[container] is null or empty");
         }
-        authenticate();
-        final SwiftObject object = this.objectStorageService.objects().get(container, path);
+        final ObjectStorageService objectStorageService = authenticate();
+        final SwiftObject object = objectStorageService.objects().get(container, path);
         return object != null;
     }
 
@@ -94,13 +94,13 @@ public class SwiftService {
         if (StringUtilities.isNullOrEmpty(container)) {
             throw new IllegalArgumentException("[container] is null or empty");
         }
-        authenticate();
+        final ObjectStorageService objectStorageService = authenticate();
         final ObjectListOptions options = ObjectListOptions.create().path(path);
         if (lastItem != null) {
             options.marker(lastItem);
         }
         options.limit(this.pageLimit);
-        return this.objectStorageService.objects().list(container, options);
+        return objectStorageService.objects().list(container, options);
     }
 
     public void upload(String filePath, byte[] contents, String container, String description) {
@@ -110,11 +110,11 @@ public class SwiftService {
         if (StringUtilities.isNullOrEmpty(container)) {
             throw new IllegalArgumentException("[container] is null or empty");
         }
-        authenticate();
+        final ObjectStorageService objectStorageService = authenticate();
         final Map<String, String> metadata = new HashMap<>();
         metadata.put("description", description);
         metadata.put("copied_by", SessionStore.currentContext().getPrincipal().getName());
-        this.objectStorageService.objects().put(container, filePath,
+        objectStorageService.objects().put(container, filePath,
                                                 Payloads.create(new ByteArrayInputStream(contents)),
                                                 ObjectPutOptions.create().metadata(metadata));
     }
@@ -126,11 +126,11 @@ public class SwiftService {
         if (StringUtilities.isNullOrEmpty(container)) {
             throw new IllegalArgumentException("[container] is null or empty");
         }
-        authenticate();
+        final ObjectStorageService objectStorageService = authenticate();
         final Map<String, String> metadata = new HashMap<>();
         metadata.put("description", description);
         metadata.put("copied_by", SessionStore.currentContext().getPrincipal().getName());
-        this.objectStorageService.objects().put(container, filePath,
+        objectStorageService.objects().put(container, filePath,
                                                 Payloads.create(stream),
                                                 ObjectPutOptions.create().metadata(metadata));
     }
@@ -142,8 +142,8 @@ public class SwiftService {
         if (StringUtilities.isNullOrEmpty(container)) {
             throw new IllegalArgumentException("[container] is null or empty");
         }
-        authenticate();
-        return this.objectStorageService.objects().get(container, file).download().getInputStream();
+        final ObjectStorageService objectStorageService = authenticate();
+        return objectStorageService.objects().get(container, file).download().getInputStream();
     }
 
     public String copy(Path source, String containerName) throws IOException {
@@ -156,7 +156,7 @@ public class SwiftService {
         if (!Files.exists(source)) {
             throw new IOException("[source] not found");
         }
-        authenticate();
+        final ObjectStorageService objectStorageService = authenticate();
         final List<Path> paths;
         if (Files.isDirectory(source)) {
             paths = FileUtilities.listTree(source);
@@ -165,7 +165,7 @@ public class SwiftService {
         }
         String relativePath;
         try {
-            ActionResponse actionResponse = this.objectStorageService.containers().create(containerName);
+            ActionResponse actionResponse = objectStorageService.containers().create(containerName);
             if (actionResponse != null && !actionResponse.isSuccess()) {
                 throw new IOException(String.format("Failed to connect to container %s. Response code: %d; fault: %s",
                                                     containerName, actionResponse.getCode(), actionResponse.getFault()));
@@ -188,7 +188,7 @@ public class SwiftService {
                     logger.fine(String.format("Copying '%s' to '%s'",
                                               path.toString(),
                                               relativePath + path.getFileName().toString()));
-                    this.objectStorageService
+                    objectStorageService
                             .objects().put(containerName,
                                            path.getFileName().toString(),
                                            Files.size(path) > 0 ? Payloads.create(Files.newInputStream(path)) : null,
@@ -199,7 +199,7 @@ public class SwiftService {
                 logger.severe(String.format("Uploading '%s' failed: %s", path, inner.getMessage()));
                 for (String relPath : movedPaths) {
                     try {
-                        this.objectStorageService.objects().delete(containerName, relPath);
+                        objectStorageService.objects().delete(containerName, relPath);
                     } catch (Exception ex) {
                         logger.warning(String.format("Removing '%s' failed: %s", relPath, ex.getMessage()));
                     }
@@ -223,17 +223,17 @@ public class SwiftService {
         if (StringUtilities.isNullOrEmpty(containerName)) {
             throw new IllegalArgumentException("[containerName] is null or empty");
         }
-        authenticate();
+        final ObjectStorageService objectStorageService = authenticate();
         int deleted = 0;
         try {
             final ObjectListOptions options = !StringUtilities.isNullOrEmpty(filter) ?
                     ObjectListOptions.create().startsWith(filter) : null;
             final List<? extends SwiftObject> objects = options != null ?
-                    this.objectStorageService.objects().list(containerName, options):
-                    this.objectStorageService.objects().list(containerName);
+                    objectStorageService.objects().list(containerName, options):
+                    objectStorageService.objects().list(containerName);
             for (SwiftObject object : objects) {
                 try {
-                    this.objectStorageService.objects().delete(containerName, object.getName());
+                    objectStorageService.objects().delete(containerName, object.getName());
                     deleted++;
                 } catch (Exception ex) {
                     logger.severe(String.format("Deleting '%s' failed: %s", object.getName(), ex.getMessage()));
@@ -245,13 +245,13 @@ public class SwiftService {
         return deleted;
     }
 
-    private void authenticate() {
-        if (this.objectStorageService == null) {
+    private ObjectStorageService authenticate() {
+        //if (this.objectStorageService == null) {
             try {
-                this.objectStorageService = OpenStackSession.objectStorageService(parameters);
+                return OpenStackSession.objectStorageService(parameters);
             } catch (AuthenticationException ex) {
                 throw new TopologyException(String.format("OpenStack authentication failed. Reason: %s", ex.getMessage()));
             }
-        }
+        //}
     }
 }

@@ -8,11 +8,11 @@ import org.openstack4j.api.storage.BlockStorageService;
 import org.openstack4j.api.storage.ObjectStorageService;
 import org.openstack4j.model.common.Identifier;
 import org.openstack4j.model.identity.v3.Service;
+import org.openstack4j.model.identity.v3.Token;
 import org.openstack4j.openstack.OSFactory;
 import ro.cs.tao.topology.TopologyException;
 
-import java.util.Comparator;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -23,12 +23,13 @@ import java.util.logging.Logger;
 public class OpenStackSession {
     //private static OpenStackSession instance;
     private static final Logger logger = Logger.getLogger(OpenStackSession.class.getName());
-
+    private static final Map<Integer, OpenStackSession> sessions = Collections.synchronizedMap(new HashMap<>());
     private final String domain;
     private final String user;
     private final String password;
     private final String authenticationURL;
     private final String tenantId;
+    private Token token;
 
     public ComputeService computeService() {
         final OSClient.OSClientV3 service = getService();
@@ -94,7 +95,11 @@ public class OpenStackSession {
         if (tenantId == null || tenantId.isEmpty()) {
             throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_TENANT_ID));
         }
-        return new OpenStackSession(domain, user, password, authUrl, tenantId);
+        final int hash = Objects.hash(domain, user, password, tenantId);
+        if (!sessions.containsKey(hash)) {
+            sessions.put(hash, new OpenStackSession(domain, user, password, authUrl, tenantId));
+        }
+        return sessions.get(hash);
     }
 
     private OpenStackSession(String domain, String user, String password, String authenticationURL, String tenantId) {
@@ -106,11 +111,17 @@ public class OpenStackSession {
     }
 
     public OSClient.OSClientV3 getService() {
-        OSClient.OSClientV3 service = OSFactory.builderV3()
-                                                .endpoint(authenticationURL)
-                                                .credentials(user, password, Identifier.byName(domain))
-                                                .scopeToProject(Identifier.byId(tenantId))
-                                                .authenticate();
+        OSClient.OSClientV3 service;
+        if (this.token == null) {
+            service = OSFactory.builderV3()
+                                .endpoint(authenticationURL)
+                                .credentials(user, password, Identifier.byName(domain))
+                                .scopeToProject(Identifier.byId(tenantId))
+                                .authenticate();
+            this.token = service.getToken();
+        } else {
+            service = OSFactory.clientFromToken(this.token);
+        }
         // hack to force the retrieval of newest version of a service
         service.getToken().getCatalog().sort((Comparator<Service>) (o1, o2) -> o2.getType().compareTo(o1.getType()));
         return service;

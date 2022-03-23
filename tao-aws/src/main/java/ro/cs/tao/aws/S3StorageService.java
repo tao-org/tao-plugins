@@ -39,6 +39,7 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     private String defaultBucket;
     private AmazonS3 client;
     private int pageLimit = 1000;
+    private ro.cs.tao.ProgressListener progressListener;
 
     public S3StorageService() {
     }
@@ -125,6 +126,11 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             PutObjectRequest request = new PutObjectRequest(bucket, relativePath, is, metadata);
             request.setStorageClass(StorageClass.Standard);
             request.setCannedAcl(CannedAccessControlList.BucketOwnerFullControl);
+            request.withGeneralProgressListener(e -> {
+                if (S3StorageService.this.progressListener != null) {
+                    S3StorageService.this.progressListener.notifyProgress((double) e.getBytesTransferred() / (double) e.getBytes());
+                }
+            });
             this.client.putObject(request);
         } catch (AmazonServiceException e) {
             throw new IOException(e);
@@ -156,6 +162,11 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             PutObjectRequest request = new PutObjectRequest(bucket, relativePath, stream, metadata);
             request.setStorageClass(StorageClass.Standard);
             request.setCannedAcl(CannedAccessControlList.BucketOwnerFullControl);
+            request.withGeneralProgressListener(e -> {
+                if (S3StorageService.this.progressListener != null) {
+                    S3StorageService.this.progressListener.notifyProgress((double) e.getBytesTransferred() / (double) e.getBytes());
+                }
+            });
             this.client.putObject(request);
         } catch (AmazonServiceException e) {
             throw new IOException(e);
@@ -181,10 +192,14 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             final String relativePath = filePath.subpath(1, filePath.getNameCount()).toString().replace("\\", "/");
             GetObjectRequest request = new GetObjectRequest(bucket, relativePath);
             final S3Object object = this.client.getObject(request);
-            return object != null;
+            if (object != null) {
+                object.close();
+                return true;
+            }
         } catch (AmazonServiceException e) {
-            return false;
+            e.printStackTrace();
         }
+        return false;
     }
 
     @Override
@@ -231,6 +246,11 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             newMetadata.addUserMetadata("old_location", source);
             newMetadata.addUserMetadata("copied_by", SessionStore.currentContext().getPrincipal().getName());
             request.setNewObjectMetadata(newMetadata);
+            request.withGeneralProgressListener(e -> {
+                if (S3StorageService.this.progressListener != null) {
+                    S3StorageService.this.progressListener.notifyProgress((double) e.getBytesTransferred() / (double) e.getBytes());
+                }
+            });
             this.client.copyObject(request);
             remove(source);
         } catch (AmazonServiceException e) {
@@ -343,6 +363,11 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             final String bucket = path.getName(0).toString();
             final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
             GetObjectRequest request = new GetObjectRequest(bucket, relativePath);
+            request.withGeneralProgressListener(e -> {
+                if (S3StorageService.this.progressListener != null) {
+                    S3StorageService.this.progressListener.notifyProgress((double) e.getBytesTransferred() / (double) e.getBytes());
+                }
+            });
             final S3Object object = this.client.getObject(request);
             return object.getObjectContent();
         } catch (AmazonServiceException e) {
@@ -362,7 +387,9 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         final List<FileObject> keys = new ArrayList<>();
         traverse(root.toString(), keys);
         ZipEntry entry;
+        final double total = keys.stream().mapToDouble(FileObject::getSize).sum();
         for (FileObject current : keys) {
+            final double size = current.getSize();
             final Path currentPath = Paths.get(current.getRelativePath());
             if (!current.isFolder()) {
                 final String relativePath = currentPath.subpath(1, currentPath.getNameCount()).toString().replace("\\", "/");
@@ -374,6 +401,7 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 entry.setTime(System.currentTimeMillis());
                 stream.putNextEntry(entry);
                 FileUtilities.appendToStream(object.getObjectContent(), stream);
+                object.close();
                 stream.closeEntry();
             } else {
                 if (!currentPath.equals(root)) {
@@ -382,6 +410,9 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                     stream.putNextEntry(entry);
                     stream.closeEntry();
                 }
+            }
+            if (this.progressListener != null) {
+                this.progressListener.notifyProgress(size / total);
             }
         }
     }
@@ -393,6 +424,11 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         clone.accessKey = this.accessKey;
         clone.secretKey = this.secretKey;
         return clone;
+    }
+
+    @Override
+    public void setProgressListener(ro.cs.tao.ProgressListener listener) {
+        this.progressListener = listener;
     }
 
     private AmazonS3 buildClient() {
