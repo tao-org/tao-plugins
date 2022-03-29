@@ -12,6 +12,7 @@ import ro.cs.tao.services.interfaces.StorageService;
 import ro.cs.tao.services.model.FileObject;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
+import ro.cs.tao.workspaces.Workspace;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -60,13 +61,15 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         }
         this.region = value;
         value = parameters.get(AWS_ACCESS_KEY);
-        if (StringUtilities.isNullOrEmpty(value)) {
-            throw new IllegalArgumentException("[parameters] " + AWS_ACCESS_KEY + " cannot be empty");
+        if (StringUtilities.isNullOrEmpty(value) || value.trim().isEmpty()) {
+            //throw new IllegalArgumentException("[parameters] " + AWS_ACCESS_KEY + " cannot be empty");
+            value = null;
         }
         this.accessKey = value;
         value = parameters.get(AWS_SECRET_KEY);
-        if (StringUtilities.isNullOrEmpty(value)) {
-            throw new IllegalArgumentException("[parameters] " + AWS_SECRET_KEY + " cannot be empty");
+        if (StringUtilities.isNullOrEmpty(value) || value.trim().isEmpty()) {
+            //throw new IllegalArgumentException("[parameters] " + AWS_SECRET_KEY + " cannot be empty");
+            value = null;
         }
         this.secretKey = value;
         value = parameters.get(AWS_BUCKET);
@@ -81,21 +84,29 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     @Override
-    public Path createFolder(String folderRelativePath, boolean userOnly) throws IOException {
+    public Path createFolder(Workspace workspace, String folderRelativePath, boolean userOnly) throws IOException {
         if (!folderRelativePath.endsWith("/")) {
             folderRelativePath += "/";
         }
-        final Path path = Paths.get(folderRelativePath);
+        Path path = Paths.get(resolve(workspace, folderRelativePath));
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
         }
+        // Since "folders" do not exist in S3, there has to be a dummy file uploaded in order to create the "folder"
+        final FileObject fakeObject = fakeRoot();
+        path = path.resolve(fakeObject.getRelativePath());
         if (this.client == null) {
             this.client = buildClient();
         }
         final String bucket = path.getName(0).toString();
         final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
-        try {
-            PutObjectRequest request = new PutObjectRequest(bucket, relativePath, (String) null);
+        final String contents = fakeObject.getAttributes().get(CONTENTS_ATTRIBUTE);
+        try (ByteArrayInputStream is = new ByteArrayInputStream(contents.getBytes())) {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(contents.length());
+            PutObjectRequest request = new PutObjectRequest(bucket, relativePath, is, metadata);
+            request.setStorageClass(StorageClass.Standard);
+            request.setCannedAcl(CannedAccessControlList.BucketOwnerFullControl);
             this.client.putObject(request);
             return path;
         } catch (AmazonServiceException e) {
@@ -104,11 +115,11 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     @Override
-    public void storeUserFile(byte[] object, String relativeFolder, String description) throws Exception {
+    public void storeUserFile(byte[] object, Workspace workspace, String relativeFolder, String description) throws Exception {
         if (object == null || object.length == 0) {
             throw new IllegalArgumentException("[object] Content cannot be null or zero");
         }
-        final Path path = Paths.get(relativeFolder);
+        final Path path = Paths.get(resolve(workspace, relativeFolder));
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[relativeFolder] Path should be relative to the S3 bucket (including the bucket name)");
         }
@@ -138,11 +149,11 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     @Override
-    public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
+    public void storeFile(InputStream stream, long length, Workspace workspace, String relativeFolder, String description) throws Exception {
         if (stream == null) {
             throw new IllegalArgumentException("[stream] Null stream");
         }
-        final Path path = Paths.get(relativeFolder);
+        final Path path = Paths.get(resolve(workspace, relativeFolder));
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[relativeFolder] Path should be relative to the S3 bucket (including the bucket name)");
         }
@@ -174,13 +185,13 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     @Override
-    public void storePublicFile(byte[] object, String relativeFolder, String description) throws Exception {
-        storeUserFile(object, relativeFolder, description);
+    public void storePublicFile(byte[] object, Workspace workspace, String relativeFolder, String description) throws Exception {
+        storeUserFile(object, workspace, relativeFolder, description);
     }
 
     @Override
-    public boolean exists(String path) throws Exception {
-        final Path filePath = Paths.get(path);
+    public boolean exists(Workspace workspace, String path) throws Exception {
+        final Path filePath = Paths.get(resolve(workspace, path));
         if (filePath.isAbsolute()) {
             throw new IllegalArgumentException("Path should be relative to the S3 bucket (including the bucket name)");
         }
@@ -203,8 +214,8 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     @Override
-    public void remove(String name) throws IOException {
-        final Path path = Paths.get(name);
+    public void remove(Workspace workspace, String name) throws IOException {
+        final Path path = Paths.get(resolve(workspace, name));
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
         }
@@ -221,12 +232,12 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     @Override
-    public void move(String source, String destination) throws IOException {
-        final Path sourcePath = Paths.get(source);
+    public void move(Workspace workspace, String source, String destination) throws IOException {
+        final Path sourcePath = Paths.get(resolve(workspace, source));
         if (sourcePath.isAbsolute()) {
             throw new IllegalArgumentException("[source] Path should be relative to the S3 bucket (including the bucket name)");
         }
-        final Path destPath = Paths.get(destination);
+        final Path destPath = Paths.get(resolve(workspace, destination));
         if (destPath.isAbsolute()) {
             throw new IllegalArgumentException("[destination] Path should be relative to the S3 bucket (including the bucket name)");
         }
@@ -252,7 +263,7 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 }
             });
             this.client.copyObject(request);
-            remove(source);
+            remove(workspace, source);
         } catch (AmazonServiceException e) {
             throw new IOException(e);
         }
@@ -260,12 +271,12 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
 
     @Override
     public List<FileObject> listUploaded() throws IOException {
-        return null;
+        throw new UnsupportedOperationException("Not implemented for AWS S3");
     }
 
     @Override
     public List<FileObject> listPublicWorkspace() throws IOException {
-        return null;
+        throw new UnsupportedOperationException("Not implemented for AWS S3");
     }
 
     @Override
@@ -293,29 +304,28 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     @Override
-    public List<FileObject> listFiles(Path fromPath, Set<Path> exclusions, Path lastItem) throws IOException {
-        if (fromPath.isAbsolute()) {
-            throw new IllegalArgumentException("Path should be relative to the S3 bucket (including the bucket name)");
-        }
+    public List<FileObject> listFiles(Workspace workspace, String fromPath, Set<String> exclusions, String lastItem) throws IOException {
         if (this.client == null) {
             this.client = buildClient();
         }
         try {
             ListObjectsRequest request = new ListObjectsRequest();
-            final String bucket = fromPath.getName(0).toString();
+            final Path path = Paths.get(resolve(workspace, fromPath));
+            final String bucket = path.getName(0).toString();
             ensureBucketExists(bucket);
             request.setBucketName(bucket);
             request.setDelimiter("/");
             if (exclusions != null) {
-                final Path markerPath = exclusions.iterator().next();
+                final Path markerPath = Paths.get(exclusions.iterator().next());
                 request.setMarker(markerPath.subpath(1, markerPath.getNameCount()).toString().replace("\\", "/") + "/");
             }
-            final String relativePath = fromPath.getNameCount() > 1
-                    ? fromPath.subpath(1, fromPath.getNameCount()).toString().replace("\\", "/") + "/"
+            final String relativePath = path.getNameCount() > 1
+                    ? path.subpath(1, path.getNameCount()).toString().replace("\\", "/") + "/"
                     : "";
             request.setPrefix(relativePath);
             if (lastItem != null) {
-                request.setMarker(lastItem.subpath(1, lastItem.getNameCount()).toString().replace("\\", "/") + "/");
+                Path lastItemPath = Paths.get(lastItem);
+                request.setMarker(lastItemPath.subpath(1, lastItemPath.getNameCount()).toString().replace("\\", "/") + "/");
             }
             request.setMaxKeys(this.pageLimit);
             return exclusions == null ? list(request) : singlePage(request);
@@ -325,16 +335,14 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     @Override
-    public List<FileObject> listTree(Path fromPath) throws IOException {
-        if (fromPath.isAbsolute()) {
-            throw new IllegalArgumentException("Path should be relative to the S3 bucket (including the bucket name)");
-        }
+    public List<FileObject> listTree(Workspace workspace, String fromPath) throws IOException {
         if (this.client == null) {
             this.client = buildClient();
         }
         try {
             final List<FileObject> files = new ArrayList<>();
-            traverse(fromPath.toString(), files);
+            final Path path = Paths.get(resolve(workspace, fromPath));
+            traverse(path.toString(), files);
             return files;
         } catch (AmazonServiceException e) {
             throw new IOException(e);
@@ -395,14 +403,16 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 final String relativePath = currentPath.subpath(1, currentPath.getNameCount()).toString().replace("\\", "/");
                 GetObjectRequest request = new GetObjectRequest(bucket, relativePath);
                 final S3Object object = this.client.getObject(request);
-                String zipPath = root.relativize(currentPath).toString();
-                entry = new ZipEntry(zipPath);
-                entry.setSize(current.getSize());
-                entry.setTime(System.currentTimeMillis());
-                stream.putNextEntry(entry);
-                FileUtilities.appendToStream(object.getObjectContent(), stream);
+                if (isNotFolderPlaceholder(object)) {
+                    String zipPath = root.relativize(currentPath).toString();
+                    entry = new ZipEntry(zipPath);
+                    entry.setSize(current.getSize());
+                    entry.setTime(System.currentTimeMillis());
+                    stream.putNextEntry(entry);
+                    FileUtilities.appendToStream(object.getObjectContent(), stream);
+                    stream.closeEntry();
+                }
                 object.close();
-                stream.closeEntry();
             } else {
                 if (!currentPath.equals(root)) {
                     String zipPath = root.relativize(currentPath) + File.separator;
@@ -432,14 +442,18 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     private AmazonS3 buildClient() {
-        if (this.region == null || this.accessKey == null || this.secretKey == null) {
+        if (this.region == null) { // || this.accessKey == null || this.secretKey == null) {
             throw new IllegalArgumentException("S3 client not configured");
         }
-        return AmazonS3ClientBuilder.standard()
-                                    .withRegion(Regions.fromName(this.region))
-                                    .withCredentials(new AWSStaticCredentialsProvider(
+        return this.accessKey != null && this.secretKey != null
+                ? AmazonS3ClientBuilder.standard()
+                                        .withRegion(Regions.fromName(this.region))
+                                        .withCredentials(new AWSStaticCredentialsProvider(
                                             new BasicAWSCredentials(this.accessKey, this.secretKey)))
-                                    .build();
+                                        .build()
+                : AmazonS3ClientBuilder.standard()
+                                        .withRegion(Regions.fromName(this.region))
+                                        .build();
     }
 
     private void ensureBucketExists(String name) {
@@ -449,8 +463,6 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             throw new IllegalArgumentException("[name] Bucket name length must be between 3 and 63 characters");
         } else if (name.contains("_") || name.contains("..") || name.contains("-.")) {
             throw new IllegalArgumentException("[name] Bucket name contains unsupported characters");
-        } else if (!name.toLowerCase().equals(name)) {
-            throw new IllegalArgumentException("[name] Bucket name cannot contain uppercase characters");
         } else if (name.endsWith("/")) {
             throw new IllegalArgumentException("[name] Bucket name should not end with a dash");
         }
@@ -476,9 +488,11 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             if (objects.getObjectSummaries() != null) {
                 while (true) {
                     for (S3ObjectSummary summary : objects.getObjectSummaries()) {
-                        final FileObject fileObject = new FileObject(PROTOCOL, request.getBucketName() + "/" + summary.getKey(), false, summary.getSize());
-                        fileObject.addAttribute("remotePath", "s3://" + fileObject.getRelativePath());
-                        files.add(fileObject);
+                        if (isNotFolderPlaceholder(summary)) {
+                            final FileObject fileObject = new FileObject(PROTOCOL, request.getBucketName() + "/" + summary.getKey(), false, summary.getSize());
+                            fileObject.addAttribute("remotePath", "s3://" + fileObject.getRelativePath());
+                            files.add(fileObject);
+                        }
                     }
                     if (!objects.isTruncated()) {
                         break;
@@ -503,12 +517,14 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             if (objectSummaries != null) {
                 for (int i = 0; i < objectSummaries.size(); i++) {
                     final S3ObjectSummary summary = objectSummaries.get(i);
-                    final FileObject fileObject = new FileObject(PROTOCOL, request.getBucketName() + "/" + summary.getKey(), false, summary.getSize());
-                    fileObject.addAttribute("remotePath", "s3://" + fileObject.getRelativePath());
-                    if (objects.isTruncated() && i == objectSummaries.size() - 1) {
-                        fileObject.addAttribute("nextMarker", objects.getNextMarker());
+                    if (isNotFolderPlaceholder(summary)) {
+                        final FileObject fileObject = new FileObject(PROTOCOL, request.getBucketName() + "/" + summary.getKey(), false, summary.getSize());
+                        fileObject.addAttribute("remotePath", "s3://" + fileObject.getRelativePath());
+                        if (objects.isTruncated() && i == objectSummaries.size() - 1) {
+                            fileObject.addAttribute("nextMarker", objects.getNextMarker());
+                        }
+                        results.add(fileObject);
                     }
-                    results.add(fileObject);
                 }
             }
         }
@@ -532,7 +548,9 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             if (objects.getObjectSummaries() != null) {
                 while (true) {
                     for (S3ObjectSummary summary : objects.getObjectSummaries()) {
-                        files.add(new FileObject(PROTOCOL, request.getBucketName() + "/" + summary.getKey(), false, summary.getSize()));
+                        if (isNotFolderPlaceholder(summary)) {
+                            files.add(new FileObject(PROTOCOL, request.getBucketName() + "/" + summary.getKey(), false, summary.getSize()));
+                        }
                     }
                     if (!objects.isTruncated()) {
                         break;
@@ -541,5 +559,13 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 }
             }
         }
+    }
+
+    private boolean isNotFolderPlaceholder(S3ObjectSummary summary) {
+        return !summary.getKey().endsWith(AVLFOLDER);
+    }
+
+    private boolean isNotFolderPlaceholder(S3Object object) {
+        return !object.getKey().endsWith(AVLFOLDER);
     }
 }
