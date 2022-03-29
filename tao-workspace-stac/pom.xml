@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>tao-aws</artifactId>
-    <name>TAO Amazon Web Services Bucket Plugin</name>
+    <artifactId>tao-workspace-stac</artifactId>
+    <name>TAO STAC Workspace Plugin</name>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -23,11 +23,6 @@
             <groupId>ro.cs.tao</groupId>
             <artifactId>tao-service-base-api</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.12.145</version>
         </dependency>
     </dependencies>
 

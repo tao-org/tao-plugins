@@ -6,6 +6,7 @@ import ro.cs.tao.ProgressListener;
 import ro.cs.tao.services.interfaces.StorageService;
 import ro.cs.tao.services.model.FileObject;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.workspaces.Workspace;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -43,13 +43,10 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public Path createFolder(String folderRelativePath, boolean userOnly) throws IOException {
-        if (!folderRelativePath.endsWith("/")) {
-            folderRelativePath += "/";
-        }
-        final Path path = Paths.get(folderRelativePath);
+    public Path createFolder(Workspace workspace, String folderRelativePath, boolean userOnly) throws IOException {
+        final Path path = Paths.get(resolve(workspace, folderRelativePath));
         if (path.isAbsolute()) {
-            throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
+            throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket");
         }
         final String bucket = path.getName(0).toString();
         final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
@@ -57,11 +54,11 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public void storeUserFile(byte[] object, String relativeFolder, String description) throws Exception {
+    public void storeUserFile(byte[] object, Workspace workspace, String relativeFolder, String description) throws Exception {
         if (object == null || object.length == 0) {
             throw new IllegalArgumentException("[object] Content cannot be null or zero");
         }
-        final Path path = Paths.get(relativeFolder);
+        Path path = Paths.get(resolve(workspace, relativeFolder));
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[relativeFolder] Path should be relative to the S3 bucket (including the bucket name)");
         }
@@ -73,11 +70,11 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
+    public void storeFile(InputStream stream, long length, Workspace workspace, String relativeFolder, String description) throws Exception {
         if (stream == null) {
             throw new IllegalArgumentException("[stream] Null stream");
         }
-        final Path path = Paths.get(relativeFolder);
+        final Path path = Paths.get(resolve(workspace, relativeFolder));
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[relativeFolder] Path should be relative to the S3 bucket (including the bucket name)");
         }
@@ -89,13 +86,13 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public void storePublicFile(byte[] object, String relativeFolder, String description) throws Exception {
-        storeUserFile(object, relativeFolder, description);
+    public void storePublicFile(byte[] object, Workspace workspace, String relativeFolder, String description) throws Exception {
+        storeUserFile(object, workspace, relativeFolder, description);
     }
 
     @Override
-    public boolean exists(String path) throws Exception {
-        final Path filePath = Paths.get(path);
+    public boolean exists(Workspace workspace, String path) throws Exception {
+        final Path filePath = Paths.get(resolve(workspace, path));
         if (filePath.isAbsolute()) {
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
         }
@@ -105,8 +102,8 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public void remove(String name) throws IOException {
-        final Path path = Paths.get(name);
+    public void remove(Workspace workspace, String name) throws IOException {
+        final Path path = Paths.get(resolve(workspace, name));
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
         }
@@ -116,18 +113,18 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public void move(String source, String destination) throws IOException {
+    public void move(Workspace workspace, String source, String destination) throws IOException {
         throw new UnsupportedOperationException("Not implemented for OpenStack Swift");
     }
 
     @Override
     public List<FileObject> listUploaded() throws IOException {
-        return null;
+        throw new UnsupportedOperationException("Not supported for S3");
     }
 
     @Override
     public List<FileObject> listPublicWorkspace() throws IOException {
-        return null;
+        throw new UnsupportedOperationException("Not supported for S3");
     }
 
     @Override
@@ -141,18 +138,14 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public List<FileObject> listFiles(Path fromPath, Set<Path> exclusions, Path lastItem) throws IOException {
-        return list(fromPath.toString(),
-                    exclusions!= null
-                            ? exclusions.stream().map(Path::toString).collect(Collectors.toSet())
-                            : null,
-                    lastItem);
+    public List<FileObject> listFiles(Workspace workspace, String fromPath, Set<String> exclusions, String lastItem) throws IOException {
+        return list(resolve(workspace, fromPath), exclusions, lastItem);
     }
 
     @Override
-    public List<FileObject> listTree(Path fromPath) throws IOException {
+    public List<FileObject> listTree(Workspace workspace, String fromPath) throws IOException {
         final List<FileObject> results = new ArrayList<>();
-        traverse(fromPath.toString(), null, results);
+        traverse(resolve(workspace, fromPath), null, results);
         return results;
     }
 
@@ -213,7 +206,7 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
         this.progressListener = listener;
     }
 
-    private List<FileObject> list(String folderRelativePath, Set<String> exclusions, Path lastItem) {
+    private List<FileObject> list(String folderRelativePath, Set<String> exclusions, String lastItem) {
         final Path path = Paths.get(folderRelativePath);
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
@@ -223,7 +216,7 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
                 ? path.subpath(1, path.getNameCount()).toString().replace("\\", "/")
                 : "";
         final List<FileObject> files = new ArrayList<>();
-        final List<? extends SwiftObject> objects = this.swiftService.list(relativePath, bucket, lastItem != null ? lastItem.toString() : null);
+        final List<? extends SwiftObject> objects = this.swiftService.list(relativePath, bucket, lastItem);
         if (objects != null) {
             objects.forEach(object -> {
                 final String oPath = bucket + "/" + (object.isDirectory() ? object.getDirectoryName() : object.getName());
