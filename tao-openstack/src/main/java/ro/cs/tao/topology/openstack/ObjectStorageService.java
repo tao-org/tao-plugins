@@ -6,7 +6,7 @@ import ro.cs.tao.ProgressListener;
 import ro.cs.tao.services.interfaces.StorageService;
 import ro.cs.tao.services.model.FileObject;
 import ro.cs.tao.utils.FileUtilities;
-import ro.cs.tao.workspaces.Workspace;
+import ro.cs.tao.workspaces.Repository;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -43,7 +43,7 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public Path createFolder(Workspace workspace, String folderRelativePath, boolean userOnly) throws IOException {
+    public Path createFolder(Repository workspace, String folderRelativePath, boolean userOnly) throws IOException {
         final Path path = Paths.get(resolve(workspace, folderRelativePath));
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket");
@@ -54,7 +54,7 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public void storeUserFile(byte[] object, Workspace workspace, String relativeFolder, String description) throws Exception {
+    public void storeUserFile(byte[] object, Repository workspace, String relativeFolder, String description) throws Exception {
         if (object == null || object.length == 0) {
             throw new IllegalArgumentException("[object] Content cannot be null or zero");
         }
@@ -70,7 +70,7 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public void storeFile(InputStream stream, long length, Workspace workspace, String relativeFolder, String description) throws Exception {
+    public void storeFile(InputStream stream, long length, Repository workspace, String relativeFolder, String description) throws Exception {
         if (stream == null) {
             throw new IllegalArgumentException("[stream] Null stream");
         }
@@ -86,12 +86,12 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public void storePublicFile(byte[] object, Workspace workspace, String relativeFolder, String description) throws Exception {
+    public void storePublicFile(byte[] object, Repository workspace, String relativeFolder, String description) throws Exception {
         storeUserFile(object, workspace, relativeFolder, description);
     }
 
     @Override
-    public boolean exists(Workspace workspace, String path) throws Exception {
+    public boolean exists(Repository workspace, String path) throws Exception {
         final Path filePath = Paths.get(resolve(workspace, path));
         if (filePath.isAbsolute()) {
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
@@ -102,7 +102,7 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public void remove(Workspace workspace, String name) throws IOException {
+    public void remove(Repository workspace, String name) throws IOException {
         final Path path = Paths.get(resolve(workspace, name));
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
@@ -113,7 +113,7 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public void move(Workspace workspace, String source, String destination) throws IOException {
+    public void move(Repository workspace, String source, String destination) throws IOException {
         throw new UnsupportedOperationException("Not implemented for OpenStack Swift");
     }
 
@@ -138,12 +138,12 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public List<FileObject> listFiles(Workspace workspace, String fromPath, Set<String> exclusions, String lastItem) throws IOException {
+    public List<FileObject> listFiles(Repository workspace, String fromPath, Set<String> exclusions, String lastItem) throws IOException {
         return list(resolve(workspace, fromPath), exclusions, lastItem);
     }
 
     @Override
-    public List<FileObject> listTree(Workspace workspace, String fromPath) throws IOException {
+    public List<FileObject> listTree(Repository workspace, String fromPath) throws IOException {
         final List<FileObject> results = new ArrayList<>();
         traverse(resolve(workspace, fromPath), null, results);
         return results;
