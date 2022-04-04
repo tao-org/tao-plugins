@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -41,6 +42,7 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     private AmazonS3 client;
     private int pageLimit = 1000;
     private ro.cs.tao.ProgressListener progressListener;
+    private final Logger logger = Logger.getLogger(S3StorageService.class.getName());
 
     public S3StorageService() {
     }
@@ -208,7 +210,7 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 return true;
             }
         } catch (AmazonServiceException e) {
-            e.printStackTrace();
+            return false;
         }
         return false;
     }
@@ -225,6 +227,18 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         final String bucket = path.getName(0).toString();
         final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
         try {
+            if (name.endsWith("/")) {
+                final List<FileObject> children = new ArrayList<>();
+                traverse(name, children);
+                String childPath;
+                for (FileObject child : children) {
+                    if (!child.isFolder()) {
+                        childPath = resolve(workspace, child.getRelativePath()).replace(bucket + "/", "");
+                        this.client.deleteObject(bucket, childPath);
+                        logger.finest("Deleted " + childPath);
+                    }
+                }
+            }
             this.client.deleteObject(bucket, relativePath);
         } catch (AmazonServiceException e) {
             throw new IOException(e);
