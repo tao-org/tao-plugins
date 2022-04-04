@@ -219,7 +219,8 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
         final List<? extends SwiftObject> objects = this.swiftService.list(relativePath, bucket, lastItem);
         if (objects != null) {
             objects.forEach(object -> {
-                final String oPath = bucket + "/" + (object.isDirectory() ? object.getDirectoryName() : object.getName());
+                //final String oPath = bucket + "/" + (object.isDirectory() ? object.getDirectoryName() : object.getName());
+                final String oPath = (object.isDirectory() ? object.getDirectoryName() : object.getName());
                 if (exclusions == null || exclusions.stream().noneMatch(oPath::startsWith)) {
                     final FileObject fileObject = new FileObject(PROTOCOL, oPath, object.isDirectory(), object.getSizeInBytes());
                     fileObject.addAttribute("remotePath", "swift://" + fileObject.getRelativePath());
