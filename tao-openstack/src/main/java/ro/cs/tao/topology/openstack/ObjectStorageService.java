@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -24,6 +23,7 @@ import java.util.zip.ZipOutputStream;
 public class ObjectStorageService implements StorageService<byte[], InputStream> {
     private static final String PROTOCOL = "swift";
 
+    private Repository repository;
     private final SwiftService swiftService;
 
     private ProgressListener progressListener;
@@ -38,114 +38,100 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public void setup(Map<String, String> parameters) {
-        swiftService.setParameters(parameters);
+    public void associate(Repository repository) {
+        this.repository = repository;
+        swiftService.setParameters(this.repository.getParameters());
     }
 
     @Override
-    public Path createFolder(Repository workspace, String folderRelativePath, boolean userOnly) throws IOException {
-        final Path path = Paths.get(resolve(workspace, folderRelativePath));
+    public Path createFolder(String folderRelativePath, boolean userOnly) throws IOException {
+        final Repository repository = repository();
+        final Path path = Paths.get(repository.resolve(folderRelativePath));
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket");
         }
-        final String bucket = path.getName(0).toString();
-        final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
+        final String bucket = repository.bucketName();
+        final String relativePath = repository.relativizeToBucket(folderRelativePath);
         return Paths.get(this.swiftService.createFolder(relativePath, bucket));
     }
 
     @Override
-    public void storeUserFile(byte[] object, Repository workspace, String relativeFolder, String description) throws Exception {
+    public void storeUserFile(byte[] object, String relativeFolder, String description) throws Exception {
         if (object == null || object.length == 0) {
             throw new IllegalArgumentException("[object] Content cannot be null or zero");
         }
-        Path path = Paths.get(resolve(workspace, relativeFolder));
+        final Repository repository = repository();
+        Path path = Paths.get(repository.resolve(relativeFolder));
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[relativeFolder] Path should be relative to the S3 bucket (including the bucket name)");
         }
-        final String bucket = path.getName(0).toString();
-        final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
+        final String bucket = repository.bucketName();
+        final String relativePath = repository.relativizeToBucket(relativeFolder);
         InputStream toPass = this.progressListener != null
                 ? new ListenableInputStream(new ByteArrayInputStream(object), this.progressListener) : new ByteArrayInputStream(object);
         this.swiftService.upload(relativePath, toPass, bucket, description);
     }
 
     @Override
-    public void storeFile(InputStream stream, long length, Repository workspace, String relativeFolder, String description) throws Exception {
+    public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
         if (stream == null) {
             throw new IllegalArgumentException("[stream] Null stream");
         }
-        final Path path = Paths.get(resolve(workspace, relativeFolder));
+        Repository repository = repository();
+        final Path path = Paths.get(repository.resolve(relativeFolder));
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[relativeFolder] Path should be relative to the S3 bucket (including the bucket name)");
         }
-        final String bucket = path.getName(0).toString();
-        final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
+        final String bucket = repository.bucketName();
+        final String relativePath = repository.relativizeToBucket(relativeFolder);
         InputStream toPass = this.progressListener != null
                 ? new ListenableInputStream(stream, this.progressListener) : stream;
         this.swiftService.upload(relativePath, toPass, bucket, description);
     }
 
     @Override
-    public void storePublicFile(byte[] object, Repository workspace, String relativeFolder, String description) throws Exception {
-        storeUserFile(object, workspace, relativeFolder, description);
-    }
-
-    @Override
-    public boolean exists(Repository workspace, String path) throws Exception {
-        final Path filePath = Paths.get(resolve(workspace, path));
+    public boolean exists(String path) throws Exception {
+        Repository repository = repository();
+        final Path filePath = Paths.get(repository.resolve(path));
         if (filePath.isAbsolute()) {
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
         }
-        final String bucket = filePath.getName(0).toString();
-        final String relativePath = filePath.subpath(1, filePath.getNameCount()).toString().replace("\\", "/");
+        final String bucket = repository.bucketName();
+        final String relativePath = repository.relativizeToBucket(path);
         return this.swiftService.exists(relativePath, bucket);
     }
 
     @Override
-    public void remove(Repository workspace, String name) throws IOException {
-        final Path path = Paths.get(resolve(workspace, name));
+    public void remove(String name) throws IOException {
+        Repository repository = repository();
+        final Path path = Paths.get(repository.resolve(name));
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
         }
-        final String bucket = path.getName(0).toString();
-        final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
+        final String bucket = repository.bucketName();
+        final String relativePath = repository.relativizeToBucket(name);
         this.swiftService.delete(bucket, relativePath);
     }
 
     @Override
-    public void move(Repository workspace, String source, String destination) throws IOException {
+    public void move(String source, String destination) throws IOException {
         throw new UnsupportedOperationException("Not implemented for OpenStack Swift");
     }
 
     @Override
-    public List<FileObject> listUploaded() throws IOException {
-        throw new UnsupportedOperationException("Not supported for S3");
+    public List<FileObject> listUserWorkspace() throws IOException {
+        return list("/", null, null);
     }
 
     @Override
-    public List<FileObject> listPublicWorkspace() throws IOException {
-        throw new UnsupportedOperationException("Not supported for S3");
+    public List<FileObject> listFiles(String fromPath, Set<String> exclusions, String lastItem) throws IOException {
+        return list(repository().resolve(fromPath), exclusions, lastItem);
     }
 
     @Override
-    public List<FileObject> listUploaded(String userName) throws IOException {
-        return listUserWorkspace(userName);
-    }
-
-    @Override
-    public List<FileObject> listUserWorkspace(String userName) throws IOException {
-        return list(userName, null, null);
-    }
-
-    @Override
-    public List<FileObject> listFiles(Repository workspace, String fromPath, Set<String> exclusions, String lastItem) throws IOException {
-        return list(resolve(workspace, fromPath), exclusions, lastItem);
-    }
-
-    @Override
-    public List<FileObject> listTree(Repository workspace, String fromPath) throws IOException {
+    public List<FileObject> listTree(String fromPath) throws IOException {
         final List<FileObject> results = new ArrayList<>();
-        traverse(resolve(workspace, fromPath), null, results);
+        traverse(repository().resolve(fromPath), null, results);
         return results;
     }
 
@@ -206,8 +192,15 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
         this.progressListener = listener;
     }
 
-    private List<FileObject> list(String folderRelativePath, Set<String> exclusions, String lastItem) {
-        final Path path = Paths.get(folderRelativePath);
+    private Repository repository() {
+        if (this.repository == null) {
+            throw new RuntimeException("Service has no associated repository");
+        }
+        return this.repository;
+    }
+
+    private List<FileObject> list(String folderPath, Set<String> exclusions, String lastItem) {
+        final Path path = Paths.get(folderPath);
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
         }
@@ -240,7 +233,7 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
         List<? extends SwiftObject> objects = this.swiftService.list(relativePath, bucket, null);
         if (objects != null) {
             for (SwiftObject object : objects) {
-                final String oPath = bucket + "/" + (object.isDirectory() ? object.getDirectoryName() : object.getName());
+                final String oPath = (object.isDirectory() ? object.getDirectoryName() : object.getName());
                 if (exclusions == null || exclusions.stream().noneMatch(oPath::startsWith)) {
                     final FileObject fileObject = new FileObject(PROTOCOL, oPath, object.isDirectory(), object.getSizeInBytes());
                     fileObject.addAttribute("remotePath", "swift://" + fileObject.getRelativePath());

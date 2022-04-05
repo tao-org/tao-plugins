@@ -18,8 +18,7 @@ public class TestAWSS3 {
             put(S3StorageService.AWS_ACCESS_KEY, "AKIA4D6IV3TWJTHJXAKS");
             put(S3StorageService.AWS_SECRET_KEY, "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");
         }};
-        client.setup(params);
-        List<FileObject> list = client.listUserWorkspace(bucket);
+        List<FileObject> list = client.listUserWorkspace();
         for (FileObject fileObject : list) {
             System.out.println(fileObject.getRelativePath() + ", folder? " + fileObject.isFolder() + ", size " + fileObject.getSize());
         }
