@@ -10,11 +10,13 @@ public class TestAWSS3 {
 
     public static void main(String[] args) throws IOException {
         final String region = "eu-central-1";
-        final String bucket = "meeo-s3";
+        final String bucket = "agriculture-vlab-data-staging";
         final S3StorageService client = new S3StorageService();
         final Map<String, String> params = new HashMap<String, String>() {{
             put(S3StorageService.AWS_REGION, region);
             put(S3StorageService.AWS_BUCKET, bucket);
+            put(S3StorageService.AWS_ACCESS_KEY, "AKIA4D6IV3TWJTHJXAKS");
+            put(S3StorageService.AWS_SECRET_KEY, "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");
         }};
         client.setup(params);
         List<FileObject> list = client.listUserWorkspace(bucket);

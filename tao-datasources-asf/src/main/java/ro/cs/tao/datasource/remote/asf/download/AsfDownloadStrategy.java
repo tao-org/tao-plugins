@@ -21,6 +21,7 @@ import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.asf.ASFDataSource;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.eodata.util.ProductHelper;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.NetUtils;
 
@@ -208,7 +209,11 @@ public class AsfDownloadStrategy extends DownloadStrategy<String> {
                 if (productFile != null) {
                     try {
                         product.setLocation(productFile.toUri().toString());
-                    } catch (URISyntaxException e) {
+                        ProductHelper helper = ProductHelper.getHelper(product.getName());
+                        if (helper != null) {
+                            product.setEntryPoint(helper.getMetadataFileName());
+                        }
+                    } catch (Exception e) {
                         logger.severe(e.getMessage());
                     }
                 }

@@ -229,11 +229,11 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         try {
             if (name.endsWith("/")) {
                 final List<FileObject> children = new ArrayList<>();
-                traverse(name, children);
+                traverse(bucket, relativePath, children, true);
                 String childPath;
                 for (FileObject child : children) {
                     if (!child.isFolder()) {
-                        childPath = resolve(workspace, child.getRelativePath()).replace(bucket + "/", "");
+                        childPath = child.getRelativePath().replaceFirst(bucket + "/", "");
                         this.client.deleteObject(bucket, childPath);
                         logger.finest("Deleted " + childPath);
                     }
@@ -342,7 +342,9 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 request.setMarker(lastItemPath.subpath(1, lastItemPath.getNameCount()).toString().replace("\\", "/") + "/");
             }
             request.setMaxKeys(this.pageLimit);
-            return exclusions == null ? list(request) : singlePage(request);
+            final List<FileObject> results = exclusions == null ? list(request) : singlePage(request);
+            results.forEach(f -> f.setRelativePath(f.getRelativePath().replaceFirst(workspace.root() + "/", "")));
+            return results;
         } catch (AmazonServiceException e) {
             throw new IOException(e);
         }
@@ -355,8 +357,11 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         }
         try {
             final List<FileObject> files = new ArrayList<>();
-            final Path path = Paths.get(resolve(workspace, fromPath));
-            traverse(path.toString(), files);
+            final Path path = Paths.get(workspace.root());
+            if (path.getNameCount() > 1) {
+                fromPath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/") + "/" + fromPath;
+            }
+            traverse(path.getName(0).toString(), fromPath, files, false);
             return files;
         } catch (AmazonServiceException e) {
             throw new IOException(e);
@@ -407,7 +412,10 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         }
         final String bucket = root.getName(0).toString();
         final List<FileObject> keys = new ArrayList<>();
-        traverse(root.toString(), keys);
+        traverse(bucket,
+                 root.getNameCount() > 1
+                         ? root.subpath(1, root.getNameCount()).toString().replace("\\", "/")
+                         : root.toString(), keys, false);
         ZipEntry entry;
         final double total = keys.stream().mapToDouble(FileObject::getSize).sum();
         for (FileObject current : keys) {
@@ -545,25 +553,23 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         return results;
     }
 
-    private void traverse(String fromPath, List<FileObject> files) {
+    private void traverse(String bucketName, String fromPath, List<FileObject> files, boolean includeHidden) {
         ListObjectsRequest request = new ListObjectsRequest();
-        final Path path = Paths.get(fromPath);
-        request.setBucketName(path.getName(0).toString());
+        request.setBucketName(bucketName);
         request.setDelimiter("/");
-        final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/") + "/";
-        request.setPrefix(relativePath);
+        request.setPrefix(fromPath);
         ObjectListing objects = this.client.listObjects(request);
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
-                final FileObject folder = new FileObject(PROTOCOL, request.getBucketName() + "/" + commonPrefix, true, 0);
+                final FileObject folder = new FileObject(PROTOCOL, bucketName + "/" + commonPrefix, true, 0);
                 files.add(folder);
-                traverse(folder.getRelativePath(), files);
+                traverse(bucketName, commonPrefix, files, includeHidden);
             }
             if (objects.getObjectSummaries() != null) {
                 while (true) {
                     for (S3ObjectSummary summary : objects.getObjectSummaries()) {
-                        if (isNotFolderPlaceholder(summary)) {
-                            files.add(new FileObject(PROTOCOL, request.getBucketName() + "/" + summary.getKey(), false, summary.getSize()));
+                        if (includeHidden || isNotFolderPlaceholder(summary)) {
+                            files.add(new FileObject(PROTOCOL, bucketName + "/" + summary.getKey(), false, summary.getSize()));
                         }
                     }
                     if (!objects.isTruncated()) {
