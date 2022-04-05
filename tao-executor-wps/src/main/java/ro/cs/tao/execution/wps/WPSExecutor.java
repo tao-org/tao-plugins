@@ -15,11 +15,15 @@ import ro.cs.tao.component.WPSComponent;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.execution.ExecutionException;
 import ro.cs.tao.execution.Executor;
+import ro.cs.tao.execution.model.ExecutionJob;
 import ro.cs.tao.execution.model.ExecutionStatus;
 import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.model.WPSExecutionTask;
+import ro.cs.tao.execution.persistence.ExecutionJobProvider;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
+import ro.cs.tao.persistence.PersistenceException;
 import ro.cs.tao.persistence.WPSAuthenticationProvider;
+import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.JacksonUtil;
 
 import java.net.URL;
@@ -35,12 +39,17 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
 
     //private WPSComponent wpsComponent;
     private static ExecutionTaskProvider taskProvider;
+    private static ExecutionJobProvider jobProvider;
     private static WPSAuthenticationProvider authenticationProvider;
     private final Map<String, WebProcessingService> webServicesMap;
     private final ExecutorService backgroundWorker;
 
     public static void setTaskProvider(ExecutionTaskProvider provider) {
         WPSExecutor.taskProvider = provider;
+    }
+
+    public static void setJobProvider(ExecutionJobProvider jobProvider) {
+        WPSExecutor.jobProvider = jobProvider;
     }
 
     public static void setAuthenticationProvider(WPSAuthenticationProvider authenticationProvider) {
@@ -205,5 +214,15 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
     private void onException(WPSExecutionTask task, Exception ex) {
         logger.severe(String.format("Task %s FAILED to execute. Reason: %s", task.getId(), ex.getMessage()));
         markTaskFinished(task, ExecutionStatus.FAILED);
+        final ExecutionJob job = task.getJob();
+        final List<ExecutionTask> tasks = job.getTasks();
+        if (tasks.size() == 1) {
+            job.setExecutionStatus(ExecutionStatus.FAILED);
+            try {
+                jobProvider.update(job);
+            } catch (PersistenceException e) {
+                logger.severe(ExceptionUtils.getStackTrace(logger, e));
+            }
+        }
     }
 }

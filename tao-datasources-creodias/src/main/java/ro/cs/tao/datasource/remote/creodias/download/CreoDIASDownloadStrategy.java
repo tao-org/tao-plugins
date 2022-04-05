@@ -13,6 +13,7 @@ import ro.cs.tao.datasource.remote.creodias.CreoDiasDataSource;
 import ro.cs.tao.datasource.remote.creodias.model.common.Token;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.eodata.util.ProductHelper;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
@@ -157,7 +158,11 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
                             if (productFile != null) {
                                 try {
                                     product.setLocation(productFile.toUri().toString());
-                                } catch (URISyntaxException e) {
+                                    ProductHelper helper = ProductHelper.getHelper(product.getName());
+                                    if (helper != null) {
+                                        product.setEntryPoint(helper.getMetadataFileName());
+                                    }
+                                } catch (Exception e) {
                                     logger.severe(e.getMessage());
                                 }
                             }
@@ -193,7 +198,7 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
         logger.fine(String.format("Begin decompressing %s into %s", archivePath.getFileName(), targetPath));
         Path result = archivePath.toString().endsWith(".tar.gz") ?
                 Zipper.decompressTarGz(archivePath, targetPath, true) :
-                Zipper.decompressZipMT(archivePath, targetPath, false, false);
+                Zipper.decompressZipMT(archivePath, targetPath, false, true);
         logger.fine(String.format("Decompression of %s completed",archivePath.getFileName()));
         return result;
     }
