@@ -3,6 +3,7 @@ package ro.cs.tao.aws;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.event.ProgressEvent;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -142,11 +143,7 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             PutObjectRequest request = new PutObjectRequest(bucket, relativePath, is, metadata);
             request.setStorageClass(StorageClass.Standard);
             request.setCannedAcl(CannedAccessControlList.BucketOwnerFullControl);
-            request.withGeneralProgressListener(e -> {
-                if (S3StorageService.this.progressListener != null) {
-                    S3StorageService.this.progressListener.notifyProgress((double) e.getBytesTransferred() / (double) e.getBytes());
-                }
-            });
+            request.withGeneralProgressListener(new ProgressListener(this.progressListener, description, object.length));
             this.client.putObject(request);
         } catch (AmazonServiceException e) {
             throw new IOException(e);
@@ -179,11 +176,9 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             PutObjectRequest request = new PutObjectRequest(bucket, relativePath, stream, metadata);
             request.setStorageClass(StorageClass.Standard);
             request.setCannedAcl(CannedAccessControlList.BucketOwnerFullControl);
-            request.withGeneralProgressListener(e -> {
-                if (S3StorageService.this.progressListener != null) {
-                    S3StorageService.this.progressListener.notifyProgress((double) e.getBytesTransferred() / (double) e.getBytes());
-                }
-            });
+            if (length > 0) {
+                request.withGeneralProgressListener(new ProgressListener(this.progressListener, description, length));
+            }
             this.client.putObject(request);
         } catch (AmazonServiceException e) {
             throw new IOException(e);
@@ -370,12 +365,10 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             final String bucket = path.getName(0).toString();
             final String relativePath = path.subpath(1, path.getNameCount()).toString().replace("\\", "/");
             GetObjectRequest request = new GetObjectRequest(bucket, relativePath);
-            request.withGeneralProgressListener(e -> {
-                if (S3StorageService.this.progressListener != null) {
-                    S3StorageService.this.progressListener.notifyProgress((double) e.getBytesTransferred() / (double) e.getBytes());
-                }
-            });
+            final ProgressListener listener = new ProgressListener(this.progressListener, relativePath);
+            request.withGeneralProgressListener(listener);
             final S3Object object = this.client.getObject(request);
+            listener.setTotal(object.getObjectMetadata().getContentLength());
             return object.getObjectContent();
         } catch (AmazonServiceException e) {
             throw new IOException(e);
@@ -424,7 +417,7 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 }
             }
             if (this.progressListener != null) {
-                this.progressListener.notifyProgress(size / total);
+                this.progressListener.notifyProgress(root.toString(), size / total);
             }
         }
     }
@@ -576,5 +569,34 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             throw new RuntimeException("Service has no associated repository");
         }
         return this.repository;
+    }
+
+    private static class ProgressListener implements com.amazonaws.event.ProgressListener {
+
+        private final ro.cs.tao.ProgressListener parent;
+        private final String task;
+        private double total;
+
+        ProgressListener(ro.cs.tao.ProgressListener parent, String task) {
+            this.parent = parent;
+            this.task = task;
+        }
+
+        ProgressListener(ro.cs.tao.ProgressListener parent, String task, double total) {
+            this.parent = parent;
+            this.task = task;
+            this.total = total;
+        }
+
+        public void setTotal(double total) {
+            this.total = total;
+        }
+
+        @Override
+        public void progressChanged(ProgressEvent progressEvent) {
+            if (this.parent != null && Double.compare(total, 0.0) != 0) {
+                this.parent.notifyProgress(task, (double) progressEvent.getBytesTransferred() / total);
+            }
+        }
     }
 }

@@ -239,7 +239,7 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
                     fileObject.addAttribute("remotePath", "swift://" + fileObject.getRelativePath());
                     files.add(fileObject);
                     if (object.isDirectory()) {
-                        traverse(fileObject.getRelativePath(), exclusions, files);
+                        traverse(bucket + "/" + oPath, exclusions, files);
                     }
                 }
             }
