@@ -7,7 +7,7 @@ public class FieldConfig {
     private String type;
     private List<Filter> filters;
     private FieldConfigOptions options;
-    private List<String> validators;
+    private List<Object> validators;
     private String numElements;
     private String displayListId;
 
@@ -19,11 +19,11 @@ public class FieldConfig {
         this.filters = filters;
     }
 
-    public List<String> getValidators() {
+    public List<Object> getValidators() {
         return validators;
     }
 
-    public void setValidators(List<String> validators) {
+    public void setValidators(List<Object> validators) {
         this.validators = validators;
     }
 
