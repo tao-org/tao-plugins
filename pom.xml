@@ -57,6 +57,7 @@
         <module>tao-workspace-aws</module>
         <module>tao-datasources-era</module>
         <module>tao-workspace-stac</module>
+        <module>tao-workspace-smb</module>
     </modules>
 
     <properties>
