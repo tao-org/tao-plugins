@@ -354,7 +354,8 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     @Override
-    public S3ObjectInputStream download(Path path) throws IOException {
+    public S3ObjectInputStream download(String strPath) throws IOException {
+        Path path = Paths.get(strPath);
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("Path should be relative to the S3 bucket (including the bucket name)");
         }
@@ -376,7 +377,8 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     @Override
-    public void streamToZip(Path root, ZipOutputStream stream) throws IOException {
+    public void streamToZip(String rootPath, ZipOutputStream stream) throws IOException {
+        Path root = Paths.get(rootPath);
         if (root.isAbsolute()) {
             throw new IllegalArgumentException("Path should be relative to the S3 bucket (including the bucket name)");
         }
