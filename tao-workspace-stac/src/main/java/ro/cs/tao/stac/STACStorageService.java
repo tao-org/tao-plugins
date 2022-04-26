@@ -98,12 +98,12 @@ public class STACStorageService implements StorageService<byte[], InputStream> {
     }
 
     @Override
-    public InputStream download(Path path) throws IOException {
+    public InputStream download(String path) throws IOException {
         return null;
     }
 
     @Override
-    public void streamToZip(Path zipRoot, ZipOutputStream stream) throws IOException {
+    public void streamToZip(String zipRoot, ZipOutputStream stream) throws IOException {
 
     }
 

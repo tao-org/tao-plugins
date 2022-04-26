@@ -41,11 +41,13 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
             LinkedHashMap<String, String> parameters = SMBStorageService.this.repository.getParameters();
             String user = parameters.get(type.userKey());
             String pwd = parameters.get(type.passwordKey());
-            String url = parameters.get(type.rootKey());
-            if (!url.endsWith("/")) {
-                url += "/";
-            }
-            return PROTOCOL + "://" + (StringUtilities.isNullOrEmpty(user) ? "" : (user + ":" + URLEncoder.encode(pwd, "UTF-8") + "@")) + url;
+            String host = parameters.get("smb.server");
+            String share = parameters.get(type.rootKey());
+            return PROTOCOL + "://" + (StringUtilities.isNullOrEmpty(user) ? "" : (user + ":" + URLEncoder.encode(pwd, "UTF-8") + "@")) + host;
+        });
+        this.repository.setBucketFunctor(() -> {
+            RepositoryType type = SMBStorageService.this.repository.getType();
+            return SMBStorageService.this.repository.getParameters().get(type.rootKey());
         });
     }
 
@@ -96,7 +98,11 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
 
     @Override
     public List<FileObject> listFiles(String fromPath, Set<String> exclusions, String lastItem) throws IOException {
-        String path = this.repository.root() + (this.repository.isRoot(fromPath) ? "" : fromPath);
+        String path = this.repository.isRoot(fromPath)
+                ? this.repository.root() + "/" + repository.bucketName() + "/"
+                : fromPath.startsWith("/")
+                    ? this.repository.root() + fromPath
+                    : this.repository.resolve(fromPath);
         if (!path.endsWith("/")) {
             path += "/";
         }
@@ -106,7 +112,7 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
         if (smbFiles != null) {
             for (SmbFile file : smbFiles) {
                 final FileObject fileObject =
-                        new FileObject(PROTOCOL, file.getPath().replace(this.repository.root(), ""),
+                        new FileObject(PROTOCOL, file.getPath().replace(this.repository.root() + "/", ""),
                                        file.isDirectory(), file.length());
                 files.add(fileObject);
             }
@@ -132,25 +138,19 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
     }
 
     @Override
-    public InputStream download(Path path) throws IOException {
-        String host = this.repository.getParameters().get(this.repository.getType().rootKey());
-        String strPath = path.toString().replace("\\", "/");
-        if (strPath.startsWith(host)) {
-            strPath = strPath.substring(host.length() + 1);
-        }
-        return new SmbFileInputStream(new SmbFile(this.repository.root() + strPath));
+    public InputStream download(String path) throws IOException {
+        return new SmbFileInputStream(new SmbFile(this.repository.resolve(path)));
     }
 
     @Override
-    public void streamToZip(Path zipRoot, ZipOutputStream stream) throws IOException {
-        String folderPath = zipRoot.toString().replace("\\", "/");
-        SmbFile root = new SmbFile(this.repository.root() + folderPath);
+    public void streamToZip(String zipRoot, ZipOutputStream stream) throws IOException {
+        SmbFile root = new SmbFile(this.repository.resolve(zipRoot));
         if (root.exists() && root.isDirectory()) {
             final List<SmbFile> files = new ArrayList<>();
-            traverseSmb(folderPath, files);
+            traverseSmb(zipRoot, files);
             for (SmbFile current : files) {
                 if (current.isFile()) {
-                    String zipPath = this.repository.relativize(folderPath, this.repository.relativizeToBucket(current.getUncPath()));
+                    String zipPath = this.repository.relativize(zipRoot, this.repository.relativizeToBucket(current.getUncPath()));
                     ZipEntry entry = new ZipEntry(zipPath);
                     entry.setSize(current.length());
                     entry.setTime(System.currentTimeMillis());
@@ -159,7 +159,7 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
                     stream.closeEntry();
                 } else {
                     if (!current.equals(root)) {
-                        String zipPath = this.repository.relativize(folderPath, this.repository.relativizeToBucket(current.getUncPath())) + File.separator;
+                        String zipPath = this.repository.relativize(zipRoot, this.repository.relativizeToBucket(current.getUncPath())) + File.separator;
                         ZipEntry entry = new ZipEntry(zipPath);
                         stream.putNextEntry(entry);
                         stream.closeEntry();
@@ -172,7 +172,7 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
     }
 
     private void traverse(String fromPath, List<FileObject> files) throws IOException {
-        SmbFile path = new SmbFile(this.repository.root() + (this.repository.isRoot(fromPath) ? "" : fromPath));
+        SmbFile path = new SmbFile(this.repository.resolve(fromPath));
         SmbFile[] smbFiles = path.listFiles();
         if (smbFiles != null) {
             for (SmbFile file : smbFiles) {
@@ -189,7 +189,7 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
     }
 
     private void traverseSmb(String fromPath, List<SmbFile> files) throws IOException {
-        SmbFile path = new SmbFile(this.repository.root() + (this.repository.isRoot(fromPath) ? "" : fromPath));
+        SmbFile path = new SmbFile(this.repository.resolve(fromPath));
         SmbFile[] smbFiles = path.listFiles();
         if (smbFiles != null) {
             for (SmbFile file : smbFiles) {
