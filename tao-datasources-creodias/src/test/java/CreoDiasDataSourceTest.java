@@ -84,7 +84,7 @@ public class CreoDiasDataSourceTest {
 
     public static void main(String[] args) {
         //Sentinel2_Count_Test();
-        Sentinel2_Test();
+        Sentinel3_Test();
         //Sentinel1_Count_Test();
         //Sentinel1_Test();
         //Landsat8_Count_Test();
@@ -134,6 +134,82 @@ public class CreoDiasDataSourceTest {
                 System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation());
             });
             final CreoDIASDownloadStrategy strategy = (CreoDIASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel2");
+            if (!results.isEmpty()) {
+                strategy.setFetchMode(FetchMode.OVERWRITE);
+                strategy.setProgressListener(new ProgressListener() {
+                    @Override
+                    public void started(String taskName) {
+                        System.out.println("Started " + taskName);
+                    }
+
+                    @Override
+                    public void subActivityStarted(String subTaskName) {
+                        System.out.println("Started " + subTaskName);
+                    }
+
+                    @Override
+                    public void subActivityEnded(String subTaskName) {
+                        System.out.println("Finished " + subTaskName);
+                    }
+
+                    @Override
+                    public void ended() {
+                        System.out.println("Download completed");
+                    }
+
+                    @Override
+                    public void notifyProgress(double progressValue) {
+                        System.out.printf("Progress: %.2f%%\r", progressValue * 100);
+                    }
+
+                    @Override
+                    public void notifyProgress(String subTaskName, double subTaskProgress) {
+                        System.out.printf("Progress: %s %.2f%%\n", subTaskName, subTaskProgress * 100);
+                    }
+
+                    @Override
+                    public void notifyProgress(String subTaskName, double subTaskProgress, double overallProgress) {
+                        System.out.printf("Progress: %s %.2f%% (%.2f%%)\n", subTaskName, subTaskProgress * 100, overallProgress * 100);
+                    }
+                });
+                Path path = strategy.fetch(results.get(0));
+                if (path != null) {
+                    System.out.println("Product downloaded at " + path.toString());
+                } else {
+                    System.out.println("Product not downloaded");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void Sentinel3_Test() {
+        try {
+            Logger logger = LogManager.getLogManager().getLogger("");
+            for (Handler handler : logger.getHandlers()) {
+                handler.setLevel(Level.FINEST);
+            }
+            //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
+            DataSource<?, ?> dataSource = new CreoDiasDataSource();
+            dataSource.setCredentials("kraftek@gmail.com", "cei7pitici@creodias.");
+            String[] sensors = dataSource.getSupportedSensors();
+
+            DataQuery query = dataSource.createQuery("Sentinel3");
+            query.addParameter(begin);
+            query.addParameter(end);
+            query.addParameter(aoi);
+            query.addParameter("status", "all");
+            query.addParameter(CommonParameterNames.PRODUCT_TYPE, "LST");
+            query.addParameter("instrument", "SL");
+            query.addParameter("processingLevel", "LEVEL2");
+            query.addParameter("productSize", "FRAME");
+            query.setMaxResults(maxResults);
+            List<EOProduct> results = query.execute();
+            results.forEach(r -> {
+                System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation());
+            });
+            final CreoDIASDownloadStrategy strategy = (CreoDIASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel3");
             if (!results.isEmpty()) {
                 strategy.setFetchMode(FetchMode.OVERWRITE);
                 strategy.setProgressListener(new ProgressListener() {
