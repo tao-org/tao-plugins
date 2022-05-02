@@ -294,6 +294,16 @@
       "valueSet": null,
       "order": 9
     },
+    "productSize": {
+      "name": "productSize",
+      "remoteName": "productIdentifier",
+      "label": "Product Size",
+      "type": "string",
+      "defaultValue": "FRAME",
+      "required": false,
+      "valueSet": ["ALL","FRAME", "STRIPE"],
+      "order": 9
+    },
     "platform": {
       "name": "platform",
       "remoteName": "platform",

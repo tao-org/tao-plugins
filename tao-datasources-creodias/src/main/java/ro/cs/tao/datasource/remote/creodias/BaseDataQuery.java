@@ -79,6 +79,9 @@ public abstract class BaseDataQuery extends DataQuery {
                             tmpResults = parser.parse(rawResponse);
                             canContinue = tmpResults != null && tmpResults.size() > 0 && count != this.pageSize;
                             if (tmpResults != null) {
+                                if (this.sensorName.equals("Sentinel3")) {
+                                    filterS3(tmpResults);
+                                }
                                 actualCount += tmpResults.size();
                                 for (EOProduct result : tmpResults) {
                                     if (!results.contains(result)) {
@@ -224,6 +227,12 @@ public abstract class BaseDataQuery extends DataQuery {
                             throw new QueryException(e.getMessage());
                         }
                         break;
+                    case "cloudCover":
+                        query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), "[0," + parameter.getValue() + "]"));
+                        break;
+                    case "productSize":
+                        // productSize filter will be applied after results are returned
+                        break;
                     default:
                         if (parameter.getType().isArray()) {
                             StringBuilder builder = new StringBuilder();
@@ -278,5 +287,16 @@ public abstract class BaseDataQuery extends DataQuery {
             e.printStackTrace();
         }
         return polygons;
+    }
+
+    private void filterS3(List<EOProduct> results) {
+        if (this.parameters.containsKey("productSize")) {
+            String productSize = this.parameters.get("productSize").getValueAsString();
+            if ("STRIPE".equalsIgnoreCase(productSize)) {
+                results.removeIf(p -> !p.getName().contains("_____"));
+            } else if ("FRAME".equalsIgnoreCase(productSize)) {
+                results.removeIf(p -> p.getName().contains("_____"));
+            }
+        }
     }
 }
