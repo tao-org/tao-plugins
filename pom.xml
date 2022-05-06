@@ -58,6 +58,7 @@
         <module>tao-datasources-era</module>
         <module>tao-workspace-stac</module>
         <module>tao-workspace-smb</module>
+        <module>tao-docker-senet</module>
     </modules>
 
     <properties>

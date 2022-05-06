@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -36,24 +37,26 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
             throw new IllegalArgumentException("Wrong repository type");
         }
         this.repository = repository;
-        this.repository.setRootFunctor(() -> {
+        Callable<String> functor = () -> {
             RepositoryType type = SMBStorageService.this.repository.getType();
             LinkedHashMap<String, String> parameters = SMBStorageService.this.repository.getParameters();
             String user = parameters.get(type.userKey());
             String pwd = parameters.get(type.passwordKey());
             String host = parameters.get("smb.server");
-            String share = parameters.get(type.rootKey());
-            return PROTOCOL + "://" + (StringUtilities.isNullOrEmpty(user) ? "" : (user + ":" + URLEncoder.encode(pwd, "UTF-8") + "@")) + host;
-        });
-        this.repository.setBucketFunctor(() -> {
+            return PROTOCOL + "://" + (StringUtilities.isNullOrEmpty(user) ? "" : (user + ":" + URLEncoder.encode(pwd, "UTF-8") + "@")) + host + "/";
+        };
+        this.repository.setRootFunctor(() -> {
             RepositoryType type = SMBStorageService.this.repository.getType();
-            return SMBStorageService.this.repository.getParameters().get(type.rootKey());
+            LinkedHashMap<String, String> parameters = SMBStorageService.this.repository.getParameters();
+            String share = parameters.get(type.rootKey());
+            return functor.call() + share + "/";
         });
+        this.repository.setBucketFunctor(functor);
     }
 
     @Override
     public Path createFolder(String relativePath, boolean userOnly) throws IOException {
-        SmbFile folder = new SmbFile(this.repository.root() + relativePath + (relativePath.endsWith("/") ? "" : "/"));
+        SmbFile folder = new SmbFile(this.repository.resolve(relativePath) + (relativePath.endsWith("/") ? "" : "/"));
         if (!folder.exists()) {
             folder.mkdir();
         }
@@ -69,7 +72,7 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
 
     @Override
     public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
-        SmbFile smbfile = new SmbFile(this.repository.root() + relativeFolder + "/" + description);
+        SmbFile smbfile = new SmbFile(this.repository.resolve(relativeFolder) + (relativeFolder.endsWith("/") ? "" : "/") + description);
         try (OutputStream out = new SmbFileOutputStream(smbfile)) {
             FileUtilities.copyStream(stream, out);
         } catch (Exception e) {
@@ -79,29 +82,29 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
 
     @Override
     public boolean exists(String path) throws Exception {
-        SmbFile smbPath = new SmbFile(this.repository.root() + path);
+        SmbFile smbPath = new SmbFile(this.repository.resolve(path));
         return smbPath.exists();
     }
 
     @Override
     public void remove(String path) throws IOException {
-        SmbFile smbPath = new SmbFile(this.repository.root() + path);
+        SmbFile smbPath = new SmbFile(this.repository.resolve(path));
         smbPath.delete();
     }
 
     @Override
     public void move(String source, String destination) throws IOException {
-        SmbFile smbSource = new SmbFile(this.repository.root() + source);
-        SmbFile smbDestination = new SmbFile(this.repository.root() + destination);
+        SmbFile smbSource = new SmbFile(this.repository.resolve(source));
+        SmbFile smbDestination = new SmbFile(this.repository.resolve(destination));
         smbSource.renameTo(smbDestination);
     }
 
     @Override
     public List<FileObject> listFiles(String fromPath, Set<String> exclusions, String lastItem) throws IOException {
         String path = this.repository.isRoot(fromPath)
-                ? this.repository.root() + "/" + repository.bucketName() + "/"
+                ? this.repository.root()
                 : fromPath.startsWith("/")
-                    ? this.repository.root() + fromPath
+                    ? this.repository.resolve(fromPath.substring(1))
                     : this.repository.resolve(fromPath);
         if (!path.endsWith("/")) {
             path += "/";
@@ -109,11 +112,15 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
         SmbFile smbPath = new SmbFile(path);
         SmbFile[] smbFiles = smbPath.listFiles();
         final List<FileObject> files = new ArrayList<>();
+        if (repository.isRoot(fromPath)) {
+            files.add(repositoryRootNode(repository));
+        }
         if (smbFiles != null) {
             for (SmbFile file : smbFiles) {
                 final FileObject fileObject =
-                        new FileObject(PROTOCOL, file.getPath().replace(this.repository.root() + "/", ""),
+                        new FileObject(PROTOCOL, file.getPath().replace(this.repository.root(), ""),
                                        file.isDirectory(), file.length());
+                fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, file.getPath());
                 files.add(fileObject);
             }
         }
@@ -123,6 +130,7 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
     @Override
     public List<FileObject> listTree(String fromPath) throws IOException {
         final List<FileObject> files = new ArrayList<>();
+        files.add(repositoryRootNode(repository));
         traverse(fromPath, files);
         return files;
     }
@@ -180,6 +188,7 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
                 String relPath = filePath.replace(this.repository.root(), "");
                 final FileObject fileObject =
                         new FileObject(PROTOCOL, relPath, file.isDirectory(), file.length());
+                fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, file.getPath());
                 files.add(fileObject);
                 if (file.isDirectory()) {
                     traverse(relPath, files);
