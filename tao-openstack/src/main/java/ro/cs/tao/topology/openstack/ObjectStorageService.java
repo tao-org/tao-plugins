@@ -120,17 +120,26 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
 
     @Override
     public List<FileObject> listUserWorkspace() throws IOException {
-        return list("/", null, null);
+        List<FileObject> list = list("/", null, null);
+        list.add(0, repositoryRootNode(repository()));
+        return list;
     }
 
     @Override
     public List<FileObject> listFiles(String fromPath, Set<String> exclusions, String lastItem) throws IOException {
-        return list(repository().resolve(fromPath), exclusions, lastItem);
+        List<FileObject> list = list(repository().resolve(fromPath), exclusions, lastItem);
+        if (repository().isRoot(fromPath)) {
+            list.add(0, repositoryRootNode(repository()));
+        }
+        return list;
     }
 
     @Override
     public List<FileObject> listTree(String fromPath) throws IOException {
         final List<FileObject> results = new ArrayList<>();
+        if (repository().isRoot(fromPath)) {
+            results.add(repositoryRootNode(repository()));
+        }
         traverse(repository().resolve(fromPath), null, results);
         return results;
     }
@@ -160,16 +169,17 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     public void streamToZip(String rootPath, ZipOutputStream stream) throws IOException {
         Path root = Paths.get(rootPath);
         if (root.isAbsolute()) {
-            throw new IllegalArgumentException("Path should be relative to the S3 bucket (including the bucket name)");
+            throw new IllegalArgumentException("Path should be relative to the S3 bucket");
         }
-        final String bucket = root.getName(0).toString();
+        Repository repository = repository();
+        final String bucket = repository.bucketName();
         final List<FileObject> keys = new ArrayList<>();
         traverse(root.toString(), null, keys);
-        ZipEntry entry = null;
+        ZipEntry entry;
         for (FileObject current : keys) {
             final Path currentPath = Paths.get(current.getRelativePath());
             if (!current.isFolder()) {
-                final String relativePath = currentPath.subpath(1, currentPath.getNameCount()).toString().replace("\\", "/");
+                final String relativePath = currentPath.toString().replace("\\", "/");
                 final InputStream inputStream = this.swiftService.download(relativePath, bucket);
                 String zipPath = root.relativize(currentPath).toString();
                 entry = new ZipEntry(zipPath);
@@ -206,10 +216,10 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
         if (path.isAbsolute()) {
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
         }
-        final String bucket = path.getName(0).toString();
-        final String relativePath = path.getNameCount() > 1
-                ? path.subpath(1, path.getNameCount()).toString().replace("\\", "/")
-                : "";
+        Repository repository = repository();
+        final String bucket = repository.bucketName();
+        final String relativePath = repository.relativizeToBucket(folderPath);
+        String prefix = repository().getUrlPrefix();
         final List<FileObject> files = new ArrayList<>();
         final List<? extends SwiftObject> objects = this.swiftService.list(relativePath, bucket, lastItem);
         if (objects != null) {
@@ -217,8 +227,8 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
                 //final String oPath = bucket + "/" + (object.isDirectory() ? object.getDirectoryName() : object.getName());
                 final String oPath = (object.isDirectory() ? object.getDirectoryName() : object.getName());
                 if (exclusions == null || exclusions.stream().noneMatch(oPath::startsWith)) {
-                    final FileObject fileObject = new FileObject(PROTOCOL, oPath, object.isDirectory(), object.getSizeInBytes());
-                    fileObject.addAttribute("remotePath", "swift://" + fileObject.getRelativePath());
+                    final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(oPath), object.isDirectory(), object.getSizeInBytes());
+                    fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                     files.add(fileObject);
                 }
             });
@@ -227,18 +237,17 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     private void traverse(String fromPath, Set<String> exclusions, List<FileObject> files) {
-        final Path path = Paths.get(fromPath);
-        final String bucket = path.getName(0).toString();
-        final String relativePath = path.getNameCount() > 1
-                ? path.subpath(1, path.getNameCount()).toString().replace("\\", "/")
-                : "";
+        Repository repository = repository();
+        final String bucket = repository.bucketName();
+        final String relativePath = repository.relativizeToBucket(fromPath);
+        String prefix = repository.getUrlPrefix();
         List<? extends SwiftObject> objects = this.swiftService.list(relativePath, bucket, null);
         if (objects != null) {
             for (SwiftObject object : objects) {
                 final String oPath = (object.isDirectory() ? object.getDirectoryName() : object.getName());
                 if (exclusions == null || exclusions.stream().noneMatch(oPath::startsWith)) {
-                    final FileObject fileObject = new FileObject(PROTOCOL, oPath, object.isDirectory(), object.getSizeInBytes());
-                    fileObject.addAttribute("remotePath", "swift://" + fileObject.getRelativePath());
+                    final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(oPath), object.isDirectory(), object.getSizeInBytes());
+                    fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                     files.add(fileObject);
                     if (object.isDirectory()) {
                         traverse(bucket + "/" + oPath, exclusions, files);

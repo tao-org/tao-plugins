@@ -98,7 +98,7 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket (including the bucket name)");
         }
         // Since "folders" do not exist in S3, there has to be a dummy file uploaded in order to create the "folder"
-        final FileObject fakeObject = fakeRoot();
+        final FileObject fakeObject = emptyFolderItem();
         path = path.resolve(fakeObject.getRelativePath());
         if (this.client == null) {
             this.client = buildClient();
@@ -291,7 +291,9 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
             request.setDelimiter("/");
             request.setMarker("/");
             request.setMaxKeys(this.pageLimit);
-            return list(request);
+            List<FileObject> list = list(request);
+            list.add(0, repositoryRootNode(repository()));
+            return list;
         } catch (AmazonServiceException e) {
             throw new IOException(e);
         }
@@ -322,7 +324,11 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 request.setMarker(repository.relativizeToBucket(lastItem));
             }
             request.setMaxKeys(this.pageLimit);
-            return exclusions == null ? list(request) : singlePage(request);
+            List<FileObject> list = exclusions == null ? list(request) : singlePage(request);
+            if (repository.isRoot(fromPath)) {
+                list.add(0, repositoryRootNode(repository));
+            }
+            return list;
         } catch (AmazonServiceException e) {
             throw new IOException(e);
         }
@@ -336,6 +342,9 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         Repository repository = repository();
         try {
             final List<FileObject> files = new ArrayList<>();
+            if (repository.isRoot(fromPath)) {
+                files.add(repositoryRootNode(repository));
+            }
             traverse(repository.bucketName(), repository.relativizeToBucket(fromPath), files, false);
             return files;
         } catch (AmazonServiceException e) {
@@ -476,11 +485,13 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     private List<FileObject> list(ListObjectsRequest request) {
         final List<FileObject> files = new ArrayList<>();
         ObjectListing objects = this.client.listObjects(request);
+        String bucketName = repository().bucketName();
+        String prefix = repository().getUrlPrefix();
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
                 if (!commonPrefix.equals(repository().getUserName() + "/")) {
-                    final FileObject fileObject = new FileObject(PROTOCOL, request.getBucketName() + "/" + commonPrefix, true, 0);
-                    fileObject.addAttribute("remotePath", "s3://" + fileObject.getRelativePath());
+                    final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(commonPrefix), true, 0);
+                    fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                     files.add(fileObject);
                 }
             }
@@ -488,8 +499,8 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 while (true) {
                     for (S3ObjectSummary summary : objects.getObjectSummaries()) {
                         if (isNotFolderPlaceholder(summary)) {
-                            final FileObject fileObject = new FileObject(PROTOCOL, request.getBucketName() + "/" + summary.getKey(), false, summary.getSize());
-                            fileObject.addAttribute("remotePath", "s3://" + fileObject.getRelativePath());
+                            final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(summary.getKey()), false, summary.getSize());
+                            fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                             files.add(fileObject);
                         }
                     }
@@ -506,10 +517,13 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     private List<FileObject> singlePage(ListObjectsRequest request) {
         ObjectListing objects = this.client.listObjects(request);
         final List<FileObject> results = new ArrayList<>();
+        Repository repository = repository();
+        String bucketName = repository.bucketName();
+        String prefix = repository.getUrlPrefix();
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
-                final FileObject fileObject = new FileObject(PROTOCOL, request.getBucketName() + "/" + commonPrefix, true, 0);
-                fileObject.addAttribute("remotePath", "s3://" + fileObject.getRelativePath());
+                final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(commonPrefix), true, 0);
+                fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                 results.add(fileObject);
             }
             final List<S3ObjectSummary> objectSummaries = objects.getObjectSummaries();
@@ -517,8 +531,8 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 for (int i = 0; i < objectSummaries.size(); i++) {
                     final S3ObjectSummary summary = objectSummaries.get(i);
                     if (isNotFolderPlaceholder(summary)) {
-                        final FileObject fileObject = new FileObject(PROTOCOL, request.getBucketName() + "/" + summary.getKey(), false, summary.getSize());
-                        fileObject.addAttribute("remotePath", "s3://" + fileObject.getRelativePath());
+                        final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(summary.getKey()), false, summary.getSize());
+                        fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                         if (objects.isTruncated() && i == objectSummaries.size() - 1) {
                             fileObject.addAttribute("nextMarker", objects.getNextMarker());
                         }
@@ -535,10 +549,12 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         request.setBucketName(bucketName);
         request.setDelimiter("/");
         request.setPrefix(fromPath);
+        Repository repository = repository();
         ObjectListing objects = this.client.listObjects(request);
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
-                final FileObject folder = new FileObject(PROTOCOL, bucketName + "/" + commonPrefix, true, 0);
+                final FileObject folder = new FileObject(PROTOCOL, repository.relativizeToRoot(commonPrefix), true, 0);
+                folder.addAttribute(REMOTE_PATH_ATTRIBUTE, PROTOCOL + "://" + repository.resolve(folder.getRelativePath()));
                 files.add(folder);
                 traverse(bucketName, commonPrefix, files, includeHidden);
             }
@@ -546,7 +562,9 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 while (true) {
                     for (S3ObjectSummary summary : objects.getObjectSummaries()) {
                         if (includeHidden || isNotFolderPlaceholder(summary)) {
-                            files.add(new FileObject(PROTOCOL, bucketName + "/" + summary.getKey(), false, summary.getSize()));
+                            FileObject file = new FileObject(PROTOCOL, repository.relativizeToRoot(summary.getKey()), false, summary.getSize());
+                            file.addAttribute(REMOTE_PATH_ATTRIBUTE, PROTOCOL + "://" + repository.resolve(file.getRelativePath()));
+                            files.add(file);
                         }
                     }
                     if (!objects.isTruncated()) {
