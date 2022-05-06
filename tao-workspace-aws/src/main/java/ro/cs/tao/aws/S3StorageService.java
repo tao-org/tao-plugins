@@ -485,13 +485,19 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     private List<FileObject> list(ListObjectsRequest request) {
         final List<FileObject> files = new ArrayList<>();
         ObjectListing objects = this.client.listObjects(request);
-        String bucketName = repository().bucketName();
-        String prefix = repository().getUrlPrefix();
+        Repository repository = repository();
+        String prefix = repository.getUrlPrefix();
+        String bucketName = repository.bucketName();
+        String filter = repository.root().replaceFirst(bucketName, "");
+        if (filter.startsWith("/")) {
+            filter = filter.substring(1);
+        }
+        final int offset = filter.length();
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
-                if (!commonPrefix.equals(repository().getUserName() + "/")) {
-                    final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(commonPrefix), true, 0);
-                    fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
+                if (!commonPrefix.equals(repository.getUserName() + "/")) {
+                    final FileObject fileObject = new FileObject(PROTOCOL, this.repository.relativizeToRoot(commonPrefix.substring(offset)), true, 0);
+                    fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + this.repository.resolve(fileObject.getRelativePath()));
                     files.add(fileObject);
                 }
             }
@@ -499,8 +505,8 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 while (true) {
                     for (S3ObjectSummary summary : objects.getObjectSummaries()) {
                         if (isNotFolderPlaceholder(summary)) {
-                            final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(summary.getKey()), false, summary.getSize());
-                            fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
+                            final FileObject fileObject = new FileObject(PROTOCOL, this.repository.relativizeToRoot(summary.getKey().substring(offset)), false, summary.getSize());
+                            fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + this.repository.resolve(fileObject.getRelativePath()));
                             files.add(fileObject);
                         }
                     }
@@ -518,11 +524,15 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         ObjectListing objects = this.client.listObjects(request);
         final List<FileObject> results = new ArrayList<>();
         Repository repository = repository();
-        String bucketName = repository.bucketName();
         String prefix = repository.getUrlPrefix();
+        String requestPrefix = request.getPrefix();
+        if (requestPrefix.equals("/")) {
+            requestPrefix = "";
+        }
+        final int offset = requestPrefix.length();
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
-                final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(commonPrefix), true, 0);
+                final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(commonPrefix.substring(offset)), true, 0);
                 fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                 results.add(fileObject);
             }
@@ -531,7 +541,7 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 for (int i = 0; i < objectSummaries.size(); i++) {
                     final S3ObjectSummary summary = objectSummaries.get(i);
                     if (isNotFolderPlaceholder(summary)) {
-                        final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(summary.getKey()), false, summary.getSize());
+                        final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(summary.getKey().substring(offset)), false, summary.getSize());
                         fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                         if (objects.isTruncated() && i == objectSummaries.size() - 1) {
                             fileObject.addAttribute("nextMarker", objects.getNextMarker());
@@ -550,10 +560,15 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         request.setDelimiter("/");
         request.setPrefix(fromPath);
         Repository repository = repository();
+        String requestPrefix = request.getPrefix();
+        if (requestPrefix.equals("/")) {
+            requestPrefix = "";
+        }
+        final int offset = requestPrefix.length();
         ObjectListing objects = this.client.listObjects(request);
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
-                final FileObject folder = new FileObject(PROTOCOL, repository.relativizeToRoot(commonPrefix), true, 0);
+                final FileObject folder = new FileObject(PROTOCOL, repository.relativizeToRoot(commonPrefix.substring(offset)), true, 0);
                 folder.addAttribute(REMOTE_PATH_ATTRIBUTE, PROTOCOL + "://" + repository.resolve(folder.getRelativePath()));
                 files.add(folder);
                 traverse(bucketName, commonPrefix, files, includeHidden);
@@ -562,7 +577,7 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 while (true) {
                     for (S3ObjectSummary summary : objects.getObjectSummaries()) {
                         if (includeHidden || isNotFolderPlaceholder(summary)) {
-                            FileObject file = new FileObject(PROTOCOL, repository.relativizeToRoot(summary.getKey()), false, summary.getSize());
+                            FileObject file = new FileObject(PROTOCOL, repository.relativizeToRoot(summary.getKey().substring(offset)), false, summary.getSize());
                             file.addAttribute(REMOTE_PATH_ATTRIBUTE, PROTOCOL + "://" + repository.resolve(file.getRelativePath()));
                             files.add(file);
                         }
