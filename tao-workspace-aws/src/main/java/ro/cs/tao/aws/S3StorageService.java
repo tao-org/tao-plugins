@@ -300,7 +300,7 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
     }
 
     @Override
-    public List<FileObject> listFiles(String fromPath, Set<String> exclusions, String lastItem) throws IOException {
+    public List<FileObject> listFiles(String fromPath, Set<String> exclusions, String lastItem, int depth) throws IOException {
         if (this.client == null) {
             this.client = buildClient();
         }
@@ -525,11 +525,12 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         final List<FileObject> results = new ArrayList<>();
         Repository repository = repository();
         String prefix = repository.getUrlPrefix();
-        String requestPrefix = request.getPrefix();
-        if (requestPrefix.equals("/")) {
-            requestPrefix = "";
+        String bucketName = repository.bucketName();
+        String filter = repository.root().replaceFirst(bucketName, "");
+        if (filter.startsWith("/")) {
+            filter = filter.substring(1);
         }
-        final int offset = requestPrefix.length();
+        final int offset = filter.length();
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
                 final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(commonPrefix.substring(offset)), true, 0);
@@ -560,11 +561,11 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         request.setDelimiter("/");
         request.setPrefix(fromPath);
         Repository repository = repository();
-        String requestPrefix = request.getPrefix();
-        if (requestPrefix.equals("/")) {
-            requestPrefix = "";
+        String filter = repository.root().replaceFirst(bucketName, "");
+        if (filter.startsWith("/")) {
+            filter = filter.substring(1);
         }
-        final int offset = requestPrefix.length();
+        final int offset = filter.length();
         ObjectListing objects = this.client.listObjects(request);
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {

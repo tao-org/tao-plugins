@@ -100,7 +100,7 @@ public class SMBStorageService implements StorageService<byte[], InputStream>{
     }
 
     @Override
-    public List<FileObject> listFiles(String fromPath, Set<String> exclusions, String lastItem) throws IOException {
+    public List<FileObject> listFiles(String fromPath, Set<String> exclusions, String lastItem, int depth) throws IOException {
         String path = this.repository.isRoot(fromPath)
                 ? this.repository.root()
                 : fromPath.startsWith("/")

@@ -48,7 +48,7 @@
 				"notNull": true
 			},
 			{
-				"id": "bandName",
+				"id": "bandNames",
 				"type": "REGULAR",
 				"dataType": "string[]",
 				"defaultValue": null,
@@ -84,11 +84,11 @@
 				"notNull": false
 			},
 			{
-				"id": "units",
+				"id": "unit",
 				"type": "REGULAR",
-				"dataType": "int",
-				"defaultValue": 1,
-				"description": "The offset to be applied to the input values. Default is 0",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "The units of the input values",
 				"label": "units",
 				"notNull": false
 			}
