@@ -126,7 +126,7 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
     }
 
     @Override
-    public List<FileObject> listFiles(String fromPath, Set<String> exclusions, String lastItem) throws IOException {
+    public List<FileObject> listFiles(String fromPath, Set<String> exclusions, String lastItem, int depth) throws IOException {
         List<FileObject> list = list(repository().resolve(fromPath), exclusions, lastItem);
         if (repository().isRoot(fromPath)) {
             list.add(0, repositoryRootNode(repository()));

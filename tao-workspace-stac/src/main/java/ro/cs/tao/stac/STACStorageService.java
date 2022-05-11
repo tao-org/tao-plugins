@@ -65,7 +65,7 @@ public class STACStorageService implements StorageService<byte[], InputStream> {
     }
 
     @Override
-    public List<FileObject> listFiles(String fromPath, Set<String> exclusions, String lastItem) throws IOException {
+    public List<FileObject> listFiles(String fromPath, Set<String> exclusions, String lastItem, int depth) throws IOException {
         final List<FileObject> files = new ArrayList<>();
         final STACClient client = new STACClient(this.repository.bucketName());
         // First we try to see if the link points to a catalog
