@@ -1,10 +1,8 @@
 package ro.cs.tao.topology.openstack;
 
 import org.openstack4j.model.storage.object.SwiftObject;
-import ro.cs.tao.ListenableInputStream;
-import ro.cs.tao.ProgressListener;
-import ro.cs.tao.services.interfaces.StorageService;
 import ro.cs.tao.services.model.FileObject;
+import ro.cs.tao.services.storage.BaseStorageService;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.workspaces.Repository;
 
@@ -20,15 +18,13 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ObjectStorageService implements StorageService<byte[], InputStream> {
+public class ObjectStorageService extends BaseStorageService<byte[], InputStream> {
     private static final String PROTOCOL = "swift";
 
-    private Repository repository;
     private final SwiftService swiftService;
 
-    private ProgressListener progressListener;
-
     public ObjectStorageService() {
+        super();
         this.swiftService = new SwiftService();
     }
 
@@ -39,8 +35,8 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
 
     @Override
     public void associate(Repository repository) {
-        this.repository = repository;
-        swiftService.setParameters(this.repository.getParameters());
+        super.associate(repository);
+        swiftService.setParameters(repository().getParameters());
     }
 
     @Override
@@ -67,9 +63,9 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
         }
         final String bucket = repository.bucketName();
         final String relativePath = repository.relativizeToBucket(relativeFolder);
-        InputStream toPass = this.progressListener != null
-                ? new ListenableInputStream(new ByteArrayInputStream(object), this.progressListener) : new ByteArrayInputStream(object);
-        this.swiftService.upload(relativePath, toPass, bucket, description);
+        try (InputStream toPass = wrapStream(new ByteArrayInputStream(object))) {
+            this.swiftService.upload(relativePath, toPass, bucket, description);
+        }
     }
 
     @Override
@@ -84,9 +80,9 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
         }
         final String bucket = repository.bucketName();
         final String relativePath = repository.relativizeToBucket(relativeFolder);
-        InputStream toPass = this.progressListener != null
-                ? new ListenableInputStream(stream, this.progressListener) : stream;
-        this.swiftService.upload(relativePath, toPass, bucket, description);
+        try (InputStream toPass = wrapStream(stream)) {
+            this.swiftService.upload(relativePath, toPass, bucket, description);
+        }
     }
 
     @Override
@@ -197,18 +193,6 @@ public class ObjectStorageService implements StorageService<byte[], InputStream>
                 }
             }
         }
-    }
-
-    @Override
-    public void setProgressListener(ProgressListener listener) {
-        this.progressListener = listener;
-    }
-
-    private Repository repository() {
-        if (this.repository == null) {
-            throw new RuntimeException("Service has no associated repository");
-        }
-        return this.repository;
     }
 
     private List<FileObject> list(String folderPath, Set<String> exclusions, String lastItem) {
