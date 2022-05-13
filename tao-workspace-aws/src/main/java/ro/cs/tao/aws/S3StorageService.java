@@ -9,8 +9,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
 import ro.cs.tao.security.SessionStore;
-import ro.cs.tao.services.interfaces.StorageService;
 import ro.cs.tao.services.model.FileObject;
+import ro.cs.tao.services.storage.BaseStorageService;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workspaces.Repository;
@@ -29,23 +29,22 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class S3StorageService implements StorageService<byte[], S3ObjectInputStream> {
+public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputStream> {
     private static final String PROTOCOL = "s3";
     public static final String AWS_REGION = "aws.region";
     public static final String AWS_ACCESS_KEY = "aws.access.key";
     public static final String AWS_SECRET_KEY = "aws.secret.key";
     public static final String AWS_BUCKET = "aws.bucket";
     public static final String AWS_PAGE_LIMIT = "page.limit";
-    private Repository repository;
     private String region;
     private String accessKey;
     private String secretKey;
     private AmazonS3 client;
     private int pageLimit = 1000;
-    private ro.cs.tao.ProgressListener progressListener;
     private final Logger logger = Logger.getLogger(S3StorageService.class.getName());
 
     public S3StorageService() {
+        super();
     }
 
     @Override
@@ -55,8 +54,8 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
 
     @Override
     public void associate(Repository repository) {
-        this.repository = repository;
-        final LinkedHashMap<String, String> parameters = this.repository.getParameters();
+        super.associate(repository);
+        final LinkedHashMap<String, String> parameters = repository.getParameters();
         if (parameters == null) {
             throw new IllegalArgumentException("[parameters] Cannot be null");
         }
@@ -442,11 +441,6 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         return clone;
     }
 
-    @Override
-    public void setProgressListener(ro.cs.tao.ProgressListener listener) {
-        this.progressListener = listener;
-    }
-
     private AmazonS3 buildClient() {
         if (this.region == null) { // || this.accessKey == null || this.secretKey == null) {
             throw new IllegalArgumentException("S3 client not configured");
@@ -496,8 +490,8 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
                 if (!commonPrefix.equals(repository.getUserName() + "/")) {
-                    final FileObject fileObject = new FileObject(PROTOCOL, this.repository.relativizeToRoot(commonPrefix.substring(offset)), true, 0);
-                    fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + this.repository.resolve(fileObject.getRelativePath()));
+                    final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(commonPrefix.substring(offset)), true, 0);
+                    fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                     files.add(fileObject);
                 }
             }
@@ -505,8 +499,8 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
                 while (true) {
                     for (S3ObjectSummary summary : objects.getObjectSummaries()) {
                         if (isNotFolderPlaceholder(summary)) {
-                            final FileObject fileObject = new FileObject(PROTOCOL, this.repository.relativizeToRoot(summary.getKey().substring(offset)), false, summary.getSize());
-                            fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + this.repository.resolve(fileObject.getRelativePath()));
+                            final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(summary.getKey().substring(offset)), false, summary.getSize());
+                            fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                             files.add(fileObject);
                         }
                     }
@@ -600,28 +594,24 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         return !object.getKey().endsWith(AVLFOLDER);
     }
 
-    private Repository repository() {
-        if (this.repository == null) {
-            throw new RuntimeException("Service has no associated repository");
-        }
-        return this.repository;
-    }
-
     private static class ProgressListener implements com.amazonaws.event.ProgressListener {
 
         private final ro.cs.tao.ProgressListener parent;
         private final String task;
+        private double current;
         private double total;
 
         ProgressListener(ro.cs.tao.ProgressListener parent, String task) {
             this.parent = parent;
             this.task = task;
+            this.current = 0.0;
         }
 
         ProgressListener(ro.cs.tao.ProgressListener parent, String task, double total) {
             this.parent = parent;
             this.task = task;
             this.total = total;
+            this.current = 0.0;
         }
 
         public void setTotal(double total) {
@@ -631,7 +621,8 @@ public class S3StorageService implements StorageService<byte[], S3ObjectInputStr
         @Override
         public void progressChanged(ProgressEvent progressEvent) {
             if (this.parent != null && Double.compare(total, 0.0) != 0) {
-                this.parent.notifyProgress(task, (double) progressEvent.getBytesTransferred() / total);
+                current += (double) progressEvent.getBytesTransferred();
+                this.parent.notifyProgress(task, current / total);
             }
         }
     }
