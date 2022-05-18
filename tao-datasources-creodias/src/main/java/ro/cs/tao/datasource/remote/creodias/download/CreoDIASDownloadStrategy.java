@@ -151,7 +151,7 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
                             logger.finest("End reading from input stream");
                             checkCancelled();
                             if (Boolean.parseBoolean(this.props.getProperty("auto.uncompress", "true"))) {
-                                productFile = extract(archivePath, computeTarget(archivePath));
+                                productFile = extract(product, archivePath, computeTarget(archivePath));
                             } else {
                                 productFile = archivePath;
                             }
@@ -194,11 +194,20 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
                 Paths.get(archivePath.toString().replace(".zip", ""));
     }
 
-    protected Path extract(Path archivePath, Path targetPath) throws IOException {
-        logger.fine(String.format("Begin decompressing %s into %s", archivePath.getFileName(), targetPath));
+    protected Path extract(EOProduct product, Path archivePath, Path targetPath) throws IOException {
+        String satelliteName = product.getSatelliteName();
+        final String name = archivePath.getFileName()
+                + (satelliteName.equals("Sentinel1") || satelliteName.equals("Sentinel2")
+                    ? ".SAFE"
+                    : satelliteName.equals("Sentinel3")
+                        ? ".SEN3"
+                        : "");
+        logger.fine(String.format("Begin decompressing %s into %s", name, targetPath));
         Path result = archivePath.toString().endsWith(".tar.gz") ?
                 Zipper.decompressTarGz(archivePath, targetPath, true) :
                 Zipper.decompressZipMT(archivePath, targetPath, false, true);
+        Files.move(result, result.getParent().resolve(name));
+        result = result.getParent().resolve(name);
         logger.fine(String.format("Decompression of %s completed",archivePath.getFileName()));
         return result;
     }
@@ -206,5 +215,13 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
     @Override
     protected String getMetadataUrl(EOProduct descriptor) {
         throw new RuntimeException("Metadata file not supported for this strategy");
+    }
+
+    @Override
+    protected Path findProductPath(Path root, EOProduct product) {
+        String location = product.getLocation();
+        return location.startsWith(root.toString())
+                ? Paths.get(location)
+                : super.findProductPath(root, product);
     }
 }

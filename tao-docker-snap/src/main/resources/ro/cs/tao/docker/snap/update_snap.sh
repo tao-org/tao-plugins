@@ -8,5 +8,3 @@ echo "Updating SNAP ..."
     done
 
 echo "Update SNAP done!"
-
-
