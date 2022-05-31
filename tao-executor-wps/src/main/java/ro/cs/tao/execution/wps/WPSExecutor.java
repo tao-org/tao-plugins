@@ -8,10 +8,7 @@ import org.geotools.data.wps.request.DescribeProcessRequest;
 import org.geotools.data.wps.response.DescribeProcessResponse;
 import org.geotools.data.wps.response.ExecuteProcessResponse;
 import org.geotools.process.Process;
-import ro.cs.tao.component.TaoComponent;
-import ro.cs.tao.component.Variable;
-import ro.cs.tao.component.WPSAuthentication;
-import ro.cs.tao.component.WPSComponent;
+import ro.cs.tao.component.*;
 import ro.cs.tao.datasource.param.JavaType;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.execution.ExecutionException;
@@ -87,18 +84,6 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
             if (values == null || values.size() == 0) {
                 throw new ExecutionException("No input data for the task");
             }
-            final Map<String, Object> input = new HashMap<>();
-            try {
-                for (Variable v : values) {
-                    input.put(v.getKey(), v.getValue());
-                }
-
-                //input.putAll(JacksonUtil.fromString(values.get(0).getValue(), input.getClass()));
-            } catch (IllegalArgumentException ignored) {
-            }
-            if (input.size() == 0) {
-                throw new ExecutionException("Invalid input data for the task");
-            }
             final WebProcessingService wps = this.webServicesMap.computeIfAbsent(address,
                                                  addr -> {
                                                     try {
@@ -121,14 +106,24 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
             for (Object dataInput : pdt.getDataInputs().getInput()) {
                 InputDescriptionType dataInputTmp = (InputDescriptionType) dataInput;
                 if (dataInputTmp.getLiteralData().getDataType().getReference() == null) {
-                    String taoType = input.keySet().stream().filter(k -> k.equals(dataInputTmp.getIdentifier().getValue())).findFirst().orElse(null);
-                    dataInputTmp.getLiteralData().getDataType().setReference(taoType != null
-                                                                                ? JavaType.fromFriendlyName(taoType).ogcURN()
-                                                                                : URN_OGC_DEF_ANY_URI);
+                    final ParameterDescriptor parameter = wpsComponent.getParameters().stream().filter(p -> p.getName().equals(dataInputTmp.getIdentifier().getValue())).findFirst().orElse(null);
+                    String taoType = URN_OGC_DEF_ANY_URI;
+                    if (parameter != null) {
+                        taoType = JavaType.fromClass(parameter.getDataType()).ogcURN();
+                    }
+                    dataInputTmp.getLiteralData().getDataType().setReference(taoType);
                 }
             }
             final WPSFactory wpsfactory = new WPSFactory(pdt, url);
             final Process process = wpsfactory.create();
+            final Map<String, Object> input = new HashMap<>();
+            try {
+                for (Variable v : values) {
+                    input.put(wpsComponent.getId() + "~" + v.getKey(), v.getValue());
+                }
+                //input.putAll(JacksonUtil.fromString(values.get(0).getValue(), input.getClass()));
+            } catch (IllegalArgumentException ignored) {
+            }
             this.backgroundWorker.submit(() -> {
                 try {
                     process.execute(input, null);
