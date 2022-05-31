@@ -88,7 +88,11 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
             }
             final Map<String, Object> input = new HashMap<>();
             try {
-                input.putAll(JacksonUtil.fromString(values.get(0).getValue(), input.getClass()));
+                for (Variable v : values) {
+                    input.put(v.getKey(),v.getValue());
+                }
+
+                //input.putAll(JacksonUtil.fromString(values.get(0).getValue(), input.getClass()));
             } catch (IllegalArgumentException ignored) {
             }
             if (input.size() == 0) {
@@ -113,6 +117,12 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
             final DescribeProcessResponse descResponse = wps.issueRequest(descRequest);
             final ProcessDescriptionsType processDesc = descResponse.getProcessDesc();
             final ProcessDescriptionType pdt = (ProcessDescriptionType) processDesc.getProcessDescription().get(0);
+            for (Object dataInput : pdt.getDataInputs().getInput()) {
+                InputDescriptionType dataInputTmp = (InputDescriptionType) dataInput;
+                if (dataInputTmp.getLiteralData().getDataType().getReference() == null) {
+                    dataInputTmp.getLiteralData().getDataType().setReference("");
+                }
+            }
             final WPSFactory wpsfactory = new WPSFactory(pdt, url);
             final Process process = wpsfactory.create();
             this.backgroundWorker.submit(() -> {
