@@ -12,6 +12,7 @@ import ro.cs.tao.component.TaoComponent;
 import ro.cs.tao.component.Variable;
 import ro.cs.tao.component.WPSAuthentication;
 import ro.cs.tao.component.WPSComponent;
+import ro.cs.tao.datasource.param.JavaType;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.execution.ExecutionException;
 import ro.cs.tao.execution.Executor;
@@ -24,7 +25,6 @@ import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
 import ro.cs.tao.persistence.PersistenceException;
 import ro.cs.tao.persistence.WPSAuthenticationProvider;
 import ro.cs.tao.utils.ExceptionUtils;
-import ro.cs.tao.utils.JacksonUtil;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -37,6 +37,7 @@ import java.util.concurrent.Executors;
 
 public class WPSExecutor extends Executor<WPSExecutionTask> {
 
+    public static final String URN_OGC_DEF_ANY_URI = "urn:ogc:def:anyURI";
     //private WPSComponent wpsComponent;
     private static ExecutionTaskProvider taskProvider;
     private static ExecutionJobProvider jobProvider;
@@ -89,7 +90,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
             final Map<String, Object> input = new HashMap<>();
             try {
                 for (Variable v : values) {
-                    input.put(v.getKey(),v.getValue());
+                    input.put(v.getKey(), v.getValue());
                 }
 
                 //input.putAll(JacksonUtil.fromString(values.get(0).getValue(), input.getClass()));
@@ -120,7 +121,10 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
             for (Object dataInput : pdt.getDataInputs().getInput()) {
                 InputDescriptionType dataInputTmp = (InputDescriptionType) dataInput;
                 if (dataInputTmp.getLiteralData().getDataType().getReference() == null) {
-                    dataInputTmp.getLiteralData().getDataType().setReference("");
+                    String taoType = input.keySet().stream().filter(k -> k.equals(dataInputTmp.getIdentifier().getValue())).findFirst().orElse(null);
+                    dataInputTmp.getLiteralData().getDataType().setReference(taoType != null
+                                                                                ? JavaType.fromFriendlyName(taoType).ogcURN()
+                                                                                : URN_OGC_DEF_ANY_URI);
                 }
             }
             final WPSFactory wpsfactory = new WPSFactory(pdt, url);
