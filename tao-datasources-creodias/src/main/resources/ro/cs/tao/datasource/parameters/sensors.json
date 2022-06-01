@@ -20,6 +20,13 @@
     "temporalCoverage": "from 2016 to present",
     "spatialCoverage": "Global"
   },
+  "Sentinel5P": {
+    "mission": "Sentinel5P",
+    "sensorType": "ATMOSPHERIC",
+    "description": "",
+    "temporalCoverage": "from october 2018 to present",
+    "spatialCoverage": "Global"
+  },
   "Landsat8": {
     "mission": "Landsat8",
     "sensorType": "OPTICAL",

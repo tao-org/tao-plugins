@@ -325,6 +325,98 @@
       "order": 10
     }
   },
+  "Sentinel5P": {
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": "L1B_RA_BD1",
+      "required": false,
+      "valueSet": ["L1B_RA_BD1", "L1B_RA_BD2", "L1B_RA_BD3", "L1B_RA_BD4", "L1B_RA_BD5", "L1B_RA_BD6", "L1B_RA_BD7", "L1B_RA_BD8", "L1B_IR_UVN", "L1B_IR_SIR", "L2__AER_AI", "L2__AER_LH", "L2__CH4___", "L2__CLOUD_", "L2__CO____", "L2__HCHO__", "L2__NO2___", "L2__NP_BD3", "L2__NP_BD6", "L2__NP_BD7", "L2__O3____", "L2__O3_TCL", "L2__O3__PR","L2__SO2___", "AUX_CTMANA", "AUX_CTMFCT"],
+      "order": 4
+    },
+    "processingLevel": {
+      "name": "processingLevel",
+      "remoteName": "processingLevel",
+      "label": "Processing Level",
+      "type": "string",
+      "defaultValue": "LEVEL1B",
+      "required": false,
+      "valueSet": ["LEVEL1B", "LEVEL2"],
+      "order": 5
+    },
+    "timeliness": {
+      "name": "timeliness",
+      "remoteName": "timeliness",
+      "label": "Timeliness",
+      "type": "string",
+      "defaultValue": "Near real Time",
+      "required": false,
+      "valueSet": ["Near real Time", "Offline", "Reprocessing"],
+      "order": 6
+    },
+    "relativeOrbit": {
+      "name": "relativeOrbit",
+      "remoteName": "orbitNumber",
+      "label": "Relative Orbit",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 7
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 1
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "completionDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 2
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "geometry",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 3
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "productIdentifier",
+      "label": "Product Name",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 8
+    },
+    "status" : {
+      "name":"status",
+      "remoteName":"status",
+      "label": "Status",
+      "type": "string",
+      "defaultValue":"all",
+      "required":false,
+      "valueSet":["all","31","32","34","37","0"],
+      "order": 9
+    }
+  },
   "Landsat8": {
     "processingLevel": {
       "name": "processingLevel",
