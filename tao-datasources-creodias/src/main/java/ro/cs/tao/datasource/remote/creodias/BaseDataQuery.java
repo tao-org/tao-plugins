@@ -15,7 +15,7 @@ import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.creodias.model.common.Token;
-import ro.cs.tao.datasource.remote.creodias.sentinel1.Sentinel1Query;
+import ro.cs.tao.datasource.remote.creodias.queries.Sentinel1Query;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
