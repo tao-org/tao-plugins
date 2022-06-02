@@ -8,7 +8,6 @@ import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
-import ro.cs.tao.eodata.enums.OrbitDirection;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.serialization.JsonMapper;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class Sentinel5PJsonResponseHandler implements JSonResponseHandler<EOProduct> {
@@ -80,9 +80,10 @@ public class Sentinel5PJsonResponseHandler implements JSonResponseHandler<EOProd
                         product.setLocation(result.getProductIdentifier());
                         product.setAcquisitionDate(new DateAdapter().unmarshal(result.getStartDate()));
                         product.setQuicklookLocation(result.getThumbnail());
-                        product.addAttribute("orbitdirection",
-                                             ("ascending".equals(result.getOrbitDirection()) ?
-                                                     OrbitDirection.ASCENDING : OrbitDirection.DESCENDING).name());
+                        Map<String, Object> additionalProperties = feature.getAdditionalProperties();
+                        for (Map.Entry<String, Object> entry : additionalProperties.entrySet()) {
+                            product.addAttribute(entry.getKey(), String.valueOf(entry.getValue()));
+                        }
                         products.add(product);
                     } catch (Exception ex) {
                         logger.warning("Error parsing JSON: " + ex.getMessage());
