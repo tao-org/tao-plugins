@@ -221,8 +221,31 @@
       "type": "string",
       "defaultValue": "EFR",
       "required": false,
-      "valueSet": ["EFR", "EO", "ERR", "LAN", "LFR", "LRR", "LST", "RBT", "SRA", "SRA_A", "SRA_BS", "WAT", "WFR", "WRR", "WST"],
-      "order": 1
+      "valueSet": ["EFR", "ERR", "LAN", "LFR", "LRR", "AOD", "LST", "RBT", "SRA", "SRA_A", "SRA_BS", "WAT", "WFR", "WRR", "WST"],
+      "order": 1,
+      "dependencies": [
+        {
+          "dependencyType": "FILTER",
+          "referencedParameterId": "instrument",
+          "condition": "EQ",
+          "expectedValue": "SL",
+          "allowedValues": "RBT,AOD,FRP,LST,WST"
+        },
+        {
+          "dependencyType": "FILTER",
+          "referencedParameterId": "instrument",
+          "condition": "EQ",
+          "expectedValue": "OL",
+          "allowedValues": "EFR,ERR,LFR,LRR,WFR,WRR"
+        },
+        {
+          "dependencyType": "FILTER",
+          "referencedParameterId": "instrument",
+          "condition": "EQ",
+          "expectedValue": "SR",
+          "allowedValues": "SRA,SRA_A,SRA_BS,LAN,WAT"
+        }
+      ]
     },
     "processingLevel": {
       "name": "processingLevel",
