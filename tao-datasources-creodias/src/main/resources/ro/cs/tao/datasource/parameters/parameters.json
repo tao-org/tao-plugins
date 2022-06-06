@@ -364,7 +364,7 @@
       "remoteName": "processingLevel",
       "label": "Processing Level",
       "type": "string",
-      "defaultValue": "LEVEL1B",
+      "defaultValue": null,
       "required": false,
       "valueSet": ["LEVEL1B", "LEVEL2"],
       "order": 5
