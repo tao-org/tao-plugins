@@ -272,10 +272,10 @@ public class Landsat8Query extends DataQuery {
                                                                         C2_LEVEL1_COLLECTION);
         SearchFilterValue filter;
         Map<String, QueryParameter> parameters = new HashMap<>(this.parameters);
-        if ((parameters.containsKey("row") && parameters.containsKey("path")) ||
+        /*if ((parameters.containsKey("row") && parameters.containsKey("path")) ||
              parameters.containsKey(CommonParameterNames.TILE)) {
             parameters.remove(CommonParameterNames.FOOTPRINT);
-        }
+        }*/
         if (parameters.containsKey("earthDataUsername") && parameters.containsKey("earthDataPassword")) {
             String username = parameters.get("earthDataUsername").getValueAsString();
             String password = parameters.get("earthDataPassword").getValueAsString();

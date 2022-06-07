@@ -25,6 +25,14 @@ public class SearchRequest extends BaseRequest {
     /*public SearchFilter getAdditionalCriteria() { return additionalCriteria; }
     private void setAdditionalCriteria(SearchFilter additionalCriteria) { this.additionalCriteria = additionalCriteria; }*/
 
+    public SearchFilter getMetadataFilter() {
+        return metadataFilter;
+    }
+
+    public void setMetadataFilter(SearchFilter metadataFilter) {
+        this.metadataFilter = metadataFilter;
+    }
+
     public int getMaxResults() { return maxResults; }
     private void setMaxResults(int maxResults) { this.maxResults = maxResults; }
 
