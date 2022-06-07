@@ -37,6 +37,7 @@ public class LandsatParameterProvider extends AbstractParameterProvider {
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<String, ProductFetchStrategy>() {{
+                    put("Landsat9", new Landsat8Strategy(dataSource, targetFolder, new Properties()));
                     put("Landsat8", new Landsat8Strategy(dataSource, targetFolder, new Properties()));
                     put("Landsat7", new Landsat8Strategy(dataSource, targetFolder, new Properties()));
                     put("Landsat5", new Landsat8Strategy(dataSource, targetFolder, new Properties()));

@@ -53,6 +53,7 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
     }};
 
     private final Pattern LANDSAT8 = Pattern.compile("L[CT]08_.*");
+    private final Pattern LANDSAT9 = Pattern.compile("L[CT]09_.*");
     private final Pattern ECOSTRESS = Pattern.compile(".*(BGEO|L1BRAD|L1BMAPRAD|ESIPTJPL|L3ETALEXIU|ETPTJPL|ANCQA|L4ESIALEXIU|LSTE|ECOSTRESS|CLOUD|WUE|ESI).*");
     private final Pattern MODIS = Pattern.compile("(MOD|MCD|MYD).*");
     private final Pattern HYPERION = Pattern.compile("EO.H.*");
@@ -71,6 +72,8 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             String displayId = r.getDisplayId();
             if (LANDSAT8.matcher(displayId).matches()) {
                 product = fillLandsat8Product(r);
+            } else if (LANDSAT9.matcher(displayId).matches()) {
+                product = fillLandsat9Product(r);
             } else if (ECOSTRESS.matcher(displayId).matches()) {
                 product = fillEcostressProduct(r);
             } else if (MODIS.matcher(displayId).matches()) {
@@ -96,6 +99,45 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         product.setSensorType(SensorType.OPTICAL);
         product.setPixelType(PixelType.UINT16);
         product.setProductType("Landsat8");
+        product.setId(result.getEntityId());
+        product.setName(result.getDisplayId());
+        try {
+            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
+        } catch (DateTimeParseException e) {
+            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
+        }
+        if (result.getSpatialCoverage() != null) {
+            Polygon2D polygon2D = new Polygon2D();
+            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
+            for (double[] point : coordinates[0]) {
+                polygon2D.append(point[0], point[1]);
+            }
+            product.setGeometry(polygon2D.toWKT());
+        }
+        try {
+            Browse browse = result.getBrowse().stream().filter(b -> quickLookElements.contains(b.getBrowseName())).findFirst().orElse(null);
+            if (browse != null) {
+                product.setQuicklookLocation(browse.getBrowsePath());
+            }
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        try {
+            Landsat8ProductHelper helper = new Landsat8ProductHelper(product.getName());
+            product.addAttribute("tiles", helper.getPath() + helper.getRow());
+        } catch (IllegalArgumentException e) {
+            Logger.getLogger(SearchResponseHandler.class.getName()).finest(product.getName() + " is not a Landsat product");
+        }
+        product.addAttribute("downloadable", result.getOptions() != null ? String.valueOf(result.getOptions().isDownload()) : "true");
+        return product;
+    }
+
+    private EOProduct fillLandsat9Product(SearchResult result) {
+        EOProduct product = new EOProduct();
+        product.setFormatType(DataFormat.RASTER);
+        product.setSensorType(SensorType.OPTICAL);
+        product.setPixelType(PixelType.UINT16);
+        product.setProductType("Landsat9");
         product.setId(result.getEntityId());
         product.setName(result.getDisplayId());
         try {
