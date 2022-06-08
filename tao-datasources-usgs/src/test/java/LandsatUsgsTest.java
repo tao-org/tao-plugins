@@ -51,12 +51,12 @@ public class LandsatUsgsTest {
         DataQuery query = dataSource.createQuery(sensor);
 
         QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
-        begin.setValue(LocalDateTime.of(2020, 11, 1, 0, 0, 0, 0));
+        begin.setValue(LocalDateTime.of(2022, 5, 1, 0, 0, 0, 0));
         query.addParameter(begin);
         QueryParameter<LocalDateTime> end = query.createParameter(CommonParameterNames.END_DATE, LocalDateTime.class);
-        end.setValue(LocalDateTime.of(2020, 12, 31, 0, 0, 0, 0));
+        end.setValue(LocalDateTime.of(2022, 6, 6, 0, 0, 0, 0));
         query.addParameter(end);
-        Polygon2D aoi = Polygon2D.fromWKT("POLYGON((0.5688037328 42.426901687,1.9031483158 42.4474430295,1.9199728398 41.4586816132,0.6060608364 41.438836285,0.5688037328 42.426901687))");
+        Polygon2D aoi = Polygon2D.fromWKT("MULTIPOLYGON(((13.8407544343395 48.8698778299916,13.8301934869479 49.2557675230918,14.4620185534294 49.2124261409465,14.4206837170399 48.8286933623671,13.8407544343395 48.8698778299916)))");
 
         query.addParameter(CommonParameterNames.FOOTPRINT, aoi);
 //        query.addParameter(CommonParameterNames.PRODUCT, "LC08_L1TP_199024_20201026_20201026_01_RT");
