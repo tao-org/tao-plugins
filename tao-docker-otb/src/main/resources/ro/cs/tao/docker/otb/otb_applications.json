@@ -6,6 +6,7 @@
     "description": "This application assign a class on each object of a segmentation by majority voting on a pixel-based classification.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -68,6 +69,7 @@
     "description": "Outputs a monoband image which is the result of a mathematical operation on several multi-band images.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -121,6 +123,7 @@
     "description": "This application performs mathematical operations on several multiband images.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -193,6 +196,7 @@
     "description": "Performs morphological operations on an input image channel",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -311,6 +315,7 @@
     "description": "Performs block-matching to estimate pixel-wise disparities between two images.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -633,6 +638,7 @@
     "description": "Perform P+XS pansharpening",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -817,6 +823,7 @@
     "description": "Filters the input labeled image using Majority Voting in a ball shaped neighbordhood",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -915,6 +922,7 @@
     "description": "Map a label image to 8-bits RGB using look-up tables.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1094,6 +1102,7 @@
     "description": "Estimator between 2 images.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1226,6 +1235,7 @@
     "description": "Computes the confusion matrix of a classification",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1350,6 +1360,7 @@
     "description": "Computes global mean and standard deviation for each band from a set of images and optionally saves the results in an XML file.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1403,6 +1414,7 @@
     "description": "This application computes the modulus and the phase of a complex SAR image or an image with 2 components (real and imaginary parts).",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1456,6 +1468,7 @@
     "description": "Compute statistics of the features in a set of OGR Layers",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1509,6 +1522,7 @@
     "description": "Concatenate a list of images of the same size into a single multi-channel image.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1552,6 +1566,7 @@
     "description": "Concatenate vector data files",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1595,6 +1610,7 @@
     "description": "Connected component segmentation and object based image filtering of the input image according to user-defined criterions.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1702,6 +1718,7 @@
     "description": "This application is the implementation of the histogram equalization algorithm. It can be used to enhance contrast in an image or to reduce the dynamic of the image without losing too much contrast. It offers several options as a nodata value, a contrast limitation factor, a local version of the algorithm and also a mode to equalize the luminance of the image.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1911,6 +1928,7 @@
     "description": "Convert cartographic coordinates to geographic ones.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [],
     "targets": [],
@@ -2013,6 +2031,7 @@
     "description": "Sensor to geographic coordinates conversion.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -2100,6 +2119,7 @@
     "description": "Perform speckle noise reduction on SAR image.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -2231,6 +2251,7 @@
     "description": "Perform Dimension reduction of the input image.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -2437,6 +2458,7 @@
     "description": "Projects a disparity map into a regular elevation map.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -2580,6 +2602,7 @@
     "description": "Domain Transform application for wavelet and fourier",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -2688,6 +2711,7 @@
     "description": "Download or list SRTM tiles",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -2761,6 +2785,7 @@
     "description": "Change the pixel type and rescale the image's dynamic",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -2922,6 +2947,7 @@
     "description": "This application computes edge features on every pixel of the input image selected channel",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -3007,6 +3033,7 @@
     "description": "Estimate the number of endmembers in a hyperspectral image",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -3071,6 +3098,7 @@
     "description": "Extract a ROI defined by the user.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -3324,6 +3352,7 @@
     "description": "Apply NL Means filter to an image.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -3404,6 +3433,7 @@
     "description": "Estimate disparity map between two images.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -3629,6 +3659,7 @@
     "description": "Fuses several classifications maps of the same image on the basis of class labels.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -3728,6 +3759,7 @@
     "description": "Generate a 3D Ply file from a DEM and a color image.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -3837,6 +3869,7 @@
     "description": "Generate a RPC sensor model from a list of Ground Control Points.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -3971,6 +4004,7 @@
     "description": "Segmentation using region merging algorithm",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4074,6 +4108,7 @@
     "description": "Performs morphological operations on a grayscale input image",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4174,6 +4209,7 @@
     "description": "Resamples an image according to a resampling grid",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4326,6 +4362,7 @@
     "description": "Computes Haralick textural features on the selected channel of the input image",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4465,6 +4502,7 @@
     "description": "Compute homologous points between images using keypoints",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4689,6 +4727,7 @@
     "description": "Compare two segmentations with Hoover metrics",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4806,6 +4845,7 @@
     "description": "Estimate abundance maps from an hyperspectral image and a set of endmembers.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4873,6 +4913,7 @@
     "description": "Performs a classification of the input image according to a model file.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4982,6 +5023,7 @@
     "description": "Performs dimensionality reduction of the input image based on a dimensionality reduction model file.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5052,6 +5094,7 @@
     "description": "Extracts an image envelope.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5141,6 +5184,7 @@
     "description": "Performs a prediction of the input image according to a regression model file.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5211,6 +5255,7 @@
     "description": "Time series gapfilling.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5300,6 +5345,7 @@
     "description": "Unsupervised KMeans image classification",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5448,6 +5494,7 @@
     "description": "This application performs the second step of the exact Large-Scale Mean-Shift segmentation workflow (LSMS) [1].",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5564,6 +5611,7 @@
     "description": "This application performs the third (optional) step of the exact Large-Scale Mean-Shift segmentation workflow [1].",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5644,6 +5692,7 @@
     "description": "This application performs the fourth step of the exact Large-Scale Mean-Shift segmentation workflow [1].",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5715,6 +5764,7 @@
     "description": "Large-scale segmentation using MeanShift",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5845,6 +5895,7 @@
     "description": "Detect line segments in raster",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5925,6 +5976,7 @@
     "description": "Performs local Rx score computation on an hyperspectral image.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5987,6 +6039,7 @@
     "description": "Computes local statistical moments on every pixel in the selected channel of the input image",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6049,6 +6102,7 @@
     "description": "Manage No-Data",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6161,6 +6215,7 @@
     "description": "This application smooths an image using the MeanShift algorithm.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6269,6 +6324,7 @@
     "description": "Performs morphological convex, concave and flat classification on an input image channel",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6353,6 +6409,7 @@
     "description": "Perform a geodesic morphology based image analysis on an input image channel",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6466,6 +6523,7 @@
     "description": "Performs morphological profiles analysis on an input image channel.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6586,6 +6644,7 @@
     "description": "Perform a mosaic of input images",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6776,6 +6835,7 @@
     "description": "Compute sampling rate for an input set of images.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6887,6 +6947,7 @@
     "description": "Build a multi-resolution pyramid of the image.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6967,6 +7028,7 @@
     "description": "This application implements the Quegan speckle filter for SAR images.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7038,6 +7100,7 @@
     "description": "This application implements the Quegan speckle filter for SAR images. It computes the outcore function of the filter. It must be followed by the MultitempFilteringFilter application to compute the filtered images",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7091,6 +7154,7 @@
     "description": "Change detection by Multivariate Alteration Detector (MAD) algorithm",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7143,6 +7207,7 @@
     "description": "Classify an OGR layer based on a machine learning model and a list of features to consider.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7214,6 +7279,7 @@
     "description": "Download vector data from OSM and store it to file",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7312,6 +7378,7 @@
     "description": "Compute features attributes of a vector dataset over an image.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7372,6 +7439,7 @@
     "description": "UTM zone determination from a geographic point.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [],
     "targets": [],
@@ -7422,6 +7490,7 @@
     "description": "Perform optical calibration TOA/TOC (Top Of Atmosphere/Top Of Canopy). Supported sensors: QuickBird, Ikonos, WorldView2, Formosat, Spot5, Pleiades, Spot6, Spot7. For other sensors the application also allows providing calibration parameters manually.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7703,6 +7772,7 @@
     "description": "This application allows ortho-rectifying optical and radar images from supported sensors.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7973,6 +8043,7 @@
     "description": "Perform P+XS pansharpening",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8076,6 +8147,7 @@
     "description": "Computes Pantex textural features on the selected channel of the input image",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8174,6 +8246,7 @@
     "description": "Get the value of a pixel.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8266,6 +8339,7 @@
     "description": "Computes statistics on a training polygon set.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8373,6 +8447,7 @@
     "description": "Generates a subsampled version of an image extract",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8489,6 +8564,7 @@
     "description": "Compute radiometric indices.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8587,6 +8663,7 @@
     "description": "Reproject and rasterize a vector dataset",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8743,6 +8820,7 @@
     "description": "Get information about the image",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9120,6 +9198,7 @@
     "description": "Perform least-square fit of a sensor model to a set of tie points",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9263,6 +9342,7 @@
     "description": "Rescale the image between two given values.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9325,6 +9405,7 @@
     "description": "This is the ResetMargin application",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9491,6 +9572,7 @@
     "description": "Resample an image with a rigid transform",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9653,6 +9735,7 @@
     "description": "Replace an amplitude for input interferogram.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9742,6 +9825,7 @@
     "description": "Evaluation of ambiguity height",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9822,6 +9906,7 @@
     "description": "SAR Amplitude estimation thanks to the associated DEM.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9920,6 +10005,7 @@
     "description": "This application performs a burst extraction by keeping only lines and samples of a required burst.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9982,6 +10068,7 @@
     "description": "Perform radiometric calibration of SAR images. Following sensors are supported: TerraSAR-X, Sentinel1 and Radarsat-2.Both Single Look Complex(SLC) and detected products are supported as input.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10050,6 +10137,7 @@
     "description": "SAR Cartesian mean estimation thanks to the associated DEM.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10148,6 +10236,7 @@
     "description": "CoRegistration between two SAR images.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10273,6 +10362,7 @@
     "description": "Compensated complex into master geometry between two SAR images.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10334,6 +10424,7 @@
     "description": "Concatenate a list of Bursts to provide a whole SAR Deburst Image.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10396,6 +10487,7 @@
     "description": "Computes SAR correction grid.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10476,6 +10568,7 @@
     "description": "Computes SAR correlation shift (into temporal domain).",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10574,6 +10667,7 @@
     "description": "Computes SAR correlation shift (rough shifts).",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10670,6 +10764,7 @@
     "description": "Computes deformation DEM grid.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10786,6 +10881,7 @@
     "description": "Projects a DEM into SAR geometry.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10911,6 +11007,7 @@
     "description": "Simu_SAR step for Diapason chain.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11000,6 +11097,7 @@
     "description": "This application performs deburst of Sentinel1 IW SLC images by removing redundant lines.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11053,6 +11151,7 @@
     "description": "From one-band complex images (each one related to an element of the Sinclair matrix), returns the selected decomposition.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11148,6 +11247,7 @@
     "description": "Deramping/Reramping of S1 IW Burst.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11246,6 +11346,7 @@
     "description": "SAR Doppler 0 calculation.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11299,6 +11400,7 @@
     "description": "ESD processing to correct phase between two bursts.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11397,6 +11499,7 @@
     "description": "geo_grid step for Diapason chain.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11558,6 +11661,7 @@
     "description": "SAR metadata correction.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11657,6 +11761,7 @@
     "description": "Applies offsets on a deformation grid.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11719,6 +11824,7 @@
     "description": "Computes grid statistics.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11815,6 +11921,7 @@
     "description": "Interferogram between two SAR images.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11922,6 +12029,7 @@
     "description": "SAR metadata correction.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11998,6 +12106,7 @@
     "description": "SAR Multi-Look creation.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12078,6 +12187,7 @@
     "description": "Interferogram into ground geometry between two SAR images.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12185,6 +12295,7 @@
     "description": "Phase filtering for input interferogram.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12292,6 +12403,7 @@
     "description": "This applications allows converting classical polarimetric matrices to each other.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12415,6 +12527,7 @@
     "description": "Gives, for each pixel, the power that would have been received by a SAR system with a basis different from the classical (H,V) one (polarimetric synthetis).",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12527,6 +12640,7 @@
     "description": "Estimates robust interferogram with flatenning and averaging.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12670,6 +12784,7 @@
     "description": "Estimates topographic phase for interferogram.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12777,6 +12892,7 @@
     "description": "Computes Structural Feature Set textures on every pixel of the input image selected channel",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12875,6 +12991,7 @@
     "description": "SOM image classification.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13037,6 +13154,7 @@
     "description": "Generates synthetic samples from a sample data file.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13167,6 +13285,7 @@
     "description": "Extracts samples values from an image.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13269,6 +13388,7 @@
     "description": "Selects samples from a training vector data set.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13479,6 +13599,7 @@
     "description": "Performs segmentation of an image, and output either a raster or a vector file. In vector mode, large input datasets are supported.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13774,6 +13895,7 @@
     "description": "This application merges small regions of a segmentation result.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13836,6 +13958,7 @@
     "description": "Apply a smoothing filter to an image",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13957,6 +14080,7 @@
     "description": "Classifies an image using a spectral measure.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -14051,6 +14175,7 @@
     "description": "Split a N multiband image into N images.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -14094,6 +14219,7 @@
     "description": "Compute the ground elevation based on one or multiple stereo pair(s)",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -14449,6 +14575,7 @@
     "description": "Generates two deformation fields to resample in epipolar geometry, a pair of stereo images up to the sensor model precision",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -14649,6 +14776,7 @@
     "description": "Using available image metadata, project one image onto another one",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -14783,6 +14911,7 @@
     "description": "This is the Synthetize application",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [],
     "targets": [
@@ -14826,6 +14955,7 @@
     "description": "This application helps developers to test parameters types",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -15020,6 +15150,7 @@
     "description": "Fusion of an image made of several tile files.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -15082,6 +15213,7 @@
     "description": "Train a dimensionality reduction model",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -15312,6 +15444,7 @@
     "description": "Train a classifier from multiple pairs of images and training vector data.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -15940,6 +16073,7 @@
     "description": "Train a regression model from multiple triplets of feature images, predictor images and training vector data.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -16510,6 +16644,7 @@
     "description": "Train a classifier from multiple images to perform regression.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17004,6 +17139,7 @@
     "description": "Train a classifier based on labeled geometries and a list of features to consider.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17587,6 +17723,7 @@
     "description": "Train a regression algorithm based on geometries with list of predictor to consider and a label (dependent variable).",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18099,6 +18236,7 @@
     "description": "Performs a classification of the input vector data according to a model file.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18188,6 +18326,7 @@
     "description": "Perform an extract ROI on the input vector data according to the input image extent",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18268,6 +18407,7 @@
     "description": "Reproject a vector data using support image projection reference, or a user specified map projection",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18413,6 +18553,7 @@
     "description": "Set a field in vector data.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18475,6 +18616,7 @@
     "description": "Apply a transform to each vertex of the input VectorData",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18582,6 +18724,7 @@
     "description": "Performs dimensionality reduction of the input vector data according to a model file.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18706,6 +18849,7 @@
     "description": "Performs regression on the input vector data according to a model file.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18786,6 +18930,7 @@
     "description": "Given a set of mixed spectral vectors, estimate reference substances also known as endmembers using the Vertex Component Analysis algorithm.",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18848,6 +18993,7 @@
     "description": "This application computes zonal statistics",
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
