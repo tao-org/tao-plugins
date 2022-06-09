@@ -6,6 +6,7 @@
     "description": "Computes sea surface temperature (SST) from (A)ATSR products.",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -114,6 +115,7 @@
     "description": "Ungrids (A)ATSR L1B products and extracts geolocation and pixel field of view data",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -193,6 +195,7 @@
     "description": "Detect ships using Constant False Alarm Rate detector",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -280,6 +283,7 @@
     "description": "Creates a DEM band",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -367,6 +371,7 @@
     "description": "Creates a land cover band",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -436,6 +441,7 @@
     "description": "Aerosol retrieval from S2 MSI following USwansea algorithm as used in GlobAlbedo project",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -584,9 +590,10 @@
     "id": "snap-alos-deskewing",
     "label": "ALOS-Deskewing",
     "version": "1.0",
-    "description": "Deskes an ALOS product",
+    "description": "Deskews an ALOS product",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -648,6 +655,7 @@
     "description": "Apply orbit file",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -719,6 +727,7 @@
     "description": "Computes sea surface temperature (SST) from (A)ATSR products",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -859,11 +868,12 @@
   },
   {
     "id": "snap-arviop",
-    "label": "ArviOp",
+    "label": "ARVI",
     "version": "1.0",
     "description": "Atmospherically Resistant Vegetation Index belongs to a family of indices with built-in atmospheric corrections",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1014,6 +1024,7 @@
     "description": "Azimuth Filter",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1087,6 +1098,7 @@
     "description": "Bursts co-registration using orbit and DEM",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1211,6 +1223,7 @@
     "description": "Allows copying raster data from any number of source products to a specified 'master' product",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1271,6 +1284,7 @@
     "description": "Creates a new product with only selected bands",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1336,11 +1350,12 @@
   },
   {
     "id": "snap-bi2op",
-    "label": "Bi2Op",
+    "label": "BI2",
     "version": "1.0",
-    "description": "The Brightness index represents the average of the brightness of a satellite image. This index is sensitive to the brightness of soils which is highly correlated with the humidity and the presence of salts in surface",
+    "description": "Second Brightness Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1477,11 +1492,12 @@
   },
   {
     "id": "snap-biop",
-    "label": "BiOp",
+    "label": "BI",
     "version": "1.0",
     "description": "The Brightness index represents the average of the brightness of a satellite image",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1603,9 +1619,10 @@
     "id": "snap-biophysicalop",
     "label": "BiophysicalOp",
     "version": "1.0",
-    "description": "BiophysicalOp operator",
+    "description": "The Biophysical Processor computes Level-2B Biophysical products from Sentinel-2 or LANDSAT 8 reflectances",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -1691,11 +1708,12 @@
   },
   {
     "id": "snap-c2rcc.landsat8",
-    "label": "c2rcc.landsat8",
+    "label": "C2RCC for Landsat-8",
     "version": "1.0",
-    "description": "c2rcc.landsat8 operator",
+    "description": "Case 2 Regional CoastColour atmospheric correction for Landsat8",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -2036,11 +2054,12 @@
   },
   {
     "id": "snap-c2rcc.meris",
-    "label": "c2rcc.meris",
+    "label": "C2RCC for MERIS",
     "version": "1.0",
-    "description": "c2rcc.meris operator",
+    "description": "Case 2 Regional CoastColour atmospheric correction for MERIS",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -2390,11 +2409,12 @@
   },
   {
     "id": "snap-c2rcc.meris4",
-    "label": "c2rcc.meris4",
+    "label": "C2RCC for MERIS-4",
     "version": "1.0",
-    "description": "c2rcc.meris4 operator",
+    "description": "Case 2 Regional CoastColour atmospheric correction for MERIS-4",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -2735,11 +2755,12 @@
   },
   {
     "id": "snap-c2rcc.modis",
-    "label": "c2rcc.modis",
+    "label": "C2RCC for MODIS",
     "version": "1.0",
-    "description": "c2rcc.modis operator",
+    "description": "Case 2 Regional CoastColour atmospheric correction for MODIS",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -2896,11 +2917,12 @@
   },
   {
     "id": "snap-c2rcc.msi",
-    "label": "c2rcc.msi",
+    "label": "C2RCC for Sentinel-2",
     "version": "1.0",
-    "description": "c2rcc.msi operator",
+    "description": "Case 2 Regional CoastColour atmospheric correction for Sentinel-2",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -3241,11 +3263,12 @@
   },
   {
     "id": "snap-c2rcc.olci",
-    "label": "c2rcc.olci",
+    "label": "C2RCC for Sentinel-3 OLCI",
     "version": "1.0",
-    "description": "c2rcc.olci operator",
+    "description": "Case 2 Regional CoastColour atmospheric correction for Sentinel-3 OLCI",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -3573,11 +3596,12 @@
   },
   {
     "id": "snap-c2rcc.seawifs",
-    "label": "c2rcc.seawifs",
+    "label": "C2RCC for SeaWIFS",
     "version": "1.0",
-    "description": "c2rcc.seawifs operator",
+    "description": "Case 2 Regional CoastColour atmospheric correction for SeaWIFS",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -3725,11 +3749,12 @@
   },
   {
     "id": "snap-c2rcc.viirs",
-    "label": "c2rcc.viirs",
+    "label": "C2RCC for VIIRS",
     "version": "1.0",
-    "description": "c2rcc.viirs operator",
+    "description": "Case 2 Regional CoastColour atmospheric correction for VIIRS",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -3882,6 +3907,7 @@
     "description": "Calibration operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4030,6 +4056,7 @@
     "description": "CCICloudShadow operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [],
     "targets": [
@@ -4062,6 +4089,7 @@
     "description": "Change-Detection operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4146,11 +4174,12 @@
   },
   {
     "id": "snap-ciop",
-    "label": "CiOp",
+    "label": "CI",
     "version": "1.0",
-    "description": "CiOp operator",
+    "description": "Colour Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4275,6 +4304,7 @@
     "description": "CloudProb operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4314,9 +4344,10 @@
     "id": "snap-coherence",
     "label": "Coherence",
     "version": "1.0",
-    "description": "Coherence operator",
+    "description": "Coherence estimation",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4483,6 +4514,7 @@
     "description": "Collocate operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [],
     "targets": [
@@ -4586,9 +4618,10 @@
     "id": "snap-convert-datatype",
     "label": "Convert-Datatype",
     "version": "1.0",
-    "description": "Convert-Datatype operator",
+    "description": "Convert data type",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4686,6 +4719,7 @@
     "description": "CreateStack operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -4784,6 +4818,7 @@
     "description": "Cross-Correlation operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5073,6 +5108,7 @@
     "description": "CrossResampling operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5153,9 +5189,10 @@
     "id": "snap-deburstwss",
     "label": "DeburstWSS",
     "version": "1.0",
-    "description": "DeburstWSS operator",
+    "description": "ASAR WSS Deburst",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5234,6 +5271,7 @@
     "description": "DEM-Assisted-Coregistration operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5350,6 +5388,7 @@
     "description": "Double-Difference-Interferogram operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5413,11 +5452,12 @@
   },
   {
     "id": "snap-dviop",
-    "label": "DviOp",
+    "label": "DVI",
     "version": "1.0",
-    "description": "DviOp operator",
+    "description": "Difference Vegetation Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5542,6 +5582,7 @@
     "description": "EAP-Phase-Correction operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5584,6 +5625,7 @@
     "description": "Ellipsoid-Correction-GG operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5660,6 +5702,7 @@
     "description": "Ellipsoid-Correction-RD operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -5999,6 +6042,7 @@
     "description": "EMClusterAnalysis operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6098,6 +6142,7 @@
     "description": "Enhanced-Spectral-Diversity operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6282,6 +6327,7 @@
     "description": "Fill-DEM-Hole operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6344,6 +6390,7 @@
     "description": "Find-Image-Pair operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6406,6 +6453,7 @@
     "description": "FlhMci operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6531,6 +6579,7 @@
     "description": "Flip operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6598,6 +6647,7 @@
     "description": "FUB.Water operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6696,6 +6746,7 @@
     "description": "FuClassification operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6789,11 +6840,12 @@
   },
   {
     "id": "snap-gemiop",
-    "label": "GemiOp",
+    "label": "GEMI",
     "version": "1.0",
-    "description": "GemiOp operator",
+    "description": "Global Environmental Monitoring Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -6918,6 +6970,7 @@
     "description": "GenericRegionMergingOp operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7034,6 +7087,7 @@
     "description": "GLCM operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7242,11 +7296,12 @@
   },
   {
     "id": "snap-gndviop",
-    "label": "GndviOp",
+    "label": "GNDVI",
     "version": "1.0",
-    "description": "GndviOp operator",
+    "description": "Green Normalized Difference Vegetation Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7371,6 +7426,7 @@
     "description": "GoldsteinPhaseFiltering operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7471,6 +7527,7 @@
     "description": "GRD-Post operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7513,6 +7570,7 @@
     "description": "Idepix.Envisat.Meris operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7700,6 +7758,7 @@
     "description": "Idepix.Landsat8.OLI operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -7898,6 +7957,7 @@
     "description": "Idepix.OrbView2.Seawifs operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8011,6 +8071,7 @@
     "description": "Idepix.Probav.Vegetation operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8146,6 +8207,7 @@
     "description": "Idepix.Sentinel2 operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [],
     "targets": [
@@ -8271,6 +8333,7 @@
     "description": "Idepix.Sentinel3.Olci operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8407,6 +8470,7 @@
     "description": "Idepix.Sentinel3.OlciSlstr operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8589,6 +8653,7 @@
     "description": "Idepix.SuomiNpp.Viirs operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8670,6 +8735,7 @@
     "description": "Idepix.TerraAqua.Modis operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8800,6 +8866,7 @@
     "description": "Image-Filter operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8871,6 +8938,7 @@
     "description": "Import-Vector operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "VECTOR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8933,6 +9001,7 @@
     "description": "IntegerInterferogram operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -8975,6 +9044,7 @@
     "description": "Interferogram operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9161,11 +9231,12 @@
   },
   {
     "id": "snap-ipviop",
-    "label": "IpviOp",
+    "label": "IPVI",
     "version": "1.0",
-    "description": "IpviOp operator",
+    "description": "Infrared Percentage Vegetation Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9285,11 +9356,12 @@
   },
   {
     "id": "snap-ireciop",
-    "label": "IreciOp",
+    "label": "IRECI",
     "version": "1.0",
-    "description": "IreciOp operator",
+    "description": "Inverted Red-Edge Chlorophyll Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9450,6 +9522,7 @@
     "description": "KDTree-KNN-Classifier operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9646,6 +9719,7 @@
     "description": "KMeansClusterAnalysis operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9736,6 +9810,7 @@
     "description": "KNN-Classifier operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -9932,6 +10007,7 @@
     "description": "Land-Cover-Mask operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10021,6 +10097,7 @@
     "description": "Land-Sea-Mask operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10119,6 +10196,7 @@
     "description": "LandWaterMask operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10191,6 +10269,7 @@
     "description": "LinearToFromdB operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10244,6 +10323,7 @@
     "description": "Maximum-Likelihood-Classifier operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10426,11 +10506,12 @@
   },
   {
     "id": "snap-mcariop",
-    "label": "McariOp",
+    "label": "MCARI",
     "version": "1.0",
-    "description": "McariOp operator",
+    "description": "Modified Chlorophyll Absorption Ratio Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10573,6 +10654,7 @@
     "description": "Mci.s2 operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10698,6 +10780,7 @@
     "description": "Meris.CorrectRadiometry operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -10810,6 +10893,7 @@
     "description": "Meris.N1Patcher operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [],
     "targets": [
@@ -10880,6 +10964,7 @@
     "description": "Minimum-Distance-Classifier operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11062,11 +11147,12 @@
   },
   {
     "id": "snap-mndwiop",
-    "label": "MndwiOp",
+    "label": "MNDWI",
     "version": "1.0",
-    "description": "MndwiOp operator",
+    "description": "Modified Normalized Difference Water Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11191,6 +11277,7 @@
     "description": "MphChl operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11275,11 +11362,12 @@
   },
   {
     "id": "snap-msavi",
-    "label": "SNAP MSAVI Index",
+    "label": "MSAVI",
     "version": "6.0.0",
     "description": "Retrieves the Modified Soil Adjusted Vegetation Index (MSAVI)",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11406,12 +11494,13 @@
     "templatecontents": "MsaviOp\n-Ssource=$Ssource\n-Pdownsampling=$downsampling\n-PnirFactor=$nirFactor\n-PnirSourceBand=$nirSourceBand\n-PredFactor=$redFactor\n-PredSourceBand=$redSourceBand\n-Pslope=$slope\n-PresampleType=$resampleType\n-Pupsampling=$upsampling\n-t\n$t\n-f\nGeoTIFF\n"
   },
   {
-    "id": "snap-msavi2op",
-    "label": "Msavi2Op",
+    "id": "snap-msavi2",
+    "label": "MSAVI2",
     "version": "1.0",
-    "description": "Msavi2Op operator",
+    "description": "Second Modified Soil Adjusted Vegetation Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11530,145 +11619,13 @@
     "templatecontents": "Msavi2Op\n-Ssource=$Ssource\n-PresampleType=$resampleType\n-Pupsampling=$upsampling\n-Pdownsampling=$downsampling\n-PredFactor=$redFactor\n-PnirFactor=$nirFactor\n-PredSourceBand=$redSourceBand\n-PnirSourceBand=$nirSourceBand\n-t\n$t\n-f\nGeoTIFF\n"
   },
   {
-    "id": "snap-msaviop",
-    "label": "MsaviOp",
+    "id": "snap-mtci",
+    "label": "MTCI",
     "version": "1.0",
-    "description": "MsaviOp operator",
+    "description": "MERIS Terrestrial Chlorophyll Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
-    "nodeAffinity": "Any",
-    "sources": [
-      {
-        "id": "07e74216-8c7c-4850-a09e-ef96e528661e",
-        "parentId": "snap-msaviop",
-        "name": "Ssource",
-        "cardinality": 1,
-        "dataDescriptor": {
-          "formatType": "RASTER"
-        }
-      }
-    ],
-    "targets": [
-      {
-        "id": "7b95ebde-2e42-4cab-8f6f-31bcbd014589",
-        "parentId": "snap-msaviop",
-        "name": "t",
-        "cardinality": 1,
-        "dataDescriptor": {
-          "formatType": "RASTER",
-          "location": "output_snap-msaviop.tif"
-        }
-      }
-    ],
-    "containerId": "caefe468-3830-45ba-a7b8-053397460899",
-    "fileLocation": "gpt",
-    "workingDirectory": ".",
-    "templateType": "VELOCITY",
-    "multiThread": true,
-    "parallelism": 4,
-    "visibility": "SYSTEM",
-    "active": true,
-    "parameterDescriptors": [
-
-      {
-        "id": "resampleType",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": "None",
-        "description": "If selected bands differ in size, the resample method used before computing the index",
-        "label": "PresampleType",
-        "valueSet": [
-          "None",
-          "Lowest resolution",
-          "Highest resolution"
-        ],
-        "notNull": false
-      },
-      {
-        "id": "upsampling",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": "Nearest",
-        "description": "The method used for interpolation (upsampling to a finer resolution)",
-        "label": "Pupsampling",
-        "valueSet": [
-          "Nearest",
-          "Bilinear",
-          "Bicubic"
-        ],
-        "notNull": false
-      },
-      {
-        "id": "downsampling",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": "First",
-        "description": "The method used for aggregation (downsampling to a coarser resolution)",
-        "label": "Pdownsampling",
-        "valueSet": [
-          "First",
-          "Min",
-          "Max",
-          "Mean",
-          "Median"
-        ],
-        "notNull": false
-      },
-      {
-        "id": "redFactor",
-        "type": "REGULAR",
-        "dataType": "float",
-        "defaultValue": 1.0,
-        "description": "The value of the red source band is multiplied by this value",
-        "label": "PredFactor",
-        "notNull": false
-      },
-      {
-        "id": "nirFactor",
-        "type": "REGULAR",
-        "dataType": "float",
-        "defaultValue": 1.0,
-        "description": "The value of the NIR source band is multiplied by this value",
-        "label": "PnirFactor",
-        "notNull": false
-      },
-      {
-        "id": "slope",
-        "type": "REGULAR",
-        "dataType": "float",
-        "defaultValue": 0.5,
-        "description": "The soil line slope",
-        "label": "Pslope",
-        "notNull": false
-      },
-      {
-        "id": "redSourceBand",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": null,
-        "description": "The red band for the MSAVI computation. If not provided, the operator will try to find the best fitting band",
-        "label": "PredSourceBand",
-        "notNull": false
-      },
-      {
-        "id": "nirSourceBand",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": null,
-        "description": "The near-infrared band for the MSAVI computation. If not provided, the operator will try to find the best fitting band",
-        "label": "PnirSourceBand",
-        "notNull": false
-      }
-    ],
-    "templatecontents": "MsaviOp\n-Ssource=$Ssource\n-PresampleType=$resampleType\n-Pupsampling=$upsampling\n-Pdownsampling=$downsampling\n-PredFactor=$redFactor\n-PnirFactor=$nirFactor\n-Pslope=$slope\n-PredSourceBand=$redSourceBand\n-PnirSourceBand=$nirSourceBand\n-t\n$t\n-f\nGeoTIFF\n"
-  },
-  {
-    "id": "snap-mtciop",
-    "label": "MtciOp",
-    "version": "1.0",
-    "description": "MtciOp operator",
-    "authors": "SNAP Team",
-    "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -11811,6 +11768,7 @@
     "description": "Multi-Temporal-Speckle-Filter operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12004,6 +11962,7 @@
     "description": "Multilook operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12087,12 +12046,13 @@
     "templatecontents": "Multilook\n-Ssource=$Ssource\n-PsourceBands=$sourceBands\n-PnRgLooks=$nRgLooks\n-PnAzLooks=$nAzLooks\n-PoutputIntensity=$outputIntensity\n-PgrSquarePixel=$grSquarePixel\n-t\n$t\n-f\nGeoTIFF\n"
   },
   {
-    "id": "snap-ndi45op",
-    "label": "Ndi45Op",
+    "id": "snap-ndi45",
+    "label": "NDI45",
     "version": "1.0",
-    "description": "Ndi45Op operator",
+    "description": "Normalized Difference Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12212,11 +12172,12 @@
   },
   {
     "id": "snap-ndpiop",
-    "label": "NdpiOp",
+    "label": "NDPI",
     "version": "1.0",
-    "description": "NdpiOp operator",
+    "description": "Normalized Difference Pond Index (or NHI: Normalized Humidity Index)",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12336,11 +12297,12 @@
   },
   {
     "id": "snap-ndtiop",
-    "label": "NdtiOp",
+    "label": "NDTI",
     "version": "1.0",
-    "description": "NdtiOp operator",
+    "description": "Normalized Difference Turbidity Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12460,11 +12422,12 @@
   },
   {
     "id": "snap-ndvi",
-    "label": "SNAP NDVI",
+    "label": "NDVI",
     "version": "6.0.0",
-    "description": "Computes Normalized Difference Vegetation Index",
+    "description": "Normalized Difference Vegetation Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12538,92 +12501,13 @@
     "templatecontents": "NdviOp\n-Ssource=$Ssource\n-PnirFactor=$nirFactor\n-PnirSourceBand=$nirSourceBand\n-PredFactor=$redFactor\n-PredSourceBand=$redSourceBand\n-t\n$t\n-f\nGeoTIFF\n"
   },
   {
-    "id": "snap-ndviop",
-    "label": "NdviOp",
-    "version": "1.0",
-    "description": "NdviOp operator",
-    "authors": "SNAP Team",
-    "copyright": "(C) SNAP Team",
-    "nodeAffinity": "Any",
-    "sources": [
-      {
-        "id": "0c23e7c9-8b34-4787-b6b6-b8b72f2b2405",
-        "parentId": "snap-ndviop",
-        "name": "Ssource",
-        "cardinality": 1,
-        "dataDescriptor": {
-          "formatType": "RASTER"
-        }
-      }
-    ],
-    "targets": [
-      {
-        "id": "aad80548-1012-4645-9cba-6781f3529fb5",
-        "parentId": "snap-ndviop",
-        "name": "t",
-        "cardinality": 1,
-        "dataDescriptor": {
-          "formatType": "RASTER",
-          "location": "output_snap-ndviop.tif"
-        }
-      }
-    ],
-    "containerId": "caefe468-3830-45ba-a7b8-053397460899",
-    "fileLocation": "gpt",
-    "workingDirectory": ".",
-    "templateType": "VELOCITY",
-    "multiThread": true,
-    "parallelism": 4,
-    "visibility": "SYSTEM",
-    "active": true,
-    "parameterDescriptors": [
-
-      {
-        "id": "redFactor",
-        "type": "REGULAR",
-        "dataType": "float",
-        "defaultValue": 1.0,
-        "description": "The value of the red source band is multiplied by this value",
-        "label": "PredFactor",
-        "notNull": false
-      },
-      {
-        "id": "nirFactor",
-        "type": "REGULAR",
-        "dataType": "float",
-        "defaultValue": 1.0,
-        "description": "The value of the NIR source band is multiplied by this value",
-        "label": "PnirFactor",
-        "notNull": false
-      },
-      {
-        "id": "redSourceBand",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": null,
-        "description": "The red band for the NDVI computation. If not provided, the operator will try to find the best fitting band",
-        "label": "PredSourceBand",
-        "notNull": false
-      },
-      {
-        "id": "nirSourceBand",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": null,
-        "description": "The near-infrared band for the NDVI computation. If not provided, the operator will try to find the best fitting band",
-        "label": "PnirSourceBand",
-        "notNull": false
-      }
-    ],
-    "templatecontents": "NdviOp\n-Ssource=$Ssource\n-PredFactor=$redFactor\n-PnirFactor=$nirFactor\n-PredSourceBand=$redSourceBand\n-PnirSourceBand=$nirSourceBand\n-t\n$t\n-f\nGeoTIFF\n"
-  },
-  {
     "id": "snap-ndwi2op",
-    "label": "Ndwi2Op",
+    "label": "NDWI2",
     "version": "1.0",
-    "description": "Ndwi2Op operator",
+    "description": "Second Normalized Difference Water Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12743,11 +12627,12 @@
   },
   {
     "id": "snap-ndwiop",
-    "label": "NdwiOp",
+    "label": "NDWI",
     "version": "1.0",
-    "description": "NdwiOp operator",
+    "description": "Normalized Difference Water Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12872,6 +12757,7 @@
     "description": "Object-Discrimination operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -12934,6 +12820,7 @@
     "description": "Offset-Tracking operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13117,6 +13004,7 @@
     "description": "Oil-Spill-Clustering operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13170,6 +13058,7 @@
     "description": "Oil-Spill-Detection operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13241,6 +13130,7 @@
     "description": "Oversample operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13371,6 +13261,7 @@
     "description": "OWTClassification operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13451,6 +13342,7 @@
     "description": "PCA operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13530,6 +13422,7 @@
     "description": "PduStitching operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13590,6 +13483,7 @@
     "description": "PhaseFilter operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13692,6 +13586,7 @@
     "description": "PhaseToDisplacement operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13733,6 +13628,7 @@
     "description": "PhaseToElevation operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13812,6 +13708,7 @@
     "description": "PhaseToHeight operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -13905,6 +13802,7 @@
     "description": "Principle-Components operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -14007,6 +13905,7 @@
     "description": "ProductSet-Reader operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [],
     "targets": [
@@ -14044,11 +13943,12 @@
   },
   {
     "id": "snap-pssraop",
-    "label": "PssraOp",
+    "label": "PSSRa",
     "version": "1.0",
-    "description": "PssraOp operator",
+    "description": "Pigment Specific Simple Ratio (chlorophyll index)",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -14167,11 +14067,12 @@
   },
   {
     "id": "snap-pviop",
-    "label": "PviOp",
+    "label": "PVI",
     "version": "1.0",
-    "description": "PviOp operator",
+    "description": "Perpendicular Vegetation Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -14299,11 +14200,12 @@
   },
   {
     "id": "snap-rad2refl",
-    "label": "Rad2Refl",
+    "label": "Radiance to Reflectance",
     "version": "1.0",
-    "description": "Rad2Refl operator",
+    "description": "Radiance to reflectance operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -14401,6 +14303,7 @@
     "description": "Random-Forest-Classifier operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -14596,6 +14499,7 @@
     "description": "RangeFilter operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -14698,6 +14602,7 @@
     "description": "RayleighCorrection operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -14823,6 +14728,7 @@
     "description": "Read operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [],
     "targets": [
@@ -14869,11 +14775,12 @@
   },
   {
     "id": "snap-reflectancetoradianceop",
-    "label": "ReflectanceToRadianceOp",
+    "label": "Sentinel-2 Reflectance to Radiance",
     "version": "1.0",
-    "description": "ReflectanceToRadianceOp operator",
+    "description": "Sentinel-2 reflectance to radiance operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -14957,11 +14864,12 @@
   },
   {
     "id": "snap-reipop",
-    "label": "ReipOp",
+    "label": "REIP",
     "version": "1.0",
-    "description": "ReipOp operator",
+    "description": "Red-Edge Inflection Point Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -15121,6 +15029,7 @@
     "description": "Remove-GRD-Border-Noise operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -15191,6 +15100,7 @@
     "description": "RemoveAntennaPattern operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -15243,6 +15153,7 @@
     "description": "ReplaceMetadata operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -15295,6 +15206,7 @@
     "description": "Reproject operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -15523,6 +15435,7 @@
     "description": "Resample operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -15652,11 +15565,12 @@
   },
   {
     "id": "snap-riop",
-    "label": "RiOp",
+    "label": "RI",
     "version": "1.0",
-    "description": "RiOp operator",
+    "description": "Redness Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -15775,11 +15689,12 @@
   },
   {
     "id": "snap-rviop",
-    "label": "RviOp",
+    "label": "RVI",
     "version": "1.0",
-    "description": "RviOp operator",
+    "description": "Ration Vegetation Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -15903,6 +15818,7 @@
     "description": "S2.WaterVapour operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [],
     "targets": [
@@ -15930,11 +15846,12 @@
   },
   {
     "id": "snap-s2rep",
-    "label": "SNAP S2Rep Index",
+    "label": "S2REP",
     "version": "6.0.0",
-    "description": "Sentinel-2 red-edge position index",
+    "description": "Sentinel-2 Red-Edge Position index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -16087,171 +16004,13 @@
     "templatecontents": "S2repOp\n-Ssource=$Ssource\n-Pdownsampling=$downsampling\n-PnirFactor=$nirFactor\n-PnirSourceBand=$nirSourceBand\n-PredB4Factor=$redB4Factor\n-PredB5Factor=$redB5Factor\n-PredB6Factor=$redB6Factor\n-PredSourceBand4=$redSourceBand4\n-PredSourceBand5=$redSourceBand5\n-PredSourceBand6=$redSourceBand6\n-PresampleType=$resampleType\n-Pupsampling=$upsampling\n-t\n$t\n-f\nGeoTIFF\n"
   },
   {
-    "id": "snap-s2repop",
-    "label": "S2repOp",
-    "version": "1.0",
-    "description": "S2repOp operator",
-    "authors": "SNAP Team",
-    "copyright": "(C) SNAP Team",
-    "nodeAffinity": "Any",
-    "sources": [
-      {
-        "id": "610a9514-a04a-44ad-aaae-68e79decdcff",
-        "parentId": "snap-s2repop",
-        "name": "Ssource",
-        "cardinality": 1,
-        "dataDescriptor": {
-          "formatType": "RASTER"
-        }
-      }
-    ],
-    "targets": [
-      {
-        "id": "fc5c6dbc-4b76-4198-ae6d-b97ed758acbd",
-        "parentId": "snap-s2repop",
-        "name": "t",
-        "dataDescriptor": {
-          "formatType": "RASTER",
-          "location": "output_snap-s2repop.tif"
-        }
-      }
-    ],
-    "containerId": "caefe468-3830-45ba-a7b8-053397460899",
-    "fileLocation": "gpt",
-    "workingDirectory": ".",
-    "templateType": "VELOCITY",
-    "multiThread": true,
-    "parallelism": 4,
-    "visibility": "SYSTEM",
-    "active": true,
-    "parameterDescriptors": [
-
-      {
-        "id": "resampleType",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": "None",
-        "description": "If selected bands differ in size, the resample method used before computing the index",
-        "label": "PresampleType",
-        "valueSet": [
-          "None",
-          "Lowest resolution",
-          "Highest resolution"
-        ],
-        "notNull": false
-      },
-      {
-        "id": "upsampling",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": "Nearest",
-        "description": "The method used for interpolation (upsampling to a finer resolution)",
-        "label": "Pupsampling",
-        "valueSet": [
-          "Nearest",
-          "Bilinear",
-          "Bicubic"
-        ],
-        "notNull": false
-      },
-      {
-        "id": "downsampling",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": "First",
-        "description": "The method used for aggregation (downsampling to a coarser resolution)",
-        "label": "Pdownsampling",
-        "valueSet": [
-          "First",
-          "Min",
-          "Max",
-          "Mean",
-          "Median"
-        ],
-        "notNull": false
-      },
-      {
-        "id": "redB4Factor",
-        "type": "REGULAR",
-        "dataType": "float",
-        "defaultValue": 1.0,
-        "description": "The value of the red source band (B4) is multiplied by this value",
-        "label": "PredB4Factor",
-        "notNull": false
-      },
-      {
-        "id": "redB5Factor",
-        "type": "REGULAR",
-        "dataType": "float",
-        "defaultValue": 1.0,
-        "description": "The value of the red source band (B5) is multiplied by this value",
-        "label": "PredB5Factor",
-        "notNull": false
-      },
-      {
-        "id": "redB6Factor",
-        "type": "REGULAR",
-        "dataType": "float",
-        "defaultValue": 1.0,
-        "description": "The value of the red source band (B6) is multiplied by this value",
-        "label": "PredB6Factor",
-        "notNull": false
-      },
-      {
-        "id": "nirFactor",
-        "type": "REGULAR",
-        "dataType": "float",
-        "defaultValue": 1.0,
-        "description": "The value of the NIR source band is multiplied by this value",
-        "label": "PnirFactor",
-        "notNull": false
-      },
-      {
-        "id": "redSourceBand4",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": "B4",
-        "description": "The red band (B4) for the S2REP computation. If not provided, the operator will try to find the best fitting band",
-        "label": "PredSourceBand4",
-        "notNull": false
-      },
-      {
-        "id": "redSourceBand5",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": "B5",
-        "description": "The red band (B5) for the S2REP computation. If not provided, the operator will try to find the best fitting band",
-        "label": "PredSourceBand5",
-        "notNull": false
-      },
-      {
-        "id": "redSourceBand6",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": "B6",
-        "description": "The red band (B6) for the S2REP computation. If not provided, the operator will try to find the best fitting band",
-        "label": "PredSourceBand6",
-        "notNull": false
-      },
-      {
-        "id": "nirSourceBand",
-        "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": null,
-        "description": "The near-infrared band for the S2REP computation. If not provided, the operator will try to find the best fitting band",
-        "label": "PnirSourceBand",
-        "notNull": false
-      }
-    ],
-    "templatecontents": "S2repOp\n-Ssource=$Ssource\n-PresampleType=$resampleType\n-Pupsampling=$upsampling\n-Pdownsampling=$downsampling\n-PredB4Factor=$redB4Factor\n-PredB5Factor=$redB5Factor\n-PredB6Factor=$redB6Factor\n-PnirFactor=$nirFactor\n-PredSourceBand4=$redSourceBand4\n-PredSourceBand5=$redSourceBand5\n-PredSourceBand6=$redSourceBand6\n-PnirSourceBand=$nirSourceBand\n-t\n$t\n-f\nGeoTIFF\n"
-  },
-  {
     "id": "snap-s2resampling",
     "label": "S2Resampling",
     "version": "1.0",
     "description": "S2Resampling operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -16364,6 +16123,7 @@
     "description": "SAR-Mosaic operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -16511,6 +16271,7 @@
     "description": "SAR-Simulation operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -16617,6 +16378,7 @@
     "description": "SARSim-Terrain-Correction operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -16901,11 +16663,12 @@
   },
   {
     "id": "snap-saviop",
-    "label": "SaviOp",
+    "label": "SAVI",
     "version": "1.0",
-    "description": "SaviOp operator",
+    "description": "Soil Adjusted Vegetation Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17038,6 +16801,7 @@
     "description": "SetNoDataValue operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17099,6 +16863,7 @@
     "description": "SliceAssembly operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17145,11 +16910,12 @@
   },
   {
     "id": "snap-smacop",
-    "label": "SmacOp",
+    "label": "SMAC",
     "version": "1.0",
-    "description": "SmacOp operator",
+    "description": "Meris/(A)ATSR Simplified Method for Atmospheric Correction",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17283,6 +17049,7 @@
     "description": "SnaphuExport operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17417,6 +17184,7 @@
     "description": "SnaphuImport operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17468,6 +17236,7 @@
     "description": "Speckle-Divergence operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17539,6 +17308,7 @@
     "description": "Speckle-Filter operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17731,6 +17501,7 @@
     "description": "SRGR operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17809,6 +17580,7 @@
     "description": "Stack-Averaging operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17868,6 +17640,7 @@
     "description": "Stack-Split operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17929,6 +17702,7 @@
     "description": "StampsExport operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -17990,6 +17764,7 @@
     "description": "SubGraph operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [],
     "targets": [
@@ -18032,6 +17807,7 @@
     "description": "Subset operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18147,6 +17923,7 @@
     "description": "TemporalPercentile operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18389,6 +18166,7 @@
     "description": "Terrain-Correction operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18727,6 +18505,7 @@
     "description": "Terrain-Flattening operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18833,6 +18612,7 @@
     "description": "Terrain-Mask operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -18953,6 +18733,7 @@
     "description": "ThermalNoiseRemoval operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -19023,6 +18804,7 @@
     "description": "Three-passDInSAR operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -19075,6 +18857,7 @@
     "description": "TileWriter operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RASTER",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -19181,11 +18964,12 @@
   },
   {
     "id": "snap-tndviop",
-    "label": "TndviOp",
+    "label": "TNDVI",
     "version": "1.0",
-    "description": "TndviOp operator",
+    "description": "Transformed Normalized Difference Vegetation Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -19309,6 +19093,7 @@
     "description": "TopoPhaseRemoval operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -19425,6 +19210,7 @@
     "description": "TOPSAR-Deburst operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -19477,6 +19263,7 @@
     "description": "TOPSAR-Merge operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -19529,6 +19316,7 @@
     "description": "TOPSAR-Split operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -19612,11 +19400,12 @@
   },
   {
     "id": "snap-tsaviop",
-    "label": "TsaviOp",
+    "label": "TSAVI",
     "version": "1.0",
-    "description": "TsaviOp operator",
+    "description": "Transformed Soil Adjusted Vegetation Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -19767,6 +19556,7 @@
     "description": "Undersample operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -19932,6 +19722,7 @@
     "description": "Update-Geo-Reference operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -20036,6 +19827,7 @@
     "description": "Warp operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "RADAR",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -20151,11 +19943,12 @@
   },
   {
     "id": "snap-wdviop",
-    "label": "WdviOp",
+    "label": "WDVI",
     "version": "1.0",
-    "description": "WdviOp operator",
+    "description": "Weighted Difference Vegetation Index",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "OPTICAL",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -20288,6 +20081,7 @@
     "description": "Wind-Field-Estimation operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
@@ -20349,6 +20143,7 @@
     "description": "Write operator",
     "authors": "SNAP Team",
     "copyright": "(C) SNAP Team",
+    "category": "MISC",
     "nodeAffinity": "Any",
     "sources": [
       {
