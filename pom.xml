@@ -59,6 +59,8 @@
         <module>tao-workspace-stac</module>
         <module>tao-workspace-smb</module>
         <module>tao-docker-senet</module>
+        <module>tao-datasources-stac</module>
+        <module>tao-stac-client</module>
     </modules>
 
     <properties>

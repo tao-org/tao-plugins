@@ -1,4 +1,3 @@
-import ro.cs.tao.ProgressListener;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.configuration.EmptyConfigurationProvider;
@@ -6,16 +5,13 @@ import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
-import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.usgs.USGSDataSource;
-import ro.cs.tao.datasource.usgs.download.Landsat8Strategy;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -56,6 +52,7 @@ public class LandsatUsgsTest {
         QueryParameter<LocalDateTime> end = query.createParameter(CommonParameterNames.END_DATE, LocalDateTime.class);
         end.setValue(LocalDateTime.of(2022, 6, 6, 0, 0, 0, 0));
         query.addParameter(end);
+        query.addParameter(CommonParameterNames.TILE, "192026");
         Polygon2D aoi = Polygon2D.fromWKT("MULTIPOLYGON(((13.8407544343395 48.8698778299916,13.8301934869479 49.2557675230918,14.4620185534294 49.2124261409465,14.4206837170399 48.8286933623671,13.8407544343395 48.8698778299916)))");
 
         query.addParameter(CommonParameterNames.FOOTPRINT, aoi);
@@ -74,7 +71,7 @@ public class LandsatUsgsTest {
             System.out.println("QUICK LOOK=" + r.getQuicklookLocation());
         });
 
-        final Landsat8Strategy strategy = (Landsat8Strategy) dataSource.getProductFetchStrategy(sensor);
+        /*final Landsat8Strategy strategy = (Landsat8Strategy) dataSource.getProductFetchStrategy(sensor);
 //        final EcostressStrategy strategy = (EcostressStrategy) dataSource.getProductFetchStrategy(sensor);
         //final ModisStrategy strategy = (ModisStrategy) dataSource.getProductFetchStrategy(sensor);
 
@@ -125,7 +122,7 @@ public class LandsatUsgsTest {
             } else {
                 System.out.println("Product not downloaded");
             }
-        }
+        }*/
     }
 
     static void searchLandsat8Test() throws Exception {

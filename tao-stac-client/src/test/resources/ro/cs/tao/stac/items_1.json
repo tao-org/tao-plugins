@@ -1,0 +1,5058 @@
+{
+  "stac_version": "1.0.0",
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "007b7139-ce42-5918-932a-41a48ddc6bd8",
+      "properties": {
+        "title": "S10E030_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222231,
+          0.0,
+          30.0,
+          0.0,
+          -0.00022222222222222231,
+          -10.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "S10E030",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "S10E030"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              30.0,
+              -10.0
+            ],
+            [
+              30.0,
+              -15.000000000000002
+            ],
+            [
+              35.0,
+              -15.000000000000002
+            ],
+            [
+              35.0,
+              -10.0
+            ],
+            [
+              30.0,
+              -10.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/007b7139-ce42-5918-932a-41a48ddc6bd8",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/007b7139-ce42-5918-932a-41a48ddc6bd8.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/007b7139-ce42-5918-932a-41a48ddc6bd8",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S10E030/S10E030_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            30.0,
+            0.0,
+            -0.00022222222222222231,
+            -10.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S10E030/S10E030_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            30.0,
+            0.0,
+            -0.00022222222222222231,
+            -10.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S10E030/S10E030_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            30.0,
+            0.0,
+            -0.00022222222222222231,
+            -10.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S10E030/S10E030_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            30.0,
+            0.0,
+            -0.00022222222222222231,
+            -10.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S10E030/S10E030_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            30.0,
+            0.0,
+            -0.00022222222222222231,
+            -10.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        30.0,
+        -15.000000000000002,
+        35.0,
+        -10.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "0396e949-640d-5ffa-8848-42f3732298d0",
+      "properties": {
+        "title": "S10E035_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222231,
+          0.0,
+          35.0,
+          0.0,
+          -0.00022222222222222231,
+          -10.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "S10E035",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "S10E035"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              35.0,
+              -10.0
+            ],
+            [
+              35.0,
+              -15.000000000000002
+            ],
+            [
+              40.0,
+              -15.000000000000002
+            ],
+            [
+              40.0,
+              -10.0
+            ],
+            [
+              35.0,
+              -10.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/0396e949-640d-5ffa-8848-42f3732298d0",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/0396e949-640d-5ffa-8848-42f3732298d0.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/0396e949-640d-5ffa-8848-42f3732298d0",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S10E035/S10E035_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            35.0,
+            0.0,
+            -0.00022222222222222231,
+            -10.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S10E035/S10E035_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            35.0,
+            0.0,
+            -0.00022222222222222231,
+            -10.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S10E035/S10E035_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            35.0,
+            0.0,
+            -0.00022222222222222231,
+            -10.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S10E035/S10E035_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            35.0,
+            0.0,
+            -0.00022222222222222231,
+            -10.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S10E035/S10E035_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            35.0,
+            0.0,
+            -0.00022222222222222231,
+            -10.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        35.0,
+        -15.000000000000002,
+        40.0,
+        -10.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "04e66ffe-8342-586b-8feb-8ba11d9760d7",
+      "properties": {
+        "title": "S25E030_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222231,
+          0.0,
+          30.0,
+          0.0,
+          -0.00022222222222222231,
+          -25.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "S25E030",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "S25E030"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              30.0,
+              -25.0
+            ],
+            [
+              30.0,
+              -30.0
+            ],
+            [
+              35.0,
+              -30.0
+            ],
+            [
+              35.0,
+              -25.0
+            ],
+            [
+              30.0,
+              -25.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/04e66ffe-8342-586b-8feb-8ba11d9760d7",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/04e66ffe-8342-586b-8feb-8ba11d9760d7.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/04e66ffe-8342-586b-8feb-8ba11d9760d7",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S25E030/S25E030_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            30.0,
+            0.0,
+            -0.00022222222222222231,
+            -25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S25E030/S25E030_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            30.0,
+            0.0,
+            -0.00022222222222222231,
+            -25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S25E030/S25E030_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            30.0,
+            0.0,
+            -0.00022222222222222231,
+            -25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S25E030/S25E030_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            30.0,
+            0.0,
+            -0.00022222222222222231,
+            -25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S25E030/S25E030_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            30.0,
+            0.0,
+            -0.00022222222222222231,
+            -25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        30.0,
+        -30.0,
+        35.0,
+        -25.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "04ee5c14-60cb-5147-9ede-98a865abd63e",
+      "properties": {
+        "title": "S05E035_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222231,
+          0.0,
+          35.0,
+          0.0,
+          -0.00022222222222222231,
+          -5.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "S05E035",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "S05E035"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              35.0,
+              -5.0
+            ],
+            [
+              35.0,
+              -10.000000000000002
+            ],
+            [
+              40.0,
+              -10.000000000000002
+            ],
+            [
+              40.0,
+              -5.0
+            ],
+            [
+              35.0,
+              -5.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/04ee5c14-60cb-5147-9ede-98a865abd63e",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/04ee5c14-60cb-5147-9ede-98a865abd63e.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/04ee5c14-60cb-5147-9ede-98a865abd63e",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S05E035/S05E035_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            35.0,
+            0.0,
+            -0.00022222222222222231,
+            -5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S05E035/S05E035_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            35.0,
+            0.0,
+            -0.00022222222222222231,
+            -5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S05E035/S05E035_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            35.0,
+            0.0,
+            -0.00022222222222222231,
+            -5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S05E035/S05E035_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            35.0,
+            0.0,
+            -0.00022222222222222231,
+            -5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S05E035/S05E035_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            35.0,
+            0.0,
+            -0.00022222222222222231,
+            -5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        35.0,
+        -10.000000000000002,
+        40.0,
+        -5.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "052cc916-c746-5dbd-8ed2-e7637771f631",
+      "properties": {
+        "title": "N05E020_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222237,
+          0.0,
+          20.0,
+          0.0,
+          -0.00022222222222222237,
+          5.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "N05E020",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "N05E020"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              20.0,
+              5.0
+            ],
+            [
+              20.0,
+              -3.552713678800501e-15
+            ],
+            [
+              25.000000000000004,
+              -3.552713678800501e-15
+            ],
+            [
+              25.000000000000004,
+              5.0
+            ],
+            [
+              20.0,
+              5.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/052cc916-c746-5dbd-8ed2-e7637771f631",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/052cc916-c746-5dbd-8ed2-e7637771f631.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/052cc916-c746-5dbd-8ed2-e7637771f631",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05E020/N05E020_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05E020/N05E020_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05E020/N05E020_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05E020/N05E020_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05E020/N05E020_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        20.0,
+        -3.552713678800501e-15,
+        25.000000000000004,
+        5.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "0861e6fd-f7f1-52f1-adc4-3be184d6a4ca",
+      "properties": {
+        "title": "N20E020_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222237,
+          0.0,
+          20.0,
+          0.0,
+          -0.00022222222222222237,
+          20.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "N20E020",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "N20E020"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              20.0,
+              20.0
+            ],
+            [
+              20.0,
+              14.999999999999996
+            ],
+            [
+              25.000000000000004,
+              14.999999999999996
+            ],
+            [
+              25.000000000000004,
+              20.0
+            ],
+            [
+              20.0,
+              20.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/0861e6fd-f7f1-52f1-adc4-3be184d6a4ca",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/0861e6fd-f7f1-52f1-adc4-3be184d6a4ca.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/0861e6fd-f7f1-52f1-adc4-3be184d6a4ca",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E020/N20E020_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E020/N20E020_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E020/N20E020_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E020/N20E020_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E020/N20E020_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        20.0,
+        14.999999999999996,
+        25.000000000000004,
+        20.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "0891705d-741a-584f-a56f-5dd30f2e83ad",
+      "properties": {
+        "title": "N05E015_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222237,
+          0.0,
+          15.0,
+          0.0,
+          -0.00022222222222222237,
+          5.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "N05E015",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "N05E015"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              15.0,
+              5.0
+            ],
+            [
+              15.0,
+              -3.552713678800501e-15
+            ],
+            [
+              20.000000000000004,
+              -3.552713678800501e-15
+            ],
+            [
+              20.000000000000004,
+              5.0
+            ],
+            [
+              15.0,
+              5.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/0891705d-741a-584f-a56f-5dd30f2e83ad",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/0891705d-741a-584f-a56f-5dd30f2e83ad.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/0891705d-741a-584f-a56f-5dd30f2e83ad",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05E015/N05E015_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05E015/N05E015_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05E015/N05E015_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05E015/N05E015_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05E015/N05E015_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        15.0,
+        -3.552713678800501e-15,
+        20.000000000000004,
+        5.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "08d8dad6-2717-5e37-bba7-b5bee14a743d",
+      "properties": {
+        "title": "N20E000_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222237,
+          0.0,
+          0.0,
+          0.0,
+          -0.00022222222222222237,
+          20.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "N20E000",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "N20E000"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              0.0,
+              20.0
+            ],
+            [
+              0.0,
+              14.999999999999996
+            ],
+            [
+              5.0000000000000036,
+              14.999999999999996
+            ],
+            [
+              5.0000000000000036,
+              20.0
+            ],
+            [
+              0.0,
+              20.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/08d8dad6-2717-5e37-bba7-b5bee14a743d",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/08d8dad6-2717-5e37-bba7-b5bee14a743d.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/08d8dad6-2717-5e37-bba7-b5bee14a743d",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E000/N20E000_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            0.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E000/N20E000_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            0.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E000/N20E000_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            0.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E000/N20E000_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            0.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E000/N20E000_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            0.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        0.0,
+        14.999999999999996,
+        5.0000000000000036,
+        20.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "0a5790bf-99b6-5176-8990-179d65f5b553",
+      "properties": {
+        "title": "N00E035_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.0002222222222222223,
+          0.0,
+          35.0,
+          0.0,
+          -0.0002222222222222223,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "N00E035",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "N00E035"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              35.0,
+              0.0
+            ],
+            [
+              35.0,
+              -5.000000000000002
+            ],
+            [
+              40.0,
+              -5.000000000000002
+            ],
+            [
+              40.0,
+              0.0
+            ],
+            [
+              35.0,
+              0.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/0a5790bf-99b6-5176-8990-179d65f5b553",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/0a5790bf-99b6-5176-8990-179d65f5b553.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/0a5790bf-99b6-5176-8990-179d65f5b553",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N00E035/N00E035_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.0002222222222222223,
+            0.0,
+            35.0,
+            0.0,
+            -0.0002222222222222223,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N00E035/N00E035_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.0002222222222222223,
+            0.0,
+            35.0,
+            0.0,
+            -0.0002222222222222223,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N00E035/N00E035_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.0002222222222222223,
+            0.0,
+            35.0,
+            0.0,
+            -0.0002222222222222223,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N00E035/N00E035_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.0002222222222222223,
+            0.0,
+            35.0,
+            0.0,
+            -0.0002222222222222223,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N00E035/N00E035_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.0002222222222222223,
+            0.0,
+            35.0,
+            0.0,
+            -0.0002222222222222223,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        35.0,
+        -5.000000000000002,
+        40.0,
+        0.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "0a91fbd3-57ca-51d3-943f-bf099b5c73ab",
+      "properties": {
+        "title": "N40E020_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222231,
+          0.0,
+          20.0,
+          0.0,
+          -0.00022222222222222231,
+          40.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "N40E020",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "N40E020"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              20.0,
+              40.0
+            ],
+            [
+              20.0,
+              35.0
+            ],
+            [
+              25.0,
+              35.0
+            ],
+            [
+              25.0,
+              40.0
+            ],
+            [
+              20.0,
+              40.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/0a91fbd3-57ca-51d3-943f-bf099b5c73ab",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/0a91fbd3-57ca-51d3-943f-bf099b5c73ab.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/0a91fbd3-57ca-51d3-943f-bf099b5c73ab",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N40E020/N40E020_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222231,
+            40.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N40E020/N40E020_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222231,
+            40.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N40E020/N40E020_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222231,
+            40.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N40E020/N40E020_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222231,
+            40.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N40E020/N40E020_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222231,
+            40.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        20.0,
+        35.0,
+        25.0,
+        40.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "0bb5c59c-ab83-55e8-87cd-1f0e7f9907d8",
+      "properties": {
+        "title": "N05W005_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          18000,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.0002222222222222222,
+          0.0,
+          -5.0,
+          0.0,
+          -0.0002222222222222222,
+          5.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "N05W005",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "N05W005"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -5.0,
+              5.0
+            ],
+            [
+              -5.0,
+              1.0000000000000004
+            ],
+            [
+              0.0,
+              1.0000000000000004
+            ],
+            [
+              0.0,
+              5.0
+            ],
+            [
+              -5.0,
+              5.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/0bb5c59c-ab83-55e8-87cd-1f0e7f9907d8",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/0bb5c59c-ab83-55e8-87cd-1f0e7f9907d8.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/0bb5c59c-ab83-55e8-87cd-1f0e7f9907d8",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05W005/N05W005_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            18000,
+            22500
+          ],
+          "proj:transform": [
+            0.0002222222222222222,
+            0.0,
+            -5.0,
+            0.0,
+            -0.0002222222222222222,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05W005/N05W005_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            18000,
+            22500
+          ],
+          "proj:transform": [
+            0.0002222222222222222,
+            0.0,
+            -5.0,
+            0.0,
+            -0.0002222222222222222,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05W005/N05W005_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            18000,
+            22500
+          ],
+          "proj:transform": [
+            0.0002222222222222222,
+            0.0,
+            -5.0,
+            0.0,
+            -0.0002222222222222222,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05W005/N05W005_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            18000,
+            22500
+          ],
+          "proj:transform": [
+            0.0002222222222222222,
+            0.0,
+            -5.0,
+            0.0,
+            -0.0002222222222222222,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N05W005/N05W005_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            18000,
+            22500
+          ],
+          "proj:transform": [
+            0.0002222222222222222,
+            0.0,
+            -5.0,
+            0.0,
+            -0.0002222222222222222,
+            5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        -5.0,
+        1.0000000000000004,
+        0.0,
+        5.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "0c95f482-fe47-5d17-933a-a6e2f5c696cb",
+      "properties": {
+        "title": "N15E020_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222237,
+          0.0,
+          20.0,
+          0.0,
+          -0.00022222222222222237,
+          15.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "N15E020",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "N15E020"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              20.0,
+              15.0
+            ],
+            [
+              20.0,
+              9.999999999999996
+            ],
+            [
+              25.000000000000004,
+              9.999999999999996
+            ],
+            [
+              25.000000000000004,
+              15.0
+            ],
+            [
+              20.0,
+              15.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/0c95f482-fe47-5d17-933a-a6e2f5c696cb",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/0c95f482-fe47-5d17-933a-a6e2f5c696cb.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/0c95f482-fe47-5d17-933a-a6e2f5c696cb",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N15E020/N15E020_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            15.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N15E020/N15E020_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            15.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N15E020/N15E020_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            15.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N15E020/N15E020_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            15.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N15E020/N15E020_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            15.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        20.0,
+        9.999999999999996,
+        25.000000000000004,
+        15.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "10ea41ba-a87c-507c-a141-15a207062603",
+      "properties": {
+        "title": "S05E025_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222237,
+          0.0,
+          25.0,
+          0.0,
+          -0.00022222222222222237,
+          -5.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "S05E025",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "S05E025"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              25.0,
+              -5.0
+            ],
+            [
+              25.0,
+              -10.000000000000004
+            ],
+            [
+              30.000000000000004,
+              -10.000000000000004
+            ],
+            [
+              30.000000000000004,
+              -5.0
+            ],
+            [
+              25.0,
+              -5.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/10ea41ba-a87c-507c-a141-15a207062603",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/10ea41ba-a87c-507c-a141-15a207062603.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/10ea41ba-a87c-507c-a141-15a207062603",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S05E025/S05E025_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            25.0,
+            0.0,
+            -0.00022222222222222237,
+            -5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S05E025/S05E025_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            25.0,
+            0.0,
+            -0.00022222222222222237,
+            -5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S05E025/S05E025_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            25.0,
+            0.0,
+            -0.00022222222222222237,
+            -5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S05E025/S05E025_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            25.0,
+            0.0,
+            -0.00022222222222222237,
+            -5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S05E025/S05E025_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            25.0,
+            0.0,
+            -0.00022222222222222237,
+            -5.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        25.0,
+        -10.000000000000004,
+        30.000000000000004,
+        -5.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "11470f62-2efd-5f96-a7b7-282741269edb",
+      "properties": {
+        "title": "N25E015_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222237,
+          0.0,
+          15.0,
+          0.0,
+          -0.00022222222222222237,
+          25.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "N25E015",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "N25E015"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              15.0,
+              25.0
+            ],
+            [
+              15.0,
+              19.999999999999996
+            ],
+            [
+              20.000000000000004,
+              19.999999999999996
+            ],
+            [
+              20.000000000000004,
+              25.0
+            ],
+            [
+              15.0,
+              25.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/11470f62-2efd-5f96-a7b7-282741269edb",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/11470f62-2efd-5f96-a7b7-282741269edb.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/11470f62-2efd-5f96-a7b7-282741269edb",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N25E015/N25E015_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N25E015/N25E015_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N25E015/N25E015_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N25E015/N25E015_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N25E015/N25E015_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        15.0,
+        19.999999999999996,
+        20.000000000000004,
+        25.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "11704cca-8e09-5b77-8aea-b87cdaa5a115",
+      "properties": {
+        "title": "S25E020_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222237,
+          0.0,
+          20.0,
+          0.0,
+          -0.00022222222222222237,
+          -25.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "S25E020",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "S25E020"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              20.0,
+              -25.0
+            ],
+            [
+              20.0,
+              -30.000000000000004
+            ],
+            [
+              25.000000000000004,
+              -30.000000000000004
+            ],
+            [
+              25.000000000000004,
+              -25.0
+            ],
+            [
+              20.0,
+              -25.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/11704cca-8e09-5b77-8aea-b87cdaa5a115",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/11704cca-8e09-5b77-8aea-b87cdaa5a115.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/11704cca-8e09-5b77-8aea-b87cdaa5a115",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S25E020/S25E020_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            -25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S25E020/S25E020_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            -25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S25E020/S25E020_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            -25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S25E020/S25E020_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            -25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S25E020/S25E020_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            -25.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        20.0,
+        -30.000000000000004,
+        25.000000000000004,
+        -25.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "14717c4b-af95-589b-869b-38488006c3a1",
+      "properties": {
+        "title": "N35W010_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222237,
+          0.0,
+          -10.0,
+          0.0,
+          -0.00022222222222222237,
+          35.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "N35W010",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "N35W010"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -10.0,
+              35.0
+            ],
+            [
+              -10.0,
+              29.999999999999996
+            ],
+            [
+              -4.9999999999999964,
+              29.999999999999996
+            ],
+            [
+              -4.9999999999999964,
+              35.0
+            ],
+            [
+              -10.0,
+              35.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/14717c4b-af95-589b-869b-38488006c3a1",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/14717c4b-af95-589b-869b-38488006c3a1.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/14717c4b-af95-589b-869b-38488006c3a1",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N35W010/N35W010_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            -10.0,
+            0.0,
+            -0.00022222222222222237,
+            35.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N35W010/N35W010_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            -10.0,
+            0.0,
+            -0.00022222222222222237,
+            35.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N35W010/N35W010_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            -10.0,
+            0.0,
+            -0.00022222222222222237,
+            35.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N35W010/N35W010_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            -10.0,
+            0.0,
+            -0.00022222222222222237,
+            35.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N35W010/N35W010_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            -10.0,
+            0.0,
+            -0.00022222222222222237,
+            35.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        -10.0,
+        29.999999999999996,
+        -4.9999999999999964,
+        35.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "153095be-4178-5652-a565-6163355547aa",
+      "properties": {
+        "title": "N20E015_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222237,
+          0.0,
+          15.0,
+          0.0,
+          -0.00022222222222222237,
+          20.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "N20E015",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "N20E015"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              15.0,
+              20.0
+            ],
+            [
+              15.0,
+              14.999999999999996
+            ],
+            [
+              20.000000000000004,
+              14.999999999999996
+            ],
+            [
+              20.000000000000004,
+              20.0
+            ],
+            [
+              15.0,
+              20.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/153095be-4178-5652-a565-6163355547aa",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/153095be-4178-5652-a565-6163355547aa.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/153095be-4178-5652-a565-6163355547aa",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E015/N20E015_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E015/N20E015_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E015/N20E015_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E015/N20E015_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E015/N20E015_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        15.0,
+        14.999999999999996,
+        20.000000000000004,
+        20.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "15e3cdf5-536e-59af-a9f9-e5fbc3198376",
+      "properties": {
+        "title": "S15E015_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222237,
+          0.0,
+          15.0,
+          0.0,
+          -0.00022222222222222237,
+          -15.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "S15E015",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "S15E015"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              15.0,
+              -15.0
+            ],
+            [
+              15.0,
+              -20.000000000000004
+            ],
+            [
+              20.000000000000004,
+              -20.000000000000004
+            ],
+            [
+              20.000000000000004,
+              -15.0
+            ],
+            [
+              15.0,
+              -15.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/15e3cdf5-536e-59af-a9f9-e5fbc3198376",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/15e3cdf5-536e-59af-a9f9-e5fbc3198376.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/15e3cdf5-536e-59af-a9f9-e5fbc3198376",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S15E015/S15E015_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            -15.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S15E015/S15E015_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            -15.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S15E015/S15E015_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            -15.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S15E015/S15E015_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            -15.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/S15E015/S15E015_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            15.0,
+            0.0,
+            -0.00022222222222222237,
+            -15.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        15.0,
+        -20.000000000000004,
+        20.000000000000004,
+        -15.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "1aa732e9-ec1f-5154-9ab0-d619f3b27c66",
+      "properties": {
+        "title": "N20E045_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222231,
+          0.0,
+          45.0,
+          0.0,
+          -0.00022222222222222231,
+          20.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "N20E045",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "N20E045"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              45.0,
+              20.0
+            ],
+            [
+              45.0,
+              14.999999999999998
+            ],
+            [
+              50.0,
+              14.999999999999998
+            ],
+            [
+              50.0,
+              20.0
+            ],
+            [
+              45.0,
+              20.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/1aa732e9-ec1f-5154-9ab0-d619f3b27c66",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/1aa732e9-ec1f-5154-9ab0-d619f3b27c66.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/1aa732e9-ec1f-5154-9ab0-d619f3b27c66",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E045/N20E045_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            45.0,
+            0.0,
+            -0.00022222222222222231,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E045/N20E045_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            45.0,
+            0.0,
+            -0.00022222222222222231,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E045/N20E045_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            45.0,
+            0.0,
+            -0.00022222222222222231,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E045/N20E045_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            45.0,
+            0.0,
+            -0.00022222222222222231,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N20E045/N20E045_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222231,
+            0.0,
+            45.0,
+            0.0,
+            -0.00022222222222222231,
+            20.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        45.0,
+        14.999999999999998,
+        50.0,
+        20.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "id": "1b218ec5-e4a7-5b97-aa5b-c03ebafcab12",
+      "properties": {
+        "title": "N00E020_07.stac-item",
+        "cf": "83.0 dB",
+        "proj:epsg": 4326,
+        "launchdate": "2006-01-24",
+        "proj:shape": [
+          22500,
+          22500
+        ],
+        "platform": "ALOS/ALOS-2",
+        "odc:product": "alos_palsar_mosaic",
+        "instruments": [
+          "palsar/palsar-2"
+        ],
+        "proj:transform": [
+          0.00022222222222222237,
+          0.0,
+          20.0,
+          0.0,
+          -0.00022222222222222237,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "odc:file_format": "GeoTIFF",
+        "odc:region_code": "N00E020",
+        "end_datetime": "2007-12-31T23:59:59Z",
+        "start_datetime": "2007-01-01T00:00:00Z",
+        "datetime": null,
+        "cubedash:region_code": "N00E020"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              20.0,
+              0.0
+            ],
+            [
+              20.0,
+              -5.0000000000000036
+            ],
+            [
+              25.000000000000004,
+              -5.0000000000000036
+            ],
+            [
+              25.000000000000004,
+              0.0
+            ],
+            [
+              20.0,
+              0.0
+            ]
+          ]
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items/1b218ec5-e4a7-5b97-aa5b-c03ebafcab12",
+          "type": "application/json"
+        },
+        {
+          "rel": "odc_yaml",
+          "href": "https://explorer.digitalearth.africa/dataset/1b218ec5-e4a7-5b97-aa5b-c03ebafcab12.odc-metadata.yaml",
+          "type": "text/yaml",
+          "title": "ODC Dataset YAML"
+        },
+        {
+          "rel": "collection",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic"
+        },
+        {
+          "rel": "product_overview",
+          "href": "https://explorer.digitalearth.africa/product/alos_palsar_mosaic",
+          "type": "text/html",
+          "title": "ODC Product Overview"
+        },
+        {
+          "rel": "alternative",
+          "href": "https://explorer.digitalearth.africa/dataset/1b218ec5-e4a7-5b97-aa5b-c03ebafcab12",
+          "type": "text/html",
+          "title": "ODC Dataset Overview"
+        }
+      ],
+      "assets": {
+        "hh": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N00E020/N00E020_07_sl_HH.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hh",
+          "eo:bands": [
+            {
+              "name": "hh"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "hv": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N00E020/N00E020_07_sl_HV.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "hv",
+          "eo:bands": [
+            {
+              "name": "hv"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "date": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N00E020/N00E020_07_sl_date.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "date",
+          "eo:bands": [
+            {
+              "name": "date"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "mask": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N00E020/N00E020_07_sl_mask.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "mask",
+          "eo:bands": [
+            {
+              "name": "mask"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        },
+        "linci": {
+          "href": "s3://deafrica-input-datasets/alos_palsar_mosaic/2007/N00E020/N00E020_07_sl_linci.tif",
+          "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+          "title": "linci",
+          "eo:bands": [
+            {
+              "name": "linci"
+            }
+          ],
+          "proj:epsg": 4326,
+          "proj:shape": [
+            22500,
+            22500
+          ],
+          "proj:transform": [
+            0.00022222222222222237,
+            0.0,
+            20.0,
+            0.0,
+            -0.00022222222222222237,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "roles": [
+            "data"
+          ]
+        }
+      },
+      "bbox": [
+        20.0,
+        -5.0000000000000036,
+        25.000000000000004,
+        0.0
+      ],
+      "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+      ],
+      "collection": "alos_palsar_mosaic"
+    }
+  ],
+  "links": [
+    {
+      "rel": "next",
+      "href": "https://explorer.digitalearth.africa/stac/search?collections=alos_palsar_mosaic&limit=20&_o=20&_full=True"
+    },
+    {
+      "href": "https://explorer.digitalearth.africa/stac/search",
+      "rel": "search",
+      "title": "Search",
+      "type": "application/geo+json",
+      "method": "GET"
+    },
+    {
+      "href": "https://explorer.digitalearth.africa/stac/search",
+      "rel": "search",
+      "title": "Search",
+      "type": "application/geo+json",
+      "method": "POST"
+    },
+    {
+      "rel": "root",
+      "href": "https://explorer.digitalearth.africa/stac"
+    }
+  ],
+  "numberReturned": 20,
+  "context": {
+    "page": 0,
+    "limit": 20,
+    "returned": 20,
+    "matched": 1727
+  },
+  "numberMatched": 1727
+}

@@ -94,9 +94,7 @@ public class DatabaseParameterProvider implements ParameterProvider {
         for (DataSource service : services) {
             if (!service.getClass().equals(this.source.getClass())) {
                 Map<String, CollectionDescription> types = service.getSensorTypes();
-                for (Map.Entry<String, CollectionDescription> entry : types.entrySet()) {
-                    sensorTypes.put(entry.getKey(), entry.getValue());
-                }
+                sensorTypes.putAll(types);
             }
         }
         return sensorTypes;
