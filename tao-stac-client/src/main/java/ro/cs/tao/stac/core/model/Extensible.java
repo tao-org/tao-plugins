@@ -34,11 +34,13 @@ public class Extensible {
         return extensions;
     }
 
-    public void registerExtension(ExtensionType type) {
+    public Extension<?> registerExtension(ExtensionType type) {
         if (this.extensions == null) {
             this.extensions = new HashMap<>();
         }
-        this.extensions.putIfAbsent(type, ExtensionFactory.create(this, type));
+        Extension<Extensible> extension = ExtensionFactory.create(this, type);
+        this.extensions.put(type, extension);
+        return extension;
     }
 
     public <T extends Extension<?>> T getExtension(ExtensionType extensionType) {

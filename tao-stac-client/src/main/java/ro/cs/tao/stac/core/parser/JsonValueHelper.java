@@ -1,7 +1,6 @@
 package ro.cs.tao.stac.core.parser;
 
 import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public abstract class BaseDeserializer<T> extends StdDeserializer<T> {
+public class JsonValueHelper {
+
     private static final List<DateTimeFormatter> formats = new ArrayList<DateTimeFormatter>() {{
         add(DateTimeFormatter.ISO_DATE_TIME);
         add(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
@@ -27,20 +27,16 @@ public abstract class BaseDeserializer<T> extends StdDeserializer<T> {
     private static final Pattern dateTimePattern3 = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d+)");
     private static final Pattern dateTimePattern4 = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2,6}\\+\\d{2}:\\d{2})");
 
-    protected BaseDeserializer(Class<?> vc) {
-        super(vc);
-    }
-
-    protected String getStringValue(TreeNode node) {
+    public static String getStringValue(TreeNode node) {
         return node != null ? node.toString().replace("\"", "") : null;
     }
 
-    protected String getString(TreeNode node, String field) {
+    public static String getString(TreeNode node, String field) {
         TreeNode value = node.get(field);
         return value != null ? getStringValue(value) : null;
     }
 
-    protected List<String> getStringArray(TreeNode node, String field) {
+    public static List<String> getStringArray(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (!valueNode.isArray()) {
             return null;
@@ -52,12 +48,12 @@ public abstract class BaseDeserializer<T> extends StdDeserializer<T> {
         return values;
     }
 
-    protected Integer getInt(TreeNode node, String field) {
+    public static Integer getInt(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         return valueNode != null ? Integer.parseInt(getStringValue(valueNode)) : null;
     }
 
-    protected int[] getIntArray(TreeNode node, String field) {
+    public static int[] getIntArray(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (!valueNode.isArray()) {
             return null;
@@ -69,12 +65,12 @@ public abstract class BaseDeserializer<T> extends StdDeserializer<T> {
         return values;
     }
 
-    protected Long getLong(TreeNode node, String field) {
+    public static Long getLong(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         return valueNode != null ? Long.parseLong(getStringValue(valueNode)) : null;
     }
 
-    protected long[] getLongArray(TreeNode node, String field) {
+    public static long[] getLongArray(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (!valueNode.isArray()) {
             return null;
@@ -86,12 +82,12 @@ public abstract class BaseDeserializer<T> extends StdDeserializer<T> {
         return values;
     }
 
-    protected Double getDouble(TreeNode node, String field) {
+    public static Double getDouble(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         return valueNode != null ? Double.parseDouble(getStringValue(valueNode)) : null;
     }
 
-    protected double[] getDoubleArray1(TreeNode node, String field) {
+    public static double[] getDoubleArray1(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (getArrayRank(valueNode) == 2) {
             valueNode = valueNode.get(0);
@@ -104,7 +100,7 @@ public abstract class BaseDeserializer<T> extends StdDeserializer<T> {
         return values;
     }
 
-    protected double[][] getDoubleArray2(TreeNode node, String field) {
+    public static double[][] getDoubleArray2(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (getArrayRank(valueNode) == 3) {
             valueNode = valueNode.get(0);
@@ -121,7 +117,7 @@ public abstract class BaseDeserializer<T> extends StdDeserializer<T> {
         return values;
     }
 
-    protected double[][][] getDoubleArray3(TreeNode node, String field) {
+    public static double[][][] getDoubleArray3(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (getArrayRank(valueNode) == 4) {
             valueNode = valueNode.get(0);
@@ -142,7 +138,7 @@ public abstract class BaseDeserializer<T> extends StdDeserializer<T> {
         return values;
     }
 
-    protected double[][][][] getDoubleArray4(TreeNode node, String field) {
+    public static double[][][][] getDoubleArray4(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (getArrayRank(valueNode) == 5) {
             valueNode = valueNode.get(0);
@@ -167,7 +163,7 @@ public abstract class BaseDeserializer<T> extends StdDeserializer<T> {
         return values;
     }
 
-    protected LocalDateTime getDateTime(TreeNode node, String field) {
+    public static LocalDateTime getDateTime(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         LocalDateTime value = null;
         if (valueNode != null && !"null".equals(valueNode.toString())) {
@@ -185,7 +181,7 @@ public abstract class BaseDeserializer<T> extends StdDeserializer<T> {
         return value;
     }
 
-    protected LocalDateTime[] getDateTimeArray(TreeNode node, String field) {
+    public static LocalDateTime[] getDateTimeArray(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (getArrayRank(valueNode) == 2) {
             valueNode = valueNode.get(0);
@@ -203,7 +199,7 @@ public abstract class BaseDeserializer<T> extends StdDeserializer<T> {
         return dateTimes;
     }
 
-    protected Object tryGuessTypedValue(TreeNode node) {
+    public static Object tryGuessTypedValue(TreeNode node) {
         final String value = getStringValue(node);
         if (value == null) {
             return value;
@@ -227,7 +223,7 @@ public abstract class BaseDeserializer<T> extends StdDeserializer<T> {
         }
     }
 
-    private int getArrayRank(final TreeNode node) {
+    private static int getArrayRank(final TreeNode node) {
         int i = 0;
         TreeNode current = node;
         while (current.isArray()) {
@@ -236,5 +232,4 @@ public abstract class BaseDeserializer<T> extends StdDeserializer<T> {
         }
         return i;
     }
-
 }

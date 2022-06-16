@@ -15,11 +15,8 @@ public class STACParser {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         SimpleModule module = new SimpleModule();
-        /*module.addDeserializer(Catalog.class, new CatalogDeserializer());
-        module.addDeserializer(Collection.class, new CollectionDeserializer());*/
         module.addDeserializer(SpatialExtent.class, new SpatialDeserializer());
         module.addDeserializer(TemporalExtent.class, new TemporalDeserializer());
-        /*module.addDeserializer(ItemCollection.class, new ItemCollectionDeserializer());*/
         module.addDeserializer(Item.class, new ItemDeserializer());
         mapper.registerModule(module);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

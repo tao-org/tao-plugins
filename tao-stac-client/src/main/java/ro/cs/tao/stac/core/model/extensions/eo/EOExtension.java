@@ -1,7 +1,10 @@
 package ro.cs.tao.stac.core.model.extensions.eo;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.TreeNode;
 import ro.cs.tao.stac.core.model.Extensible;
 import ro.cs.tao.stac.core.model.extensions.Extension;
+import ro.cs.tao.stac.core.parser.STACParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +16,22 @@ public class EOExtension<E extends Extensible> extends Extension<E> {
     }
 
     @Override
-    public boolean isOfThisType(String fieldName) {
-        return fieldName.startsWith(EoFields.PREFIX);
+    public String getPrefix() {
+        return EoFields.PREFIX;
+    }
+
+    @Override
+    public void extractField(TreeNode node, String name) throws JsonProcessingException {
+        if (EoFields.BANDS.equals(name)) {
+            TreeNode arrNode = node.get(name);
+            if (arrNode != null) {
+                for (int i = 0; i < arrNode.size(); i++) {
+                    addBand(new STACParser().parseBand(arrNode.get(i).toString()));
+                }
+            }
+        } else if (EoFields.CLOUD_COVER.equals(name)) {
+            setCloud_cover(Double.parseDouble(node.get(name).toString()));
+        }
     }
 
     public Double getCloud_cover() {
