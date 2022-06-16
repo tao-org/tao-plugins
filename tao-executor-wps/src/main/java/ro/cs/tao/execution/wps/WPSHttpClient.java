@@ -127,32 +127,36 @@ public class WPSHttpClient extends SimpleHttpClient {
     }
 
     private String doLogin() throws IOException {
-        URLConnection connection = openConnection(new URL(this.authentication.getLoginUrl()));
-        ((HttpURLConnection) connection).setRequestMethod("POST");
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
-        connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
-        try (DataOutputStream out = new DataOutputStream(connection.getOutputStream())) {
-            final String content = "user=" + URLEncoder.encode(getUser(), "UTF-8") + "&password=" + URLEncoder.encode(getPassword(), "UTF-8");
-            out.writeBytes(content);
-            out.flush();
-        }
-        final StringBuilder builder = new StringBuilder();
-        String line;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-            while ((line = reader.readLine()) != null) {
-                builder.append(line);
+        if (this.authentication != null) {
+            URLConnection connection = openConnection(new URL(this.authentication.getLoginUrl()));
+            ((HttpURLConnection) connection).setRequestMethod("POST");
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+            try (DataOutputStream out = new DataOutputStream(connection.getOutputStream())) {
+                final String content = "user=" + URLEncoder.encode(getUser(), "UTF-8") + "&password=" + URLEncoder.encode(getPassword(), "UTF-8");
+                out.writeBytes(content);
+                out.flush();
             }
-        }
-        final ServiceResponse response = new ObjectMapper().readerFor(ServiceResponse.class).readValue(builder.toString());
-        final Object data = response.getData();
-        if (data instanceof String) {
-            return (String) data;
+            final StringBuilder builder = new StringBuilder();
+            String line;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+            }
+            final ServiceResponse response = new ObjectMapper().readerFor(ServiceResponse.class).readValue(builder.toString());
+            final Object data = response.getData();
+            if (data instanceof String) {
+                return (String) data;
+            } else {
+                final Map.Entry<String, String> entry = ((Map<String, String>) data).entrySet().stream()
+                                                                                    .filter(e -> e.getKey().toLowerCase().contains("token"))
+                                                                                    .findFirst().orElse(null);
+                return entry != null ? entry.getValue() : null;
+            }
         } else {
-            final Map.Entry<String, String> entry = ((Map<String, String>) data).entrySet().stream()
-                    .filter(e -> e.getKey().toLowerCase().contains("token"))
-                    .findFirst().orElse(null);
-            return entry != null ? entry.getValue() : null;
+            return null;
         }
     }
 

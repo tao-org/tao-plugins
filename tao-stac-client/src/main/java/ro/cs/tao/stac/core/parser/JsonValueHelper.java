@@ -204,9 +204,9 @@ public class JsonValueHelper {
         if (value == null) {
             return value;
         }
-        if (intPattern.matcher(value).find() && !value.contains(" ")) {
+        if (intPattern.matcher(value).find() && !value.contains(" ") && !value.contains(".")) {
             return Long.parseLong(value);
-        } else if (floatPattern.matcher(value).find() && !value.contains(" ")) {
+        } else if (floatPattern.matcher(value).find() && !value.contains(" ") && !value.contains("T")) {
             return Double.parseDouble(value);
         } else if (datePattern.matcher(value).find() && value.length() == 10) {
             return LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -215,7 +215,7 @@ public class JsonValueHelper {
         } else if (dateTimePattern2.matcher(value).find()) {
             return LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
         } else if (dateTimePattern3.matcher(value).find()) {
-            return LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+            return LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
         } else if (dateTimePattern4.matcher(value).find()) {
             return LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssSSSSXXX"));
         } else {
