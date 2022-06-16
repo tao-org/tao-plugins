@@ -1,13 +1,20 @@
 package ro.cs.tao.stac.core.model;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Item extends Extensible {
     public static final String DATETIME = "datetime";
+    private static final Set<String> declaredFieldNames;
+
+    static {
+        final Field[] declaredFields = Item.class.getDeclaredFields();
+        declaredFieldNames = Arrays.stream(declaredFields).map(Field::getName).collect(Collectors.toSet());
+        declaredFieldNames.add(DATETIME);
+    }
+
     protected String stac_version;
     protected List<String> stac_extensions;
     protected String id;
@@ -16,6 +23,10 @@ public class Item extends Extensible {
     protected ItemType type;
     protected List<Link> links;
     protected Map<String, Asset> assets;
+
+    public static Set<String> coreFieldNames(){
+        return declaredFieldNames;
+    }
 
     public String getStac_version() {
         return stac_version;

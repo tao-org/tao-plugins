@@ -1,26 +1,26 @@
 package ro.cs.tao.stac.core.model.extensions.projection;
 
 public class Centroid {
-    private double lat;
-    private double lon;
+    private Double lat;
+    private Double lon;
 
-    public double getLat() {
+    public Double getLat() {
         return lat;
     }
 
-    public void setLat(double lat) {
-        if (lat < -90 || lat > 90) {
+    public void setLat(Double lat) {
+        if (lat != null && (lat < -90 || lat > 90)) {
             throw new IllegalArgumentException("Invalid latitude value");
         }
         this.lat = lat;
     }
 
-    public double getLon() {
+    public Double getLon() {
         return lon;
     }
 
-    public void setLon(double lon) {
-        if (lon < -180 || lon > 180) {
+    public void setLon(Double lon) {
+        if (lon != null && (lon < -180 || lon > 180)) {
             throw new IllegalArgumentException("Invalid longitude value");
         }
         this.lon = lon;
