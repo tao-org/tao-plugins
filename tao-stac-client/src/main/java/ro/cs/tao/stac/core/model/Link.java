@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class Link {
     protected String href;
-    protected Relation rel;
+    protected String rel;
     protected String type;
     protected String title;
     protected String description;
@@ -30,11 +30,11 @@ public class Link {
     /**
      * Relation type of the link
      */
-    public Relation getRel() {
+    public String getRel() {
         return rel;
     }
 
-    public void setRel(Relation rel) {
+    public void setRel(String rel) {
         this.rel = rel;
     }
 
