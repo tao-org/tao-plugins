@@ -3,6 +3,7 @@ package ro.cs.tao.stac.core.model.extensions;
 import ro.cs.tao.stac.core.model.Extensible;
 import ro.cs.tao.stac.core.model.extensions.eo.EOExtension;
 import ro.cs.tao.stac.core.model.extensions.projection.ProjExtension;
+import ro.cs.tao.stac.core.model.extensions.view.ViewExtension;
 
 public class ExtensionFactory {
 
@@ -16,6 +17,7 @@ public class ExtensionFactory {
                 extension = new ProjExtension<>(parent);
                 break;
             case VIEW:
+                extension = new ViewExtension<>(parent);
                 break;
         }
         return extension;

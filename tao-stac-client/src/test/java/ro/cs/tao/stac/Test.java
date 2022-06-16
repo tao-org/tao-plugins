@@ -1,18 +1,27 @@
 package ro.cs.tao.stac;
 
-import ro.cs.tao.stac.core.model.Catalog;
-import ro.cs.tao.stac.core.model.Collection;
-import ro.cs.tao.stac.core.model.ItemCollection;
+import ro.cs.tao.stac.core.STACClient;
+import ro.cs.tao.stac.core.model.*;
 import ro.cs.tao.stac.core.parser.STACParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Test {
 
     public static void main(String[] args) throws Exception {
+        testParser();
+        testClient();
+        System.exit(0);
+    }
+
+    private static void testParser() throws IOException {
         STACParser parser = new STACParser();
         Catalog catalog = parser.parseCatalogResponse(testCatalog());
         assert(catalog != null);
@@ -20,7 +29,33 @@ public class Test {
         assert(collection != null);
         ItemCollection itemCollection = parser.parseItemCollectionResponse(testItems());
         assert(itemCollection != null);
-        System.exit(0);
+    }
+
+    private static void testClient() throws IOException {
+        STACClient client = new STACClient("https://earth-search.aws.element84.com/v0", null);
+        Catalog catalog = client.listCatalog();
+        assert (catalog != null);
+        Collection collection = client.listCollection("sentinel-s2-l2a-cogs");
+        assert (collection != null);
+        ItemCollection itemCollection = client.listItems("sentinel-s2-l2a-cogs");
+        assert(itemCollection != null);
+        Item item = client.getItem("sentinel-s2-l2a-cogs", "S2A_46WDV_20220616_0_L2A");
+        assert (item != null);
+        Map<String, Object> params = new HashMap<>();
+        params.put("bbox", "20.2201924985,43.6884447292,29.62654341,48.2208812526");
+        params.put("datetime", "2022-05-01T00:00:00Z/2022-05-02T23:59:59Z");
+        ItemCollection results = client.search("sentinel-s2-l2a-cogs", params);
+        assert (results != null);
+        List<Item> features = results.getFeatures();
+        if (features != null && features.size() > 0) {
+            Item it = features.get(0);
+            Map<String, Asset> assets = it.getAssets();
+            if (assets.size() > 1) {
+                client.download(assets.values().iterator().next(), Paths.get("D:\\test"));
+            } else {
+                client.download(it, Paths.get("D:\\test"));
+            }
+        }
     }
 
     private static String testCatalog() {

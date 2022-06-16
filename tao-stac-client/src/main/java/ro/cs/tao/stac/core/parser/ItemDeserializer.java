@@ -38,14 +38,15 @@ public class ItemDeserializer extends StdDeserializer<Item> {
                 }
             }
         }
+        if (!hasExtensions) {
+            for (ExtensionType type : ExtensionType.values()) {
+                item.registerExtension(type);
+            }
+            hasExtensions = true;
+        }
         final Map<String, Extension<?>> itemExtensions = new HashMap<>();
         final Map<String, Extension<?>> assetExtensions = new HashMap<>();
-        if (hasExtensions) {
-            item.getExtensions().values().forEach(v -> itemExtensions.put(v.getPrefix(), v));
-        }
-        /*final EOExtension<Item> eoExt = item.getExtension(ExtensionType.EO);
-        final ProjExtension<Item> projExt = item.getExtension(ExtensionType.PROJ);
-        final ViewExtension<Item> viewExt = item.getExtension(ExtensionType.VIEW);*/
+        item.getExtensions().values().forEach(v -> itemExtensions.put(v.getPrefix(), v));
         while (iterator.hasNext()) {
             String field = iterator.next();
             child = root.get(field);
@@ -111,7 +112,7 @@ public class ItemDeserializer extends StdDeserializer<Item> {
                     while (namesIterator.hasNext()) {
                         final String name = namesIterator.next();
                         final Asset asset = new Asset();
-                        if (hasExtensions && assetExtensions.isEmpty()){
+                        if (assetExtensions.isEmpty()){
                             item.getExtensions().keySet().forEach(e -> {
                                 Extension<?> extension = asset.registerExtension(e);
                                 assetExtensions.put(extension.getPrefix(), extension);
