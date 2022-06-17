@@ -134,8 +134,9 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 try {
                     switch (this.identifiedElement) {
                         case "beginposition":
-                            this.current.setAcquisitionDate(new DateAdapter().unmarshal(elementValue.endsWith("Z") ?
-                                    elementValue.substring(0, elementValue.lastIndexOf(".")) : elementValue));
+                            int dotIdx = elementValue.lastIndexOf(".");
+                            this.current.setAcquisitionDate(new DateAdapter().unmarshal(dotIdx > 0 ?
+                                    elementValue.substring(0, dotIdx) : elementValue));
                             break;
                         default:
                             this.current.addAttribute(this.identifiedElement, elementValue);

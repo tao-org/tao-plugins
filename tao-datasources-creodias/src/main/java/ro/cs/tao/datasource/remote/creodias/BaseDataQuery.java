@@ -43,6 +43,7 @@ public abstract class BaseDataQuery extends DataQuery {
         super(source, sensorName);
         this.sensorName = sensorName;
         this.connectionString = connectionString;
+        this.queryDelay = 1;
     }
 
     @Override
@@ -228,7 +229,7 @@ public abstract class BaseDataQuery extends DataQuery {
                         }
                         break;
                     case "cloudCover":
-                        query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), "[0," + parameter.getValue() + "]"));
+                        query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), "[0," + parameter.getValueAsDouble().intValue() + "]"));
                         break;
                     case "productSize":
                         // productSize filter will be applied after results are returned
