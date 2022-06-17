@@ -17,7 +17,7 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         testParser();
-        testClient();
+        //testClient();
         System.exit(0);
     }
 
@@ -25,6 +25,8 @@ public class Test {
         STACParser parser = new STACParser();
         Catalog catalog = parser.parseCatalogResponse(testCatalog());
         assert(catalog != null);
+        CollectionList collections = parser.parseCollectionsResponse(testCollections());
+        assert (collections != null);
         Collection collection = parser.parseCollectionResponse(testCollection());
         assert(collection != null);
         ItemCollection itemCollection = parser.parseItemCollectionResponse(testItems());
@@ -33,13 +35,13 @@ public class Test {
 
     private static void testClient() throws IOException {
         STACClient client = new STACClient("https://earth-search.aws.element84.com/v0", null);
-        Catalog catalog = client.listCatalog();
+        Catalog catalog = client.getCatalog();
         assert (catalog != null);
-        Collection collection = client.listCollection("sentinel-s2-l2a-cogs");
+        Collection collection = client.getCollection("sentinel-s2-l2a-cogs");
         assert (collection != null);
         ItemCollection itemCollection = client.listItems("sentinel-s2-l2a-cogs");
         assert(itemCollection != null);
-        Item item = client.getItem("sentinel-s2-l2a-cogs", "S2A_46WDV_20220616_0_L2A");
+        Item item = client.getItem("sentinel-s2-l2a-cogs", itemCollection.getFeatures().get(0).getId());
         assert (item != null);
         Map<String, Object> params = new HashMap<>();
         params.put("bbox", "20.2201924985,43.6884447292,29.62654341,48.2208812526");
@@ -449,6 +451,12 @@ public class Test {
                 "    }\n" +
                 "  ]\n" +
                 "}";
+    }
+
+    private static String testCollections() throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Test.class.getResourceAsStream("collections.json")))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+        }
     }
 
     private static String testItems() throws IOException {

@@ -24,14 +24,21 @@ public class STACClient {
         this.client= new HttpClient(authentication);
     }
 
-    public Catalog listCatalog() throws IOException {
+    public Catalog getCatalog() throws IOException {
         final HTTPResponse response = this.client.get(this.stacURL);
         try (InputStream inStream = response.getResponseStream()) {
             return new STACParser().parseCatalogResponse(inStream);
         }
     }
 
-    public Collection listCollection(String collectionName) throws IOException {
+    public CollectionList listCollections() throws IOException {
+        final HTTPResponse response = this.client.get(new URL(this.stacURL + "/collections"));
+        try (InputStream inStream = response.getResponseStream()) {
+            return new STACParser().parseCollectionsResponse(inStream);
+        }
+    }
+
+    public Collection getCollection(String collectionName) throws IOException {
         final HTTPResponse response = this.client.get(new URL(this.stacURL + "/collections/" + collectionName));
         try (InputStream inStream = response.getResponseStream()) {
             return new STACParser().parseCollectionResponse(inStream);
@@ -69,10 +76,16 @@ public class STACClient {
         if (parameters == null) {
             return listItems(collectionName);
         }
-        StringBuilder href = new StringBuilder(this.stacURL + "/collections/" + collectionName + "/search?");
+        final Catalog catalog = getCatalog();
+        Link searchLink = catalog.getLinks().stream().filter(l -> "search".equals(l.getRel())).findFirst().orElse(null);
+        if (searchLink == null) {
+            throw new IOException("Search not supported on catalog " + catalog.getId());
+        }
+        StringBuilder href = new StringBuilder(searchLink.getHref() + "?");
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
             href.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
+        href.append("collections=").append(collectionName).append("&");
         if (pageNumber > 0 & pageSize > 0) {
             href.append("page=").append(pageSize).append("&limit=").append(pageSize);
         }
@@ -104,6 +117,10 @@ public class STACClient {
              OutputStream outStream = Files.newOutputStream(folder.resolve(name))) {
             FileUtilities.copyStream(inStream, outStream);
         }
+    }
+    public InputStream download(Asset asset) throws IOException {
+        final HTTPResponse response = this.client.get(new URL(asset.getHref()));
+        return response.getResponseStream();
     }
 
 }

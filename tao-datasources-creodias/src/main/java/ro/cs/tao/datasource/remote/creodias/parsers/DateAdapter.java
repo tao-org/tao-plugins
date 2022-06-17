@@ -18,18 +18,14 @@ package ro.cs.tao.datasource.remote.creodias.parsers;
 import ro.cs.tao.utils.DateUtils;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Cosmin Cara
  */
 public class DateAdapter extends XmlAdapter<String, LocalDateTime> {
-    private static final List<DateTimeFormatter> formats = new ArrayList<DateTimeFormatter>() {{
+    /*private static final List<DateTimeFormatter> formats = new ArrayList<DateTimeFormatter>() {{
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss'Z'"));
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SS'Z'"));
@@ -37,20 +33,23 @@ public class DateAdapter extends XmlAdapter<String, LocalDateTime> {
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'"));
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSSSS'Z'"));
         add(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"));
-    }};
+    }};*/
+    private static final DateTimeFormatter parseFormat = DateUtils.getResilientFormatterAtUTC();
+    private static final DateTimeFormatter stringFormat = DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     @Override
     public LocalDateTime unmarshal(String v) throws Exception {
-        for (DateTimeFormatter format : formats) {
+        /*for (DateTimeFormatter format : formats) {
             try {
                 return LocalDateTime.parse(v, format);
             } catch (DateTimeParseException ignored) {}
         }
-        throw new ParseException("Unsupported date format", 0);
+        throw new ParseException("Unsupported date format", 0);*/
+        return LocalDateTime.parse(v, parseFormat);
     }
 
     @Override
     public String marshal(LocalDateTime v) throws Exception {
-        return formats.get(0).format(v);
+        return stringFormat.format(v);
     }
 }
