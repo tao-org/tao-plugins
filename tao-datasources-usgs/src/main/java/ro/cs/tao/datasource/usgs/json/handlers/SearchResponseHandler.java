@@ -36,6 +36,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -52,8 +53,8 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         add("Thermal Browse");
     }};
 
-    private final Pattern LANDSAT8 = Pattern.compile("L[CT]08_.*");
-    private final Pattern LANDSAT9 = Pattern.compile("L[CT]09_.*");
+    private final Pattern LANDSAT8 = Pattern.compile("L[CTO]08_.*");
+    private final Pattern LANDSAT9 = Pattern.compile("L[CTO]09_.*");
     private final Pattern ECOSTRESS = Pattern.compile(".*(BGEO|L1BRAD|L1BMAPRAD|ESIPTJPL|L3ETALEXIU|ETPTJPL|ANCQA|L4ESIALEXIU|LSTE|ECOSTRESS|CLOUD|WUE|ESI).*");
     private final Pattern MODIS = Pattern.compile("(MOD|MCD|MYD).*");
     private final Pattern HYPERION = Pattern.compile("EO.H.*");
@@ -83,8 +84,11 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             } else if (VIIRS.matcher(displayId).matches()) {
                 product = fillViirsProduct(r);
             }
+            if (product == null) {
+                Logger.getLogger(SearchResponseHandler.class.getName()).finest(displayId + " is not a supported product");
+            }
             return product;
-        }).collect(Collectors.toList());
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Override
