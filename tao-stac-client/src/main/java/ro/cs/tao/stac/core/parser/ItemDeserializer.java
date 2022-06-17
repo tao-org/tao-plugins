@@ -29,24 +29,27 @@ public class ItemDeserializer extends StdDeserializer<Item> {
         TreeNode child;
         List<String> extensions = JsonValueHelper.getStringArray(root, "stac_extensions");
         boolean hasExtensions = false;
+        final Map<String, Extension<?>> itemExtensions = new HashMap<>();
+        final Map<String, ExtensionType> assetExtensionTypes = new HashMap<>();
         if (extensions != null) {
             for (String extension : extensions) {
                 ExtensionType extensionType = ExtensionType.fromURI(extension);
                 if (extensionType != null) {
-                    item.registerExtension(extensionType);
+                    Extension<?> ext = item.registerExtension(extensionType);
+                    itemExtensions.put(ext.getPrefix(), ext);
+                    assetExtensionTypes.put(ext.getPrefix(), extensionType);
                     hasExtensions = true;
                 }
             }
         }
         if (!hasExtensions) {
             for (ExtensionType type : ExtensionType.values()) {
-                item.registerExtension(type);
+                Extension<?> ext = item.registerExtension(type);
+                itemExtensions.put(ext.getPrefix(), ext);
+                assetExtensionTypes.put(ext.getPrefix(), type);
             }
-            hasExtensions = true;
         }
-        final Map<String, Extension<?>> itemExtensions = new HashMap<>();
         final Map<String, Extension<?>> assetExtensions = new HashMap<>();
-        item.getExtensions().values().forEach(v -> itemExtensions.put(v.getPrefix(), v));
         while (iterator.hasNext()) {
             String field = iterator.next();
             child = root.get(field);
@@ -113,7 +116,7 @@ public class ItemDeserializer extends StdDeserializer<Item> {
                         final String name = namesIterator.next();
                         final Asset asset = new Asset();
                         if (assetExtensions.isEmpty()){
-                            item.getExtensions().keySet().forEach(e -> {
+                            assetExtensionTypes.values().forEach(e -> {
                                 Extension<?> extension = asset.registerExtension(e);
                                 assetExtensions.put(extension.getPrefix(), extension);
                             });
@@ -138,6 +141,7 @@ public class ItemDeserializer extends StdDeserializer<Item> {
                             }
                         }
                         item.addAsset(name, asset);
+                        assetExtensions.clear();
                     }
                     break;
                 default:

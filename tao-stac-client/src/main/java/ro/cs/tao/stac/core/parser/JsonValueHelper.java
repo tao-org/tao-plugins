@@ -1,34 +1,26 @@
 package ro.cs.tao.stac.core.parser;
 
 import com.fasterxml.jackson.core.TreeNode;
+import ro.cs.tao.utils.DateUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class JsonValueHelper {
-
-    private static final List<DateTimeFormatter> formats = new ArrayList<DateTimeFormatter>() {{
-        add(DateTimeFormatter.ISO_DATE_TIME);
-        add(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        add(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        add(DateTimeFormatter.ISO_ZONED_DATE_TIME);
-        add(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssSSSSXXX"));
-    }};
-    private static final Pattern floatPattern = Pattern.compile("(\\d+)\\.(\\d+)");
-    private static final Pattern intPattern = Pattern.compile("(\\d+)\\.(\\d+)");
+    private static final DateTimeFormatter format = DateUtils.getResilientFormatterAtUTC();
     private static final Pattern datePattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})");
-    private static final Pattern dateTimePattern1 = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2})");
-    private static final Pattern dateTimePattern2 = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z)");
-    private static final Pattern dateTimePattern3 = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d+)");
-    private static final Pattern dateTimePattern4 = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2,6}\\+\\d{2}:\\d{2})");
 
     public static String getStringValue(TreeNode node) {
-        return node != null ? node.toString().replace("\"", "") : null;
+        if (node == null)
+            return null;
+        final String val = node.toString().replace("\"", "");
+        if ("null".equals(val))
+            return null;
+        return val;
     }
 
     public static String getString(TreeNode node, String field) {
@@ -166,16 +158,10 @@ public class JsonValueHelper {
     public static LocalDateTime getDateTime(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         LocalDateTime value = null;
-        if (valueNode != null && !"null".equals(valueNode.toString())) {
-            for (DateTimeFormatter format : formats) {
-                try {
-                    value = LocalDateTime.parse(getStringValue(valueNode), format);
-                    break;
-                } catch (Exception ignored) {
-                }
-            }
-            if (value == null) {
-                throw new DateTimeParseException("Unsupported date/time format", valueNode.toString(), 0);
+        if (valueNode != null) {
+            String val = getStringValue(valueNode);
+            if (val != null) {
+                value = LocalDateTime.parse(val, format);
             }
         }
         return value;
@@ -188,12 +174,9 @@ public class JsonValueHelper {
         }
         LocalDateTime[] dateTimes = new LocalDateTime[valueNode.size()];
         for (int i = 0; i < valueNode.size(); i++) {
-            for (DateTimeFormatter format : formats) {
-                try {
-                    dateTimes[i] = LocalDateTime.parse(getStringValue(valueNode.get(i)), format);
-                    break;
-                } catch (Exception ignored) {
-                }
+            String value = getStringValue(valueNode.get(i));
+            if (value != null) {
+                dateTimes[i] = LocalDateTime.parse(value, format);
             }
         }
         return dateTimes;
@@ -204,20 +187,10 @@ public class JsonValueHelper {
         if (value == null) {
             return value;
         }
-        if (intPattern.matcher(value).find() && !value.contains(" ") && !value.contains(".")) {
-            return Long.parseLong(value);
-        } else if (floatPattern.matcher(value).find() && !value.contains(" ") && !value.contains("T")) {
-            return Double.parseDouble(value);
-        } else if (datePattern.matcher(value).find() && value.length() == 10) {
+        if (datePattern.matcher(value).find() && value.length() == 10) {
             return LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        } else if (dateTimePattern1.matcher(value).find() && value.length() == 19) {
-            return LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
-        } else if (dateTimePattern2.matcher(value).find()) {
-            return LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
-        } else if (dateTimePattern3.matcher(value).find()) {
-            return LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-        } else if (dateTimePattern4.matcher(value).find()) {
-            return LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssSSSSXXX"));
+        } else if (datePattern.matcher(value).find()) {
+            return LocalDateTime.parse(value, DateUtils.getResilientFormatterAtUTC());
         } else {
             return value;
         }

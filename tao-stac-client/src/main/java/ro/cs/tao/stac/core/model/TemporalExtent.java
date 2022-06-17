@@ -16,7 +16,7 @@ public class TemporalExtent {
                 throw new IllegalArgumentException("Must have exactly 2 items");
             }
             if (interval[0] == null && interval[1] == null) {
-                throw new IllegalArgumentException("At least one item must be not null");
+                //throw new IllegalArgumentException("At least one item must be not null");
             }
         }
         this.interval = interval;

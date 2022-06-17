@@ -37,6 +37,16 @@ public class STACParser {
                                 Catalog.class);
     }
 
+    public CollectionList parseCollectionsResponse(String content) throws JsonProcessingException {
+        return mapper.readValue(content, CollectionList.class);
+    }
+
+    public CollectionList parseCollectionsResponse(InputStream stream) throws JsonProcessingException {
+        return mapper.readValue(new BufferedReader(new InputStreamReader(stream))
+                                        .lines().collect(Collectors.joining("\n")),
+                                CollectionList.class);
+    }
+
     public Collection parseCollectionResponse(String content) throws JsonProcessingException {
         return mapper.readValue(content, Collection.class);
     }

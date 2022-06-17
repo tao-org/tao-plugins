@@ -46,4 +46,17 @@ public class Band {
     public void setSolar_illumination(double solar_illumination) {
         this.solar_illumination = solar_illumination;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(name).append(": ");
+        if (common_name != null) {
+            builder.append(common_name).append(", ");
+        }
+        builder.append("cwl: ").append(center_wavelength > 0 ? center_wavelength : "n/a").append(",");
+        builder.append("fwhm: ").append(full_width_half_max > 0 ? full_width_half_max : "n/a").append(",");
+        builder.append("solar illumination: ").append(solar_illumination > 0 ? solar_illumination : "n/a");
+        return builder.toString();
+    }
 }
