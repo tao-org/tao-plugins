@@ -3,6 +3,7 @@ package ro.cs.tao.keycloak;
 import org.keycloak.representations.idm.UserRepresentation;
 import ro.cs.tao.user.User;
 import ro.cs.tao.user.UserModelAdapter;
+import ro.cs.tao.user.UserType;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -15,7 +16,7 @@ public class KeycloakUserAdapter implements UserModelAdapter<UserRepresentation>
         if (profile != null) {
             user = new User();
             user.setUsername(profile.getUsername());
-            user.setExternal(true);
+            user.setUserType(UserType.KEYCLOAK);
             user.setFirstName(profile.getFirstName());
             user.setLastName(profile.getLastName());
             user.setEmail(profile.getEmail());

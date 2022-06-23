@@ -2,6 +2,7 @@ package ro.cs.tao.ldap;
 
 import ro.cs.tao.user.User;
 import ro.cs.tao.user.UserModelAdapter;
+import ro.cs.tao.user.UserType;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -16,7 +17,7 @@ public class LdapUserAdapter implements UserModelAdapter<Attributes> {
             try {
                 user = new User();
                 user.setUsername(attrs.get("samAccountName").get().toString());
-                user.setExternal(true);
+                user.setUserType(UserType.LDAP);
                 Attribute attribute = attrs.get("givenname");
                 if (attribute != null) {
                     user.setFirstName(String.valueOf(attribute.get()));
