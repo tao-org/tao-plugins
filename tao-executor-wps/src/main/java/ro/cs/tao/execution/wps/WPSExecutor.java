@@ -2,7 +2,6 @@ package ro.cs.tao.execution.wps;
 
 import net.opengis.ows11.ExceptionReportType;
 import net.opengis.wps10.*;
-import org.geotools.data.wps.WPSFactory;
 import org.geotools.data.wps.WebProcessingService;
 import org.geotools.data.wps.request.DescribeProcessRequest;
 import org.geotools.data.wps.response.DescribeProcessResponse;
@@ -70,16 +69,12 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
     @Override
     public void execute(WPSExecutionTask task) throws ExecutionException {
         try {
-            task.setResourceId(UUID.randomUUID().toString());
-            logger.fine(String.format("Successfully submitted task with id %s", task.getResourceId()));
             final WPSComponent wpsComponent = task.getComponent();
             final Container service = wpsComponent.getService();
             final WPSAuthentication authentication = authenticationProvider.get(service.getId());
             final String address = wpsComponent.getRemoteAddress();
             final URL url = new URL(address);
             task.setExecutionNodeHostName(url.getHost());
-            task.setStartTime(LocalDateTime.now());
-            changeTaskStatus(task, ExecutionStatus.RUNNING);
             List<Variable> values = task.getInputParameterValues();
             if (values == null || values.size() == 0) {
                 throw new ExecutionException("No input data for the task");
@@ -114,19 +109,27 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
                     dataInputTmp.getLiteralData().getDataType().setReference(taoType);
                 }
             }
+
             final WPSFactory wpsfactory = new WPSFactory(pdt, url);
-            final Process process = wpsfactory.create();
+            final Process process = wpsfactory.create(wps);
             final Map<String, Object> input = new HashMap<>();
             try {
                 for (Variable v : values) {
-                    input.put(wpsComponent.getId() + "~" + v.getKey(), v.getValue());
+                    input.put(v.getKey().contains("~")
+                                ? v.getKey()
+                                : wpsComponent.getId() + "~" + v.getKey(),
+                              v.getValue());
                 }
                 //input.putAll(JacksonUtil.fromString(values.get(0).getValue(), input.getClass()));
             } catch (IllegalArgumentException ignored) {
             }
             this.backgroundWorker.submit(() -> {
                 try {
-                    process.execute(input, null);
+                    Map<String, Object> result = process.execute(input, null);
+                    task.setStartTime(LocalDateTime.now());
+                    task.setResourceId(UUID.randomUUID().toString());
+                    logger.fine(String.format("Successfully submitted task with id %s", task.getResourceId()));
+                    changeTaskStatus(task, ExecutionStatus.RUNNING);
                 } catch (Exception inner) {
                     onException(task, inner);
                 }
