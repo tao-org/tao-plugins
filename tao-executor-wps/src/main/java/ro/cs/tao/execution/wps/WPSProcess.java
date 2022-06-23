@@ -1,5 +1,6 @@
 package ro.cs.tao.execution.wps;
 
+import net.opengis.ows10.impl.ExceptionTypeImpl;
 import net.opengis.wps10.DataType;
 import net.opengis.wps10.ExecuteResponseType;
 import net.opengis.wps10.InputDescriptionType;
@@ -85,7 +86,14 @@ public class WPSProcess extends org.geotools.data.wps.WPSProcess {
         // if there is an exception in the response, return null
         // TODO:  properly handle the exception?
         if (response.getExceptionResponse() != null || response.getExecuteResponse() == null) {
-            return null;
+            Object exception = response.getExceptionResponse().getException().get(0);
+            String details = "an error";
+            if (exception instanceof ExceptionTypeImpl) {
+                details = "'" + ((ExceptionTypeImpl) response.getExceptionResponse().getException().get(0)).getExceptionText().get(0) + "'";
+            } else if (exception instanceof net.opengis.ows11.impl.ExceptionTypeImpl) {
+                details = "'" + ((net.opengis.ows11.impl.ExceptionTypeImpl) response.getExceptionResponse().getException().get(0)).getExceptionText().get(0).toString() + "'";
+            }
+            throw new RuntimeException("The remote service returned " + details);
         }
 
         // get response object and create a map of outputs from it
