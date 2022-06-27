@@ -126,10 +126,18 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
             this.backgroundWorker.submit(() -> {
                 try {
                     Map<String, Object> result = process.execute(input, null);
-                    task.setStartTime(LocalDateTime.now());
-                    task.setResourceId(UUID.randomUUID().toString());
-                    logger.fine(String.format("Successfully submitted task with id %s", task.getResourceId()));
-                    changeTaskStatus(task, ExecutionStatus.RUNNING);
+                    if (result != null) {
+                        task.setStartTime(LocalDateTime.now());
+                        if (result.containsKey("JobId")) {
+                            task.setResourceId(result.get("JobId").toString());
+                        } else {
+                            task.setResourceId(UUID.randomUUID().toString());
+                        }
+                        logger.fine(String.format("Successfully submitted task with resource id %s", task.getResourceId()));
+                        changeTaskStatus(task, ExecutionStatus.RUNNING);
+                    } else {
+                        throw new ExecutionException("WPS task did not return any result");
+                    }
                 } catch (Exception inner) {
                     onException(task, inner);
                 }
