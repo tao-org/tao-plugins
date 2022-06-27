@@ -102,7 +102,12 @@ public class WPSProcess extends org.geotools.data.wps.WPSProcess {
         // create the result map of outputs
         Map<String, Object> results = new TreeMap<>();
         results = WPSUtils.createResultMap(executeResponse, results);
-
+        if (results.isEmpty()) {
+            String statusLocation = executeResponse.getStatusLocation();
+            if (statusLocation != null && statusLocation.toLowerCase().contains("jobid")) {
+                results.put("JobId", statusLocation.substring(statusLocation.lastIndexOf("=") + 1));
+            }
+        }
         return results;
     }
 }
