@@ -291,7 +291,13 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
             request.setMarker("/");
             request.setMaxKeys(this.pageLimit);
             List<FileObject> list = list(request);
-            list.add(0, repositoryRootNode(repository()));
+            final FileObject root = list.stream().filter(f -> StringUtilities.isNullOrEmpty(f.getRelativePath())).findFirst().orElse(null);
+            if (root == null) {
+                list.add(0, repositoryRootNode(repository()));
+            } else {
+                root.setRelativePath("/");
+                root.setDisplayName(ROOT_TITLE);
+            }
             return list;
         } catch (AmazonServiceException e) {
             throw new IOException(e);
@@ -325,7 +331,13 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
             request.setMaxKeys(this.pageLimit);
             List<FileObject> list = exclusions == null ? list(request) : singlePage(request);
             if (repository.isRoot(fromPath)) {
-                list.add(0, repositoryRootNode(repository));
+                final FileObject root = list.stream().filter(f -> StringUtilities.isNullOrEmpty(f.getRelativePath())).findFirst().orElse(null);
+                if (root == null) {
+                    list.add(0, repositoryRootNode(repository()));
+                } else {
+                    root.setRelativePath("/");
+                    root.setDisplayName(ROOT_TITLE);
+                }
             }
             return list;
         } catch (AmazonServiceException e) {
