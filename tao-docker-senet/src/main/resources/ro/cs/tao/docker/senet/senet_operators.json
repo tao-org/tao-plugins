@@ -7,6 +7,7 @@
 		"authors": "DHI Gras",
 		"copyright": "(C) DHI Gras",
 		"nodeAffinity": "Any",
+		"category": "OPTICAL",
 		"sources": [
 			{
 				"id": "08899dac-142e-416a-a11e-cfc71b7c0d29",
@@ -39,6 +40,17 @@
 				}
 			}
 		],
+		"parameterDescriptors": [
+			{
+				"id": "w",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Temporary working folder",
+				"label": "Temporary folder",
+				"notNull": false,
+				"valueSet": null
+			}],
 		"containerId": "75db2435-e9a6-4e85-abba-de1f3d3e92d6",
 		"fileLocation": "/opt/senet/senET.sh",
 		"workingDirectory": ".",
@@ -47,7 +59,6 @@
 		"parallelism": 1,
 		"visibility": "SYSTEM",
 		"active": true,
-		"parameterDescriptors": [ ],
 		"templatecontents": "-p\n$p\n-s\n$s\n-w\n/tmp_wkd\n-t\n$t\n"
 	}
 ]
