@@ -6,6 +6,7 @@
 		"description": "Converts raster data to Zarr format",
 		"authors": "Lidia Baciu, Laurentiu Nicola",
 		"copyright": "(C) 2021 CS GROUP ROMANIA",
+		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"sources": [
 			{
