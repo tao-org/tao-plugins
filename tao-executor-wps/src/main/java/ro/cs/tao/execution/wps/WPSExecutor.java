@@ -196,15 +196,13 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
                             // Process failed ... handle failed status
                             markTaskFinished(task, ExecutionStatus.FAILED);
                         } else if (status.getProcessStarted() != null) {
-                            logger.fine(String.format("Task %s is at %d%%",
-                                                      task.getId(), status.getProcessStarted().getPercentCompleted().intValue()));
-                            taskProvider.updateStatus(task, ExecutionStatus.RUNNING);
+                            taskProvider.updateStatus(task, ExecutionStatus.RUNNING, String.format("Task %s is at %d%%",
+                                                                                                   task.getId(), status.getProcessStarted().getPercentCompleted().intValue()));
                         } else if (status.getProcessAccepted() != null) {
-                            taskProvider.updateStatus(task, ExecutionStatus.RUNNING);
+                            taskProvider.updateStatus(task, ExecutionStatus.RUNNING, "Accepted");
                         } else if (status.getProcessPaused() != null) {
-                            logger.fine(String.format("Task %s was paused at %d%%",
-                                                      task.getId(), status.getProcessPaused().getPercentCompleted().intValue()));
-                            taskProvider.updateStatus(task, ExecutionStatus.SUSPENDED);
+                            taskProvider.updateStatus(task, ExecutionStatus.SUSPENDED, String.format("Task %s was paused at %d%%",
+                                                                                                     task.getId(), status.getProcessPaused().getPercentCompleted().intValue()));
                         } else {
                             throw new Exception("Empty status");
                         }
