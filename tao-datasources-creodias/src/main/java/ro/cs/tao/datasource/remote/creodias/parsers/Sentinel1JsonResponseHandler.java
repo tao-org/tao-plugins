@@ -77,6 +77,7 @@ public class Sentinel1JsonResponseHandler implements JSonResponseHandler<EOProdu
                         }
                         //product.setProductType(result.getProductType());
                         product.setProductType("Sentinel1");
+                        product.setSatelliteName("Sentinel1");
                         product.setLocation(result.getProductIdentifier());
                         product.setAcquisitionDate(new DateAdapter().unmarshal(result.getStartDate()));
                         product.setQuicklookLocation(result.getThumbnail());
