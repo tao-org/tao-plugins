@@ -177,7 +177,8 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
                     final WPSAuthentication authentication = authenticationProvider.get(service.getId());
                     WebProcessingService wps = new WebProcessingService(new URL(wpsComponent.getRemoteAddress()),
                                                                         new WPSHttpClient(authentication), null);
-                    final ExecuteProcessResponse response = wps.issueStatusRequest(new URL(wpsComponent.getRemoteAddress() + "?service=WPS&request=GetStatus"));
+                    final String statusUrl = wpsComponent.getRemoteAddress() + "?service=WPS&request=GetStatus&jobId=" + task.getResourceId();
+                    final ExecuteProcessResponse response = wps.issueStatusRequest(new URL(statusUrl));
                     // Checking for Exceptions and Status...
                     final ExceptionReportType exceptionResponse = response.getExceptionResponse();
                     final ExecuteResponseType executeResponse = response.getExecuteResponse();
@@ -207,12 +208,12 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
                             throw new Exception("Empty status");
                         }
                     } else if (exceptionResponse != null) {
-                        // Retrieve here the Exception message and handle the errored status ...
+                        // Retrieve here the Exception message and handle the error status ...
                         StringBuilder builder = new StringBuilder();
                         for (Object o : exceptionResponse.getException()) {
                             builder.append(o).append("\n");
                         }
-                        logger.warning(String.format("Task %s FAILED. Process output: %s", task.getId(), builder.toString()));
+                        logger.warning(String.format("Task %s FAILED. Process output: %s", task.getId(), builder));
                         markTaskFinished(task, ExecutionStatus.FAILED);
                     } else {
                         throw new Exception("Empty response");
