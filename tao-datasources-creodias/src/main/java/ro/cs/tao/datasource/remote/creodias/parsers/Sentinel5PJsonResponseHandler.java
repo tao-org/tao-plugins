@@ -77,6 +77,7 @@ public class Sentinel5PJsonResponseHandler implements JSonResponseHandler<EOProd
                         }
                         //product.setProductType(result.getProductType());
                         product.setProductType("Sentinel5P");
+                        product.setSatelliteName("Sentinel5P");
                         product.setLocation(result.getProductIdentifier());
                         product.setAcquisitionDate(new DateAdapter().unmarshal(result.getStartDate()));
                         product.setQuicklookLocation(result.getThumbnail());
