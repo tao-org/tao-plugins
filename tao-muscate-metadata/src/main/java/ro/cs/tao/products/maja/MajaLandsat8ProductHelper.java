@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class MajaLandsat8ProductHelper extends MajaProductHelper {
 
@@ -17,8 +18,8 @@ public class MajaLandsat8ProductHelper extends MajaProductHelper {
     @Override
     public String getGranuleFolder(String granuleIdentifier) {
         String folder = null;
-        try {
-            Path granuleFolder = Files.list(this.path)
+        try (Stream<Path> stream = Files.list(this.path)) {
+            Path granuleFolder = stream
                     .filter(p -> L8L2TilePattern.matcher(p.getFileName().toString()).matches() && p.getFileName().toString().contains(granuleIdentifier))
                     .findFirst().orElse(null);
             if (granuleFolder != null) {
