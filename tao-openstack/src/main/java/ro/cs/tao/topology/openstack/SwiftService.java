@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public class SwiftService {
     private final Logger logger;
@@ -212,10 +213,11 @@ public class SwiftService {
 
     public String move(Path source, String containerName) throws IOException {
         final String targetPath = copy(source, containerName);
-        Files.walk(source, FileVisitOption.FOLLOW_LINKS)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
+        try (Stream<Path> stream = Files.walk(source, FileVisitOption.FOLLOW_LINKS)) {
+            stream.sorted(Comparator.reverseOrder())
+                  .map(Path::toFile)
+                  .forEach(File::delete);
+        }
         return targetPath;
     }
 

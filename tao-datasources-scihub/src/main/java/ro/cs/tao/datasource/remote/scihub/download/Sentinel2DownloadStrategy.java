@@ -34,6 +34,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Cosmin Cara
@@ -387,32 +388,33 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                     }
                     if (downloadedTiles.size() > 0) {
                         final Pattern tilePattern = helper.getTilePattern();
-                        product.addAttribute("tiles", String.join(",", downloadedTiles.stream().map(t -> {
+                        product.addAttribute("tiles", downloadedTiles.stream().map(t -> {
                             Matcher matcher = tilePattern.matcher(t);
                             //noinspection ResultOfMethodCallIgnored
                             matcher.matches();
                             return matcher.group(1);
-                        }).collect(Collectors.toList())));
+                        }).collect(Collectors.joining(",")));
                     }
                 } else {
                     //Files.deleteIfExists(metadataFile);
                     // remove the entire directory
-                    Files.walk(rootPath)
-                            .sorted(Comparator.reverseOrder())
-                            .map(Path::toFile)
-                            .peek(System.out::println)
-                            .forEach(File::delete);
-                    rootPath = null;
+                    try (Stream<Path> stream = Files.walk(rootPath)) {
+                        stream.sorted(Comparator.reverseOrder())
+                              .map(Path::toFile)
+                              .peek(System.out::println)
+                              .forEach(File::delete);
+                    }
                     logger.warning(String.format("The product %s did not contain any tiles from the tile list", productName));
                     throw new NoSuchElementException(String.format("The product %s did not contain any tiles from the tile list", productName));
                 }
             } else {
                 // remove the entire directory
-                Files.walk(rootPath)
-                        .sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .peek(System.out::println)
-                        .forEach(File::delete);
+                try (Stream<java.nio.file.Path> stream = Files.walk(rootPath)) {
+                    stream.sorted(Comparator.reverseOrder())
+                          .map(Path::toFile)
+                          .peek(System.out::println)
+                          .forEach(File::delete);
+                }
                 logger.warning(String.format("The product %s was not found", productName));
                 rootPath = null;
             }
