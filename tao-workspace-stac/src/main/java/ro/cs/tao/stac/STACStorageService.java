@@ -224,6 +224,7 @@ public class STACStorageService implements StorageService<byte[], InputStream> {
         fileObject.setFolder(feature.getAssets() != null && feature.getAssets().size() > 0);
         fileObject.setProtocol(PROTOCOL);
         fileObject.setProductName(fileObject.getDisplayName());
+        fileObject.setLastModified(feature.getDatetime());
         fileObject.setRelativePath(collectionName + "/" + feature.getId() + "/");
         Map<String, Object> properties = feature.getFields();
         for (Map.Entry<String, Object> entry : properties.entrySet()) {
