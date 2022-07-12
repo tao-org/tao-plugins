@@ -22,7 +22,7 @@ public class GenericQuicklookGenerator extends BaseQuicklookGenerator<Path> {
     public Class<Path> isIntendedFor() { return Path.class; }
 
     @Override
-    public int getPriority() { return 1; }
+    public int getPriority() { return 2; }
 
     @Override
     protected Set<String> getSupportedExtensions() {

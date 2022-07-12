@@ -43,6 +43,12 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
     }
 
     @Override
+    public boolean allowNext() {
+        // Only one quicklook handler should be allowed
+        return false;
+    }
+
+    @Override
     public void setFileProcessFactory(FileProcessFactory factory) {
         this.factory = factory;
     }
