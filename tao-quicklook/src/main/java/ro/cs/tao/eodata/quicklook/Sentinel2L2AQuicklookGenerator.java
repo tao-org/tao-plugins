@@ -6,6 +6,7 @@ import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.OutputAccumulator;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class Sentinel2L2AQuicklookGenerator extends BaseQuicklookGenerator<Path>
     public Class<Path> isIntendedFor() { return Path.class; }
 
     @Override
-    public int getPriority() { return 2; }
+    public int getPriority() { return 1; }
 
     @Override
     protected Set<String> getSupportedExtensions() {
@@ -57,26 +58,30 @@ public class Sentinel2L2AQuicklookGenerator extends BaseQuicklookGenerator<Path>
                 continue;
             }
             try {
-                // At least on Windows, docker doesn't handle well folder symlinks in the path
-                productFile = productFile.resolve("GRANULE");
-                productFile = this.factory.fileManager().list(productFile).stream().findFirst().orElse(null);
-                if (productFile == null) {
-                    continue;
-                }
-                productFile = productFile.resolve("QI_DATA")
-                            .resolve("T" + helper.getTileIdentifier() + "_" + helper.getSensingDate() + "_PVI.jp2");
-                Executor<?> executor = initialize(productFile, useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
-                if (executor != null) {
-                    executor.setOutputConsumer(consumer);
-                    int code;
-                    if ((code = executor.execute(false)) == 0) {
-                        productFile = Paths.get(productFile.toString() + extension);
-                    } else {
-                        logger.warning(String.format("Quicklook for %s was not created (return code: %d, output: %s)",
-                                productFile.getFileName(), code, consumer.getOutput()));
-                    }
+                if (Files.exists(productFile.resolve(productFile.getFileName().toString().replace(".SAFE", "-ql.jpg")))) {
+                    productFile = productFile.resolve(productFile.getFileName().toString().replace(".SAFE", "-ql.jpg"));
                 } else {
-                    logger.warning(String.format("Quicklooks not supported for %s files", FileUtilities.getExtension(productFile)));
+                    // At least on Windows, docker doesn't handle well folder symlinks in the path
+                    productFile = productFile.resolve("GRANULE");
+                    productFile = this.factory.fileManager().list(productFile).stream().findFirst().orElse(null);
+                    if (productFile == null) {
+                        continue;
+                    }
+                    productFile = productFile.resolve("QI_DATA")
+                                             .resolve("T" + helper.getTileIdentifier() + "_" + helper.getSensingDate() + "_PVI.jp2");
+                    Executor<?> executor = initialize(productFile, useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
+                    if (executor != null) {
+                        executor.setOutputConsumer(consumer);
+                        int code;
+                        if ((code = executor.execute(false)) == 0) {
+                            productFile = Paths.get(productFile.toString() + extension);
+                        } else {
+                            logger.warning(String.format("Quicklook for %s was not created (return code: %d, output: %s)",
+                                                         productFile.getFileName(), code, consumer.getOutput()));
+                        }
+                    } else {
+                        logger.warning(String.format("Quicklooks not supported for %s files", FileUtilities.getExtension(productFile)));
+                    }
                 }
             } catch (Exception e) {
                 logger.severe(String.format("Cannot create quicklook for %s. Reason: %s", productFile, e.getMessage()));

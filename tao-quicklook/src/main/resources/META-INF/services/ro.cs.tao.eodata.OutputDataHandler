@@ -16,3 +16,4 @@
 
 ro.cs.tao.eodata.quicklook.EOProductQuicklookGenerator
 ro.cs.tao.eodata.quicklook.GenericQuicklookGenerator
+ro.cs.tao.eodata.quicklook.Sentinel2L2AQuicklookGenerator
