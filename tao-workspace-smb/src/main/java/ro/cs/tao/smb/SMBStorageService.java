@@ -15,6 +15,9 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -127,6 +130,7 @@ public class SMBStorageService extends BaseStorageService<byte[], InputStream> {
             String root = repository.root();
             for (SmbFile file : smbFiles) {
                 final FileObject fileObject = new FileObject(PROTOCOL, file.getPath().replace(root, ""), file.isDirectory(), file.length());
+                fileObject.setLastModified(LocalDateTime.ofInstant(Instant.ofEpochMilli(file.getLastModified()), ZoneId.systemDefault()));
                 fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, file.getPath());
                 files.add(fileObject);
             }
@@ -203,8 +207,8 @@ public class SMBStorageService extends BaseStorageService<byte[], InputStream> {
             for (SmbFile file : smbFiles) {
                 String filePath = file.getPath();
                 String relPath = filePath.replace(repository.root(), "");
-                final FileObject fileObject =
-                        new FileObject(PROTOCOL, relPath, file.isDirectory(), file.length());
+                final FileObject fileObject = new FileObject(PROTOCOL, relPath, file.isDirectory(), file.length());
+                fileObject.setLastModified(LocalDateTime.ofInstant(Instant.ofEpochMilli(file.getLastModified()), ZoneId.systemDefault()));
                 fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, file.getPath());
                 files.add(fileObject);
                 if (file.isDirectory()) {

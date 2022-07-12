@@ -9,6 +9,7 @@ import ro.cs.tao.workspaces.Repository;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -219,6 +220,9 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
                 final String oPath = (object.isDirectory() ? object.getDirectoryName() : object.getName());
                 if (exclusions == null || exclusions.stream().noneMatch(oPath::startsWith)) {
                     final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(oPath), object.isDirectory(), object.getSizeInBytes());
+                    if (object.getLastModified() != null) {
+                        fileObject.setLastModified(Timestamp.from(object.getLastModified().toInstant()).toLocalDateTime());
+                    }
                     fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                     files.add(fileObject);
                 }
@@ -238,6 +242,9 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
                 final String oPath = (object.isDirectory() ? object.getDirectoryName() : object.getName());
                 if (exclusions == null || exclusions.stream().noneMatch(oPath::startsWith)) {
                     final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(oPath), object.isDirectory(), object.getSizeInBytes());
+                    if (object.getLastModified() != null) {
+                        fileObject.setLastModified(Timestamp.from(object.getLastModified().toInstant()).toLocalDateTime());
+                    }
                     fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                     files.add(fileObject);
                     if (object.isDirectory()) {

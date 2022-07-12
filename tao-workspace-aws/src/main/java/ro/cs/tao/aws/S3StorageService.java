@@ -18,6 +18,7 @@ import ro.cs.tao.workspaces.Repository;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -519,6 +520,9 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
                     for (S3ObjectSummary summary : objects.getObjectSummaries()) {
                         if (isNotFolderPlaceholder(summary)) {
                             final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(summary.getKey().substring(offset)), false, summary.getSize());
+                            if (summary.getLastModified() != null) {
+                                fileObject.setLastModified(Timestamp.from(summary.getLastModified().toInstant()).toLocalDateTime());
+                            }
                             fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                             files.add(fileObject);
                         }
@@ -556,6 +560,9 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
                     final S3ObjectSummary summary = objectSummaries.get(i);
                     if (isNotFolderPlaceholder(summary)) {
                         final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(summary.getKey().substring(offset)), false, summary.getSize());
+                        if (summary.getLastModified() != null) {
+                            fileObject.setLastModified(Timestamp.from(summary.getLastModified().toInstant()).toLocalDateTime());
+                        }
                         fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                         if (objects.isTruncated() && i == objectSummaries.size() - 1) {
                             fileObject.addAttribute("nextMarker", objects.getNextMarker());
