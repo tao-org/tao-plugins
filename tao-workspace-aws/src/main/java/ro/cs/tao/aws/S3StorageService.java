@@ -15,10 +15,7 @@ import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workspaces.Repository;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -26,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -441,6 +440,14 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
             if (this.progressListener != null) {
                 this.progressListener.notifyProgress(root.toString(), size / total);
             }
+        }
+    }
+
+    @Override
+    public String readAsText(S3ObjectInputStream resource, int lines, int skipLines) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource));
+             Stream<String> stream = reader.lines()) {
+            return stream.skip(skipLines).limit(lines).collect(Collectors.joining());
         }
     }
 

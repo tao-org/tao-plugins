@@ -20,6 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -182,6 +184,14 @@ public class SMBStorageService extends BaseStorageService<byte[], InputStream> {
             }
         } else {
             throw new IOException("Not a folder");
+        }
+    }
+
+    @Override
+    public String readAsText(InputStream resource, int lines, int skipLines) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource));
+             Stream<String> stream = reader.lines()) {
+            return stream.skip(skipLines).limit(lines).collect(Collectors.joining());
         }
     }
 
