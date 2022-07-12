@@ -12,15 +12,14 @@ import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workspaces.Repository;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -182,6 +181,14 @@ public class STACStorageService implements StorageService<byte[], InputStream> {
             stream.putNextEntry(entry);
             FileUtilities.appendToStream(inputStream, stream);
             stream.closeEntry();
+        }
+    }
+
+    @Override
+    public String readAsText(InputStream resource, int lines, int skipLines) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource));
+             Stream<String> stream = reader.lines()) {
+            return stream.skip(skipLines).limit(lines).collect(Collectors.joining());
         }
     }
 
