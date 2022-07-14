@@ -444,7 +444,7 @@ class Sentinel2Query extends DataQuery {
                         .getJsonObject("properties")
                         .getString("name");
                 final CoordinateReferenceSystem initialCrs = new CRSAdapter().marshal(initialCrsCode);
-                final CoordinateReferenceSystem targetCrs = CRS.decode("EPSG:4326");
+                final CoordinateReferenceSystem targetCrs = CRS.decode("EPSG:4326", true);
                 MathTransform mathTransform;
                 try {
                     mathTransform = CRS.findMathTransform(initialCrs, targetCrs);

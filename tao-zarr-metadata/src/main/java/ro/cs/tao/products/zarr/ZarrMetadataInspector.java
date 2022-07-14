@@ -53,7 +53,7 @@ public class ZarrMetadataInspector implements MetadataInspector {
                         int idx2 = crsString.indexOf("\"", idx1);
                         try {
                             crs = CRS.decode(crsString.substring(idx1, idx2) + ":"
-                                    + crsString.substring(idx2 + 2, crsString.indexOf("]", idx2)));
+                                    + crsString.substring(idx2 + 2, crsString.indexOf("]", idx2)), true);
                         } catch (Exception e2) {
                             logger.warning("Cannot determine CRS");
                         }
