@@ -26,8 +26,9 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
         }
         Path productFolderPath = Files.isRegularFile(productPath) ?  productPath.getParent() : productPath;
         try {
-            new MaccsSentinel2ProductHelper(productFolderPath);
-            return DecodeStatus.INTENDED;
+            MaccsSentinel2ProductHelper helper = new MaccsSentinel2ProductHelper(productFolderPath);
+            return Files.exists(productPath.resolve(helper.getMetadataFileName()))
+                    ? DecodeStatus.INTENDED : DecodeStatus.UNABLE;
         } catch (Exception e) {
             return DecodeStatus.UNABLE;
         }

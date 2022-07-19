@@ -23,8 +23,8 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
         }
         Path productFolderPath = Files.isRegularFile(productPath) ?  productPath.getParent() : productPath;
         try {
-            MajaSentinel2ProductHelper helper = new MajaSentinel2ProductHelper(productFolderPath);
-            return Files.exists(productFolderPath.resolve(helper.getMetadataFileName())) ? DecodeStatus.INTENDED : DecodeStatus.UNABLE;
+            return FileUtilities.listFolders(productFolderPath, 1).stream().anyMatch(f -> f.getFileName().startsWith("SENTINEL"))
+                    ? DecodeStatus.INTENDED : DecodeStatus.UNABLE;
         } catch (Exception e) {
             return DecodeStatus.UNABLE;
         }
