@@ -355,7 +355,7 @@ public class GdalInfoWrapper implements MetadataInspector {
         //Path realPath = FileUtilities.resolveSymLinks(path);
         for (String arg : args) {
             arguments.add(arg.replace("$FULL_PATH", path.toString())
-                              .replace("$FOLDER", path.getParent().toString())
+                              .replace("$FOLDER", FileUtilities.asUnixPath(path.getParent(), false))
                               .replace("$FILE", path.getFileName().toString()));
         }
         return this.factory.processManager().createExecutor(arguments);
