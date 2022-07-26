@@ -1,0 +1,44 @@
+[
+	{
+		"id": "ba",
+		"label": "Burned Area",
+		"version": "22.7.2",
+		"description": "Computes burned area masks from S2 L2A",
+		"authors": "Alex Becheru, Lidia Baciu",
+		"copyright": "(C) 2021",
+		"nodeAffinity": "Any",
+		"category": "OPTICAL",
+		"sources": [
+			{
+				"id": null,
+				"parentId": "ba",
+				"name": "l2a",
+				"cardinality": 0,
+				"dataDescriptor": {
+					"formatType": "RASTER"
+				}
+			}
+		],
+		"targets": [
+			{
+				"id": null,
+				"parentId": "ba",
+				"name": "out",
+				"dataDescriptor": {
+					"formatType": "FOLDER",
+					"location": "out"
+				}
+			}
+		],
+		"containerId": "783677a2-0c7b-4368-9e82-77e8153bf5b0",
+		"fileLocation": "ba.py",
+		"workingDirectory": ".",
+		"templateType": "VELOCITY",
+		"multiThread": false,
+		"visibility": "SYSTEM",
+		"active": true,
+		"parameterDescriptors": [
+		],
+		"templatecontents": "-l2a\n$l2a\n-out\n$out"
+	}
+]

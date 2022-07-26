@@ -61,6 +61,7 @@
         <module>tao-docker-senet</module>
         <module>tao-datasources-stac</module>
         <module>tao-stac-client</module>
+        <module>tao-docker-burnarea</module>
     </modules>
 
     <properties>
