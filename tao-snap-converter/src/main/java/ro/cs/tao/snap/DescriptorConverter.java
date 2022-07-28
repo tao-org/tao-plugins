@@ -91,10 +91,10 @@ public class DescriptorConverter {
             } else {
                 final int size = sourceDescriptors.size();
                 if (size == 1) {
-                    builder.append("\t\t\t\t\t<sourceProduct refid=\"$[sourceProduct]\" />\n");
+                    builder.append("\t\t\t\t\t<sourceProduct refid=\"$[source]\" />\n");
                 } else {
                     for (int i = 0; i < size; i++) {
-                        builder.append("\t\t\t\t\t<sourceProduct refid=\"$[sourceProduct")
+                        builder.append("\t\t\t\t\t<sourceProduct refid=\"$[source")
                                 .append(i + 1)
                                 .append("]\"/>\n");
                     }
