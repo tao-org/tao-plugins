@@ -164,7 +164,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
 
     @Override
     public void monitorExecutions() throws ExecutionException {
-        if(!isInitialized) {
+        if(!isInitialized.get()) {
             return;
         }
         List<ExecutionTask> tasks = taskProvider.listRemoteExecuting();
