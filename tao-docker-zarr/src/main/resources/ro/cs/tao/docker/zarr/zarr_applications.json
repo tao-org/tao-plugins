@@ -94,6 +94,6 @@
 				"notNull": false
 			}
 		],
-		"templatecontents": "--input\n$input\n--out\n$out\n--date\n$date\n--band-names\n$bandNames\n--scale\n$scale\n--offset\n$offset\n--fill\n$fill\n--units\n$units\n"
+		"templatecontents": "--input\n$input\n--out\n$out\n--date\n$date\n--band-names\n$bandNames\n--scale\n$scale\n--offset\n$offset\n--fill\n$fill\n--units\n$units"
 	}
 ]
