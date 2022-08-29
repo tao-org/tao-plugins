@@ -27,9 +27,11 @@ import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.fedeo.parameters.FedEODateParameterConverter;
+import ro.cs.tao.datasource.remote.fedeo.parameters.FedEOPolygon2DConverter;
 import ro.cs.tao.datasource.remote.fedeo.xml.FedEOXmlResponseHandler;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
@@ -46,6 +48,7 @@ public class FedEODataQuery extends DataQuery {
     static {
         final ConverterFactory factory = new ConverterFactory();
         factory.register(FedEODateParameterConverter.class, LocalDateTime.class);
+        factory.register(FedEOPolygon2DConverter.class, Polygon2D.class);
         converterFactory.put(FedEODataQuery.class, factory);
     }
 
