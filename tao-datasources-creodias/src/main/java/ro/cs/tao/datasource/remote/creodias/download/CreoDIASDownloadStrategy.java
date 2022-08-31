@@ -2,7 +2,6 @@ package ro.cs.tao.datasource.remote.creodias.download;
 
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import ro.cs.tao.datasource.InterruptedException;
@@ -14,6 +13,7 @@ import ro.cs.tao.datasource.remote.creodias.model.common.Token;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.util.ProductHelper;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;

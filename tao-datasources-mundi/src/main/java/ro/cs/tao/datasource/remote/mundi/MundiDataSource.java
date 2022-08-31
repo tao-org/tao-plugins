@@ -3,7 +3,6 @@ package ro.cs.tao.datasource.remote.mundi;
 import org.apache.http.Header;
 import org.apache.http.HeaderIterator;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import ro.cs.tao.datasource.QueryException;
@@ -12,6 +11,7 @@ import ro.cs.tao.datasource.remote.mundi.landsat8.Landsat8Query;
 import ro.cs.tao.datasource.remote.mundi.parameters.MundiParameterProvider;
 import ro.cs.tao.datasource.remote.mundi.sentinel1.Sentinel1Query;
 import ro.cs.tao.datasource.remote.mundi.sentinel2.Sentinel2Query;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 

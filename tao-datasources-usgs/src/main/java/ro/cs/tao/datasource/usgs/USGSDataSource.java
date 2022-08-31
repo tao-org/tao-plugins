@@ -16,7 +16,6 @@
 package ro.cs.tao.datasource.usgs;
 
 import org.apache.http.auth.Credentials;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.URLDataSource;
@@ -25,6 +24,7 @@ import ro.cs.tao.datasource.usgs.json.handlers.LoginResponseHandler;
 import ro.cs.tao.datasource.usgs.json.requests.LoginRequest;
 import ro.cs.tao.datasource.usgs.json.responses.LoginResponse;
 import ro.cs.tao.datasource.usgs.parameters.LandsatParameterProvider;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 

@@ -1,7 +1,6 @@
 package ro.cs.tao.datasource.remote.creodias;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -24,6 +23,7 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.util.TileExtent;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 

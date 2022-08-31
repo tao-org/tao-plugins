@@ -15,7 +15,6 @@
  */
 package ro.cs.tao.datasource.usgs;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
@@ -38,6 +37,7 @@ import ro.cs.tao.datasource.usgs.parameters.USGSDateParameterConverter;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 import ro.cs.tao.utils.StringUtilities;

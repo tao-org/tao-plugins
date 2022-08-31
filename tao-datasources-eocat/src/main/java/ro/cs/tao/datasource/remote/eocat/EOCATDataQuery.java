@@ -17,7 +17,6 @@
 package ro.cs.tao.datasource.remote.eocat;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -30,6 +29,7 @@ import ro.cs.tao.datasource.remote.eocat.parameters.EOCATDateParameterConverter;
 import ro.cs.tao.datasource.remote.eocat.xml.EOCATXmlResponseHandler;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
