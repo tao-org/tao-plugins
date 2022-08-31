@@ -15,7 +15,6 @@
  */
 package ro.cs.tao.datasource.remote.peps.download;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
@@ -25,6 +24,7 @@ import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.util.ProductHelper;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;

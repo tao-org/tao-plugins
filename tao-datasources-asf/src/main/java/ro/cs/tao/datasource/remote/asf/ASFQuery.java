@@ -16,7 +16,6 @@
 package ro.cs.tao.datasource.remote.asf;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -29,6 +28,7 @@ import ro.cs.tao.datasource.remote.asf.handlers.AsfJsonResponseHandler;
 import ro.cs.tao.datasource.remote.asf.parameters.DateParameterConverter;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.DateUtils;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;

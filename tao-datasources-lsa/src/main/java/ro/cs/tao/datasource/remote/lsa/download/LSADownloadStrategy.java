@@ -18,13 +18,13 @@ package ro.cs.tao.datasource.remote.lsa.download;
 import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.lsa.LSADataSource;
 import ro.cs.tao.datasource.remote.lsa.auth.LSAAuthentication;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
@@ -131,8 +131,7 @@ public class LSADownloadStrategy extends DownloadStrategy<Header> {
         try {
             final String productUrl = getProductUrl(product);
             final String extension = getExtensionFromUrl(productUrl);
-            final boolean isArchive = !extension.isEmpty() &&
-                    (extension.equalsIgnoreCase(ZIP_EXTENSION));
+            final boolean isArchive = extension.equalsIgnoreCase(ZIP_EXTENSION);
             subActivityStart(product.getName());
             final String archiveName = (product.getId() != null ? product.getId() : product.getName()) + extension;
             final Path archivePath = Paths.get(destination, archiveName);
