@@ -81,6 +81,7 @@ public class Sentinel5PJsonResponseHandler implements JSonResponseHandler<EOProd
                         product.setLocation(result.getProductIdentifier());
                         product.setAcquisitionDate(new DateAdapter().unmarshal(result.getStartDate()));
                         product.setQuicklookLocation(result.getThumbnail());
+                        product.addAttribute("productType", result.getProductType());
                         Map<String, Object> additionalProperties = feature.getAdditionalProperties();
                         for (Map.Entry<String, Object> entry : additionalProperties.entrySet()) {
                             product.addAttribute(entry.getKey(), String.valueOf(entry.getValue()));

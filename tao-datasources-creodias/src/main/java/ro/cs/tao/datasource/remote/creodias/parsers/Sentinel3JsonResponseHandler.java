@@ -82,8 +82,12 @@ public class Sentinel3JsonResponseHandler  implements JSonResponseHandler<EOProd
                         product.setAcquisitionDate(new DateAdapter().unmarshal(result.getStartDate()));
                         product.setQuicklookLocation(result.getThumbnail());
                         product.addAttribute("orbitdirection",
-                                             ("ascending".equals(result.getOrbitDirection()) ?
-                                                     OrbitDirection.ASCENDING : OrbitDirection.DESCENDING).name());
+                                             ("ascending".equals(result.getOrbitDirection())
+                                              ? OrbitDirection.ASCENDING
+                                              : OrbitDirection.DESCENDING).name());
+                        product.addAttribute("productType", result.getProductType());
+                        product.addAttribute("instrument", result.getInstrument());
+                        product.addAttribute("processingLevel", result.getProcessingLevel());
                         products.add(product);
                     } catch (Exception ex) {
                         logger.warning("Error parsing JSON: " + ex.getMessage());
