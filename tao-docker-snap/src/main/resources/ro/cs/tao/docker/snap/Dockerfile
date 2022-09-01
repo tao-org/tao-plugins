@@ -47,8 +47,8 @@ RUN sed -i '/^-Xmx/s/^/#/' /opt/snap/bin/gpt.vmoptions && \
         sed -i '$a-Xms4G' /opt/snap/bin/gpt.vmoptions && \
         sed -i '$a-Xmx16G' /opt/snap/bin/gpt.vmoptions
 # install extra cluster
-#RUN unzip extra-cluster.zip -d /opt/snap
-#RUN sed -i '$a-Dsnap.extraClusters=/opt/snap/extra' /opt/snap/bin/gpt.vmoptions
+RUN unzip extra-cluster.zip -d /opt/snap
+RUN sed -i '$a-Dsnap.extraClusters=/opt/snap/extra' /opt/snap/bin/gpt.vmoptions
 
 ENV DISPLAY :99
 COPY update_snap.sh .
