@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-import sys
 import argparse
+import logging
 import multiprocessing.dummy
 import os
-import shutil
-import subprocess
-import sqlite3
-import logging
 import re
+import sqlite3
+import subprocess
 from datetime import datetime, timedelta
+
 
 class ProductInfo:
     def __init__(self, path, name, tile_id, ty, orbit_type, polarization, date, scale, offset):
