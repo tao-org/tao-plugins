@@ -85,6 +85,7 @@ public class Sentinel2JsonResponseHandler implements JSonResponseHandler<EOProdu
                         product.addAttribute("cloudcoverpercentage", String.valueOf(result.getCloudCover()));
                         productHelper = SentinelProductHelper.create(result.getTitle());
                         product.addAttribute("tiles", ((Sentinel2ProductHelper) productHelper).getTileIdentifier());
+                        product.addAttribute("productType", result.getProductType());
                         products.add(product);
                     } catch (Exception ex) {
                         logger.warning("Error parsing JSON: " + ex.getMessage());
