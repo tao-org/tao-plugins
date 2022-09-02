@@ -1,6 +1,5 @@
 package ro.cs.tao.datasource.stac.parameters;
 
-import ro.cs.tao.Tuple;
 import ro.cs.tao.datasource.CollectionDescription;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.CommonParameterNames;
@@ -8,6 +7,7 @@ import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.stac.STACSource;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.utils.Tuple;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
