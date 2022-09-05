@@ -352,7 +352,6 @@ public class GdalInfoWrapper implements MetadataInspector {
     private Executor<?> initialize(Path path, String[] args) {
         List<String> arguments = new ArrayList<>();
         // At least on Windows, docker doesn't handle well folder symlinks in the path
-        //Path realPath = FileUtilities.resolveSymLinks(path);
         for (String arg : args) {
             arguments.add(arg.replace("$FULL_PATH", path.toString())
                               .replace("$FOLDER", FileUtilities.asUnixPath(path.getParent(), false))
@@ -364,7 +363,6 @@ public class GdalInfoWrapper implements MetadataInspector {
     private Executor<?> initialize(String path, String netcdfVariable, String[] args) {
         List<String> arguments = new ArrayList<>();
         // At least on Windows, docker doesn't handle well folder symlinks in the path
-        //Path realPath = FileUtilities.resolveSymLinks(path);
         Path pPath = Paths.get(path);
         for (String arg : args) {
             arguments.add(arg.replace("$FULL_PATH", "NETCDF:" + path + ":" + netcdfVariable)
