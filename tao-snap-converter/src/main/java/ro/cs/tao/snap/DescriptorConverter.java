@@ -90,13 +90,23 @@ public class DescriptorConverter {
                 builder.append("\t\t\t\t\t<sourceProduct refid=\"").append(parentId).append("\"/>\n");
             } else {
                 final int size = sourceDescriptors.size();
+                String sourceName;
                 if (size == 1) {
-                    builder.append("\t\t\t\t\t<sourceProduct refid=\"$[source]\" />\n");
+                    SourceDescriptor descriptor = sourceDescriptors.get(0);
+                    sourceName = descriptor.getName();
+                    sourceName = sourceName.substring(1);
+                    builder.append("\t\t\t\t\t<sourceProduct refid=\"$[").append(sourceName).append("]\" />\n");
+                    if (descriptor.getCardinality() > 1) {
+                        for (int i = 1; i < descriptor.getCardinality(); i++) {
+                            builder.append("\t\t\t\t\t<sourceProduct refid=\"$[").append(sourceName)
+                                   .append(".").append(i + 1).append("]\"/>\n");
+                        }
+                    }
                 } else {
-                    for (int i = 0; i < size; i++) {
-                        builder.append("\t\t\t\t\t<sourceProduct refid=\"$[source")
-                                .append(i + 1)
-                                .append("]\"/>\n");
+                    for (SourceDescriptor sourceDescriptor : sourceDescriptors) {
+                        sourceName = sourceDescriptor.getName();
+                        sourceName = sourceName.substring(1);
+                        builder.append("\t\t\t\t\t<sourceProduct refid=\"$[").append(sourceName).append("]\"/>\n");
                     }
                 }
             }
