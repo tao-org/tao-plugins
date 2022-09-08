@@ -209,7 +209,7 @@ public class KeycloakClient implements TokenProvider {
                     .verify();
             return true;
         } catch (VerificationException e) {
-            logger.severe("Verification of token " + token + " failed!");
+            logger.warning("Verification of token " + token + " failed!");
         }
         return false;
     }
