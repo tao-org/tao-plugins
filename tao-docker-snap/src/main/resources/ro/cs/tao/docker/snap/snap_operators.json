@@ -1635,7 +1635,7 @@
 		"workingDirectory": ".",
 		"templateType": "VELOCITY",
 		"multiThread": true,
-	"parallelism": 4,
+		"parallelism": 8,
 		"visibility": "SYSTEM",
 		"active": true,
 		"parameterDescriptors": [
@@ -1685,9 +1685,18 @@
 				"label": "PcomputeCw",
 
 				"notNull": false
+			},
+			{
+				"id": "sensor",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Sensor model",
+				"label": "Psensor",
+				"notNull": false
 			}
 		],
-		"templatecontents": "BiophysicalOp\n-Ssource=$Ssource\n-PcomputeLAI=$computeLAI\n-PcomputeFapar=$computeFapar\n-PcomputeFcover=$computeFcover\n-PcomputeCab=$computeCab\n-PcomputeCw=$computeCw\n-t\n$t\n-f\nGeoTIFF\n"
+		"templatecontents": "BiophysicalOp\n-Ssource=$Ssource\n-Psensor=$sensor\n-PcomputeLAI=$computeLAI\n-PcomputeFapar=$computeFapar\n-PcomputeFcover=$computeFcover\n-PcomputeCab=$computeCab\n-PcomputeCw=$computeCw\n-t\n$t\n-f\nGeoTIFF\n"
 	},
 	{
 		"id": "snap-c2rcc.landsat8",
