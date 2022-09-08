@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
 LABEL maintainer="sen4cap@c-s.ro" \
-       description="Prepare a SNAP 8.0 EO processing environment with commonly used tools"
+       description="Prepare a SNAP 9.0 EO processing environment with commonly used tools"
 
 # Environment
 ENV SNAP_VERSION        8.0
@@ -22,13 +22,13 @@ RUN apt-get update && \
 RUN     mkdir ~/.vnc
 RUN     x11vnc -storepasswd 1234 ~/.vnc/passwd
 
-RUN wget http://step.esa.int/downloads/8.0/installers/esa-snap_sentinel_unix_8_0.sh
+RUN wget https://download.esa.int/step/snap/9.0/installers/esa-snap_sentinel_unix_9_0_0.sh
 
 # Install SNAP 8.0
 #COPY esa-snap_sentinel_unix_8_0.sh .
-RUN chmod +x esa-snap_sentinel_unix_8_0.sh && \
-    ./esa-snap_sentinel_unix_8_0.sh -q && \
-    rm -f esa-snap_sentinel_unix_8_0.sh
+RUN chmod +x esa-snap_sentinel_unix_9_0_0.sh && \
+    ./esa-snap_sentinel_unix_9_0_0.sh -q && \
+    rm -f esa-snap_sentinel_unix_9_0_0.sh
 #RUN snap --nosplash --nogui --modules --disable org.esa.snap.snap.product.library.v2
 
 # Install additional tools
@@ -47,8 +47,8 @@ RUN sed -i '/^-Xmx/s/^/#/' /opt/snap/bin/gpt.vmoptions && \
         sed -i '$a-Xms4G' /opt/snap/bin/gpt.vmoptions && \
         sed -i '$a-Xmx16G' /opt/snap/bin/gpt.vmoptions
 # install extra cluster
-RUN unzip extra-cluster.zip -d /opt/snap
-RUN sed -i '$a-Dsnap.extraClusters=/opt/snap/extra' /opt/snap/bin/gpt.vmoptions
+# RUN unzip extra-cluster.zip -d /opt/snap
+# RUN sed -i '$a-Dsnap.extraClusters=/opt/snap/extra' /opt/snap/bin/gpt.vmoptions
 
 ENV DISPLAY :99
 COPY update_snap.sh .

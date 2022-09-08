@@ -35,7 +35,8 @@
 		"fileLocation": "gdal_translate",
 		"workingDirectory": ".",
 		"templateType": "VELOCITY",
-		"multiThread": false,
+		"multiThread": true,
+		"parallelism": 4,
 		"visibility": "SYSTEM",
 		"active": true,
 		"parameterDescriptors": [
