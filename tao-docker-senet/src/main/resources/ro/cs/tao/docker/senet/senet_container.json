@@ -11,7 +11,7 @@
 		{
 			"path": "/opt/senet/senET.sh",
 			"name": "senET",
-			"memoryRequirements": 8192
+			"memoryRequirements": 16384
 		}
 	]
 }

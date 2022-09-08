@@ -56,7 +56,7 @@
 		"workingDirectory": ".",
 		"templateType": "VELOCITY",
 		"multiThread": false,
-		"parallelism": 1,
+		"parallelism": 8,
 		"visibility": "SYSTEM",
 		"active": true,
 		"templatecontents": "-p\n$p\n-s\n$s\n-w\n/tmp_wkd\n-t\n$t\n"

@@ -36,7 +36,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -145,7 +145,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -224,7 +224,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -312,7 +312,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -400,7 +400,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -471,7 +471,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -623,7 +623,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -685,7 +685,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -757,7 +757,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -903,7 +903,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -1054,7 +1054,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -1128,7 +1128,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -1252,7 +1252,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -1314,7 +1314,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -1385,7 +1385,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -1527,7 +1527,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -1643,7 +1643,7 @@
         "cardinality": 1,
         "dataDescriptor": {
           "formatType": "RASTER",
-          "location": "output_snap-biophysicalop.tif"
+          "location": "output_snap-biophysicalop.dim"
         }
       }
     ],
@@ -1753,7 +1753,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -2099,7 +2099,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -2454,7 +2454,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -2800,7 +2800,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -2962,7 +2962,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -3308,7 +3308,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -3641,7 +3641,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -3794,7 +3794,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -3947,7 +3947,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -4086,7 +4086,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [],
@@ -4129,7 +4129,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -4219,7 +4219,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -4344,7 +4344,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [],
@@ -4387,7 +4387,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -4544,7 +4544,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -4661,7 +4661,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -4759,7 +4759,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -4858,7 +4858,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -5148,7 +5148,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -5232,7 +5232,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -5311,7 +5311,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -5428,7 +5428,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -5497,7 +5497,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -5622,7 +5622,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [],
@@ -5665,7 +5665,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -5742,7 +5742,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -6082,7 +6082,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -6182,7 +6182,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -6367,7 +6367,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -6430,7 +6430,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -6493,7 +6493,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -6619,7 +6619,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -6687,7 +6687,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -6786,7 +6786,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -6885,7 +6885,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -7010,7 +7010,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -7127,7 +7127,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -7341,7 +7341,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -7466,7 +7466,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -7567,7 +7567,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [],
@@ -7610,7 +7610,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -7798,7 +7798,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -7997,7 +7997,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -8111,7 +8111,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -8237,7 +8237,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -8373,7 +8373,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -8510,7 +8510,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -8693,7 +8693,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -8775,7 +8775,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -8906,7 +8906,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -8978,7 +8978,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -9041,7 +9041,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [],
@@ -9084,7 +9084,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -9276,7 +9276,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -9401,7 +9401,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -9561,7 +9561,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -9759,7 +9759,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -9849,7 +9849,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -10047,7 +10047,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -10137,7 +10137,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -10236,7 +10236,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -10309,7 +10309,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -10362,7 +10362,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -10551,7 +10551,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -10694,7 +10694,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -10820,7 +10820,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -10923,7 +10923,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -11003,7 +11003,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -11192,7 +11192,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -11317,7 +11317,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -11407,7 +11407,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -11540,7 +11540,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -11665,7 +11665,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -11808,7 +11808,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -12002,7 +12002,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -12092,7 +12092,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -12217,7 +12217,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -12342,7 +12342,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -12467,7 +12467,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -12547,7 +12547,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -12672,7 +12672,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -12797,7 +12797,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -12860,7 +12860,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -13044,7 +13044,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -13098,7 +13098,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -13170,7 +13170,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -13301,7 +13301,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -13381,7 +13381,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -13460,7 +13460,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -13522,7 +13522,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -13625,7 +13625,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [],
@@ -13667,7 +13667,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -13747,7 +13747,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -13841,7 +13841,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -13935,7 +13935,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -13987,7 +13987,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -14111,7 +14111,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -14244,7 +14244,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -14341,7 +14341,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -14538,7 +14538,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -14641,7 +14641,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -14758,7 +14758,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -14819,7 +14819,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -14908,7 +14908,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -15068,7 +15068,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -15139,7 +15139,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -15192,7 +15192,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -15245,7 +15245,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -15465,7 +15465,7 @@
         "name": "t",
         "dataDescriptor": {
           "formatType": "RASTER",
-          "location": "output_snap-resample.tif"
+          "location": "output_snap-resample.dim"
         }
       }
     ],
@@ -15474,7 +15474,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -15609,7 +15609,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -15733,7 +15733,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -15848,7 +15848,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [],
@@ -15890,7 +15890,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -16049,7 +16049,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -16162,7 +16162,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -16310,7 +16310,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -16417,7 +16417,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -16707,7 +16707,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -16840,7 +16840,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -16901,7 +16901,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -16954,7 +16954,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -17088,7 +17088,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -17222,7 +17222,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -17275,7 +17275,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -17347,7 +17347,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -17540,7 +17540,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -17619,7 +17619,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -17679,7 +17679,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -17741,7 +17741,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -17794,7 +17794,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -17846,7 +17846,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -17961,7 +17961,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -18205,7 +18205,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -18544,7 +18544,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -18651,7 +18651,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -18772,7 +18772,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -18842,7 +18842,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -18896,7 +18896,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -19008,7 +19008,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -19132,7 +19132,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -19249,7 +19249,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -19302,7 +19302,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -19355,7 +19355,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -19444,7 +19444,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -19595,7 +19595,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -19761,7 +19761,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -19866,7 +19866,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -19987,7 +19987,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -20120,7 +20120,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
@@ -20182,7 +20182,7 @@
     "workingDirectory": ".",
     "templateType": "VELOCITY",
     "multiThread": true,
-    "parallelism": 4,
+    "parallelism": 8,
     "visibility": "SYSTEM",
     "active": true,
     "parameterDescriptors": [
