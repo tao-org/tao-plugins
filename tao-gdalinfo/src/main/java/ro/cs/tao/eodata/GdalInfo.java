@@ -1,10 +1,9 @@
 package ro.cs.tao.eodata;
 
-import ro.cs.eo.gdal.dataio.drivers.Dataset;
-import ro.cs.eo.gdal.dataio.drivers.GDAL;
-import ro.cs.eo.gdal.dataio.drivers.GDALConst;
+import ro.cs.eo.gdal.dataio.drivers.*;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
+import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
 import ro.cs.tao.eodata.metadata.MetadataInspector;
 import ro.cs.tao.products.landsat.Landsat8MetadataInspector;
@@ -68,9 +67,57 @@ public class GdalInfo implements MetadataInspector {
         metadata.setWidth(gdalDataset.getRasterXSize());
         metadata.setHeight(gdalDataset.getRasterYSize());
         if (gdalDataset.getProjectionRef() != null) {
-            metadata.setCrs(gdalDataset.getProjectionRef());
+            metadata.setFootprint(gdalDataset.getProjectionRef());
         }
-
+        if (gdalDataset.getSpatialRef() != null) {
+            metadata.setCrs("EPSG:" + gdalDataset.getSpatialRef().getAuthorityCode(null));
+        }
+        if (gdalDataset.getRasterCount() > 0) {
+            Band gdalBand = gdalDataset.getRasterBand(1);
+            int gdalDataType = gdalBand.getDataType();
+            if (GDALConstConstants.gdtByte() == gdalDataType) {
+                metadata.setPixelType(PixelType.UINT8);
+            } else if (GDALConstConstants.gdtUint16() == gdalDataType || GDALConstConstants.gdtCInt16() == gdalDataType) {
+                metadata.setPixelType(PixelType.UINT16);
+            } else if (GDALConstConstants.gdtInt16() == gdalDataType) {
+                metadata.setPixelType(PixelType.INT16);
+            } else if (GDALConstConstants.gdtUint32() == gdalDataType || GDALConstConstants.gdtCInt32() == gdalDataType) {
+                metadata.setPixelType(PixelType.UINT32);
+            } else if (GDALConstConstants.gdtInt32() == gdalDataType) {
+                metadata.setPixelType(PixelType.INT32);
+            } else if (GDALConstConstants.gdtFloat32() == gdalDataType || GDALConstConstants.gdtCFloat32() == gdalDataType) {
+                metadata.setPixelType(PixelType.FLOAT32);
+            } else if (GDALConstConstants.gdtFloat64() == gdalDataType || GDALConstConstants.gdtCFloat64() == gdalDataType) {
+                metadata.setPixelType(PixelType.FLOAT64);
+            }
+            double[] min = new double[1];
+            double[] max = new double[1];
+            double[] mean = new double[1];
+            double[] stddev = new double[1];
+            if (extractStatistics && gdalBand.getStatistics(true, false, min, max, mean, stddev).equals(GDALConstConstants.ceNone())) {
+                metadata.addStatistic("min", min[0]);
+                metadata.addStatistic("max", max[0]);
+                metadata.addStatistic("mean", mean[0]);
+                metadata.addStatistic("stdDev", stddev[0]);
+            }
+            int[] buckets = new int[256];
+            if (extractHistogram && gdalBand.getHistogram(buckets).equals(GDALConstConstants.ceNone())) {
+                metadata.setHistogram(buckets);
+            }
+            RasterAttributeTable gdalRasterAttributeTable = gdalBand.getDefaultRAT();
+            if (gdalRasterAttributeTable != null) {
+                int nrCols = gdalRasterAttributeTable.getColumnCount();
+                int nrRows = gdalRasterAttributeTable.getRowCount();
+                if (nrCols == 2) {
+                    for (int i = 0; i < nrRows; i++) {
+                        metadata.addAttribute(gdalRasterAttributeTable.getValueAsString(i, 0), gdalRasterAttributeTable.getValueAsString(i, 1));
+                    }
+                }
+            }
+            for (int i = 1; i <= gdalDataset.getRasterCount(); i++) {
+                metadata.addControlSum("" + gdalDataset.getRasterBand(i).checksum());
+            }
+        }
         return metadata;
     }
 
