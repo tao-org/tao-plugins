@@ -11,9 +11,12 @@ import ro.cs.tao.products.sentinels.Sentinel1MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel2MetadataInspector;
 import ro.cs.tao.utils.executors.FileProcessFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 public class GdalInfo implements MetadataInspector {
@@ -60,49 +63,54 @@ public class GdalInfo implements MetadataInspector {
         if (gdalDataset == null) {
             throw new IllegalStateException("Fail to open Dataset for file: " + productPath + ". " + GDAL.getLastErrorMsg());
         }
-        metadata = new Metadata();
-        metadata.setEntryPoint(productPath.getFileName().toString());
-        metadata.setSize(Files.size(productPath));
-        metadata.setProductType(gdalDataset.getDriver().getLongName());
-        metadata.setWidth(gdalDataset.getRasterXSize());
-        metadata.setHeight(gdalDataset.getRasterYSize());
+        final Metadata gdalMetadata = new Metadata();
+        String productId = gdalDataset.getDescription();
+        if (productId.contains(File.separator)) {
+            productId = productId.substring(productId.lastIndexOf(File.separator) + 1, productId.lastIndexOf('.'));
+        }
+        gdalMetadata.setProductId(productId);
+        gdalMetadata.setEntryPoint(productPath.getFileName().toString());
+        gdalMetadata.setSize(Files.size(productPath));
+        gdalMetadata.setProductType(gdalDataset.getDriver().getLongName());
+        gdalMetadata.setWidth(gdalDataset.getRasterXSize());
+        gdalMetadata.setHeight(gdalDataset.getRasterYSize());
         if (gdalDataset.getProjectionRef() != null) {
-            metadata.setFootprint(gdalDataset.getProjectionRef());
+            gdalMetadata.setFootprint(gdalDataset.getProjectionRef());
         }
         if (gdalDataset.getSpatialRef() != null) {
-            metadata.setCrs("EPSG:" + gdalDataset.getSpatialRef().getAuthorityCode(null));
+            gdalMetadata.setCrs("EPSG:" + gdalDataset.getSpatialRef().getAuthorityCode(null));
         }
         if (gdalDataset.getRasterCount() > 0) {
             Band gdalBand = gdalDataset.getRasterBand(1);
             int gdalDataType = gdalBand.getDataType();
             if (GDALConstConstants.gdtByte() == gdalDataType) {
-                metadata.setPixelType(PixelType.UINT8);
+                gdalMetadata.setPixelType(PixelType.UINT8);
             } else if (GDALConstConstants.gdtUint16() == gdalDataType || GDALConstConstants.gdtCInt16() == gdalDataType) {
-                metadata.setPixelType(PixelType.UINT16);
+                gdalMetadata.setPixelType(PixelType.UINT16);
             } else if (GDALConstConstants.gdtInt16() == gdalDataType) {
-                metadata.setPixelType(PixelType.INT16);
+                gdalMetadata.setPixelType(PixelType.INT16);
             } else if (GDALConstConstants.gdtUint32() == gdalDataType || GDALConstConstants.gdtCInt32() == gdalDataType) {
-                metadata.setPixelType(PixelType.UINT32);
+                gdalMetadata.setPixelType(PixelType.UINT32);
             } else if (GDALConstConstants.gdtInt32() == gdalDataType) {
-                metadata.setPixelType(PixelType.INT32);
+                gdalMetadata.setPixelType(PixelType.INT32);
             } else if (GDALConstConstants.gdtFloat32() == gdalDataType || GDALConstConstants.gdtCFloat32() == gdalDataType) {
-                metadata.setPixelType(PixelType.FLOAT32);
+                gdalMetadata.setPixelType(PixelType.FLOAT32);
             } else if (GDALConstConstants.gdtFloat64() == gdalDataType || GDALConstConstants.gdtCFloat64() == gdalDataType) {
-                metadata.setPixelType(PixelType.FLOAT64);
+                gdalMetadata.setPixelType(PixelType.FLOAT64);
             }
             double[] min = new double[1];
             double[] max = new double[1];
             double[] mean = new double[1];
             double[] stddev = new double[1];
             if (extractStatistics && gdalBand.getStatistics(true, false, min, max, mean, stddev).equals(GDALConstConstants.ceNone())) {
-                metadata.addStatistic("min", min[0]);
-                metadata.addStatistic("max", max[0]);
-                metadata.addStatistic("mean", mean[0]);
-                metadata.addStatistic("stdDev", stddev[0]);
+                gdalMetadata.addStatistic("min", min[0]);
+                gdalMetadata.addStatistic("max", max[0]);
+                gdalMetadata.addStatistic("mean", mean[0]);
+                gdalMetadata.addStatistic("stdDev", stddev[0]);
             }
             int[] buckets = new int[256];
             if (extractHistogram && gdalBand.getHistogram(buckets).equals(GDALConstConstants.ceNone())) {
-                metadata.setHistogram(buckets);
+                gdalMetadata.setHistogram(buckets);
             }
             RasterAttributeTable gdalRasterAttributeTable = gdalBand.getDefaultRAT();
             if (gdalRasterAttributeTable != null) {
@@ -110,15 +118,24 @@ public class GdalInfo implements MetadataInspector {
                 int nrRows = gdalRasterAttributeTable.getRowCount();
                 if (nrCols == 2) {
                     for (int i = 0; i < nrRows; i++) {
-                        metadata.addAttribute(gdalRasterAttributeTable.getValueAsString(i, 0), gdalRasterAttributeTable.getValueAsString(i, 1));
+                        gdalMetadata.addAttribute(gdalRasterAttributeTable.getValueAsString(i, 0), gdalRasterAttributeTable.getValueAsString(i, 1));
                     }
                 }
             }
             for (int i = 1; i <= gdalDataset.getRasterCount(); i++) {
-                metadata.addControlSum("" + gdalDataset.getRasterBand(i).checksum());
+                gdalMetadata.addControlSum("" + gdalDataset.getRasterBand(i).checksum());
             }
         }
-        return metadata;
+        for (Object domain : gdalDataset.getMetadataDomainList()) {
+            gdalDataset.getMetadataDict(domain.toString()).forEach((key, value) -> {
+                if (key.toString().contains("DATETIME")) {
+                    gdalMetadata.setAquisitionDate(LocalDateTime.parse(value.toString(), DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss")));
+                } else {
+                    gdalMetadata.addAttribute(key.toString(), value.toString());
+                }
+            });
+        }
+        return gdalMetadata;
     }
 
     @Override
