@@ -4,7 +4,7 @@ LABEL maintainer="sen4cap@c-s.ro" \
        description="Prepare a SNAP 9.0 EO processing environment with commonly used tools"
 
 # Environment
-ENV SNAP_VERSION        8.0
+ENV SNAP_VERSION        9.0
 ENV DEBIAN_FRONTEND noninteractive
 ENV LANG            en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
