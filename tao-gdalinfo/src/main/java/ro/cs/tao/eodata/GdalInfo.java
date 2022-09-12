@@ -73,10 +73,26 @@ public class GdalInfo implements MetadataInspector {
         gdalMetadata.setEntryPoint(productPath.getFileName().toString());
         gdalMetadata.setSize(Files.size(productPath));
         gdalMetadata.setProductType(gdalDataset.getDriver().getLongName());
-        gdalMetadata.setWidth(gdalDataset.getRasterXSize());
-        gdalMetadata.setHeight(gdalDataset.getRasterYSize());
-        if (gdalDataset.getProjectionRef() != null) {
-            gdalMetadata.setFootprint(gdalDataset.getProjectionRef());
+        Integer width = gdalDataset.getRasterXSize();
+        gdalMetadata.setWidth(width);
+        Integer height = gdalDataset.getRasterYSize();
+        gdalMetadata.setHeight(height);
+        String projectionRef = gdalDataset.getProjectionRef();
+        if (projectionRef != null) {
+            double[] geoTransform = new double[6];
+            gdalDataset.getGeoTransform(geoTransform);
+            final Polygon2D footprint = new Polygon2D();
+            footprint.append(geoTransform[0] + geoTransform[1] * 0.0 + geoTransform[2] * 0.0,
+                             geoTransform[3] + geoTransform[4] * 0.0 + geoTransform[5] * 0.0);
+            footprint.append(geoTransform[0] + geoTransform[1] * 0.0 + geoTransform[2] * height,
+                             geoTransform[3] + geoTransform[4] * 0.0 + geoTransform[5] * height);
+            footprint.append(geoTransform[0] + geoTransform[1] * width + geoTransform[2] * height,
+                             geoTransform[3] + geoTransform[4] * width + geoTransform[5] * height);
+            footprint.append(geoTransform[0] + geoTransform[1] * width + geoTransform[2] * 0.0,
+                             geoTransform[3] + geoTransform[4] * width + geoTransform[5] * 0.0);
+            footprint.append(geoTransform[0] + geoTransform[1] * 0.0 + geoTransform[2] * 0.0,
+                             geoTransform[3] + geoTransform[4] * 0.0 + geoTransform[5] * 0.0);
+            gdalMetadata.setFootprint(footprint.toWKT());
         }
         if (gdalDataset.getSpatialRef() != null) {
             gdalMetadata.setCrs("EPSG:" + gdalDataset.getSpatialRef().getAuthorityCode(null));
