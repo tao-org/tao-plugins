@@ -17,12 +17,12 @@
 package ro.cs.tao.datasource.db.fetch;
 
 import org.apache.http.auth.UsernamePasswordCredentials;
-import ro.cs.tao.ProgressListener;
 import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.db.DatabaseSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.security.SessionStore;
+import ro.cs.tao.utils.executors.monitoring.ProgressListener;
 
 import java.net.URI;
 import java.nio.file.Files;

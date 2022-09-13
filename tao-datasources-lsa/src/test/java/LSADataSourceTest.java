@@ -1,5 +1,4 @@
 import reactor.core.support.Assert;
-import ro.cs.tao.ProgressListener;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
@@ -11,6 +10,7 @@ import ro.cs.tao.datasource.remote.lsa.LSADataSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
+import ro.cs.tao.utils.executors.monitoring.ProgressListener;
 
 import java.net.URI;
 import java.nio.file.Files;

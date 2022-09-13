@@ -38,7 +38,6 @@
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ro.cs.tao.ProgressListener;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.configuration.EmptyConfigurationProvider;
@@ -53,6 +52,7 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
+import ro.cs.tao.utils.executors.monitoring.ProgressListener;
 
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
