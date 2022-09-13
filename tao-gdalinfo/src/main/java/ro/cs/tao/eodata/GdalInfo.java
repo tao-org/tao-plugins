@@ -11,7 +11,6 @@ import ro.cs.tao.products.sentinels.Sentinel1MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel2MetadataInspector;
 import ro.cs.tao.utils.executors.FileProcessFactory;
 
-import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -74,23 +73,27 @@ public class GdalInfo implements MetadataInspector {
         gdalMetadata.setEntryPoint(productPath.getFileName().toString());
         gdalMetadata.setSize(Files.size(productPath));
         gdalMetadata.setProductType(gdalDataset.getDriver().getLongName());
-        gdalMetadata.setWidth(gdalDataset.getRasterXSize());
-        gdalMetadata.setHeight(gdalDataset.getRasterYSize());
-        final double[] geoTransform = new double[6];
-        gdalDataset.getGeoTransform(geoTransform);
-        // some products have the Y step incorrectly placed as z
-        final double stepY = geoTransform[4] != 0 ? geoTransform[4] : geoTransform[5];
-        final Polygon2D polygon2D = new Polygon2D();
-        final Point2D upperLeft = new Point2D.Double(geoTransform[0], geoTransform[3]);
-        final Point2D lowerLeft = new Point2D.Double(geoTransform[0], geoTransform[3] + stepY * gdalDataset.getRasterYSize());
-        final Point2D lowerRight = new Point2D.Double(geoTransform[0] + geoTransform[1] * gdalDataset.getRasterXSize(), geoTransform[3] + stepY * gdalDataset.getRasterYSize());
-        final Point2D upperRight = new Point2D.Double(geoTransform[0] + geoTransform[1] * gdalDataset.getRasterXSize(), geoTransform[3]);
-        polygon2D.append(upperLeft.getX(), upperLeft.getY());
-        polygon2D.append(lowerLeft.getX(), lowerLeft.getY());
-        polygon2D.append(lowerRight.getX(), lowerRight.getY());
-        polygon2D.append(upperRight.getX(), upperRight.getY());
-        polygon2D.append(upperLeft.getX(), upperLeft.getY());
-        gdalMetadata.setFootprint(polygon2D.toWKT(8));
+        Integer width = gdalDataset.getRasterXSize();
+        gdalMetadata.setWidth(width);
+        Integer height = gdalDataset.getRasterYSize();
+        gdalMetadata.setHeight(height);
+        String projectionRef = gdalDataset.getProjectionRef();
+        if (projectionRef != null) {
+            double[] geoTransform = new double[6];
+            gdalDataset.getGeoTransform(geoTransform);
+            final Polygon2D footprint = new Polygon2D();
+            footprint.append(geoTransform[0] + geoTransform[1] * 0.0 + geoTransform[2] * 0.0,
+                             geoTransform[3] + geoTransform[4] * 0.0 + geoTransform[5] * 0.0);
+            footprint.append(geoTransform[0] + geoTransform[1] * 0.0 + geoTransform[2] * height,
+                             geoTransform[3] + geoTransform[4] * 0.0 + geoTransform[5] * height);
+            footprint.append(geoTransform[0] + geoTransform[1] * width + geoTransform[2] * height,
+                             geoTransform[3] + geoTransform[4] * width + geoTransform[5] * height);
+            footprint.append(geoTransform[0] + geoTransform[1] * width + geoTransform[2] * 0.0,
+                             geoTransform[3] + geoTransform[4] * width + geoTransform[5] * 0.0);
+            footprint.append(geoTransform[0] + geoTransform[1] * 0.0 + geoTransform[2] * 0.0,
+                             geoTransform[3] + geoTransform[4] * 0.0 + geoTransform[5] * 0.0);
+            gdalMetadata.setFootprint(footprint.toWKT());
+        }
         if (gdalDataset.getSpatialRef() != null) {
             gdalMetadata.setCrs(gdalDataset.getSpatialRef().getAuthorityName(null) + ":" + gdalDataset.getSpatialRef().getAuthorityCode(null));
         }
