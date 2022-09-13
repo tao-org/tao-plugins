@@ -36,7 +36,6 @@
  *
  */
 
-import ro.cs.tao.ProgressListener;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.param.CommonParameterNames;
@@ -48,6 +47,7 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
+import ro.cs.tao.utils.executors.monitoring.ProgressListener;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;

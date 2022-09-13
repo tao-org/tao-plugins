@@ -3,11 +3,11 @@ package ro.cs.tao.smb;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
 import jcifs.smb.SmbFileOutputStream;
-import ro.cs.tao.ProgressListener;
 import ro.cs.tao.services.model.FileObject;
 import ro.cs.tao.services.storage.BaseStorageService;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
+import ro.cs.tao.utils.executors.monitoring.ProgressListener;
 import ro.cs.tao.workspaces.Repository;
 import ro.cs.tao.workspaces.RepositoryType;
 
