@@ -16,3 +16,4 @@
 
 ro.cs.tao.products.sentinels.Sentinel1MetadataInspector
 ro.cs.tao.products.sentinels.Sentinel2MetadataInspector
+ro.cs.tao.products.sentinels.Sentinel3MetadataInspector
