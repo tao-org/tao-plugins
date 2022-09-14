@@ -209,7 +209,9 @@ public class KeycloakClient implements TokenProvider {
                     .verify();
             return true;
         } catch (VerificationException e) {
-            logger.warning("Verification of token " + token + " failed!");
+            if (!String.valueOf(token).equals("null")) {
+                logger.warning("Verification of token " + (token.length() <= 30 ? token : token.substring(0, 30))  + " failed!");
+            }
         }
         return false;
     }
