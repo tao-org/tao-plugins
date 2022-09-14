@@ -147,12 +147,12 @@ public class SwiftService {
         return objectStorageService.objects().get(container, file).download().getInputStream();
     }
 
-    public String copy(Path source, String containerName) throws IOException {
+    public String copy(Path source, String pathInContainer) throws IOException {
         if (source == null) {
             throw new IllegalArgumentException("[source] is null");
         }
-        if (StringUtilities.isNullOrEmpty(containerName)) {
-            throw new IllegalArgumentException("[containerName] is null or empty");
+        if (StringUtilities.isNullOrEmpty(pathInContainer)) {
+            throw new IllegalArgumentException("[pathInContainer] is null or empty");
         }
         if (!Files.exists(source)) {
             throw new IOException("[source] not found");
@@ -165,16 +165,23 @@ public class SwiftService {
             paths = new ArrayList<Path>() {{ add(source); }};
         }
         String relativePath;
-        try {
-            ActionResponse actionResponse = objectStorageService.containers().create(containerName);
-            if (actionResponse != null && !actionResponse.isSuccess()) {
-                throw new IOException(String.format("Failed to connect to container %s. Response code: %d; fault: %s",
-                                                    containerName, actionResponse.getCode(), actionResponse.getFault()));
-            } else {
-                logger.finest(String.format("Connected to container %s", containerName));
+        String container = this.parameters.get(Constants.OPENSTACK_BUCKET);
+        String containerFolder = "";
+        if (container == null) {
+            try {
+                ActionResponse actionResponse = objectStorageService.containers().create(pathInContainer);
+                if (actionResponse != null && !actionResponse.isSuccess()) {
+                    throw new IOException(String.format("Failed to connect to container %s. Response code: %d; fault: %s",
+                                                        pathInContainer, actionResponse.getCode(), actionResponse.getFault()));
+                } else {
+                    logger.finest(String.format("Connected to container %s", pathInContainer));
+                }
+                container = pathInContainer;
+            } catch (Exception ex) {
+                throw new IOException(String.format("Container %s does not exist", pathInContainer));
             }
-        } catch (Exception ex) {
-            throw new IOException(String.format("Container %s does not exist", containerName));
+        } else {
+            containerFolder = pathInContainer + "/";
         }
         final List<String> movedPaths = new LinkedList<>();
         String relativeTargetRoot = source.getName(source.getNameCount() - 1).toString();
@@ -186,21 +193,21 @@ public class SwiftService {
                         relativePath = relativePath.substring(0, relativePath.length() - 1);
                     }
                     relativePath = relativePath.replace("\\", "/");
-                    logger.fine(String.format("Copying '%s' to '%s'",
-                                              path.toString(),
-                                              relativePath + path.getFileName().toString()));
+                    logger.finest(String.format("Copying '%s' to '%s'",
+                                                path,
+                                                relativePath + path.getFileName().toString()));
                     objectStorageService
-                            .objects().put(containerName,
+                            .objects().put(container,
                                            path.getFileName().toString(),
                                            Files.size(path) > 0 ? Payloads.create(Files.newInputStream(path)) : null,
-                                           ObjectPutOptions.create().path(relativePath));
+                                           ObjectPutOptions.create().path(containerFolder + relativePath));
                     movedPaths.add(relativePath);
                 }
             } catch (Exception inner) {
                 logger.severe(String.format("Uploading '%s' failed: %s", path, inner.getMessage()));
                 for (String relPath : movedPaths) {
                     try {
-                        objectStorageService.objects().delete(containerName, relPath);
+                        objectStorageService.objects().delete(pathInContainer, relPath);
                     } catch (Exception ex) {
                         logger.warning(String.format("Removing '%s' failed: %s", relPath, ex.getMessage()));
                     }
@@ -211,8 +218,8 @@ public class SwiftService {
         return Files.isDirectory(source) ? relativeTargetRoot : movedPaths.get(0);
     }
 
-    public String move(Path source, String containerName) throws IOException {
-        final String targetPath = copy(source, containerName);
+    public String move(Path source, String pathInContainer) throws IOException {
+        final String targetPath = copy(source, pathInContainer);
         try (Stream<Path> stream = Files.walk(source, FileVisitOption.FOLLOW_LINKS)) {
             stream.sorted(Comparator.reverseOrder())
                   .map(Path::toFile)
