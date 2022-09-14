@@ -6,6 +6,7 @@ public class Constants {
     public static final String OPENSTACK_AUTH_URL = "openstack.auth.url";
     public static final String OPENSTACK_DOMAIN = "openstack.domain";
     public static final String OPENSTACK_TENANT_ID = "openstack.tenantId";
+    public static final String OPENSTACK_BUCKET = "openstack.bucket";
     public static final String OPENSTACK_DEFAULT_SECURITY_GROUP = "openstack.default.security.group";
     public static final String OPENSTACK_FLOATING_IP_POOL = "openstack.floating.ip.pool";
     public static final String OPENSTACK_VOLUME_TYPE_SSD = "openstack.volume.type.ssd";
