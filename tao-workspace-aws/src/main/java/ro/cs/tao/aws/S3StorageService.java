@@ -622,18 +622,18 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
 
     private static class ProgressListener implements com.amazonaws.event.ProgressListener {
 
-        private final ro.cs.tao.ProgressListener parent;
+        private final ro.cs.tao.utils.executors.monitoring.ProgressListener parent;
         private final String task;
         private double current;
         private double total;
 
-        ProgressListener(ro.cs.tao.ProgressListener parent, String task) {
+        ProgressListener(ro.cs.tao.utils.executors.monitoring.ProgressListener parent, String task) {
             this.parent = parent;
             this.task = task;
             this.current = 0.0;
         }
 
-        ProgressListener(ro.cs.tao.ProgressListener parent, String task, double total) {
+        ProgressListener(ro.cs.tao.utils.executors.monitoring.ProgressListener parent, String task, double total) {
             this.parent = parent;
             this.task = task;
             this.total = total;
