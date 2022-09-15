@@ -84,12 +84,10 @@ public class Sentinel3MetadataInspector extends XmlMetadataInspector {
             String[] coords = points.trim().split(" ");
             Polygon2D polygon2D = new Polygon2D();
             for (int i = 0; i < coords.length - 1; i += 2) {
-                polygon2D.append(Double.parseDouble(coords[i]),
-                        Double.parseDouble(coords[i + 1]));
+                polygon2D.append(Double.parseDouble(coords[i + 1]),
+                        Double.parseDouble(coords[i]));
             }
-            polygon2D.append(Double.parseDouble(coords[0]),
-                    Double.parseDouble(coords[1]));
-            metadata.setFootprint(polygon2D.toWKT(8));
+            metadata.setFootprint(polygon2D.toWKT());
         } else {
             logger.warning(String.format("Cannot extract product footprint from metadata [product=%s,xPath=%s]", productPath, XPATH_COORDINATES));
         }
