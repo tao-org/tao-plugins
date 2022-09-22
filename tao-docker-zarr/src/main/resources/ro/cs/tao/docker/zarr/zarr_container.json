@@ -11,6 +11,11 @@
 			"path": "gdal_to_xarray.py",
 			"name": "zarr_convert",
 			"memoryRequirements": 8192
+		},
+		{
+			"path": "union_zarrs.py",
+			"name": "union_zarr",
+			"memoryRequirements": 8192
 		}
 	]
 }
