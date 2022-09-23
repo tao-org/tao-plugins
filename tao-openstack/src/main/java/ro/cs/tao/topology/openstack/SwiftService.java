@@ -101,7 +101,27 @@ public class SwiftService {
             options.marker(lastItem);
         }
         options.limit(this.pageLimit);
-        return objectStorageService.objects().list(container, options);
+        final List<? extends SwiftObject> results = new ArrayList<>(objectStorageService.objects().list(container, options));
+        List partial;
+        // Some OpenStack REST implementation don't return the full list, even if it is less than the limit set.
+        // Hence, at the expense of an extra call if no other result, try to retrieve the rest of the list
+        if ((path.isEmpty() || path.equals("/")) && results.size() < this.pageLimit) {
+            SwiftObject lastObject = results.get(results.size() - 1);
+            if (lastObject.isDirectory()) {
+                options.marker((path.isEmpty() ? "" : (path + "/")) + lastObject.getDirectoryName());
+            }
+            do {
+                partial = objectStorageService.objects().list(container, options);
+                results.addAll(partial);
+                if (partial.size() > 0) {
+                    lastObject = (SwiftObject) partial.get(partial.size() - 1);
+                    if (lastObject.isDirectory()) {
+                        options.marker((path.isEmpty() ? "" : (path + "/")) + lastObject.getDirectoryName());
+                    }
+                }
+            } while (partial.size() > 0 && results.size() <= this.pageLimit);
+        }
+        return results;
     }
 
     public void upload(String filePath, byte[] contents, String container, String description) {
