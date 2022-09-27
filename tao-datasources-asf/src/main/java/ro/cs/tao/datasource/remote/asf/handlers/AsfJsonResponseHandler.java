@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
-import static ro.cs.tao.utils.executors.ByteUnit.MEGABYTE;
+import static ro.cs.tao.utils.executors.MemoryUnit.MB;
 
 /**
  * ASF Search query JSON response handler
@@ -67,7 +67,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     if(!"NA".equalsIgnoreCase(thumbnailUrl) && !"N/A".equalsIgnoreCase(thumbnailUrl)){
                         product.setQuicklookLocation(r.getThumbnailUrl());
                     }
-                    product.setApproximateSize(MEGABYTE.value() * (long) Double.parseDouble(r.getSizeMb()));
+                    product.setApproximateSize(MB.value() * (long) Double.parseDouble(r.getSizeMb()));
                     //productType read from sensor property
                     String sensor = r.getSensor().trim();
                     if(sensor.contains(" ")){

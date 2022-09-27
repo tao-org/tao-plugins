@@ -3,19 +3,13 @@ package ro.cs.tao.topology.openstack;
 import org.openstack4j.api.Builders;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.api.compute.ComputeFloatingIPService;
-import org.openstack4j.api.compute.ComputeService;
 import org.openstack4j.api.compute.ServerService;
-import org.openstack4j.api.exceptions.AuthenticationException;
-import org.openstack4j.api.image.ImageService;
-import org.openstack4j.api.networking.NetworkingService;
-import org.openstack4j.api.storage.BlockStorageService;
 import org.openstack4j.api.storage.BlockVolumeService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.common.Identifier;
 import org.openstack4j.model.compute.*;
 import org.openstack4j.model.compute.builder.ServerCreateBuilder;
 import org.openstack4j.model.identity.v3.Service;
-import org.openstack4j.model.image.Image;
 import org.openstack4j.model.network.Network;
 import org.openstack4j.model.storage.block.Volume;
 import org.openstack4j.model.storage.block.VolumeAttachment;
@@ -28,10 +22,8 @@ import ro.cs.tao.topology.NodeFlavor;
 import ro.cs.tao.topology.NodeProvider;
 import ro.cs.tao.topology.TopologyException;
 import ro.cs.tao.topology.openstack.commons.Constants;
-import ro.cs.tao.topology.openstack.commons.OpenStackSession;
+import ro.cs.tao.utils.executors.MemoryUnit;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -379,7 +371,9 @@ public class NovaService implements NodeProvider {
     protected static NodeFlavor convert(Flavor flavor) {
         return flavor != null ?
                 new NodeFlavor(flavor.getName(), flavor.getVcpus(), flavor.getRam(),
-                               flavor.getDisk(), flavor.getSwap() == 0 ? flavor.getRam() / 1024 * 2 : flavor.getSwap(),
+                               flavor.getDisk(), flavor.getSwap() == 0
+                                                 ? flavor.getRam() / MemoryUnit.KB.value().intValue() * 2
+                                                 : flavor.getSwap(),
                                flavor.getRxtxFactor()) : null;
     }
 

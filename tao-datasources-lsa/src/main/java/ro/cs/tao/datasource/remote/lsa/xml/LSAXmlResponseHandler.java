@@ -22,6 +22,7 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.serialization.DateAdapter;
+import ro.cs.tao.utils.executors.MemoryUnit;
 
 import java.net.URISyntaxException;
 
@@ -29,9 +30,6 @@ import java.net.URISyntaxException;
  * @author Cosmin Cara
  */
 public class LSAXmlResponseHandler extends XmlResponseHandler<EOProduct> {
-
-    private static final double MEGABYTE = 1024.0 * 1024.0;
-    private static final double GIGABYTE = MEGABYTE * 1024.0;
 
     public LSAXmlResponseHandler(String recordElementName) {
         super(EOProduct.class, recordElementName);
@@ -130,9 +128,9 @@ public class LSAXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 val = content.substring(idx, content.indexOf("</td>", idx)).trim();
                 long size;
                 if (val.endsWith("MB")) {
-                    size = (long) (MEGABYTE * Double.parseDouble(val.substring(0, val.indexOf(" "))));
+                    size = (long) (MemoryUnit.MB.value() * Double.parseDouble(val.substring(0, val.indexOf(" "))));
                 } else if (val.endsWith("GB")) {
-                    size = (long) (GIGABYTE * Double.parseDouble(val.substring(0, val.indexOf(" "))));
+                    size = (long) (MemoryUnit.GB.value() * Double.parseDouble(val.substring(0, val.indexOf(" "))));
                 } else {
                     size = 0;
                 }

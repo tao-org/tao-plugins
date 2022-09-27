@@ -1,7 +1,6 @@
 package ro.cs.tao.quota;
 
 import ro.cs.tao.component.SystemVariable;
-import ro.cs.tao.execution.monitor.MemoryUnit;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
 import ro.cs.tao.persistence.EOProductProvider;
 import ro.cs.tao.persistence.PersistenceException;
@@ -9,6 +8,7 @@ import ro.cs.tao.persistence.UserProvider;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 import ro.cs.tao.user.User;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.executors.MemoryUnit;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 	public boolean checkUserInputQuota(Principal principal, long addedQuota) throws QuotaException {
 		final User user = getUser(principal);
 		final long targetQuota = user.getInputQuota();
-		final long actualQuota = user.getActualInputQuota() + (addedQuota / (long)MemoryUnit.MEGABYTE.value());
+		final long actualQuota = user.getActualInputQuota() + (addedQuota / MemoryUnit.MB.value());
 		return targetQuota == -1 || targetQuota > actualQuota;
 	}
 
@@ -101,7 +101,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 
 			// compute the size of all public products assigned to the user
 			final long actualInputQuota = this.productProvider.getUserInputProductsSize(principal.getName(), location)
-					/ ((long) MemoryUnit.MEGABYTE.value());
+					/ MemoryUnit.MB.value();
 
 			// update the user info
 			this.userProvider.updateInputQuota(principal.getName(), (int)actualInputQuota);
@@ -126,7 +126,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 			// compute and update the quota based on the database information
 			 final String userWorkspace = SystemVariable.USER_WORKSPACE.value();
 			 // compute used space in MB
-			final long usedSpace = FileUtilities.folderSize(new File(userWorkspace).toPath()) / ((long) MemoryUnit.MEGABYTE.value());
+			final long usedSpace = FileUtilities.folderSize(new File(userWorkspace).toPath()) / MemoryUnit.MB.value();
 
 			// update the user info
 			this.userProvider.updateProcessingQuota(principal.getName(), (int)usedSpace);
