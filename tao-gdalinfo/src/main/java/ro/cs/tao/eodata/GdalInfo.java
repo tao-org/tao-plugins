@@ -119,7 +119,7 @@ public class GdalInfo implements MetadataInspector {
             double[] max = new double[1];
             double[] mean = new double[1];
             double[] stddev = new double[1];
-            if (extractStatistics && gdalBand.getStatistics(true, false, min, max, mean, stddev).equals(GDALConstConstants.ceNone())) {
+            if (extractStatistics && gdalBand.getStatistics(true, true, min, max, mean, stddev).equals(GDALConstConstants.ceNone())) {
                 gdalMetadata.addStatistic("min", min[0]);
                 gdalMetadata.addStatistic("max", max[0]);
                 gdalMetadata.addStatistic("mean", mean[0]);
