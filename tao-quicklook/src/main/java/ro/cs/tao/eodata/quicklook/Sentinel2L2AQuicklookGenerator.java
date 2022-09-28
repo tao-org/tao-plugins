@@ -49,7 +49,7 @@ public class Sentinel2L2AQuicklookGenerator extends BaseQuicklookGenerator<Path>
     @Override
     protected List<Path> handleInner(List<Path> list) throws DataHandlingException {
         final OutputAccumulator consumer = new OutputAccumulator();
-        final List<Path> results = new ArrayList<>();
+        List<Path> results = new ArrayList<>();
         for (Path productFile : list) {
             final Sentinel2ProductHelper helper;
             try {
@@ -74,7 +74,7 @@ public class Sentinel2L2AQuicklookGenerator extends BaseQuicklookGenerator<Path>
                         executor.setOutputConsumer(consumer);
                         int code;
                         if ((code = executor.execute(false)) == 0) {
-                            productFile = Paths.get(productFile.toString() + extension);
+                            productFile = Paths.get(productFile + extension);
                         } else {
                             logger.warning(String.format("Quicklook for %s was not created (return code: %d, output: %s)",
                                                          productFile.getFileName(), code, consumer.getOutput()));
@@ -88,7 +88,7 @@ public class Sentinel2L2AQuicklookGenerator extends BaseQuicklookGenerator<Path>
             }
             results.add(productFile);
         }
-        return results;
+        return results.size() == 0 ? null : results;
     }
 
 }

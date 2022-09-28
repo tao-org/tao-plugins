@@ -56,6 +56,6 @@ public class GenericQuicklookGenerator extends BaseQuicklookGenerator<Path> {
             }
             results.add(productFile);
         }
-        return results;
+        return results.size() == 0 ? null : results;
     }
 }
