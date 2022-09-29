@@ -55,9 +55,12 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
 
     @Override
     public List<T> handle(List<T> list) throws DataHandlingException {
-        List<T> results = new ArrayList<>();
+        List<T> results = null;
         if (canCreate) {
-            results.addAll(handleInner(list));
+            List<T> ret = handleInner(list);
+            if (ret != null) {
+                results = new ArrayList<>(ret);
+            }
         }
         return results;
     }
