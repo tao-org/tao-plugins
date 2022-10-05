@@ -241,8 +241,14 @@ public class Landsat8Query extends DataQuery {
                                 downloads = resp.getData().getPreparingDownloads();
                             }
                             if (downloads != null) {
-                                for (int i = 0; i < downloads.size(); i++) {
-                                    products.get(i).setLocation(downloads.get(i).getUrl());
+                                String dUrl;
+                                for (EOProduct product : products) {
+                                    for (AvailableDownload download : downloads) {
+                                        dUrl = download.getUrl();
+                                        if (dUrl.contains(product.getName())) {
+                                            product.setLocation(dUrl);
+                                        }
+                                    }
                                 }
                             }
                         }
