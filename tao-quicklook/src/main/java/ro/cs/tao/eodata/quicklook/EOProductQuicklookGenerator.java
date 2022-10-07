@@ -21,10 +21,10 @@ import ro.cs.tao.eodata.DataHandlingException;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.utils.DockerHelper;
+import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.OutputAccumulator;
 
-import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -57,7 +57,7 @@ public class EOProductQuicklookGenerator extends BaseQuicklookGenerator<EOProduc
                     consumer.reset();
                     final String entryPoint = product.getEntryPoint();
                     if (StringUtils.isNotEmpty(entryPoint)) {
-                        Path productPath = Paths.get(URI.create(product.getLocation())).resolve(entryPoint);
+                        Path productPath = FileUtilities.toPath(product.getLocation()).resolve(entryPoint);
                         Executor<?> executor = initialize(productPath, DockerHelper.isDockerFound() ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
                         if (executor != null) {
                             executor.setOutputConsumer(consumer);
