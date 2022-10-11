@@ -62,7 +62,7 @@ public class EOProductQuicklookGenerator extends BaseQuicklookGenerator<EOProduc
                         if (executor != null) {
                             executor.setOutputConsumer(consumer);
                             int code;
-                            logger.fine("Trying to create quicklook for " + product.getLocation());
+                            logger.fine("Trying to create quicklook for " + product.getLocation() + entryPoint);
                             if ((code = executor.execute(false)) == 0) {
                                 product.setQuicklookLocation(Paths.get(productPath + extension).toString());
                             } else {
