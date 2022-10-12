@@ -2,6 +2,7 @@ package ro.cs.tao.keycloak;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.keycloak.OAuth2Constants;
 import org.keycloak.RSATokenVerifier;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
@@ -297,11 +298,11 @@ public class KeycloakClient implements TokenProvider {
         return KeycloakBuilder.builder()
                 .serverUrl(this.authUrl)
                 .realm(this.realm)
-                //.grantType(OAuth2Constants.CLIENT_CREDENTIALS)
-                .username(this.adminUser)
-                .password(this.adminPwd)
+                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+                /*.username(this.adminUser)
+                .password(this.adminPwd)*/
                 .clientId(this.clientId)
-                //.clientSecret(this.clientSecret)
+                .clientSecret(this.clientSecret)
                 .build();
     }
 
