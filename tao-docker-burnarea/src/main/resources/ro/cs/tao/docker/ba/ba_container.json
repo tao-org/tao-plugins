@@ -9,7 +9,7 @@
 		{
 			"path": "ba",
 			"name": "ba",
-			"memoryRequirements": 4096
+			"memoryRequirements": 40960
 		}
 	]
 }
