@@ -61,7 +61,7 @@
 				"id": "scale",
 				"type": "REGULAR",
 				"dataType": "double",
-				"defaultValue": 1,
+				"defaultValue": 1.0,
 				"description": "The scaling to be applied to the input values. Default is 1",
 				"label": "scale",
 				"notNull": false
@@ -70,7 +70,7 @@
 				"id": "offset",
 				"type": "REGULAR",
 				"dataType": "double",
-				"defaultValue": 0,
+				"defaultValue": 0.0,
 				"description": "The offset to be applied to the input values. Default is 0",
 				"label": "offset",
 				"notNull": false
@@ -88,7 +88,7 @@
 				"id": "units",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "n/a",
+				"defaultValue": "dl",
 				"description": "The units of the input values",
 				"label": "units",
 				"notNull": false
