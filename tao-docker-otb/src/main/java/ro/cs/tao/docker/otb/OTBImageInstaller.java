@@ -17,20 +17,9 @@
 package ro.cs.tao.docker.otb;
 
 import org.apache.commons.lang3.SystemUtils;
-import ro.cs.tao.component.ParameterDescriptor;
-import ro.cs.tao.component.ProcessingComponent;
-import ro.cs.tao.component.SourceDescriptor;
-import ro.cs.tao.component.TargetDescriptor;
-import ro.cs.tao.component.enums.ProcessingComponentType;
-import ro.cs.tao.component.enums.ProcessingComponentVisibility;
-import ro.cs.tao.docker.Application;
-import ro.cs.tao.docker.Container;
-import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
 
 import java.nio.file.Path;
-import java.util.List;
-import java.util.UUID;
 
 public class OTBImageInstaller extends BaseImageInstaller {
     @Override
@@ -50,102 +39,12 @@ public class OTBImageInstaller extends BaseImageInstaller {
     }
 
     @Override
-    protected Container initializeContainer(Container container, String path) {
-        Container otbContainer;
-        try {
-            otbContainer = readContainerDescriptor("otb_container.json");
-            otbContainer.setId(container.getId());
-            otbContainer.setName(container.getName());
-            otbContainer.setTag(container.getTag());
-            otbContainer.setApplicationPath(path);
-            otbContainer.getApplications().forEach(app -> {
-                String appPath = app.getPath()/* + (SystemUtils.IS_OS_WINDOWS && (winExtensions.stream()
-                                    .noneMatch(e -> getPathInContainer().toLowerCase().endsWith(e))) ? ".bat" : "")*/;
-                app.setName(app.getName());
-                app.setPath(appPath);
-            });
-            otbContainer.setLogo(readContainerLogo("otb_logo.png"));
-            otbContainer = this.containerProvider.save(otbContainer);
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            return null;
-        }
-        ProcessingComponent current = null;
-        try {
-            ProcessingComponent[] components = readComponentDescriptors("otb_applications.json");
-            List<Application> containerApplications = otbContainer.getApplications();
-            for (ProcessingComponent component : components) {
-                try {
-                    current = component;
-                    component.setContainerId(otbContainer.getId());
-                    component.setLabel(component.getId());
-                    component.setComponentType(ProcessingComponentType.EXECUTABLE);
-                    containerApplications.stream().filter(a -> a.getName().equals(component.getId())).findFirst()
-                            .ifPresent(application -> component.setFileLocation(application.getPath()));
-                    List<ParameterDescriptor> parameterDescriptors = component.getParameterDescriptors();
-                    if (parameterDescriptors != null) {
-                        parameterDescriptors.forEach(p -> {
-                            if (p.getName() == null) {
-                                p.setName(p.getId());
-                                p.setId(UUID.randomUUID().toString());
-                            }
-                            String[] valueSet = p.getValueSet();
-                            if (valueSet != null && valueSet.length == 1 &&
-                                    ("null".equals(valueSet[0]) || valueSet[0].isEmpty())) {
-                                p.setValueSet(null);
-                            }
-                            if (valueSet != null && valueSet.length > 0 &&
-                                    ("null".equals(valueSet[0]) || valueSet[0].isEmpty())) {
-                                p.setDefaultValue(valueSet[0]);
-                            }
-                        });
-                    }
-                    List<SourceDescriptor> sources = component.getSources();
-                    if (sources != null) {
-                        sources.forEach(s -> s.setId(UUID.randomUUID().toString()));
-                    }
-                    List<TargetDescriptor> targets = component.getTargets();
-                    if (targets != null) {
-                        targets.forEach(t -> t.setId(UUID.randomUUID().toString()));
-                    }
-                    String template = component.getTemplateContents();
-                    int i = 0;
-                    while (i < template.length()) {
-                        char ch = template.charAt(i);
-                        if (ch == '$' && template.charAt(i - 1) != '\n') {
-                            template = template.substring(0, i) + "\n" + template.substring(i);
-                        }
-                        i++;
-                    }
-                    String[] tokens = template.split("\n");
-                    for (int j = 0; j < tokens.length - 1; j++) {
-                        final int idx = j;
-                        if ((targets != null && targets.stream().anyMatch(t -> t.getName().equals(tokens[idx].substring(1)))) ||
-                                (sources != null && sources.stream().anyMatch(s -> s.getName().equals(tokens[idx].substring(1))))) {
-                            tokens[j + 1] = tokens[j].replace('-', '$');
-                            j++;
-                        }
-                    }
-                    component.setTemplateContents(String.join("\n", tokens));
-                    component.setComponentType(ProcessingComponentType.EXECUTABLE);
-                    component.setVisibility(ProcessingComponentVisibility.SYSTEM);
-                    component.setOwner(SystemPrincipal.instance().getName());
-                    component.addTags(getOrCreateTag(container.getName()).getText());
-                    if (this.componentProvider.get(component.getId(), component.getContainerId()) == null) {
-                        this.componentProvider.save(component);
-                    } else {
-                        this.componentProvider.update(component);
-                    }
-                } catch (Exception inner) {
-                    logger.severe(String.format("Faulty component: %s. Error: %s",
-                                                current != null ? current.getId() : "n/a",
-                                                inner.getMessage()));
-                }
-            }
-        } catch (Exception outer) {
-            logger.severe(String.format("Error occured while registering container applications: %s",
-                                        outer.getMessage()));
-        }
-        return otbContainer;
-    }
+    protected String getContainerDescriptorFileName() { return "otb_container.json"; }
+
+    @Override
+    protected String getComponentDescriptorFileName() { return "otb_applications.json"; }
+
+    @Override
+    protected String getLogoFileName() { return "otb_logo.png"; }
+
 }

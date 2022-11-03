@@ -1,18 +1,6 @@
 package ro.cs.tao.docker.zarr;
 
-import ro.cs.tao.component.ParameterDescriptor;
-import ro.cs.tao.component.ProcessingComponent;
-import ro.cs.tao.component.SourceDescriptor;
-import ro.cs.tao.component.TargetDescriptor;
-import ro.cs.tao.component.enums.ProcessingComponentType;
-import ro.cs.tao.component.enums.ProcessingComponentVisibility;
-import ro.cs.tao.docker.Application;
-import ro.cs.tao.docker.Container;
-import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
-
-import java.util.List;
-import java.util.UUID;
 
 public class ZarrImageInstaller extends BaseImageInstaller {
     @Override
@@ -36,115 +24,25 @@ public class ZarrImageInstaller extends BaseImageInstaller {
     }
 
     @Override
+    protected String getContainerDescriptorFileName() {
+        return "zarr_container.json";
+    }
+
+    @Override
+    protected String getComponentDescriptorFileName() {
+        return "zarr_applications.json";
+    }
+
+    @Override
+    protected String getLogoFileName() {
+        return "zarr_logo.png";
+    }
+
+    @Override
     protected String[] additionalResources() {
         return new String[] {
                 "gdal_to_xarray.py", "requirements.txt", "union_zarrs.py", "compute_products.py",
                 "db_reader.py", "launcher.py", "launcher_union.py", "stack_products.py", "union_chunks.py"
         };
-    }
-
-    @Override
-    protected Container initializeContainer(Container container, String path) {
-        Container zarrContainer;
-        try {
-            zarrContainer = readContainerDescriptor("zarr_container.json");
-            zarrContainer.setId(container.getId());
-            zarrContainer.setName(container.getName());
-            zarrContainer.setTag(container.getTag());
-            zarrContainer.setApplicationPath(path);
-            zarrContainer.getApplications().forEach(app -> {
-                String appPath = app.getPath()/* + (SystemUtils.IS_OS_WINDOWS && (winExtensions.stream()
-                                    .noneMatch(e -> getPathInContainer().toLowerCase().endsWith(e))) ? ".bat" : "")*/;
-                app.setName(app.getName());
-                app.setPath(appPath);
-            });
-            zarrContainer.setLogo(readContainerLogo("zarr_logo.png"));
-            zarrContainer = this.containerProvider.save(zarrContainer);
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            return null;
-        }
-        ProcessingComponent current = null;
-        try {
-            final ProcessingComponent[] components = readComponentDescriptors("zarr_applications.json");
-            final List<Application> containerApplications = zarrContainer.getApplications();
-            for (ProcessingComponent component : components) {
-                try {
-                    current = component;
-                    component.setContainerId(zarrContainer.getId());
-                    component.setLabel(component.getId());
-                    component.setComponentType(ProcessingComponentType.EXECUTABLE);
-                    final Application application = containerApplications.stream().filter(a -> a.getName().equals(component.getId())).findFirst().orElse(null);
-                    if (application == null) {
-                        logger.severe(String.format("Component [%s] was not found among container [%s] applications",
-                                                    component.getId(), container.getName()));
-                        continue;
-                    }
-                    component.setFileLocation(application.getPath());
-                    List<ParameterDescriptor> parameterDescriptors = component.getParameterDescriptors();
-                    if (parameterDescriptors != null) {
-                        parameterDescriptors.forEach(p -> {
-                            if (p.getName() == null) {
-                                p.setName(p.getId());
-                                p.setId(UUID.randomUUID().toString());
-                            }
-                            String[] valueSet = p.getValueSet();
-                            if (valueSet != null && valueSet.length == 1 &&
-                                    ("null".equals(valueSet[0]) || valueSet[0].isEmpty())) {
-                                p.setValueSet(null);
-                            }
-                            if (valueSet != null && valueSet.length > 0 &&
-                                    ("null".equals(valueSet[0]) || valueSet[0].isEmpty())) {
-                                p.setDefaultValue(valueSet[0]);
-                            }
-                        });
-                    }
-                    List<SourceDescriptor> sources = component.getSources();
-                    if (sources != null) {
-                        sources.forEach(s -> s.setId(UUID.randomUUID().toString()));
-                    }
-                    List<TargetDescriptor> targets = component.getTargets();
-                    if (targets != null) {
-                        targets.forEach(t -> t.setId(UUID.randomUUID().toString()));
-                    }
-                    String template = component.getTemplateContents();
-                    int i = 0;
-                    while (i < template.length()) {
-                        char ch = template.charAt(i);
-                        if (ch == '$' && template.charAt(i - 1) != '\n') {
-                            template = template.substring(0, i) + "\n" + template.substring(i);
-                        }
-                        i++;
-                    }
-                    String[] tokens = template.split("\n");
-                    for (int j = 0; j < tokens.length; j++) {
-                        final int idx = j;
-                        if ((targets != null && targets.stream().anyMatch(t -> t.getName().equals(tokens[idx].substring(1)))) ||
-                                (sources != null && sources.stream().anyMatch(s -> s.getName().equals(tokens[idx].substring(1))))) {
-                            tokens[j + 1] = tokens[j].replace('-', '$');
-                            j++;
-                        }
-                    }
-                    component.setTemplateContents(String.join("\n", tokens));
-                    component.setComponentType(ProcessingComponentType.EXECUTABLE);
-                    component.setVisibility(ProcessingComponentVisibility.SYSTEM);
-                    component.setOwner(SystemPrincipal.instance().getName());
-                    component.addTags(getOrCreateTag(container.getName()).getText());
-                    if (this.componentProvider.get(component.getId(), component.getContainerId()) == null) {
-                        this.componentProvider.save(component);
-                    } else {
-                        this.componentProvider.update(component);
-                    }
-                } catch (Exception inner) {
-                    logger.severe(String.format("Faulty component: %s. Error: %s",
-                                                current != null ? current.getId() : "n/a",
-                                                inner.getMessage()));
-                }
-            }
-        } catch (Exception outer) {
-            logger.severe(String.format("Error occured while registering container applications: %s",
-                                        outer.getMessage()));
-        }
-        return zarrContainer;
     }
 }
