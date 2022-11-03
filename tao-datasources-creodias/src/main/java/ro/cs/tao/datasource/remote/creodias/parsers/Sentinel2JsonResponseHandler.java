@@ -69,17 +69,6 @@ public class Sentinel2JsonResponseHandler implements JSonResponseHandler<EOProdu
                         if (footprint != null) {
                             product.setGeometry(footprint.toWKT());
                         }
-                        switch (result.getProductType()) {
-                            case "L1C":
-                                product.addAttribute("productType", "S2MSI1C");
-                                break;
-                            case "L2A":
-                                product.addAttribute("productType", "S2MSI2A");
-                                break;
-                            default:
-                                product.addAttribute("productType", result.getProductType());
-                                break;
-                        }
                         product.setProductType("Sentinel2");
                         product.setSatelliteName("Sentinel2");
                         product.setLocation(result.getProductIdentifier());
@@ -88,6 +77,7 @@ public class Sentinel2JsonResponseHandler implements JSonResponseHandler<EOProdu
                         product.addAttribute("cloudcoverpercentage", String.valueOf(result.getCloudCover()));
                         productHelper = SentinelProductHelper.create(result.getTitle());
                         product.addAttribute("tiles", ((Sentinel2ProductHelper) productHelper).getTileIdentifier());
+                        product.addAttribute("productType", result.getProductType());
                         products.add(product);
                     } catch (Exception ex) {
                         logger.warning("Error parsing JSON: " + ex.getMessage());
