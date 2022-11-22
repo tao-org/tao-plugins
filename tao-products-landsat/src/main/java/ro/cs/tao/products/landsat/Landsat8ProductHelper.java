@@ -15,7 +15,7 @@
  */
 package ro.cs.tao.products.landsat;
 
-import ro.cs.tao.eodata.util.ProductHelper;
+import ro.cs.tao.eodata.util.BaseProductHelper;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 /**
  * @author Cosmin Cara
  */
-public class Landsat8ProductHelper extends ProductHelper {
+public class Landsat8ProductHelper extends BaseProductHelper {
     private static final Pattern preCollectionNamePattern = Pattern.compile("L\\w[1-8](\\d{3})(\\d{3})(\\d{4})(\\d{3})\\w{3}\\d{2}");
     private static final Pattern collectionNamePattern = Pattern.compile("L\\w\\d{2}_L[1-2]\\w{2}_(\\d{3})(\\d{3})_(\\d{4})(\\d{2})(\\d{2})_\\d{8}_\\d{2}_(\\w{2})");
     private static final String PRE_COLLECTION = "pre-collection";
@@ -38,6 +38,10 @@ public class Landsat8ProductHelper extends ProductHelper {
     private String row;
     private String path;
     private LandsatProduct productType;
+
+    Landsat8ProductHelper() {
+        super();
+    }
 
     public Landsat8ProductHelper(String name) {
         super(name);
@@ -55,6 +59,11 @@ public class Landsat8ProductHelper extends ProductHelper {
                 this.nameTokens = getTokens(collectionNamePattern, name, null);
                 break;
         }
+    }
+
+    @Override
+    public Landsat8ProductHelper duplicate() {
+        return new Landsat8ProductHelper();
     }
 
     @Override

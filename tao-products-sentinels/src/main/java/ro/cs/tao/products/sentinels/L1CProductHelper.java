@@ -46,6 +46,11 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
     }
 
     @Override
+    public L1CProductHelper duplicate() {
+        return new L1CProductHelper();
+    }
+
+    @Override
     public String getVersion() {
         if (this.version == null) {
             this.version = this.oldFormat ? PSD_13 : PSD_14;

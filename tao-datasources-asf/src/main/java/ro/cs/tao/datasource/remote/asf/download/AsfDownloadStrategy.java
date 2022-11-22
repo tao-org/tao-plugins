@@ -16,6 +16,7 @@
 package ro.cs.tao.datasource.remote.asf.download;
 
 import org.apache.http.HttpStatus;
+import ro.cs.tao.datasource.ProductHelperFactory;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.asf.ASFDataSource;
@@ -209,7 +210,7 @@ public class AsfDownloadStrategy extends DownloadStrategy<String> {
                 if (productFile != null) {
                     try {
                         product.setLocation(productFile.toUri().toString());
-                        ProductHelper helper = ProductHelper.getHelper(product.getName());
+                        ProductHelper helper = ProductHelperFactory.getHelper(product.getName());
                         if (helper != null) {
                             product.setEntryPoint(helper.getMetadataFileName());
                         }
