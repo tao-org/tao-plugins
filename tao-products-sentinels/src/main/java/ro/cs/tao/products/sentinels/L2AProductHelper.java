@@ -34,6 +34,11 @@ public class L2AProductHelper extends Sentinel2ProductHelper {
     }
 
     @Override
+    public L2AProductHelper duplicate() {
+        return new L2AProductHelper();
+    }
+
+    @Override
     public String getVersion() {
         if (this.version == null) {
             this.version = PSD_14;

@@ -11,8 +11,16 @@ public class MajaLandsat8ProductHelper extends MajaProductHelper {
     private static final Pattern L8L2Pattern = Pattern.compile("LC08_L2A_(\\d{6})_(\\d{8})_(\\d{8})_(\\d{2})_(T[12]|RT)");
     private static final Pattern L8L2TilePattern = Pattern.compile("L8_\\w+_L8C_L2VALD_(\\d{6})_(\\d{8}).DBL.DIR");
 
+    MajaLandsat8ProductHelper() {
+    }
+
     MajaLandsat8ProductHelper(Path productPath) {
         super(productPath);
+    }
+
+    @Override
+    public MajaLandsat8ProductHelper duplicate() {
+        return new MajaLandsat8ProductHelper();
     }
 
     @Override
