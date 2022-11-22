@@ -186,6 +186,10 @@ public class Landsat8Query extends DataQuery {
                     if (this.sensorName.equalsIgnoreCase("Hyperion")) {
                         downloadInfos.removeIf(i -> formats.stream().noneMatch(f -> i.getProductName().toLowerCase().contains(f)));
                     }
+                    // It may happen to have two entries for the same entityId, one available and one not.
+                    // Then, in order to properly populate the 'notAvailable' set, we need to sort the list by
+                    // entityId and then by 'available' (if y/n, n comes before y, if true/false, false comes before true)
+                    downloadInfos.sort(Comparator.comparing(DownloadInfo::getEntityId).thenComparing(DownloadInfo::getAvailable));
                     final Iterator<DownloadInfo> iterator = downloadInfos.iterator();
                     final Set<String> notAvailable = new HashSet<>();
                     while (iterator.hasNext()) {
