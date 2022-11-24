@@ -43,7 +43,7 @@ public class Sentinel1ProductHelper extends BaseProductHelper {
     static final Pattern S1Pattern =
             Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
 
-    Sentinel1ProductHelper() { super(); }
+    public Sentinel1ProductHelper() { super(); }
 
     @Override
     public Sentinel1ProductHelper duplicate() {

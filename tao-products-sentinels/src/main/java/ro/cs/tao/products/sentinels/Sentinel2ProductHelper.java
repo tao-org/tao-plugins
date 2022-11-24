@@ -39,7 +39,7 @@ public abstract class Sentinel2ProductHelper extends BaseProductHelper {
         return helper;
     }
 
-    Sentinel2ProductHelper() { }
+    public Sentinel2ProductHelper() { super(); }
 
     Sentinel2ProductHelper(String name) {
         super(name);

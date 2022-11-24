@@ -11,7 +11,7 @@ public class MajaSentinel2ProductHelper extends MajaProductHelper {
     private static final Pattern S2L2Pattern = Pattern.compile("S2([AB])_MSIL2A_(\\d{8}T\\d{6})_(N\\d{4})_R(\\d{3})_T(\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
     private static final Pattern S2L2TilePattern = Pattern.compile("SENTINEL2[AB]_(\\d{8})-(\\d{6})-(\\d{3})_L2A_T(\\d{2}\\w{3})_C_V(\\d+)-(\\d+)");
 
-    MajaSentinel2ProductHelper() {
+    public MajaSentinel2ProductHelper() {
         super();
     }
 
