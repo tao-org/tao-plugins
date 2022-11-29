@@ -6,10 +6,7 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import javax.json.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
@@ -71,7 +68,8 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
 
     private String createFootprint(JsonObject jsonObject) {
         Polygon2D footprint = new Polygon2D();
-        if (jsonObject.getJsonArray("boxes").size() > 0) {
+        // footprint can be obtained from boxes or polygons object
+        if (jsonObject.getJsonArray("boxes") != null && jsonObject.getJsonArray("boxes").size() > 0) {
             String coordinates = jsonObject.getJsonArray("boxes").getString(0).replace("\"", "");
             String points[] = coordinates.split("\\s");
             int length = points.length;
@@ -93,6 +91,36 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
                     nextCoordinate = Double.parseDouble(points[j+1].trim());
                     j++;
                     footprint.append(currentCoordinate, nextCoordinate);
+                }
+            }
+        } else if (jsonObject.getJsonArray("polygons") != null && jsonObject.getJsonArray("polygons").size() > 0) {
+           JsonArray polygons = jsonObject.getJsonArray("polygons");
+            int length = polygons.size();
+            if (length == 1) {
+                JsonValue coordinates = polygons.get(0).asJsonArray().get(0);
+                String points[] = coordinates.toString().replaceAll("\"","").split("\\s");
+                double currentCoordinate;
+                double nextCoordinate;
+                for (int j = 0; j < points.length - 1; j++) {
+                    currentCoordinate = Double.parseDouble(points[j].trim());
+                    nextCoordinate = Double.parseDouble(points[j + 1].trim());
+                    j++;
+                    footprint.append(currentCoordinate, nextCoordinate);
+                }
+            } else {
+                int countPolygons = 0;
+                for (JsonValue polygon: polygons) {
+                    JsonValue coordinates = polygon.asJsonArray().get(0);
+                    String points[] = coordinates.toString().replaceAll("\"","").split("\\s");
+                    double currentCoordinate;
+                    double nextCoordinate;
+                    for (int j = 0; j < points.length - 1; j++) {
+                        currentCoordinate = Double.parseDouble(points[j].trim());
+                        nextCoordinate = Double.parseDouble(points[j + 1].trim());
+                        j++;
+                        footprint.append(countPolygons, currentCoordinate, nextCoordinate);
+                    }
+                    countPolygons++;
                 }
             }
         }
