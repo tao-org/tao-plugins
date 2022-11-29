@@ -36,7 +36,7 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
 
     private boolean oldFormat;
 
-    L1CProductHelper() {
+    public L1CProductHelper() {
         super();
     }
 
