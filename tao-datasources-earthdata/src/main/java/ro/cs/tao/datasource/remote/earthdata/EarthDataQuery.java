@@ -82,9 +82,8 @@ public class EarthDataQuery extends DataQuery {
 
         int page = Math.max(this.pageNumber, 1);
         int retrieved = 0;
-
+        List<EOProduct> tmpResults;
         do {
-            List<EOProduct> tmpResults;
             List<NameValuePair> queryParams = new ArrayList<>(params);
             queryParams.add(new BasicNameValuePair("page_size", String.valueOf(this.pageSize)));
             queryParams.add(new BasicNameValuePair("page_num", String.valueOf(page)));
@@ -117,7 +116,7 @@ public class EarthDataQuery extends DataQuery {
             } catch (IOException ex) {
                 throw new QueryException(ex);
             }
-        } while (retrieved > 0 && results.size() <= this.limit);
+        } while (retrieved > 0 && results.size() <= this.limit && !tmpResults.isEmpty());
 
         if (results.size() > this.limit) {
             logger.info(String.format("Query {%s-%s} returned %s products", this.source.getId(), this.sensorName, this.limit));
