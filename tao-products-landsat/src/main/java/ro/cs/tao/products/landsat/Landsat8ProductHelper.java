@@ -39,7 +39,7 @@ public class Landsat8ProductHelper extends BaseProductHelper {
     private String path;
     private LandsatProduct productType;
 
-    Landsat8ProductHelper() {
+    public Landsat8ProductHelper() {
         super();
     }
 
