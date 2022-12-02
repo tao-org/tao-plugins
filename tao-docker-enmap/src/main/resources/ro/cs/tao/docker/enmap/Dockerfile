@@ -1,6 +1,6 @@
-ARG DOCKER_TAG=latest
+FROM  qgis/qgis:release-3_28
 
-FROM  qgis/qgis:latest
+ARG DOCKER_TAG=latest
 
 LABEL maintainer="tao@c-s.ro" \
        description="EnMAP-BOX 3"
@@ -10,30 +10,31 @@ ENV QT_QPA_PLATFORM=offscreen
 # build timeout in seconds, so no timeout by default
 ARG BUILD_TIMEOUT=360000
 
-# change current directory to userdir
-RUN cd ~
+# copy the ENMAP-Box distribution cloned from official repository
+COPY enmap-box.zip .
 
-# clone the ENMAP-Box distribution from official repository
-RUN git clone https://github.com/EnMAP-Box/enmap-box.git enmap-box
+# unzip the ENMAP-Box distribution
+RUN unzip enmap-box.zip
 
-# clone the ENMAP-Box qgispluginsupport from official repository
-RUN git clone https://github.com/EnMAP-Box/qgispluginsupport.git qgispluginsupport
+# backup libQt5Core.so.5 before applying the special patch for old Linux
+RUN cp /lib/x86_64-linux-gnu/libQt5Core.so.5 /lib/x86_64-linux-gnu/libQt5Core.so.5.bak
 
-# move qgispluginsupport on enmap-box/enmapbox/
-RUN mv qgispluginsupport enmap-box/enmapbox/
+# apply the special 'patch' for fix 'ImportError: libQt5Core.so.5: cannot open shared object file: No such file or directory'
+RUN strip --remove-section=.note.ABI-tag /lib/x86_64-linux-gnu/libQt5Core.so.5
+
+WORKDIR /enmap-box
 
 # build the EnMAP-BOX plugin
-RUN cd enmap-box && \
-    python3 -m pip install -r requirements.txt && \
-    python3 -m pip install -r requirements_developer.txt && \
-    python3 scripts/setup_repository.py && \
-    python3 scripts/create_plugin.py && \
-    mkdir -p ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins && \
-    cp -r deploy/enmapboxplugin ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins && \
-    qgis_process plugins enable enmapboxplugin
+RUN    python3 -m pip install -r requirements_developer.txt
+RUN    python3 scripts/setup_repository.py
+RUN    python3 scripts/create_plugin.py
+RUN    mkdir -p ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins
+RUN    cp -r deploy/enmapboxplugin ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins
+RUN    qgis_process plugins enable enmapboxplugin
 
 # clean the build workspace
-RUN rm -rf ~/enmap-box
-RUN rm -rf ~/qgispluginsupport
+RUN rm -f enmap-box.zip
+RUN rm -rf enmap-box
+RUN rm -rf qgispluginsupport
 
 CMD ["qgis_process"]
