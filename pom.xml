@@ -64,6 +64,7 @@
         <module>tao-workspace-smb</module>
         <module>tao-workspace-stac</module>
         <module>tao-zarr-metadata</module>
+        <module>tao-products-enmap</module>
     </modules>
 
     <properties>
