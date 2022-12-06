@@ -47,7 +47,7 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
 
     @Override
     public L1CProductHelper duplicate() {
-        return new L1CProductHelper();
+        return new L1CProductHelper(getName());
     }
 
     @Override
