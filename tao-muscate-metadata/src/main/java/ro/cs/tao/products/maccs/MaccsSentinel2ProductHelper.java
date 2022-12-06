@@ -16,7 +16,7 @@ public class MaccsSentinel2ProductHelper extends MaccsProductHelper {
 
     @Override
     public MaccsSentinel2ProductHelper duplicate() {
-        return new MaccsSentinel2ProductHelper();
+        return new MaccsSentinel2ProductHelper(this.path);
     }
 
     @Override

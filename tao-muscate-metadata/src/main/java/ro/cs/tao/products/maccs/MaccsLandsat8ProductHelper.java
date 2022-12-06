@@ -19,7 +19,7 @@ public class MaccsLandsat8ProductHelper extends MaccsProductHelper {
 
     @Override
     public MaccsLandsat8ProductHelper duplicate() {
-        return new MaccsLandsat8ProductHelper();
+        return new MaccsLandsat8ProductHelper(this.path);
     }
 
     @Override
