@@ -388,6 +388,7 @@ public class SciHubDataQuery extends DataQuery {
                             break;
                         case "productSize":
                             // productSize filter will be applied after results are returned
+                            query.setLength(query.length() - 5);
                             break;
                         default:
                             if (parameter.getType().isArray()) {
