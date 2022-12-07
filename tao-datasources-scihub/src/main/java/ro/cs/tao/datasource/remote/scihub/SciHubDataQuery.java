@@ -85,6 +85,7 @@ public class SciHubDataQuery extends DataQuery {
         Map<String, String> queries = buildQueriesParams();
         final boolean isS2 = "Sentinel-2".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
         final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
+        final boolean isS3 = "Sentinel-3".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
         final boolean useApiHub = this.parameters.containsKey("useApiHub") ?
                 Boolean.parseBoolean(this.parameters.get("useApiHub").getValueAsString()) : this.source.useAlternateConnectionString();
         StringBuilder msgBuilder = new StringBuilder();
@@ -133,6 +134,9 @@ public class SciHubDataQuery extends DataQuery {
                             }
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null) {
+                                if (isS3) {
+                                    filterS3(tmpResults);
+                                }
                                 count = tmpResults.size();
                                 if (count > 0) {
                                     if (hasProcessingDate && this.parameters.containsKey(CommonParameterNames.CLOUD_COVER)) {
@@ -382,6 +386,9 @@ public class SciHubDataQuery extends DataQuery {
                                 query.append(paramTypeName).append(":").append(value);
                             }
                             break;
+                        case "productSize":
+                            // productSize filter will be applied after results are returned
+                            break;
                         default:
                             if (parameter.getType().isArray()) {
                                 if (LocalDateTime.class.equals(parameter.getType().getComponentType())) {
@@ -439,5 +446,16 @@ public class SciHubDataQuery extends DataQuery {
             value = null;
         }
         return value;
+    }
+
+    private void filterS3(List<EOProduct> results) {
+        if (this.parameters.containsKey("productSize")) {
+            String productSize = this.parameters.get("productSize").getValueAsString();
+            if ("STRIPE".equalsIgnoreCase(productSize)) {
+                results.removeIf(p -> !p.getName().contains("_____"));
+            } else if ("FRAME".equalsIgnoreCase(productSize)) {
+                results.removeIf(p -> p.getName().contains("_____"));
+            }
+        }
     }
 }
