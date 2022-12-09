@@ -134,7 +134,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
                             task.setResourceId(UUID.randomUUID().toString());
                         }
                         logger.fine(String.format("Successfully submitted task with resource id %s", task.getResourceId()));
-                        changeTaskStatus(task, ExecutionStatus.RUNNING);
+                        changeTaskStatus(task, ExecutionStatus.RUNNING, null);
                     } else {
                         throw new ExecutionException("WPS task did not return any result");
                     }
@@ -192,10 +192,10 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
                                 task.setOutputParameterValue(wpsOutput.getIdentifier().getValue(),
                                                              wpsOutput.getData().getLiteralData().getValue());
                             }
-                            markTaskFinished(task, ExecutionStatus.DONE);
+                            markTaskFinished(task, ExecutionStatus.DONE, null);
                         } else if (status.getProcessFailed() != null) {
                             // Process failed ... handle failed status
-                            markTaskFinished(task, ExecutionStatus.FAILED);
+                            markTaskFinished(task, ExecutionStatus.FAILED, status.getProcessFailed().getExceptionReport().toString());
                         } else if (status.getProcessStarted() != null) {
                             taskProvider.updateStatus(task, ExecutionStatus.RUNNING, String.format("Task %s is at %d%%",
                                                                                                    task.getId(), status.getProcessStarted().getPercentCompleted().intValue()));
@@ -213,15 +213,16 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
                         for (Object o : exceptionResponse.getException()) {
                             builder.append(o).append("\n");
                         }
-                        logger.warning(String.format("Task %s FAILED. Process output: %s", task.getId(), builder));
-                        markTaskFinished(task, ExecutionStatus.FAILED);
+                        String message = String.format("Task %s FAILED. Process output: %s", task.getId(), builder);
+                        logger.warning(message);
+                        markTaskFinished(task, ExecutionStatus.FAILED, message);
                     } else {
                         throw new Exception("Empty response");
                     }
                 } catch (Exception ex) {
                     logger.severe(String.format("%s: Error while getting the status for the task %s [%s]",
                                                 ex.getClass().getName(), task.getId(), ex.getMessage()));
-                    markTaskFinished(task, ExecutionStatus.FAILED);
+                    markTaskFinished(task, ExecutionStatus.FAILED, ex.getMessage());
                 }
             }
         }
@@ -232,7 +233,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
 
     private void onException(WPSExecutionTask task, Exception ex) {
         logger.severe(String.format("Task %s FAILED to execute. Reason: %s", task.getId(), ex.getMessage()));
-        markTaskFinished(task, ExecutionStatus.FAILED);
+        markTaskFinished(task, ExecutionStatus.FAILED, ex.getMessage());
         final ExecutionJob job = task.getJob();
         final List<ExecutionTask> tasks = job.getTasks();
         if (tasks.size() == 1) {
