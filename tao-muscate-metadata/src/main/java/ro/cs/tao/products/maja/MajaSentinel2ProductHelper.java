@@ -21,7 +21,7 @@ public class MajaSentinel2ProductHelper extends MajaProductHelper {
 
     @Override
     public MajaSentinel2ProductHelper duplicate() {
-        return new MajaSentinel2ProductHelper();
+        return new MajaSentinel2ProductHelper(this.path);
     }
 
     @Override

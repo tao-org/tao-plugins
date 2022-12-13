@@ -21,21 +21,20 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public abstract class FTPBaseService extends BaseStorageService<byte[], InputStream> {
-    protected FTPEnvironment environment;
     protected FileSystem ftpFileSystem;
+    protected FTPEnvironment environment;
 
     protected abstract String protocol();
     protected abstract FTPEnvironment newEnvironment();
+
+    private static final Map<String, FileSystem> fileSystemMap = Collections.synchronizedMap(new HashMap<>());
 
     @Override
     public boolean isIntendedFor(String protocol) {
@@ -52,16 +51,18 @@ public abstract class FTPBaseService extends BaseStorageService<byte[], InputStr
         LinkedHashMap<String, String> parameters = internal.getParameters();
         RepositoryType type = internal.getType();
         String user = parameters.get(type.userKey());
+        if (StringUtilities.isNullOrEmpty(user)) {
+            user = "anonymous";
+        }
         String pwd = parameters.get(type.passwordKey());
         String host = parameters.get(type.rootKey());
         internal.setRootFunctor(() -> protocol() + "://" + host);
         internal.setBucketFunctor(() -> "");
         environment = newEnvironment()
-                            .withCredentials(StringUtilities.isNullOrEmpty(user) ? "anonymous" : user,
-                                             pwd != null ? pwd.toCharArray() : null)
-                            .withConnectTimeout(500)
-                            .withConnectionMode(ConnectionMode.PASSIVE)
-                            .withAutodetectEncoding(true);
+                .withCredentials(user, pwd != null ? pwd.toCharArray() : null)
+                .withConnectTimeout(500)
+                .withConnectionMode(ConnectionMode.PASSIVE)
+                .withAutodetectEncoding(true);
         initializeFileSystem();
     }
 
@@ -209,12 +210,16 @@ public abstract class FTPBaseService extends BaseStorageService<byte[], InputStr
     }
 
     private void initializeFileSystem() {
+        final String user = (String) environment.get("username");
+        final String root = repository().root();
+        ftpFileSystem = fileSystemMap.get(root + ":" + user);
         if (ftpFileSystem == null || !ftpFileSystem.isOpen()) {
             try {
-                ftpFileSystem = FileSystems.newFileSystem(URI.create(repository().root()), environment);
-            } catch (IOException e) {
+                ftpFileSystem = FileSystems.newFileSystem(URI.create(root), environment);
+            } catch (Throwable e) {
                 throw new RuntimeException(e);
             }
+            fileSystemMap.put(root + ":" + user, ftpFileSystem);
         }
     }
 

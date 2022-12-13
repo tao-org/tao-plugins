@@ -47,7 +47,7 @@ public class Sentinel1ProductHelper extends BaseProductHelper {
 
     @Override
     public Sentinel1ProductHelper duplicate() {
-        return new Sentinel1ProductHelper();
+        return new Sentinel1ProductHelper(getName());
     }
 
     public Sentinel1ProductHelper(String productName) { super(productName); }

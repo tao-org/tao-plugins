@@ -35,7 +35,7 @@ public class L2AProductHelper extends Sentinel2ProductHelper {
 
     @Override
     public L2AProductHelper duplicate() {
-        return new L2AProductHelper();
+        return new L2AProductHelper(getName());
     }
 
     @Override
