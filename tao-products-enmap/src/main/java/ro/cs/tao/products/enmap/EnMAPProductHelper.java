@@ -11,12 +11,12 @@ import java.util.stream.Stream;
 
 public class EnMAPProductHelper extends BaseProductHelper {
 
-    public static final String LX_2 = "alps";
-    public static final String LX_4 = "other";
+    public static final String LX_2 = "00.02.00";
+    public static final String LX_6 = "00.06.00";
 
     static final Pattern ProductLX2 = Pattern.compile("(L[1-2][A-C]_Alps_\\d.*?)");
-    static final Pattern ProductLX4 = Pattern.compile("(other)");
-    private static final Pattern Tile = Pattern.compile("(ENMAP01-____L[1-2][A-C]-DT\\d{9})_(\\d{8}T\\d{6}Z)_(\\d{3})_(V\\d{6})_(\\d{8}T\\d{6}Z)");
+    static final Pattern ProductLX6 = Pattern.compile("(ENMAP01-____L[1-2][A-C]-DT\\d{9,10})_(\\d{8}T\\d{6}Z)_(\\d{3})_(V\\d{6})_(\\d{8}T\\d{6}Z)");
+    private static final Pattern Tile = Pattern.compile("(ENMAP01-____L[1-2][A-C]-DT\\d{9,10})_(\\d{8}T\\d{6}Z)_(\\d{3})_(V\\d{6})_(\\d{8}T\\d{6}Z)");
 
     private static final Pattern Metadata = Pattern.compile(Tile.pattern() + "-METADATA.XML");
 
@@ -33,7 +33,7 @@ public class EnMAPProductHelper extends BaseProductHelper {
     @Override
     public String getVersion() {
         if (this.version == null) {
-            this.version = this.demoFormat ? LX_2 : LX_4;
+            this.version = this.demoFormat ? LX_2 : LX_6;
         }
         return this.version;
     }
@@ -79,7 +79,7 @@ public class EnMAPProductHelper extends BaseProductHelper {
     @Override
     protected boolean verifyProductName(String name) {
         this.demoFormat = ProductLX2.matcher(name).matches();
-        return this.demoFormat || ProductLX4.matcher(name).matches();
+        return this.demoFormat || ProductLX6.matcher(name).matches();
     }
 
 }
