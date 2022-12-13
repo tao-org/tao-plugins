@@ -16,11 +16,12 @@ import java.util.List;
 
 public class ConvertToCOGAction implements ItemAction {
     private static final String gdalArgs;
+    private static final DockerVolumeMap volumeMap;
 
     static {
-        final DockerVolumeMap volumeMap = ExecutionConfiguration.getMasterContainerVolumeMap();
+        volumeMap = ExecutionConfiguration.getMasterContainerVolumeMap();
         gdalArgs = "docker run -t --rm -v " + volumeMap.getHostWorkspaceFolder() + ":" + volumeMap.getContainerWorkspaceFolder() +
-                " osgeo/gdal:alpine-normal-3.3.2 gdal_translate %s %s -of COG -co RESAMPLING=BILINEAR -co COMPRESS=DEFLATE -co TILED=YES";
+                " osgeo/gdal:alpine-normal-3.3.2 gdal_translate -of COG -co RESAMPLING=BILINEAR -co COMPRESS=DEFLATE -co TILED=YES %s %s";
     }
 
     public ConvertToCOGAction() {
@@ -39,7 +40,10 @@ public class ConvertToCOGAction implements ItemAction {
     @Override
     public void doAction(Path item) throws Exception {
         final String outFile = FileUtilities.getFilenameWithoutExtension(item) + "_cog.tif";
-        final List<String> args = Arrays.asList(String.format(gdalArgs, item, item.getParent().resolve(outFile)).split(" "));
+        final List<String> args = Arrays.asList(String.format(gdalArgs,
+                                                              volumeMap.relativizePath(FileUtilities.asUnixPath(item, true)),
+                                                              volumeMap.relativizePath(FileUtilities.asUnixPath(item.getParent().resolve(outFile), true)))
+                                                      .split(" "));
         final Executor<?> executor = Executor.create(ExecutorType.PROCESS, null, args);
         final OutputAccumulator consumer = new OutputAccumulator();
         executor.setOutputConsumer(consumer);

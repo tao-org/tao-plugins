@@ -1,5 +1,6 @@
 package ro.cs.tao.docker.zarr;
 
+import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.docker.DockerVolumeMap;
 import ro.cs.tao.docker.ExecutionConfiguration;
 import ro.cs.tao.services.model.ItemAction;
@@ -23,11 +24,13 @@ public class ConvertToZarrAction implements ItemAction {
     private static final String zarrArgs;
     private static final Pattern pattern = Pattern.compile("((?:[A-Za-z0-9_]*?(?=\\d{8}))((\\d{4})(\\d{2})(\\d{2}))?(?:[A-Za-z0-9_]*))\\.([A-Za-z.]+)");
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    private static final DockerVolumeMap volumeMap;
 
     static {
-        final DockerVolumeMap volumeMap = ExecutionConfiguration.getMasterContainerVolumeMap();
-        zarrArgs = "docker run -t --rm -v " + volumeMap.getHostWorkspaceFolder() + ":" + volumeMap.getContainerWorkspaceFolder() +
-                "zarr-1-0-0 gdal_to_xarray.py --input %s --out %s --date %s";
+        volumeMap = ExecutionConfiguration.getMasterContainerVolumeMap();
+        final String registry = ConfigurationManager.getInstance().getValue("tao.docker.registry");
+        zarrArgs = "docker run -t --rm -v " + volumeMap.getHostWorkspaceFolder() + ":" + volumeMap.getContainerWorkspaceFolder() + " " +
+                (registry != null ? registry + "/" : "") + "zarr-1-0-0 gdal_to_xarray.py --input %s --out %s --date %s";
     }
 
     public ConvertToZarrAction() {
@@ -48,13 +51,17 @@ public class ConvertToZarrAction implements ItemAction {
         Matcher matcher = pattern.matcher(outFile);
         LocalDateTime date;
         if (matcher.find()) {
-            date = DateUtils.parseDateTime(matcher.group(2));
+            try {
+                date = DateUtils.parseDateTime(matcher.group(2));
+            } catch (Exception e) {
+                date = DateUtils.parseDate(matcher.group(2)).atStartOfDay();
+            }
         } else {
             date = LocalDateTime.now();
         }
         final List<String> args = Arrays.asList(String.format(zarrArgs,
-                                                              item,
-                                                              item.getParent().resolve(outFile),
+                                                              volumeMap.relativizePath(FileUtilities.asUnixPath(item, true)),
+                                                              volumeMap.relativizePath(FileUtilities.asUnixPath(item.getParent().resolve(outFile), true)),
                                                               date.format(formatter)).split(" "));
         final Executor<?> executor = Executor.create(ExecutorType.PROCESS, null, args);
         final OutputAccumulator consumer = new OutputAccumulator();
