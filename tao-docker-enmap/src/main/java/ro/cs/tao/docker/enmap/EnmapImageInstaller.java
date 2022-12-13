@@ -41,4 +41,9 @@ public class EnmapImageInstaller extends BaseImageInstaller {
     protected String getLogoFileName() {
         return "enmap_logo.png";
     }
+
+    @Override
+    protected String[] additionalResources() {
+        return new String[] { "enmap-box.zip" };
+    }
 }

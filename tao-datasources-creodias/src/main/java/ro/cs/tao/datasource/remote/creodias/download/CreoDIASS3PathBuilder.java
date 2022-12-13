@@ -22,8 +22,15 @@ public class CreoDIASS3PathBuilder extends DefaultProductPathBuilder {
         // Products are assumed to be organized according to the pattern defined in tao.properties
         LocalDateTime date = product.getAcquisitionDate();
         final String productName = getProductName(product);
-        final String productType = product.getAttributeValue("productType");
-        final String instrument = product.getAttributeValue("instrument");
+        String productType = product.getAttributeValue("productType");
+        String instrument;
+        if (productType.endsWith("_")) {
+            productType = productType.replace("___", "");
+            instrument = productType.substring(0, productType.indexOf("_"));
+            productType = productType.substring(productType.lastIndexOf("_") + 1);
+        } else {
+            instrument = product.getAttributeValue("instrument");
+        }
         final String pathProductType;
         switch (instrument) {
             case "OL":
@@ -39,7 +46,9 @@ public class CreoDIASS3PathBuilder extends DefaultProductPathBuilder {
                 pathProductType = "SYNERGY";
         }
         String level = product.getAttributeValue("processingLevel");
-        level = level.substring(level.length() - 1);
+        if (level.length() > 1) {
+            level = level.substring(level.length() - 1);
+        }
         Path productFolderPath = dateToPath(this.repositoryPath.resolve(pathProductType).resolve(instrument + "_" + level + "_" + productType),
                                             date, this.localPathFormat);
         Path fullProductPath = productFolderPath.resolve(productName);

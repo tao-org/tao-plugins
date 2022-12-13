@@ -33,7 +33,7 @@ public class Sentinel3ProductHelper extends BaseProductHelper {
 
     @Override
     public Sentinel3ProductHelper duplicate() {
-        return new Sentinel3ProductHelper();
+        return new Sentinel3ProductHelper(getName());
     }
 
     @Override

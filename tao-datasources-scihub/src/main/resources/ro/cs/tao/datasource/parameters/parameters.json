@@ -389,6 +389,16 @@
       "valueSet": ["L1", "L2"],
       "order": 11
     },
+    "productSize": {
+      "name": "productSize",
+      "remoteName": "productIdentifier",
+      "label": "Product Size",
+      "type": "string",
+      "defaultValue": "FRAME",
+      "required": false,
+      "valueSet": ["ALL","FRAME", "STRIPE"],
+      "order": 9
+    },
     "useApiHub": {
       "name": "useApiHub",
       "remoteName": "",
