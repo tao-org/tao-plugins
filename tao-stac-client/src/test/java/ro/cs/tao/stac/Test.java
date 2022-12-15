@@ -1,5 +1,8 @@
 package ro.cs.tao.stac;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ro.cs.tao.stac.core.STACClient;
 import ro.cs.tao.stac.core.model.*;
 import ro.cs.tao.stac.core.parser.STACParser;
@@ -7,7 +10,6 @@ import ro.cs.tao.stac.core.parser.STACParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +18,8 @@ import java.util.stream.Collectors;
 public class Test {
 
     public static void main(String[] args) throws Exception {
-        testParser();
-        //testClient();
+        //testParser();
+        testClient();
         System.exit(0);
     }
 
@@ -34,29 +36,38 @@ public class Test {
     }
 
     private static void testClient() throws IOException {
-        STACClient client = new STACClient("https://earth-search.aws.element84.com/v0", null);
+        STACClient client = new STACClient("https://earth-search.aws.element84.com/v1", null);
+        final String collectionName = "sentinel-2-l2a";
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
         Catalog catalog = client.getCatalog();
         assert (catalog != null);
-        Collection collection = client.getCollection("sentinel-s2-l2a-cogs");
-        assert (collection != null);
-        ItemCollection itemCollection = client.listItems("sentinel-s2-l2a-cogs");
+        CollectionList collectionList = client.listCollections();
+        assert (collectionList != null);
+        ItemCollection itemCollection = client.listItems(collectionName);
         assert(itemCollection != null);
-        Item item = client.getItem("sentinel-s2-l2a-cogs", itemCollection.getFeatures().get(0).getId());
+        Item item = client.getItem(collectionName, itemCollection.getFeatures().get(0).getId());
         assert (item != null);
         Map<String, Object> params = new HashMap<>();
         params.put("bbox", "20.2201924985,43.6884447292,29.62654341,48.2208812526");
         params.put("datetime", "2022-05-01T00:00:00Z/2022-05-02T23:59:59Z");
-        ItemCollection results = client.search("sentinel-s2-l2a-cogs", params);
+        ItemCollection results = client.search(collectionName, params);
         assert (results != null);
         List<Item> features = results.getFeatures();
         if (features != null && features.size() > 0) {
             Item it = features.get(0);
             Map<String, Asset> assets = it.getAssets();
-            if (assets.size() > 1) {
+            System.out.println(mapper.writer().writeValueAsString(it));
+            ObjectWriter writer = mapper.writerFor(Asset.class);
+            for (Map.Entry<String, Asset> entry : assets.entrySet()) {
+                System.out.println(entry.getKey() + ": " + writer.writeValueAsString(entry.getValue()));
+            }
+
+            /*if (assets.size() > 1) {
                 client.download(assets.values().iterator().next(), Paths.get("D:\\test"));
             } else {
                 client.download(it, Paths.get("D:\\test"));
-            }
+            }*/
         }
     }
 

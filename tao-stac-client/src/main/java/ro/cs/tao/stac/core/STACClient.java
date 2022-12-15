@@ -1,7 +1,7 @@
 package ro.cs.tao.stac.core;
 
 import org.geotools.http.HTTPResponse;
-import ro.cs.tao.component.WPSAuthentication;
+import ro.cs.tao.component.WebServiceAuthentication;
 import ro.cs.tao.stac.core.model.*;
 import ro.cs.tao.stac.core.parser.STACParser;
 import ro.cs.tao.utils.FileUtilities;
@@ -19,7 +19,7 @@ public class STACClient {
     private final URL stacURL;
     final HttpClient client;
 
-    public STACClient(String baseURL, WPSAuthentication authentication) throws MalformedURLException {
+    public STACClient(String baseURL, WebServiceAuthentication authentication) throws MalformedURLException {
         this.stacURL = new URL(baseURL);
         this.client= new HttpClient(authentication);
     }

@@ -5,7 +5,7 @@ import org.geotools.http.HTTPResponse;
 import org.geotools.http.SimpleHttpClient;
 import org.geotools.util.Base64;
 import org.geotools.util.factory.GeoTools;
-import ro.cs.tao.component.WPSAuthentication;
+import ro.cs.tao.component.WebServiceAuthentication;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -25,9 +25,9 @@ import java.util.logging.Logger;
 
 public class HttpClient extends SimpleHttpClient {
     private final Logger logger = Logger.getLogger(HttpClient.class.getName());
-    private final WPSAuthentication authentication;
+    private final WebServiceAuthentication authentication;
 
-    public HttpClient(WPSAuthentication authentication) {
+    public HttpClient(WebServiceAuthentication authentication) {
         super();
         this.authentication = authentication;
         if (this.authentication != null) {
