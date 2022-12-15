@@ -71,7 +71,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
         try {
             final WPSComponent wpsComponent = task.getComponent();
             final Container service = wpsComponent.getService();
-            final WPSAuthentication authentication = authenticationProvider.get(service.getId());
+            final WebServiceAuthentication authentication = authenticationProvider.get(service.getId());
             final String address = wpsComponent.getRemoteAddress();
             final URL url = new URL(address);
             task.setExecutionNodeHostName(url.getHost());
@@ -174,7 +174,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
                     final WPSExecutionTask wpsTask = (WPSExecutionTask) task;
                     final WPSComponent wpsComponent = wpsTask.getComponent();
                     final Container service = wpsComponent.getService();
-                    final WPSAuthentication authentication = authenticationProvider.get(service.getId());
+                    final WebServiceAuthentication authentication = authenticationProvider.get(service.getId());
                     WebProcessingService wps = new WebProcessingService(new URL(wpsComponent.getRemoteAddress()),
                                                                         new WPSHttpClient(authentication), null);
                     final String statusUrl = wpsComponent.getRemoteAddress() + "?service=WPS&request=GetStatus&jobId=" + task.getResourceId();
