@@ -33,7 +33,7 @@ public class STACTest {
 
             @Override
             protected void readInfo() {
-                this.serviceURL = "https://earth-search.aws.element84.com/v1/";
+                this.connectionString = "https://earth-search.aws.element84.com/v1/";
                 this.authentication = null;
             }
         };

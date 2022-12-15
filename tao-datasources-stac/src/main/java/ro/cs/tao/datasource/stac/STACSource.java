@@ -21,7 +21,6 @@ public class STACSource extends AbstractDataSource<STACQuery, STACClient> {
     private static final String dbConnectionString;
     private static final String dbUser;
     private static final String dbPass;
-    protected String serviceURL;
     protected WebServiceAuthentication authentication;
     private final Logger logger = Logger.getLogger(STACSource.class.getName());
 
@@ -37,13 +36,14 @@ public class STACSource extends AbstractDataSource<STACQuery, STACClient> {
         }
     }
 
-    public STACSource() {
+    /*public STACSource() {
         super();
         setParameterProvider(new STACParameterProvider(this));
-    }
+    }*/
 
     public STACSource(String provider) {
         super(provider);
+        setId(provider);
         readInfo();
         setParameterProvider(new STACParameterProvider(this));
     }
@@ -55,15 +55,11 @@ public class STACSource extends AbstractDataSource<STACQuery, STACClient> {
 
     @Override
     public STACSource clone() throws CloneNotSupportedException {
-        return (STACSource) super.clone();
+        return new STACSource(this.id);
     }
 
     @Override
     public boolean requiresAuthentication() { return authentication != null && authentication.getType() != AuthenticationType.NONE; }
-
-    public String getServiceURL() {
-        return serviceURL;
-    }
 
     public WebServiceAuthentication getAuthentication() {
         return authentication;
@@ -86,7 +82,7 @@ public class STACSource extends AbstractDataSource<STACQuery, STACClient> {
 
     @Override
     public STACClient authenticate() throws IOException {
-        return new STACClient(this.serviceURL, this.authentication);
+        return new STACClient(this.connectionString, this.authentication);
     }
 
     @Override
@@ -113,12 +109,12 @@ public class STACSource extends AbstractDataSource<STACQuery, STACClient> {
         try (Connection sqlConnection = getConnection();
              PreparedStatement cStmt = sqlConnection.prepareStatement("SELECT id, application_path FROM component.container WHERE name = ?");
              PreparedStatement aStmt = sqlConnection.prepareStatement("SELECT id, auth_type, username, password, login_url, header_name FROM component.wps_authentication WHERE id = ?")) {
-            cStmt.setString(1, this.connectionString);
+            cStmt.setString(1, this.id);
             String containerId = null;
             try (ResultSet rs = cStmt.executeQuery()) {
                 if (rs.next()) {
                     containerId = rs.getString(1);
-                    this.serviceURL = rs.getString(2);
+                    this.connectionString = rs.getString(2);
                 } else {
                     throw new SQLException("Not found");
                 }
