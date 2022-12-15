@@ -9,6 +9,8 @@ import ro.cs.tao.datasource.stac.parameters.DateParameterConverter;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
+import ro.cs.tao.eodata.enums.PixelType;
+import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.serialization.GeometryAdapter;
 import ro.cs.tao.stac.core.STACClient;
 import ro.cs.tao.stac.core.model.*;
@@ -117,6 +119,9 @@ public class STACQuery extends DataQuery {
                 EOProduct product = new EOProduct();
                 product.setId(item.getId());
                 product.setName(item.getId());
+                product.setSensorType(SensorType.UNKNOWN);
+                product.setPixelType(PixelType.INT16);
+                product.setProductType("unknown");
                 Geometry geometry = item.getGeometry();
                 if (geometry != null) {
                     double[][][] coords = (double[][][]) geometry.getCoordinates();
