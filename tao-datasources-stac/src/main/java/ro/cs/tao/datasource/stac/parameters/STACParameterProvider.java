@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class STACParameterProvider implements ParameterProvider {
     private static final String DS_TABLE = "component.data_source_component";
@@ -57,8 +58,9 @@ public class STACParameterProvider implements ParameterProvider {
     public String[] getSupportedSensors() {
         List<String> collections = new ArrayList<>();
         try (Connection sqlConnection = this.source.getConnection();
-             PreparedStatement statement = sqlConnection.prepareStatement("SELECT DISTINCT sensor_name FROM " + DS_TABLE + " WHERE data_source_name = ?")) {
-            statement.setString(1, this.source.getConnectionString());
+             PreparedStatement statement = sqlConnection.prepareStatement("SELECT DISTINCT a.name FROM component.container_applications a " +
+                                                                                  "JOIN component.container c ON c.id = a.container_id WHERE c.name = ?")) {
+            statement.setString(1, this.source.getId());
             final ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 collections.add(rs.getString(1));
@@ -85,7 +87,10 @@ public class STACParameterProvider implements ParameterProvider {
                         summaries = collection.getSummaries();
                         mission = getObjectValue(summaries.get("mission"));
                         if (mission == null) {
-                            mission = getObjectValue(summaries.get("platform"));
+                            mission = getObjectValue(summaries.get("constellation"));
+                            if (mission == null) {
+                                mission = getObjectValue(summaries.get("platform"));
+                            }
                         }
                         CollectionDescription description = new CollectionDescription();
                         description.setMission(mission);
@@ -122,7 +127,20 @@ public class STACParameterProvider implements ParameterProvider {
             return null;
         }
         if (object.getClass().isArray()) {
-            return String.valueOf(Array.get(object, 0));
+            int length = Array.getLength(object);
+            if (length > 1) {
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < length; i++) {
+                    builder.append(Array.get(object, i)).append(",");
+                }
+                builder.setLength(builder.length() - 1);
+                return builder.toString();
+            } else {
+                return String.valueOf(Array.get(object, 0));
+            }
+        } else if (object instanceof List<?>) {
+            List<?> list = (List<?>) object;
+            return list.stream().map(String::valueOf).collect(Collectors.joining(","));
         } else {
             return String.valueOf(object);
         }
