@@ -1,11 +1,14 @@
 package ro.cs.tao.datasource.stac.parameters;
 
+import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.datasource.CollectionDescription;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.stac.STACSource;
+import ro.cs.tao.datasource.stac.fetch.STACFetchStrategy;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.stac.core.STACClient;
@@ -27,9 +30,9 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class STACParameterProvider implements ParameterProvider {
-    private static final String DS_TABLE = "component.data_source_component";
     private static Map<String, CollectionDescription> sensorTypes;
     private final STACSource source;
+    private Map<String, ProductFetchStrategy> productFetchers;
 
     public STACParameterProvider(STACSource source) {
         this.source = source;
@@ -119,7 +122,16 @@ public class STACParameterProvider implements ParameterProvider {
 
     @Override
     public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() {
-        return null;
+        if (productFetchers == null) {
+            productFetchers = new HashMap<>();
+        }
+        final ConfigurationProvider configurationProvider = ConfigurationManager.getInstance();
+        final String targetFolder = configurationProvider.getValue("product.location");
+        String[] supportedSensors = getSupportedSensors();
+        for (String sensor : supportedSensors) {
+            productFetchers.putIfAbsent(sensor, new STACFetchStrategy(this.source, targetFolder, new Properties()));
+        }
+        return productFetchers;
     }
 
     private String getObjectValue(Object object) {
