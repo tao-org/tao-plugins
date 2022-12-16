@@ -7,7 +7,11 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import ro.cs.tao.stac.core.model.SpatialExtent;
 
 import java.io.IOException;
-
+/**
+ * Deserialization from JSON class for a spatial extent.
+ *
+ * @author Cosmin Cara
+ */
 public class SpatialDeserializer extends StdDeserializer<SpatialExtent> {
 
     public SpatialDeserializer() {
