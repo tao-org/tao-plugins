@@ -1,11 +1,9 @@
 package ro.cs.tao.datasource.stac.fetch;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.stac.STACSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.stac.core.STACClient;
-import ro.cs.tao.stac.core.model.Asset;
 import ro.cs.tao.utils.FileUtilities;
 
 import java.io.FileNotFoundException;
@@ -14,9 +12,8 @@ import java.io.InterruptedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 public class STACFetchStrategy extends DownloadStrategy<STACClient> {
 
@@ -35,43 +32,44 @@ public class STACFetchStrategy extends DownloadStrategy<STACClient> {
 
     @Override
     protected Path fetchImpl(EOProduct product) throws IOException {
-        final Path target = Paths.get(this.destination).resolve(product.getName());
-        Files.createDirectories(target);
-        String links = product.getAttributeValue("assets");
-        final List<Asset> assets = new ArrayList<>();
-        assets.addAll(new ObjectMapper().readerFor(assets.getClass()).readValue(links));
-        STACClient client = this.dataSource.authenticate();
-        long size = 0;
-        for (Asset asset : assets) {
-            checkCancelled();
-            String link = asset.getHref();
-            Path filePath = target.resolve(link.substring(link.lastIndexOf('/')));
-            try {
-                logger.fine(String.format("Begin download for %s", link));
-                subActivityStart(link);
-                if (Files.exists(filePath)) {
-                    Files.delete(filePath);
-                }
+        final Path target;
+        final Set<String> files = product.getFiles();
+        if (files != null && files.size() > 0) {
+            target = Paths.get(this.destination).resolve(product.getName());
+            Files.createDirectories(target);
+            STACClient client = this.dataSource.authenticate();
+            long size = 0;
+            for (String file : files) {
                 checkCancelled();
-                long start = System.currentTimeMillis();
-                client.download(asset, target);
-                size += Files.size(filePath);
-                currentProductProgress.add(1);
-                logger.fine(String.format("End download for %s", link));
-            } catch (FileNotFoundException fnex) {
-                logger.warning(fnex.getMessage());
-                filePath = null;
-            } catch (InterruptedIOException iioe) {
-                logger.severe("Operation timed out");
-                throw new IOException("Operation timed out");
-            } catch (Exception ex) {
-                logger.severe(ex.getMessage());
-                throw new IOException(ex);
-            } finally {
-                subActivityEnd(link);
-                product.setApproximateSize(size);
+                Path filePath = target.resolve(file.substring(file.lastIndexOf('/') + 1));
+                try {
+                    logger.fine(String.format("Begin download for %s", file));
+                    subActivityStart(filePath.toString());
+                    if (Files.exists(filePath)) {
+                        Files.delete(filePath);
+                    }
+                    checkCancelled();
+                    client.download(file, target);
+                    size += Files.size(filePath);
+                    currentProductProgress.add(1);
+                    logger.fine(String.format("End download for %s", file));
+                } catch (FileNotFoundException fnex) {
+                    logger.warning(fnex.getMessage());
+                    //filePath = null;
+                } catch (InterruptedIOException iioe) {
+                    logger.severe("Operation timed out");
+                    throw new IOException("Operation timed out");
+                } catch (Exception ex) {
+                    logger.severe(ex.getMessage());
+                    throw new IOException(ex);
+                } finally {
+                    subActivityEnd(filePath.toString());
+                    product.setApproximateSize(size);
+                }
+                FileUtilities.ensurePermissions(filePath);
             }
-            return FileUtilities.ensurePermissions(filePath);
+        } else {
+            target = null;
         }
         return target;
     }

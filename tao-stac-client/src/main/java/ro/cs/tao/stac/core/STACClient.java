@@ -111,7 +111,15 @@ public class STACClient {
 
     public void download(Asset asset, Path folder) throws IOException {
         final String href = asset.getHref();
-        final String name = href.substring(href.lastIndexOf('/'));
+        final String name = href.substring(href.lastIndexOf('/') + 1);
+        final HTTPResponse response = this.client.get(new URL(href));
+        try (InputStream inStream = response.getResponseStream();
+             OutputStream outStream = Files.newOutputStream(folder.resolve(name))) {
+            FileUtilities.copyStream(inStream, outStream);
+        }
+    }
+    public void download(String href, Path folder) throws IOException {
+        final String name = href.substring(href.lastIndexOf('/') + 1);
         final HTTPResponse response = this.client.get(new URL(href));
         try (InputStream inStream = response.getResponseStream();
              OutputStream outStream = Files.newOutputStream(folder.resolve(name))) {
@@ -120,6 +128,10 @@ public class STACClient {
     }
     public InputStream download(Asset asset) throws IOException {
         final HTTPResponse response = this.client.get(new URL(asset.getHref()));
+        return response.getResponseStream();
+    }
+    public InputStream download(String href) throws IOException {
+        final HTTPResponse response = this.client.get(new URL(href));
         return response.getResponseStream();
     }
 
