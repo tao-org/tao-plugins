@@ -6,6 +6,11 @@ import ro.cs.tao.stac.core.model.Extensible;
 import ro.cs.tao.stac.core.model.extensions.Extension;
 import ro.cs.tao.stac.core.parser.JsonValueHelper;
 
+/**
+ * View Geometry extension
+ * @implSpec <a href="https://github.com/stac-extensions/view">View Geometry Extension Specification</a>
+ * @param <E>   The type of the extensible object
+ */
 public class ViewExtension<E extends Extensible> extends Extension<E> {
 
     public ViewExtension(E parent) {
