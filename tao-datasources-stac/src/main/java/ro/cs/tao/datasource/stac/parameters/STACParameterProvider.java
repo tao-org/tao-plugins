@@ -61,7 +61,7 @@ public class STACParameterProvider implements ParameterProvider {
     public String[] getSupportedSensors() {
         List<String> collections = new ArrayList<>();
         try (Connection sqlConnection = this.source.getConnection();
-             PreparedStatement statement = sqlConnection.prepareStatement("SELECT DISTINCT a.name FROM component.container_applications a " +
+             PreparedStatement statement = sqlConnection.prepareStatement("SELECT DISTINCT a.path FROM component.container_applications a " +
                                                                                   "JOIN component.container c ON c.id = a.container_id WHERE c.name = ?")) {
             statement.setString(1, this.source.getId());
             final ResultSet rs = statement.executeQuery();
