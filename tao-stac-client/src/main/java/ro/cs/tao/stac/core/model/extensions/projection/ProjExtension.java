@@ -7,7 +7,8 @@ import ro.cs.tao.stac.core.model.extensions.Extension;
 import ro.cs.tao.stac.core.parser.JsonValueHelper;
 /**
  * Projection extension
- * @implSpec <a href="https://github.com/stac-extensions/projection">Projection Extension Specification</a>
+ *
+ * @see <a href="https://github.com/stac-extensions/projection">Projection Extension Specification</a>
  * @param <E>   The type of the extensible object
  */
 public class ProjExtension<E extends Extensible> extends Extension<E> {
