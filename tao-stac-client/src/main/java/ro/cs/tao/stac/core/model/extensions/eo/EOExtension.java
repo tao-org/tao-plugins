@@ -11,7 +11,8 @@ import java.util.List;
 
 /**
  * Electro Optical extension
- * @implSpec <a href="https://github.com/stac-extensions/eo">Electro-Optical Extension Specification</a>
+ *
+ * @see <a href="https://github.com/stac-extensions/eo">Electro-Optical Extension Specification</a>
  * @param <E>   The type of the extensible object
  */
 public class EOExtension<E extends Extensible> extends Extension<E> {
