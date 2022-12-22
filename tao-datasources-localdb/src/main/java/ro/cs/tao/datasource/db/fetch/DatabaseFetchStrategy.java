@@ -23,7 +23,7 @@ import ro.cs.tao.datasource.db.DatabaseSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.security.SessionStore;
 import ro.cs.tao.utils.FileUtilities;
-import ro.cs.tao.utils.executors.monitoring.ProgressListener;
+import ro.cs.tao.utils.executors.monitoring.DownloadProgressListener;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  */
 public class DatabaseFetchStrategy implements ProductFetchStrategy {
     private final DatabaseSource source;
-    private ProgressListener progressListener;
+    private DownloadProgressListener progressListener;
 
     public DatabaseFetchStrategy(DatabaseSource source) {
         this.source = source;
@@ -54,7 +54,7 @@ public class DatabaseFetchStrategy implements ProductFetchStrategy {
     }
 
     @Override
-    public void setProgressListener(ProgressListener progressListener) {
+    public void setProgressListener(DownloadProgressListener progressListener) {
         this.progressListener = progressListener;
     }
 

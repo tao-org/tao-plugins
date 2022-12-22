@@ -47,7 +47,7 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
-import ro.cs.tao.utils.executors.monitoring.ProgressListener;
+import ro.cs.tao.utils.executors.monitoring.DownloadProgressListener;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -136,7 +136,7 @@ public class MundiDataSourceTest {
             });
             DownloadStrategy<?> downloadStrategy = (DownloadStrategy<?>) dataSource.getProductFetchStrategy("Sentinel2");
             downloadStrategy.setFetchMode(FetchMode.OVERWRITE);
-            downloadStrategy.setProgressListener(new ProgressListener() {});
+            downloadStrategy.setProgressListener(new DownloadProgressListener() {});
             Path path = downloadStrategy.fetch(results.get(0));
         } catch (Exception e) {
             e.printStackTrace();
@@ -185,7 +185,7 @@ public class MundiDataSourceTest {
             });
             DownloadStrategy<?> downloadStrategy = (DownloadStrategy<?>) dataSource.getProductFetchStrategy("Sentinel1");
             downloadStrategy.setFetchMode(FetchMode.OVERWRITE);
-            downloadStrategy.setProgressListener(new ProgressListener() {});
+            downloadStrategy.setProgressListener(new DownloadProgressListener() {});
             Path path = downloadStrategy.fetch(results.get(0));
         } catch (Exception e) {
             e.printStackTrace();

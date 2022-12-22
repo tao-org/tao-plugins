@@ -10,7 +10,7 @@ import ro.cs.tao.datasource.remote.lsa.LSADataSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
-import ro.cs.tao.utils.executors.monitoring.ProgressListener;
+import ro.cs.tao.utils.executors.monitoring.DownloadProgressListener;
 
 import java.net.URI;
 import java.nio.file.Files;
@@ -96,7 +96,7 @@ public class LSADataSourceTest {
         component.setUserCredentials("kraftek", "cei7pitici.");
         if (!results.isEmpty()) {
             component.setFetchMode(FetchMode.OVERWRITE);
-            component.setProgressListener(new ProgressListener() {
+            component.setProgressListener(new DownloadProgressListener() {
                 @Override
                 public void started(String taskName) {
                     System.out.println("Started " + taskName);
@@ -120,6 +120,11 @@ public class LSADataSourceTest {
                 @Override
                 public void notifyProgress(double progressValue) {
                     System.out.printf("Progress: %.2f%%\r", progressValue * 100);
+                }
+
+                @Override
+                public void notifyProgress(double progressValue, double transferSpeed) {
+                    System.out.printf("Progress: %.2f%%, %.2fMB/s\r", progressValue * 100, transferSpeed);
                 }
 
                 @Override
