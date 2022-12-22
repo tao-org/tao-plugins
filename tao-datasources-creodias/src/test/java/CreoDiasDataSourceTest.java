@@ -47,7 +47,7 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
-import ro.cs.tao.utils.executors.monitoring.ProgressListener;
+import ro.cs.tao.utils.executors.monitoring.DownloadProgressListener;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -68,6 +68,7 @@ public class CreoDiasDataSourceTest {
     private static final int pageSize;
     private static final int maxResults;
     private static final String rowTemplate;
+    private static final DownloadProgressListener listener;
 
     static {
         begin = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.START_DATE);
@@ -80,6 +81,47 @@ public class CreoDiasDataSourceTest {
         pageSize = 50;
         maxResults = 50;
         rowTemplate = "ID=%s, NAME=%s, LOCATION=%s";
+        listener = new DownloadProgressListener() {
+            @Override
+            public void started(String taskName) {
+                System.out.println("Started " + taskName);
+            }
+
+            @Override
+            public void subActivityStarted(String subTaskName) {
+                System.out.println("Started " + subTaskName);
+            }
+
+            @Override
+            public void subActivityEnded(String subTaskName) {
+                System.out.println("Finished " + subTaskName);
+            }
+
+            @Override
+            public void ended() {
+                System.out.println("Download completed");
+            }
+
+            @Override
+            public void notifyProgress(double progressValue) {
+                System.out.printf("Progress: %.2f%%\r", progressValue * 100);
+            }
+
+            @Override
+            public void notifyProgress(double progressValue, double transferSpeed) {
+                System.out.printf("Progress: %.2f%%\r", progressValue * 100);
+            }
+
+            @Override
+            public void notifyProgress(String subTaskName, double subTaskProgress) {
+                System.out.printf("Progress: %s %.2f%%\n", subTaskName, subTaskProgress * 100);
+            }
+
+            @Override
+            public void notifyProgress(String subTaskName, double subTaskProgress, double overallProgress) {
+                System.out.printf("Progress: %s %.2f%% (%.2f%%)\n", subTaskName, subTaskProgress * 100, overallProgress * 100);
+            }
+        };
     }
 
     public static void main(String[] args) {
@@ -136,42 +178,7 @@ public class CreoDiasDataSourceTest {
             final CreoDIASDownloadStrategy strategy = (CreoDIASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel2");
             if (!results.isEmpty()) {
                 strategy.setFetchMode(FetchMode.OVERWRITE);
-                strategy.setProgressListener(new ProgressListener() {
-                    @Override
-                    public void started(String taskName) {
-                        System.out.println("Started " + taskName);
-                    }
-
-                    @Override
-                    public void subActivityStarted(String subTaskName) {
-                        System.out.println("Started " + subTaskName);
-                    }
-
-                    @Override
-                    public void subActivityEnded(String subTaskName) {
-                        System.out.println("Finished " + subTaskName);
-                    }
-
-                    @Override
-                    public void ended() {
-                        System.out.println("Download completed");
-                    }
-
-                    @Override
-                    public void notifyProgress(double progressValue) {
-                        System.out.printf("Progress: %.2f%%\r", progressValue * 100);
-                    }
-
-                    @Override
-                    public void notifyProgress(String subTaskName, double subTaskProgress) {
-                        System.out.printf("Progress: %s %.2f%%\n", subTaskName, subTaskProgress * 100);
-                    }
-
-                    @Override
-                    public void notifyProgress(String subTaskName, double subTaskProgress, double overallProgress) {
-                        System.out.printf("Progress: %s %.2f%% (%.2f%%)\n", subTaskName, subTaskProgress * 100, overallProgress * 100);
-                    }
-                });
+                strategy.setProgressListener(listener);
                 Path path = strategy.fetch(results.get(0));
                 if (path != null) {
                     System.out.println("Product downloaded at " + path.toString());
@@ -212,42 +219,7 @@ public class CreoDiasDataSourceTest {
             final CreoDIASDownloadStrategy strategy = (CreoDIASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel3");
             if (!results.isEmpty()) {
                 strategy.setFetchMode(FetchMode.OVERWRITE);
-                strategy.setProgressListener(new ProgressListener() {
-                    @Override
-                    public void started(String taskName) {
-                        System.out.println("Started " + taskName);
-                    }
-
-                    @Override
-                    public void subActivityStarted(String subTaskName) {
-                        System.out.println("Started " + subTaskName);
-                    }
-
-                    @Override
-                    public void subActivityEnded(String subTaskName) {
-                        System.out.println("Finished " + subTaskName);
-                    }
-
-                    @Override
-                    public void ended() {
-                        System.out.println("Download completed");
-                    }
-
-                    @Override
-                    public void notifyProgress(double progressValue) {
-                        System.out.printf("Progress: %.2f%%\r", progressValue * 100);
-                    }
-
-                    @Override
-                    public void notifyProgress(String subTaskName, double subTaskProgress) {
-                        System.out.printf("Progress: %s %.2f%%\n", subTaskName, subTaskProgress * 100);
-                    }
-
-                    @Override
-                    public void notifyProgress(String subTaskName, double subTaskProgress, double overallProgress) {
-                        System.out.printf("Progress: %s %.2f%% (%.2f%%)\n", subTaskName, subTaskProgress * 100, overallProgress * 100);
-                    }
-                });
+                strategy.setProgressListener(listener);
                 Path path = strategy.fetch(results.get(0));
                 if (path != null) {
                     System.out.println("Product downloaded at " + path.toString());
