@@ -116,7 +116,7 @@ public class Link {
      * particularly for navigating pages through the `POST /search` endpoint.
      *
      * NOTE: To support form encoding it is expected that a client be able to merge in
-     * the key value pairs specified as JSON `{\"next\": \"token\"}` will become `&next=token`
+     * the key value pairs specified as JSON <code>{\"next\": \"token\"}</code> will become <code>&amp;next=token</code>
      */
     public Boolean getMerge() {
         if (this.merge == null) {

@@ -10,10 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * Helper class for JSON parsers.
+ *
+ * @author Cosmin Cara
+ */
 public class JsonValueHelper {
     private static final DateTimeFormatter format = DateUtils.getResilientFormatterAtUTC();
     private static final Pattern datePattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})");
 
+    /**
+     * Returns the JSON node value as string
+     * @param node  The JSON node
+     */
     public static String getStringValue(TreeNode node) {
         if (node == null)
             return null;
@@ -22,12 +31,20 @@ public class JsonValueHelper {
             return null;
         return val;
     }
-
+    /**
+     * Returns the field value of a JSON node as string
+     * @param node  The JSON node
+     * @param field The name of the field of the node
+     */
     public static String getString(TreeNode node, String field) {
         TreeNode value = node.get(field);
         return value != null ? getStringValue(value) : null;
     }
-
+    /**
+     * Returns the field value of a JSON node as a string list
+     * @param node  The JSON node
+     * @param field The name of the field of the node
+     */
     public static List<String> getStringArray(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (!valueNode.isArray()) {
@@ -39,12 +56,20 @@ public class JsonValueHelper {
         }
         return values;
     }
-
+    /**
+     * Returns the field value of a JSON node as a nullable integer
+     * @param node  The JSON node
+     * @param field The name of the field of the node
+     */
     public static Integer getInt(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         return valueNode != null ? Integer.parseInt(getStringValue(valueNode)) : null;
     }
-
+    /**
+     * Returns the field value of a JSON node as an array of integers
+     * @param node  The JSON node
+     * @param field The name of the field of the node
+     */
     public static int[] getIntArray(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (!valueNode.isArray()) {
@@ -56,12 +81,20 @@ public class JsonValueHelper {
         }
         return values;
     }
-
+    /**
+     * Returns the field value of a JSON node as a nullable long
+     * @param node  The JSON node
+     * @param field The name of the field of the node
+     */
     public static Long getLong(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         return valueNode != null ? Long.parseLong(getStringValue(valueNode)) : null;
     }
-
+    /**
+     * Returns the field value of a JSON node as an array of longs
+     * @param node  The JSON node
+     * @param field The name of the field of the node
+     */
     public static long[] getLongArray(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (!valueNode.isArray()) {
@@ -73,12 +106,20 @@ public class JsonValueHelper {
         }
         return values;
     }
-
+    /**
+     * Returns the field value of a JSON node as a nullable double
+     * @param node  The JSON node
+     * @param field The name of the field of the node
+     */
     public static Double getDouble(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         return valueNode != null ? Double.parseDouble(getStringValue(valueNode)) : null;
     }
-
+    /**
+     * Returns the field value of a JSON node as a 1-dimensional array of doubles
+     * @param node  The JSON node
+     * @param field The name of the field of the node
+     */
     public static double[] getDoubleArray1(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (getArrayRank(valueNode) == 2) {
@@ -91,7 +132,11 @@ public class JsonValueHelper {
         }
         return values;
     }
-
+    /**
+     * Returns the field value of a JSON node as a 2-dimensional array of doubles
+     * @param node  The JSON node
+     * @param field The name of the field of the node
+     */
     public static double[][] getDoubleArray2(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (getArrayRank(valueNode) == 3) {
@@ -108,7 +153,11 @@ public class JsonValueHelper {
         }
         return values;
     }
-
+    /**
+     * Returns the field value of a JSON node as a 3-dimensional array of doubles
+     * @param node  The JSON node
+     * @param field The name of the field of the node
+     */
     public static double[][][] getDoubleArray3(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (getArrayRank(valueNode) == 4) {
@@ -129,7 +178,11 @@ public class JsonValueHelper {
         }
         return values;
     }
-
+    /**
+     * Returns the field value of a JSON node as a 4-dimensional array of doubles
+     * @param node  The JSON node
+     * @param field The name of the field of the node
+     */
     public static double[][][][] getDoubleArray4(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (getArrayRank(valueNode) == 5) {
@@ -154,7 +207,11 @@ public class JsonValueHelper {
         }
         return values;
     }
-
+    /**
+     * Returns the field value of a JSON node as a date/time
+     * @param node  The JSON node
+     * @param field The name of the field of the node
+     */
     public static LocalDateTime getDateTime(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         LocalDateTime value = null;
@@ -166,7 +223,11 @@ public class JsonValueHelper {
         }
         return value;
     }
-
+    /**
+     * Returns the field value of a JSON node as an array of dates/times
+     * @param node  The JSON node
+     * @param field The name of the field of the node
+     */
     public static LocalDateTime[] getDateTimeArray(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
         if (getArrayRank(valueNode) == 2) {
@@ -181,7 +242,12 @@ public class JsonValueHelper {
         }
         return dateTimes;
     }
-
+    /**
+     * Tries to "guess" the typed value of a node.
+     * It resolves only dates and dates/times to their actual Java type.
+     * For other type of values, it returns the string value of the node.
+     * @param node  The JSON node
+     */
     public static Object tryGuessTypedValue(TreeNode node) {
         final String value = getStringValue(node);
         if (value == null) {
@@ -196,6 +262,11 @@ public class JsonValueHelper {
         }
     }
 
+    /**
+     * Returns the rank (number of dimensions) of the array representing the value of the given node.
+     * If the value is not an array, it returns 0.
+     * @param node  The JSON node
+     */
     private static int getArrayRank(final TreeNode node) {
         int i = 0;
         TreeNode current = node;

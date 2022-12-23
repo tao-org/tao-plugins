@@ -39,7 +39,7 @@ public class LSAAuthentication {
             if (keycloakCookies != null && keycloakCookies.length>0) {
                 final StringBuilder keyCloakToken = new StringBuilder();
                 for (final Header keycloakCookie : keycloakCookies) {
-                    keyCloakToken.append(keycloakCookie.getValue().substring(0, keycloakCookie.getValue().indexOf(';'))).append(';');
+                    keyCloakToken.append(keycloakCookie.getValue(), 0, keycloakCookie.getValue().indexOf(';')).append(';');
                 }
                 return keyCloakToken.toString();
             }
@@ -73,7 +73,7 @@ public class LSAAuthentication {
             final String keycloakAuthUrl = downloadRequestResponseBody.substring(idx, downloadRequestResponseBody.indexOf('"', idx)).replaceAll("&amp;","&");
             final StringBuilder keyCloakLoginCookie = new StringBuilder();
             for (final Header downloadRequestResponseHeader : downloadRequestResponse.getHeaders("Set-Cookie")) {
-                keyCloakLoginCookie.append(downloadRequestResponseHeader.getValue().substring(0, downloadRequestResponseHeader.getValue().indexOf(';'))).append(';');
+                keyCloakLoginCookie.append(downloadRequestResponseHeader.getValue(), 0, downloadRequestResponseHeader.getValue().indexOf(';')).append(';');
             }
             this.cookieToken = getKeycloakToken(keycloakAuthUrl, keyCloakLoginCookie.toString());
             return this.cookieToken;

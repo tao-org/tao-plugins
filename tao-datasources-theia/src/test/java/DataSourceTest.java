@@ -52,7 +52,7 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
-import ro.cs.tao.utils.executors.monitoring.ProgressListener;
+import ro.cs.tao.utils.executors.monitoring.DownloadProgressListener;
 
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -105,7 +105,7 @@ public class DataSourceTest {
                 System.out.println("FOOTPRINT=" + r.getGeometry());
             });
             DownloadStrategy<?> strategy = (DownloadStrategy<?>) dataSource.getProductFetchStrategy("Landsat8");
-            ProgressListener progressListener = new ProgressListener() {};
+            DownloadProgressListener progressListener = new DownloadProgressListener() {};
             strategy.setProgressListener(progressListener);
             strategy.setDestination(ConfigurationManager.getInstance().getValue("products.location"));
             strategy.setFetchMode(FetchMode.OVERWRITE);

@@ -27,10 +27,10 @@ import java.util.zip.ZipOutputStream;
  * Service for accessing in a repository-like fashion the items of a STAC service.
  * Since the items of a STAC search/list are not hierarchically grouped,
  * we have the following internal convention for representing the relative path of an item:
- *      /                               root of the service (translated to a catalog query)
- *      /<collection>                   first level of nodes consist in collections of the catalog
- *      /<collection>/<item>            second level of nodes consist in item names of a collection; this would be an EOProduct
- *      /<collection>/<item>/<asset>    last level of nodes consist in item assets (actual files)
+ *      /                         root of the service (translated to a catalog query)
+ *      /collection               first level of nodes consist in collections of the catalog
+ *      /collection/item          second level of nodes consist in item names of a collection; this would be an EOProduct
+ *      /collection/item/asset    last level of nodes consist in item assets (actual files)
  *
  * @author  Cosmin Cara
  * @since   1.3.1
