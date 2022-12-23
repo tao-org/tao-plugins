@@ -3,7 +3,7 @@
   "name": "enmap",
   "description": "EnMAP-Box Container",
   "tag": "latest",
-  "applicationPath": null,
+  "applicationPath": "/usr/bin/",
   "formatNameParameter": null,
   "applications": [
     {
