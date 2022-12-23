@@ -16,6 +16,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Deserialization from JSON class for an Item.
+ *
+ * @author Cosmin Cara
+ */
 public class ItemDeserializer extends StdDeserializer<Item> {
     public ItemDeserializer() {
         super(Item.class);

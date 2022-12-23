@@ -1,11 +1,14 @@
 package ro.cs.tao.datasource.stac.parameters;
 
+import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.datasource.CollectionDescription;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.stac.STACSource;
+import ro.cs.tao.datasource.stac.fetch.STACFetchStrategy;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.stac.core.STACClient;
@@ -24,11 +27,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class STACParameterProvider implements ParameterProvider {
-    private static final String DS_TABLE = "component.data_source_component";
     private static Map<String, CollectionDescription> sensorTypes;
     private final STACSource source;
+    private Map<String, ProductFetchStrategy> productFetchers;
 
     public STACParameterProvider(STACSource source) {
         this.source = source;
@@ -57,8 +61,9 @@ public class STACParameterProvider implements ParameterProvider {
     public String[] getSupportedSensors() {
         List<String> collections = new ArrayList<>();
         try (Connection sqlConnection = this.source.getConnection();
-             PreparedStatement statement = sqlConnection.prepareStatement("SELECT DISTINCT sensor_name FROM " + DS_TABLE + " WHERE data_source_name = ?")) {
-            statement.setString(1, this.source.getConnectionString());
+             PreparedStatement statement = sqlConnection.prepareStatement("SELECT DISTINCT a.path FROM component.container_applications a " +
+                                                                                  "JOIN component.container c ON c.id = a.container_id WHERE c.name = ?")) {
+            statement.setString(1, this.source.getId());
             final ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 collections.add(rs.getString(1));
@@ -85,7 +90,10 @@ public class STACParameterProvider implements ParameterProvider {
                         summaries = collection.getSummaries();
                         mission = getObjectValue(summaries.get("mission"));
                         if (mission == null) {
-                            mission = getObjectValue(summaries.get("platform"));
+                            mission = getObjectValue(summaries.get("constellation"));
+                            if (mission == null) {
+                                mission = getObjectValue(summaries.get("platform"));
+                            }
                         }
                         CollectionDescription description = new CollectionDescription();
                         description.setMission(mission);
@@ -114,7 +122,16 @@ public class STACParameterProvider implements ParameterProvider {
 
     @Override
     public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() {
-        return null;
+        if (productFetchers == null) {
+            productFetchers = new HashMap<>();
+        }
+        final ConfigurationProvider configurationProvider = ConfigurationManager.getInstance();
+        final String targetFolder = configurationProvider.getValue("product.location");
+        String[] supportedSensors = getSupportedSensors();
+        for (String sensor : supportedSensors) {
+            productFetchers.putIfAbsent(sensor, new STACFetchStrategy(this.source, targetFolder, new Properties()));
+        }
+        return productFetchers;
     }
 
     private String getObjectValue(Object object) {
@@ -122,7 +139,20 @@ public class STACParameterProvider implements ParameterProvider {
             return null;
         }
         if (object.getClass().isArray()) {
-            return String.valueOf(Array.get(object, 0));
+            int length = Array.getLength(object);
+            if (length > 1) {
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < length; i++) {
+                    builder.append(Array.get(object, i)).append(",");
+                }
+                builder.setLength(builder.length() - 1);
+                return builder.toString();
+            } else {
+                return String.valueOf(Array.get(object, 0));
+            }
+        } else if (object instanceof List<?>) {
+            List<?> list = (List<?>) object;
+            return list.stream().map(String::valueOf).collect(Collectors.joining(","));
         } else {
             return String.valueOf(object);
         }

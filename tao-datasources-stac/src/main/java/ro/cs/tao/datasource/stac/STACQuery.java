@@ -9,6 +9,8 @@ import ro.cs.tao.datasource.stac.parameters.DateParameterConverter;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
+import ro.cs.tao.eodata.enums.PixelType;
+import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.serialization.GeometryAdapter;
 import ro.cs.tao.stac.core.STACClient;
 import ro.cs.tao.stac.core.model.*;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class STACQuery extends DataQuery {
 
@@ -117,6 +120,9 @@ public class STACQuery extends DataQuery {
                 EOProduct product = new EOProduct();
                 product.setId(item.getId());
                 product.setName(item.getId());
+                product.setSensorType(SensorType.UNKNOWN);
+                product.setPixelType(PixelType.INT16);
+                product.setProductType("unknown");
                 Geometry geometry = item.getGeometry();
                 if (geometry != null) {
                     double[][][] coords = (double[][][]) geometry.getCoordinates();
@@ -132,7 +138,10 @@ public class STACQuery extends DataQuery {
                 if (link != null) {
                     product.setLocation(link.getHref());
                 }
-                product.setApproximateSize(item.getAssets().values().stream().filter(a -> a.getHref().startsWith("http")).count());
+                List<Asset> downloadableAssets = item.getAssets().values().stream()
+                                                     .filter(a -> a.getHref().startsWith("http"))
+                                                     .collect(Collectors.toList());
+                product.setApproximateSize(downloadableAssets.size());
                 product.setAcquisitionDate(item.getDatetime());
                 Asset thumbnail = item.getAssets().get("thumbnail");
                 if (thumbnail != null) {
@@ -147,6 +156,9 @@ public class STACQuery extends DataQuery {
                 Map<String, Object> fields = item.getFields();
                 for (Map.Entry<String, Object> entry : fields.entrySet()) {
                     product.addAttribute(entry.getKey(), String.valueOf(entry.getValue()));
+                }
+                for (Asset asset : downloadableAssets) {
+                    product.addFile(asset.getHref());
                 }
                 results.add(product);
             }

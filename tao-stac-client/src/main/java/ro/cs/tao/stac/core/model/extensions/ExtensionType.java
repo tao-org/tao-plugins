@@ -8,6 +8,11 @@ import ro.cs.tao.stac.core.model.extensions.projection.ProjFields;
 import ro.cs.tao.stac.core.model.extensions.view.ViewExtension;
 import ro.cs.tao.stac.core.model.extensions.view.ViewFields;
 
+/**
+ * Enumeration of the supported extension types.
+ *
+ * @author Cosmin Cara
+ */
 public enum ExtensionType implements TaoEnum<String> {
     EO(EOExtension.class, EoFields.PREFIX,
        "https://stac-extensions.github.io/eo/v1.0.0/schema.json"),
