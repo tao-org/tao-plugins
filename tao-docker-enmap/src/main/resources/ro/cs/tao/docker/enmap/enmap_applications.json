@@ -61,7 +61,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ClassFractionLayerFromCategorizedVectorLayer\ncategorizedVector=$categorizedVector\ngrid=$grid\noutputFraction=$outputFraction"
+    "templatecontents": "run\nenmapbox:ClassFractionLayerFromCategorizedVectorLayer\ncategorizedVector=$categorizedVector\ngrid=$grid\noutputFraction=$outputFraction"
   },
   {
     "id": "Classification4Simple",
@@ -114,7 +114,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:ClassificationLayerAccuracyAndAreaReportForSimpleRandomSampling\nclassification=$classification\nreference=$reference\nopenReport=false\noutClassificationPerformance=$outClassificationPerformance"
+    "templatecontents": "run\nenmapbox:ClassificationLayerAccuracyAndAreaReportForSimpleRandomSampling\nclassification=$classification\nreference=$reference\nopenReport=false\noutClassificationPerformance=$outClassificationPerformance"
   },
   {
     "id": "Classification4Stratified",
@@ -176,7 +176,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:ClassificationLayerAccuracyAndAreaReportForStratifiedRandomSampling\nclassification=$classification\nreference=$reference\nstratification=$stratification\nopenReport=false\noutClassificationPerformance=$outClassificationPerformance"
+    "templatecontents": "run\nenmapbox:ClassificationLayerAccuracyAndAreaReportForStratifiedRandomSampling\nclassification=$classification\nreference=$reference\nstratification=$stratification\nopenReport=false\noutClassificationPerformance=$outClassificationPerformance"
   },
   {
     "id": "ClassificationFraction",
@@ -220,7 +220,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:ClassificationLayerFromClassProbabilityfractionLayer\nprobability=$probability\noutputClassification=$outputClassification"
+    "templatecontents": "run\nenmapbox:ClassificationLayerFromClassProbabilityfractionLayer\nprobability=$probability\noutputClassification=$outputClassification"
   },
   {
     "id": "ClassificationWorkflow",
@@ -324,7 +324,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ClassificationWorkflow\ndataset=$dataset\nclassifier=$classifier\nraster=$raster\nnfold=$nfold\nopenReport=false\noutputClassifier=$outputClassifier\noutputClassification=$outputClassification\noutputProbability=$outputProbability\noutputClassifierPerformance=$outputClassifierPerformance"
+    "templatecontents": "run\nenmapbox:ClassificationWorkflow\ndataset=$dataset\nclassifier=$classifier\nraster=$raster\nnfold=$nfold\nopenReport=false\noutputClassifier=$outputClassifier\noutputClassification=$outputClassification\noutputProbability=$outputProbability\noutputClassifierPerformance=$outputClassifierPerformance"
   },
   {
     "id": "ClassifierPerformanceReport",
@@ -387,7 +387,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ClassifierPerformanceReport\nclassifier=$classifier\ndataset=$dataset\nnfold=$nfold\nopenReport=false\noutputClassifierPerformance=$outputClassifierPerformance"
+    "templatecontents": "run\nenmapbox:ClassifierPerformanceReport\nclassifier=$classifier\ndataset=$dataset\nnfold=$nfold\nopenReport=false\noutputClassifierPerformance=$outputClassifierPerformance"
   },
   {
     "id": "FitCatBoostClassifier",
@@ -441,7 +441,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitCatboostclassifier\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
+    "templatecontents": "run\nenmapbox:FitCatboostclassifier\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
   },
   {
     "id": "FitGaussianProcessClassifier",
@@ -495,7 +495,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitGaussianprocessclassifier\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
+    "templatecontents": "run\nenmapbox:FitGaussianprocessclassifier\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
   },
   {
     "id": "FitGenericClassifier",
@@ -549,7 +549,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitGenericClassifier\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
+    "templatecontents": "run\nenmapbox:FitGenericClassifier\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
   },
   {
     "id": "FitLGBMClassifier",
@@ -603,7 +603,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitLgbmclassifier\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
+    "templatecontents": "run\nenmapbox:FitLgbmclassifier\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
   },
   {
     "id": "FitLinearSVC",
@@ -657,7 +657,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitLinearsvc\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
+    "templatecontents": "run\nenmapbox:FitLinearsvc\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
   },
   {
     "id": "FitLogisticRegression",
@@ -711,7 +711,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitLogisticregression\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
+    "templatecontents": "run\nenmapbox:FitLogisticregression\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
   },
   {
     "id": "FitRandomForestClassifier",
@@ -765,7 +765,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitRandomforestclassifier4Modeler\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
+    "templatecontents": "run\nenmapbox:FitRandomforestclassifier4Modeler\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
   },
   {
     "id": "FitSpectralAngleMapper",
@@ -819,7 +819,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitSpectralanglemapper\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
+    "templatecontents": "run\nenmapbox:FitSpectralanglemapper\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
   },
   {
     "id": "FitSVCPolynomialKernel",
@@ -873,7 +873,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitSvcPolynomialKernel\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
+    "templatecontents": "run\nenmapbox:FitSvcPolynomialKernel\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
   },
   {
     "id": "FitSVCRBFKernel",
@@ -927,7 +927,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitSvcRbfKernel\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
+    "templatecontents": "run\nenmapbox:FitSvcRbfKernel\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
   },
   {
     "id": "FitXGBClassifier",
@@ -981,7 +981,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitXgbclassifier\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
+    "templatecontents": "run\nenmapbox:FitXgbclassifier\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
   },
   {
     "id": "FitXGBRFClassifier",
@@ -1035,7 +1035,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitXgbrfclassifier\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
+    "templatecontents": "run\nenmapbox:FitXgbrfclassifier\nclassifier=$classifier\ndataset=$dataset\noutputClassifier=$outputClassifier"
   },
   {
     "id": "PredictClassProbability",
@@ -1088,7 +1088,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:PredictClassProbabilityLayer\nraster=$raster\nclassifier=$classifier\noutputProbability=$outputProbability"
+    "templatecontents": "run\nenmapbox:PredictClassProbabilityLayer\nraster=$raster\nclassifier=$classifier\noutputProbability=$outputProbability"
   },
   {
     "id": "PredictClassification",
@@ -1141,7 +1141,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:PredictClassificationLayer\nraster=$raster\nclassifier=$classifier\noutputClassification=$outputClassification"
+    "templatecontents": "run\nenmapbox:PredictClassificationLayer\nraster=$raster\nclassifier=$classifier\noutputClassification=$outputClassification"
   },
   {
     "id": "ReclassifyRaster",
@@ -1215,7 +1215,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ReclassifyRasterLayer\nraster=$raster\nmapping=$mapping\ncategories=$categories\nnoDataValue=$noDataValue\noutputClassification=$outputClassification"
+    "templatecontents": "run\nenmapbox:ReclassifyRasterLayer\nraster=$raster\nmapping=$mapping\ncategories=$categories\nnoDataValue=$noDataValue\noutputClassification=$outputClassification"
   },
   {
     "id": "FitAffinityPropagation",
@@ -1269,7 +1269,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitAffinitypropagation\nclusterer=$clusterer\ndataset=$dataset\noutputClusterer=$outputClusterer"
+    "templatecontents": "run\nenmapbox:FitAffinitypropagation\nclusterer=$clusterer\ndataset=$dataset\noutputClusterer=$outputClusterer"
   },
   {
     "id": "FitBirch",
@@ -1323,7 +1323,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitBirch\nclusterer=$clusterer\ndataset=$dataset\noutputClusterer=$outputClusterer"
+    "templatecontents": "run\nenmapbox:FitBirch\nclusterer=$clusterer\ndataset=$dataset\noutputClusterer=$outputClusterer"
   },
   {
     "id": "FitKMeans",
@@ -1377,7 +1377,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitKmeans\nclusterer=$clusterer\ndataset=$dataset\noutputClusterer=$outputClusterer"
+    "templatecontents": "run\nenmapbox:FitKmeans\nclusterer=$clusterer\ndataset=$dataset\noutputClusterer=$outputClusterer"
   },
   {
     "id": "FitMeanshift",
@@ -1431,7 +1431,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitMeanshift\nclusterer=$clusterer\ndataset=$dataset\noutputClusterer=$outputClusterer"
+    "templatecontents": "run\nenmapbox:FitMeanshift\nclusterer=$clusterer\ndataset=$dataset\noutputClusterer=$outputClusterer"
   },
   {
     "id": "PredictUnsupervisedClassification",
@@ -1484,7 +1484,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:PredictUnsupervisedClassificationLayer\nraster=$raster\nclusterer=$clusterer\noutputClassification=$outputClassification"
+    "templatecontents": "run\nenmapbox:PredictUnsupervisedClassificationLayer\nraster=$raster\nclusterer=$clusterer\noutputClassification=$outputClassification"
   },
   {
     "id": "SpatialConvolutionAiryDisk",
@@ -1564,7 +1564,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpatialConvolutionAiryDiskFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialConvolutionAiryDiskFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialConvolutionBox",
@@ -1644,7 +1644,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpatialConvolutionBoxFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialConvolutionBoxFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialConvolutionCustom",
@@ -1724,7 +1724,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpatialConvolutionCustomFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialConvolutionCustomFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialConvolutionGaussian",
@@ -1804,7 +1804,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpatialConvolutionGaussianFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialConvolutionGaussianFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialConvolutionMoffat",
@@ -1884,7 +1884,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpatialConvolutionMoffatFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialConvolutionMoffatFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialConvolutionRickerWavelet",
@@ -1964,7 +1964,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpatialConvolutionRickerWaveletFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialConvolutionRickerWaveletFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialConvolutionRing",
@@ -2044,7 +2044,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpatialConvolutionRingFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialConvolutionRingFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialConvolutionSavitskyGolay",
@@ -2124,7 +2124,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpatialConvolutionSavitskygolayFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialConvolutionSavitskygolayFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialConvolutionTopHat",
@@ -2204,7 +2204,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpatialConvolutionTophatFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialConvolutionTophatFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialConvolutionTrapezoid",
@@ -2284,7 +2284,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpatialConvolutionTrapezoidFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialConvolutionTrapezoidFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialGaussianGradientMagnitude",
@@ -2338,7 +2338,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialGaussianGradientMagnitudeFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialGaussianGradientMagnitudeFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialGeneric",
@@ -2392,7 +2392,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialGenericFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialGenericFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialLaplace",
@@ -2446,7 +2446,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialLaplaceFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialLaplaceFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMaximum",
@@ -2500,7 +2500,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMaximumFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMaximumFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMedian",
@@ -2554,7 +2554,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMedianFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMedianFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMinimum",
@@ -2608,7 +2608,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMinimumFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMinimumFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMorphologicalBinaryClosing",
@@ -2662,7 +2662,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMorphologicalBinaryClosingFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMorphologicalBinaryClosingFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMorphologicalBinaryDilation",
@@ -2716,7 +2716,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMorphologicalBinaryDilationFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMorphologicalBinaryDilationFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMorphologicalBinaryErosion",
@@ -2770,7 +2770,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMorphologicalBinaryErosionFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMorphologicalBinaryErosionFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMorphologicalBinaryFillHoles",
@@ -2824,7 +2824,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMorphologicalBinaryFillHolesFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMorphologicalBinaryFillHolesFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMorphologicalBinaryOpening",
@@ -2878,7 +2878,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMorphologicalBinaryOpeningFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMorphologicalBinaryOpeningFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMorphologicalBinaryPropagation",
@@ -2932,7 +2932,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMorphologicalBinaryPropagationFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMorphologicalBinaryPropagationFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMorphologicalBlackTopHat",
@@ -2986,7 +2986,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMorphologicalBlackTophatFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMorphologicalBlackTophatFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMorphologicalGradient",
@@ -3040,7 +3040,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMorphologicalGradientFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMorphologicalGradientFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMorphologicalGreyDilation",
@@ -3094,7 +3094,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMorphologicalGreyDilationFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMorphologicalGreyDilationFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMorphologicalGreyErosion",
@@ -3148,7 +3148,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMorphologicalGreyErosionFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMorphologicalGreyErosionFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMorphologicalGreyOpening",
@@ -3202,7 +3202,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMorphologicalGreyOpeningFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMorphologicalGreyOpeningFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMorphologicalLaplace",
@@ -3256,7 +3256,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMorphologicalLaplaceFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMorphologicalLaplaceFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialMorphologicalWhiteTopHat",
@@ -3310,7 +3310,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialMorphologicalWhiteTophatFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialMorphologicalWhiteTophatFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialPercentile",
@@ -3364,7 +3364,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialPercentileFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialPercentileFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialPrewitt",
@@ -3418,7 +3418,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialPrewittFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialPrewittFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpatialSobel",
@@ -3472,7 +3472,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpatialSobelFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpatialSobelFilter\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "SpectralConvolutionBox",
@@ -3552,7 +3552,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralConvolutionBoxFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpectralConvolutionBoxFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpectralConvolutionGaussian",
@@ -3632,7 +3632,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralConvolutionGaussianFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpectralConvolutionGaussianFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpectralConvolutionRickerWavelet",
@@ -3712,7 +3712,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralConvolutionRickerWaveletFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpectralConvolutionRickerWaveletFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpectralConvolutionSavitskyGolay",
@@ -3792,7 +3792,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralConvolutionSavitskygolayFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpectralConvolutionSavitskygolayFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "SpectralConvolutionTrapezoid",
@@ -3872,7 +3872,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralConvolutionTrapezoidFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SpectralConvolutionTrapezoidFilter\nraster=$raster\nkernel=$kernel\nnormalize=$normalize\ninterpolate=$interpolate\noutputRaster=$outputRaster"
   },
   {
     "id": "CreateClassificationDsFromRaster",
@@ -3935,7 +3935,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateClassificationDatasetFromCategorizedRasterLayerAndFeatureRaster\ncategorizedRaster=$categorizedRaster\nfeatureRaster=$featureRaster\ncategoryBand=$categoryBand\noutputClassificationDataset=$outputClassificationDataset"
+    "templatecontents": "run\nenmapbox:CreateClassificationDatasetFromCategorizedRasterLayerAndFeatureRaster\ncategorizedRaster=$categorizedRaster\nfeatureRaster=$featureRaster\ncategoryBand=$categoryBand\noutputClassificationDataset=$outputClassificationDataset"
   },
   {
     "id": "CreateClassificationDsFromLibrary",
@@ -3999,7 +3999,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateClassificationDatasetFromCategorizedSpectralLibrary\ncategorizedLibrary=$categorizedLibrary\ncategoryField=$categoryField\nfield=$field\noutputClassificationDataset=$outputClassificationDataset"
+    "templatecontents": "run\nenmapbox:CreateClassificationDatasetFromCategorizedSpectralLibrary\ncategorizedLibrary=$categorizedLibrary\ncategoryField=$categoryField\nfield=$field\noutputClassificationDataset=$outputClassificationDataset"
   },
   {
     "id": "CreateClassificationDsFromVector",
@@ -4085,7 +4085,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:CreateClassificationDatasetFromCategorizedVectorLayerAndFeatureRaster\ncategorizedVector=$categorizedVector\nfeatureRaster=$featureRaster\ncategoryField=$categoryField\ncoverage=$coverage\nmajorityVoting=$majorityVoting\noutputClassificationDataset=$outputClassificationDataset"
+    "templatecontents": "run\nenmapbox:CreateClassificationDatasetFromCategorizedVectorLayerAndFeatureRaster\ncategorizedVector=$categorizedVector\nfeatureRaster=$featureRaster\ncategoryField=$categoryField\ncoverage=$coverage\nmajorityVoting=$majorityVoting\noutputClassificationDataset=$outputClassificationDataset"
   },
   {
     "id": "CreateClassificationDsFromVectorWithTable",
@@ -4149,7 +4149,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateClassificationDatasetFromCategorizedVectorLayerWithAttributeTable\ncategorizedVector=$categorizedVector\nfeatureFields=$featureFields\ncategoryField=$categoryField\noutputClassificationDataset=$outputClassificationDataset"
+    "templatecontents": "run\nenmapbox:CreateClassificationDatasetFromCategorizedVectorLayerWithAttributeTable\ncategorizedVector=$categorizedVector\nfeatureFields=$featureFields\ncategoryField=$categoryField\noutputClassificationDataset=$outputClassificationDataset"
   },
   {
     "id": "CreateClassificationDsFromJsonFile",
@@ -4193,7 +4193,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:CreateClassificationDatasetFromJsonFile\njsonFile=$jsonFile\noutputClassificationDataset=$outputClassificationDataset"
+    "templatecontents": "run\nenmapbox:CreateClassificationDatasetFromJsonFile\njsonFile=$jsonFile\noutputClassificationDataset=$outputClassificationDataset"
   },
   {
     "id": "CreateClassificationDsFromPythonCode",
@@ -4238,7 +4238,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateClassificationDatasetFromPythonCode\ncode=$code\noutputClassificationDataset=$outputClassificationDataset"
+    "templatecontents": "run\nenmapbox:CreateClassificationDatasetFromPythonCode\ncode=$code\noutputClassificationDataset=$outputClassificationDataset"
   },
   {
     "id": "CreateClassificationDsFromTable",
@@ -4322,7 +4322,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateClassificationDatasetFromTableWithCategoriesAndFeatureFields\ntable=$table\nfeatureFields=$featureFields\nvalueField=$valueField\nnameField=$nameField\ncolorField=$colorField\noutputClassificationDataset=$outputClassificationDataset"
+    "templatecontents": "run\nenmapbox:CreateClassificationDatasetFromTableWithCategoriesAndFeatureFields\ntable=$table\nfeatureFields=$featureFields\nvalueField=$valueField\nnameField=$nameField\ncolorField=$colorField\noutputClassificationDataset=$outputClassificationDataset"
   },
   {
     "id": "CreateClassificationDsFromTextFiles",
@@ -4375,7 +4375,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:CreateClassificationDatasetFromTextFiles\nfeatureFile=$featureFile\nvalueFile=$valueFile\noutputClassificationDataset=$outputClassificationDataset"
+    "templatecontents": "run\nenmapbox:CreateClassificationDatasetFromTextFiles\nfeatureFile=$featureFile\nvalueFile=$valueFile\noutputClassificationDataset=$outputClassificationDataset"
   },
   {
     "id": "CreateRegressionDsFromDsVectorWithTable",
@@ -4439,7 +4439,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateRegressionDatasetFromContinuousvaluedLayerWithAttributeTable\ncontinuousVector=$continuousVector\nfeatureFields=$featureFields\ntargetFields=$targetFields\noutputRegressionDataset=$outputRegressionDataset"
+    "templatecontents": "run\nenmapbox:CreateRegressionDatasetFromContinuousvaluedLayerWithAttributeTable\ncontinuousVector=$continuousVector\nfeatureFields=$featureFields\ntargetFields=$targetFields\noutputRegressionDataset=$outputRegressionDataset"
   },
   {
     "id": "CreateRegressionDsFromDsRaster",
@@ -4502,7 +4502,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateRegressionDatasetFromContinuousvaluedRasterLayerAndFeatureRaster\ncontinuousRaster=$continuousRaster\nfeatureRaster=$featureRaster\ntargets=$targets\noutputRegressionDataset=$outputRegressionDataset"
+    "templatecontents": "run\nenmapbox:CreateRegressionDatasetFromContinuousvaluedRasterLayerAndFeatureRaster\ncontinuousRaster=$continuousRaster\nfeatureRaster=$featureRaster\ntargets=$targets\noutputRegressionDataset=$outputRegressionDataset"
   },
   {
     "id": "CreateRegressionDsFromDsLibrary",
@@ -4566,7 +4566,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateRegressionDatasetFromContinuousvaluedSpectralLibrary\ncontinuousLibrary=$continuousLibrary\ntargetFields=$targetFields\nfield=$field\noutputRegressionDataset=$outputRegressionDataset"
+    "templatecontents": "run\nenmapbox:CreateRegressionDatasetFromContinuousvaluedSpectralLibrary\ncontinuousLibrary=$continuousLibrary\ntargetFields=$targetFields\nfield=$field\noutputRegressionDataset=$outputRegressionDataset"
   },
   {
     "id": "CreateRegressionDsFromDsVector",
@@ -4629,7 +4629,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateRegressionDatasetFromContinuousvaluedVectorLayerAndFeatureRaster\ncontinuousVector=$continuousVector\nfeatureRaster=$featureRaster\ntargetFields=$targetFields\noutputRegressionDataset=$outputRegressionDataset"
+    "templatecontents": "run\nenmapbox:CreateRegressionDatasetFromContinuousvaluedVectorLayerAndFeatureRaster\ncontinuousVector=$continuousVector\nfeatureRaster=$featureRaster\ntargetFields=$targetFields\noutputRegressionDataset=$outputRegressionDataset"
   },
   {
     "id": "CreateRegressionDsFromJsonFile",
@@ -4673,7 +4673,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:CreateRegressionDatasetFromJsonFile\njsonFile=$jsonFile\noutputRegressionDataset=$outputRegressionDataset"
+    "templatecontents": "run\nenmapbox:CreateRegressionDatasetFromJsonFile\njsonFile=$jsonFile\noutputRegressionDataset=$outputRegressionDataset"
   },
   {
     "id": "CreateRegressionDsFromPythonCode",
@@ -4718,7 +4718,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateRegressionDatasetFromPythonCode\ncode=$code\noutputRegressionDataset=$outputRegressionDataset"
+    "templatecontents": "run\nenmapbox:CreateRegressionDatasetFromPythonCode\ncode=$code\noutputRegressionDataset=$outputRegressionDataset"
   },
   {
     "id": "CreateRegressionDsFromTable",
@@ -4782,7 +4782,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateRegressionDatasetFromTableWithTargetAndFeatureFields\ntable=$table\nfeatureFields=$featureFields\ntargetFields=$targetFields\noutputRegressionDataset=$outputRegressionDataset"
+    "templatecontents": "run\nenmapbox:CreateRegressionDatasetFromTableWithTargetAndFeatureFields\ntable=$table\nfeatureFields=$featureFields\ntargetFields=$targetFields\noutputRegressionDataset=$outputRegressionDataset"
   },
   {
     "id": "CreateRegressionDsFromTextFiles",
@@ -4835,7 +4835,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:CreateRegressionDatasetFromTextFiles\nfeatureFile=$featureFile\nvalueFile=$valueFile\noutputRegressionDataset=$outputRegressionDataset"
+    "templatecontents": "run\nenmapbox:CreateRegressionDatasetFromTextFiles\nfeatureFile=$featureFile\nvalueFile=$valueFile\noutputRegressionDataset=$outputRegressionDataset"
   },
   {
     "id": "CreateRegressionDsFromClassificationDs",
@@ -4945,7 +4945,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateRegressionDatasetSynthmixFromClassificationDataset\ndataset=$dataset\nn=$n\nbackground=$background\nincludeEndmember=$includeEndmember\nmixingProbabilities=$mixingProbabilities\nallowWithinClassMixtures=$allowWithinClassMixtures\nclassProbabilities=$classProbabilities\noutputFolder=$outputFolder"
+    "templatecontents": "run\nenmapbox:CreateRegressionDatasetSynthmixFromClassificationDataset\ndataset=$dataset\nn=$n\nbackground=$background\nincludeEndmember=$includeEndmember\nmixingProbabilities=$mixingProbabilities\nallowWithinClassMixtures=$allowWithinClassMixtures\nclassProbabilities=$classProbabilities\noutputFolder=$outputFolder"
   },
   {
     "id": "CreateUnsupervisedDsFromFeatureRaster",
@@ -5008,7 +5008,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateUnsupervisedDatasetFromFeatureRaster\nfeatureRaster=$featureRaster\nmask=$mask\nsampleSize=$sampleSize\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
+    "templatecontents": "run\nenmapbox:CreateUnsupervisedDatasetFromFeatureRaster\nfeatureRaster=$featureRaster\nmask=$mask\nsampleSize=$sampleSize\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
   },
   {
     "id": "CreateUnsupervisedDsFromJsonFile",
@@ -5052,7 +5052,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:CreateUnsupervisedDatasetFromJsonFile\njsonFile=$jsonFile\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
+    "templatecontents": "run\nenmapbox:CreateUnsupervisedDatasetFromJsonFile\njsonFile=$jsonFile\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
   },
   {
     "id": "CreateUnsupervisedDsFromPythonCode",
@@ -5097,7 +5097,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateUnsupervisedDatasetFromPythonCode\ncode=$code\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
+    "templatecontents": "run\nenmapbox:CreateUnsupervisedDatasetFromPythonCode\ncode=$code\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
   },
   {
     "id": "CreateUnsupervisedDsFromSpectralLibrary",
@@ -5151,7 +5151,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateUnsupervisedDatasetFromSpectralLibrary\nlibrary=$library\nfield=$field\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
+    "templatecontents": "run\nenmapbox:CreateUnsupervisedDatasetFromSpectralLibrary\nlibrary=$library\nfield=$field\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
   },
   {
     "id": "CreateUnsupervisedDsFromTextFile",
@@ -5195,7 +5195,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:CreateUnsupervisedDatasetFromTextFile\nfeatureFile=$featureFile\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
+    "templatecontents": "run\nenmapbox:CreateUnsupervisedDatasetFromTextFile\nfeatureFile=$featureFile\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
   },
   {
     "id": "CreateUnsupervisedDsFromVectorWithTable",
@@ -5249,7 +5249,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateUnsupervisedDatasetFromVectorLayerWithAttributeTable\nvector=$vector\nfeatureFields=$featureFields\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
+    "templatecontents": "run\nenmapbox:CreateUnsupervisedDatasetFromVectorLayerWithAttributeTable\nvector=$vector\nfeatureFields=$featureFields\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
   },
   {
     "id": "MergeClassificationDatasets",
@@ -5302,7 +5302,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:MergeClassificationDatasets\ndatasets=$datasets\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
+    "templatecontents": "run\nenmapbox:MergeClassificationDatasets\ndatasets=$datasets\noutputUnsupervisedDataset=$outputUnsupervisedDataset"
   },
   {
     "id": "RandomSamplesFromClassificationDataset",
@@ -5402,7 +5402,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:RandomSamplesFromClassificationDataset\ndataset=$dataset\nn=$n\nreplace=$replace\nproportional=$proportional\nseed=$seed\noutputDatasetRandomSample=$outputDatasetRandomSample\noutputDatasetRandomSampleComplement=$outputDatasetRandomSampleComplement"
+    "templatecontents": "run\nenmapbox:RandomSamplesFromClassificationDataset\ndataset=$dataset\nn=$n\nreplace=$replace\nproportional=$proportional\nseed=$seed\noutputDatasetRandomSample=$outputDatasetRandomSample\noutputDatasetRandomSampleComplement=$outputDatasetRandomSampleComplement"
   },
   {
     "id": "RandomSamplesFromRegressionDataset",
@@ -5512,7 +5512,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:RandomSamplesFromRegressionDataset\ndataset=$dataset\nbins=$bins\nn=$n\nreplace=$replace\nproportional=$proportional\nseed=$seed\noutputDatasetRandomSample=$outputDatasetRandomSample\noutputDatasetRandomSampleComplement=$outputDatasetRandomSampleComplement"
+    "templatecontents": "run\nenmapbox:RandomSamplesFromRegressionDataset\ndataset=$dataset\nbins=$bins\nn=$n\nreplace=$replace\nproportional=$proportional\nseed=$seed\noutputDatasetRandomSample=$outputDatasetRandomSample\noutputDatasetRandomSampleComplement=$outputDatasetRandomSampleComplement"
   },
   {
     "id": "SelectFeaturesFromDataset",
@@ -5566,7 +5566,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SelectFeaturesFromDataset\ndataset=$dataset\nfeatureList=$featureList\noutputDatasetFeatureSubset=$outputDatasetFeatureSubset"
+    "templatecontents": "run\nenmapbox:SelectFeaturesFromDataset\ndataset=$dataset\nfeatureList=$featureList\noutputDatasetFeatureSubset=$outputDatasetFeatureSubset"
   },
   {
     "id": "SaveSpectralLibraryAsGeoJSONFile",
@@ -5610,7 +5610,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:SaveSpectralLibraryAsGeojsonFile\nlibrary=$library\noutputFile=$outputFile"
+    "templatecontents": "run\nenmapbox:SaveSpectralLibraryAsGeojsonFile\nlibrary=$library\noutputFile=$outputFile"
   },
   {
     "id": "ClassifierFeatureRanking",
@@ -5702,7 +5702,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ClassifierFeatureRankingPermutationImportance\nclassifier=$classifier\ntrainDataset=$trainDataset\ntestDataset=$testDataset\nevaluationMetric=$evaluationMetric\nrepeats=$repeats\nseed=$seed\nopenReport=false\noutputPermutationImportanceRanking=$outputPermutationImportanceRanking"
+    "templatecontents": "run\nenmapbox:ClassifierFeatureRankingPermutationImportance\nclassifier=$classifier\ntrainDataset=$trainDataset\ntestDataset=$testDataset\nevaluationMetric=$evaluationMetric\nrepeats=$repeats\nseed=$seed\nopenReport=false\noutputPermutationImportanceRanking=$outputPermutationImportanceRanking"
   },
   {
     "id": "HierarchicalFeatureClustering",
@@ -5759,7 +5759,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:HierarchicalFeatureClustering\ndataset=$dataset\nnoPlot=$noPlot\nopenReport=false\noutputHierarchicalFeatureClustering=$outputHierarchicalFeatureClustering"
+    "templatecontents": "run\nenmapbox:HierarchicalFeatureClustering\ndataset=$dataset\nnoPlot=$noPlot\nopenReport=false\noutputHierarchicalFeatureClustering=$outputHierarchicalFeatureClustering"
   },
   {
     "id": "ImportDesisL1BProduct",
@@ -5803,7 +5803,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ImportDesisL1BProduct\nfile=$file\noutputDesisL1CRaster=$outputDesisL1CRaster"
+    "templatecontents": "run\nenmapbox:ImportDesisL1BProduct\nfile=$file\noutputDesisL1CRaster=$outputDesisL1CRaster"
   },
   {
     "id": "ImportDesisL1CProduct",
@@ -5847,7 +5847,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ImportDesisL1CProduct\nfile=$file\noutputDesisL1CRaster=$outputDesisL1CRaster"
+    "templatecontents": "run\nenmapbox:ImportDesisL1CProduct\nfile=$file\noutputDesisL1CRaster=$outputDesisL1CRaster"
   },
   {
     "id": "ImportDesisL2AProduct",
@@ -5891,7 +5891,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ImportDesisL2AProduct\nfile=$file\noutputDesisL2ARaster=$outputDesisL2ARaster"
+    "templatecontents": "run\nenmapbox:ImportDesisL2AProduct\nfile=$file\noutputDesisL2ARaster=$outputDesisL2ARaster"
   },
   {
     "id": "ImportEnmapL1BProduct",
@@ -5945,7 +5945,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ImportEnmapL1BProduct\nfile=$file\noutputEnmapL1BRasterVnir=$outputEnmapL1BRasterVnir\noutputEnmapL1BRasterSwir=$outputEnmapL1BRasterSwir"
+    "templatecontents": "run\nenmapbox:ImportEnmapL1BProduct\nfile=$file\noutputEnmapL1BRasterVnir=$outputEnmapL1BRasterVnir\noutputEnmapL1BRasterSwir=$outputEnmapL1BRasterSwir"
   },
   {
     "id": "ImportEnmapL1CProduct",
@@ -5989,7 +5989,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ImportEnmapL1CProduct\nfile=$file\noutputEnmapL1CRaster=$outputEnmapL1CRaster"
+    "templatecontents": "run\nenmapbox:ImportEnmapL1CProduct\nfile=$file\noutputEnmapL1CRaster=$outputEnmapL1CRaster"
   },
   {
     "id": "ImportEnmapL2AProduct",
@@ -6033,7 +6033,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ImportEnmapL2AProduct\nfile=$file\noutputEnmapL2ARaster=$outputEnmapL2ARaster"
+    "templatecontents": "run\nenmapbox:ImportEnmapL2AProduct\nfile=$file\noutputEnmapL2ARaster=$outputEnmapL2ARaster"
   },
   {
     "id": "ImportLandsatL2Product",
@@ -6077,7 +6077,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ImportLandsatL2Product\nfile=$file\noutputEnmapL2ARaster=$outputEnmapL2ARaster"
+    "templatecontents": "run\nenmapbox:ImportLandsatL2Product\nfile=$file\noutputEnmapL2ARaster=$outputEnmapL2ARaster"
   },
   {
     "id": "ImportPrismaL1Product",
@@ -6211,7 +6211,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ImportPrismaL1Product\nfile=$file\nspectralRegion=$spectralRegion\noutputPrismaL1_spectralCube=$outputPrismaL1_spectralCube\noutputPrismaL1_panCube=$outputPrismaL1_panCube\noutputPrismaL1_cloudMask=$outputPrismaL1_cloudMask\noutputPrismaL1_landCoverMask=$outputPrismaL1_landCoverMask\noutputPrismaL1_sunGlintMask=$outputPrismaL1_sunGlintMask\noutputPrisma1_spectralErrorMatrix=$outputPrisma1_spectralErrorMatrix\noutputPrismaL1_spectralGeolocationFields=$outputPrismaL1_spectralGeolocationFields\noutputPrismaL1_panGeolocationFields=$outputPrismaL1_panGeolocationFields\noutputPrismaL1_panErrorMatrix=$outputPrismaL1_panErrorMatrix"
+    "templatecontents": "run\nenmapbox:ImportPrismaL1Product\nfile=$file\nspectralRegion=$spectralRegion\noutputPrismaL1_spectralCube=$outputPrismaL1_spectralCube\noutputPrismaL1_panCube=$outputPrismaL1_panCube\noutputPrismaL1_cloudMask=$outputPrismaL1_cloudMask\noutputPrismaL1_landCoverMask=$outputPrismaL1_landCoverMask\noutputPrismaL1_sunGlintMask=$outputPrismaL1_sunGlintMask\noutputPrisma1_spectralErrorMatrix=$outputPrisma1_spectralErrorMatrix\noutputPrismaL1_spectralGeolocationFields=$outputPrismaL1_spectralGeolocationFields\noutputPrismaL1_panGeolocationFields=$outputPrismaL1_panGeolocationFields\noutputPrismaL1_panErrorMatrix=$outputPrismaL1_panErrorMatrix"
   },
   {
     "id": "ImportPrismaL2BProduct",
@@ -6325,7 +6325,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ImportPrismaL2BProduct\nfile=$file\nspectralRegion=$spectralRegion\noutputPrismaL2B_spectralCube=$outputPrismaL2B_spectralCube\noutputPrismaL2B_panCube=$outputPrismaL2B_panCube\noutputPrisma2B_spectralErrorMatrix=$outputPrisma2B_spectralErrorMatrix\noutputPrismaL2B_spectralGeolocationFields=$outputPrismaL2B_spectralGeolocationFields\noutputPrismaL2B_spectralGeometricFields=$outputPrismaL2B_spectralGeometricFields\noutputPrismaL2B_panGeolocationFields=$outputPrismaL2B_panGeolocationFields\noutputPrismaL2B_panErrorMatrix=$outputPrismaL2B_panErrorMatrix"
+    "templatecontents": "run\nenmapbox:ImportPrismaL2BProduct\nfile=$file\nspectralRegion=$spectralRegion\noutputPrismaL2B_spectralCube=$outputPrismaL2B_spectralCube\noutputPrismaL2B_panCube=$outputPrismaL2B_panCube\noutputPrisma2B_spectralErrorMatrix=$outputPrisma2B_spectralErrorMatrix\noutputPrismaL2B_spectralGeolocationFields=$outputPrismaL2B_spectralGeolocationFields\noutputPrismaL2B_spectralGeometricFields=$outputPrismaL2B_spectralGeometricFields\noutputPrismaL2B_panGeolocationFields=$outputPrismaL2B_panGeolocationFields\noutputPrismaL2B_panErrorMatrix=$outputPrismaL2B_panErrorMatrix"
   },
   {
     "id": "ImportPrismaL2CProduct",
@@ -6439,7 +6439,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ImportPrismaL2CProduct\nfile=$file\nspectralRegion=$spectralRegion\noutputPrismaL2C_spectralCube=$outputPrismaL2C_spectralCube\noutputPrismaL2C_panCube=$outputPrismaL2C_panCube\noutputPrisma2C_spectralErrorMatrix=$outputPrisma2C_spectralErrorMatrix\noutputPrismaL2C_spectralGeolocationFields=$outputPrismaL2C_spectralGeolocationFields\noutputPrismaL2C_spectralGeometricFields=$outputPrismaL2C_spectralGeometricFields\noutputPrismaL2C_panGeolocationFields=$outputPrismaL2C_panGeolocationFields\noutputPrismaL2C_panErrorMatrix=$outputPrismaL2C_panErrorMatrix"
+    "templatecontents": "run\nenmapbox:ImportPrismaL2CProduct\nfile=$file\nspectralRegion=$spectralRegion\noutputPrismaL2C_spectralCube=$outputPrismaL2C_spectralCube\noutputPrismaL2C_panCube=$outputPrismaL2C_panCube\noutputPrisma2C_spectralErrorMatrix=$outputPrisma2C_spectralErrorMatrix\noutputPrismaL2C_spectralGeolocationFields=$outputPrismaL2C_spectralGeolocationFields\noutputPrismaL2C_spectralGeometricFields=$outputPrismaL2C_spectralGeometricFields\noutputPrismaL2C_panGeolocationFields=$outputPrismaL2C_panGeolocationFields\noutputPrismaL2C_panErrorMatrix=$outputPrismaL2C_panErrorMatrix"
   },
   {
     "id": "ImportPrismaL2DProduct",
@@ -6573,7 +6573,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ImportPrismaL2DProduct\nfile=$file\nspectralRegion=$spectralRegion\nbadBandThreshold=$badBandThreshold\nbadPixelType=$badPixelType\noutputPrismaL2D_spectralCube=$outputPrismaL2D_spectralCube\noutputPrismaL2D_panCube=$outputPrismaL2D_panCube\noutputPrismaL2D_spectralGeolocationFields=$outputPrismaL2D_spectralGeolocationFields\noutputPrismaL2D_spectralGeometricFields=$outputPrismaL2D_spectralGeometricFields\noutputPrismaL2D_spectralErrorMatrix=$outputPrismaL2D_spectralErrorMatrix\noutputPrismaL2D_panGeolocationFields=$outputPrismaL2D_panGeolocationFields\noutputPrismaL2D_panErrorMatrix=$outputPrismaL2D_panErrorMatrix"
+    "templatecontents": "run\nenmapbox:ImportPrismaL2DProduct\nfile=$file\nspectralRegion=$spectralRegion\nbadBandThreshold=$badBandThreshold\nbadPixelType=$badPixelType\noutputPrismaL2D_spectralCube=$outputPrismaL2D_spectralCube\noutputPrismaL2D_panCube=$outputPrismaL2D_panCube\noutputPrismaL2D_spectralGeolocationFields=$outputPrismaL2D_spectralGeolocationFields\noutputPrismaL2D_spectralGeometricFields=$outputPrismaL2D_spectralGeometricFields\noutputPrismaL2D_spectralErrorMatrix=$outputPrismaL2D_spectralErrorMatrix\noutputPrismaL2D_panGeolocationFields=$outputPrismaL2D_panGeolocationFields\noutputPrismaL2D_panErrorMatrix=$outputPrismaL2D_panErrorMatrix"
   },
   {
     "id": "ImportSentinel2L2AProduct",
@@ -6627,7 +6627,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ImportSentinel2L2AProduct\nfile=$file\nbandList=$bandList\noutputSentinel2L2ARaster=$outputSentinel2L2ARaster"
+    "templatecontents": "run\nenmapbox:ImportSentinel2L2AProduct\nfile=$file\nbandList=$bandList\noutputSentinel2L2ARaster=$outputSentinel2L2ARaster"
   },
   {
     "id": "ApplyMaskLayerToRasterLayer",
@@ -6680,7 +6680,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:ApplyMaskLayerToRasterLayer\nraster=$raster\nmask=$mask\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:ApplyMaskLayerToRasterLayer\nraster=$raster\nmask=$mask\noutputRaster=$outputRaster"
   },
   {
     "id": "CreateMaskRaster",
@@ -6734,7 +6734,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateMaskRasterLayer\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:CreateMaskRasterLayer\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "LayerToMaskRasterLayer",
@@ -6787,7 +6787,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:LayerToMaskRasterLayer\nraster=$raster\ngrid=$grid\noutputMask=$outputMask"
+    "templatecontents": "run\nenmapbox:LayerToMaskRasterLayer\nraster=$raster\ngrid=$grid\noutputMask=$outputMask"
   },
   {
     "id": "AggregateRasterLayerBands",
@@ -6841,7 +6841,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:AggregateRasterLayerBands\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:AggregateRasterLayerBands\nraster=$raster\nfunction=$function\noutputRaster=$outputRaster"
   },
   {
     "id": "ConvexHull",
@@ -6905,7 +6905,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:ConvexHullAndContinuumremoval\nraster=$raster\nxUnits=$xUnits\noutputConvexHull=$outputConvexHull\noutputContinuumRemoved=$outputContinuumRemoved"
+    "templatecontents": "run\nenmapbox:ConvexHullAndContinuumremoval\nraster=$raster\nxUnits=$xUnits\noutputConvexHull=$outputConvexHull\noutputContinuumRemoved=$outputContinuumRemoved"
   },
   {
     "id": "CreateSpectralIndices",
@@ -7199,7 +7199,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateSpectralIndices\nraster=$raster\nindices=$indices\nA=$A\nB=$B\nG=$G\nR=$R\nRE1=$RE1\nRE2=$RE2\nRE3=$RE3\nRE4=$RE4\nN=$N\nscale=$scale\nS1=$S1\nS2=$S2\nT1=$T1\nT2=$T2\nL=$L\ng=$g\nC1=$C1\nC2=$C2\ncexp=$cexp\nnexp=$nexp\nalpha=$alpha\ngamma=$gamma\nsla=$sla\nslb=$slb\noutputtif=$outputtif"
+    "templatecontents": "run\nenmapbox:CreateSpectralIndices\nraster=$raster\nindices=$indices\nA=$A\nB=$B\nG=$G\nR=$R\nRE1=$RE1\nRE2=$RE2\nRE3=$RE3\nRE4=$RE4\nN=$N\nscale=$scale\nS1=$S1\nS2=$S2\nT1=$T1\nT2=$T2\nL=$L\ng=$g\nC1=$C1\nC2=$C2\ncexp=$cexp\nnexp=$nexp\nalpha=$alpha\ngamma=$gamma\nsla=$sla\nslb=$slb\noutputtif=$outputtif"
   },
   {
     "id": "RasterLayerZonalAggregation",
@@ -7252,7 +7252,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:RasterLayerZonalAggregation\nraster=$raster\ncategorizedRaster=$categorizedRaster\noutputTable=$outputTable"
+    "templatecontents": "run\nenmapbox:RasterLayerZonalAggregation\nraster=$raster\ncategorizedRaster=$categorizedRaster\noutputTable=$outputTable"
   },
   {
     "id": "rasterMath",
@@ -7552,7 +7552,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:rasterMath\ncode=$code\ngrid=$grid\nfloatInput=$floatInput\noverlap=$overlap\nmonolithic=$monolithic\nR1=$R1\nR2=$R2\nR3=$R3\nR4=$R4\nR5=$R5\nR6=$R6\nR7=$R7\nR8=$R8\nR9=$R9\nR10=$R10\nV1=$V1\nV2=$V2\nV3=$V3\nV4=$V4\nV5=$V5\nV6=$V6\nV7=$V7\nV8=$V8\nV9=$V9\nV10=$V10\nRS=$RS\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:rasterMath\ncode=$code\ngrid=$grid\nfloatInput=$floatInput\noverlap=$overlap\nmonolithic=$monolithic\nR1=$R1\nR2=$R2\nR3=$R3\nR4=$R4\nR5=$R5\nR6=$R6\nR7=$R7\nR8=$R8\nR9=$R9\nR10=$R10\nV1=$V1\nV2=$V2\nV3=$V3\nV4=$V4\nV5=$V5\nV6=$V6\nV7=$V7\nV8=$V8\nV9=$V9\nV10=$V10\nRS=$RS\noutputRaster=$outputRaster"
   },
   {
     "id": "SampleRasterLayerValues",
@@ -7615,7 +7615,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SampleRasterLayerValues\nraster=$raster\nvector=$vector\ncoverageRange=$coverageRange\noutputPointsData=$outputPointsData"
+    "templatecontents": "run\nenmapbox:SampleRasterLayerValues\nraster=$raster\nvector=$vector\ncoverageRange=$coverageRange\noutputPointsData=$outputPointsData"
   },
   {
     "id": "VrtBandMath",
@@ -7719,7 +7719,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:VrtBandMath\nraster=$raster\nbandList=$bandList\ncode=$code\ndataType=$dataType\nnoData=$noData\nbandName=$bandName\noverlap=$overlap\noutputtif=$outputtif"
+    "templatecontents": "run\nenmapbox:VrtBandMath\nraster=$raster\nbandList=$bandList\ncode=$code\ndataType=$dataType\nnoData=$noData\nbandName=$bandName\noverlap=$overlap\noutputtif=$outputtif"
   },
   {
     "id": "CreateRGBImageFromClassProbability",
@@ -7783,7 +7783,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateRgbImageFromClassProbabilityfractionLayer\nprobability=$probability\ncolors=$colors\ncolorsLayer=$colorsLayer\noutputRGBImage=$outputRGBImage"
+    "templatecontents": "run\nenmapbox:CreateRgbImageFromClassProbabilityfractionLayer\nprobability=$probability\ncolors=$colors\ncolorsLayer=$colorsLayer\noutputRGBImage=$outputRGBImage"
   },
   {
     "id": "SaveRasterLayerAs",
@@ -7863,7 +7863,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SaveRasterLayerAs\nraster=$raster\ncopyMetadata=$copyMetadata\ncopyStyle=$copyStyle\ncreationProfile=$creationProfile\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SaveRasterLayerAs\nraster=$raster\ncopyMetadata=$copyMetadata\ncopyStyle=$copyStyle\ncreationProfile=$creationProfile\noutputRaster=$outputRaster"
   },
   {
     "id": "TranslateCategorizedRasterLayer",
@@ -7929,7 +7929,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:TranslateCategorizedRasterLayer\ncategorizedRaster=$categorizedRaster\ngrid=$grid\nmajorityVoting=$majorityVoting\noutputTranslatedCategorizedRaster=$outputTranslatedCategorizedRaster"
+    "templatecontents": "run\nenmapbox:TranslateCategorizedRasterLayer\ncategorizedRaster=$categorizedRaster\ngrid=$grid\nmajorityVoting=$majorityVoting\noutputTranslatedCategorizedRaster=$outputTranslatedCategorizedRaster"
   },
   {
     "id": "TranslateRasterLayer",
@@ -8201,7 +8201,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:TranslateRasterLayer\nraster=$raster\nbandList=$bandList\ngrid=$grid\ncopyMetadata=$copyMetadata\ncopyStyle=$copyStyle\nexcludeBadBands=$excludeBadBands\nwriteEnviHeader=$writeEnviHeader\nspectralSubset=$spectralSubset\nspectralBandList=$spectralBandList\noffset=$offset\nscale=$scale\nextent=$extent\nsourceColumns=$sourceColumns\nsourceRows=$sourceRows\nresampleAlg=$resampleAlg\nsourceNoData=$sourceNoData\nnoData=$noData\nunsetSourceNoData=$unsetSourceNoData\nunsetNoData=$unsetNoData\nworkingType=$workingType\ndataType=$dataType\ncreationProfile=$creationProfile\noutputTranslatedRaster=$outputTranslatedRaster"
+    "templatecontents": "run\nenmapbox:TranslateRasterLayer\nraster=$raster\nbandList=$bandList\ngrid=$grid\ncopyMetadata=$copyMetadata\ncopyStyle=$copyStyle\nexcludeBadBands=$excludeBadBands\nwriteEnviHeader=$writeEnviHeader\nspectralSubset=$spectralSubset\nspectralBandList=$spectralBandList\noffset=$offset\nscale=$scale\nextent=$extent\nsourceColumns=$sourceColumns\nsourceRows=$sourceRows\nresampleAlg=$resampleAlg\nsourceNoData=$sourceNoData\nnoData=$noData\nunsetSourceNoData=$unsetSourceNoData\nunsetNoData=$unsetNoData\nworkingType=$workingType\ndataType=$dataType\ncreationProfile=$creationProfile\noutputTranslatedRaster=$outputTranslatedRaster"
   },
   {
     "id": "CreateGrid",
@@ -8286,7 +8286,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:CreateGrid\ncrs=$crs\nextent=$extent\nunit=$unit\nwidth=$width\nhight=$hight\noutputGrid=$outputGrid"
+    "templatecontents": "run\nenmapbox:CreateGrid\ncrs=$crs\nextent=$extent\nunit=$unit\nwidth=$width\nhight=$hight\noutputGrid=$outputGrid"
   },
   {
     "id": "StackRasterLayers",
@@ -8350,7 +8350,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:StackRasterLayers\nRasters=$Rasters\ngrid=$grid\nband=$band\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:StackRasterLayers\nRasters=$Rasters\ngrid=$grid\nband=$band\noutputRaster=$outputRaster"
   },
   {
     "id": "SubsetRasterLayerBands",
@@ -8417,7 +8417,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SubsetRasterLayerBands\nraster=$raster\nbandList=$bandList\nexcludeBadBands=$excludeBadBands\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:SubsetRasterLayerBands\nraster=$raster\nbandList=$bandList\nexcludeBadBands=$excludeBadBands\noutputRaster=$outputRaster"
   },
   {
     "id": "GeolocateRasterLayer",
@@ -8569,7 +8569,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:GeolocateRasterLayer\nraster=$raster\nxRaster=$xRaster\nyRaster=$yRaster\ngrid=$grid\ncrs=$crs\nnoDataValue=$noDataValue\nxBand=$xBand\nyBand=$yBand\npixelOffset=$pixelOffset\nlineOffset=$lineOffset\npixelStep=$pixelStep\nlineStep=$lineStep\noutputGeolocatedRaster=$outputGeolocatedRaster"
+    "templatecontents": "run\nenmapbox:GeolocateRasterLayer\nraster=$raster\nxRaster=$xRaster\nyRaster=$yRaster\ngrid=$grid\ncrs=$crs\nnoDataValue=$noDataValue\nxBand=$xBand\nyBand=$yBand\npixelOffset=$pixelOffset\nlineOffset=$lineOffset\npixelStep=$pixelStep\nlineStep=$lineStep\noutputGeolocatedRaster=$outputGeolocatedRaster"
   },
   {
     "id": "FitCatBoostRegressor",
@@ -8623,7 +8623,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitCatboostregressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
+    "templatecontents": "run\nenmapbox:FitCatboostregressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
   },
   {
     "id": "FitGaussianProcessRegressor",
@@ -8677,7 +8677,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitGaussianprocessregressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
+    "templatecontents": "run\nenmapbox:FitGaussianprocessregressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
   },
   {
     "id": "FitGenericRegressor",
@@ -8731,7 +8731,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitGenericRegressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
+    "templatecontents": "run\nenmapbox:FitGenericRegressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
   },
   {
     "id": "FitKernelRidge",
@@ -8785,7 +8785,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitKernelridge\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
+    "templatecontents": "run\nenmapbox:FitKernelridge\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
   },
   {
     "id": "FitLGBMRegressor",
@@ -8839,7 +8839,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitLgbmregressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
+    "templatecontents": "run\nenmapbox:FitLgbmregressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
   },
   {
     "id": "FitLinearRegression",
@@ -8893,7 +8893,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitLinearregression\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
+    "templatecontents": "run\nenmapbox:FitLinearregression\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
   },
   {
     "id": "FitLinearSVR",
@@ -8947,7 +8947,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitLinearsvr\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
+    "templatecontents": "run\nenmapbox:FitLinearsvr\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
   },
   {
     "id": "FitPLSRegression",
@@ -9001,7 +9001,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitPlsregression\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
+    "templatecontents": "run\nenmapbox:FitPlsregression\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
   },
   {
     "id": "FitRandomForestRegressor",
@@ -9055,7 +9055,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitRandomforestregressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
+    "templatecontents": "run\nenmapbox:FitRandomforestregressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
   },
   {
     "id": "FitSVRPolynomialKernel",
@@ -9109,7 +9109,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitSvrPolynomialKernel\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
+    "templatecontents": "run\nenmapbox:FitSvrPolynomialKernel\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
   },
   {
     "id": "FitSVRRBFKernel",
@@ -9163,7 +9163,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitSvrRbfKernel\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
+    "templatecontents": "run\nenmapbox:FitSvrRbfKernel\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
   },
   {
     "id": "FitXGBRegressor",
@@ -9217,7 +9217,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitXgbregressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
+    "templatecontents": "run\nenmapbox:FitXgbregressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
   },
   {
     "id": "FitXGBRFRegressor",
@@ -9271,7 +9271,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitXgbrfregressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
+    "templatecontents": "run\nenmapbox:FitXgbrfregressor\nregressor=$regressor\ndataset=$dataset\noutputRegressor=$outputRegressor"
   },
   {
     "id": "PredictRegressionLayer",
@@ -9324,7 +9324,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:PredictRegressionLayer\nraster=$raster\nregressor=$regressor\noutputRegression=$outputRegression"
+    "templatecontents": "run\nenmapbox:PredictRegressionLayer\nraster=$raster\nregressor=$regressor\noutputRegression=$outputRegression"
   },
   {
     "id": "ReceiverOperatingROC",
@@ -9377,7 +9377,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:ReceiverOperatingCharacteristicRocAndDetectionErrorTradeoffDetCurves\nregression=$regression\nreference=$reference\nopenReport=false\noutRocCurve=$outRocCurve"
+    "templatecontents": "run\nenmapbox:ReceiverOperatingCharacteristicRocAndDetectionErrorTradeoffDetCurves\nregression=$regression\nreference=$reference\nopenReport=false\noutRocCurve=$outRocCurve"
   },
   {
     "id": "RegressionAccuracyReport",
@@ -9430,7 +9430,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:RegressionLayerAccuracyReport\nregression=$regression\nreference=$reference\nopenReport=false\noutRegressionPerformance=$outRegressionPerformance"
+    "templatecontents": "run\nenmapbox:RegressionLayerAccuracyReport\nregression=$regression\nreference=$reference\nopenReport=false\noutRegressionPerformance=$outRegressionPerformance"
   },
   {
     "id": "RegressionWorkflow",
@@ -9522,7 +9522,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:RegressionWorkflow\ndataset=$dataset\nregressor=$regressor\nraster=$raster\nnfold=$nfold\nopenReport=false\noutputRegressorPerformance=$outputRegressorPerformance\noutputRegressor=$outputRegressor\noutputRegression=$outputRegression\n"
+    "templatecontents": "run\nenmapbox:RegressionWorkflow\ndataset=$dataset\nregressor=$regressor\nraster=$raster\nnfold=$nfold\nopenReport=false\noutputRegressorPerformance=$outputRegressorPerformance\noutputRegressor=$outputRegressor\noutputRegression=$outputRegression\n"
   },
   {
     "id": "RegressorPerformanceReport",
@@ -9585,7 +9585,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:RegressorPerformanceReport\nregressor=$regressor\ndataset=$dataset\nnfold=$nfold\nopenReport=false\noutputRegressorPerformance=$outputRegressorPerformance"
+    "templatecontents": "run\nenmapbox:RegressorPerformanceReport\nregressor=$regressor\ndataset=$dataset\nnfold=$nfold\nopenReport=false\noutputRegressorPerformance=$outputRegressorPerformance"
   },
   {
     "id": "SpectralIndexOptimizer",
@@ -9689,7 +9689,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpectralIndexOptimizer\ndataset=$dataset\nformular=$formular\nmaxFeatures=$maxFeatures\nf1=$f1\nf2=$f2\nf3=$f3\noutScoreMatrix=$outScoreMatrix"
+    "templatecontents": "run\nenmapbox:SpectralIndexOptimizer\ndataset=$dataset\nformular=$formular\nmaxFeatures=$maxFeatures\nf1=$f1\nf2=$f2\nf3=$f3\noutScoreMatrix=$outScoreMatrix"
   },
   {
     "id": "SpectralResamplingToCustomSensor",
@@ -9756,7 +9756,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralResamplingToCustomSensor\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
+    "templatecontents": "run\nenmapbox:SpectralResamplingToCustomSensor\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
   },
   {
     "id": "SpectralResamplingToDesisHsi",
@@ -9823,7 +9823,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralResamplingToDesisHsi\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
+    "templatecontents": "run\nenmapbox:SpectralResamplingToDesisHsi\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
   },
   {
     "id": "SpectralResamplingToEnmap",
@@ -9890,7 +9890,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralResamplingToEnmap\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
+    "templatecontents": "run\nenmapbox:SpectralResamplingToEnmap\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
   },
   {
     "id": "SpectralResamplingToLandsat45Tm",
@@ -9957,7 +9957,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralResamplingToLandsat45Tm\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
+    "templatecontents": "run\nenmapbox:SpectralResamplingToLandsat45Tm\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
   },
   {
     "id": "SpectralResamplingToLandsat7Etm",
@@ -10024,7 +10024,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralResamplingToLandsat7Etm\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
+    "templatecontents": "run\nenmapbox:SpectralResamplingToLandsat7Etm\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
   },
   {
     "id": "SpectralResamplingToLandsat89Oli",
@@ -10091,7 +10091,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralResamplingToLandsat89Oli\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
+    "templatecontents": "run\nenmapbox:SpectralResamplingToLandsat89Oli\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
   },
   {
     "id": "SpectralResamplingToPrisma",
@@ -10158,7 +10158,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralResamplingToPrisma\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
+    "templatecontents": "run\nenmapbox:SpectralResamplingToPrisma\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
   },
   {
     "id": "SpectralResamplingToResponseFunctionLibrary",
@@ -10221,7 +10221,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:SpectralResamplingToResponseFunctionLibrary\nraster=$raster\nlibrary=$library\nfield=$field\noutputResampledRaster=$outputResampledRaster"
+    "templatecontents": "run\nenmapbox:SpectralResamplingToResponseFunctionLibrary\nraster=$raster\nlibrary=$library\nfield=$field\noutputResampledRaster=$outputResampledRaster"
   },
   {
     "id": "SpectralResamplingToSentinel2Msi",
@@ -10288,7 +10288,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralResamplingToSentinel2Msi\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
+    "templatecontents": "run\nenmapbox:SpectralResamplingToSentinel2Msi\nraster=$raster\nresponse=$response\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
   },
   {
     "id": "SpectralResamplingToSpectralRasterLayerWavelengthAndFwhm",
@@ -10354,7 +10354,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:SpectralResamplingToSpectralRasterLayerWavelengthAndFwhm\nraster=$raster\nresponseRaster=$responseRaster\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
+    "templatecontents": "run\nenmapbox:SpectralResamplingToSpectralRasterLayerWavelengthAndFwhm\nraster=$raster\nresponseRaster=$responseRaster\nsaveResponseFunction=$saveResponseFunction\noutputResampledRaster=$outputResampledRaster"
   },
   {
     "id": "FitFactoranalysis",
@@ -10428,7 +10428,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitFactoranalysis\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
+    "templatecontents": "run\nenmapbox:FitFactoranalysis\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
   },
   {
     "id": "FitFastica",
@@ -10502,7 +10502,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitFastica\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
+    "templatecontents": "run\nenmapbox:FitFastica\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
   },
   {
     "id": "FitFeatureagglomeration",
@@ -10576,7 +10576,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitFeatureagglomeration\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
+    "templatecontents": "run\nenmapbox:FitFeatureagglomeration\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
   },
   {
     "id": "FitKernelpca",
@@ -10650,7 +10650,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitKernelpca\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
+    "templatecontents": "run\nenmapbox:FitKernelpca\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
   },
   {
     "id": "FitMaxabsscaler",
@@ -10724,7 +10724,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitMaxabsscaler\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
+    "templatecontents": "run\nenmapbox:FitMaxabsscaler\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
   },
   {
     "id": "FitMinmaxscaler",
@@ -10798,7 +10798,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitMinmaxscaler\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
+    "templatecontents": "run\nenmapbox:FitMinmaxscaler\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
   },
   {
     "id": "FitNormalizer",
@@ -10872,7 +10872,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitNormalizer\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
+    "templatecontents": "run\nenmapbox:FitNormalizer\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
   },
   {
     "id": "FitPca",
@@ -10946,7 +10946,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitPca\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
+    "templatecontents": "run\nenmapbox:FitPca\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
   },
   {
     "id": "FitQuantiletransformer",
@@ -11020,7 +11020,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitQuantiletransformer\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
+    "templatecontents": "run\nenmapbox:FitQuantiletransformer\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
   },
   {
     "id": "FitRobustscaler",
@@ -11094,7 +11094,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitRobustscaler\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
+    "templatecontents": "run\nenmapbox:FitRobustscaler\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
   },
   {
     "id": "FitStandardscaler",
@@ -11168,7 +11168,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:FitStandardscaler\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
+    "templatecontents": "run\nenmapbox:FitStandardscaler\ntransformer=$transformer\nfactorAnalysis=$factorAnalysis\nfeatureRaster=$featureRaster\nsampleSize=$sampleSize\ndataset=$dataset\noutputTransformer=$outputTransformer"
   },
   {
     "id": "TransformRasterLayer",
@@ -11221,7 +11221,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:TransformRasterLayer\nraster=$raster\ntransformer=$transformer\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:TransformRasterLayer\nraster=$raster\ntransformer=$transformer\noutputRaster=$outputRaster"
   },
   {
     "id": "InverseTransformRasterLayer",
@@ -11274,7 +11274,7 @@
     "active": true,
     "parameterDescriptors": [
     ],
-    "templatecontents": "run enmapbox:InverseTransformRasterLayer\nraster=$raster\ntransformer=$transformer\noutputRaster=$outputRaster"
+    "templatecontents": "run\nenmapbox:InverseTransformRasterLayer\nraster=$raster\ntransformer=$transformer\noutputRaster=$outputRaster"
   },
   {
     "id": "RegressionBasedUnmixing",
@@ -11446,7 +11446,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:RegressionbasedUnmixing\ndataset=$dataset\nraster=$raster\nregressor=$regressor\nn=$n\nbackground=$background\nincludeEndmember=$includeEndmember\nmixingProbabilities=$mixingProbabilities\nallowWithinClassMixtures=$allowWithinClassMixtures\nclassProbabilities=$classProbabilities\nensembleSize=$ensembleSize\nrobustFusion=$robustFusion\noutputFraction=$outputFraction\noutputClassification=$outputClassification\noutputFractionVariation=$outputFractionVariation"
+    "templatecontents": "run\nenmapbox:RegressionbasedUnmixing\ndataset=$dataset\nraster=$raster\nregressor=$regressor\nn=$n\nbackground=$background\nincludeEndmember=$includeEndmember\nmixingProbabilities=$mixingProbabilities\nallowWithinClassMixtures=$allowWithinClassMixtures\nclassProbabilities=$classProbabilities\nensembleSize=$ensembleSize\nrobustFusion=$robustFusion\noutputFraction=$outputFraction\noutputClassification=$outputClassification\noutputFractionVariation=$outputFractionVariation"
   },
   {
     "id": "RasterizeCategorizedVectorLayer",
@@ -11522,7 +11522,7 @@
         ]
       }
     ],
-    "templatecontents": "run enmapbox:rasterizeCategorizedVectorLayer\ncategorizedVector=$categorizedVector\ngrid=$grid\ncoverage=$coverage\nmajorityVoting=$majorityVoting\noutputRasterizedCategories=$outputRasterizedCategories"
+    "templatecontents": "run\nenmapbox:rasterizeCategorizedVectorLayer\ncategorizedVector=$categorizedVector\ngrid=$grid\ncoverage=$coverage\nmajorityVoting=$majorityVoting\noutputRasterizedCategories=$outputRasterizedCategories"
   },
   {
     "id": "RasterizeVectorLayer",
@@ -11654,7 +11654,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:rasterizeVectorLayer\nvector=$vector\ngrid=$grid\ninitValue=$initValue\nburnValue=$burnValue\nburnAttribute=$burnAttribute\nburnFid=$burnFid\naddValue=$addValue\nallTouched=$allTouched\ndataType=$dataType\noutputRasterizedVector=$outputRasterizedVector"
+    "templatecontents": "run\nenmapbox:rasterizeVectorLayer\nvector=$vector\ngrid=$grid\ninitValue=$initValue\nburnValue=$burnValue\nburnAttribute=$burnAttribute\nburnFid=$burnFid\naddValue=$addValue\nallTouched=$allTouched\ndataType=$dataType\noutputRasterizedVector=$outputRasterizedVector"
   },
   {
     "id": "RandomPointsFromCategorizedRasterLayer",
@@ -11738,7 +11738,7 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:RandomPointsFromCategorizedRasterLayer\nstratification=$stratification\nn=$n\ndistanceGlobal=$distanceGlobal\ndistanceStatum=$distanceStatum\nseed=$seed\noutputPoints=$outputPoints"
+    "templatecontents": "run\nenmapbox:RandomPointsFromCategorizedRasterLayer\nstratification=$stratification\nn=$n\ndistanceGlobal=$distanceGlobal\ndistanceStatum=$distanceStatum\nseed=$seed\noutputPoints=$outputPoints"
   },
   {
     "id": "RandomPointsFromMaskRasterLayer",
@@ -11812,6 +11812,6 @@
         "valueSet": []
       }
     ],
-    "templatecontents": "run enmapbox:RandomPointsFromMaskRasterLayer\nmask=$mask\nn=$n\ndistance=$distance\nseed=$seed\noutputPoints=$outputPoints"
+    "templatecontents": "run\nenmapbox:RandomPointsFromMaskRasterLayer\nmask=$mask\nn=$n\ndistance=$distance\nseed=$seed\noutputPoints=$outputPoints"
   }
 ]
