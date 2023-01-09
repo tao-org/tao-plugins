@@ -48,9 +48,9 @@ public class STACParameterProvider implements ParameterProvider {
                             Tuple<String, DataSourceParameter> parameter =
                                     ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "bbox", "Region of Interest", Polygon2D.class);
                             put(parameter.getKeyOne(), parameter.getKeyTwo());
-                            parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "datetime", "Begin Date", LocalDateTime.class);
+                            parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "datetime", "Begin Date", LocalDateTime.class,null,true, null);
                             put(parameter.getKeyOne(), parameter.getKeyTwo());
-                            parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "datetime", "End Date", LocalDateTime.class);
+                            parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "datetime", "End Date", LocalDateTime.class, null, true, null);
                             put(parameter.getKeyOne(), parameter.getKeyTwo());
                         }});
                     }
