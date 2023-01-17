@@ -6,7 +6,6 @@ import ro.cs.tao.datasource.usgs.json.types.AcquisitionFilter;
 public class SearchRequest extends BaseRequest {
     private String datasetName;
     private SceneFilter sceneFilter;
-    private SearchFilter metadataFilter;
     private int maxResults = 10;
     private int startingNumber = 1;
     private String sortDirection = "ASC";
@@ -25,14 +24,6 @@ public class SearchRequest extends BaseRequest {
     /*public SearchFilter getAdditionalCriteria() { return additionalCriteria; }
     private void setAdditionalCriteria(SearchFilter additionalCriteria) { this.additionalCriteria = additionalCriteria; }*/
 
-    public SearchFilter getMetadataFilter() {
-        return metadataFilter;
-    }
-
-    public void setMetadataFilter(SearchFilter metadataFilter) {
-        this.metadataFilter = metadataFilter;
-    }
-
     public int getMaxResults() { return maxResults; }
     private void setMaxResults(int maxResults) { this.maxResults = maxResults; }
 
@@ -43,10 +34,14 @@ public class SearchRequest extends BaseRequest {
     private void setSortDirection(String sortDirection) { this.sortDirection = sortDirection; }
 
     private void addFilter(SearchFilter filter) {
-        if (this.metadataFilter == null) {
-            this.metadataFilter = new SearchFilterAnd();
+        if (this.sceneFilter == null) {
+            this.sceneFilter = new SceneFilter();
         }
-        final SearchFilterAnd metadataFilter = (SearchFilterAnd) this.metadataFilter;
+        SearchFilterAnd metadataFilter = (SearchFilterAnd) this.sceneFilter.getMetadataFilter();
+        if (metadataFilter == null) {
+            metadataFilter = new SearchFilterAnd();
+            this.sceneFilter.setMetadataFilter(metadataFilter);
+        }
         metadataFilter.addChildFilter(filter);
     }
 
