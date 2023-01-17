@@ -43,7 +43,7 @@ public class LandsatUsgsTest {
         String[] sensors = dataSource.getSupportedSensors();
 //        String sensor = "ECOSTRESS-WUE";
 //        String sensor = "MODIS-FIRE-8";
-        String sensor = "Landsat8";
+        String sensor = "Landsat9";
         DataQuery query = dataSource.createQuery(sensor);
 
         QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);

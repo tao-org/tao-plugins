@@ -7,6 +7,7 @@ public class SceneFilter {
     private AcquisitionFilter acquisitionFilter;
     private CloudCoverFilter cloudCoverFilter;
     private TemporalFilter ingestFilter;
+    private SearchFilter metadataFilter;
     private int[] seasonalFilter;
 
     public SpatialFilter getSpatialFilter() {
@@ -47,5 +48,21 @@ public class SceneFilter {
 
     public void setSeasonalFilter(int[] seasonalFilter) {
         this.seasonalFilter = seasonalFilter;
+    }
+
+    public SearchFilter getMetadataFilter() {
+        return metadataFilter;
+    }
+
+    public void setMetadataFilter(SearchFilter metadataFilter) {
+        this.metadataFilter = metadataFilter;
+    }
+
+    private void addFilter(SearchFilter filter) {
+        if (this.metadataFilter == null) {
+            this.metadataFilter = new SearchFilterAnd();
+        }
+        final SearchFilterAnd metadataFilter = (SearchFilterAnd) this.metadataFilter;
+        metadataFilter.addChildFilter(filter);
     }
 }

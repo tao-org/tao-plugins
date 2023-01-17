@@ -319,7 +319,7 @@ public class Landsat8Query extends DataQuery {
                     case CommonParameterNames.PRODUCT_TYPE:
                         if (!C2_LEVEL2_COLLECTION.equals(request.getDatasetName())) {
                             filter = new SearchFilterValue();
-                            filter.setFilterId(fieldIds.get("Data Type Level-1"));
+                            filter.setFilterId(fieldIds.get("Data Type L1"));
                             filter.setOperand("=");
                             filter.setValue(parameter.getValueAsString());
                             request.withFilter(filter);
@@ -362,6 +362,13 @@ public class Landsat8Query extends DataQuery {
             } catch (ConversionException e) {
                 e.printStackTrace();
             }
+        }
+        if (this.sensorName.toLowerCase().startsWith("landsat")) {
+            filter = new SearchFilterValue();
+            filter.setFilterId(fieldIds.get("Satellite"));
+            filter.setOperand("=");
+            filter.setValue(this.sensorName.substring(this.sensorName.length() - 1));
+            request.withFilter(filter);
         }
         if (pathRowFilter != null && pathRowFilter.size() > 0) {
             SearchFilterOr orFilter = new SearchFilterOr();
