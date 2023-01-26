@@ -44,6 +44,7 @@ import ro.cs.tao.utils.StringUtilities;
 
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -232,39 +233,60 @@ public class Landsat8Query extends DataQuery {
                     }})
                     .collect(Collectors.toList()));
             String url = buildPostRequestURL("download-request");
-            try (CloseableHttpResponse lastOne =
-                         NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, downloadRequest.toString())) {
-                switch (lastOne.getStatusLine().getStatusCode()) {
-                    case 200:
-                        String body = EntityUtils.toString(lastOne.getEntity());
-                        JsonResponseParser<DownloadResponse> parser = new JsonResponseParser<>(new DownloadResponseHandler());
-                        DownloadResponse resp = parser.parseValue(body);
-                        if (resp != null) {
-                            List<AvailableDownload> downloads = resp.getData().getAvailableDownloads();
-                            if (downloads == null || downloads.size() == 0) {
-                                downloads = resp.getData().getPreparingDownloads();
-                            }
-                            if (downloads != null) {
-                                String dUrl;
-                                for (EOProduct product : products) {
-                                    for (AvailableDownload download : downloads) {
-                                        dUrl = download.getUrl();
-                                        if (dUrl.contains(product.getName())) {
-                                            product.setLocation(dUrl);
-                                        }
-                                    }
+            int preparingDownloads = downloadInfos.size();
+            List<AvailableDownload> downloads = null;
+            // Loop until all download requests moved to download queue from staging
+            while (preparingDownloads > 0) {
+                try (CloseableHttpResponse lastOne =
+                             NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, downloadRequest.toString())) {
+                    switch (lastOne.getStatusLine().getStatusCode()) {
+                        case 200:
+                            String body = EntityUtils.toString(lastOne.getEntity());
+                            JsonResponseParser<DownloadResponse> parser = new JsonResponseParser<>(new DownloadResponseHandler());
+                            DownloadResponse resp = parser.parseValue(body);
+                            if (resp != null) {
+                                if (resp.getData().getPreparingDownloads() != null) {
+                                    preparingDownloads = resp.getData().getPreparingDownloads().size();
+                                } else {
+                                    preparingDownloads = 0;
                                 }
+                                downloads = resp.getData().getAvailableDownloads();
+                            } else {
+                                preparingDownloads = 0;
                             }
-                        }
-                        break;
-                    case 401:
-                        throw new QueryException("The supplied credentials are invalid!");
-                    default:
-                        throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                lastOne.getStatusLine().getReasonPhrase()));
+                            break;
+                        case 401:
+                            throw new QueryException("The supplied credentials are invalid!");
+                        default:
+                            throw new QueryException(String.format("The request was not successful. Reason: %s",
+                                                                   lastOne.getStatusLine().getReasonPhrase()));
+                    }
+                } catch (Exception ex) {
+                    throw new QueryException(ex);
                 }
-            } catch (Exception ex) {
-                throw new QueryException(ex);
+                if (preparingDownloads > 0) {
+                    logger.fine("Some downloads are staging. Retrying after 10 seconds.");
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException ignored) {
+                    }
+                }
+            }
+            if (downloads != null) {
+                if (products.size() != downloads.size()) {
+                    logger.severe("Retrieved less download URLs than requested products");
+                } else {
+                    for (int i = 0; i < products.size(); i++) {
+                        try {
+                            EOProduct current = products.get(i);
+                            AvailableDownload download = downloads.stream().filter(d -> d.getUrl().contains(current.getName())).findFirst().orElse(null);
+                            // Try to match the old way (product name included in query string), then fill by position
+                            current.setLocation(download != null ? download.getUrl() : downloads.get(i).getUrl());
+                        } catch (URISyntaxException e) {
+                            logger.warning(e.getMessage());
+                        }
+                    }
+                }
             }
         }
     }
