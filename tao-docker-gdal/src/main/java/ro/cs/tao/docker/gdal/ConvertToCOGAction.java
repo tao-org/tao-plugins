@@ -54,6 +54,11 @@ public class ConvertToCOGAction implements ItemAction {
     }
 
     @Override
+    public String[] supportedFiles() {
+        return new String[] { ".tif", ".tiff", ".nc" };
+    }
+
+    @Override
     public boolean isIntendedFor(RepositoryType repositoryType) {
         return repositoryType == RepositoryType.LOCAL;
     }
