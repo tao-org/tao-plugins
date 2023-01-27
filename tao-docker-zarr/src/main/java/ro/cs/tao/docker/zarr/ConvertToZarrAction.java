@@ -62,6 +62,12 @@ public class ConvertToZarrAction implements ItemAction {
         return "Convert to Zarr";
     }
 
+
+    @Override
+    public String[] supportedFiles() {
+        return new String[] { ".tif", ".tiff", ".nc" };
+    }
+
     public boolean isIntendedFor(RepositoryType repositoryType) {
         return repositoryType == RepositoryType.LOCAL;
     }
