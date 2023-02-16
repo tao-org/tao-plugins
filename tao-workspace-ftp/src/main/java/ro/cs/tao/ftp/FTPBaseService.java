@@ -11,12 +11,11 @@ import ro.cs.tao.workspaces.RepositoryType;
 
 import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -212,14 +211,23 @@ public abstract class FTPBaseService extends BaseStorageService<byte[], InputStr
     private void initializeFileSystem() {
         final String user = (String) environment.get("username");
         final String root = repository().root();
-        ftpFileSystem = fileSystemMap.get(root + ":" + user);
+        final String key = root + ":" + user;
+        ftpFileSystem = fileSystemMap.get(key);
         if (ftpFileSystem == null || !ftpFileSystem.isOpen()) {
+            // Either the fileSystem was not yet created or is closed
             try {
-                ftpFileSystem = FileSystems.newFileSystem(URI.create(root), environment);
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
+                // First try to get an existing instance
+                final URI uri = normalizeURI(URI.create(root), user);
+                ftpFileSystem = FileSystems.getFileSystem(uri);
+            } catch (FileSystemNotFoundException | URISyntaxException e) {
+                try {
+                    // No previous instance found, creating a new one
+                    ftpFileSystem = FileSystems.newFileSystem(URI.create(root), environment);
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
             }
-            fileSystemMap.put(root + ":" + user, ftpFileSystem);
+            fileSystemMap.put(key, ftpFileSystem);
         }
     }
 
@@ -238,5 +246,9 @@ public abstract class FTPBaseService extends BaseStorageService<byte[], InputStr
     private Path getPath(String path) {
         String p = path.replace(repository().root(), "");
         return ftpFileSystem.getPath(p.isEmpty() ? "/" : p);
+    }
+
+    private URI normalizeURI(URI uri, String user) throws URISyntaxException {
+        return new URI(uri.getScheme(), user, uri.getHost(), uri.getPort(), null, null, null);
     }
 }
