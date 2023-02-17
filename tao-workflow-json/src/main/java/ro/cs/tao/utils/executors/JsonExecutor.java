@@ -21,7 +21,7 @@ public class JsonExecutor extends Executor<Object>
     public JsonExecutor() {
     }
 
-    JsonExecutor(ExecutionUnit unit) {
+    public JsonExecutor(ExecutionUnit unit) {
         super(unit.getHost(), unit.getArguments(), unit.asSuperUser());
         this.unit = unit;
     }
