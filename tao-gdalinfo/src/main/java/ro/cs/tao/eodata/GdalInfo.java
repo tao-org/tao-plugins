@@ -31,7 +31,7 @@ public class GdalInfo implements MetadataInspector {
 
     @Override
     public DecodeStatus decodeQualification(Path productPath) {
-        return productPath == null || Files.notExists(productPath) && !productPath.endsWith(".dim")
+        return productPath == null || Files.notExists(productPath) || productPath.endsWith(".dim")
                ? DecodeStatus.UNABLE : DecodeStatus.SUITABLE;
     }
 
