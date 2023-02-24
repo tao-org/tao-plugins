@@ -48,9 +48,9 @@ public class JsonExecutor extends Executor<Object>
             }
             final String json = new ObjectMapper().writer().forType(JsonUnitView.class).writeValueAsString(asJsonView(this.unit));
             this.outputConsumer.consume(json);
-            if (unit.getJsonPath() != null) {
+            if (unit.getScriptTargetPath() != null) {
                 try {
-                    final Path path = Paths.get(unit.getJsonPath());
+                    final Path path = Paths.get(unit.getScriptTargetPath());
                     if (!Files.exists(path)) {
                         Files.write(path, ("[" + json + "]").getBytes(), StandardOpenOption.CREATE);
                     } else {
