@@ -1,5 +1,7 @@
 package ro.cs.tao.utils.executors;
 
+import ro.cs.tao.docker.DockerVolumeMap;
+import ro.cs.tao.docker.ExecutionConfiguration;
 import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.ExecutionUnitFormat;
 import ro.cs.tao.utils.StringUtilities;
@@ -10,12 +12,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BashExecutor extends Executor<Object>
                             implements ExecutionDescriptorConverter {
+    private static final String skeleton = "Help()\n" +
+            "{\n" +
+            "   # Display Help\n" +
+            "   echo \"Syntax: %s [-h] %s\"\n" +
+            "   echo \"options:\"\n" +
+            "   echo \"h     Print this Help.\"\n" +
+            "   echo\n" +
+            "}\n";
     private ExecutionUnit unit;
 
     public BashExecutor() {
@@ -40,16 +49,18 @@ public class BashExecutor extends Executor<Object>
         if (this.unit == null) {
             throw new NullPointerException("Execution unit not set");
         }
-        final String cmdLine = asCommandLine(this.unit);
-        this.outputConsumer.consume(cmdLine);
         if (unit.getScriptTargetPath() != null) {
             try {
+                String cmdLine;
                 final Path path = Paths.get(unit.getScriptTargetPath());
                 if (!Files.exists(path)) {
+                    cmdLine = asCommandLine(this.unit, true);
                     Files.write(path, ("#!/bin/bash\n" + cmdLine).getBytes(), StandardOpenOption.CREATE);
                 } else {
+                    cmdLine = asCommandLine(this.unit, false);
                     Files.write(path, cmdLine.getBytes(), StandardOpenOption.APPEND);
                 }
+                this.outputConsumer.consume(cmdLine);
             } catch (IOException e) {
                 logger.severe(ExceptionUtils.getStackTrace(logger, e));
             }
@@ -62,10 +73,13 @@ public class BashExecutor extends Executor<Object>
         return true;
     }
 
-    private String asCommandLine(ExecutionUnit unit) {
+    private String asCommandLine(ExecutionUnit unit, boolean isFirst) {
         final StringBuilder builder = new StringBuilder();
         final ContainerUnit container = unit.getContainerUnit();
         final Map<String, Object> metadata = unit.getMetadata();
+        Map<String, String> volumeMap = container.getVolumeMap();
+        List<String> args = unit.getArguments();
+        final DockerVolumeMap map = ExecutionConfiguration.getMasterContainerVolumeMap();
         String comment = "# ";
         if (metadata != null ) {
             if (metadata.containsKey("name")) {
@@ -79,34 +93,88 @@ public class BashExecutor extends Executor<Object>
                 final List<Long> list = (List<Long>) metadata.get("dependsOn");
                 comment += list.stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
             }
-        }
-        if (container != null) {
-            appendLine(builder, comment);
-            append(builder, "docker run ");
-            append(builder, String.join(" ", container.getArguments()));
-            Map<String, String> volumeMap = container.getVolumeMap();
-            if (volumeMap != null) {
-                for (Map.Entry<String, String> entry : volumeMap.entrySet()) {
-                    append(builder, " -v " + entry.getKey() + ":" + entry.getValue());
+            if (metadata.containsKey("inputs")) {
+                final Set<String> inputSet = new HashSet<>();
+                String[] inputs = ((String) metadata.get("inputs")).split(",");
+                String hostWorkspaceFolder = map.getHostWorkspaceFolder();
+                if (hostWorkspaceFolder.endsWith("/")) {
+                    hostWorkspaceFolder = hostWorkspaceFolder.substring(0, hostWorkspaceFolder.length() - 1);
+                }
+                String containerWorkspaceFolder = map.getContainerWorkspaceFolder();
+                if (containerWorkspaceFolder.endsWith("/")) {
+                    containerWorkspaceFolder = containerWorkspaceFolder.substring(0, containerWorkspaceFolder.length() - 1);
+                }
+                for (String input : inputs) {
+                    inputSet.add(input.replace("file:///", "/").replace(":", "")
+                                      .replace(hostWorkspaceFolder, containerWorkspaceFolder)
+                                      .replace(map.getHostEODataFolder(), map.getContainerEoDataFolder())
+                                      .replace(map.getHostConfigurationFolder(), map.getContainerConfigurationFolder()));
+                }
+                if (isFirst && volumeMap != null) {
+                    int index = 1;
+                    List<String> arguments;
+                    final boolean isBash = args.get(0).equals("/bin/bash");
+                    if (isBash) {
+                        arguments = Arrays.asList(args.get(2).split(" "));
+                    } else {
+                        arguments = args;
+                    }
+                    String positionalArgument, variable;
+                    for (int i = 0; i < arguments.size(); i++) {
+                        String arg = arguments.get(i);
+                        String found = inputSet.stream().filter(arg::contains).findFirst().orElse(null);
+                        if (found != null) {
+                            inputSet.remove(found);
+                            positionalArgument = "$" + index;
+                            variable = "argument" + index;
+                            for (int j = 1; j < arguments.size(); j++) {
+                                if (arguments.get(j).equals(arg)) {
+                                    arguments.set(j, "$" + variable);
+                                }
+                            }
+                            appendLine(builder, variable + "=" + positionalArgument);
+                            appendLine(builder, variable + "=${" + variable + "/" + map.getHostWorkspaceFolder() + "/\"" + map.getContainerWorkspaceFolder() + "\"}");
+                            arguments.set(i, variable);
+                            index++;
+                        }
+                    }
+                    String helpArgs = "";
+                    for (int idx = 1; idx < index; idx++) {
+                        helpArgs += "<product_" + idx + "> ";
+                    }
+                    builder.insert(0, String.format(skeleton,
+                                                    Paths.get(unit.getScriptTargetPath()).getFileName(),
+                                                    helpArgs));
+                    if (isBash) {
+                        args.set(2, String.join(" ", arguments));
+                    }
                 }
             }
-            Map<String, String> env = container.getEnvironmentVariables();
-            if (env != null) {
-                for (Map.Entry<String, String> entry : env.entrySet()) {
-                    append(builder, " -e \"" + entry.getKey() + "=" + entry.getValue() + "\"");
-                }
-            }
-            Long memory = unit.getMinMemory();
-            if (memory != null && memory > 0) {
-                append(builder, " --memory " + memory + "MB");
-            }
-            String registry = container.getContainerRegistry();
-            if (!StringUtilities.isNullOrEmpty(registry)) {
-                append(builder, " " + registry + "/");
-            }
-            append(builder, container.getContainerName());
-            append(builder, " " + String.join(" ", unit.getArguments()));
         }
+        appendLine(builder, comment);
+        append(builder, "docker run ");
+        append(builder, String.join(" ", container.getArguments()));
+        if (volumeMap != null) {
+            for (Map.Entry<String, String> entry : volumeMap.entrySet()) {
+                append(builder, " -v " + entry.getKey() + ":" + entry.getValue());
+            }
+        }
+        Map<String, String> env = container.getEnvironmentVariables();
+        if (env != null) {
+            for (Map.Entry<String, String> entry : env.entrySet()) {
+                append(builder, " -e \"" + entry.getKey() + "=" + entry.getValue() + "\"");
+            }
+        }
+        Long memory = unit.getMinMemory();
+        if (memory != null && memory > 0) {
+            append(builder, " --memory " + memory + "MB");
+        }
+        String registry = container.getContainerRegistry();
+        if (!StringUtilities.isNullOrEmpty(registry)) {
+            append(builder, " " + registry + "/");
+        }
+        append(builder, container.getContainerName());
+        append(builder, " " + String.join(" ", args));
         appendLine(builder, null);
         return builder.toString();
     }
