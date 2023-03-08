@@ -47,7 +47,7 @@ public class JsonValueHelper {
      */
     public static List<String> getStringArray(TreeNode node, String field) {
         TreeNode valueNode = node.get(field);
-        if (!valueNode.isArray()) {
+        if (valueNode == null || !valueNode.isArray()) {
             return null;
         }
         List<String> values = new ArrayList<>(valueNode.size());

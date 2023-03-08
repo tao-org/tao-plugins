@@ -30,6 +30,7 @@ public class STACParser {
         module.addDeserializer(Item.class, new ItemDeserializer());
         mapper.registerModule(module);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES, false);
     }
 
     /**

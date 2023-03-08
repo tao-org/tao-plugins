@@ -18,6 +18,7 @@ import ro.cs.tao.stac.core.model.extensions.Extension;
 import ro.cs.tao.stac.core.model.extensions.ExtensionType;
 import ro.cs.tao.stac.core.model.extensions.projection.ProjExtension;
 
+import java.awt.geom.Point2D;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -68,17 +69,16 @@ public class STACQuery extends DataQuery {
             ItemCollection currentPage = client.search(this.sensorName, params);
             final List<EOProduct> results = new ArrayList<>();
             PageContext context = currentPage.getContext();
-            if (context == null) {
-                return results;
-            }
-            final int total = context.getMatched();
+            final int total = context == null ? -1 : context.getMatched();
             Link link;
             if (total > this.pageSize && this.pageNumber > 1) {
                 link = getLink(currentPage.getLinks(), "page");
                 if (link != null) {
                     params.put("page", extractParameterValue(link.getHref(), "page"));
                     currentPage = client.search(this.sensorName, params);
-                    results.addAll(extractResults(currentPage));
+                    List<EOProduct> eoProducts = extractResults(currentPage);
+                    eoProducts.forEach(p -> p.setSatelliteName(this.sensorName));
+                    results.addAll(eoProducts);
                 } else { // we need to follow the 'next' link while we reach the page
                     link = getLink(currentPage.getLinks(), "next");
                     if (link != null) {
@@ -90,13 +90,19 @@ public class STACQuery extends DataQuery {
                             currentPage = client.search(this.sensorName, params);
                             link = getLink(currentPage.getLinks(), "next");
                         }
-                        results.addAll(extractResults(currentPage));
+                        List<EOProduct> eoProducts = extractResults(currentPage);
+                        eoProducts.forEach(p -> p.setSatelliteName(this.sensorName));
+                        results.addAll(eoProducts);
                     } else {
-                        results.addAll(extractResults(currentPage));
+                        List<EOProduct> eoProducts = extractResults(currentPage);
+                        eoProducts.forEach(p -> p.setSatelliteName(this.sensorName));
+                        results.addAll(eoProducts);
                     }
                 }
             } else {
-                results.addAll(extractResults(currentPage));
+                List<EOProduct> eoProducts = extractResults(currentPage);
+                eoProducts.forEach(p -> p.setSatelliteName(this.sensorName));
+                results.addAll(eoProducts);
             }
             return results;
         } catch (Exception e) {
@@ -129,18 +135,55 @@ public class STACQuery extends DataQuery {
                 product.setProductType("unknown");
                 Geometry geometry = item.getGeometry();
                 if (geometry != null) {
-                    double[][][] coords = (double[][][]) geometry.getCoordinates();
-                    Polygon2D polygon = new Polygon2D();
-                    for (double[][] coord : coords) {
-                        for (double[] point : coord) {
-                            polygon.append(point[0], point[1]);
-                        }
+                    Polygon2D polygon = null;
+                    switch (geometry.getRank()) {
+                        case 2:
+                            double[][] c2 = (double[][]) geometry.getCoordinates();
+                            polygon = new Polygon2D();
+                            for (double[] point : c2) {
+                                polygon.append(point[0], point[1]);
+                            }
+                            break;
+                        case 3:
+                            double[][][] c3 = (double[][][]) geometry.getCoordinates();
+                            polygon = new Polygon2D();
+                            for (double[][] coord : c3) {
+                                for (double[] point : coord) {
+                                    polygon.append(point[0], point[1]);
+                                }
+                            }
+                            break;
+                        case 4:
+                            double[][][][] c4 = (double[][][][]) geometry.getCoordinates();
+                            polygon = new Polygon2D();
+                            for (double[][][] coord : c4) {
+                                for (double[][] c : coord) {
+                                    for (double[] point : c) {
+                                        polygon.append(point[0], point[1]);
+                                    }
+                                }
+                            }
+                            break;
+                        case 1:
+                        default:
+                            break;
                     }
-                    product.setGeometry(polygon.toWKT());
+                    if (polygon != null) {
+                        List<Point2D> points = polygon.getPoints();
+                        if (!points.get(0).equals(points.get(points.size() - 1))) {
+                            polygon.append(points.get(0).getX(), points.get(0).getY());
+                        }
+                        product.setGeometry(polygon.toWKT());
+                    }
                 }
-                Link link = getLink(item.getLinks(), "self");
-                if (link != null) {
-                    product.setLocation(link.getHref());
+                Asset aProduct = item.getAssets().get("PRODUCT");
+                if (aProduct != null) {
+                    product.setLocation(aProduct.getHref());
+                } else {
+                    Link link = getLink(item.getLinks(), "self");
+                    if (link != null) {
+                        product.setLocation(link.getHref());
+                    }
                 }
                 List<Asset> downloadableAssets = item.getAssets().values().stream()
                                                      .filter(a -> a.getHref().startsWith("http"))
@@ -150,6 +193,11 @@ public class STACQuery extends DataQuery {
                 Asset thumbnail = item.getAssets().get("thumbnail");
                 if (thumbnail != null) {
                     product.setQuicklookLocation(thumbnail.getHref());
+                } else {
+                    thumbnail = item.getAssets().get("QUICKLOOK");
+                    if (thumbnail != null) {
+                        product.setQuicklookLocation(thumbnail.getHref());
+                    }
                 }
                 product.setFormatType(DataFormat.RASTER);
                 Extension<?> extension = item.getExtension(ExtensionType.PROJ);
