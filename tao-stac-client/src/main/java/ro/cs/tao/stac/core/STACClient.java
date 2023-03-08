@@ -124,7 +124,10 @@ public class STACClient {
         final Catalog catalog = getCatalog();
         Link searchLink = catalog.getLinks().stream().filter(l -> "search".equals(l.getRel())).findFirst().orElse(null);
         if (searchLink == null) {
-            throw new IOException("Search not supported on catalog " + catalog.getId());
+            // Maybe the link was not returned by the catalog, but the service exists
+            searchLink = new Link();
+            searchLink.setHref(this.stacURL + "search");
+            //throw new IOException("Search not supported on catalog " + catalog.getId());
         }
         StringBuilder href = new StringBuilder(searchLink.getHref() + "?");
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
