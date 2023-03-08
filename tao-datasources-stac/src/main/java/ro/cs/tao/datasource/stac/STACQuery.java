@@ -67,7 +67,11 @@ public class STACQuery extends DataQuery {
             }
             ItemCollection currentPage = client.search(this.sensorName, params);
             final List<EOProduct> results = new ArrayList<>();
-            final int total = currentPage.getContext().getMatched();
+            PageContext context = currentPage.getContext();
+            if (context == null) {
+                return results;
+            }
+            final int total = context.getMatched();
             Link link;
             if (total > this.pageSize && this.pageNumber > 1) {
                 link = getLink(currentPage.getLinks(), "page");
