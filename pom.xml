@@ -67,6 +67,8 @@
         <module>tao-products-enmap</module>
         <module>tao-workflow-json</module>
         <module>tao-drmaa-kubernetes</module>
+        <module>tao-datasources-creodias2</module>
+        <!--<module>tao-workflow-argo</module>-->
     </modules>
 
     <properties>
