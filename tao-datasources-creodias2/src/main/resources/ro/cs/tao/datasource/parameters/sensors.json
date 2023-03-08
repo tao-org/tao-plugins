@@ -1,0 +1,37 @@
+{
+  "Sentinel1": {
+    "mission": "Sentinel1",
+    "sensorType": "RADAR",
+    "description": "The collection consists of all Sentinel-1 GRD Level 1 products covering whole observation area (global) since 2014-10-03. Observation modes included: WV (since 2014-10-03), EV (since 2014-10-03). Level-1 Ground Range Detected (GRD) products consist of focused SAR data that has been detected, multi-looked and projected to ground range using an Earth ellipsoid model.",
+    "temporalCoverage": "from 2014 to present",
+    "spatialCoverage": "Global"
+  },
+  "Sentinel2": {
+    "mission": "Sentinel2",
+    "sensorType": "OPTICAL",
+    "description": "The collection consists of all Sentinel-2 Level 1 products covering whole observation area (global) since 2016-10-18. The Sentinel-2 is a wide-swath, high-resolution, multi-spectral imaging mission, supporting Copernicus Land Monitoring studies, including the monitoring of vegetation, soil and water cover, as well as observation of inland waterways and coastal areas.",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  },
+  "Sentinel3": {
+    "mission": "Sentinel3",
+    "sensorType": "OPTICAL",
+    "description": "The collection consists of all Sentinel-3 Level 1 and Level 2 products covering whole observation area (global) since 2016. Sentinel-3 carries 5 instruments, among which: the Ocean and Land Colour Instrument (OLCI), the Sea and Land Surface Temperature Radiometer (SLSTR) and the SAR Radar Altimeter (SRAL).",
+    "temporalCoverage": "from 2016 to present",
+    "spatialCoverage": "Global"
+  },
+  "Sentinel5P": {
+    "mission": "Sentinel5P",
+    "sensorType": "ATMOSPHERIC",
+    "description": "",
+    "temporalCoverage": "from october 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "Landsat8": {
+    "mission": "Landsat8",
+    "sensorType": "OPTICAL",
+    "description": "The collection consists of all Landsat-8 Level 1 products covering whole observation area (global) since 2013-03-24. Landsat 8 carries two push-broom instruments: The Operational Land Imager (OLI) and the Thermal Infrared Sensor (TIRS).",
+    "temporalCoverage": "from 2013 to present",
+    "spatialCoverage": "Global"
+  }
+}
