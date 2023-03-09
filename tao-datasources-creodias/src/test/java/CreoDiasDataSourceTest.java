@@ -126,7 +126,7 @@ public class CreoDiasDataSourceTest {
 
     public static void main(String[] args) {
         //Sentinel2_Count_Test();
-        Sentinel3_Test();
+        Sentinel1_Test();
         //Sentinel1_Count_Test();
         //Sentinel1_Test();
         //Landsat8_Count_Test();
@@ -258,10 +258,8 @@ public class CreoDiasDataSourceTest {
             for (Handler handler : logger.getHandlers()) {
                 handler.setLevel(Level.FINEST);
             }
-            //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel1DataSource.class.getName());
             DataSource<?, ?> dataSource = new CreoDiasDataSource();
-            dataSource.setCredentials("cosmin.cara@c-s.ro", "cei7pitici.");
-            String[] sensors = dataSource.getSupportedSensors();
+            dataSource.setCredentials("kraftek@c-s.ro", "cei7pitici.");
 
             DataQuery query = dataSource.createQuery("Sentinel1");
             query.addParameter(begin);
@@ -274,6 +272,17 @@ public class CreoDiasDataSourceTest {
             results.forEach(r -> {
                 System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation());
             });
+            final CreoDIASDownloadStrategy strategy = (CreoDIASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel1");
+            if (!results.isEmpty()) {
+                strategy.setFetchMode(FetchMode.OVERWRITE);
+                strategy.setProgressListener(listener);
+                Path path = strategy.fetch(results.get(0));
+                if (path != null) {
+                    System.out.println("Product downloaded at " + path.toString());
+                } else {
+                    System.out.println("Product not downloaded");
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

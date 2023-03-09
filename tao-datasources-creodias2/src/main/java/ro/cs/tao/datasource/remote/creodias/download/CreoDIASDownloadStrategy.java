@@ -76,7 +76,7 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
         if (this.lastRead > 0) {
             headers.add(new BasicHeader("Range", "bytes=" + lastRead + "-"));
         }
-        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, productUrl, headers, null)) {
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, productUrl, headers, null, 30000)) {
             int statusCode = response.getStatusLine().getStatusCode();
             logger.finest(String.format("%s returned http code %s", productUrl, statusCode));
             switch (statusCode) {

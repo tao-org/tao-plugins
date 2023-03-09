@@ -51,7 +51,7 @@ public class Result {
     @JsonProperty("collection")
     private String collection;
     @JsonProperty("status")
-    private Integer status;
+    private String status;
     @JsonProperty("license")
     private License license;
     @JsonProperty("productIdentifier")
@@ -129,16 +129,16 @@ public class Result {
     }
 
     @JsonProperty("status")
-    public Integer getStatus() {
+    public String getStatus() {
         return status;
     }
 
     @JsonProperty("status")
-    public void setStatus(Integer status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public Result withStatus(Integer status) {
+    public Result withStatus(String status) {
         this.status = status;
         return this;
     }
