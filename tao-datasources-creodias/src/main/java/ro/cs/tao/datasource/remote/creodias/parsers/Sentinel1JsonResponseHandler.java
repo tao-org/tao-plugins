@@ -47,25 +47,15 @@ public class Sentinel1JsonResponseHandler implements JSonResponseHandler<EOProdu
                             final String type = (String) geometry.get("type");
                             switch (type.toLowerCase()) {
                                 case "polygon":
+                                case "multipolygon":
                                     List<List<List<Object>>> cPoly = (List<List<List<Object>>>) geometry.get("coordinates");
                                     footprint = new Polygon2D();
-                                    for (List<Object> doubles : cPoly.get(0)) {
+                                    for (List doubles : cPoly.get(0)) {
                                         // we don't directly cast to Double because Jackson deserializes "0" as an Integer
                                         final Object x = doubles.get(0);
                                         final Object y = doubles.get(1);
                                         footprint.append(x instanceof Double ? (Double) x : Double.valueOf(x.toString()),
                                                          y instanceof Double ? (Double) y : Double.valueOf(y.toString()));
-                                    }
-                                    break;
-                                case "multipolygon":
-                                    List<List<List<List<Object>>>> cMultiPoly = (List<List<List<List<Object>>>>) geometry.get("coordinates");
-                                    footprint = new Polygon2D();
-                                    for (List<Object> doubles : cMultiPoly.get(0).get(0)) {
-                                        // we don't directly cast to Double because Jackson deserializes "0" as an Integer
-                                        final Object x = doubles.get(0);
-                                        final Object y = doubles.get(1);
-                                        footprint.append(x instanceof Double ? (Double) x : Double.valueOf(x.toString()),
-                                                y instanceof Double ? (Double) y : Double.valueOf(y.toString()));
                                     }
                                     break;
                                 default:

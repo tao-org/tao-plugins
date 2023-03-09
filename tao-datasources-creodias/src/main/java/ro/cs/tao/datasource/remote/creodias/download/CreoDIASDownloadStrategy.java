@@ -73,7 +73,7 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("token", this.apiKey.getAccessToken()));
         productUrl += "?" + URLEncodedUtils.format(params, "UTF-8");
-        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, productUrl, null, null, DOWNLOAD_TIMEOUT)) {
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, productUrl, (List<Header>)null, null, DOWNLOAD_TIMEOUT)) {
             int statusCode = response.getStatusLine().getStatusCode();
             logger.finest(String.format("%s returned http code %s", productUrl, statusCode));
             switch (statusCode) {

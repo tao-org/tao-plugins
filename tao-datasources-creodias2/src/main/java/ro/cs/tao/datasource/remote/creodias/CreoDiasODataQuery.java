@@ -85,9 +85,10 @@ public class CreoDiasODataQuery extends DataQuery {
         } catch (ConversionException e) {
             throw new RuntimeException(e);
         }
-        final boolean isS2 = "Sentinel-2".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
-        final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
-        final boolean isS3 = "Sentinel-3".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
+        String platform = this.parameters.get(CommonParameterNames.PLATFORM).getValue().toString();
+        final boolean isS2 = "Sentinel-2".equalsIgnoreCase(platform);
+        final boolean isS1 = "Sentinel-1".equalsIgnoreCase(platform);
+        final boolean isS3 = "Sentinel-3".equalsIgnoreCase(platform);
         StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
         for (String queryId : queries.keySet()) {

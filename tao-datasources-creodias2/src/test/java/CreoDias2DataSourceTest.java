@@ -128,9 +128,9 @@ public class CreoDias2DataSourceTest {
 
     public static void main(String[] args) {
         Sentinel1_Test();
-        Sentinel2_Test();
-        Sentinel3_Test();
-        Landsat8_Test();
+        //Sentinel2_Test();
+        //Sentinel3_Test();
+        //Landsat8_Test();
     }
 
     public static void Sentinel1_Test() {
