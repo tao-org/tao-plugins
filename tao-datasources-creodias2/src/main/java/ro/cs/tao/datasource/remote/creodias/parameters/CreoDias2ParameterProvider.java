@@ -18,7 +18,7 @@ package ro.cs.tao.datasource.remote.creodias.parameters;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductPathBuilder;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
-import ro.cs.tao.datasource.remote.creodias.CreoDias2DataSource;
+import ro.cs.tao.datasource.remote.creodias.CreoDiasODataSource;
 import ro.cs.tao.datasource.remote.creodias.download.CreoDIASDownloadStrategy;
 import ro.cs.tao.datasource.remote.creodias.download.CreoDIASPathBuilder;
 
@@ -31,7 +31,7 @@ import java.util.Properties;
  */
 public final class CreoDias2ParameterProvider extends AbstractParameterProvider {
 
-    public CreoDias2ParameterProvider(CreoDias2DataSource dataSource) {
+    public CreoDias2ParameterProvider(CreoDiasODataSource dataSource) {
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         Properties properties = new Properties();
         properties.put(ProductPathBuilder.PATH_BUILDER_CLASS, CreoDIASPathBuilder.class.getName());

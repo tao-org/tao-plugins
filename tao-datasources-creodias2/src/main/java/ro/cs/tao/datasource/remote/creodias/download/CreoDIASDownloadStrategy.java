@@ -7,7 +7,7 @@ import ro.cs.tao.datasource.ProductHelperFactory;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.FetchMode;
-import ro.cs.tao.datasource.remote.creodias.CreoDias2DataSource;
+import ro.cs.tao.datasource.remote.creodias.CreoDiasODataSource;
 import ro.cs.tao.datasource.remote.creodias.common.Token;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
@@ -36,7 +36,7 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
     private Token apiKey;
     private long lastRead;
 
-    public CreoDIASDownloadStrategy(CreoDias2DataSource dataSource, String targetFolder, Properties properties) {
+    public CreoDIASDownloadStrategy(CreoDiasODataSource dataSource, String targetFolder, Properties properties) {
         super(dataSource, targetFolder, properties);
         this.fetchMode = FetchMode.OVERWRITE;
         this.lastRead = 0;
