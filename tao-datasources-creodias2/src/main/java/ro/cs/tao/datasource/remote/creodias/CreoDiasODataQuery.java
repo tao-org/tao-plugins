@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
 /**
  * @author Cosmin Cara
  */
-public class CreoDias2DataQuery extends DataQuery {
+public class CreoDiasODataQuery extends DataQuery {
     static final Pattern S1Pattern =
             Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
 
@@ -68,10 +68,10 @@ public class CreoDias2DataQuery extends DataQuery {
         final ConverterFactory factory = new ConverterFactory();
         factory.register(CreoDiasPolygonParameterConverter.class, Polygon2D.class);
         factory.register(DateTimeParameterConverter.class, LocalDateTime.class);
-        converterFactory.put(CreoDias2DataQuery.class, factory);
+        converterFactory.put(CreoDiasODataQuery.class, factory);
     }
 
-    CreoDias2DataQuery(CreoDias2DataSource source, String sensorName) {
+    CreoDiasODataQuery(CreoDiasODataSource source, String sensorName) {
         super(source, sensorName);
         this.sensorName = sensorName;
     }
@@ -125,7 +125,7 @@ public class CreoDias2DataQuery extends DataQuery {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
                             String rawResponse = EntityUtils.toString(response.getEntity());
-                            ResponseParser<EOProduct> parser = new JsonResponseParser<>(new CreodiasJsonResponseHandler((CreoDias2DataSource) this.source));
+                            ResponseParser<EOProduct> parser = new JsonResponseParser<>(new CreodiasJsonResponseHandler((CreoDiasODataSource) this.source));
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null) {
                                 if (isS3) {

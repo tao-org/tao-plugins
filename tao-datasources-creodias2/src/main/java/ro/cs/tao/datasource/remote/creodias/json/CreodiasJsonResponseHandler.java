@@ -15,7 +15,7 @@
  */
 package ro.cs.tao.datasource.remote.creodias.json;
 
-import ro.cs.tao.datasource.remote.creodias.CreoDias2DataSource;
+import ro.cs.tao.datasource.remote.creodias.CreoDiasODataSource;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.eodata.EOProduct;
@@ -36,9 +36,9 @@ import java.util.regex.Pattern;
 public class CreodiasJsonResponseHandler implements JSonResponseHandler<EOProduct> {
     static final Pattern S1Pattern =
             Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
-    private final CreoDias2DataSource dataSource;
+    private final CreoDiasODataSource dataSource;
 
-    public CreodiasJsonResponseHandler(CreoDias2DataSource dataSource) {
+    public CreodiasJsonResponseHandler(CreoDiasODataSource dataSource) {
         this.dataSource = dataSource;
     }
 

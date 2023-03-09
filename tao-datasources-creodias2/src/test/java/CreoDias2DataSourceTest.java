@@ -41,7 +41,7 @@ import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.FetchMode;
-import ro.cs.tao.datasource.remote.creodias.CreoDias2DataSource;
+import ro.cs.tao.datasource.remote.creodias.CreoDiasODataSource;
 import ro.cs.tao.datasource.remote.creodias.download.CreoDIASDownloadStrategy;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
@@ -139,7 +139,7 @@ public class CreoDias2DataSourceTest {
             for (Handler handler : logger.getHandlers()) {
                 handler.setLevel(Level.FINEST);
             }
-            DataSource<?, ?> dataSource = new CreoDias2DataSource();
+            DataSource<?, ?> dataSource = new CreoDiasODataSource();
             dataSource.setCredentials(user, password);
 
             DataQuery query = dataSource.createQuery("Sentinel1");
@@ -174,7 +174,7 @@ public class CreoDias2DataSourceTest {
             for (Handler handler : logger.getHandlers()) {
                 handler.setLevel(Level.FINEST);
             }
-            DataSource<?, ?> dataSource = new CreoDias2DataSource();
+            DataSource<?, ?> dataSource = new CreoDiasODataSource();
             dataSource.setCredentials(user, password);
 
             DataQuery query = dataSource.createQuery("Sentinel2");
@@ -209,7 +209,7 @@ public class CreoDias2DataSourceTest {
             for (Handler handler : logger.getHandlers()) {
                 handler.setLevel(Level.FINEST);
             }
-            DataSource<?, ?> dataSource = new CreoDias2DataSource();
+            DataSource<?, ?> dataSource = new CreoDiasODataSource();
             dataSource.setCredentials(user, password);
 
             DataQuery query = dataSource.createQuery("Sentinel3");
@@ -247,7 +247,7 @@ public class CreoDias2DataSourceTest {
             for (Handler handler : logger.getHandlers()) {
                 handler.setLevel(Level.FINEST);
             }
-            DataSource<?, ?> dataSource = new CreoDias2DataSource();
+            DataSource<?, ?> dataSource = new CreoDiasODataSource();
             dataSource.setCredentials(user, password);
 
             DataQuery query = dataSource.createQuery("Landsat8");

@@ -39,7 +39,7 @@ import java.util.Properties;
 /**
  * @author Cosmin Cara
  */
-public class CreoDias2DataSource extends URLDataSource<CreoDias2DataQuery, Token> {
+public class CreoDiasODataSource extends URLDataSource<CreoDiasODataQuery, Token> {
     private static final Properties props;
     private static String LOGIN_URL;
     private static String SEARCH_URL;
@@ -47,17 +47,17 @@ public class CreoDias2DataSource extends URLDataSource<CreoDias2DataQuery, Token
     static {
         props = new Properties();
         try {
-            props.load(CreoDias2DataSource.class.getResourceAsStream("creodias2.properties"));
+            props.load(CreoDiasODataSource.class.getResourceAsStream("creodias2.properties"));
             SEARCH_URL = props.getProperty("search.url");
             LOGIN_URL = props.getProperty("login.url");
         } catch (IOException ignored) {
         }
     }
 
-    public CreoDias2DataSource() throws URISyntaxException {
+    public CreoDiasODataSource() throws URISyntaxException {
         super(SEARCH_URL);
         setParameterProvider(new CreoDias2ParameterProvider(this));
-        this.properties = CreoDias2DataSource.props;
+        this.properties = CreoDiasODataSource.props;
     }
 
     @Override
@@ -115,7 +115,7 @@ public class CreoDias2DataSource extends URLDataSource<CreoDias2DataQuery, Token
     }
 
     @Override
-    protected CreoDias2DataQuery createQueryImpl(String sensorName) {
-        return new CreoDias2DataQuery(this, sensorName);
+    protected CreoDiasODataQuery createQueryImpl(String sensorName) {
+        return new CreoDiasODataQuery(this, sensorName);
     }
 }
