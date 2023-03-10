@@ -21,7 +21,6 @@
         <module>tao-datasources-creodias</module>
         <module>tao-datasources-earthdata</module>
         <module>tao-datasources-eocat</module>
-        <module>tao-datasources-era</module>
         <module>tao-datasources-fedeo</module>
         <module>tao-datasources-localdb</module>
         <module>tao-datasources-lsa</module>
@@ -43,7 +42,6 @@
         <module>tao-docker-zarr</module>
         <module>tao-drmaa-slurm</module>
         <module>tao-drmaa-torque</module>
-        <module>tao-eo-search</module>
         <module>tao-executor-wps</module>
         <module>tao-gdalinfo</module>
         <module>tao-integration-geostorm</module>
@@ -68,7 +66,7 @@
         <module>tao-workflow-json</module>
         <module>tao-drmaa-kubernetes</module>
         <module>tao-datasources-creodias2</module>
-        <!--<module>tao-workflow-argo</module>-->
+        <module>tao-eo-search</module>
     </modules>
 
     <properties>
