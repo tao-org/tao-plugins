@@ -1,17 +1,26 @@
 package ro.cs.tao.datasource.stac.fetch;
 
+import ro.cs.tao.datasource.DataSourceConfiguration;
+import ro.cs.tao.datasource.persistence.DataSourceConfigurationProvider;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.stac.STACSource;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.services.factory.StorageServiceFactory;
+import ro.cs.tao.services.interfaces.StorageService;
 import ro.cs.tao.stac.core.STACClient;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.workspaces.Repository;
+import ro.cs.tao.workspaces.RepositoryType;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.LinkedHashMap;
 import java.util.Properties;
 import java.util.Set;
 
@@ -49,8 +58,18 @@ public class STACFetchStrategy extends DownloadStrategy<STACClient> {
                         Files.delete(filePath);
                     }
                     checkCancelled();
-                    client.download(file, target);
-                    size += Files.size(filePath);
+                    if (file.startsWith("http")) {
+                        client.download(file, target);
+                    } else {
+                        final StorageService<?, ?> service = getStorageService();
+                        if (service != null) {
+                            final Object input = service.download(file);
+                            if (InputStream.class.isAssignableFrom(input.getClass())) {
+                                Files.copy((InputStream) input, filePath, StandardCopyOption.REPLACE_EXISTING);
+                            }
+                        }
+                    }
+                    size += Files.exists(filePath) ? Files.size(filePath) : 0;
                     currentProductProgress.add(1);
                     logger.fine(String.format("End download for %s", file));
                 } catch (FileNotFoundException fnex) {
@@ -76,6 +95,25 @@ public class STACFetchStrategy extends DownloadStrategy<STACClient> {
 
     @Override
     protected String getMetadataUrl(EOProduct descriptor) {
+        return null;
+    }
+
+    private StorageService<?, ?> getStorageService() {
+        final DataSourceConfigurationProvider provider = ((STACSource) this.dataSource).getConfigurationProvider();
+        if (provider != null) {
+            final DataSourceConfiguration configuration = provider.get(this.dataSource.getId());
+            if (configuration != null) {
+                final Repository repository = new Repository();
+                repository.setName(this.dataSource.getId());
+                repository.setParameters(new LinkedHashMap<>(configuration.getParameters()));
+                repository.setType(RepositoryType.valueOf(configuration.getParameters().get("type")));
+                repository.setEditable(false);
+                repository.setReadOnly(true);
+                repository.setSystem(false);
+                repository.setUrlPrefix(repository.getType().prefix());
+                return StorageServiceFactory.getInstance(repository);
+            }
+        }
         return null;
     }
 }
