@@ -8,6 +8,7 @@ import ro.cs.tao.datasource.AbstractDataSource;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.param.ParameterProvider;
+import ro.cs.tao.datasource.persistence.DataSourceConfigurationProvider;
 import ro.cs.tao.datasource.stac.parameters.STACParameterProvider;
 import ro.cs.tao.stac.core.STACClient;
 
@@ -22,6 +23,7 @@ public class STACSource extends AbstractDataSource<STACQuery, STACClient> {
     private static final String dbUser;
     private static final String dbPass;
     protected WebServiceAuthentication authentication;
+    protected DataSourceConfigurationProvider configurationProvider;
     private final Logger logger = Logger.getLogger(STACSource.class.getName());
 
     static {
@@ -63,6 +65,14 @@ public class STACSource extends AbstractDataSource<STACQuery, STACClient> {
 
     public WebServiceAuthentication getAuthentication() {
         return authentication;
+    }
+
+    public void setConfigurationProvider(DataSourceConfigurationProvider provider) {
+        this.configurationProvider = provider;
+    }
+
+    public DataSourceConfigurationProvider getConfigurationProvider() {
+        return this.configurationProvider;
     }
 
     @Override

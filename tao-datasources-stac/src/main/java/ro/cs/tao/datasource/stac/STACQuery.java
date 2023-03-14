@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class STACQuery extends DataQuery {
 
@@ -176,7 +175,8 @@ public class STACQuery extends DataQuery {
                         product.setGeometry(polygon.toWKT());
                     }
                 }
-                Asset aProduct = item.getAssets().get("PRODUCT");
+                final Map<String, Asset> assets = item.getAssets();
+                Asset aProduct = assets.get("PRODUCT");
                 if (aProduct != null) {
                     product.setLocation(aProduct.getHref());
                 } else {
@@ -185,16 +185,13 @@ public class STACQuery extends DataQuery {
                         product.setLocation(link.getHref());
                     }
                 }
-                List<Asset> downloadableAssets = item.getAssets().values().stream()
-                                                     .filter(a -> a.getHref().startsWith("http"))
-                                                     .collect(Collectors.toList());
-                product.setApproximateSize(downloadableAssets.size());
+                product.setApproximateSize(assets.size());
                 product.setAcquisitionDate(item.getDatetime());
-                Asset thumbnail = item.getAssets().get("thumbnail");
+                Asset thumbnail = assets.get("thumbnail");
                 if (thumbnail != null) {
                     product.setQuicklookLocation(thumbnail.getHref());
                 } else {
-                    thumbnail = item.getAssets().get("QUICKLOOK");
+                    thumbnail = assets.get("QUICKLOOK");
                     if (thumbnail != null) {
                         product.setQuicklookLocation(thumbnail.getHref());
                     }
@@ -209,7 +206,7 @@ public class STACQuery extends DataQuery {
                 for (Map.Entry<String, Object> entry : fields.entrySet()) {
                     product.addAttribute(entry.getKey(), String.valueOf(entry.getValue()));
                 }
-                for (Asset asset : downloadableAssets) {
+                for (Asset asset : assets.values()) {
                     product.addFile(asset.getHref());
                 }
                 results.add(product);
