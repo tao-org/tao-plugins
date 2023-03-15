@@ -1,7 +1,7 @@
 package ro.cs.tao.stac;
 
-import ro.cs.tao.services.interfaces.StorageService;
 import ro.cs.tao.services.model.FileObject;
+import ro.cs.tao.services.storage.BaseStorageService;
 import ro.cs.tao.stac.core.STACClient;
 import ro.cs.tao.stac.core.model.Collection;
 import ro.cs.tao.stac.core.model.*;
@@ -12,7 +12,10 @@ import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workspaces.Repository;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -35,7 +38,7 @@ import java.util.zip.ZipOutputStream;
  * @author  Cosmin Cara
  * @since   1.3.1
  */
-public class STACStorageService implements StorageService<byte[], InputStream> {
+public class STACStorageService extends BaseStorageService<byte[], InputStream> {
     private static final String PROTOCOL = "stac";
     private Repository repository;
 
@@ -126,7 +129,7 @@ public class STACStorageService implements StorageService<byte[], InputStream> {
 
     @Override
     public List<FileObject> listTree(String fromPath) throws IOException {
-        throw new UnsupportedEncodingException();
+        return listFiles(fromPath, null, null, 1);
     }
 
     @Override
@@ -144,17 +147,22 @@ public class STACStorageService implements StorageService<byte[], InputStream> {
         if (StringUtilities.isNullOrEmpty(path)) {
             throw new IllegalArgumentException("[path] null");
         }
-        final String[] tokens = path.split("/");
-        if (tokens.length != 3) {
-            throw new IllegalArgumentException("Only individual assets can be downloaded like this");
-        }
         final STACClient client = new STACClient(this.repository.root(), null);
-        final Item item = client.getItem(tokens[0], tokens[1]);
-        Asset asset = item.getAssets().values().stream().filter(a -> tokens[2].equals(a.getTitle())).findFirst().orElse(null);
-        if (asset == null) {
-            throw new IOException("No such asset");
+        InputStream stream = null;
+        if (path.startsWith("http")) {
+            return client.download(path);
+        } else {
+            final String[] tokens = path.split("/");
+            if (tokens.length != 3) {
+                throw new IllegalArgumentException("Only individual assets can be downloaded like this");
+            }
+            final Item item = client.getItem(tokens[0], tokens[1]);
+            Asset asset = item.getAssets().values().stream().filter(a -> tokens[2].equals(a.getTitle())).findFirst().orElse(null);
+            if (asset == null) {
+                throw new IOException("No such asset");
+            }
+            return client.download(asset);
         }
-        return client.download(asset);
     }
 
     @Override
@@ -220,7 +228,8 @@ public class STACStorageService implements StorageService<byte[], InputStream> {
 
     private FileObject toFileObject(String collectionName, Item feature) {
         final FileObject fileObject = new FileObject();
-        fileObject.setDisplayName(feature.getField("title"));
+        final String title = feature.getField("title");
+        fileObject.setDisplayName(title != null ? title : feature.getId());
         fileObject.setFolder(feature.getAssets() != null && feature.getAssets().size() > 0);
         fileObject.setProtocol(PROTOCOL);
         fileObject.setProductName(fileObject.getDisplayName());
