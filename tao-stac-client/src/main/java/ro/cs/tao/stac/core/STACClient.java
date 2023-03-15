@@ -1,10 +1,12 @@
 package ro.cs.tao.stac.core;
 
 import org.geotools.http.HTTPResponse;
+import ro.cs.tao.ListenableInputStream;
 import ro.cs.tao.component.WebServiceAuthentication;
 import ro.cs.tao.stac.core.model.*;
 import ro.cs.tao.stac.core.parser.STACParser;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.executors.monitoring.DownloadProgressListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +29,7 @@ import java.util.Map;
 public class STACClient {
     private final URL stacURL;
     final HttpClient client;
+    private DownloadProgressListener progressListener;
 
     /**
      * Initializes a new client for the given URL, with specific authentication instructions.
@@ -156,8 +159,17 @@ public class STACClient {
         if (assets != null && assets.size() > 0) {
             final Path target = folder.resolve(item.getId());
             Files.createDirectories(target);
-            for (Asset asset : assets.values()) {
-                download(asset, target);
+            try {
+                if (this.progressListener != null) {
+                    this.progressListener.started(folder.getFileName().toString());
+                }
+                for (Asset asset : assets.values()) {
+                    download(asset, target);
+                }
+            } finally {
+                if (this.progressListener != null) {
+                    this.progressListener.ended();
+                }
             }
         }
     }
@@ -170,9 +182,17 @@ public class STACClient {
         final String href = asset.getHref();
         final String name = href.substring(href.lastIndexOf('/') + 1);
         final HTTPResponse response = this.client.get(new URL(href));
+        if (this.progressListener != null) {
+            this.progressListener.subActivityStarted(name);
+        }
         try (InputStream inStream = response.getResponseStream();
              OutputStream outStream = Files.newOutputStream(folder.resolve(name))) {
-            FileUtilities.copyStream(inStream, outStream);
+            InputStream stream = this.progressListener != null ? new ListenableInputStream(inStream, this.progressListener) : inStream;
+            FileUtilities.copyStream(stream, outStream);
+        } finally {
+            if (this.progressListener != null) {
+                this.progressListener.subActivityEnded(name);
+            }
         }
     }
     /**
@@ -183,9 +203,17 @@ public class STACClient {
     public void download(String href, Path folder) throws IOException {
         final String name = href.substring(href.lastIndexOf('/') + 1);
         final HTTPResponse response = this.client.get(new URL(href));
+        if (this.progressListener != null) {
+            this.progressListener.subActivityStarted(name);
+        }
         try (InputStream inStream = response.getResponseStream();
              OutputStream outStream = Files.newOutputStream(folder.resolve(name))) {
-            FileUtilities.copyStream(inStream, outStream);
+            InputStream stream = this.progressListener != null ? new ListenableInputStream(inStream, this.progressListener) : inStream;
+            FileUtilities.copyStream(stream, outStream);
+        } finally {
+            if (this.progressListener != null) {
+                this.progressListener.subActivityEnded(name);
+            }
         }
     }
     /**
@@ -194,7 +222,11 @@ public class STACClient {
      */
     public InputStream download(Asset asset) throws IOException {
         final HTTPResponse response = this.client.get(new URL(asset.getHref()));
-        return response.getResponseStream();
+        InputStream stream = response.getResponseStream();
+        if (this.progressListener != null) {
+            stream = new ListenableInputStream(stream, this.progressListener);
+        }
+        return stream;
     }
     /**
      * Returns an input stream for an asset given by its URL
@@ -202,7 +234,14 @@ public class STACClient {
      */
     public InputStream download(String href) throws IOException {
         final HTTPResponse response = this.client.get(new URL(href));
-        return response.getResponseStream();
+        InputStream stream = response.getResponseStream();
+        if (this.progressListener != null) {
+            stream = new ListenableInputStream(stream, this.progressListener);
+        }
+        return stream;
     }
 
+    public void setProgressListener(DownloadProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
 }
