@@ -61,11 +61,16 @@ public class STACFetchStrategy extends DownloadStrategy<STACClient> {
                     if (file.startsWith("http")) {
                         client.download(file, target);
                     } else {
-                        final StorageService<?, ?> service = getStorageService();
-                        if (service != null) {
-                            final Object input = service.download(file);
-                            if (InputStream.class.isAssignableFrom(input.getClass())) {
-                                Files.copy((InputStream) input, filePath, StandardCopyOption.REPLACE_EXISTING);
+                        final Repository repository = getRepository();
+                        if (repository != null) {
+                            final StorageService<?, ?> service = StorageServiceFactory.getInstance(repository);
+                            if (service != null) {
+                                String relativePath = file.replace(repository.getUrlPrefix() + "://", "");
+                                relativePath = relativePath.substring(relativePath.indexOf('/') + 1);
+                                final Object input = service.download(relativePath);
+                                if (InputStream.class.isAssignableFrom(input.getClass())) {
+                                    Files.copy((InputStream) input, filePath, StandardCopyOption.REPLACE_EXISTING);
+                                }
                             }
                         }
                     }
@@ -98,7 +103,7 @@ public class STACFetchStrategy extends DownloadStrategy<STACClient> {
         return null;
     }
 
-    private StorageService<?, ?> getStorageService() {
+    private Repository getRepository() {
         final DataSourceConfigurationProvider provider = ((STACSource) this.dataSource).getConfigurationProvider();
         if (provider != null) {
             final DataSourceConfiguration configuration = provider.get(this.dataSource.getId());
@@ -111,7 +116,7 @@ public class STACFetchStrategy extends DownloadStrategy<STACClient> {
                 repository.setReadOnly(true);
                 repository.setSystem(false);
                 repository.setUrlPrefix(repository.getType().prefix());
-                return StorageServiceFactory.getInstance(repository);
+                return repository;
             }
         }
         return null;
