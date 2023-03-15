@@ -22,8 +22,8 @@ public class STACSource extends AbstractDataSource<STACQuery, STACClient> {
     private static final String dbConnectionString;
     private static final String dbUser;
     private static final String dbPass;
+    private static DataSourceConfigurationProvider configurationProvider;
     protected WebServiceAuthentication authentication;
-    protected DataSourceConfigurationProvider configurationProvider;
     private final Logger logger = Logger.getLogger(STACSource.class.getName());
 
     static {
@@ -67,12 +67,12 @@ public class STACSource extends AbstractDataSource<STACQuery, STACClient> {
         return authentication;
     }
 
-    public void setConfigurationProvider(DataSourceConfigurationProvider provider) {
-        this.configurationProvider = provider;
+    public static void setConfigurationProvider(DataSourceConfigurationProvider provider) {
+        configurationProvider = provider;
     }
 
     public DataSourceConfigurationProvider getConfigurationProvider() {
-        return this.configurationProvider;
+        return configurationProvider;
     }
 
     @Override
