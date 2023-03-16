@@ -64,6 +64,7 @@
         <module>tao-zarr-metadata</module>
         <module>tao-products-enmap</module>
         <module>tao-workflow-json</module>
+		<module>tao-workflow-cwl</module>
         <module>tao-drmaa-kubernetes</module>
         <module>tao-datasources-creodias2</module>
         <module>tao-eo-search</module>
