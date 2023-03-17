@@ -182,12 +182,17 @@ public class STACClient {
         final String href = asset.getHref();
         final String name = href.substring(href.lastIndexOf('/') + 1);
         final HTTPResponse response = this.client.get(new URL(href));
+        final String header = response.getResponseHeader("Content-Length");
+        long length = 0;
+        if (header != null) {
+            length = Long.parseLong(header);
+        }
         if (this.progressListener != null) {
             this.progressListener.subActivityStarted(name);
         }
         try (InputStream inStream = response.getResponseStream();
              OutputStream outStream = Files.newOutputStream(folder.resolve(name))) {
-            InputStream stream = this.progressListener != null ? new ListenableInputStream(inStream, this.progressListener) : inStream;
+            InputStream stream = this.progressListener != null ? new ListenableInputStream(inStream, length, this.progressListener) : inStream;
             FileUtilities.copyStream(stream, outStream);
         } finally {
             if (this.progressListener != null) {
@@ -203,12 +208,17 @@ public class STACClient {
     public void download(String href, Path folder) throws IOException {
         final String name = href.substring(href.lastIndexOf('/') + 1);
         final HTTPResponse response = this.client.get(new URL(href));
+        final String header = response.getResponseHeader("Content-Length");
+        long length = 0;
+        if (header != null) {
+            length = Long.parseLong(header);
+        }
         if (this.progressListener != null) {
             this.progressListener.subActivityStarted(name);
         }
         try (InputStream inStream = response.getResponseStream();
              OutputStream outStream = Files.newOutputStream(folder.resolve(name))) {
-            InputStream stream = this.progressListener != null ? new ListenableInputStream(inStream, this.progressListener) : inStream;
+            InputStream stream = this.progressListener != null ? new ListenableInputStream(inStream, length, this.progressListener) : inStream;
             FileUtilities.copyStream(stream, outStream);
         } finally {
             if (this.progressListener != null) {
@@ -223,8 +233,13 @@ public class STACClient {
     public InputStream download(Asset asset) throws IOException {
         final HTTPResponse response = this.client.get(new URL(asset.getHref()));
         InputStream stream = response.getResponseStream();
+        final String header = response.getResponseHeader("Content-Length");
+        long length = 0;
+        if (header != null) {
+            length = Long.parseLong(header);
+        }
         if (this.progressListener != null) {
-            stream = new ListenableInputStream(stream, this.progressListener);
+            stream = new ListenableInputStream(stream, length, this.progressListener);
         }
         return stream;
     }
@@ -235,8 +250,13 @@ public class STACClient {
     public InputStream download(String href) throws IOException {
         final HTTPResponse response = this.client.get(new URL(href));
         InputStream stream = response.getResponseStream();
+        final String header = response.getResponseHeader("Content-Length");
+        long length = 0;
+        if (header != null) {
+            length = Long.parseLong(header);
+        }
         if (this.progressListener != null) {
-            stream = new ListenableInputStream(stream, this.progressListener);
+            stream = new ListenableInputStream(stream, length, this.progressListener);
         }
         return stream;
     }
