@@ -1,6 +1,6 @@
-package ro.cs.tao.datasource.remote.creodias.json;
+package ro.cs.tao.datasource.remote.odata.json;
 
-import ro.cs.tao.datasource.remote.creodias.common.Token;
+import ro.cs.tao.datasource.remote.odata.common.Token;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.serialization.JsonMapper;

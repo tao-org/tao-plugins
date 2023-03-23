@@ -14,4 +14,4 @@
 # with this program; if not, see http://www.gnu.org/licenses/
 #
 
-ro.cs.tao.datasource.remote.creodias.CreoDiasODataSource
+ro.cs.tao.datasource.remote.odata.CreoDiasODataSource
