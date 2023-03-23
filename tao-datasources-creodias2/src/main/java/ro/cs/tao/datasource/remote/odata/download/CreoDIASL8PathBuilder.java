@@ -1,4 +1,4 @@
-package ro.cs.tao.datasource.remote.creodias.download;
+package ro.cs.tao.datasource.remote.odata.download;
 
 import ro.cs.tao.datasource.DefaultProductPathBuilder;
 import ro.cs.tao.eodata.EOProduct;

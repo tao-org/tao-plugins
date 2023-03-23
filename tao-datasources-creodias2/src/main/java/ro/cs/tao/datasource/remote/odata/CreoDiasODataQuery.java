@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
-package ro.cs.tao.datasource.remote.creodias;
+package ro.cs.tao.datasource.remote.odata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.NameValuePair;
@@ -27,10 +27,10 @@ import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
-import ro.cs.tao.datasource.remote.creodias.json.CreodiasJsonResponseHandler;
-import ro.cs.tao.datasource.remote.creodias.json.Results;
-import ro.cs.tao.datasource.remote.creodias.parameters.CreoDiasPolygonParameterConverter;
-import ro.cs.tao.datasource.remote.creodias.parameters.DateTimeParameterConverter;
+import ro.cs.tao.datasource.remote.odata.json.CreodiasJsonResponseHandler;
+import ro.cs.tao.datasource.remote.odata.json.Results;
+import ro.cs.tao.datasource.remote.odata.parameters.CreoDiasPolygonParameterConverter;
+import ro.cs.tao.datasource.remote.odata.parameters.DateTimeParameterConverter;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.eodata.EOProduct;

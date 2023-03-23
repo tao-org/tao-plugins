@@ -13,14 +13,14 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
-package ro.cs.tao.datasource.remote.creodias.parameters;
+package ro.cs.tao.datasource.remote.odata.parameters;
 
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductPathBuilder;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
-import ro.cs.tao.datasource.remote.creodias.CreoDiasODataSource;
-import ro.cs.tao.datasource.remote.creodias.download.CreoDIASDownloadStrategy;
-import ro.cs.tao.datasource.remote.creodias.download.CreoDIASPathBuilder;
+import ro.cs.tao.datasource.remote.odata.CreoDiasODataSource;
+import ro.cs.tao.datasource.remote.odata.download.CreoDIASDownloadStrategy;
+import ro.cs.tao.datasource.remote.odata.download.CreoDIASPathBuilder;
 
 import java.util.Collections;
 import java.util.HashMap;
