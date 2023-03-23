@@ -10,6 +10,11 @@ public class KubernetesSessionFactory extends AbstractSessionFactory {
     }
 
     @Override
+    protected void initLibrary() {
+        // NO-OP
+    }
+
+    @Override
     protected Session createSession() {
         return new KubernetesSession();
     }
