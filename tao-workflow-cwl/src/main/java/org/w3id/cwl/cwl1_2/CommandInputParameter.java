@@ -28,6 +28,8 @@ public interface CommandInputParameter extends InputParameter, Saveable {
    */
 
   java.util.Optional<String> getId();
+
+  void setId(java.util.Optional<String> id);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#Labeled/label</I><BR>
    * <BLOCKQUOTE>
@@ -35,6 +37,8 @@ public interface CommandInputParameter extends InputParameter, Saveable {
    */
 
   java.util.Optional<String> getLabel();
+
+  void setLabel(java.util.Optional<String> label);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#secondaryFiles</I><BR>
    * <BLOCKQUOTE>
@@ -83,6 +87,8 @@ public interface CommandInputParameter extends InputParameter, Saveable {
    */
 
   Object getSecondaryFiles();
+
+  void setSecondaryFiles(Object secondaryFiles);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#FieldBase/streamable</I><BR>
    * <BLOCKQUOTE>
@@ -96,6 +102,8 @@ public interface CommandInputParameter extends InputParameter, Saveable {
    */
 
   java.util.Optional<Boolean> getStreamable();
+
+  void setStreamable(java.util.Optional<Boolean> streamable);
   /**
    * Getter for property <I>https://w3id.org/cwl/salad#Documented/doc</I><BR>
    * <BLOCKQUOTE>
@@ -103,6 +111,8 @@ public interface CommandInputParameter extends InputParameter, Saveable {
    */
 
   Object getDoc();
+
+  void setDoc(Object doc);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#format</I><BR>
    * <BLOCKQUOTE>
@@ -116,6 +126,8 @@ public interface CommandInputParameter extends InputParameter, Saveable {
    */
 
   Object getFormat();
+
+  void setFormat(Object format);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#LoadContents/loadContents</I><BR>
    * <BLOCKQUOTE>
@@ -131,6 +143,8 @@ public interface CommandInputParameter extends InputParameter, Saveable {
    */
 
   java.util.Optional<Boolean> getLoadContents();
+
+  void setLoadContents(java.util.Optional<Boolean> loadContents);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#LoadContents/loadListing</I><BR>
    * <BLOCKQUOTE>
@@ -148,6 +162,8 @@ public interface CommandInputParameter extends InputParameter, Saveable {
    */
 
   java.util.Optional<LoadListingEnum> getLoadListing();
+
+  void setLoadListing(java.util.Optional<LoadListingEnum> loadListing);
   /**
    * Getter for property <I>https://w3id.org/cwl/salad#default</I><BR>
    * <BLOCKQUOTE>
@@ -159,6 +175,8 @@ public interface CommandInputParameter extends InputParameter, Saveable {
    */
 
   Object getDefault();
+
+  void setDefault(Object default_);
   /**
    * Getter for property <I>https://w3id.org/cwl/salad#type</I><BR>
    * <BLOCKQUOTE>
@@ -167,6 +185,8 @@ public interface CommandInputParameter extends InputParameter, Saveable {
    */
 
   Object getType();
+
+  void setType(Object type);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#CommandInputParameter/inputBinding</I><BR>
    * <BLOCKQUOTE>
@@ -176,4 +196,6 @@ public interface CommandInputParameter extends InputParameter, Saveable {
    */
 
   java.util.Optional<CommandLineBinding> getInputBinding();
+
+  void setInputBinding(java.util.Optional<CommandLineBinding> inputBinding);
 }

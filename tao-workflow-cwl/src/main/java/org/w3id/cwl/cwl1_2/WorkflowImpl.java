@@ -545,9 +545,9 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
   }
 
   @Override
-  public  Map<Object, Object> save(){
+  public  Map<Object, Object> save() {
     Map<Object, Object> workflow = new LinkedHashMap<>();
-    workflow.put("class", StringUtils.capitalize(this.class_.name().toString().toLowerCase()));
+    workflow.put("class", this.class_.getDocVal());
     if (this.cwlVersion != null && this.cwlVersion.isPresent() && !this.cwlVersion.isEmpty()) {
       workflow.put("cwlVersion",this.cwlVersion.get().toString());
     }
@@ -559,11 +559,11 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
     }
 
     if (inputs != null) {
-      workflow.put("inputs", treatWfInOut(inputs));
+      workflow.put("inputs", treatInOut(inputs));
     }
 
     if (outputs != null) {
-      workflow.put("outputs", treatWfInOut(outputs));
+      workflow.put("outputs", treatInOut(outputs));
     }
 
     if (steps != null) {
@@ -582,7 +582,7 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
                 Map<String,String> inList = new LinkedHashMap<>();
                 for (Object in : (ArrayList) field.get(step)) {
                   System.out.println();
-                  inList.put(((WorkflowStepInput) in).getId().get(), ((WorkflowStepInput) in).getValueFrom().toString());
+                  inList.put(((WorkflowStepInput) in).getId().get(), ((WorkflowStepInput) in).getDefault().toString());
                 }
                 temp.put(field.getName(), inList);
               } else if (field.getName().equalsIgnoreCase("out")) {
@@ -606,35 +606,5 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
       }
     }
     return workflow;
-  }
-
-  /**
-   * write input and output workflow elements in a LinkedHashMap
-   */
-  private Map<String, Object> treatWfInOut(java.util.List<Object> inputs) {
-    Map<String, Object> inputList = new LinkedHashMap<>();
-    try {
-      for (Object input : inputs) {
-        Field[] fields = input.getClass().getDeclaredFields();
-        Map<String, Object> temp = new LinkedHashMap<>();
-        String inputId = "";
-        for (Field field : fields) {
-          if (!field.getName().equalsIgnoreCase("loadingOptions_") && !field.getName().equalsIgnoreCase("extensionFields_")) {
-            field.setAccessible(true);
-            if (field.getName().equalsIgnoreCase("id")) {
-              inputId = ((Optional)field.get(input)).get().toString();
-            } else if (field.get(input) != null) {
-              temp.put(field.getName(), field.get(input));
-            }
-          }
-        }
-        if (inputId != "") {
-          inputList.put(inputId, temp);
-        }
-      }
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-    return inputList;
   }
 }
