@@ -1,4 +1,4 @@
-package ro.cs.tao.datasource.remote.creodias.common;
+package ro.cs.tao.datasource.remote.odata.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

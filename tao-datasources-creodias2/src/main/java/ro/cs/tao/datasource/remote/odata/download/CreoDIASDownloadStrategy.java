@@ -1,4 +1,4 @@
-package ro.cs.tao.datasource.remote.creodias.download;
+package ro.cs.tao.datasource.remote.odata.download;
 
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
@@ -7,8 +7,8 @@ import ro.cs.tao.datasource.ProductHelperFactory;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.FetchMode;
-import ro.cs.tao.datasource.remote.creodias.CreoDiasODataSource;
-import ro.cs.tao.datasource.remote.creodias.common.Token;
+import ro.cs.tao.datasource.remote.odata.CreoDiasODataSource;
+import ro.cs.tao.datasource.remote.odata.common.Token;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.util.ProductHelper;

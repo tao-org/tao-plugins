@@ -1,4 +1,4 @@
-package ro.cs.tao.datasource.remote.creodias.json;
+package ro.cs.tao.datasource.remote.odata.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

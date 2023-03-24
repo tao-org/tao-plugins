@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
-package ro.cs.tao.datasource.remote.creodias;
+package ro.cs.tao.datasource.remote.odata;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.Credentials;
@@ -21,9 +21,9 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.URLDataSource;
-import ro.cs.tao.datasource.remote.creodias.common.Token;
-import ro.cs.tao.datasource.remote.creodias.json.LoginResponseHandler;
-import ro.cs.tao.datasource.remote.creodias.parameters.CreoDias2ParameterProvider;
+import ro.cs.tao.datasource.remote.odata.common.Token;
+import ro.cs.tao.datasource.remote.odata.json.LoginResponseHandler;
+import ro.cs.tao.datasource.remote.odata.parameters.CreoDias2ParameterProvider;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.utils.CloseableHttpResponse;
