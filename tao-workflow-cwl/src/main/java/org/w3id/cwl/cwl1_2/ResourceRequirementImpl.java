@@ -19,6 +19,11 @@ import org.w3id.cwl.cwl1_2.utils.LoadingOptions;
 import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
 import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
 import org.w3id.cwl.cwl1_2.utils.ValidationException;
+import ro.cs.tao.utils.ExceptionUtils;
+
+import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#ResourceRequirement</I><BR> <BLOCKQUOTE>
@@ -220,6 +225,46 @@ public class ResourceRequirementImpl extends SaveableImpl implements ResourceReq
     return this.outdirMax;
   }
 
+  public void setClass_(ResourceRequirement_class class_) {
+    this.class_ = class_;
+  }
+
+  public void setCoresMin(Object coresMin) {
+    this.coresMin = coresMin;
+  }
+
+  public void setCoresMax(Object coresMax) {
+    this.coresMax = coresMax;
+  }
+
+  public void setRamMin(Object ramMin) {
+    this.ramMin = ramMin;
+  }
+
+  public void setRamMax(Object ramMax) {
+    this.ramMax = ramMax;
+  }
+
+  public void setTmpdirMin(Object tmpdirMin) {
+    this.tmpdirMin = tmpdirMin;
+  }
+
+  public void setTmpdirMax(Object tmpdirMax) {
+    this.tmpdirMax = tmpdirMax;
+  }
+
+  public void setOutdirMin(Object outdirMin) {
+    this.outdirMin = outdirMin;
+  }
+
+  public void setOutdirMax(Object outdirMax) {
+    this.outdirMax = outdirMax;
+  }
+
+  public ResourceRequirementImpl() {
+    super();
+  }
+
   /**
    * Used by {@link org.w3id.cwl.cwl1_2.utils.RootLoader} to construct instances of ResourceRequirementImpl.
    *
@@ -409,5 +454,24 @@ public class ResourceRequirementImpl extends SaveableImpl implements ResourceReq
     this.tmpdirMax = (Object) tmpdirMax;
     this.outdirMin = (Object) outdirMin;
     this.outdirMax = (Object) outdirMax;
+  }
+
+  @Override
+  public Map<Object, Object> save() {
+    Map<Object, Object> resourceRequirements = new LinkedHashMap<>();
+    for (Field f : this.getClass().getDeclaredFields()) {
+      if (f.getName().equalsIgnoreCase("class_")) {
+        resourceRequirements.put("class", this.class_.getDocVal());
+      } else if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
+        try {
+          if ( f.get(this) != null) {
+            resourceRequirements.put(f.getName(), f.get(this).toString());
+          }
+        } catch (Exception e){
+          System.out.println(e.getStackTrace());
+        }
+      }
+    }
+    return resourceRequirements;
   }
 }

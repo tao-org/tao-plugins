@@ -28,6 +28,8 @@ public interface CommandOutputParameter extends OutputParameter, Saveable {
    */
 
   java.util.Optional<String> getId();
+
+  void setId(java.util.Optional<String> id);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#Labeled/label</I><BR>
    * <BLOCKQUOTE>
@@ -35,6 +37,8 @@ public interface CommandOutputParameter extends OutputParameter, Saveable {
    */
 
   java.util.Optional<String> getLabel();
+
+  void setLabel(java.util.Optional<String> label);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#secondaryFiles</I><BR>
    * <BLOCKQUOTE>
@@ -83,6 +87,8 @@ public interface CommandOutputParameter extends OutputParameter, Saveable {
    */
 
   Object getSecondaryFiles();
+
+  void setSecondaryFiles(Object secondaryFiles);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#FieldBase/streamable</I><BR>
    * <BLOCKQUOTE>
@@ -96,6 +102,8 @@ public interface CommandOutputParameter extends OutputParameter, Saveable {
    */
 
   java.util.Optional<Boolean> getStreamable();
+
+  void setStreamable(java.util.Optional<Boolean> streamable);
   /**
    * Getter for property <I>https://w3id.org/cwl/salad#Documented/doc</I><BR>
    * <BLOCKQUOTE>
@@ -103,6 +111,8 @@ public interface CommandOutputParameter extends OutputParameter, Saveable {
    */
 
   Object getDoc();
+
+  void setDoc(Object doc);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#format</I><BR>
    * <BLOCKQUOTE>
@@ -114,6 +124,8 @@ public interface CommandOutputParameter extends OutputParameter, Saveable {
    */
 
   Object getFormat();
+
+  void setFormat(Object format);
   /**
    * Getter for property <I>https://w3id.org/cwl/salad#type</I><BR>
    * <BLOCKQUOTE>
@@ -122,6 +134,8 @@ public interface CommandOutputParameter extends OutputParameter, Saveable {
    */
 
   Object getType();
+
+  void setType(Object type);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#CommandOutputParameter/outputBinding</I><BR>
    * <BLOCKQUOTE>
@@ -129,4 +143,6 @@ public interface CommandOutputParameter extends OutputParameter, Saveable {
    */
 
   java.util.Optional<CommandOutputBinding> getOutputBinding();
+
+  void setOutputBinding(java.util.Optional<CommandOutputBinding> binding);
 }

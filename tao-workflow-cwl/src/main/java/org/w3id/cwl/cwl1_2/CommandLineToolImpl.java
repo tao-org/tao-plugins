@@ -14,11 +14,11 @@
 
 package org.w3id.cwl.cwl1_2;
 
-import org.w3id.cwl.cwl1_2.utils.LoaderInstances;
-import org.w3id.cwl.cwl1_2.utils.LoadingOptions;
-import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
-import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
-import org.w3id.cwl.cwl1_2.utils.ValidationException;
+import org.apache.commons.lang3.StringUtils;
+import org.w3id.cwl.cwl1_2.utils.*;
+
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#CommandLineTool</I><BR> <BLOCKQUOTE>
@@ -92,6 +92,7 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
   public Object getDoc() {
     return this.doc;
   }
+
   public void setDoc(Object doc) {
     this.doc = doc;
   }
@@ -769,5 +770,45 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
     this.successCodes = (java.util.Optional<java.util.List<Object>>) successCodes;
     this.temporaryFailCodes = (java.util.Optional<java.util.List<Object>>) temporaryFailCodes;
     this.permanentFailCodes = (java.util.Optional<java.util.List<Object>>) permanentFailCodes;
+  }
+
+  @Override
+  public Map<Object, Object> save() {
+    Map<Object, Object> commandLineTool = new LinkedHashMap<>();
+    commandLineTool.put("class", this.class_.getDocVal());
+    if (this.cwlVersion != null && this.cwlVersion.isPresent() && !this.cwlVersion.isEmpty()) {
+      commandLineTool.put("cwlVersion",this.cwlVersion.get().toString());
+    }
+    if (this.label != null && this.label.isPresent() && !this.label.isEmpty()) {
+      commandLineTool.put("label",this.label.get());
+    }
+    if (this.doc != null) {
+      commandLineTool.put("doc",this.doc);
+    }
+    if (this.inputs != null) {
+      commandLineTool.put("inputs", treatInOut(inputs));
+    }
+    if (this.outputs != null) {
+      commandLineTool.put("outputs", treatInOut(outputs));
+    }
+    if (this.baseCommand != null) {
+      if (this.baseCommand instanceof ArrayList<?> && !((ArrayList<?>) this.baseCommand).isEmpty()) {
+        List<Object> commandList = new ArrayList<>();
+        for (String command: ((ArrayList<String>) this.baseCommand)) {
+          commandList.add("\"" + command + "\"");
+        }
+        commandLineTool.put("baseCommand", commandList.toString());
+      } else if (this.baseCommand instanceof String) {
+        commandLineTool.put("baseCommand", "[\"" + this.baseCommand.toString() + "\"]");
+      }
+    }
+    if (this.requirements != null) {
+      for(Object req : this.requirements.get()) {
+        if(req instanceof Saveable) {
+          commandLineTool.put("requirements", ((Saveable) req).save());
+        }
+      }
+    }
+    return commandLineTool;
   }
 }

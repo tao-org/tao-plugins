@@ -46,6 +46,8 @@ public interface CommandOutputBinding extends LoadContents, Saveable {
    */
 
   java.util.Optional<Boolean> getLoadContents();
+
+  void setLoadContents(java.util.Optional<Boolean> loadContents);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#LoadContents/loadListing</I><BR>
    * <BLOCKQUOTE>
@@ -63,6 +65,8 @@ public interface CommandOutputBinding extends LoadContents, Saveable {
    */
 
   java.util.Optional<LoadListingEnum> getLoadListing();
+
+  void setLoadListing(java.util.Optional<LoadListingEnum> loadListing);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#CommandOutputBinding/glob</I><BR>
    * <BLOCKQUOTE>
@@ -105,6 +109,8 @@ public interface CommandOutputBinding extends LoadContents, Saveable {
    */
 
   Object getGlob();
+
+  void setGlob(Object glob);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#CommandOutputBinding/outputEval</I><BR>
    * <BLOCKQUOTE>
@@ -131,4 +137,6 @@ public interface CommandOutputBinding extends LoadContents, Saveable {
    */
 
   java.util.Optional<String> getOutputEval();
+
+  void setOutputEval(java.util.Optional<String> outputEval);
 }

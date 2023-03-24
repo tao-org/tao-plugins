@@ -22,6 +22,10 @@ public enum Workflow_class {
   private static String[] symbols = new String[] {"Workflow"};
   private String docVal;
 
+  public String getDocVal() {
+    return docVal;
+  }
+
   private Workflow_class(final String docVal) {
     this.docVal = docVal;
   }

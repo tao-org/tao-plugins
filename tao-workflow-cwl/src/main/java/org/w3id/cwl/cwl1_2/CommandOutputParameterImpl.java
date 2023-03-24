@@ -20,6 +20,8 @@ import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
 import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
 import org.w3id.cwl.cwl1_2.utils.ValidationException;
 
+import java.util.Optional;
+
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#CommandOutputParameter</I><BR> <BLOCKQUOTE>
  An output parameter for a CommandLineTool. </BLOCKQUOTE>
@@ -177,6 +179,41 @@ public class CommandOutputParameterImpl extends SaveableImpl implements CommandO
     return this.outputBinding;
   }
 
+  public void setId(Optional<String> id) {
+    this.id = id;
+  }
+
+  public void setLabel(Optional<String> label) {
+    this.label = label;
+  }
+
+  public void setSecondaryFiles(Object secondaryFiles) {
+    this.secondaryFiles = secondaryFiles;
+  }
+
+  public void setStreamable(Optional<Boolean> streamable) {
+    this.streamable = streamable;
+  }
+
+  public void setDoc(Object doc) {
+    this.doc = doc;
+  }
+
+  public void setFormat(Object format) {
+    this.format = format;
+  }
+
+  public void setType(Object type) {
+    this.type = type;
+  }
+
+  public void setOutputBinding(Optional<CommandOutputBinding> outputBinding) {
+    this.outputBinding = outputBinding;
+  }
+
+  public CommandOutputParameterImpl() {
+    super();
+  }
   /**
    * Used by {@link org.w3id.cwl.cwl1_2.utils.RootLoader} to construct instances of CommandOutputParameterImpl.
    *

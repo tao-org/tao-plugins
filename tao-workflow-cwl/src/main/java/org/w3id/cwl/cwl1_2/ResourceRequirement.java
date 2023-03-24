@@ -53,6 +53,8 @@ public interface ResourceRequirement extends ProcessRequirement, Saveable {
    */
 
   ResourceRequirement_class getClass_();
+
+  void setClass_(ResourceRequirement_class class_);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#ResourceRequirement/coresMin</I><BR>
    * <BLOCKQUOTE>
@@ -85,6 +87,8 @@ public interface ResourceRequirement extends ProcessRequirement, Saveable {
    */
 
   Object getCoresMin();
+
+  void setCoresMin(Object coresMin);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#ResourceRequirement/coresMax</I><BR>
    * <BLOCKQUOTE>
@@ -95,6 +99,8 @@ public interface ResourceRequirement extends ProcessRequirement, Saveable {
    */
 
   Object getCoresMax();
+
+  void setCoresMax(Object coresMax);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#ResourceRequirement/ramMin</I><BR>
    * <BLOCKQUOTE>
@@ -109,6 +115,8 @@ public interface ResourceRequirement extends ProcessRequirement, Saveable {
    */
 
   Object getRamMin();
+
+  void setRamMin(Object ramMin);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#ResourceRequirement/ramMax</I><BR>
    * <BLOCKQUOTE>
@@ -119,6 +127,8 @@ public interface ResourceRequirement extends ProcessRequirement, Saveable {
    */
 
   Object getRamMax();
+
+  void setRamMax(Object ramMax);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#ResourceRequirement/tmpdirMin</I><BR>
    * <BLOCKQUOTE>
@@ -133,6 +143,8 @@ public interface ResourceRequirement extends ProcessRequirement, Saveable {
    */
 
   Object getTmpdirMin();
+
+  void setTmpdirMin(Object tmpdirMin);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#ResourceRequirement/tmpdirMax</I><BR>
    * <BLOCKQUOTE>
@@ -143,6 +155,8 @@ public interface ResourceRequirement extends ProcessRequirement, Saveable {
    */
 
   Object getTmpdirMax();
+
+  void setTmpdirMax(Object tmpdirMax);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#ResourceRequirement/outdirMin</I><BR>
    * <BLOCKQUOTE>
@@ -157,6 +171,8 @@ public interface ResourceRequirement extends ProcessRequirement, Saveable {
    */
 
   Object getOutdirMin();
+
+  void setOutdirMin(Object outdirMin);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#ResourceRequirement/outdirMax</I><BR>
    * <BLOCKQUOTE>
@@ -167,4 +183,6 @@ public interface ResourceRequirement extends ProcessRequirement, Saveable {
    */
 
   Object getOutdirMax();
+
+  void setOutdirMax(Object outdirMax);
 }

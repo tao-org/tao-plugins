@@ -20,6 +20,8 @@ import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
 import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
 import org.w3id.cwl.cwl1_2.utils.ValidationException;
 
+import java.util.Optional;
+
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#CommandInputParameter</I><BR> <BLOCKQUOTE>
  An input parameter for a CommandLineTool. </BLOCKQUOTE>
@@ -239,6 +241,53 @@ public class CommandInputParameterImpl extends SaveableImpl implements CommandIn
     return this.inputBinding;
   }
 
+  public void setId(Optional<String> id) {
+    this.id = id;
+  }
+
+  public void setLabel(Optional<String> label) {
+    this.label = label;
+  }
+
+  public void setSecondaryFiles(Object secondaryFiles) {
+    this.secondaryFiles = secondaryFiles;
+  }
+
+  public void setStreamable(Optional<Boolean> streamable) {
+    this.streamable = streamable;
+  }
+
+  public void setDoc(Object doc) {
+    this.doc = doc;
+  }
+
+  public void setFormat(Object format) {
+    this.format = format;
+  }
+
+  public void setLoadContents(Optional<Boolean> loadContents) {
+    this.loadContents = loadContents;
+  }
+
+  public void setLoadListing(Optional<LoadListingEnum> loadListing) {
+    this.loadListing = loadListing;
+  }
+
+  public void setDefault(Object default_) {
+    this.default_ = default_;
+  }
+
+  public void setType(Object type) {
+    this.type = type;
+  }
+
+  public void setInputBinding(Optional<CommandLineBinding> inputBinding) {
+    this.inputBinding = inputBinding;
+  }
+
+  public CommandInputParameterImpl() {
+    super();
+  }
   /**
    * Used by {@link org.w3id.cwl.cwl1_2.utils.RootLoader} to construct instances of CommandInputParameterImpl.
    *

@@ -20,6 +20,8 @@ import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
 import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
 import org.w3id.cwl.cwl1_2.utils.ValidationException;
 
+import java.util.Optional;
+
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#CommandOutputBinding</I><BR> <BLOCKQUOTE>
  Describes how to generate an output parameter based on the files produced
@@ -157,6 +159,26 @@ public class CommandOutputBindingImpl extends SaveableImpl implements CommandOut
 
   public java.util.Optional<String> getOutputEval() {
     return this.outputEval;
+  }
+
+  public void setLoadContents(Optional<Boolean> loadContents) {
+    this.loadContents = loadContents;
+  }
+
+  public void setLoadListing(Optional<LoadListingEnum> loadListing) {
+    this.loadListing = loadListing;
+  }
+
+  public void setGlob(Object glob) {
+    this.glob = glob;
+  }
+
+  public void setOutputEval(Optional<String> outputEval) {
+    this.outputEval = outputEval;
+  }
+
+  public CommandOutputBindingImpl() {
+    super();
   }
 
   /**

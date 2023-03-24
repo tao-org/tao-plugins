@@ -22,6 +22,10 @@ public enum ResourceRequirement_class {
   private static String[] symbols = new String[] {"ResourceRequirement"};
   private String docVal;
 
+  public String getDocVal() {
+    return docVal;
+  }
+
   private ResourceRequirement_class(final String docVal) {
     this.docVal = docVal;
   }
