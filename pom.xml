@@ -68,6 +68,7 @@
         <module>tao-drmaa-kubernetes</module>
         <module>tao-datasources-creodias2</module>
         <module>tao-eo-search</module>
+        <module>tao-plugins-kit</module>
     </modules>
 
     <properties>
@@ -135,7 +136,7 @@
                     <executions>
                         <execution>
                             <id>copy-libs</id>
-                            <phase>package</phase>
+                            <phase>deploy</phase>
                             <goals>
                                 <goal>copy-dependencies</goal>
                             </goals>
@@ -144,13 +145,13 @@
                                 <excludeGroupIds>ro.cs.tao</excludeGroupIds>
                                 <overWriteReleases>false</overWriteReleases>
                                 <overWriteSnapshots>true</overWriteSnapshots>
-                                <outputDirectory>../../tao-core/tao-core-kit/target/tao-core-${project.version}/tao-core/lib</outputDirectory>
+                                <outputDirectory>../tao-plugins-kit/target/tao-plugins-${project.version}/tao/lib</outputDirectory>
                                 <overWriteIfNewer>true</overWriteIfNewer>
                             </configuration>
                         </execution>
                         <execution>
                             <id>copy-artifacts</id>
-                            <phase>install</phase>
+                            <phase>deploy</phase>
                             <goals>
                                 <goal>copy</goal>
                             </goals>
@@ -164,7 +165,7 @@
                                 </artifactItems>
                                 <overWriteReleases>true</overWriteReleases>
                                 <overWriteSnapshots>true</overWriteSnapshots>
-                                <outputDirectory>../../tao-core/tao-core-kit/target/tao-core-${project.version}/tao-core/plugins</outputDirectory>
+                                <outputDirectory>../../tao-core/tao-core-kit/target/tao-core-${project.version}/tao/plugins</outputDirectory>
                             </configuration>
                         </execution>
                     </executions>

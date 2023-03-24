@@ -13,9 +13,9 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
-package ro.cs.tao.datasource.remote.creodias.json;
+package ro.cs.tao.datasource.remote.odata.json;
 
-import ro.cs.tao.datasource.remote.creodias.CreoDiasODataSource;
+import ro.cs.tao.datasource.remote.odata.CreoDiasODataSource;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.eodata.EOProduct;

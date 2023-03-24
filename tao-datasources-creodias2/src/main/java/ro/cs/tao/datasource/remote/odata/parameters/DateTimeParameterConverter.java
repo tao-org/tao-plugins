@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
-package ro.cs.tao.datasource.remote.creodias.parameters;
+package ro.cs.tao.datasource.remote.odata.parameters;
 
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.DefaultParameterConverter;
