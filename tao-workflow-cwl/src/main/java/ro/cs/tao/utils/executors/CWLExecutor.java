@@ -238,9 +238,9 @@ public class CWLExecutor extends Executor<Object>
                 if (i == this.unit.getArguments().size() - 1) {
                     int indexEnd = this.unit.getArguments().get(i).indexOf(" ");
                     baseCommandArray.add(this.unit.getArguments().get(i).substring(0, indexEnd).replaceAll("\"",""));
-                } else {
+                }/* else {
                     baseCommandArray.add(this.unit.getArguments().get(i));
-                }
+                }*/
             }
 
 
