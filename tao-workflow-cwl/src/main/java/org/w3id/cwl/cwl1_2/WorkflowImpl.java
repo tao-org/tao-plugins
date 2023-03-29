@@ -581,7 +581,6 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
               } else if (field.getName().equalsIgnoreCase("in")) {
                 Map<String,String> inList = new LinkedHashMap<>();
                 for (Object in : (ArrayList) field.get(step)) {
-                  System.out.println();
                   inList.put(((WorkflowStepInput) in).getId().get(), ((WorkflowStepInput) in).getDefault().toString());
                 }
                 temp.put(field.getName(), inList);

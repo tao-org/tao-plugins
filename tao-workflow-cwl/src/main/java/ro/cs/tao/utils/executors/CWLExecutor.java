@@ -112,11 +112,7 @@ public class CWLExecutor extends Executor<Object>
                             WorkflowOutputParameter output = new WorkflowOutputParameterImpl();
                             output.setId(Optional.of(target.getParentId().toLowerCase() + "_" + target.getName()));
                             output.setType(getInOutType(target.getDataDescriptor().getFormatType()));
-                            String targetLocation = target.getDataDescriptor().getLocation();
-                            if (targetLocation.contains(".")) {
-                                targetLocation = targetLocation.substring(0, targetLocation.indexOf("."));
-                            }
-                            output.setOutputSource(target.getParentId().toLowerCase() + "/" + targetLocation);
+                            output.setOutputSource(target.getParentId().toLowerCase() + "_" + wf.getId() + "/" + target.getName() + "_" + wf.getId());
                             outputList.add(output);
                         }
                     }
@@ -142,7 +138,8 @@ public class CWLExecutor extends Executor<Object>
                 retVal = formatType.friendlyName();
                 break;
             case OTHER:
-                retVal = StringUtilities.toFirstCaps(formatType.name());
+                //retVal = StringUtilities.toFirstCaps(formatType.name());
+                retVal = "File";
                 break;
             default:
                 retVal = "File";
@@ -164,23 +161,21 @@ public class CWLExecutor extends Executor<Object>
                 for (ComponentLink link : wf.getIncomingLinks()) {
                     WorkflowStepInput in = new WorkflowStepInputImpl();
                     in.setId(Optional.of(link.getOutput().getName() + "_" + wf.getId()));
-                    stepInfoMap.get(link.getSourceNodeId()).get("out");
                     if (((HashMap<?, ?>)stepInfoMap.get(link.getSourceNodeId()).get("in")).size() > 0) {
-                        Map linkedInput = ((HashMap) stepInfoMap.get(wf.getId()).get("in"));
-                        in.setDefault(linkedInput.get(link.getSourceNodeId()) + "_" + link.getSourceNodeId() +
-                                "/" + link.getInput().getName() + "_" + link.getSourceNodeId());
+                        String linkedInput = stepInfoMap.get(link.getSourceNodeId()).get("name").toString();
+                        in.setDefault(linkedInput + "/" + link.getInput().getName() + "_" + link.getSourceNodeId());
                     } else {
                         in.setDefault(link.getInput().getName() + "_" + link.getSourceNodeId());
                     }
                     inList.add(in);
                 }
-                for(Object output : (ArrayList) stepInfoMap.get(wf.getId()).get("out")) {
+                for (Object output : (ArrayList) stepInfoMap.get(wf.getId()).get("out")) {
                     WorkflowStepOutput out = new WorkflowStepOutputImpl();
-                    out.setId(Optional.of(output.toString() + "_" + wf.getId()));
+                    out.setId(Optional.of(output.toString()));
                     outList.add(out);
                 }
                 step.setId(Optional.of(stepId));
-                step.setRun(wf.getComponentId().toLowerCase() + ".cwl");
+                step.setRun(wf.getName().toLowerCase() + ".cwl");
                 step.setIn(inList);
                 step.setOut(outList);
                 steps.add(step);
@@ -191,18 +186,18 @@ public class CWLExecutor extends Executor<Object>
 
     private Map<Long, Map<String, Object>> createStepsMap (WorkflowDescriptor workflowDescriptor) {
         Map<Long, Map<String, Object>> stepInfoMap = new HashMap<>();
-        for(WorkflowNodeDescriptor wf : workflowDescriptor.getNodes()) {
+        for (WorkflowNodeDescriptor wf : workflowDescriptor.getNodes()) {
             Long id = wf.getId();
             Map<String, Object> obj = new HashMap<>();
             TaoComponent wfTaskComponent = TaskUtilities.getComponentFor(wf);
             Map<Long, String> in = new HashMap<>();
-            for(ComponentLink link : wf.getIncomingLinks()) {
+            for (ComponentLink link : wf.getIncomingLinks()) {
                 in.put(link.getSourceNodeId(),link.getOutput().getName());
             }
             obj.put("in", in);
             List<String> out = new ArrayList<>();
-            for(TargetDescriptor target : wfTaskComponent.getTargets()){
-                out.add(target.getName());
+            for (TargetDescriptor target : wfTaskComponent.getTargets()) {
+                out.add(target.getName() + "_" + wf.getId());
             }
             obj.put("out", out);
             obj.put("name", wf.getComponentId().toLowerCase() + "_" + wf.getId());
@@ -222,7 +217,6 @@ public class CWLExecutor extends Executor<Object>
         mapper.registerModule(new Jdk8Module());
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         try {
-            //Workflow doc = (WorkflowImpl) RootLoader.loadDocument(path);
             mapper.writeValue(yamlFile.toFile(), inputList);
         } catch (IOException e) {
             logger.severe(ExceptionUtils.getStackTrace(logger, e));
@@ -274,7 +268,7 @@ public class CWLExecutor extends Executor<Object>
 
             List<Object> inputs = new ArrayList<>();
             List<Object> outputs = new ArrayList<>();
-            for(SourceDescriptor source : component.getSources()) {
+            for (SourceDescriptor source : component.getSources()) {
                 CommandInputParameter input = new CommandInputParameterImpl();
                 input.setId(Optional.of(source.getName() + "_" + task.getWorkflowNodeId()));
                 input.setType(getInOutType(source.getDataDescriptor().getFormatType()));
@@ -282,7 +276,7 @@ public class CWLExecutor extends Executor<Object>
             }
             commandLineTool.setInputs(inputs);
 
-            for(TargetDescriptor target : component.getTargets()) {
+            for (TargetDescriptor target : component.getTargets()) {
                 CommandOutputParameter output = new CommandOutputParameterImpl();
                 output.setId(Optional.of(target.getName() + "_" + task.getWorkflowNodeId()));
                 output.setType(getInOutType(target.getDataDescriptor().getFormatType()));
@@ -302,10 +296,15 @@ public class CWLExecutor extends Executor<Object>
         StringBuilder objectString = new StringBuilder();
         final StringBuilder builder = new StringBuilder();
         for (Map.Entry<?, ?> obj : object.entrySet()) {
+            //check if string builder is not empty and last characters represents a new line separator
+            if (objectString.length() > 0 &&
+                    objectString.lastIndexOf(System.lineSeparator()) + System.lineSeparator().length() != objectString.length()) {
+                objectString.append(System.lineSeparator());
+            }
             if (obj.getKey().equals("class")) {
-                objectString.append(obj.getKey()).append(": \"").append(obj.getValue()).append("\"").append(System.lineSeparator());
+                objectString.append(obj.getKey()).append(": \"").append(obj.getValue()).append("\"");
             } else if (obj.getKey().equals("cwlVersion")) {
-                objectString.append(obj.getKey()).append(": \"").append(obj.getValue().toString().toLowerCase().replace("_", ".")).append("\"").append(System.lineSeparator());
+                objectString.append(obj.getKey()).append(": \"").append(obj.getValue().toString().toLowerCase().replace("_", ".")).append("\"");
             } else {
                 treatObject(objectString, obj, "");
             }
@@ -322,19 +321,23 @@ public class CWLExecutor extends Executor<Object>
         if (object.getValue() instanceof LinkedHashMap<?, ?> || object.getValue() instanceof Map<?, ?>) {
             objectString.append(ident).append(object.getKey()).append(":").append(System.lineSeparator());
             for (Map.Entry<?, ?>  elem: ((Map<?, ?>)object.getValue()).entrySet()) {
+                //check if last characters represents a new line separator
+                if (objectString.lastIndexOf(System.lineSeparator()) + System.lineSeparator().length() != objectString.length()) {
+                    objectString.append(System.lineSeparator());
+                }
                 String currentIdent = ident + " ";
                 if (elem.getValue() instanceof LinkedHashMap<?, ?> || elem.getValue() instanceof Map<?, ?>) {
                     treatObject(objectString, elem, currentIdent);
                 } else if (elem.getValue() instanceof  ArrayList<?>) {
-                    objectString.append(currentIdent).append(elem.getKey()).append(": ").append(elem.getValue().toString().replaceAll("\"", "")).append(System.lineSeparator());
+                    objectString.append(currentIdent).append(elem.getKey()).append(": ").append(elem.getValue().toString().replaceAll("\"", ""));
                 } else {
-                    objectString.append(currentIdent).append(elem.getKey()).append(": ").append(elem.getValue()).append(System.lineSeparator());
+                    objectString.append(currentIdent).append(elem.getKey()).append(": ").append(elem.getValue());
                 }
             }
         } else if (object.getValue() instanceof  ArrayList<?>) {
-            objectString.append(ident).append(object.getKey()).append(": ").append(object.getValue().toString().replaceAll("\"", "")).append(System.lineSeparator());
+            objectString.append(ident).append(object.getKey()).append(": ").append(object.getValue().toString().replaceAll("\"", ""));
         } else {
-            objectString.append(ident).append(object.getKey()).append(": ").append(object.getValue()).append(System.lineSeparator());
+            objectString.append(ident).append(object.getKey()).append(": ").append(object.getValue());
         }
     }
 }

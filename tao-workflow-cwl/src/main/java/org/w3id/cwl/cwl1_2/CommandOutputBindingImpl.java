@@ -20,6 +20,9 @@ import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
 import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
 import org.w3id.cwl.cwl1_2.utils.ValidationException;
 
+import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -286,5 +289,21 @@ public class CommandOutputBindingImpl extends SaveableImpl implements CommandOut
     this.loadListing = (java.util.Optional<LoadListingEnum>) loadListing;
     this.glob = (Object) glob;
     this.outputEval = (java.util.Optional<String>) outputEval;
+  }
+
+  public Map<Object, Object> save() {
+    Map<Object, Object> outputBinding = new LinkedHashMap<>();
+    for (Field f : this.getClass().getDeclaredFields()) {
+      if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
+        try {
+          if (f.get(this) != null) {
+            outputBinding.put(f.getName(), f.get(this).toString());
+          }
+        } catch (Exception e){
+          System.out.println(e.getStackTrace());
+        }
+      }
+    }
+    return outputBinding;
   }
 }

@@ -785,12 +785,6 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
     if (this.doc != null) {
       commandLineTool.put("doc",this.doc);
     }
-    if (this.inputs != null) {
-      commandLineTool.put("inputs", treatInOut(inputs));
-    }
-    if (this.outputs != null) {
-      commandLineTool.put("outputs", treatInOut(outputs));
-    }
     if (this.baseCommand != null) {
       if (this.baseCommand instanceof ArrayList<?> && !((ArrayList<?>) this.baseCommand).isEmpty()) {
         List<Object> commandList = new ArrayList<>();
@@ -808,6 +802,12 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
           commandLineTool.put("requirements", ((Saveable) req).save());
         }
       }
+    }
+    if (this.inputs != null) {
+      commandLineTool.put("inputs", treatInOut(inputs));
+    }
+    if (this.outputs != null) {
+      commandLineTool.put("outputs", treatInOut(outputs));
     }
     return commandLineTool;
   }
