@@ -461,11 +461,11 @@ public class ResourceRequirementImpl extends SaveableImpl implements ResourceReq
     Map<Object, Object> resourceRequirements = new LinkedHashMap<>();
     for (Field f : this.getClass().getDeclaredFields()) {
       if (f.getName().equalsIgnoreCase("class_")) {
-        resourceRequirements.put("class", this.class_.getDocVal());
+        resourceRequirements.put("- class", this.class_.getDocVal());
       } else if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
         try {
           if ( f.get(this) != null) {
-            resourceRequirements.put(f.getName(), f.get(this).toString());
+            resourceRequirements.put("  " + f.getName(), f.get(this).toString());
           }
         } catch (Exception e){
           System.out.println(e.getStackTrace());

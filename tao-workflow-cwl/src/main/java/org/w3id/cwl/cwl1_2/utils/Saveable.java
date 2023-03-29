@@ -3,10 +3,7 @@ package org.w3id.cwl.cwl1_2.utils;
 import org.w3id.cwl.cwl1_2.CommandOutputBinding;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public interface Saveable {
     public default Map<Object, Object> save(boolean top, String baseUrl, boolean relativeUris) {
@@ -43,7 +40,7 @@ public interface Saveable {
                             inputId = ((Optional)field.get(object)).get().toString();
                         } else if (field.get(object) != null) {
                             if (field.get(object) instanceof Optional<?> && ((Optional) field.get(object)).get() instanceof CommandOutputBinding) {
-                                temp.put(field.getName(), ((CommandOutputBinding) ((Optional) field.get(object)).get()).getGlob());
+                                temp.put(field.getName(), ((Saveable) ((Optional) field.get(object)).get()).save());
                             } else {
                                 temp.put(field.getName(), field.get(object));
                             }
