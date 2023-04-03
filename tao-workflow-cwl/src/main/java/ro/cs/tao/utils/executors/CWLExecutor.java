@@ -1,6 +1,7 @@
 package ro.cs.tao.utils.executors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
@@ -12,10 +13,12 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.representer.Representer;
 import ro.cs.tao.component.*;
 import ro.cs.tao.datasource.DataSourceComponent;
+import ro.cs.tao.datasource.param.JavaType;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
 import ro.cs.tao.execution.util.TaskUtilities;
+import ro.cs.tao.persistence.WorkflowNodeProvider;
 import ro.cs.tao.persistence.WorkflowProvider;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 import ro.cs.tao.utils.ExceptionUtils;
@@ -33,16 +36,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CWLExecutor extends Executor<Object>
         implements ExecutionDescriptorConverter {
     private ExecutionUnit unit;
     private final ExecutionTaskProvider taskProvider;
     private final WorkflowProvider workflowProvider;
+    private final WorkflowNodeProvider workflowNodeProvider;
 
     public CWLExecutor() {
         this.taskProvider = SpringContextBridge.services().getService(ExecutionTaskProvider.class);
         this.workflowProvider = SpringContextBridge.services().getService(WorkflowProvider.class);
+        this.workflowNodeProvider = SpringContextBridge.services().getService(WorkflowNodeProvider.class);
     }
 
     public CWLExecutor(ExecutionUnit unit) {
@@ -50,6 +56,7 @@ public class CWLExecutor extends Executor<Object>
         this.unit = unit;
         this.taskProvider = SpringContextBridge.services().getService(ExecutionTaskProvider.class);
         this.workflowProvider = SpringContextBridge.services().getService(WorkflowProvider.class);
+        this.workflowNodeProvider = SpringContextBridge.services().getService(WorkflowNodeProvider.class);
     }
 
     @Override
@@ -75,7 +82,6 @@ public class CWLExecutor extends Executor<Object>
                 long workflowId = task.getJob().getWorkflowId();
                 WorkflowDescriptor workflowDesc = this.workflowProvider.get(workflowId);
                 if (!Files.exists(path)) {
-
                     final Workflow cwlWorkflow = new WorkflowImpl();
                     cwlWorkflow.setClass_(Workflow_class.WORKFLOW);
                     cwlWorkflow.setCwlVersion(Optional.of(CWLVersion.V1_2));
@@ -93,18 +99,18 @@ public class CWLExecutor extends Executor<Object>
                             Map<Object, Object>yamlFileObj = new HashMap<>();
                             if (!DataSourceComponent.QUERY_PARAMETER.equals(source.getName())) {
                                 WorkflowInputParameter input = new WorkflowInputParameterImpl();
-                                input.setType(getInOutType(source.getDataDescriptor().getFormatType()));
+                                input.setType(Any.ANY.getDocVal());
                                 input.setId(Optional.of(wfComponent.getTargets().get(0).getName() + "_" + wf.getId()));
                                 inputList.add(input);
                             } else {
-                                yamlFileObj.put("class", File_class.FILE.getDocVal());
+                                yamlFileObj.put("class", Any.ANY.getDocVal());
                                 yamlFileObj.put("path", FileUtilities.toUnixPath(source.getDataDescriptor().getLocation()));
                                 yamlFileList.put(wfComponent.getTargets().get(0).getName() + "_" + wf.getId(), yamlFileObj);
                             }
                         }
                     }
                     cwlWorkflow.setInputs(inputList);
-                    createYamlFile(path, yamlFileList);
+                    createOrUpdateYamlFile(path, yamlFileList);
 
                     for (WorkflowNodeDescriptor wf : leaves) {
                         TaoComponent leavesTaskComponent = TaskUtilities.getComponentFor(wf);
@@ -116,13 +122,21 @@ public class CWLExecutor extends Executor<Object>
                             outputList.add(output);
                         }
                     }
+
                     cwlWorkflow.setOutputs(outputList);
                     List<Object> steps = createWorkflowCWLSteps(workflowDesc);
                     cwlWorkflow.setSteps(steps);
-                    createStepCWL(path, workflowDesc, task);
+                    createStepCWL(path, workflowDesc, task, cwlWorkflow);
                     writeToFile(path, cwlWorkflow.save());
                 } else {
-                    createStepCWL(path, workflowDesc, task);
+                    WorkflowNodeDescriptor node = this.workflowNodeProvider.get(task.getWorkflowNodeId());
+                    List<WorkflowNodeDescriptor> wfAncestors = workflowDesc.findAncestors(workflowDesc.getNodes(), node);
+                    if (wfAncestors != null && wfAncestors.size() > 0) {
+                        final Workflow existingCWL = (WorkflowImpl) RootLoader.loadDocument(path);
+                        createStepCWL(path, workflowDesc, task, existingCWL);
+                    } else {
+                        System.out.println(String.format("Files for job [%s] already exist!", path));
+                    }
                 }
             } catch (Exception e) {
                 logger.severe(ExceptionUtils.getStackTrace(logger, e));
@@ -135,14 +149,14 @@ public class CWLExecutor extends Executor<Object>
         final String retVal;
         switch (formatType) {
             case FOLDER:
-                retVal = formatType.friendlyName();
+                retVal = Directory_class.DIRECTORY.getDocVal();
                 break;
             case OTHER:
                 //retVal = StringUtilities.toFirstCaps(formatType.name());
-                retVal = "File";
+                retVal = Any.ANY.getDocVal();
                 break;
             default:
-                retVal = "File";
+                retVal = File_class.FILE.getDocVal();
         }
         return retVal;
     }
@@ -175,7 +189,7 @@ public class CWLExecutor extends Executor<Object>
                     outList.add(out);
                 }
                 step.setId(Optional.of(stepId));
-                step.setRun(wf.getName().toLowerCase() + ".cwl");
+                step.setRun(wf.getName().toLowerCase() + "_" + wf.getId() + ".cwl");
                 step.setIn(inList);
                 step.setOut(outList);
                 steps.add(step);
@@ -206,25 +220,39 @@ public class CWLExecutor extends Executor<Object>
         return stepInfoMap;
     }
 
-    private void createYamlFile(Path path, Map<Object, Object> inputList) {
+    private void createOrUpdateYamlFile(Path path, Map<Object, Object> inputList) {
+        Map<Object, Object> tempList = new LinkedHashMap<>();
+
         String yamlPathParent = path.getParent().toString();
         String yamlFileName = path.getFileName().toString().replace(".cwl", ".yaml");
         final Path yamlFile =  Paths.get(yamlPathParent + File.separator + yamlFileName);
+
         YAMLFactory factory =  new YAMLFactory();
         factory.enable(YAMLGenerator.Feature.MINIMIZE_QUOTES);
         factory.disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER);
+
         ObjectMapper mapper = new ObjectMapper(factory);
         mapper.registerModule(new Jdk8Module());
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
         try {
-            mapper.writeValue(yamlFile.toFile(), inputList);
+            if (Files.exists(yamlFile)) {
+                Map<Object, Object> existingInputList = mapper.readValue(yamlFile.toFile(), Map.class);
+                if (existingInputList != null && existingInputList.size() > 0) {
+                    tempList.putAll(existingInputList);
+                }
+            }
+            if (inputList != null && inputList.size() > 0) {
+                tempList.putAll(inputList);
+                mapper.writeValue(yamlFile.toFile(), tempList);
+            }
         } catch (IOException e) {
             logger.severe(ExceptionUtils.getStackTrace(logger, e));
         }
     }
 
-    private void createStepCWL(Path path, WorkflowDescriptor workflowDesc, ExecutionTask task) {
-        Path stepPath = Paths.get(path.getParent().toString() + File.separator + this.unit.getMetadata().get("name").toString().toLowerCase() + ".cwl");
+    private void createStepCWL(Path path, WorkflowDescriptor workflowDesc, ExecutionTask task, Workflow existingWorkflow) {
+        Path stepPath = Paths.get(path.getParent().toString() + File.separator + this.unit.getMetadata().get("name").toString().toLowerCase() + "_" + task.getWorkflowNodeId() + ".cwl");
         if (!Files.exists(stepPath)) {
             TaoComponent component = TaskUtilities.getComponentFor(task);
             CommandLineTool commandLineTool = new CommandLineToolImpl();
@@ -233,16 +261,20 @@ public class CWLExecutor extends Executor<Object>
             commandLineTool.setCwlVersion(Optional.of(CWLVersion.V1_2));
 
             List<Object> baseCommandArray = new ArrayList();
-            //the last argument is not added, represents input, outputs and parameters
+            // only last argument is taken into account
             for (int i=0; i< this.unit.getArguments().size(); i++) {
+                // only the job argument is added
                 if (i == this.unit.getArguments().size() - 1) {
-                    int indexEnd = this.unit.getArguments().get(i).indexOf(" ");
-                    baseCommandArray.add(this.unit.getArguments().get(i).substring(0, indexEnd).replaceAll("\"",""));
-                }/* else {
-                    baseCommandArray.add(this.unit.getArguments().get(i));
-                }*/
+                    String arguments = this.unit.getArguments().get(i);
+                    int indexEnd = arguments.indexOf(" ");
+                    int secondIndexStart = arguments.indexOf(" \\");
+                    baseCommandArray.add(arguments.substring(0, indexEnd).replaceAll("\"",""));
+                    if (secondIndexStart > 0) {
+                        int secondIndexEnd = arguments.substring(secondIndexStart + 1).indexOf(" ");
+                        baseCommandArray.add(arguments.substring(secondIndexStart + 1, secondIndexEnd).toString().replaceAll("\"","").replaceAll("\\\\","/"));
+                    }
+                }
             }
-
 
             List<Object> requirementsList = new ArrayList<>();
             if (this.unit.getMinDisk() != null || this.unit.getMinMemory() != null) {
@@ -253,17 +285,6 @@ public class CWLExecutor extends Executor<Object>
             }
             commandLineTool.setRequirements(Optional.of(requirementsList));
 
-            if (component instanceof ProcessingComponent && ((ProcessingComponent)component).getParameterDescriptors().size() > 0) {
-                for (ParameterDescriptor desc : ((ProcessingComponent)component).getParameterDescriptors()) {
-                    for (Variable t : task.getInputParameterValues()) {
-                        if (t.getKey().equals(desc.getName())) {
-                            baseCommandArray.add(desc.getName() + " " + t.getValue());
-                            break;
-                        }
-                    }
-                }
-            }
-
             commandLineTool.setBaseCommand(baseCommandArray);
 
             List<Object> inputs = new ArrayList<>();
@@ -271,9 +292,57 @@ public class CWLExecutor extends Executor<Object>
             for (SourceDescriptor source : component.getSources()) {
                 CommandInputParameter input = new CommandInputParameterImpl();
                 input.setId(Optional.of(source.getName() + "_" + task.getWorkflowNodeId()));
-                input.setType(getInOutType(source.getDataDescriptor().getFormatType()));
+                input.setType(Any.ANY.getDocVal());
                 inputs.add(input);
             }
+
+            if (component instanceof ProcessingComponent && ((ProcessingComponent)component).getParameterDescriptors().size() > 0) {
+                Map<Object, Object> yamlFileList = new HashMap<>();
+                // read the workflow cwl file
+
+                // get inputs
+                List<Object> existingCWLInputs = existingWorkflow.getInputs();
+                // get current steps form Workflow
+                Object currentStep = existingWorkflow.getSteps().stream().filter(s->((WorkflowStep)s).getId().get().equals(component.getId().toLowerCase() + "_" + task.getWorkflowNodeId())).findFirst().orElse(null);
+                // get in element from current step
+                List<Object> inList = ((WorkflowStep)currentStep).getIn();
+                for (ParameterDescriptor desc : ((ProcessingComponent)component).getParameterDescriptors()) {
+                    // create parameter input for current execution unit cwl file and add it to inputs
+                    CommandInputParameter input = new CommandInputParameterImpl();
+                    input.setId(Optional.of(desc.getLabel()));
+                    input.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
+                    input.setLabel(Optional.of(desc.getLabel()));
+                    inputs.add(input);
+
+                    // create parameter input for workflow and add it to inputs
+                    WorkflowInputParameter workflowInputParameter = new WorkflowInputParameterImpl();
+                    workflowInputParameter.setId(Optional.of(desc.getName()));
+                    workflowInputParameter.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
+                    workflowInputParameter.setLabel(Optional.of(desc.getDescription()));
+                    existingCWLInputs.add(workflowInputParameter);
+
+                    // create input for step workflow add it to in list
+                    WorkflowStepInput stepInput = new WorkflowStepInputImpl();
+                    stepInput.setId(Optional.of(desc.getLabel()));
+                    stepInput.setDefault(desc.getName());
+                    inList.add(stepInput);
+
+                    for (Variable t : task.getInputParameterValues()) {
+                        if (t.getKey().equals(desc.getName())) {
+                            // create parameter input for YAML file
+                            yamlFileList.put(desc.getName(), t.getValue());
+                            break;
+                        }
+                    }
+                }
+                // add parameter input for YAML file
+                createOrUpdateYamlFile(path, yamlFileList);
+                // add inputs to workflow CWL file
+                if (Files.exists(path)) {
+                    writeToFile(path, existingWorkflow.save());
+                }
+            }
+
             commandLineTool.setInputs(inputs);
 
             for (TargetDescriptor target : component.getTargets()) {
@@ -311,7 +380,8 @@ public class CWLExecutor extends Executor<Object>
         }
         builder.append(objectString);
         try {
-            Files.write(path, builder.toString().getBytes(), StandardOpenOption.CREATE);
+            Files.write(path, builder.toString().getBytes(), StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             logger.severe(ExceptionUtils.getStackTrace(logger, e));
         }

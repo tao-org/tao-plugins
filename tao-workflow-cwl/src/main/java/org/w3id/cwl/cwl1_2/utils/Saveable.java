@@ -41,6 +41,8 @@ public interface Saveable {
                         } else if (field.get(object) != null) {
                             if (field.get(object) instanceof Optional<?> && ((Optional) field.get(object)).get() instanceof CommandOutputBinding) {
                                 temp.put(field.getName(), ((Saveable) ((Optional) field.get(object)).get()).save());
+                            } else  if (field.get(object) instanceof Optional<?>) {
+                                temp.put(field.getName(), ((Optional) field.get(object)).get());
                             } else {
                                 temp.put(field.getName(), field.get(object));
                             }
