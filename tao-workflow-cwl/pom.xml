@@ -25,6 +25,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+            <groupId>ro.cs.tao</groupId>
+            <artifactId>tao-execution-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+		<dependency>
 			<groupId>ro.cs.tao</groupId>
 			<artifactId>tao-spring-bridge</artifactId>
 			<version>${project.version}</version>
