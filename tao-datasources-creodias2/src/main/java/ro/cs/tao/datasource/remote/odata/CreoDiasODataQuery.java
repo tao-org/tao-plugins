@@ -323,6 +323,8 @@ public class CreoDiasODataQuery extends DataQuery {
                                     throw new QueryException(e.getMessage());
                                 }
                             } else {
+                                // remove the last " AND " because parameter is skipped
+                                query.setLength(query.length() - 5);
                                 idx--;
                             }
                             break;
