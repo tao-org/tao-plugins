@@ -14,6 +14,10 @@
 
 package org.w3id.cwl.cwl1_2;
 
+import org.apache.commons.collections4.MultiSet;
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+import org.apache.commons.collections4.multiset.HashMultiSet;
 import org.apache.commons.lang3.StringUtils;
 import org.w3id.cwl.cwl1_2.utils.*;
 
@@ -797,11 +801,13 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
       }
     }
     if (this.requirements != null) {
+      List<Object> reqList = new LinkedList<>();
       for(Object req : this.requirements.get()) {
         if(req instanceof Saveable) {
-          commandLineTool.put("requirements", ((Saveable) req).save());
+          reqList.add(((Saveable) req).save());
         }
       }
+      commandLineTool.put("requirements", reqList);
     }
     if (this.inputs != null) {
       commandLineTool.put("inputs", treatInOut(inputs));

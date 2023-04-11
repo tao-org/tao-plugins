@@ -7,8 +7,25 @@ import java.util.*;
 
 public interface Saveable {
     public default Map<Object, Object> save(boolean top, String baseUrl, boolean relativeUris) {
-        System.out.println("Not implemented save method!");
-        return null;
+        Map<Object, Object> objectList = new LinkedHashMap<>();
+        for (Field f : this.getClass().getDeclaredFields()) {
+            if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
+                f.setAccessible(true);
+                try {
+                    if (f.get(this) != null) {
+                        if (f.get(this) instanceof Optional) {
+                            objectList.put(f.getName(), ((Optional<?>) f.get(this)).get());
+                        } else {
+                            objectList.put(f.getName(), f.get(this).toString());
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getStackTrace());
+                }
+            }
+        }
+        System.out.println("Interface implementation of the save method!");
+        return objectList;
     }
 
     public default Map<Object, Object> save(boolean top, String baseUrl){
@@ -39,7 +56,7 @@ public interface Saveable {
                         if (field.getName().equalsIgnoreCase("id")) {
                             inputId = ((Optional)field.get(object)).get().toString();
                         } else if (field.get(object) != null) {
-                            if (field.get(object) instanceof Optional<?> && ((Optional) field.get(object)).get() instanceof CommandOutputBinding) {
+                            if (field.get(object) instanceof Optional<?> && ((Optional) field.get(object)).get() instanceof Saveable) {
                                 temp.put(field.getName(), ((Saveable) ((Optional) field.get(object)).get()).save());
                             } else  if (field.get(object) instanceof Optional<?>) {
                                 temp.put(field.getName(), ((Optional) field.get(object)).get());
