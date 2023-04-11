@@ -20,6 +20,11 @@ import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
 import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
 import org.w3id.cwl.cwl1_2.utils.ValidationException;
 
+import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#DockerRequirement</I><BR> <BLOCKQUOTE>
  Indicates that a workflow component should be run in a
@@ -171,6 +176,38 @@ public class DockerRequirementImpl extends SaveableImpl implements DockerRequire
 
   public java.util.Optional<String> getDockerOutputDirectory() {
     return this.dockerOutputDirectory;
+  }
+
+  public void setClass_(DockerRequirement_class class_) {
+    this.class_ = class_;
+  }
+
+  public void setDockerPull(Optional<String> dockerPull) {
+    this.dockerPull = dockerPull;
+  }
+
+  public void setDockerLoad(Optional<String> dockerLoad) {
+    this.dockerLoad = dockerLoad;
+  }
+
+  public void setDockerFile(Optional<String> dockerFile) {
+    this.dockerFile = dockerFile;
+  }
+
+  public void setDockerImport(Optional<String> dockerImport) {
+    this.dockerImport = dockerImport;
+  }
+
+  public void setDockerImageId(Optional<String> dockerImageId) {
+    this.dockerImageId = dockerImageId;
+  }
+
+  public void setDockerOutputDirectory(Optional<String> dockerOutputDirectory) {
+    this.dockerOutputDirectory = dockerOutputDirectory;
+  }
+
+  public DockerRequirementImpl() {
+    super();
   }
 
   /**
@@ -326,5 +363,28 @@ public class DockerRequirementImpl extends SaveableImpl implements DockerRequire
     this.dockerImport = (java.util.Optional<String>) dockerImport;
     this.dockerImageId = (java.util.Optional<String>) dockerImageId;
     this.dockerOutputDirectory = (java.util.Optional<String>) dockerOutputDirectory;
+  }
+
+  @Override
+  public Map<Object, Object> save() {
+    Map<Object, Object> resourceRequirements = new LinkedHashMap<>();
+    for (Field f : this.getClass().getDeclaredFields()) {
+      if (f.getName().equalsIgnoreCase("class_")) {
+        resourceRequirements.put("- class", this.class_.getDocVal());
+      } else if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
+        try {
+          if ( f.get(this) != null) {
+            if (f.get(this) instanceof Optional) {
+              resourceRequirements.put("  " + f.getName(), ((Optional<?>) f.get(this)).get());
+            } else {
+              resourceRequirements.put("  " + f.getName(), f.get(this).toString());
+            }
+          }
+        } catch (Exception e){
+          System.out.println(e.getStackTrace());
+        }
+      }
+    }
+    return resourceRequirements;
   }
 }

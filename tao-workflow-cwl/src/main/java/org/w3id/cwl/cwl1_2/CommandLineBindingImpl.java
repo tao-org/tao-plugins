@@ -20,6 +20,8 @@ import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
 import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
 import org.w3id.cwl.cwl1_2.utils.ValidationException;
 
+import java.util.Optional;
+
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#CommandLineBinding</I><BR> <BLOCKQUOTE>
  
@@ -183,6 +185,38 @@ public class CommandLineBindingImpl extends SaveableImpl implements CommandLineB
 
   public java.util.Optional<Boolean> getShellQuote() {
     return this.shellQuote;
+  }
+
+  public void setLoadContents(Optional<Boolean> loadContents) {
+    this.loadContents = loadContents;
+  }
+
+  public void setPosition(Object position) {
+    this.position = position;
+  }
+
+  public void setPrefix(Optional<String> prefix) {
+    this.prefix = prefix;
+  }
+
+  public void setSeparate(Optional<Boolean> separate) {
+    this.separate = separate;
+  }
+
+  public void setItemSeparator(Optional<String> itemSeparator) {
+    this.itemSeparator = itemSeparator;
+  }
+
+  public void setValueFrom(Object valueFrom) {
+    this.valueFrom = valueFrom;
+  }
+
+  public void setShellQuote(Optional<Boolean> shellQuote) {
+    this.shellQuote = shellQuote;
+  }
+
+  public CommandLineBindingImpl() {
+    super();
   }
 
   /**
