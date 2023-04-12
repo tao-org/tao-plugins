@@ -4,8 +4,12 @@ import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.api.model.batch.v1.JobBuilder;
 import io.fabric8.kubernetes.client.Config;
+import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
+import io.fabric8.kubernetes.client.dsl.LogWatch;
+import io.fabric8.kubernetes.client.dsl.NonNamespaceOperation;
+import io.fabric8.kubernetes.client.dsl.PodResource;
 import org.ggf.drmaa.*;
 import ro.cs.tao.EnumUtils;
 import ro.cs.tao.configuration.ConfigurationManager;
@@ -21,34 +25,96 @@ import ro.cs.tao.utils.executors.ExecutorType;
 import ro.cs.tao.utils.executors.OutputAccumulator;
 import ro.cs.tao.utils.executors.SSHMode;
 import ro.cs.tao.utils.executors.container.ContainerCmdBuilder;
+import ro.cs.tao.utils.executors.container.ContainerType;
 import ro.cs.tao.utils.executors.container.ContainerUnit;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 public class KubernetesSession implements Session {
     private static final String configFileName = "kubernetes.config";
-    private static final String namespace = "TAO";
-    private final KubernetesClientBuilder builder;
+    private static final String token = "tao.kubernetes.token";
+    private static final String namespace = "argo";
+    private static final String masterURL = "tao.kubernetes.master.url";
+    private static final String caCertFile = "tao.kubernetes.ca.cert.file";
+    private final io.fabric8.kubernetes.client.Config builder;
     private KubernetesClient client;
     private Map<String, JobTemplate> jobTemplates;
     private Map<String, Job> runningJobs;
+    private Map<String, LogWatch> logWatchers;
     private Map<String, OutputAccumulator> jobOutputs;
     private AtomicInteger nodeCounter;
     private final Logger logger = Logger.getLogger(DefaultSession.class.getName());
+    private List <LogWatch> jobsLog;
 
     public KubernetesSession() {
+        /*
         final Path configPath = ConfigurationManager.getInstance().getConfigurationFolder().resolve(configFileName);
         if (!Files.exists(configPath)) {
             throw new RuntimeException("No Kubernetes configuration file found");
         }
+        */
         try {
-            Config kubeconfig = Config.fromKubeconfig(configPath.toString());
-            this.builder = new KubernetesClientBuilder().withConfig(kubeconfig);
+            final String url =  ConfigurationManager.getInstance().getValue(this.masterURL);
+            if (url == null) {
+                throw new RuntimeException("Kubernetes master url not found in config file");
+            }
+            final String serviceAccountToken = ConfigurationManager.getInstance().getValue(this.token);
+
+            if (serviceAccountToken == null) {
+                throw new RuntimeException("Kubernetes service account token not found in config file");
+            }
+
+            //String namespace = ConfigurationManager.getInstance().getValue(this.namespace);
+            final Path fileToTest = Paths.get(ConfigurationManager.getInstance().getValue(this.caCertFile));
+            if (!Files.exists(fileToTest)) {
+                throw new RuntimeException("No Kubernetes ca certification file found");
+            }
+
+            this.builder = new io.fabric8.kubernetes.client.ConfigBuilder()
+                    .withMasterUrl(url)
+                    .withNamespace(namespace)
+                    .withCaCertFile(fileToTest.toString())
+                    .withOauthToken(serviceAccountToken)
+                    .build();
+
+
+            this.client = new KubernetesClientBuilder()
+                    .withConfig(this.builder)
+                    .build();
+            /* //TODO: this creates a pod by using an yaml file
+            logger.info("Test");
+            String fileName = "/home/alex/prj/tao/aws/test_pod.yaml";
+            File file = new File("/home/alex/prj/tao/aws/test_pod.yaml");
+            List<HasMetadata> resources = client.load(new FileInputStream(fileName)).items();
+            if (resources.isEmpty()) {
+                logger.info("No resources loaded from file: " + fileName);
+            }
+            else {
+                HasMetadata resource = resources.get(0);
+                if (resource instanceof Pod) {
+                    Pod pod = (Pod) resource;
+                    logger.info("Creating pod in namespace " + client.getNamespace());
+                    NonNamespaceOperation<Pod, PodList, PodResource> pods = client.pods().inNamespace(client.getNamespace());
+                    Pod result = pods.resource(pod).create();
+                    logger.info("Created pod " + result.getMetadata().getName());
+                } else {
+                    logger.info("Loaded resource is not a Pod! " + resource);
+                }
+            }
+            */
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -62,9 +128,12 @@ public class KubernetesSession implements Session {
         synchronized (this) {
             this.jobTemplates = Collections.synchronizedMap(new HashMap<>());
             this.runningJobs = Collections.synchronizedMap(new HashMap<>());
+            this.logWatchers = Collections.synchronizedMap(new HashMap<>());
             this.jobOutputs = Collections.synchronizedMap(new HashMap<>());
             this.nodeCounter = new AtomicInteger(0);
-            this.client = this.builder.build();
+            this.client = new KubernetesClientBuilder()
+                    .withConfig(this.builder)
+                    .build();
         }
     }
 
@@ -74,6 +143,7 @@ public class KubernetesSession implements Session {
             checkSession();
             this.jobTemplates.clear();
             this.runningJobs.clear();
+            this.logWatchers.clear();
             this.jobOutputs.clear();
             this.client.close();
             this.client = null;
@@ -139,6 +209,7 @@ public class KubernetesSession implements Session {
     public void cleanupJob(String jobId) {
         this.jobOutputs.remove(jobId);
         this.runningJobs.remove(jobId);
+        this.logWatchers.remove(jobId);
     }
 
     @Override
@@ -174,7 +245,15 @@ public class KubernetesSession implements Session {
                 unit.setMinMemory(memConstraint);
             }
             final String jobId = jt.getJobName() + ":" + System.nanoTime();
-            this.runningJobs.put(jobId, execute(jobId, unit));
+            Job newJob = execute(jobId, unit);
+            this.runningJobs.put(jobId, newJob);
+            // TODO: maybe the log should be used only at the end of the job
+            /*
+            // streaming to System.out
+            LogWatch lw = this.client.batch().v1().jobs().inNamespace(namespace).withName(newJob.getMetadata().getName()).watchLog(System.out);
+            this.logWatchers.put(jobId, lw);
+            // end TODO
+             */
             return jobId;
         }
     }
@@ -188,6 +267,7 @@ public class KubernetesSession implements Session {
     public void control(String jobId, int action) throws DrmaaException {
         checkSession();
         Job job = this.runningJobs.get(jobId);
+        LogWatch lw = this.logWatchers.get(jobId);
         Pod pod = job != null ? getPod(job) : null;
         switch (action) {
             case HOLD:
@@ -205,6 +285,11 @@ public class KubernetesSession implements Session {
                     throw new NoActiveSessionException("No active executor for job " + jobId);
                 }
                 stopPods(job);
+                if (lw != null) {
+                    lw.close();
+                }
+                logger.info("Logger closed for jobId / name: " + jobId + " / " + job.getMetadata().getName());
+                cleanupJob(jobId);
                 break;
             case RELEASE:
             case RESUME:
@@ -230,6 +315,7 @@ public class KubernetesSession implements Session {
     public int getJobProgramStatus(String jobId) throws DrmaaException {
         checkSession();
         Job job = this.runningJobs.get(jobId);
+        LogWatch lw = this.logWatchers.get(jobId);
         if (job == null) {
             throw new InvalidJobException();
         }
@@ -248,13 +334,29 @@ public class KubernetesSession implements Session {
                 break;
             case SUCCEEDED:
                 statusId = DONE;
+                if (lw != null) {
+                    lw.close();
+                }
+                logger.info("Logger closed for jobId / name: " + jobId + " / " + job.getMetadata().getName());
+                logger.info("Pod LOG: " + client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog());
+
+                cleanupJob(jobId);
                 break;
             case FAILED:
                 statusId = FAILED;
+                if (lw != null) {
+                    lw.close();
+                }
+                logger.info("Pod LOG: " + client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog());
+                cleanupJob(jobId);
                 break;
             case UNKNOWN:
             default:
                 statusId = UNDETERMINED;
+                if (lw != null) {
+                    lw.close();
+                }
+                //cleanupJob(jobId);
                 break;
         }
         return statusId;
@@ -322,45 +424,90 @@ public class KubernetesSession implements Session {
             throw new InvalidJobTemplateException();
         }
     }
-
     private Job execute(String jobId, ExecutionUnit unit) {
         Container container = new Container();
-        ContainerUnit containerUnit = unit.getContainerUnit();
-        container.setName(containerUnit.getContainerName());
-        container.setImage(containerUnit.getContainerName());
-        container.setArgs(unit.getArguments());
-        container.setCommand(unit.getArguments());
-        if (containerUnit.getVolumeMap() != null) {
-            final List<VolumeMount> mounts = new ArrayList<>();
-            for (Map.Entry<String, String> entry : containerUnit.getVolumeMap().entrySet()) {
-                VolumeMount mount = new VolumeMount();
-                mount.setName(entry.getKey());
-                mount.setMountPath(entry.getValue());
-                mounts.add(mount);
+        ContainerUnit containerUnit = new ContainerUnit(ContainerType.KUBERNETES);
+
+        try {
+            //containerUnit.setArguments(unit.getArguments());
+            // TODO: tests only
+            containerUnit.addEnvironmentVariable("TEST_POD", "values");
+            containerUnit.setArguments(Arrays.asList("sh", "-c", "echo 'The app is running!'; cd /tst_pod; ls -all; cat tst.txt; sleep 5; echo 'Second'; sleep 10 ; echo 'Third' ; sleep 2 "));
+            //end TODO
+
+            //TODO: implement the container name on an upper layer
+            containerUnit.setContainerName("test-pod-job");
+            //end TODO
+
+            container.setName(containerUnit.getContainerName());
+            // TODO: implement the image name on an upper layer
+            //container.setImage(unit.getImage())
+            container.setImage("501872996718.dkr.ecr.eu-central-1.amazonaws.com/world-cereal/ewoc_general:latest");
+
+            container.setCommand(containerUnit.getArguments());
+
+            // TODO: tests only
+            containerUnit.addVolumeMapping("/tst", "/tst_pod");
+            // end TODO
+            List<Volume> volumes = null;
+            if (containerUnit.getVolumeMap() != null) {
+                final List<VolumeMount> mounts = new ArrayList<>();
+                volumes = new ArrayList<>();
+                int volIdx = 0;
+                // TODO: This is for hostPath mount only ! Implement it for s3 as well
+                for (Map.Entry<String, String> entry : containerUnit.getVolumeMap().entrySet()) {
+                    VolumeMount mount = new VolumeMount();
+                    String volName = "volume-" + volIdx;
+                    mount.setName(volName);
+                    volIdx ++;
+                    mount.setMountPath(entry.getValue());
+                    mounts.add(mount);
+
+                    Volume volToAdd = new Volume();
+                    volToAdd.setHostPath(new HostPathVolumeSource(entry.getKey(), "DirectoryOrCreate"));
+                    volToAdd.setName(volName);
+                    volumes.add(volToAdd);
+                }
+                container.setVolumeMounts(mounts);
             }
-            container.setVolumeMounts(mounts);
-        }
-        ResourceRequirements resourceRequirements = new ResourceRequirements();
-        resourceRequirements.setAdditionalProperty("memory", new Quantity(unit.getMinMemory() + "Mi"));
-        container.setResources(resourceRequirements);
-        final Job job = new JobBuilder()
+
+            if (!containerUnit.getEnvironmentVariables().isEmpty()) {
+                List envVars = new ArrayList();
+                for (Map.Entry<String, String> entry : containerUnit.getEnvironmentVariables().entrySet()) {
+                    envVars.add(new EnvVar(entry.getKey(), entry.getValue(), null));
+                }
+                container.setEnv(envVars);
+            }
+            //ResourceRequirements resourceRequirements = new ResourceRequirements();
+            //resourceRequirements.setAdditionalProperty("memory", new Quantity(unit.getMinMemory() + "Mi"));
+            //container.setResources(resourceRequirements);
+            final Job job = new JobBuilder()
                     .withApiVersion("batch/v1")
                     .withNewMetadata()
-                        .withName(jobId)
-                        //.withLabels(Collections.singletonMap("Label", //put job label here))
+                    .withName("job-id-111")
+                    //.withLabels(Collections.singletonMap("Label", //put job label here))
                     .endMetadata()
                     .withNewSpec()
-                        .withNewTemplate()
-                            .withNewSpec()
-                                .addNewContainerLike(container)
-                                .endContainer()
-                                .withRestartPolicy("Never")
-                            .endSpec()
-                        .endTemplate()
+                    .withBackoffLimit(0)
+                    // by using ttlSecondsAfterFinished, the job will be deleted automatically after it finishes, so the "delete" function may not be called anymore
+                    .withTtlSecondsAfterFinished(200)
+                    .withNewTemplate()
+                    .withNewSpec()
+                    .withNodeSelector(Collections.singletonMap("role-pg", "db"))
+                    .addNewContainerLike(container)
+                    .endContainer()
+                    .withVolumes(volumes)
+                    .withRestartPolicy("Never")
+                    .endSpec()
+                    .endTemplate()
                     .endSpec()
                     .build();
-        client.batch().v1().jobs().inNamespace(namespace).resource(job).create();
-        return job;
+
+            client.batch().v1().jobs().inNamespace(namespace).resource(job).create();
+            return job;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Pod getPod(Job job) {
@@ -371,11 +518,6 @@ public class KubernetesSession implements Session {
     }
 
     private void stopPods(Job job) {
-        // Get All pods created by the job
-        PodList podList = client.pods().inNamespace(namespace).withLabel("job-name", job.getMetadata().getName()).list();
-        // Wait for pod to complete
-        for (Pod pod : podList.getItems()) {
-            client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).delete();
-        }
+        client.resource(job).inNamespace(namespace).delete();
     }
 }
