@@ -68,14 +68,38 @@ public class CWLExecutor extends Executor<Object>
         if (this.unit == null) {
             throw new NullPointerException("Execution unit not set");
         }
-        if (unit.getScriptTargetPath() != null) {
+        if (this.unit.getScriptTargetPath() != null) {
             long taskId = (Long) unit.getMetadata().get("id");
             ExecutionTask task = this.taskProvider.get(taskId);
             try {
                 final Path path = Paths.get(unit.getScriptTargetPath());
                 long workflowId = task.getJob().getWorkflowId();
                 WorkflowDescriptor workflowDesc = this.workflowProvider.get(workflowId);
+
+                boolean createFile = false;
                 if (!Files.exists(path)) {
+                    createFile = true;
+                } else {
+                    WorkflowNodeDescriptor node = this.workflowNodeProvider.get(task.getWorkflowNodeId());
+                   // List<WorkflowNodeDescriptor> wfAncestors = workflowDesc.findAncestors(workflowDesc.getNodes(), node);
+                    /*for (int idx = 0; idx < workflowDesc.getNodes().size(); idx++) {
+                        if (workflowDesc.getNodes().get(idx).getId().equals(task.getWorkflowNodeId())) {
+                            nodePosition = idx;
+                            break;
+                        }
+                    }*/
+                    List<WorkflowNodeDescriptor> orderedNodes = workflowDesc.orderNodes(workflowDesc.getNodes(), null);
+                    int nodePosition = orderedNodes.indexOf(node);
+                    if (nodePosition > 0 && orderedNodes.get(nodePosition - 1).getIncomingLinks().size() > 0) {
+                    //if (wfAncestors != null && wfAncestors.stream().anyMatch(wf -> wf.getComponentType().equals("DATASOURCE"))) {
+                        createFile = false;
+                    } else {
+                        createFile = true;
+                    }
+                }
+
+                if (createFile) {
+                    System.out.println("Create file");
                     final Workflow cwlWorkflow = new WorkflowImpl();
                     cwlWorkflow.setClass_(Workflow_class.WORKFLOW);
                     cwlWorkflow.setCwlVersion(Optional.of(CWLVersion.V1_2));
@@ -126,14 +150,9 @@ public class CWLExecutor extends Executor<Object>
                     createStepCWL(path, workflowDesc, task, cwlWorkflow);
                     writeToFile(path, cwlWorkflow.save());
                 } else {
-                    WorkflowNodeDescriptor node = this.workflowNodeProvider.get(task.getWorkflowNodeId());
-                    List<WorkflowNodeDescriptor> wfAncestors = workflowDesc.findAncestors(workflowDesc.getNodes(), node);
-                    if (wfAncestors != null && wfAncestors.size() > 0) {
-                        final Workflow existingCWL = (WorkflowImpl) RootLoader.loadDocument(path);
-                        createStepCWL(path, workflowDesc, task, existingCWL);
-                    } else {
-                        System.out.println(String.format("Files for job [%s] already exist!", path));
-                    }
+                    System.out.println("Update file");
+                    final Workflow existingCWL = (WorkflowImpl) RootLoader.loadDocument(path);
+                    createStepCWL(path, workflowDesc, task, existingCWL);
                 }
             } catch (Exception e) {
                 logger.severe(ExceptionUtils.getStackTrace(logger, e));
@@ -257,135 +276,161 @@ public class CWLExecutor extends Executor<Object>
 
     private void createStepCWL(Path path, WorkflowDescriptor workflowDesc, ExecutionTask task, Workflow existingWorkflow) {
         Path stepPath = Paths.get(path.getParent().toString() + File.separator + this.unit.getMetadata().get("name").toString().toLowerCase() + "_" + task.getWorkflowNodeId() + ".cwl");
-        if (!Files.exists(stepPath)) {
-            TaoComponent component = TaskUtilities.getComponentFor(task);
-            CommandLineTool commandLineTool = new CommandLineToolImpl();
+        TaoComponent component = TaskUtilities.getComponentFor(task);
+        CommandLineTool commandLineTool = new CommandLineToolImpl();
 
-            commandLineTool.setClass_(CommandLineTool_class.COMMANDLINETOOL);
-            commandLineTool.setCwlVersion(Optional.of(CWLVersion.V1_2));
+        commandLineTool.setClass_(CommandLineTool_class.COMMANDLINETOOL);
+        commandLineTool.setCwlVersion(Optional.of(CWLVersion.V1_2));
 
-            List<Object> baseCommandArray = new ArrayList();
-            // only last argument is taken into account
-            for (int i=0; i< this.unit.getArguments().size(); i++) {
-                // only the job argument is added
-                if (i == this.unit.getArguments().size() - 1) {
-                    String arguments = this.unit.getArguments().get(i);
-                    int indexEnd = arguments.indexOf(" ");
-                    int secondIndexStart = arguments.indexOf(" \\");
-                    baseCommandArray.add(arguments.substring(0, indexEnd).replaceAll("\"",""));
-                    if (secondIndexStart > 0) {
-                        int secondIndexEnd = arguments.substring(secondIndexStart + 1).indexOf(" ");
-                        baseCommandArray.add(arguments.substring(secondIndexStart + 1, secondIndexEnd).toString().replaceAll("\"","").replaceAll("\\\\","/"));
-                    }
+        List<Object> baseCommandArray = new ArrayList();
+        // only last argument is taken into account
+        for (int i=0; i< this.unit.getArguments().size(); i++) {
+            // only the job argument is added
+            if (i == this.unit.getArguments().size() - 1) {
+                String arguments = this.unit.getArguments().get(i);
+                int indexEnd = arguments.indexOf(" ");
+                int secondIndexStart = arguments.indexOf(" \\");
+                baseCommandArray.add(arguments.substring(0, indexEnd).replaceAll("\"",""));
+                if (secondIndexStart > 0) {
+                    int secondIndexEnd = arguments.substring(secondIndexStart + 1).indexOf(" ");
+                    baseCommandArray.add(arguments.substring(secondIndexStart + 1, secondIndexEnd).toString().replaceAll("\"","").replaceAll("\\\\","/"));
                 }
             }
+        }
 
-            List<Object> requirementsList = new ArrayList<>();
-            if (this.unit.getMinDisk() != null || this.unit.getMinMemory() != null) {
-                ResourceRequirement requirement = new ResourceRequirementImpl();
-                requirement.setClass_(ResourceRequirement_class.RESOURCEREQUIREMENT);
-                requirement.setRamMin(this.unit.getMinMemory() != null ? this.unit.getMinMemory() : this.unit.getMinDisk());
-                requirementsList.add(requirement);
+        List<Object> requirementsList = new ArrayList<>();
+        if (this.unit.getMinDisk() != null || this.unit.getMinMemory() != null) {
+            ResourceRequirement requirement = new ResourceRequirementImpl();
+            requirement.setClass_(ResourceRequirement_class.RESOURCEREQUIREMENT);
+            requirement.setRamMin(this.unit.getMinMemory() != null ? this.unit.getMinMemory() : this.unit.getMinDisk());
+            requirementsList.add(requirement);
+        }
+        if (this.unit.getContainerUnit() != null) {
+            DockerRequirement requirement = new DockerRequirementImpl();
+            requirement.setClass_(DockerRequirement_class.DOCKERREQUIREMENT);
+            requirement.setDockerImageId(Optional.of(this.unit.getContainerUnit().getContainerRegistry() + "/" + this.unit.getContainerUnit().getContainerName()));
+            requirementsList.add(requirement);
+        }
+        commandLineTool.setRequirements(Optional.of(requirementsList));
+
+        commandLineTool.setBaseCommand(baseCommandArray);
+
+        List<Object> inputs = new ArrayList<>();
+        List<Object> outputs = new ArrayList<>();
+
+        // get current steps form Workflow
+       Object currentStep = existingWorkflow.getSteps().stream().filter(s->((WorkflowStep)s).getId().get().contains(component.getId().toLowerCase() + "_" + task.getWorkflowNodeId())).findFirst().orElse(null);
+
+        // get inputs
+        List<Object> existingCWLInputs = existingWorkflow.getInputs();
+        List<String> arguments;
+        final boolean isBash = this.unit.getArguments().get(0).equals("/bin/bash");
+        if (isBash) {
+            arguments = Arrays.asList(this.unit.getArguments().get(2).split(" "));
+        } else {
+            arguments = this.unit.getArguments();
+        }
+
+        for (SourceDescriptor source : component.getSources()) {
+            String inputId = source.getName() + "_" + task.getWorkflowNodeId();
+            CommandInputParameter input = new CommandInputParameterImpl();
+            input.setId(Optional.of(inputId));
+            Object associatedInput = null;
+            if (currentStep != null) {
+                Object currentStepIn = ((WorkflowStep) currentStep).getIn().stream().filter(in -> ((WorkflowStepInput) in).getId().get().equals(inputId)).findFirst().orElse(null);
+                Object currentStepInVal = currentStepIn != null ? ((WorkflowStepInput) currentStepIn).getDefault() : null;
+                associatedInput = existingCWLInputs.stream().filter(in -> ((WorkflowInputParameter) in).getId().get().equals(currentStepInVal)).findFirst().orElse(null);
             }
-            if (this.unit.getContainerUnit() != null) {
-                DockerRequirement requirement = new DockerRequirementImpl();
-                requirement.setClass_(DockerRequirement_class.DOCKERREQUIREMENT);
-                requirement.setDockerImageId(Optional.of(this.unit.getContainerUnit().getContainerRegistry() + "/" + this.unit.getContainerUnit().getContainerName()));
-                requirementsList.add(requirement);
-            }
-            commandLineTool.setRequirements(Optional.of(requirementsList));
-
-            commandLineTool.setBaseCommand(baseCommandArray);
-
-            List<Object> inputs = new ArrayList<>();
-            List<Object> outputs = new ArrayList<>();
-
-            // get current steps form Workflow
-            Object currentStep = existingWorkflow.getSteps().stream().filter(s->((WorkflowStep)s).getId().get().equals(component.getId().toLowerCase() + "_" + task.getWorkflowNodeId())).findFirst().orElse(null);
-
-            // get inputs
-            List<Object> existingCWLInputs = existingWorkflow.getInputs();
-
-            for (SourceDescriptor source : component.getSources()) {
-                String inputId = source.getName() + "_" + task.getWorkflowNodeId();
-                CommandInputParameter input = new CommandInputParameterImpl();
-                input.setId(Optional.of(inputId));
-                Object currentStepIn = ((WorkflowStep)currentStep).getIn().stream().filter(in -> ((WorkflowStepInput)in).getId().get().equals(inputId)).findFirst().orElse(null);
-                Object currentStepInVal = currentStepIn != null ? ((WorkflowStepInput)currentStepIn).getDefault() : null;
-                Object associatedInput = existingCWLInputs.stream().filter(in->((WorkflowInputParameter)in).getId().get().equals(currentStepInVal)).findFirst().orElse(null);
-                Object type = associatedInput != null ? ((WorkflowInputParameter)associatedInput).getType() : Any.ANY.getDocVal();
-                input.setType(type);
-                CommandLineBinding inputBinding = new CommandLineBindingImpl();
+            Object type = associatedInput != null ? ((WorkflowInputParameter)associatedInput).getType() : Any.ANY.getDocVal();
+            input.setType(type);
+            CommandLineBinding inputBinding = new CommandLineBindingImpl();
+            String foundPrefix = arguments.stream().filter(arg -> arg.contains(source.getName())).findFirst().orElse(null);
+            if (foundPrefix != null) {
+                int chIndex = foundPrefix.indexOf("=");
+                if (chIndex > -1) {
+                    inputBinding.setPrefix(Optional.of(foundPrefix.substring(0,chIndex + 1 )));
+                } else {
+                    inputBinding.setPrefix(Optional.of(foundPrefix));
+                }
+            } else {
                 inputBinding.setPrefix(Optional.of("-" + source.getName()));
-                inputBinding.setValueFrom("$(self.path)");
-                input.setInputBinding(Optional.of(inputBinding));
-                inputs.add(input);
             }
+            inputBinding.setValueFrom("$(self.path)");
+            input.setInputBinding(Optional.of(inputBinding));
+            inputs.add(input);
+        }
 
-            if (component instanceof ProcessingComponent && ((ProcessingComponent)component).getParameterDescriptors().size() > 0) {
-                Map<Object, Object> yamlFileList = new HashMap<>();
+        if (component instanceof ProcessingComponent && ((ProcessingComponent)component).getParameterDescriptors().size() > 0) {
+            Map<Object, Object> yamlFileList = new HashMap<>();
 
-                // get in element from current step
-                List<Object> inList = ((WorkflowStep)currentStep).getIn();
+            // get in element from current step
+            List<Object> inList = ((WorkflowStep)currentStep).getIn();
 
-                for (ParameterDescriptor desc : ((ProcessingComponent)component).getParameterDescriptors()) {
-                    if (task.getInputParameterValues().stream().anyMatch(t -> t.getKey().equals(desc.getName()))) {
-                        // create parameter input for current execution unit cwl file and add it to inputs
-                        CommandInputParameter input = new CommandInputParameterImpl();
-                        input.setId(Optional.of(desc.getLabel()));
-                        input.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
-                        input.setLabel(Optional.of(desc.getLabel()));
-                        CommandLineBinding inputBinding = new CommandLineBindingImpl();
+            for (ParameterDescriptor desc : ((ProcessingComponent)component).getParameterDescriptors()) {
+                if (task.getInputParameterValues().stream().anyMatch(t -> t.getKey().equals(desc.getName()))) {
+                    // create parameter input for current execution unit cwl file and add it to inputs
+                    CommandInputParameter input = new CommandInputParameterImpl();
+                    input.setId(Optional.of(desc.getLabel()));
+                    input.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
+                    input.setLabel(Optional.of(desc.getLabel()));
+                    CommandLineBinding inputBinding = new CommandLineBindingImpl();
+                    String foundPrefix = arguments.stream().filter(arg -> arg.contains(desc.getLabel())).findFirst().orElse(null);
+                    if (foundPrefix != null) {
+                        int chIndex = foundPrefix.indexOf("=");
+                        if (chIndex > -1) {
+                            inputBinding.setPrefix(Optional.of(foundPrefix.substring(0,chIndex + 1 )));
+                        } else {
+                            inputBinding.setPrefix(Optional.of(foundPrefix));
+                        }
+                    } else {
                         inputBinding.setPrefix(Optional.of("-" + desc.getLabel()));
-                        input.setInputBinding(Optional.of(inputBinding));
-                        inputs.add(input);
+                    }
+                    input.setInputBinding(Optional.of(inputBinding));
+                    inputs.add(input);
 
-                        // create parameter input for workflow and add it to inputs
-                        WorkflowInputParameter workflowInputParameter = new WorkflowInputParameterImpl();
-                        workflowInputParameter.setId(Optional.of(desc.getName()));
-                        workflowInputParameter.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
-                        workflowInputParameter.setLabel(Optional.of(desc.getDescription()));
-                        existingCWLInputs.add(workflowInputParameter);
+                    // create parameter input for workflow and add it to inputs
+                    WorkflowInputParameter workflowInputParameter = new WorkflowInputParameterImpl();
+                    workflowInputParameter.setId(Optional.of(desc.getName()));
+                    workflowInputParameter.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
+                    workflowInputParameter.setLabel(Optional.of(desc.getDescription()));
+                    existingCWLInputs.add(workflowInputParameter);
 
-                        // create input for step workflow add it to in list
-                        WorkflowStepInput stepInput = new WorkflowStepInputImpl();
-                        stepInput.setId(Optional.of(desc.getLabel()));
-                        stepInput.setDefault(desc.getName());
-                        inList.add(stepInput);
+                    // create input for step workflow add it to in list
+                    WorkflowStepInput stepInput = new WorkflowStepInputImpl();
+                    stepInput.setId(Optional.of(desc.getLabel()));
+                    stepInput.setDefault(desc.getName());
+                    inList.add(stepInput);
 
-                        for (Variable t : task.getInputParameterValues()) {
-                            if (t.getKey().equals(desc.getName())) {
-                                // create parameter input for YAML file
-                                yamlFileList.put(desc.getName(), t.getValue());
-                                break;
-                            }
+                    for (Variable t : task.getInputParameterValues()) {
+                        if (t.getKey().equals(desc.getName())) {
+                            // create parameter input for YAML file
+                            yamlFileList.put(desc.getName(), t.getValue());
+                            break;
                         }
                     }
                 }
-                // add parameter input for YAML file
-                createOrUpdateYamlFile(path, yamlFileList);
-                // add inputs to workflow CWL file
-                if (Files.exists(path)) {
-                    writeToFile(path, existingWorkflow.save());
-                }
             }
-
-            commandLineTool.setInputs(inputs);
-
-            for (TargetDescriptor target : component.getTargets()) {
-                CommandOutputParameter output = new CommandOutputParameterImpl();
-                output.setId(Optional.of(target.getName() + "_" + task.getWorkflowNodeId()));
-                output.setType(getInOutType(target.getDataDescriptor().getFormatType(), target.getDataDescriptor().getLocation()));
-                CommandOutputBinding outputBinding = new CommandOutputBindingImpl();
-                outputBinding.setGlob(target.getDataDescriptor().getLocation());
-                output.setOutputBinding(Optional.of(outputBinding));
-                outputs.add(output);
+            // add parameter input for YAML file
+            createOrUpdateYamlFile(path, yamlFileList);
+            // add inputs to workflow CWL file
+            if (Files.exists(path)) {
+                writeToFile(path, existingWorkflow.save());
             }
-            commandLineTool.setOutputs(outputs);
-            writeToFile(stepPath, commandLineTool.save());
-        } else {
-            System.out.println(String.format("File %s already exist!", stepPath.toString()));
         }
+
+        commandLineTool.setInputs(inputs);
+
+        for (TargetDescriptor target : component.getTargets()) {
+            CommandOutputParameter output = new CommandOutputParameterImpl();
+            output.setId(Optional.of(target.getName() + "_" + task.getWorkflowNodeId()));
+            output.setType(getInOutType(target.getDataDescriptor().getFormatType(), target.getDataDescriptor().getLocation()));
+            CommandOutputBinding outputBinding = new CommandOutputBindingImpl();
+            outputBinding.setGlob(target.getDataDescriptor().getLocation());
+            output.setOutputBinding(Optional.of(outputBinding));
+            outputs.add(output);
+        }
+        commandLineTool.setOutputs(outputs);
+        writeToFile(stepPath, commandLineTool.save());
     }
 
     private void writeToFile(Path path, Map<Object, Object> object) {
