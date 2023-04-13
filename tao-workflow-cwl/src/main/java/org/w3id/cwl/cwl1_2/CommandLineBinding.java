@@ -66,6 +66,8 @@ public interface CommandLineBinding extends InputBinding, Saveable {
    */
 
   java.util.Optional<Boolean> getLoadContents();
+
+  void setLoadContents(java.util.Optional<Boolean> loadContents);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#CommandLineBinding/position</I><BR>
    * <BLOCKQUOTE>
@@ -80,6 +82,8 @@ public interface CommandLineBinding extends InputBinding, Saveable {
    */
 
   Object getPosition();
+
+  void setPosition(Object position);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#CommandLineBinding/prefix</I><BR>
    * <BLOCKQUOTE>
@@ -87,6 +91,8 @@ public interface CommandLineBinding extends InputBinding, Saveable {
    */
 
   java.util.Optional<String> getPrefix();
+
+  void setPrefix(java.util.Optional<String> prefix);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#CommandLineBinding/separate</I><BR>
    * <BLOCKQUOTE>
@@ -97,6 +103,8 @@ public interface CommandLineBinding extends InputBinding, Saveable {
    */
 
   java.util.Optional<Boolean> getSeparate();
+
+  void setSeparate(java.util.Optional<Boolean> separate);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#CommandLineBinding/itemSeparator</I><BR>
    * <BLOCKQUOTE>
@@ -106,6 +114,8 @@ public interface CommandLineBinding extends InputBinding, Saveable {
    */
 
   java.util.Optional<String> getItemSeparator();
+
+  void setItemSeparator(java.util.Optional<String> itemSeparator);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#CommandLineBinding/valueFrom</I><BR>
    * <BLOCKQUOTE>
@@ -129,6 +139,8 @@ public interface CommandLineBinding extends InputBinding, Saveable {
    */
 
   Object getValueFrom();
+
+  void setValueFrom(Object valueFrom);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#CommandLineBinding/shellQuote</I><BR>
    * <BLOCKQUOTE>
@@ -142,4 +154,6 @@ public interface CommandLineBinding extends InputBinding, Saveable {
    */
 
   java.util.Optional<Boolean> getShellQuote();
+
+  void setShellQuote(java.util.Optional<Boolean> shellQuote);
 }

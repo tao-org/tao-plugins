@@ -24,6 +24,7 @@ import ro.cs.tao.utils.ExceptionUtils;
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#ResourceRequirement</I><BR> <BLOCKQUOTE>
@@ -465,7 +466,11 @@ public class ResourceRequirementImpl extends SaveableImpl implements ResourceReq
       } else if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
         try {
           if ( f.get(this) != null) {
-            resourceRequirements.put("  " + f.getName(), f.get(this).toString());
+            if (f.get(this) instanceof Optional) {
+              resourceRequirements.put("  " + f.getName(), ((Optional<?>) f.get(this)).get());
+            } else {
+              resourceRequirements.put("  " + f.getName(), f.get(this).toString());
+            }
           }
         } catch (Exception e){
           System.out.println(e.getStackTrace());

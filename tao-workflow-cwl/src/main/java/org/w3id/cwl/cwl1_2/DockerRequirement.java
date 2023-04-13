@@ -79,6 +79,8 @@ public interface DockerRequirement extends ProcessRequirement, Saveable {
    */
 
   DockerRequirement_class getClass_();
+
+  void setClass_(DockerRequirement_class class_);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#DockerRequirement/dockerPull</I><BR>
    * <BLOCKQUOTE>
@@ -89,6 +91,8 @@ public interface DockerRequirement extends ProcessRequirement, Saveable {
    */
 
   java.util.Optional<String> getDockerPull();
+
+  void setDockerPull(java.util.Optional<String> dockerPull);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#DockerRequirement/dockerLoad</I><BR>
    * <BLOCKQUOTE>
@@ -96,6 +100,8 @@ public interface DockerRequirement extends ProcessRequirement, Saveable {
    */
 
   java.util.Optional<String> getDockerLoad();
+
+  void setDockerLoad(java.util.Optional<String> dockerLoad);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#DockerRequirement/dockerFile</I><BR>
    * <BLOCKQUOTE>
@@ -103,6 +109,8 @@ public interface DockerRequirement extends ProcessRequirement, Saveable {
    */
 
   java.util.Optional<String> getDockerFile();
+
+  void setDockerFile(java.util.Optional<String> dockerFile);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#DockerRequirement/dockerImport</I><BR>
    * <BLOCKQUOTE>
@@ -110,6 +118,8 @@ public interface DockerRequirement extends ProcessRequirement, Saveable {
    */
 
   java.util.Optional<String> getDockerImport();
+
+  void setDockerImport(java.util.Optional<String> dockerImport);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#DockerRequirement/dockerImageId</I><BR>
    * <BLOCKQUOTE>
@@ -121,6 +131,8 @@ public interface DockerRequirement extends ProcessRequirement, Saveable {
    */
 
   java.util.Optional<String> getDockerImageId();
+
+  void setDockerImageId(java.util.Optional<String> dockerImageId);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#DockerRequirement/dockerOutputDirectory</I><BR>
    * <BLOCKQUOTE>
@@ -130,4 +142,6 @@ public interface DockerRequirement extends ProcessRequirement, Saveable {
    */
 
   java.util.Optional<String> getDockerOutputDirectory();
+
+  void setDockerOutputDirectory(java.util.Optional<String> dockerOutputDirectory);
 }
