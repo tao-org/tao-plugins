@@ -457,9 +457,8 @@ public class KubernetesSession implements Session {
                 // TODO: This is for hostPath mount only ! Implement it for s3 as well
                 for (Map.Entry<String, String> entry : containerUnit.getVolumeMap().entrySet()) {
                     VolumeMount mount = new VolumeMount();
-                    String volName = "volume-" + volIdx;
+                    String volName = "volume-" + volIdx++;
                     mount.setName(volName);
-                    volIdx ++;
                     mount.setMountPath(entry.getValue());
                     mounts.add(mount);
 
