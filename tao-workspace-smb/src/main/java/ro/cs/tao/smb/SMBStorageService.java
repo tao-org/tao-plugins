@@ -31,6 +31,9 @@ import java.util.zip.ZipOutputStream;
 public class SMBStorageService extends BaseStorageService<byte[], InputStream> {
     private static final String PROTOCOL = "smb";
 
+    public SMBStorageService() {
+    }
+
     @Override
     public boolean isIntendedFor(String protocol) {
         return PROTOCOL.equalsIgnoreCase(protocol);
