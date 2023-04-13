@@ -1,16 +1,13 @@
 package ro.cs.tao.utils.executors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.w3id.cwl.cwl1_2.*;
 import org.w3id.cwl.cwl1_2.utils.RootLoader;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.representer.Representer;
 import ro.cs.tao.component.*;
 import ro.cs.tao.datasource.DataSourceComponent;
 import ro.cs.tao.datasource.param.JavaType;
@@ -24,19 +21,16 @@ import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.ExecutionUnitFormat;
 import ro.cs.tao.utils.FileUtilities;
-import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workflow.WorkflowDescriptor;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CWLExecutor extends Executor<Object>
         implements ExecutionDescriptorConverter {
@@ -97,15 +91,18 @@ public class CWLExecutor extends Executor<Object>
                         TaoComponent wfComponent = TaskUtilities.getComponentFor(wf);
                         for (SourceDescriptor source : wfComponent.getSources()) {
                             Map<Object, Object>yamlFileObj = new HashMap<>();
-                            if (!DataSourceComponent.QUERY_PARAMETER.equals(source.getName())) {
+                            if (DataSourceComponent.QUERY_PARAMETER.equals(source.getName())) {
+                                String type = getInOutType(source.getDataDescriptor().getFormatType(), source.getDataDescriptor().getLocation());
+                                String id = wfComponent.getTargets().get(0).getName() + "_" + wf.getId();
+
                                 WorkflowInputParameter input = new WorkflowInputParameterImpl();
-                                input.setType(Any.ANY.getDocVal());
-                                input.setId(Optional.of(wfComponent.getTargets().get(0).getName() + "_" + wf.getId()));
+                                input.setType(type);
+                                input.setId(Optional.of(id));
                                 inputList.add(input);
-                            } else {
-                                yamlFileObj.put("class", Any.ANY.getDocVal());
+
+                                yamlFileObj.put("class", type);
                                 yamlFileObj.put("path", FileUtilities.toUnixPath(source.getDataDescriptor().getLocation()));
-                                yamlFileList.put(wfComponent.getTargets().get(0).getName() + "_" + wf.getId(), yamlFileObj);
+                                yamlFileList.put(id, yamlFileObj);
                             }
                         }
                     }
@@ -117,7 +114,7 @@ public class CWLExecutor extends Executor<Object>
                         for(TargetDescriptor target : leavesTaskComponent.getTargets()) {
                             WorkflowOutputParameter output = new WorkflowOutputParameterImpl();
                             output.setId(Optional.of(target.getParentId().toLowerCase() + "_" + target.getName()));
-                            output.setType(getInOutType(target.getDataDescriptor().getFormatType()));
+                            output.setType(getInOutType(target.getDataDescriptor().getFormatType(), target.getDataDescriptor().getLocation()));
                             output.setOutputSource(target.getParentId().toLowerCase() + "_" + wf.getId() + "/" + target.getName() + "_" + wf.getId());
                             outputList.add(output);
                         }
@@ -145,18 +142,25 @@ public class CWLExecutor extends Executor<Object>
         return 0;
     }
 
-    private String getInOutType (DataFormat formatType) {
+    private String getInOutType(DataFormat formatType, String filePath) {
         final String retVal;
         switch (formatType) {
             case FOLDER:
                 retVal = Directory_class.DIRECTORY.getDocVal();
                 break;
             case OTHER:
-                //retVal = StringUtilities.toFirstCaps(formatType.name());
-                retVal = Any.ANY.getDocVal();
+                if (filePath != null && (filePath.endsWith("/") || filePath.endsWith("\\"))) {
+                    retVal = Directory_class.DIRECTORY.getDocVal();
+                } else {
+                    retVal = Any.ANY.getDocVal();
+                }
                 break;
             default:
-                retVal = File_class.FILE.getDocVal();
+                if (filePath != null && (filePath.endsWith("/") || filePath.endsWith("\\"))) {
+                    retVal = Directory_class.DIRECTORY.getDocVal();
+                } else {
+                    retVal = File_class.FILE.getDocVal();
+                }
         }
         return retVal;
     }
@@ -283,55 +287,78 @@ public class CWLExecutor extends Executor<Object>
                 requirement.setRamMin(this.unit.getMinMemory() != null ? this.unit.getMinMemory() : this.unit.getMinDisk());
                 requirementsList.add(requirement);
             }
+            if (this.unit.getContainerUnit() != null) {
+                DockerRequirement requirement = new DockerRequirementImpl();
+                requirement.setClass_(DockerRequirement_class.DOCKERREQUIREMENT);
+                requirement.setDockerImageId(Optional.of(this.unit.getContainerUnit().getContainerRegistry() + "/" + this.unit.getContainerUnit().getContainerName()));
+                requirementsList.add(requirement);
+            }
             commandLineTool.setRequirements(Optional.of(requirementsList));
 
             commandLineTool.setBaseCommand(baseCommandArray);
 
             List<Object> inputs = new ArrayList<>();
             List<Object> outputs = new ArrayList<>();
+
+            // get current steps form Workflow
+            Object currentStep = existingWorkflow.getSteps().stream().filter(s->((WorkflowStep)s).getId().get().equals(component.getId().toLowerCase() + "_" + task.getWorkflowNodeId())).findFirst().orElse(null);
+
+            // get inputs
+            List<Object> existingCWLInputs = existingWorkflow.getInputs();
+
             for (SourceDescriptor source : component.getSources()) {
+                String inputId = source.getName() + "_" + task.getWorkflowNodeId();
                 CommandInputParameter input = new CommandInputParameterImpl();
-                input.setId(Optional.of(source.getName() + "_" + task.getWorkflowNodeId()));
-                input.setType(Any.ANY.getDocVal());
+                input.setId(Optional.of(inputId));
+                Object currentStepIn = ((WorkflowStep)currentStep).getIn().stream().filter(in -> ((WorkflowStepInput)in).getId().get().equals(inputId)).findFirst().orElse(null);
+                Object currentStepInVal = currentStepIn != null ? ((WorkflowStepInput)currentStepIn).getDefault() : null;
+                Object associatedInput = existingCWLInputs.stream().filter(in->((WorkflowInputParameter)in).getId().get().equals(currentStepInVal)).findFirst().orElse(null);
+                Object type = associatedInput != null ? ((WorkflowInputParameter)associatedInput).getType() : Any.ANY.getDocVal();
+                input.setType(type);
+                CommandLineBinding inputBinding = new CommandLineBindingImpl();
+                inputBinding.setPrefix(Optional.of("-" + source.getName()));
+                inputBinding.setValueFrom("$(self.path)");
+                input.setInputBinding(Optional.of(inputBinding));
                 inputs.add(input);
             }
 
             if (component instanceof ProcessingComponent && ((ProcessingComponent)component).getParameterDescriptors().size() > 0) {
                 Map<Object, Object> yamlFileList = new HashMap<>();
-                // read the workflow cwl file
 
-                // get inputs
-                List<Object> existingCWLInputs = existingWorkflow.getInputs();
-                // get current steps form Workflow
-                Object currentStep = existingWorkflow.getSteps().stream().filter(s->((WorkflowStep)s).getId().get().equals(component.getId().toLowerCase() + "_" + task.getWorkflowNodeId())).findFirst().orElse(null);
                 // get in element from current step
                 List<Object> inList = ((WorkflowStep)currentStep).getIn();
+
                 for (ParameterDescriptor desc : ((ProcessingComponent)component).getParameterDescriptors()) {
-                    // create parameter input for current execution unit cwl file and add it to inputs
-                    CommandInputParameter input = new CommandInputParameterImpl();
-                    input.setId(Optional.of(desc.getLabel()));
-                    input.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
-                    input.setLabel(Optional.of(desc.getLabel()));
-                    inputs.add(input);
+                    if (task.getInputParameterValues().stream().anyMatch(t -> t.getKey().equals(desc.getName()))) {
+                        // create parameter input for current execution unit cwl file and add it to inputs
+                        CommandInputParameter input = new CommandInputParameterImpl();
+                        input.setId(Optional.of(desc.getLabel()));
+                        input.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
+                        input.setLabel(Optional.of(desc.getLabel()));
+                        CommandLineBinding inputBinding = new CommandLineBindingImpl();
+                        inputBinding.setPrefix(Optional.of("-" + desc.getLabel()));
+                        input.setInputBinding(Optional.of(inputBinding));
+                        inputs.add(input);
 
-                    // create parameter input for workflow and add it to inputs
-                    WorkflowInputParameter workflowInputParameter = new WorkflowInputParameterImpl();
-                    workflowInputParameter.setId(Optional.of(desc.getName()));
-                    workflowInputParameter.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
-                    workflowInputParameter.setLabel(Optional.of(desc.getDescription()));
-                    existingCWLInputs.add(workflowInputParameter);
+                        // create parameter input for workflow and add it to inputs
+                        WorkflowInputParameter workflowInputParameter = new WorkflowInputParameterImpl();
+                        workflowInputParameter.setId(Optional.of(desc.getName()));
+                        workflowInputParameter.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
+                        workflowInputParameter.setLabel(Optional.of(desc.getDescription()));
+                        existingCWLInputs.add(workflowInputParameter);
 
-                    // create input for step workflow add it to in list
-                    WorkflowStepInput stepInput = new WorkflowStepInputImpl();
-                    stepInput.setId(Optional.of(desc.getLabel()));
-                    stepInput.setDefault(desc.getName());
-                    inList.add(stepInput);
+                        // create input for step workflow add it to in list
+                        WorkflowStepInput stepInput = new WorkflowStepInputImpl();
+                        stepInput.setId(Optional.of(desc.getLabel()));
+                        stepInput.setDefault(desc.getName());
+                        inList.add(stepInput);
 
-                    for (Variable t : task.getInputParameterValues()) {
-                        if (t.getKey().equals(desc.getName())) {
-                            // create parameter input for YAML file
-                            yamlFileList.put(desc.getName(), t.getValue());
-                            break;
+                        for (Variable t : task.getInputParameterValues()) {
+                            if (t.getKey().equals(desc.getName())) {
+                                // create parameter input for YAML file
+                                yamlFileList.put(desc.getName(), t.getValue());
+                                break;
+                            }
                         }
                     }
                 }
@@ -348,7 +375,7 @@ public class CWLExecutor extends Executor<Object>
             for (TargetDescriptor target : component.getTargets()) {
                 CommandOutputParameter output = new CommandOutputParameterImpl();
                 output.setId(Optional.of(target.getName() + "_" + task.getWorkflowNodeId()));
-                output.setType(getInOutType(target.getDataDescriptor().getFormatType()));
+                output.setType(getInOutType(target.getDataDescriptor().getFormatType(), target.getDataDescriptor().getLocation()));
                 CommandOutputBinding outputBinding = new CommandOutputBindingImpl();
                 outputBinding.setGlob(target.getDataDescriptor().getLocation());
                 output.setOutputBinding(Optional.of(outputBinding));
@@ -406,7 +433,25 @@ public class CWLExecutor extends Executor<Object>
             }
         } else if (object.getValue() instanceof  ArrayList<?>) {
             objectString.append(ident).append(object.getKey()).append(": ").append(object.getValue().toString().replaceAll("\"", ""));
+        } else if (object.getValue() instanceof LinkedList<?>) {
+            objectString.append(ident).append(object.getKey()).append(":").append(System.lineSeparator());
+            for (Object elem: (LinkedList)object.getValue()) {
+                String currentIdent = ident + " ";
+                if (elem instanceof LinkedHashMap<?, ?> || elem instanceof Map<?, ?>) {
+                   for (Map.Entry<?, ?>  el: ((Map<?, ?>) elem).entrySet()) {
+                       treatObject(objectString, el, currentIdent);
+                   }
+                } else if (elem instanceof  ArrayList<?>) {
+                    objectString.append(currentIdent).append(elem.toString().replaceAll("\"", ""));
+                } else {
+                    objectString.append(elem);
+                }
+            }
         } else {
+            //check if last characters represents a new line separator
+            if (objectString.lastIndexOf(System.lineSeparator()) + System.lineSeparator().length() != objectString.length()) {
+                objectString.append(System.lineSeparator());
+            }
             objectString.append(ident).append(object.getKey()).append(": ").append(object.getValue());
         }
     }

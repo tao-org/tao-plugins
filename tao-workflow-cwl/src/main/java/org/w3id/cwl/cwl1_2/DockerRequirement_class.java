@@ -22,6 +22,10 @@ public enum DockerRequirement_class {
   private static String[] symbols = new String[] {"DockerRequirement"};
   private String docVal;
 
+  public String getDocVal() {
+    return docVal;
+  }
+
   private DockerRequirement_class(final String docVal) {
     this.docVal = docVal;
   }
