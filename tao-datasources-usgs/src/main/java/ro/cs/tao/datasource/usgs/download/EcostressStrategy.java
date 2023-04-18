@@ -61,22 +61,29 @@ public class EcostressStrategy extends SimpleArchiveDownloadStrategy {
      */
     protected Path connectAndDownload(EOProduct product) throws QueryException, IOException {
         boolean toDownloadBGeo = !(product.getLocation().contains("ECO1BMAPRAD") || product.getLocation().contains("ECO3ETALEXIU") || product.getLocation().contains("ECO4ESIALEXIU") || product.getLocation().contains("ECO1BGEO"));
-        HttpURLConnection connection = getConnectionForProduct(product);
-        Path downloaded = downloadProduct(product, connection);
+        HttpURLConnection connection = getConnectionForProduct(product, false);
+        EOProduct bgeoProduct = null;
         if (toDownloadBGeo) {
-            EOProduct bgeoProduct = createBGeoProduct(product);
+            // product should be cloned before the download occurs, otherwise the location is overwritten
+            bgeoProduct = createBGeoProduct(product);
+        }
+        Path downloaded = downloadProduct(product, connection);
+        if (bgeoProduct != null) {
             downloadBGEO(bgeoProduct);
         }
         return downloaded;
     }
 
-    protected HttpURLConnection getConnectionForProduct(EOProduct product) {
+    protected HttpURLConnection getConnectionForProduct(EOProduct product, boolean isBGeo) {
         int numberOfTries = 0;
         int responseStatus;
 
         // First set the default cookie manager.
         CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
         String productDownloadUrl = getProductUrl(product);
+        if (isBGeo) {
+            productDownloadUrl = productDownloadUrl.substring(0, productDownloadUrl.lastIndexOf('.') - 1) + "1" + HDF5_EXTENSION;
+        }
         HttpURLConnection connection = null;
         try {
             String token = ((USGSDataSource) this.dataSource).getEarthDataToken();
@@ -95,6 +102,12 @@ public class EcostressStrategy extends SimpleArchiveDownloadStrategy {
                         connection = NetUtils.openConnection(connection.getURL().toString(), token);
                         connection.setInstanceFollowRedirects(true);
                         connection.connect();
+                        numberOfTries++;
+                        break;
+                    case HttpStatus.SC_NOT_FOUND:
+                        if (isBGeo) {
+                            productDownloadUrl = productDownloadUrl.substring(0, productDownloadUrl.lastIndexOf('.') - 1) + (numberOfTries + 2) + HDF5_EXTENSION;
+                        }
                         numberOfTries++;
                         break;
                     default:
@@ -122,8 +135,9 @@ public class EcostressStrategy extends SimpleArchiveDownloadStrategy {
                     (extension.equalsIgnoreCase(ZIP_EXTENSION) ||
                             extension.equalsIgnoreCase(TAR_GZ_EXTENSION) ||
                             extension.equalsIgnoreCase(KMZ_EXTENSION));
-            subActivityStart(product.getName());
-            final String archiveName = (product.getName() != null ? product.getName() : product.getId()) + extension;
+            final String name = product.getName() != null ? product.getName() : product.getId();
+            subActivityStart(name);
+            final String archiveName = name.endsWith(extension) ? name : name + extension;
             Path archivePath = Paths.get(destination, archiveName);
             FileUtilities.ensureExists(Paths.get(destination));
             Files.deleteIfExists(archivePath);
@@ -254,7 +268,8 @@ public class EcostressStrategy extends SimpleArchiveDownloadStrategy {
     protected EOProduct createBGeoProduct(EOProduct product) {
         EOProduct bgeoProduct = (EOProduct) SerializationUtils.clone(product);
         try {
-            bgeoProduct.setLocation(getProductBGEOUrl(bgeoProduct));
+            final String productBGEOUrl = getProductBGEOUrl(bgeoProduct);
+            bgeoProduct.setLocation(productBGEOUrl);
             bgeoProduct.setName(getProductBGEOName(bgeoProduct));
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -267,7 +282,7 @@ public class EcostressStrategy extends SimpleArchiveDownloadStrategy {
             final String archiveName = (bgeoProduct.getName() != null ? bgeoProduct.getName() : bgeoProduct.getId()) + HDF5_EXTENSION;
             Path archivePath = Paths.get(destination, archiveName);
             if (!Files.exists(archivePath)) {
-                HttpURLConnection connection = getConnectionForProduct(bgeoProduct);
+                HttpURLConnection connection = getConnectionForProduct(bgeoProduct, true);
                 downloadProduct(bgeoProduct, connection);
             }
         } catch (IOException e) {
