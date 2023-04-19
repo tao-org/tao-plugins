@@ -1,5 +1,6 @@
 package ro.cs.tao.utils.executors;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.docker.DockerVolumeMap;
 import ro.cs.tao.docker.ExecutionConfiguration;
 import ro.cs.tao.utils.ExceptionUtils;
@@ -12,7 +13,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BashExecutor extends Executor<Object>
@@ -93,8 +97,9 @@ public class BashExecutor extends Executor<Object>
                 final List<Long> list = (List<Long>) metadata.get("dependsOn");
                 comment += list.stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
             }
-            if (metadata.containsKey("inputs")) {
-                final Set<String> inputSet = new HashSet<>();
+            Map<String, Integer> inputSet = new LinkedHashMap<>();
+            final Path inputsFile = Paths.get(unit.getScriptTargetPath()).getParent().resolve("inputs.txt");
+            if (isFirst && metadata.containsKey("inputs")) {
                 String[] inputs = ((String) metadata.get("inputs")).split(",");
                 String hostWorkspaceFolder = map.getHostWorkspaceFolder();
                 if (hostWorkspaceFolder.endsWith("/")) {
@@ -104,51 +109,75 @@ public class BashExecutor extends Executor<Object>
                 if (containerWorkspaceFolder.endsWith("/")) {
                     containerWorkspaceFolder = containerWorkspaceFolder.substring(0, containerWorkspaceFolder.length() - 1);
                 }
-                for (String input : inputs) {
-                    inputSet.add(input.replace("file:///", "/").replace(":", "")
-                                      .replace(hostWorkspaceFolder, containerWorkspaceFolder)
-                                      .replace(map.getHostEODataFolder(), map.getContainerEoDataFolder())
-                                      .replace(map.getHostConfigurationFolder(), map.getContainerConfigurationFolder()));
+                for (int i = 0; i < inputs.length; i++) {
+                    inputSet.put(inputs[i].replace("file:///", "/").replace(":", "")
+                                          .replace(hostWorkspaceFolder, containerWorkspaceFolder)
+                                          .replace(map.getHostEODataFolder(), map.getContainerEoDataFolder())
+                                          .replace(map.getHostConfigurationFolder(), map.getContainerConfigurationFolder()),
+                                 i + 1);
                 }
-                if (isFirst && volumeMap != null) {
-                    int index = 1;
-                    List<String> arguments;
-                    final boolean isBash = args.get(0).equals("/bin/bash");
-                    if (isBash) {
-                        arguments = Arrays.asList(args.get(2).split(" "));
-                    } else {
-                        arguments = args;
+                try {
+                    Files.write(inputsFile, new ObjectMapper().writeValueAsBytes(inputSet));
+                } catch (Exception e) {
+                    logger.severe(ExceptionUtils.getStackTrace(logger, e));
+                }
+            } else {
+                if (Files.exists(inputsFile)) {
+                    try {
+                        inputSet.putAll((Map<String, Integer>) new ObjectMapper().readValue(Files.readAllBytes(inputsFile), LinkedHashMap.class));
+                    } catch (IOException e) {
+                        logger.severe(ExceptionUtils.getStackTrace(logger, e));
                     }
-                    String positionalArgument, variable;
-                    for (int i = 0; i < arguments.size(); i++) {
-                        String arg = arguments.get(i);
-                        String found = inputSet.stream().filter(arg::contains).findFirst().orElse(null);
-                        if (found != null) {
-                            inputSet.remove(found);
-                            positionalArgument = "$" + index;
-                            variable = "argument" + index;
-                            for (int j = 1; j < arguments.size(); j++) {
-                                if (arguments.get(j).equals(arg)) {
-                                    arguments.set(j, "$" + variable);
-                                }
-                            }
-                            appendLine(builder, variable + "=" + positionalArgument);
-                            appendLine(builder, variable + "=${" + variable + "/" + map.getHostWorkspaceFolder() + "/\"" + map.getContainerWorkspaceFolder() + "\"}");
-                            arguments.set(i, variable);
-                            index++;
+                }
+            }
+            List<String> arguments;
+            final boolean isBash = args.get(0).equals("/bin/bash");
+            if (isBash) {
+                arguments = Arrays.asList(args.get(2).split(" "));
+            } else {
+                arguments = args;
+            }
+            String positionalArgument, variable;
+            for (int i = 0; i < arguments.size(); i++) {
+                String arg = arguments.get(i);
+                String found = null;
+                int index = 0;
+                for (Map.Entry<String, Integer> entry : inputSet.entrySet()) {
+                    if (arg.contains(entry.getKey())) {
+                        found = entry.getKey();
+                        index = entry.getValue();
+                        break;
+                    }
+                }
+                if (found != null) {
+                    positionalArgument = "$" + index;
+                    variable = "argument" + index;
+                    for (int j = 1; j < arguments.size(); j++) {
+                        if (arguments.get(j).equals(arg)) {
+                            arguments.set(j, "$" + variable);
                         }
                     }
-                    String helpArgs = "";
-                    for (int idx = 1; idx < index; idx++) {
-                        helpArgs += "<product_" + idx + "> ";
-                    }
-                    builder.insert(0, String.format(skeleton,
-                                                    Paths.get(unit.getScriptTargetPath()).getFileName(),
-                                                    helpArgs));
-                    if (isBash) {
-                        args.set(2, String.join(" ", arguments));
-                    }
+                    //appendLine(builder, variable + "=" + positionalArgument);
+                    //appendLine(builder, variable + "=${" + variable + "/" + map.getHostWorkspaceFolder() + "/\"" + map.getContainerWorkspaceFolder() + "\"}");
+                    arguments.set(i, positionalArgument);
+                    index++;
                 }
+            }
+            if (isFirst) {
+                String helpArgs = "";
+                for (int idx = 1; idx < inputSet.size(); idx++) {
+                    helpArgs += "<product_" + idx + "> ";
+                }
+                String text = String.format(skeleton, Paths.get(unit.getScriptTargetPath()).getFileName(), helpArgs);
+                for (int i = 1; i <= inputSet.size(); i++) {
+                    text += "\n$argument" + i + "=$" + i;
+                }
+                text += "\n";
+
+                builder.insert(0, text);
+            }
+            if (isBash) {
+                args.set(2, String.join(" ", arguments));
             }
         }
         appendLine(builder, comment);
