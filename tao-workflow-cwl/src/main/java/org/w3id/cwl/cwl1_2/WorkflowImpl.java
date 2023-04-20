@@ -548,6 +548,13 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
   public  Map<Object, Object> save() {
     Map<Object, Object> workflow = new LinkedHashMap<>();
     workflow.put("class", this.class_.getDocVal());
+    String filePath = "";
+    String outputStr = ((WorkflowOutputParameter)outputs.get(0)).getOutputSource().toString();
+    if (outputStr.contains("#")) {
+      int chIdx = outputStr.indexOf("#");
+      chIdx = outputStr.substring(0, chIdx).lastIndexOf("/") + 1;
+      filePath = outputStr.substring(0, chIdx).replaceAll("file:///|file://|file:/","");
+    }
     if (this.cwlVersion != null && this.cwlVersion.isPresent() && !this.cwlVersion.isEmpty()) {
       workflow.put("cwlVersion",this.cwlVersion.get().toString());
     }
@@ -578,20 +585,48 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
               field.setAccessible(true);
               if (field.getName().equalsIgnoreCase("id")) {
                 stepId = ((Optional)field.get(step)).get().toString();
+                if (stepId.contains("#")) {
+                  int chIdx = stepId.indexOf("#");
+                  stepId = stepId.substring(chIdx + 1);
+                }
               } else if (field.getName().equalsIgnoreCase("in")) {
                 Map<String,String> inList = new LinkedHashMap<>();
                 for (Object in : (ArrayList) field.get(step)) {
-                  inList.put(((WorkflowStepInput) in).getId().get(), ((WorkflowStepInput) in).getDefault().toString());
+                  if (((WorkflowStepInput) in).getDefault() != null) {
+                    inList.put(((WorkflowStepInput) in).getId().get(), ((WorkflowStepInput) in).getDefault().toString());
+                  } else {
+                    if (((WorkflowStepInput) in).getId().get().contains("#")) {
+                      int indexId = ((WorkflowStepInput) in).getId().get().indexOf("#") + 1;
+                      int indexSource = ((WorkflowStepInput) in).getSource().toString().indexOf("#") + 1;
+                      inList.put(((WorkflowStepInput) in).getId().get().substring(indexId).replaceAll(stepId + "|/",""), ((WorkflowStepInput) in).getSource().toString().substring(indexSource));
+                    } else {
+                      inList.put(((WorkflowStepInput) in).getId().get(), ((WorkflowStepInput) in).getSource().toString());
+                    }
+                  }
                 }
                 temp.put(field.getName(), inList);
               } else if (field.getName().equalsIgnoreCase("out")) {
                 List<String> outList = new ArrayList<>();
                 for (Object out : (ArrayList) field.get(step)) {
-                  outList.add(((WorkflowStepOutput) out).getId().get());
+                  if (out instanceof WorkflowStepOutput) {
+                    outList.add(((WorkflowStepOutput) out).getId().get());
+                  } else if (out instanceof ArrayList<?>){
+                    for (String outStr: (ArrayList<String>)out) {
+                      int indexId = ((String) outStr).indexOf("#") + 1;
+                      outList.add(((String) outStr).substring(indexId).replaceAll(stepId + "|/",""));
+                    }
+                  } else {
+                    int indexId = ((String) out).indexOf("#") + 1;
+                    outList.add(((String) out).substring(indexId).replaceAll(stepId + "|/",""));
+                  }
                 }
                 temp.put(field.getName(), outList);
               } else if (field.get(step) != null) {
-                temp.put(field.getName(), field.get(step));
+                if (filePath != "" && field.get(step).toString().contains(filePath)){
+                  temp.put(field.getName(), field.get(step).toString().replaceAll(filePath + "|file:///|file://|file:/",""));
+                } else {
+                  temp.put(field.getName(), field.get(step));
+                }
               }
             }
           }
