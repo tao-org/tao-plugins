@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.gs.collections.impl.utility.ListIterate;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.w3id.cwl.cwl1_2.*;
 import org.w3id.cwl.cwl1_2.utils.RootLoader;
@@ -31,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CWLExecutor extends Executor<Object>
         implements ExecutionDescriptorConverter {
@@ -88,7 +90,7 @@ public class CWLExecutor extends Executor<Object>
                             break;
                         }
                     }*/
-                    List<WorkflowNodeDescriptor> orderedNodes = workflowDesc.orderNodes(workflowDesc.getNodes(), null);
+                    List<WorkflowNodeDescriptor> orderedNodes = orderWfDescNodes(workflowDesc);
                     int nodePosition = orderedNodes.indexOf(node);
                     if (nodePosition > 0 && orderedNodes.get(nodePosition - 1).getIncomingLinks().size() > 0) {
                     //if (wfAncestors != null && wfAncestors.stream().anyMatch(wf -> wf.getComponentType().equals("DATASOURCE"))) {
@@ -111,6 +113,9 @@ public class CWLExecutor extends Executor<Object>
                     List<WorkflowNodeDescriptor> roots = workflowDesc.findRoots(workflowDesc.getNodes());
                     List<WorkflowNodeDescriptor> leaves = workflowDesc.findLeaves(workflowDesc.getNodes());
 
+                    /** create the general inputs from workflow roots
+                     * will be added main CWL file and to YML file
+                     */
                     for (WorkflowNodeDescriptor wf  : roots) {
                         TaoComponent wfComponent = TaskUtilities.getComponentFor(wf);
                         for (SourceDescriptor source : wfComponent.getSources()) {
@@ -133,6 +138,9 @@ public class CWLExecutor extends Executor<Object>
                     cwlWorkflow.setInputs(inputList);
                     createOrUpdateYamlFile(path, yamlFileList);
 
+                    /** create the general outputs from workflow leaves
+                     * will be added main CWL file
+                     */
                     for (WorkflowNodeDescriptor wf : leaves) {
                         TaoComponent leavesTaskComponent = TaskUtilities.getComponentFor(wf);
                         for(TargetDescriptor target : leavesTaskComponent.getTargets()) {
@@ -147,7 +155,9 @@ public class CWLExecutor extends Executor<Object>
                     cwlWorkflow.setOutputs(outputList);
                     List<Object> steps = createWorkflowCWLSteps(workflowDesc);
                     cwlWorkflow.setSteps(steps);
+                    // create the CWL file for the current workflow step
                     createStepCWL(path, workflowDesc, task, cwlWorkflow);
+                    // write the main CWL file
                     writeToFile(path, cwlWorkflow.save());
                 } else {
                     System.out.println("Update file");
@@ -184,10 +194,15 @@ public class CWLExecutor extends Executor<Object>
         return retVal;
     }
 
+    /**
+     * Create the step map found in the job CWL file,based on WorkflowNodeDescriptor list
+     * @param workflowNodeDesc
+     * @return list of objects
+     */
     private List<Object> createWorkflowCWLSteps(WorkflowDescriptor workflowNodeDesc) {
         List<Object> steps = new ArrayList<>();
         Map<Long, Map<String, Object>> stepInfoMap = createStepsMap(workflowNodeDesc);
-        List<WorkflowNodeDescriptor> orderedWfNodeDescList = workflowNodeDesc.orderNodes(workflowNodeDesc.getNodes(),null);
+        List<WorkflowNodeDescriptor> orderedWfNodeDescList = orderWfDescNodes(workflowNodeDesc);
 
         for (WorkflowNodeDescriptor wf : orderedWfNodeDescList) {
             if (wf.getIncomingLinks().size() > 0) {
@@ -221,6 +236,12 @@ public class CWLExecutor extends Executor<Object>
         return steps;
     }
 
+    /**
+     * Creates map of maps, where the first key is the workflow node descriptor id.
+     * The second key represents the parameter (in, out ot name) and the value is an object.
+     * This map is used to associate the steps inputs and outputs in the job CWL file
+     * @param workflowDescriptor
+     */
     private Map<Long, Map<String, Object>> createStepsMap (WorkflowDescriptor workflowDescriptor) {
         Map<Long, Map<String, Object>> stepInfoMap = new HashMap<>();
         for (WorkflowNodeDescriptor wf : workflowDescriptor.getNodes()) {
@@ -243,6 +264,11 @@ public class CWLExecutor extends Executor<Object>
         return stepInfoMap;
     }
 
+    /**
+     * Create or update the YAML file assosciated with the current job CWL file
+     * @param path
+     * @param inputList
+     */
     private void createOrUpdateYamlFile(Path path, Map<Object, Object> inputList) {
         Map<Object, Object> tempList = new LinkedHashMap<>();
 
@@ -274,6 +300,13 @@ public class CWLExecutor extends Executor<Object>
         }
     }
 
+    /**
+     * Creates the CWL file for each task
+     * @param path
+     * @param workflowDesc
+     * @param task
+     * @param existingWorkflow
+     */
     private void createStepCWL(Path path, WorkflowDescriptor workflowDesc, ExecutionTask task, Workflow existingWorkflow) {
         Path stepPath = Paths.get(path.getParent().toString() + File.separator + this.unit.getMetadata().get("name").toString().toLowerCase() + "_" + task.getWorkflowNodeId() + ".cwl");
         TaoComponent component = TaskUtilities.getComponentFor(task);
@@ -282,19 +315,24 @@ public class CWLExecutor extends Executor<Object>
         commandLineTool.setClass_(CommandLineTool_class.COMMANDLINETOOL);
         commandLineTool.setCwlVersion(Optional.of(CWLVersion.V1_2));
 
+        List<String> bashArguments;
+        final boolean isBash = this.unit.getArguments().get(0).equals("/bin/bash");
+        if (isBash) {
+            bashArguments = Arrays.asList(this.unit.getArguments().get(2).split(" "));
+        } else {
+            bashArguments = this.unit.getArguments();
+        }
+
         List<Object> baseCommandArray = new ArrayList();
-        // only last argument is taken into account
-        for (int i=0; i< this.unit.getArguments().size(); i++) {
-            // only the job argument is added
-            if (i == this.unit.getArguments().size() - 1) {
-                String arguments = this.unit.getArguments().get(i);
-                int indexEnd = arguments.indexOf(" ");
-                int secondIndexStart = arguments.indexOf(" \\");
-                baseCommandArray.add(arguments.substring(0, indexEnd).replaceAll("\"",""));
-                if (secondIndexStart > 0) {
-                    int secondIndexEnd = arguments.substring(secondIndexStart + 1).indexOf(" ");
-                    baseCommandArray.add(arguments.substring(secondIndexStart + 1, secondIndexEnd).toString().replaceAll("\"","").replaceAll("\\\\","/"));
-                }
+        // first bash argument is always added
+        baseCommandArray.add(bashArguments.get(0).replaceAll("\"", ""));
+        if (bashArguments.get(1).startsWith(" \\")) {
+            baseCommandArray.add(bashArguments.get(1).replaceAll("\"","").replaceAll("\\\\","/"));
+        } else if (bashArguments.get(1).equals("-c")) {
+            baseCommandArray.add("/bin/bash");
+            int lastPosition = ListIterate.detectIndex(bashArguments, b -> b.toString().startsWith("-") && !b.toString().equals("-c"));
+            for(int i = 1 ; i < lastPosition ; i++) {
+                baseCommandArray.add(bashArguments.get(i));
             }
         }
 
@@ -323,30 +361,43 @@ public class CWLExecutor extends Executor<Object>
 
         // get inputs
         List<Object> existingCWLInputs = existingWorkflow.getInputs();
-        List<String> arguments;
-        final boolean isBash = this.unit.getArguments().get(0).equals("/bin/bash");
-        if (isBash) {
-            arguments = Arrays.asList(this.unit.getArguments().get(2).split(" "));
-        } else {
-            arguments = this.unit.getArguments();
-        }
 
+        // create task inputs based on Component sources
         for (SourceDescriptor source : component.getSources()) {
             String inputId = source.getName() + "_" + task.getWorkflowNodeId();
             CommandInputParameter input = new CommandInputParameterImpl();
             input.setId(Optional.of(inputId));
             Object associatedInput = null;
             if (currentStep != null) {
-                Object currentStepIn = ((WorkflowStep) currentStep).getIn().stream().filter(in -> ((WorkflowStepInput) in).getId().get().equals(inputId)).findFirst().orElse(null);
+                Object currentStepIn = ((WorkflowStep) currentStep).getIn().stream().filter(in -> {
+                    if (((WorkflowStepInput) in).getId().get().contains("#")) {
+                        int chIdx = ((WorkflowStepInput) in).getId().get().indexOf("#");
+                        return ((WorkflowStepInput) in).getId().get().substring(chIdx + 1).equals(inputId);
+                    }
+                    else {
+                        return  ((WorkflowStepInput) in).getId().get().equals(inputId);
+                    }
+                }).findFirst().orElse(null);
                 Object currentStepInVal = currentStepIn != null ? ((WorkflowStepInput) currentStepIn).getDefault() : null;
-                associatedInput = existingCWLInputs.stream().filter(in -> ((WorkflowInputParameter) in).getId().get().equals(currentStepInVal)).findFirst().orElse(null);
+
+                associatedInput = existingCWLInputs.stream().filter(in -> {
+                    if (((WorkflowInputParameter) in).getId().get().contains("#")) {
+                        int chIdx = ((WorkflowInputParameter) in).getId().get().indexOf("#");
+                        return ((WorkflowInputParameter) in).getId().get().substring(chIdx + 1).equals(currentStepInVal);
+                    }
+                    else {
+                        return  ((WorkflowInputParameter) in).getId().get().equals(currentStepInVal);
+                    }
+                }).findFirst().orElse(null);
             }
             Object type = associatedInput != null ? ((WorkflowInputParameter)associatedInput).getType() : Any.ANY.getDocVal();
             input.setType(type);
             CommandLineBinding inputBinding = new CommandLineBindingImpl();
-            String foundPrefix = arguments.stream().filter(arg -> arg.contains(source.getName())).findFirst().orElse(null);
+            // check if source name is found in bash arguments
+            String foundPrefix = bashArguments.stream().filter(arg -> arg.contains("-" + source.getName())).findFirst().orElse(null);
             if (foundPrefix != null) {
                 int chIndex = foundPrefix.indexOf("=");
+                // if source name is found containing equal sign, add only the first part; else add the found prefix
                 if (chIndex > -1) {
                     inputBinding.setPrefix(Optional.of(foundPrefix.substring(0,chIndex + 1 )));
                 } else {
@@ -360,6 +411,7 @@ public class CWLExecutor extends Executor<Object>
             inputs.add(input);
         }
 
+        // add the parameters to job CWL file, inputs section and YAML file
         if (component instanceof ProcessingComponent && ((ProcessingComponent)component).getParameterDescriptors().size() > 0) {
             Map<Object, Object> yamlFileList = new HashMap<>();
 
@@ -374,7 +426,7 @@ public class CWLExecutor extends Executor<Object>
                     input.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
                     input.setLabel(Optional.of(desc.getLabel()));
                     CommandLineBinding inputBinding = new CommandLineBindingImpl();
-                    String foundPrefix = arguments.stream().filter(arg -> arg.contains(desc.getLabel())).findFirst().orElse(null);
+                    String foundPrefix = bashArguments.stream().filter(arg -> arg.contains(desc.getLabel())).findFirst().orElse(null);
                     if (foundPrefix != null) {
                         int chIndex = foundPrefix.indexOf("=");
                         if (chIndex > -1) {
@@ -412,7 +464,7 @@ public class CWLExecutor extends Executor<Object>
             }
             // add parameter input for YAML file
             createOrUpdateYamlFile(path, yamlFileList);
-            // add inputs to workflow CWL file
+            // add inputs to job CWL file
             if (Files.exists(path)) {
                 writeToFile(path, existingWorkflow.save());
             }
@@ -420,6 +472,7 @@ public class CWLExecutor extends Executor<Object>
 
         commandLineTool.setInputs(inputs);
 
+        // create task outputs based on Component targets
         for (TargetDescriptor target : component.getTargets()) {
             CommandOutputParameter output = new CommandOutputParameterImpl();
             output.setId(Optional.of(target.getName() + "_" + task.getWorkflowNodeId()));
@@ -433,6 +486,11 @@ public class CWLExecutor extends Executor<Object>
         writeToFile(stepPath, commandLineTool.save());
     }
 
+    /**
+     * Transforms the object and write it to file
+     * @param path
+     * @param object
+     */
     private void writeToFile(Path path, Map<Object, Object> object) {
         StringBuilder objectString = new StringBuilder();
         final StringBuilder builder = new StringBuilder();
@@ -459,6 +517,12 @@ public class CWLExecutor extends Executor<Object>
         }
     }
 
+    /**
+     * Transform object based on type
+     * @param objectString
+     * @param object
+     * @param ident
+     */
     private void treatObject(StringBuilder objectString, Map.Entry<?, ?> object, String ident) {
         if (object.getValue() instanceof LinkedHashMap<?, ?> || object.getValue() instanceof Map<?, ?>) {
             objectString.append(ident).append(object.getKey()).append(":").append(System.lineSeparator());
@@ -499,5 +563,16 @@ public class CWLExecutor extends Executor<Object>
             }
             objectString.append(ident).append(object.getKey()).append(": ").append(object.getValue());
         }
+    }
+
+    /**
+     * Order workflow nodes based on orderNodes method and node level
+     * @param workflowNodeDesc
+     * @return list of workflow node descriptor
+     */
+    private List<WorkflowNodeDescriptor> orderWfDescNodes(WorkflowDescriptor workflowNodeDesc) {
+        List<WorkflowNodeDescriptor> nodes = workflowNodeDesc.orderNodes(workflowNodeDesc.getNodes(),null);
+        // order nodes by level too.
+        return nodes.stream().sorted(Comparator.comparing(WorkflowNodeDescriptor::getLevel)).collect(Collectors.toList());
     }
 }
