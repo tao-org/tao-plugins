@@ -15,6 +15,7 @@
  */
 package ro.cs.tao.datasource.remote.asf.download;
 
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import ro.cs.tao.datasource.ProductHelperFactory;
 import ro.cs.tao.datasource.QueryException;
@@ -106,8 +107,14 @@ public class AsfDownloadStrategy extends DownloadStrategy<String> {
                 responseStatus = connection.getResponseCode();
                 switch (responseStatus) {
                     case HttpStatus.SC_OK:
-                        connection = NetUtils.openConnection(connection.getURL().toString(), token);
+                        final String requestUrl = connection.getURL().toString();
+                        if (requestUrl.toLowerCase().contains("token")) {
+                            connection = NetUtils.openConnection(requestUrl, (Header) null);
+                        } else {
+                            connection = NetUtils.openConnection(requestUrl, token);
+                        }
                         connection.setInstanceFollowRedirects(true);
+                        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 Edg/112.0.1722.58");
                         connection.connect();
                         return connection;
                     case HttpStatus.SC_UNAUTHORIZED:
@@ -145,11 +152,12 @@ public class AsfDownloadStrategy extends DownloadStrategy<String> {
             Files.deleteIfExists(archivePath);
             SeekableByteChannel outputStream = null;
             long size = currentProduct.getApproximateSize();
-            long length = connection.getContentLength();
-            if (length == -1) {
+            //long length = connection.getContentLength();
+            long length = -1;//connection.getHeaderFieldLong("Content-Length", size);
+            /*if (length == -1) {
                 //try to get the length from header
                 length = connection.getHeaderFieldLong("Content-Length", size);
-            }
+            }*/
 
             if (size > length) {
                 Path existingProduct = Paths.get(destination, product.getName() + ".SAFE");
