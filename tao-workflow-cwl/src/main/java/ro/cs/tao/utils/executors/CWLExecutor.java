@@ -12,6 +12,7 @@ import org.w3id.cwl.cwl1_2.utils.RootLoader;
 import ro.cs.tao.component.*;
 import ro.cs.tao.datasource.DataSourceComponent;
 import ro.cs.tao.datasource.param.JavaType;
+import ro.cs.tao.docker.ExecutionConfiguration;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
@@ -83,17 +84,9 @@ public class CWLExecutor extends Executor<Object>
                     createFile = true;
                 } else {
                     WorkflowNodeDescriptor node = this.workflowNodeProvider.get(task.getWorkflowNodeId());
-                   // List<WorkflowNodeDescriptor> wfAncestors = workflowDesc.findAncestors(workflowDesc.getNodes(), node);
-                    /*for (int idx = 0; idx < workflowDesc.getNodes().size(); idx++) {
-                        if (workflowDesc.getNodes().get(idx).getId().equals(task.getWorkflowNodeId())) {
-                            nodePosition = idx;
-                            break;
-                        }
-                    }*/
                     List<WorkflowNodeDescriptor> orderedNodes = orderWfDescNodes(workflowDesc);
                     int nodePosition = orderedNodes.indexOf(node);
                     if (nodePosition > 0 && orderedNodes.get(nodePosition - 1).getIncomingLinks().size() > 0) {
-                    //if (wfAncestors != null && wfAncestors.stream().anyMatch(wf -> wf.getComponentType().equals("DATASOURCE"))) {
                         createFile = false;
                     } else {
                         createFile = true;
@@ -130,7 +123,16 @@ public class CWLExecutor extends Executor<Object>
                                 inputList.add(input);
 
                                 yamlFileObj.put("class", type);
-                                yamlFileObj.put("path", FileUtilities.toUnixPath(source.getDataDescriptor().getLocation()));
+                                if (source.getDataDescriptor().getLocation().contains(",")) {
+                                    String[] strings = source.getDataDescriptor().getLocation().split(",");
+                                    List<String> sourceList = new LinkedList<>();
+                                    for (String sourceStr : strings) {
+                                        sourceList.add(FileUtilities.toUnixPath(sourceStr));
+                                    }
+                                    yamlFileObj.put("path", sourceList.stream().collect(Collectors.joining(",")));
+                                } else {
+                                    yamlFileObj.put("path", FileUtilities.toUnixPath(source.getDataDescriptor().getLocation()));
+                                }
                                 yamlFileList.put(id, yamlFileObj);
                             }
                         }
@@ -346,7 +348,11 @@ public class CWLExecutor extends Executor<Object>
         if (this.unit.getContainerUnit() != null) {
             DockerRequirement requirement = new DockerRequirementImpl();
             requirement.setClass_(DockerRequirement_class.DOCKERREQUIREMENT);
-            requirement.setDockerImageId(Optional.of(this.unit.getContainerUnit().getContainerRegistry() + "/" + this.unit.getContainerUnit().getContainerName()));
+            if (ExecutionConfiguration.getDockerRegistry().equals(this.unit.getContainerUnit().getContainerRegistry())) {
+                requirement.setDockerImageId(Optional.of(this.unit.getContainerUnit().getContainerRegistry() + "/" + this.unit.getContainerUnit().getContainerName()));
+            } else {
+                requirement.setDockerPull(Optional.of(this.unit.getContainerUnit().getContainerRegistry() + "/" + this.unit.getContainerUnit().getContainerName()));
+            }
             requirementsList.add(requirement);
         }
         commandLineTool.setRequirements(Optional.of(requirementsList));
@@ -394,7 +400,7 @@ public class CWLExecutor extends Executor<Object>
             input.setType(type);
             CommandLineBinding inputBinding = new CommandLineBindingImpl();
             // check if source name is found in bash arguments
-            String foundPrefix = bashArguments.stream().filter(arg -> arg.contains("-" + source.getName())).findFirst().orElse(null);
+            String foundPrefix = bashArguments.stream().filter(arg -> arg.matches("-" + source.getName() + "(=.*)?")).findFirst().orElse(null);
             if (foundPrefix != null) {
                 int chIndex = foundPrefix.indexOf("=");
                 // if source name is found containing equal sign, add only the first part; else add the found prefix
@@ -426,7 +432,7 @@ public class CWLExecutor extends Executor<Object>
                     input.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
                     input.setLabel(Optional.of(desc.getLabel()));
                     CommandLineBinding inputBinding = new CommandLineBindingImpl();
-                    String foundPrefix = bashArguments.stream().filter(arg -> arg.contains(desc.getLabel())).findFirst().orElse(null);
+                    String foundPrefix = bashArguments.stream().filter(arg -> arg.matches(desc.getLabel() + "(=.*)?")).findFirst().orElse(null);
                     if (foundPrefix != null) {
                         int chIndex = foundPrefix.indexOf("=");
                         if (chIndex > -1) {
@@ -472,16 +478,45 @@ public class CWLExecutor extends Executor<Object>
 
         commandLineTool.setInputs(inputs);
 
-        // create task outputs based on Component targets
+        // arguments associated with the outputs
+        List<Object> argumentsList = new LinkedList<>();
+        int argumentPosition = baseCommandArray.size();
+        // create task outputs and arguments based on Component targets
         for (TargetDescriptor target : component.getTargets()) {
+            argumentPosition++;
             CommandOutputParameter output = new CommandOutputParameterImpl();
-            output.setId(Optional.of(target.getName() + "_" + task.getWorkflowNodeId()));
+            CommandLineBinding argumentOut = new CommandLineBindingImpl();
+
+            String outputId = target.getName() + "_" + task.getWorkflowNodeId();
+
+            output.setId(Optional.of(outputId));
+            argumentOut.setValueFrom("outputs." + outputId);
+
             output.setType(getInOutType(target.getDataDescriptor().getFormatType(), target.getDataDescriptor().getLocation()));
             CommandOutputBinding outputBinding = new CommandOutputBindingImpl();
             outputBinding.setGlob(target.getDataDescriptor().getLocation());
             output.setOutputBinding(Optional.of(outputBinding));
+
             outputs.add(output);
+
+            argumentOut.setPosition(argumentPosition);
+            // set prefix
+            // check if target name is found in bash arguments
+            String foundPrefix = bashArguments.stream().filter(arg -> arg.matches("-" + target.getName() + "(=.*)?")).findFirst().orElse(null);
+            if (foundPrefix != null) {
+                int chIndex = foundPrefix.indexOf("=");
+                // if source name is found containing equal sign, add only the first part; else add the found prefix
+                if (chIndex > -1) {
+                    argumentOut.setPrefix(Optional.of(foundPrefix.substring(0,chIndex + 1 )));
+                } else {
+                    argumentOut.setPrefix(Optional.of(foundPrefix));
+                }
+            } else {
+                argumentOut.setPrefix(Optional.of("-" + target.getName()));
+            }
+            argumentsList.add(argumentOut);
         }
+        commandLineTool.setArguments(Optional.of(argumentsList));
         commandLineTool.setOutputs(outputs);
         writeToFile(stepPath, commandLineTool.save());
     }

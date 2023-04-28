@@ -809,6 +809,36 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
       }
       commandLineTool.put("requirements", reqList);
     }
+    if (this.arguments != null) {
+      List<Object> argumentsList = new LinkedList<>();
+      for(Object arg : this.arguments.get()) {
+        if(arg instanceof CommandLineBindingImpl) {
+          Map<Object, Object> argList = new LinkedHashMap<>();
+          for (Field f : arg.getClass().getDeclaredFields()) {
+            f.setAccessible(true);
+            if (f.getName().equalsIgnoreCase("valueFrom")) {
+              argList.put("- valueFrom", ((CommandLineBindingImpl) arg).getValueFrom());
+            } else if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
+              try {
+                if ( f.get(arg) != null) {
+                  if (f.get(arg) instanceof Optional) {
+                    argList.put("  " + f.getName(), ((Optional<?>) f.get(arg)).get());
+                  } else {
+                    argList.put("  " + f.getName(), f.get(arg).toString());
+                  }
+                }
+              } catch (Exception e){
+                System.out.println(e.getStackTrace());
+              }
+            }
+          }
+          argumentsList.add(new TreeMap<>(argList).descendingMap());
+        } else if(arg instanceof Saveable) {
+          argumentsList.add(((Saveable) arg).save());
+        }
+      }
+      commandLineTool.put("arguments", argumentsList);
+    }
     if (this.inputs != null) {
       commandLineTool.put("inputs", treatInOut(inputs));
     }
