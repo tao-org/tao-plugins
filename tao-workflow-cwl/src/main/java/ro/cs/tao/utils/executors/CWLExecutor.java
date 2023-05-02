@@ -278,9 +278,9 @@ public class CWLExecutor extends Executor<Object>
         String yamlFileName = path.getFileName().toString().replace(".cwl", ".yaml");
         final Path yamlFile =  Paths.get(yamlPathParent + File.separator + yamlFileName);
 
-        YAMLFactory factory =  new YAMLFactory();
-        factory.enable(YAMLGenerator.Feature.MINIMIZE_QUOTES);
-        factory.disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER);
+        MyYAMLFactory factory =  new MyYAMLFactory();
+        factory.enable(MyYAMLGenerator.Feature.MINIMIZE_QUOTES);
+        factory.disable(MyYAMLGenerator.Feature.WRITE_DOC_START_MARKER);
 
         ObjectMapper mapper = new ObjectMapper(factory);
         mapper.registerModule(new Jdk8Module());
@@ -400,7 +400,7 @@ public class CWLExecutor extends Executor<Object>
             input.setType(type);
             CommandLineBinding inputBinding = new CommandLineBindingImpl();
             // check if source name is found in bash arguments
-            String foundPrefix = bashArguments.stream().filter(arg -> arg.matches("-" + source.getName() + "(=.*)?")).findFirst().orElse(null);
+            String foundPrefix = bashArguments.stream().filter(arg -> arg.matches("-?" + source.getName() + "(=.*)?")).findFirst().orElse(null);
             if (foundPrefix != null) {
                 int chIndex = foundPrefix.indexOf("=");
                 // if source name is found containing equal sign, add only the first part; else add the found prefix
@@ -432,7 +432,7 @@ public class CWLExecutor extends Executor<Object>
                     input.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
                     input.setLabel(Optional.of(desc.getLabel()));
                     CommandLineBinding inputBinding = new CommandLineBindingImpl();
-                    String foundPrefix = bashArguments.stream().filter(arg -> arg.matches(desc.getLabel() + "(=.*)?")).findFirst().orElse(null);
+                    String foundPrefix = bashArguments.stream().filter(arg -> arg.matches("-?" + desc.getLabel() + "(=.*)?")).findFirst().orElse(null);
                     if (foundPrefix != null) {
                         int chIndex = foundPrefix.indexOf("=");
                         if (chIndex > -1) {
@@ -462,7 +462,7 @@ public class CWLExecutor extends Executor<Object>
                     for (Variable t : task.getInputParameterValues()) {
                         if (t.getKey().equals(desc.getName())) {
                             // create parameter input for YAML file
-                            yamlFileList.put(desc.getName(), t.getValue());
+                            yamlFileList.put(desc.getName(), JavaType.fromClass(desc.getDataType()).getConverter().apply(t.getValue()));
                             break;
                         }
                     }
