@@ -29,8 +29,8 @@ import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -52,7 +52,9 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
     }
 
     @Override
-    public ProcessingComponent createAggregatedComponent(ProcessingComponent... sources) throws AggregationException {
+    public ProcessingComponent createAggregatedComponent(List<ProcessingComponent> sources,
+                                                         Map<String, Map<String, String>> values) throws AggregationException {
+        final ProcessingComponent first = sources.get(0);
         ProcessingComponent aggregator = new ProcessingComponent();
         final String newId = "snap-aggregated-component-" + UUID.randomUUID();
         aggregator.setId(newId);
@@ -61,8 +63,8 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
         aggregator.setDescription("SNAP aggregated component");
         aggregator.setAuthors(SystemPrincipal.instance().getName());
         aggregator.setCopyright("(C)" + LocalDate.now().getYear());
-        aggregator.setFileLocation(sources[0].getFileLocation());
-        aggregator.setWorkingDirectory(sources[0].getWorkingDirectory());
+        aggregator.setFileLocation(first.getFileLocation());
+        aggregator.setWorkingDirectory(first.getWorkingDirectory());
         Template template = new BasicTemplate();
         template.setName(newId + ".xslt");
         template.setTemplateType(TemplateType.XSLT);
@@ -71,18 +73,23 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
         aggregator.setVisibility(ProcessingComponentVisibility.USER);
         aggregator.setNodeAffinity("Any");
         aggregator.setMultiThread(true);
-        aggregator.setParallelism(Arrays.stream(sources).mapToInt(ProcessingComponent::getParallelism).min().getAsInt());
+        aggregator.setParallelism(sources.stream().mapToInt(ProcessingComponent::getParallelism).min().orElse(1));
         aggregator.setActive(true);
-        aggregator.setContainerId(sources[0].getContainerId());
+        aggregator.setContainerId(first.getContainerId());
         //Path graphPath = Paths.get(SystemVariable.USER_WORKSPACE.value(), newId + ".xml");
-
-        sources[0].getSources().forEach((s) -> {
-            SourceDescriptor source = s.clone();
-            source.setParentId(aggregator.getId());
-            aggregator.addSource(source);
+        final List<ParameterDescriptor> params = first.getParameterDescriptors();
+        first.getSources().forEach((s) -> {
+            final ParameterDescriptor param = params.stream().filter(p -> p.getName().equals(s.getName())).findFirst().orElse(null);
+            if (param == null) {
+                SourceDescriptor source = s.clone();
+                source.setParentId(aggregator.getId());
+                aggregator.addSource(source);
+            } else {
+                param.setDefaultValue(s.getDataDescriptor().getLocation());
+            }
         });
 
-        sources[sources.length - 1].getTargets().forEach((t) -> {
+        sources.get(sources.size() - 1).getTargets().forEach((t) -> {
             TargetDescriptor target = t.clone();
             target.setParentId(aggregator.getId());
             aggregator.addTarget(target);
@@ -108,7 +115,7 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
             }
         }
         aggregator.setParameterDescriptors(parameterDescriptors);
-        final String graph = DescriptorConverter.toSnapXml(sources);
+        final String graph = DescriptorConverter.toSnapXml(sources, values);
         if (graph == null) {
             throw new AggregationException("Cannot produce aggregated graph");
         }
