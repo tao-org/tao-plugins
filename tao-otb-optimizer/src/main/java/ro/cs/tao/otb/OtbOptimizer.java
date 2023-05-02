@@ -14,6 +14,7 @@ import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -34,7 +35,9 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
     }
 
     @Override
-    protected ProcessingComponent createAggregatedComponent(ProcessingComponent... sources) throws AggregationException {
+    protected ProcessingComponent createAggregatedComponent(List<ProcessingComponent> sources,
+                                                            Map<String, Map<String, String>> values) throws AggregationException {
+        final ProcessingComponent first = sources.get(0);
         ProcessingComponent component = new ProcessingComponent();
 
         final String newId = "otb-aggregated-component-" + UUID.randomUUID();
@@ -46,7 +49,7 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
         component.setAuthors(SystemPrincipal.instance().getName());
         component.setCopyright("(C)" + LocalDate.now().getYear());
         component.setFileLocation("python");
-        component.setWorkingDirectory(sources[0].getWorkingDirectory());
+        component.setWorkingDirectory(first.getWorkingDirectory());
 
         Template template = new BasicTemplate();
         template.setName(newId + "_template");
@@ -58,15 +61,15 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
         component.setNodeAffinity("Any");
         component.setMultiThread(true);
         component.setActive(true);
-        component.setContainerId(sources[0].getContainerId());
+        component.setContainerId(first.getContainerId());
 
-        sources[0].getSources().forEach((s) -> {
+        first.getSources().forEach((s) -> {
             SourceDescriptor source = s.clone();
             source.setParentId(component.getId());
             component.addSource(source);
         });
 
-        sources[sources.length - 1].getTargets().forEach((t) -> {
+        sources.get(sources.size() - 1).getTargets().forEach((t) -> {
             TargetDescriptor target = t.clone();
             target.setParentId(component.getId());
             component.addTarget(target);

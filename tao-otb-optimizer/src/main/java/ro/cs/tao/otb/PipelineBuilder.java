@@ -2,6 +2,8 @@ package ro.cs.tao.otb;
 
 import ro.cs.tao.component.*;
 
+import java.util.List;
+
 
 /**
  * Utility class that performs conversion from TAO processing component to OTB python pipeline.
@@ -111,30 +113,30 @@ public class PipelineBuilder {
      *
      * @param components  The TAO processing components
      */
-    public static String toPythonPipeline(ProcessingComponent... components) throws AggregationException {
-        if (components == null || components.length == 0) {
+    public static String toPythonPipeline(List<ProcessingComponent> components) throws AggregationException {
+        if (components == null || components.size() == 0) {
             return null;
         }
 
-        if (components.length == 1) {
+        if (components.size() == 1) {
             return "import otbApplication as otb\n\n" +
                    "apps = []\n\n" +
-                   toPythonPipeline(components[0], true, true, null);
+                   toPythonPipeline(components.get(0), true, true, null);
         } else {
             final StringBuilder builder = new StringBuilder();
 
             builder.append("import otbApplication as otb\n\n")
                     .append("apps = []\n\n");
 
-            builder.append(toPythonPipeline(components[0], true, false, null));
-            String outParamName = components[0].getTargets().get(0).getName();
+            builder.append(toPythonPipeline(components.get(0), true, false, null));
+            String outParamName = components.get(0).getTargets().get(0).getName();
 
-            for (int i = 1; i < components.length - 1; i++) {
-                builder.append(toPythonPipeline(components[i], false, false, outParamName));
-                outParamName = components[0].getTargets().get(0).getName();
+            for (int i = 1; i < components.size() - 1; i++) {
+                builder.append(toPythonPipeline(components.get(i), false, false, outParamName));
+                outParamName = components.get(0).getTargets().get(0).getName();
             }
 
-            builder.append(toPythonPipeline(components[components.length - 1], false, true, outParamName));
+            builder.append(toPythonPipeline(components.get(components.size() - 1), false, true, outParamName));
 
             return builder.toString();
         }
