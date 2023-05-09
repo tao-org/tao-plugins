@@ -1,0 +1,150 @@
+[
+	{
+		"id": "zarr_convert",
+		"label": "Zarr Converter",
+		"version": "1.0.0",
+		"description": "Converts raster data to Zarr format",
+		"authors": "Lidia Baciu, Laurentiu Nicola",
+		"copyright": "(C) 2021 CS GROUP ROMANIA",
+		"category": "RASTER",
+		"nodeAffinity": "Any",
+		"sources": [
+			{
+				"id": null,
+				"parentId": "zarr_convert",
+				"name": "input",
+				"cardinality": 1,
+				"dataDescriptor": {
+					"formatType": "RASTER"
+				}
+			}
+		],
+		"targets": [
+			{
+				"id": null,
+				"parentId": "zarr_convert",
+				"name": "out",
+				"dataDescriptor": {
+					"formatType": "FOLDER",
+					"formatName": "Zarr",
+					"location": "output_zarr"
+				}
+			}
+		],
+		"containerId": "e0426b19-50cf-460b-aa25-840ad6e8dd36",
+		"fileLocation": "gdal_to_xarray.py",
+		"workingDirectory": ".",
+		"templateType": "VELOCITY",
+		"multiThread": false,
+		"visibility": "SYSTEM",
+		"active": true,
+		"parameterDescriptors": [
+			{
+				"id": "date",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "The date of the input product as yyyy-MM-ddTHH:mm:ss",
+				"label": "date",
+				"notNull": true
+			},
+			{
+				"id": "bandNames",
+				"type": "REGULAR",
+				"dataType": "string[]",
+				"defaultValue": null,
+				"description": "Name of the bands in the output product",
+				"label": "band-names",
+				"notNull": false
+			},
+			{
+				"id": "scale",
+				"type": "REGULAR",
+				"dataType": "double",
+				"defaultValue": 1.0,
+				"description": "The scaling to be applied to the input values. Default is 1",
+				"label": "scale",
+				"notNull": false
+			},
+			{
+				"id": "offset",
+				"type": "REGULAR",
+				"dataType": "double",
+				"defaultValue": 0.0,
+				"description": "The offset to be applied to the input values. Default is 0",
+				"label": "offset",
+				"notNull": false
+			},
+			{
+				"id": "fill",
+				"type": "REGULAR",
+				"dataType": "double",
+				"defaultValue": 0,
+				"description": "The offset to be applied to the input values. Default is 0",
+				"label": "fill",
+				"notNull": false
+			},
+			{
+				"id": "units",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "dl",
+				"description": "The units of the input values",
+				"label": "units",
+				"notNull": false
+			}
+		],
+		"templatecontents": "--input\n$input\n--out\n$out\n--date\n$date\n--band-names\n$bandNames\n--scale\n$scale\n--offset\n$offset\n--fill\n$fill\n--units\n$units"
+	},
+	{
+		"id": "union_zarr",
+		"label": "Zarr Union",
+		"version": "1.0.0",
+		"description": "Combines several zarr products into a single one",
+		"authors": "Lidia Baciu, Laurentiu Nicola",
+		"copyright": "(C) 2021 CS GROUP ROMANIA",
+		"category": "RASTER",
+		"nodeAffinity": "Any",
+		"sources": [
+			{
+				"id": null,
+				"parentId": "union_zarr",
+				"name": "inputs",
+				"cardinality": 0,
+				"dataDescriptor": {
+					"formatType": "RASTER"
+				}
+			}
+		],
+		"targets": [
+			{
+				"id": null,
+				"parentId": "union_zarr",
+				"name": "out",
+				"dataDescriptor": {
+					"formatType": "FOLDER",
+					"location": "out_union.zarr"
+				}
+			}
+		],
+		"containerId": "e0426b19-50cf-460b-aa25-840ad6e8dd36",
+		"fileLocation": "union_zarrs.py",
+		"workingDirectory": ".",
+		"templateType": "VELOCITY",
+		"multiThread": false,
+		"visibility": "SYSTEM",
+		"active": true,
+		"parameterDescriptors": [
+			{
+				"id": "bandNames",
+				"type": "REGULAR",
+				"dataType": "string[]",
+				"defaultValue": null,
+				"description": "Name of the bands to join from source products",
+				"label": "band-names",
+				"notNull": false
+			}
+		],
+		"templatecontents": "--inputs\n$inputs\n--out\n$out\n--band-names\n$bandNames\n"
+	}
+]

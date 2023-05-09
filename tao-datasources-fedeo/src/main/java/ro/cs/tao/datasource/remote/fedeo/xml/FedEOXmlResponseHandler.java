@@ -18,7 +18,10 @@ package ro.cs.tao.datasource.remote.fedeo.xml;
 import org.xml.sax.Attributes;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseHandler;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.serialization.DateAdapter;
 
 import java.net.URISyntaxException;
 
@@ -79,9 +82,19 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 if (this.current != null) {
                     this.current.setId(elementValue);
                     this.current.setName(elementValue);
+                    this.current.setPixelType(PixelType.UINT16);
+                    this.current.setSensorType(SensorType.UNKNOWN);
                 }
                 break;
             case "beginPosition":
+                if (elementValue.isEmpty()) {
+                    break;
+                }
+                try {
+                    this.current.setAcquisitionDate(new DateAdapter().unmarshal(elementValue));
+                } catch (Exception e) {
+                    logger.warning(e.getMessage());
+                }
                 this.current.addAttribute(qName, elementValue);
                 break;
             case "endPosition":
@@ -90,6 +103,7 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
             case "shortName":
                 switch (this.identifiedElement) {
                     case "platform":
+                        this.current.setProductType(elementValue);
                         this.current.addAttribute(this.identifiedElement, elementValue);
                         break;
                     case "instrument":
@@ -99,8 +113,15 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                         break;
                 }
                 break;
+            case "serialIdentifier":
+                this.current.setSatelliteName(elementValue);
+                break;
             case "sensorType":
-                this.current.setSensorType(SensorType.valueOf(elementValue));
+                try {
+                    this.current.setSensorType(SensorType.valueOf(elementValue));
+                } catch (IllegalArgumentException ex) {
+                    this.current.setSensorType(SensorType.UNKNOWN);
+                }
                 this.current.addAttribute(qName, elementValue);
                 break;
             case "operationalMode":
@@ -115,7 +136,27 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
             case "wrsLatitudeGrid":
                 this.current.addAttribute(qName, elementValue);
                 break;
+            case "illuminationAzimuthAngle":
+                this.current.addAttribute(qName, elementValue);
+                break;
+            case "illuminationElevationAngle":
+                this.current.addAttribute(qName, elementValue);
+                break;
+            case "incidenceAngle":
+                this.current.addAttribute(qName, elementValue);
+                break;
             case "posList":
+                if (!elementValue.isEmpty()) {
+                    String[] points = elementValue.split(" ");
+                    if (points.length >= 5) {
+                        Polygon2D polygon2D = new Polygon2D();
+                        for (int i = 0; i < points.length; i += 2) {
+                            polygon2D.append(Double.parseDouble(points[i + 1]),
+                                    Double.parseDouble(points[i]));
+                        }
+                        this.current.setGeometry(polygon2D.toWKT(8));
+                    }
+                }
                 this.current.addAttribute(qName, elementValue);
                 break;
             case "type":
@@ -125,6 +166,9 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 break;
             case "size":
                 this.current.setApproximateSize(Long.parseLong(elementValue));
+                break;
+            case "cloudCoverPercentage":
+                this.current.addAttribute(qName, elementValue);
                 break;
             case "acquisitionType":
                 this.current.addAttribute(qName, elementValue);

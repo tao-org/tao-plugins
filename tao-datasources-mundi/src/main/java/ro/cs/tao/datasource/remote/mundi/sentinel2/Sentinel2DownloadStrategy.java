@@ -38,6 +38,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Cosmin Cara
@@ -418,21 +419,23 @@ public class Sentinel2DownloadStrategy extends DownloadStrategy<Header> {
                 }
             } else {
                 // remove the entire directory
-                Files.walk(rootPath)
-                        .sorted(Comparator.reverseOrder())
-                        .map(java.nio.file.Path::toFile)
-                        .peek(System.out::println)
-                        .forEach(File::delete);
+                try (Stream<java.nio.file.Path> stream = Files.walk(rootPath)) {
+                    stream.sorted(Comparator.reverseOrder())
+                          .map(java.nio.file.Path::toFile)
+                          .peek(System.out::println)
+                          .forEach(File::delete);
+                }
                 logger.warning(String.format("The product %s did not contain any tiles from the tile list", productName));
                 throw new NoSuchElementException(String.format("The product %s did not contain any tiles from the tile list", productName));
             }
         } else {
             // remove the entire directory
-            Files.walk(rootPath)
-                    .sorted(Comparator.reverseOrder())
-                    .map(java.nio.file.Path::toFile)
-                    .peek(System.out::println)
-                    .forEach(File::delete);
+            try (Stream<java.nio.file.Path> stream = Files.walk(rootPath)) {
+                stream.sorted(Comparator.reverseOrder())
+                      .map(java.nio.file.Path::toFile)
+                      .peek(System.out::println)
+                      .forEach(File::delete);
+            }
             logger.warning(String.format("The product %s was not found", productName));
             rootPath = null;
         }

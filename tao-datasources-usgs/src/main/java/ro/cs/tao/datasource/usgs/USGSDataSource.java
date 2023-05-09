@@ -16,7 +16,6 @@
 package ro.cs.tao.datasource.usgs;
 
 import org.apache.http.auth.Credentials;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.URLDataSource;
@@ -25,6 +24,7 @@ import ro.cs.tao.datasource.usgs.json.handlers.LoginResponseHandler;
 import ro.cs.tao.datasource.usgs.json.requests.LoginRequest;
 import ro.cs.tao.datasource.usgs.json.responses.LoginResponse;
 import ro.cs.tao.datasource.usgs.parameters.LandsatParameterProvider;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
@@ -38,6 +38,8 @@ import java.util.Properties;
 public class USGSDataSource extends URLDataSource<Landsat8Query, String> {
     private static final Properties props;
     private static String URL;
+    private static String earthDataUsername;
+    private static String earthDataPassword;
 
     static {
         props = new Properties();
@@ -104,6 +106,15 @@ public class USGSDataSource extends URLDataSource<Landsat8Query, String> {
         } catch (Exception ex) {
             throw new QueryException(ex);
         }
+    }
+
+    public void setEarthDataCredentials(String username, String password) {
+        earthDataUsername = username;
+        earthDataPassword = password;
+    }
+
+    public String getEarthDataToken() {
+        return NetUtils.getAuthToken(earthDataUsername, earthDataPassword);
     }
 
     @Override

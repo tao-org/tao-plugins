@@ -1,0 +1,9 @@
+xarray==0.19.*
+numpy==1.21.*
+zarr==2.9.*
+pyproj==3.2.*
+dask==2021.9.*
+psycopg2-binary==2.9.*
+docker==5.0.*
+s3fs==2021.10.*
+blosc==1.10.*

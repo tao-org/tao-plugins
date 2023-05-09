@@ -17,17 +17,16 @@
 package ro.cs.tao.datasource.db.fetch;
 
 import org.apache.http.auth.UsernamePasswordCredentials;
-import ro.cs.tao.ProgressListener;
 import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.db.DatabaseSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.security.SessionStore;
+import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.executors.monitoring.DownloadProgressListener;
 
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -38,7 +37,7 @@ import java.util.logging.Logger;
  */
 public class DatabaseFetchStrategy implements ProductFetchStrategy {
     private final DatabaseSource source;
-    private ProgressListener progressListener;
+    private DownloadProgressListener progressListener;
 
     public DatabaseFetchStrategy(DatabaseSource source) {
         this.source = source;
@@ -55,7 +54,7 @@ public class DatabaseFetchStrategy implements ProductFetchStrategy {
     }
 
     @Override
-    public void setProgressListener(ProgressListener progressListener) {
+    public void setProgressListener(DownloadProgressListener progressListener) {
         this.progressListener = progressListener;
     }
 
@@ -64,7 +63,7 @@ public class DatabaseFetchStrategy implements ProductFetchStrategy {
         Path productPath = null;
         if (product != null && product.getLocation() != null) {
             this.progressListener.started(product.getName());
-            productPath = Paths.get(URI.create(product.getLocation()));
+            productPath = FileUtilities.toPath(product.getLocation());
             if (!productPath.isAbsolute()) {
                 productPath = SessionStore.currentContext().getWorkspace().resolve(productPath);
                 if (product.getEntryPoint() != null) {

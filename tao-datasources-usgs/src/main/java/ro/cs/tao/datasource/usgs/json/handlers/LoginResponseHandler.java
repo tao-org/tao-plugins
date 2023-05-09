@@ -15,10 +15,10 @@
  */
 package ro.cs.tao.datasource.usgs.json.handlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.usgs.json.responses.LoginResponse;
+import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 
@@ -29,7 +29,6 @@ public class LoginResponseHandler implements JSonResponseHandler<LoginResponse> 
 
     @Override
     public LoginResponse readValue(String content, AttributeFilter...filters) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(content, LoginResponse.class);
+        return JsonMapper.instance().readValue(content, LoginResponse.class);
     }
 }

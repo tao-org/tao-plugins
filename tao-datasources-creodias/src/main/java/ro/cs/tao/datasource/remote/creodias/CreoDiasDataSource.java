@@ -2,19 +2,17 @@ package ro.cs.tao.datasource.remote.creodias;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.Credentials;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.URLDataSource;
-import ro.cs.tao.datasource.remote.creodias.landsat8.Landsat8Query;
 import ro.cs.tao.datasource.remote.creodias.model.common.Token;
 import ro.cs.tao.datasource.remote.creodias.parameters.CreodiasParameterProvider;
 import ro.cs.tao.datasource.remote.creodias.parsers.LoginResponseHandler;
-import ro.cs.tao.datasource.remote.creodias.sentinel1.Sentinel1Query;
-import ro.cs.tao.datasource.remote.creodias.sentinel2.Sentinel2Query;
+import ro.cs.tao.datasource.remote.creodias.queries.*;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
@@ -49,6 +47,8 @@ public class CreoDiasDataSource extends URLDataSource<BaseDataQuery, Token> {
             //put("Sentinel2", normalizedURL("s2.search.url"));
             put("Sentinel2", properties.getProperty("s2.search.url"));
             //put("Landsat8", normalizedURL("l8.search.url"));
+            put("Sentinel3", properties.getProperty("s3.search.url"));
+            put("Sentinel5P", properties.getProperty("s5p.search.url"));
             put("Landsat8", properties.getProperty("l8.search.url"));
             put("Login", properties.getProperty("login.url"));
             put("Download", properties.getProperty("download.url"));
@@ -125,6 +125,12 @@ public class CreoDiasDataSource extends URLDataSource<BaseDataQuery, Token> {
                 break;
             case "Sentinel2":
                 query = new Sentinel2Query(this, sensorName, this.connectionStrings.get(sensorName));
+                break;
+            case "Sentinel3":
+                query = new Sentinel3Query(this, sensorName, this.connectionStrings.get(sensorName));
+                break;
+            case "Sentinel5P":
+                query = new Sentinel5PQuery(this, sensorName, this.connectionStrings.get(sensorName));
                 break;
             case "Landsat8":
                 query = new Landsat8Query(this, sensorName, this.connectionStrings.get(sensorName));

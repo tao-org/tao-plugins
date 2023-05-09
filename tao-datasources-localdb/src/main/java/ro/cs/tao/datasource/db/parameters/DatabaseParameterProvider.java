@@ -15,7 +15,7 @@
  */
 package ro.cs.tao.datasource.db.parameters;
 
-import ro.cs.tao.Tuple;
+import ro.cs.tao.datasource.CollectionDescription;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.db.DatabaseSource;
@@ -28,7 +28,9 @@ import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
+import ro.cs.tao.utils.Tuple;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -62,7 +64,7 @@ public class DatabaseParameterProvider implements ParameterProvider {
                             put(parameter.getKeyOne(), parameter.getKeyTwo());
                             parameter = ParameterProvider.createParameter("sensorType", "sensor_type_id", "Sensor Type", SensorType.class);
                             put(parameter.getKeyOne(), parameter.getKeyTwo());
-                            parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "acquisition_date", "Acquisition Date", Date.class);
+                            parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "acquisition_date", "Acquisition Date", LocalDateTime.class);
                             put(parameter.getKeyOne(), parameter.getKeyTwo());
                             parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "product_type", "Satellite", String.class, sensor);
                             put(parameter.getKeyOne(), parameter.getKeyTwo());
@@ -81,26 +83,21 @@ public class DatabaseParameterProvider implements ParameterProvider {
                 Collections.addAll(sensors, service.getSupportedSensors());
             }
         }
-        /*List<String> sensors = new ArrayList<>();
-        Connection sqlConnection = this.source.getConnection();
-        if (sqlConnection != null) {
-            try {
-                PreparedStatement statement = sqlConnection.prepareStatement("SELECT DISTINCT product_type FROM " + DatabaseSource.PRODUCTS_TABLE);
-                ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    sensors.add(resultSet.getString(0));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    sqlConnection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }*/
         return sensors.toArray(new String[0]);
+    }
+
+    @Override
+    public Map<String, CollectionDescription> getSensorTypes() {
+        final Map<String, CollectionDescription> sensorTypes = new HashMap<>();
+        ServiceRegistry<DataSource> serviceRegistry = ServiceRegistryManager.getInstance().getServiceRegistry(DataSource.class);
+        Set<DataSource> services = serviceRegistry.getServices();
+        for (DataSource service : services) {
+            if (!service.getClass().equals(this.source.getClass())) {
+                Map<String, CollectionDescription> types = service.getSensorTypes();
+                sensorTypes.putAll(types);
+            }
+        }
+        return sensorTypes;
     }
 
     @Override

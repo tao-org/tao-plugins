@@ -1,0 +1,450 @@
+{
+  "Landsat8": {
+    "collection": {
+      "name": "collection",
+      "remoteName": "collection",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "LANDSAT",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platform",
+      "label": "Satellite",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["LANDSAT8"],
+      "order": 0
+    },
+    "instrument": {
+      "name": "instrument",
+      "remoteName": "instrument",
+      "label": "Instrument",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["OLITIRS"],
+      "order": 0
+    },
+    "processingLevel": {
+      "name": "processingLevel",
+      "remoteName": "processingLevel",
+      "label": "Processing Level",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["LEVEL2A"],
+      "order": 0
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["REFLECTANCE"],
+      "order": 0
+    },
+    "sensorMode": {
+      "name": "sensorMode",
+      "remoteName": "sensorMode",
+      "label": "Sensor Mode",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["XS"],
+      "order": 0
+    },
+    "orbit": {
+      "name": "orbit",
+      "remoteName": "orbit",
+      "label": "Absolute Orbit",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "relativeOrbit": {
+      "name": "relativeOrbit",
+      "remoteName": "relativeOrbitNumber",
+      "label": "Relative Orbit",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "completionDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "geometry",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "Sentinel2": {
+    "collection": {
+      "name": "collection",
+      "remoteName": "collection",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "SENTINEL2",
+      "required": false,
+      "valueSet": ["SENTINEL2"],
+      "order": 0
+    },
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platform",
+      "label": "Satellite",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["SENTINEL2A","SENTINEL2B","SENTINEL2X"],
+      "order": 0
+    },
+    "instrument": {
+      "name": "instrument",
+      "remoteName": "instrument",
+      "label": "Instrument",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "processingLevel": {
+      "name": "processingLevel",
+      "remoteName": "processingLevel",
+      "label": "Processing Level",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["LEVEL2A","LEVEL3A"],
+      "order": 0
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["REFLECTANCE"],
+      "order": 0
+    },
+    "sensorMode": {
+      "name": "sensorMode",
+      "remoteName": "sensorMode",
+      "label": "Sensor Mode",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "orbit": {
+      "name": "orbit",
+      "remoteName": "orbit",
+      "label": "Absolute Orbit",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "relativeOrbit": {
+      "name": "relativeOrbit",
+      "remoteName": "relativeOrbitNumber",
+      "label": "Relative Orbit",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "location",
+      "label": "Tile",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "completionDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "geometry",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "Pleiades": {
+    "collection": {
+      "name": "collection",
+      "remoteName": "collection",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "Pleiades",
+      "required": false,
+      "valueSet": ["Pleiades"],
+      "order": 0
+    },
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platform",
+      "label": "Satellite",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["PLEIADES-1A","PLEIADES-1B"],
+      "order": 0
+    },
+    "instrument": {
+      "name": "instrument",
+      "remoteName": "instrument",
+      "label": "Instrument",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["PHR"],
+      "order": 0
+    },
+    "processingLevel": {
+      "name": "processingLevel",
+      "remoteName": "processingLevel",
+      "label": "Processing Level",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["ORTHO","PRIMARY"],
+      "order": 0
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["Bundle (Pan, XS)", "Multispectral (XS)", "Panchromatique (Pan)", "Pansharpened (Pan+XS)"],
+      "order": 0
+    },
+    "sensorMode": {
+      "name": "sensorMode",
+      "remoteName": "sensorMode",
+      "label": "Sensor Mode",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "orbit": {
+      "name": "orbit",
+      "remoteName": "orbit",
+      "label": "Absolute Orbit",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "relativeOrbit": {
+      "name": "relativeOrbit",
+      "remoteName": "relativeOrbitNumber",
+      "label": "Relative Orbit",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "completionDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "geometry",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "Venus": {
+    "collection": {
+      "name": "collection",
+      "remoteName": "collection",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "VENUS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platform",
+      "label": "Satellite",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["VENUS"],
+      "order": 0
+    },
+    "processingLevel": {
+      "name": "processingLevel",
+      "remoteName": "processingLevel",
+      "label": "Processing Level",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["LEVEL1C","LEVEL2A","LEVEL3A"],
+      "order": 0
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["REFLECTANCE","REFLECTANCETOA"],
+      "order": 0
+    },
+    "location": {
+      "name": "location",
+      "remoteName": "location",
+      "label": "Location",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["25MAYO","ALP12","ALSACE","ANANTAP","ANGIANG","ANJI","AOMORI1","AOMORI4","ARM","ASP-CS1","ATTO","BADHAA-2","BAMBENW2","BAVFONW2","BAVFOR-E","BCI","BCI2","BENGA","BF-KOUMB","BR-MATO","BR-SAOP","CAIDD","CASANARE","CATRIEL","CHERSKII","CHILE","CHOPTANK","COLOMBIA","COMODO-2","CORK1","CORUMBA","CREDO","CTNVRI1","CTNVRI2","CURONIAN","CURONNW2","DAHRA","DANUM","DDUANT","DESIP2","DESIP3","DMT-BRUN","DONEGAL1","DOWNER","DUANTNEW","DUCK","DUOLUN3","ESGISB-1","ESGISB-2","ESGISB-3","ES-IC3XG","ES-LTERA","ESTUAGIS","ESTUAMAR","FGMANAUS","FORTPECK","YUMA-2","ZEL01NW2"],
+      "order": 0
+    },
+    "orbit": {
+      "name": "orbit",
+      "remoteName": "orbit",
+      "label": "Absolute Orbit",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "relativeOrbit": {
+      "name": "relativeOrbit",
+      "remoteName": "relativeOrbitNumber",
+      "label": "Relative Orbit",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "startDate",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "completionDate",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "geometry",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  }
+}

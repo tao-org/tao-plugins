@@ -28,6 +28,7 @@ import ro.cs.tao.products.sentinels.Sentinel1MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel2MetadataInspector;
 import ro.cs.tao.utils.DockerHelper;
 import ro.cs.tao.utils.ExceptionUtils;
+import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.*;
 
 import javax.json.*;
@@ -53,7 +54,7 @@ public class GdalInfoWrapper implements MetadataInspector {
     static {
         final ConfigurationProvider configurationProvider = ConfigurationManager.getInstance();
         gdalDockerImage = configurationProvider.getValue("docker.gdal.image", "geodata/gdal");
-        useDocker = Boolean.parseBoolean(configurationProvider.getValue("plugins.use.docker", "false")) && DockerHelper.isDockerFound();
+        useDocker = "docker".equals(configurationProvider.getValue("plugins.use", "")) && DockerHelper.isDockerFound();
         extractStatistics = Boolean.parseBoolean(configurationProvider.getValue("extract.statistics", "true"));
         extractHistogram = Boolean.parseBoolean(configurationProvider.getValue("extract.histogram", "false"));
         Logger.getLogger(GdalInfoWrapper.class.getName())
@@ -188,7 +189,10 @@ public class GdalInfoWrapper implements MetadataInspector {
                                 .filter(jv -> jv.toString().contains("NETCDF:"))
                                 .findFirst().orElse(null);
                         if (subDataSet != null) {
-                            executor = initialize(Paths.get(subDataSet.toString()), gdalOnDocker);
+                            String[] varPath = subDataSet.toString().split(":");
+                            executor = initialize(productPath.toString(),
+                                                  varPath[2].replace("\"", ""),
+                                                  gdalOnDocker);
                             consumer = new OutputAccumulator();
                             executor.setOutputConsumer(consumer);
                             reader.close();
@@ -320,13 +324,12 @@ public class GdalInfoWrapper implements MetadataInspector {
     private double getSafeValue(JsonObject parent, String name) {
         double value = Double.NaN;
         final JsonValue jsonObject = parent.get(name);
-        if (jsonObject.getValueType() == JsonValue.ValueType.STRING) {
+        if (jsonObject != null && jsonObject.getValueType() == JsonValue.ValueType.STRING) {
             // special case of NaN and Infinity/-Infinity
             final String jsonString = parent.getJsonString(name).getString();
             switch (jsonString.toLowerCase()) {
                 case "nan":
                 case "-nan":
-                    value = Double.NaN;
                     break;
                 case "infinity":
                 case "inf":
@@ -338,7 +341,10 @@ public class GdalInfoWrapper implements MetadataInspector {
                     break;
             }
         } else {
-            value = parent.getJsonNumber(name).doubleValue();
+            final JsonNumber jsonNumber = parent.getJsonNumber(name);
+            if (jsonNumber != null) {
+                value = jsonNumber.doubleValue();
+            }
         }
         return value;
     }
@@ -346,11 +352,22 @@ public class GdalInfoWrapper implements MetadataInspector {
     private Executor<?> initialize(Path path, String[] args) {
         List<String> arguments = new ArrayList<>();
         // At least on Windows, docker doesn't handle well folder symlinks in the path
-        //Path realPath = FileUtilities.resolveSymLinks(path);
         for (String arg : args) {
             arguments.add(arg.replace("$FULL_PATH", path.toString())
-                              .replace("$FOLDER", path.getParent().toString())
+                              .replace("$FOLDER", FileUtilities.asUnixPath(path.getParent(), false))
                               .replace("$FILE", path.getFileName().toString()));
+        }
+        return this.factory.processManager().createExecutor(arguments);
+    }
+
+    private Executor<?> initialize(String path, String netcdfVariable, String[] args) {
+        List<String> arguments = new ArrayList<>();
+        // At least on Windows, docker doesn't handle well folder symlinks in the path
+        Path pPath = Paths.get(path);
+        for (String arg : args) {
+            arguments.add(arg.replace("$FULL_PATH", "NETCDF:" + path + ":" + netcdfVariable)
+                             .replace("$FOLDER", FileUtilities.asUnixPath(pPath.getParent(), false))
+                             .replace("/mnt/data/$FILE", "NETCDF:/mnt/data/" + pPath.getFileName() + ":" + netcdfVariable));
         }
         return this.factory.processManager().createExecutor(arguments);
     }

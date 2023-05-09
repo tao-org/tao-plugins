@@ -32,8 +32,8 @@ import ro.cs.tao.eodata.enums.SensorType;
 import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -50,7 +50,7 @@ public class DatabaseQuery extends DataQuery {
     static {
         ConverterFactory factory = new ConverterFactory();
         factory.register(PolygonParameterConverter.class, Polygon2D.class);
-        factory.register(DateParameterConverter.class, Date.class);
+        factory.register(DateParameterConverter.class, LocalDateTime.class);
         converterFactory.put(DatabaseQuery.class, factory);
     }
     DatabaseQuery(DatabaseSource source, String sensorName) {
@@ -85,6 +85,11 @@ public class DatabaseQuery extends DataQuery {
                     if (parameter.getType().isArray()) {
                         query.append(getRemoteName(parameter.getName())).append(" IN (");
                         Object value = parameter.getValue();
+                        if (!value.getClass().isArray()) {
+                            // the value should be a string on the form "[a,b,..]"
+                            String strValue = (String) value;
+                            value = strValue.substring(1, strValue.length() - 1).split(",");
+                        }
                         Object[] arrayValue;
                         int length;
                         try {
@@ -157,8 +162,8 @@ public class DatabaseQuery extends DataQuery {
                                 statement.setString(i, (String) value);
                             } else if (Polygon2D.class.equals(clazz)) {
                                 statement.setString(i, ((Polygon2D) value).toWKT());
-                            } else if (Date.class.equals(clazz)) {
-                                statement.setObject(i, value, Types.DATE);
+                            } else if (LocalDateTime.class.equals(clazz)) {
+                                statement.setObject(i, Timestamp.valueOf((LocalDateTime) value), Types.TIMESTAMP);
                             }
                         }
                     }
@@ -196,7 +201,10 @@ public class DatabaseQuery extends DataQuery {
                     if (sensorTypeId != 0) {
                         product.setSensorType(EnumUtils.getEnumConstantByValue(SensorType.class, sensorTypeId));
                     }
-                    product.setAcquisitionDate(resultSet.getDate(9));
+                    final Timestamp timestamp = resultSet.getTimestamp(9);
+                    if (timestamp != null) {
+                        product.setAcquisitionDate(timestamp.toLocalDateTime());
+                    }
                     int pixelTypeId = resultSet.getInt(10);
                     if (pixelTypeId != 0) {
                         product.setPixelType(EnumUtils.getEnumConstantByValue(PixelType.class, pixelTypeId));

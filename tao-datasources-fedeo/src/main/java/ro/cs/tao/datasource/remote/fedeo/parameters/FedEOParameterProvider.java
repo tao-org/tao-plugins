@@ -16,9 +16,10 @@
 
 package ro.cs.tao.datasource.remote.fedeo.parameters;
 
+import org.apache.commons.lang3.StringUtils;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.datasource.ProductFetchStrategy;
-import ro.cs.tao.datasource.opensearch.OpenSearchParameterProvider;
+import ro.cs.tao.datasource.param.AbstractParameterProvider;
 import ro.cs.tao.datasource.remote.fedeo.FedEODataSource;
 import ro.cs.tao.datasource.remote.fedeo.download.FedEODownloadStrategy;
 
@@ -26,22 +27,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class FedEOParameterProvider extends OpenSearchParameterProvider {
+public class FedEOParameterProvider extends AbstractParameterProvider {
 
-    public FedEOParameterProvider(FedEODataSource dataSource, String url) {
-        super(url);
-        this.endpointType = "application/sru+xml";
+    public FedEOParameterProvider(FedEODataSource dataSource) {
+        super();
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         this.productFetchers = new HashMap<>();
         String[] sensors = getSupportedSensors();
         for (String sensor : sensors) {
-            this.productFetchers.put(sensor, new FedEODownloadStrategy(dataSource, targetFolder, new Properties()));
+            this.productFetchers.put(StringUtils.capitalize(sensor.replace("-", "")), new FedEODownloadStrategy(dataSource, targetFolder, new Properties()));
         }
-    }
-
-    @Override
-    protected String sensorParameterName() {
-        return "platform";
     }
 
     @Override

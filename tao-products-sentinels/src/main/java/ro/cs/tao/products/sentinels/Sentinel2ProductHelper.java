@@ -15,14 +15,14 @@
  */
 package ro.cs.tao.products.sentinels;
 
-import ro.cs.tao.eodata.util.ProductHelper;
+import ro.cs.tao.eodata.util.BaseProductHelper;
 
 import java.util.regex.Pattern;
 
 /**
  * @author Cosmin Cara
  */
-public abstract class Sentinel2ProductHelper extends ProductHelper {
+public abstract class Sentinel2ProductHelper extends BaseProductHelper {
 
     public static final String PSD_13 = "13";
     public static final String PSD_14 = "14";
@@ -39,7 +39,7 @@ public abstract class Sentinel2ProductHelper extends ProductHelper {
         return helper;
     }
 
-    Sentinel2ProductHelper() { }
+    public Sentinel2ProductHelper() { super(); }
 
     Sentinel2ProductHelper(String name) {
         super(name);

@@ -48,8 +48,8 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
         }
         Path productFolderPath = Files.isRegularFile(productPath) ?  productPath.getParent() : productPath;
         try {
-            Sentinel2ProductHelper.createHelper(productFolderPath.getFileName().toString());
-            return DecodeStatus.INTENDED;
+            Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(productFolderPath.getFileName().toString());
+            return Files.exists(productFolderPath.resolve(helper.getMetadataFileName())) ? DecodeStatus.INTENDED : DecodeStatus.UNABLE;
         } catch (Exception e) {
             return DecodeStatus.UNABLE;
         }
@@ -62,6 +62,15 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
         }
         Path productFolderPath = Files.isRegularFile(productPath) ?  productPath.getParent() : productPath;
         Sentinel2ProductHelper helper = Sentinel2ProductHelper.createHelper(productFolderPath.getFileName().toString());
+        final String productTag;
+        final String granuleTag;
+        if (helper instanceof L1CProductHelper) {
+            productTag = "Level-1C_User_Product";
+            granuleTag = "Level-1C_Tile_ID";
+        } else {
+            productTag = "Level-2A_User_Product";
+            granuleTag = "Level-2A_Tile_ID";
+        }
         Metadata metadata = new Metadata();
 
         String metadataFileName = helper.getMetadataFileName();
@@ -77,7 +86,7 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
             logger.warning(String.format("Cannot read metadata %s. Reason: %s", metadataFileName, e.getMessage()));
             throw new IOException(e);
         }
-        String points = getValue("/Level-1C_User_Product/Geometric_Info/Product_Footprint/Product_Footprint/Global_Footprint/EXT_POS_LIST/text()");
+        String points = getValue("/" + productTag + "/Geometric_Info/Product_Footprint/Product_Footprint/Global_Footprint/EXT_POS_LIST/text()");
         if (points != null) {
             String[] coords = points.trim().split(" ");
             Polygon2D polygon2D = new Polygon2D();
@@ -88,15 +97,15 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
             metadata.setFootprint(polygon2D.toWKT(8));
         }
         metadata.setCrs("EPSG:4326");
-        metadata.setOrbitDirection(OrbitDirection.valueOf(getValue("/Level-1C_User_Product/General_Info/Product_Info/Datatake/SENSING_ORBIT_DIRECTION/text()")));
+        metadata.setOrbitDirection(OrbitDirection.valueOf(getValue("/" + productTag + "/General_Info/Product_Info/Datatake/SENSING_ORBIT_DIRECTION/text()")));
         if (Sentinel2ProductHelper.PSD_14.equals(helper.getVersion())) {
             metadata.setWidth(10980);
             metadata.setHeight(10980);
             metadata.addAttribute("tiles", helper.getTileIdentifier());
         } else {
-            List<String> granuleList = getValues("/Level-1C_User_Product/Product_Organisation/Granule_List/Granules/@granuleIdentifier");
+            List<String> granuleList = getValues("/" + productTag + "/Product_Organisation/Granule_List/Granules/@granuleIdentifier");
             if (granuleList == null) {
-                granuleList = getValues("/Level-1C_User_Product/Product_Organisation/Granule_List/Granule/@granuleIdentifier");
+                granuleList = getValues("/" + productTag + "/Product_Organisation/Granule_List/Granule/@granuleIdentifier");
             }
             List<String> ulx = new ArrayList<>();
             List<String> uly = new ArrayList<>();
@@ -107,11 +116,11 @@ public class Sentinel2MetadataInspector extends XmlMetadataInspector {
                         .resolve(granuleMetadataFileName);
                 try {
                     readDocument(granuleMetadataFile);
-                    List<String> ulxg = getValues("/Level-1C_Tile_ID/n1:Geometric_Info/Tile_Geocoding/Geoposition/ULX/text()");
+                    List<String> ulxg = getValues("/" + granuleTag + "/n1:Geometric_Info/Tile_Geocoding/Geoposition/ULX/text()");
                     if (ulxg != null) {
                         ulx.addAll(ulxg);
                     }
-                    List<String> ulyg = getValues("/Level-1C_Tile_ID/n1:Geometric_Info/Tile_Geocoding/Geoposition/ULY/text()");
+                    List<String> ulyg = getValues("/" + granuleTag + "/n1:Geometric_Info/Tile_Geocoding/Geoposition/ULY/text()");
                     if (ulyg != null) {
                         uly.addAll(ulyg);
                     }

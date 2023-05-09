@@ -48,8 +48,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,10 +61,9 @@ import java.util.stream.Collectors;
  */
 class Sentinel2Query extends DataQuery {
     private static final String S2_SEARCH_URL_SUFFIX = "?delimiter=/&prefix=";
-    private static final String dateFormatString = "yyyy-MM-dd";
-    private static final DateFormat dateFormat = DateUtils.getFormatterAtUTC(dateFormatString);
-    private static final DateTimeFormatter fileDateFormat = DateTimeFormatter.ofPattern(dateFormatString);
-    private static final DateFormat nameDateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
+    private static final String dateFormatString = new SimpleDateFormat("yyyy-MM-dd").toPattern();
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter nameDateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
 
     Sentinel2Query(DataSource source) {
         super(source, "Sentinel2");
@@ -115,13 +116,13 @@ class Sentinel2Query extends DataQuery {
                     if (currentParameter.getMinValue() != null) {
                         sensingStart = currentParameter.getMinValueAsFormattedDate(dateFormatString);
                     } else {
-                        sensingStart = todayDate.minusDays(30).format(fileDateFormat);
+                        sensingStart = todayDate.minusDays(30).format(dateFormat);
                     }
                 }
             } else {
-                sensingStart = todayDate.minusDays(30).format(fileDateFormat);
+                sensingStart = todayDate.minusDays(30).format(dateFormat);
             }
-            startDate.setTime(dateFormat.parse(sensingStart));
+            startDate.setTime(Date.from(LocalDateTime.parse(sensingStart, dateFormat).atZone(ZoneId.of("UTC")).toInstant()));
             currentParameter = this.parameters.get(CommonParameterNames.END_DATE);
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
@@ -130,13 +131,13 @@ class Sentinel2Query extends DataQuery {
                     if (currentParameter.getMaxValue() != null) {
                         sensingEnd = currentParameter.getMaxValueAsFormattedDate(dateFormatString);
                     } else {
-                        sensingEnd = todayDate.format(fileDateFormat);
+                        sensingEnd = todayDate.format(dateFormat);
                     }
                 }
             } else {
-                sensingEnd = todayDate.format(fileDateFormat);
+                sensingEnd = todayDate.format(dateFormat);
             }
-            endDate.setTime(dateFormat.parse(sensingEnd));
+            endDate.setTime(Date.from(LocalDateTime.parse(sensingEnd, dateFormat).atZone(ZoneId.of("UTC")).toInstant()));
             //http://sentinel-s2-l1c.s3.amazonaws.com/?delimiter=/&prefix=tiles/15/R/TM/
 
             currentParameter = this.parameters.get(CommonParameterNames.CLOUD_COVER);
@@ -198,7 +199,7 @@ class Sentinel2Query extends DataQuery {
                                     int dayE = month == monthE ? dayEnd : calendar.get(Calendar.DAY_OF_MONTH);
                                     for (int day = dayS; day <= dayE; day++) {
                                         if (days.contains(day)) {
-                                            String dayUrl = monthUrl + String.valueOf(day) + Constants.URL_SEPARATOR;
+                                            String dayUrl = monthUrl + day + Constants.URL_SEPARATOR;
                                             AwsResult dayResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, dayUrl));
                                             if (dayResult.getCommonPrefixes() != null) {
                                                 Set<Integer> sequences = dayResult.getCommonPrefixes().stream()
@@ -207,21 +208,18 @@ class Sentinel2Query extends DataQuery {
                                                             return Integer.parseInt(tmp.substring(0, tmp.indexOf(dayResult.getDelimiter())));
                                                         }).collect(Collectors.toSet());
                                                 for (int sequence : sequences) {
-                                                    String jsonTile = dayUrl + String.valueOf(sequence) +
-                                                            Constants.URL_SEPARATOR + "tileInfo.json";
+                                                    String jsonTile = dayUrl + sequence + Constants.URL_SEPARATOR + "tileInfo.json";
                                                     jsonTile = jsonTile.replace(S2_SEARCH_URL_SUFFIX, "");
                                                     EOProduct product = new EOProduct();
                                                     product.setProductType("Sentinel2");
                                                     double clouds = getTileCloudPercentage(jsonTile, product);
                                                     if (clouds > cloudFilter) {
-                                                        Calendar instance = new Calendar.Builder().setDate(year, month - 1, day).build();
                                                         logger.fine(String.format("Tile %s from %s has %.2f %% clouds",
-                                                                                     tile,
-                                                                                     dateFormat.format(instance.getTime()),
-                                                                                     clouds));
+                                                                                  tile,
+                                                                                  LocalDate.of(year, month - 1, day).format(dateFormat),
+                                                                                  clouds));
                                                     } else {
-                                                        String jsonProduct = dayUrl + String.valueOf(sequence) +
-                                                                Constants.URL_SEPARATOR + "productInfo.json";
+                                                        String jsonProduct = dayUrl + sequence + Constants.URL_SEPARATOR + "productInfo.json";
                                                         jsonProduct = jsonProduct.replace("?delimiter=/&prefix=", "");
                                                         parseProductJson(jsonProduct, product);
                                                         String manifest = product.getLocation() +
@@ -232,10 +230,9 @@ class Sentinel2Query extends DataQuery {
                                                             if (this.limit > 0 && this.limit <= results.size()) {
                                                                 break;
                                                             }
-                                                            String processingDate = SentinelProductHelper.create(product.getName())
-                                                                                        .getProcessingDate();
+                                                            String processingDate = SentinelProductHelper.create(product.getName()).getProcessingDate();
                                                             if (processingDate != null) {
-                                                                product.setProcessingDate(nameDateFormat.parse(processingDate));
+                                                                product.setProcessingDate(LocalDateTime.parse(processingDate, nameDateFormat));
                                                             }
                                                             results.put(product.getName(), product);
                                                         }
@@ -297,13 +294,13 @@ class Sentinel2Query extends DataQuery {
                     if (currentParameter.getMinValue() != null) {
                         sensingStart = currentParameter.getMinValueAsFormattedDate(dateFormatString);
                     } else {
-                        sensingStart = todayDate.minusDays(30).format(fileDateFormat);
+                        sensingStart = todayDate.minusDays(30).format(dateFormat);
                     }
                 }
             } else {
-                sensingStart = todayDate.minusDays(30).format(fileDateFormat);
+                sensingStart = todayDate.minusDays(30).format(dateFormat);
             }
-            startDate.setTime(dateFormat.parse(sensingStart));
+            startDate.setTime(Date.from(LocalDateTime.parse(sensingStart, dateFormat).atZone(ZoneId.of("UTC")).toInstant()));
             currentParameter = this.parameters.get(CommonParameterNames.END_DATE);
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
@@ -312,13 +309,13 @@ class Sentinel2Query extends DataQuery {
                     if (currentParameter.getMaxValue() != null) {
                         sensingEnd = currentParameter.getMaxValueAsFormattedDate(dateFormatString);
                     } else {
-                        sensingEnd = todayDate.format(fileDateFormat);
+                        sensingEnd = todayDate.format(dateFormat);
                     }
                 }
             } else {
-                sensingEnd = todayDate.format(fileDateFormat);
+                sensingEnd = todayDate.format(dateFormat);
             }
-            endDate.setTime(dateFormat.parse(sensingEnd));
+            endDate.setTime(Date.from(LocalDateTime.parse(sensingEnd, dateFormat).atZone(ZoneId.of("UTC")).toInstant()));
             //http://sentinel-s2-l1c.s3.amazonaws.com/?delimiter=/&prefix=tiles/15/R/TM/
 
             /*currentParameter = this.parameters.get("cloudcoverpercentage");
@@ -380,7 +377,7 @@ class Sentinel2Query extends DataQuery {
                                     int dayE = month == monthE ? dayEnd : calendar.get(Calendar.DAY_OF_MONTH);
                                     for (int day = dayS; day <= dayE; day++) {
                                         if (days.contains(day)) {
-                                            String dayUrl = monthUrl + String.valueOf(day) + Constants.URL_SEPARATOR;
+                                            String dayUrl = monthUrl + day + Constants.URL_SEPARATOR;
                                             AwsResult dayResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, dayUrl));
                                             if (dayResult.getCommonPrefixes() != null) {
                                                 count += dayResult.getCommonPrefixes().stream()
@@ -413,7 +410,7 @@ class Sentinel2Query extends DataQuery {
             product.setId(obj.getString("id"));
             product.setLocation(this.source.getConnectionString()
                                         .replace(S2_SEARCH_URL_SUFFIX + "tiles/", "") + obj.getString("path"));
-            product.setAcquisitionDate(dateFormat.parse(obj.getString("timestamp")));
+            product.setAcquisitionDate(LocalDateTime.parse(obj.getString("timestamp"), dateFormat));
             JsonObject tile = obj.getJsonArray("tiles").getJsonObject(0);
             String utmCode = String.format("%02d", tile.getInt("utmZone")) +
                     tile.getString("latitudeBand") + tile.getString("gridSquare");
@@ -447,7 +444,7 @@ class Sentinel2Query extends DataQuery {
                         .getJsonObject("properties")
                         .getString("name");
                 final CoordinateReferenceSystem initialCrs = new CRSAdapter().marshal(initialCrsCode);
-                final CoordinateReferenceSystem targetCrs = CRS.decode("EPSG:4326");
+                final CoordinateReferenceSystem targetCrs = CRS.decode("EPSG:4326", true);
                 MathTransform mathTransform;
                 try {
                     mathTransform = CRS.findMathTransform(initialCrs, targetCrs);

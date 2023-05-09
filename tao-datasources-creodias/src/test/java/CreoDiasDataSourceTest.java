@@ -36,7 +36,6 @@
  *
  */
 
-import ro.cs.tao.ProgressListener;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.param.CommonParameterNames;
@@ -48,11 +47,10 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
+import ro.cs.tao.utils.executors.monitoring.DownloadProgressListener;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -64,33 +62,75 @@ import java.util.logging.Logger;
  */
 public class CreoDiasDataSourceTest {
 
-    private static final QueryParameter<Date> begin;
-    private static final QueryParameter<Date> end;
+    private static final QueryParameter<LocalDateTime> begin;
+    private static final QueryParameter<LocalDateTime> end;
     private static final QueryParameter<Polygon2D> aoi;
     private static final int pageSize;
     private static final int maxResults;
     private static final String rowTemplate;
+    private static String user;
+    private static String password;
+    private static final DownloadProgressListener listener;
 
     static {
-        begin = new QueryParameter<>(Date.class, CommonParameterNames.START_DATE);
-        begin.setValue(Date.from(LocalDateTime.of(2019, 5, 21, 0, 0, 0, 0)
-                                         .atZone(ZoneId.systemDefault())
-                                         .toInstant()));
-        end = new QueryParameter<>(Date.class, CommonParameterNames.END_DATE);
-        end.setValue(Date.from(LocalDateTime.of(2019, 10, 1, 23, 59, 59, 0)
-                                       .atZone(ZoneId.systemDefault())
-                                       .toInstant()));
+        begin = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.START_DATE);
+        begin.setValue(LocalDateTime.of(2019, 5, 21, 0, 0, 0, 0));
+        end = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.END_DATE);
+        end.setValue(LocalDateTime.of(2019, 10, 1, 23, 59, 59, 0));
         Polygon2D footprint = Polygon2D.fromWKT("POLYGON((4.67 53.134,5.964 53.108,5.839 51.44,4.608 51.463,4.67 53.134))");
         aoi = new QueryParameter<>(Polygon2D.class, CommonParameterNames.FOOTPRINT);
         aoi.setValue(footprint);
         pageSize = 50;
         maxResults = 50;
         rowTemplate = "ID=%s, NAME=%s, LOCATION=%s";
+        //user =
+        //password =
+        listener = new DownloadProgressListener() {
+            @Override
+            public void started(String taskName) {
+                System.out.println("Started " + taskName);
+            }
+
+            @Override
+            public void subActivityStarted(String subTaskName) {
+                System.out.println("Started " + subTaskName);
+            }
+
+            @Override
+            public void subActivityEnded(String subTaskName) {
+                System.out.println("Finished " + subTaskName);
+            }
+
+            @Override
+            public void ended() {
+                System.out.println("Download completed");
+            }
+
+            @Override
+            public void notifyProgress(double progressValue) {
+                System.out.printf("Progress: %.2f%%\r", progressValue * 100);
+            }
+
+            @Override
+            public void notifyProgress(double progressValue, double transferSpeed) {
+                System.out.printf("Progress: %.2f%%\r", progressValue * 100);
+            }
+
+            @Override
+            public void notifyProgress(String subTaskName, double subTaskProgress) {
+                System.out.printf("Progress: %s %.2f%%\n", subTaskName, subTaskProgress * 100);
+            }
+
+            @Override
+            public void notifyProgress(String subTaskName, double subTaskProgress, double overallProgress) {
+                System.out.printf("Progress: %s %.2f%% (%.2f%%)\n", subTaskName, subTaskProgress * 100, overallProgress * 100);
+            }
+        };
     }
 
     public static void main(String[] args) {
         //Sentinel2_Count_Test();
-        Sentinel2_Test();
+        Sentinel1_Test();
         //Sentinel1_Count_Test();
         //Sentinel1_Test();
         //Landsat8_Count_Test();
@@ -125,7 +165,7 @@ public class CreoDiasDataSourceTest {
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
             DataSource<?, ?> dataSource = new CreoDiasDataSource();
-            dataSource.setCredentials("kraftek@gmail.com", "cei7pitici@creodias.");
+            dataSource.setCredentials(user, password);
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery("Sentinel2");
@@ -142,42 +182,48 @@ public class CreoDiasDataSourceTest {
             final CreoDIASDownloadStrategy strategy = (CreoDIASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel2");
             if (!results.isEmpty()) {
                 strategy.setFetchMode(FetchMode.OVERWRITE);
-                strategy.setProgressListener(new ProgressListener() {
-                    @Override
-                    public void started(String taskName) {
-                        System.out.println("Started " + taskName);
-                    }
+                strategy.setProgressListener(listener);
+                Path path = strategy.fetch(results.get(0));
+                if (path != null) {
+                    System.out.println("Product downloaded at " + path.toString());
+                } else {
+                    System.out.println("Product not downloaded");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-                    @Override
-                    public void subActivityStarted(String subTaskName) {
-                        System.out.println("Started " + subTaskName);
-                    }
+    public static void Sentinel3_Test() {
+        try {
+            Logger logger = LogManager.getLogManager().getLogger("");
+            for (Handler handler : logger.getHandlers()) {
+                handler.setLevel(Level.FINEST);
+            }
+            //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
+            DataSource<?, ?> dataSource = new CreoDiasDataSource();
+            dataSource.setCredentials(user, password);
+            String[] sensors = dataSource.getSupportedSensors();
 
-                    @Override
-                    public void subActivityEnded(String subTaskName) {
-                        System.out.println("Finished " + subTaskName);
-                    }
-
-                    @Override
-                    public void ended() {
-                        System.out.println("Download completed");
-                    }
-
-                    @Override
-                    public void notifyProgress(double progressValue) {
-                        System.out.printf("Progress: %.2f%%\r", progressValue * 100);
-                    }
-
-                    @Override
-                    public void notifyProgress(String subTaskName, double subTaskProgress) {
-                        System.out.printf("Progress: %s %.2f%%\n", subTaskName, subTaskProgress * 100);
-                    }
-
-                    @Override
-                    public void notifyProgress(String subTaskName, double subTaskProgress, double overallProgress) {
-                        System.out.printf("Progress: %s %.2f%% (%.2f%%)\n", subTaskName, subTaskProgress * 100, overallProgress * 100);
-                    }
-                });
+            DataQuery query = dataSource.createQuery("Sentinel3");
+            query.addParameter(begin);
+            query.addParameter(end);
+            query.addParameter(aoi);
+            query.addParameter("status", "all");
+            query.addParameter(CommonParameterNames.PRODUCT_TYPE, "LST");
+            query.addParameter("instrument", "SL");
+            query.addParameter("processingLevel", "LEVEL2");
+            query.addParameter("productSize", "FRAME");
+            query.setMaxResults(maxResults);
+            List<EOProduct> results = query.execute();
+            results.forEach(r -> {
+                System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation());
+            });
+            final CreoDIASDownloadStrategy strategy = (CreoDIASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel3");
+            if (!results.isEmpty()) {
+                strategy.setFetchMode(FetchMode.OVERWRITE);
+                strategy.setProgressListener(listener);
                 Path path = strategy.fetch(results.get(0));
                 if (path != null) {
                     System.out.println("Product downloaded at " + path.toString());
@@ -216,10 +262,8 @@ public class CreoDiasDataSourceTest {
             for (Handler handler : logger.getHandlers()) {
                 handler.setLevel(Level.FINEST);
             }
-            //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel1DataSource.class.getName());
             DataSource<?, ?> dataSource = new CreoDiasDataSource();
-            dataSource.setCredentials("cosmin.cara@c-s.ro", "cei7pitici.");
-            String[] sensors = dataSource.getSupportedSensors();
+            dataSource.setCredentials(user, password);
 
             DataQuery query = dataSource.createQuery("Sentinel1");
             query.addParameter(begin);
@@ -232,6 +276,17 @@ public class CreoDiasDataSourceTest {
             results.forEach(r -> {
                 System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation());
             });
+            final CreoDIASDownloadStrategy strategy = (CreoDIASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel1");
+            if (!results.isEmpty()) {
+                strategy.setFetchMode(FetchMode.OVERWRITE);
+                strategy.setProgressListener(listener);
+                Path path = strategy.fetch(results.get(0));
+                if (path != null) {
+                    System.out.println("Product downloaded at " + path.toString());
+                } else {
+                    System.out.println("Product not downloaded");
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

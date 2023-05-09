@@ -32,4 +32,9 @@ class SlurmSession extends AbstractSession {
 
     @Override
     public String serviceName() { return "SLURM"; }
+
+    @Override
+    public boolean hasOwnQueue() {
+        return true;
+    }
 }

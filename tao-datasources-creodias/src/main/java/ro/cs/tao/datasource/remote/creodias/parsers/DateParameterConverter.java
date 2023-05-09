@@ -20,21 +20,19 @@ import ro.cs.tao.datasource.converters.DefaultParameterConverter;
 import ro.cs.tao.datasource.param.QueryParameter;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 /**
  * Default query parameter converter for Date values.
  *
  * @author Cosmin Cara
  */
-public class DateParameterConverter extends DefaultParameterConverter {
+public class DateParameterConverter extends DefaultParameterConverter<LocalDateTime> {
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     protected DateTimeFormatter dateFormat;
-    public DateParameterConverter(QueryParameter parameter) {
+    public DateParameterConverter(QueryParameter<LocalDateTime> parameter) {
         super(parameter);
-        if (!Date.class.equals(parameter.getType())) {
+        if (!LocalDateTime.class.equals(parameter.getType())) {
             throw new IllegalArgumentException("Invalid parameter type");
         }
         dateFormat = DateTimeFormatter.ofPattern(DATE_FORMAT);
@@ -42,20 +40,13 @@ public class DateParameterConverter extends DefaultParameterConverter {
 
     @Override
     public String stringValue() throws ConversionException {
-        StringBuilder builder = new StringBuilder();
-        Object minValue;
         if (parameter.isInterval()) {
             throw new ConversionException("Parameter represents an interval, but it is not supported by this data source");
-        } else {
-            minValue = parameter.getValue();
         }
-        if (minValue != null) {
-            LocalDateTime minDate = ((Date) minValue).toInstant()
-                    .atZone(ZoneId.systemDefault()).toLocalDateTime();
-            builder.append(minDate.format(dateFormat));
+        if (parameter.getValue() != null) {
+            return dateFormat.format(parameter.getValue());
         } else {
             throw new ConversionException("Parameter represents an interval, but the minimum value is absent");
         }
-        return builder.toString();
     }
 }

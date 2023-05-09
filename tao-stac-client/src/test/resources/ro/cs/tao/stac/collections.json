@@ -1,0 +1,2051 @@
+{
+  "stac_version": "1.0.0",
+  "links": [
+    {
+      "rel": "root",
+      "href": "https://explorer.digitalearth.africa/stac"
+    }
+  ],
+  "collections": [
+    {
+      "stac_version": "1.0.0",
+      "id": "alos_palsar_mosaic",
+      "title": "alos_palsar_mosaic",
+      "type": "Collection",
+      "license": null,
+      "description": "ALOS/PALSAR and ALOS-2/PALSAR-2 annual mosaic tiles generated for use in the Data Cube - 25m pixel spacing, WGS84. These tiles are derived from the orignal JAXA mosaics with conversion to GeoTIFF.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2007-07-02T11:59:59.500000+00:00",
+              "2020-07-01T23:59:59.500000+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -19.999995750555073,
+              -35.01972686708247,
+              55.0000149402844,
+              40.00000334798672
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/alos_palsar_mosaic/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "cci_landcover",
+      "title": "cci_landcover",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "ESA Climate Change Initiative Land Cover",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1992-01-01T00:00:00+00:00",
+              "2019-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.361106324453548,
+              -54.346956922596235,
+              64.50002257687831,
+              38.350005621406694
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/cci_landcover/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "cgls_landcover",
+      "title": "cgls_landcover",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Copernicus Global Land Service, Land Use/Land Cover at 100 m",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2015-01-01T00:00:00+00:00",
+              "2019-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.360114261182865,
+              -54.34761076009557,
+              64.50002257726194,
+              38.35020403410543
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/cgls_landcover/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "crop_mask",
+      "title": "crop_mask",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Annual cropland extent map produced by Digital Earth Africa.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2019-01-01T00:00:00+00:00",
+              "2019-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -17.909275881226005,
+              -35.24827164956268,
+              58.70266013122613,
+              38.04203970568676
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/crop_mask/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "crop_mask_central",
+      "title": "crop_mask_central",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Annual cropland extent map for Central Africa produced by Digital Earth Africa.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2019-01-01T00:00:00+00:00",
+              "2019-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              4.97480969531997,
+              -18.372775586257735,
+              31.838731911193808,
+              13.671125857539907
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/crop_mask_central/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "crop_mask_eastern",
+      "title": "crop_mask_eastern",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Annual cropland extent map for Eastern Africa produced by Digital Earth Africa.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2019-07-02T12:00:00+00:00",
+              "2019-07-02T12:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              28.853851789757773,
+              -12.13665997043543,
+              48.75305218696174,
+              15.224049527720211
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/crop_mask_eastern/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "crop_mask_indian_ocean",
+      "title": "crop_mask_indian_ocean",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Annual cropland extent map for Indian Ocean Africa produced by Digital Earth Africa.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2019-01-01T00:00:00+00:00",
+              "2019-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              42.78329624569967,
+              -25.664768074078776,
+              58.70266013122613,
+              -11.359953898300645
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/crop_mask_indian_ocean/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "crop_mask_northern",
+      "title": "crop_mask_northern",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Annual cropland extent map for Northern Africa produced by Digital Earth Africa.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2019-07-02T12:00:00+00:00",
+              "2019-07-02T12:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -17.909275881226005,
+              18.363921239275328,
+              35.81856684668357,
+              38.04203970568676
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/crop_mask_northern/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "crop_mask_sahel",
+      "title": "crop_mask_sahel",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Annual cropland extent map for Sahel Africa produced by Digital Earth Africa.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2019-01-01T00:00:00+00:00",
+              "2019-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -17.909275756910343,
+              -2.258684642499274,
+              51.737932142921615,
+              27.338616351963477
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/crop_mask_sahel/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "crop_mask_southeast",
+      "title": "crop_mask_southeast",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Annual cropland extent map for Southeast Africa produced by Digital Earth Africa.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2019-01-01T00:00:00+00:00",
+              "2019-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              21.889134337501353,
+              -27.342002148917263,
+              41.78833714436554,
+              -7.54630817518205
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/crop_mask_southeast/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "crop_mask_southern",
+      "title": "crop_mask_southern",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Annual cropland extent map for Southern Africa produced by Digital Earth Africa.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2019-01-01T00:00:00+00:00",
+              "2019-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              10.944573882031117,
+              -35.24827164956268,
+              33.82865971494256,
+              -16.788224184993833
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/crop_mask_southern/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "crop_mask_western",
+      "title": "crop_mask_western",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Annual cropland extent map for Western Africa produced by Digital Earth Africa.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2019-07-02T12:00:00+00:00",
+              "2019-07-02T12:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -16.914314446291932,
+              3.7604989989059696,
+              14.924408141435022,
+              14.446262874161928
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/crop_mask_western/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "dem_cop_30",
+      "title": "dem_cop_30",
+      "type": "Collection",
+      "license": null,
+      "description": "Copernicus DEM 30 m",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2000-01-01T12:00:00+00:00",
+              "2000-01-01T12:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.00013411418291,
+              -47.00645521235116,
+              64.99986368821313,
+              39.00014462637428
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/dem_cop_30/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "dem_cop_90",
+      "title": "dem_cop_90",
+      "type": "Collection",
+      "license": null,
+      "description": "Copernicus DEM 90 m",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2000-01-01T12:00:00+00:00",
+              "2000-01-01T12:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.000411891953362,
+              -47.00617743234761,
+              64.9995859103456,
+              39.00042240408808
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/dem_cop_90/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "dem_srtm",
+      "title": "dem_srtm",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "1 second elevation model",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2000-01-01T12:00:00+00:00",
+              "2000-01-01T12:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -32.00013422189464,
+              -52.683556707233805,
+              61.000160911965885,
+              47.0001436952228
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/dem_srtm/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "dem_srtm_deriv",
+      "title": "dem_srtm_deriv",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "1 second elevation model derivatives",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2000-01-01T12:00:00+00:00",
+              "2000-01-01T12:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -32.00039986687444,
+              -52.68339437647288,
+              60.99978265942636,
+              47.00038088028722
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/dem_srtm_deriv/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "esa_worldcover",
+      "title": "esa_worldcover",
+      "type": "Collection",
+      "license": null,
+      "description": "ESA World Cover, global 10 m land use/land cover data from 2020.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2020-07-01T12:00:00+00:00",
+              "2020-07-01T12:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.99999519389688,
+              -48.00660742654561,
+              66.00001342241393,
+              39.000005967573294
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/esa_worldcover/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "fc_ls",
+      "title": "fc_ls",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Landsat Fractional Cover Observations from Space",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1984-03-19T10:12:16.637044+00:00",
+              "2022-06-14T11:15:54.900310+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -27.5545067381175,
+              -49.84287003145609,
+              65.57421371781454,
+              40.71573413830629
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/fc_ls/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "fc_ls_summary_annual",
+      "title": "fc_ls_summary_annual",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "DE Africa Landsat Fractional Cover Percentiles",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1984-01-01T00:00:00+00:00",
+              "2021-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -27.85887531242176,
+              -50.61475736106173,
+              64.67242161717233,
+              40.95208941975297
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/fc_ls_summary_annual/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "gm_ls5_ls7_annual",
+      "title": "gm_ls5_ls7_annual",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Surface Reflectance Annual Geometric Median and Median Absolute Deviations, Landsat 5 and Landsat 7",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1984-07-02T00:00:00+00:00",
+              "2012-07-02T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.863915529615245,
+              -49.448744647148665,
+              64.67242076536115,
+              40.95208919707567
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/gm_ls5_ls7_annual/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "gm_ls5_ls7_annual_lowres",
+      "title": "gm_ls5_ls7_annual_lowres",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Surface Reflectance Annual Geometric Median and Median Absolute Deviations, Landsat 5 and Landsat 7. Low resolution version used for visualisations.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1984-07-01T23:59:59.500000+00:00",
+              "2012-07-01T23:59:59.500000+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.863918508513265,
+              -55.94008618509311,
+              64.67243043329451,
+              40.95210045074279
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/gm_ls5_ls7_annual_lowres/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "gm_ls8_annual",
+      "title": "gm_ls8_annual",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Surface Reflectance Annual Geometric Median and Median Absolute Deviations, Landsat 8",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2013-01-01T00:00:00+00:00",
+              "2020-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.86391561596603,
+              -49.448744647148665,
+              64.67242076536115,
+              39.968615072880986
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/gm_ls8_annual/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "gm_ls8_annual_lowres",
+      "title": "gm_ls8_annual_lowres",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Surface Reflectance Annual Geometric Median and Median Absolute Deviations, Landsat 8. Low resolution version used for visualisations.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2013-07-02T11:59:59.500000+00:00",
+              "2020-07-01T23:59:59.500000+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.863918344356968,
+              -55.94008618509311,
+              64.67243043329451,
+              39.96862797832
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/gm_ls8_annual_lowres/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "gm_ls8_ls9_annual",
+      "title": "gm_ls8_ls9_annual",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Surface Reflectance Annual Geometric Median and Median Absolute Deviations, Landsat 8 and Landsat 9",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2021-01-01T00:00:00+00:00",
+              "2021-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.86391561596603,
+              -49.448744647148665,
+              65.66738083071176,
+              39.968615072880986
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/gm_ls8_ls9_annual/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "gm_ls8_ls9_annual_lowres",
+      "title": "gm_ls8_ls9_annual_lowres",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Surface Reflectance Annual Geometric Median and Median Absolute Deviations, Landsat 8 and Landsat 9. Low resolution version used for visualisations.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2021-01-01T00:00:00+00:00",
+              "2021-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.863918344356968,
+              -56.087087870426714,
+              65.66739041559678,
+              39.96862820789888
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/gm_ls8_ls9_annual_lowres/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "gm_s2_annual",
+      "title": "gm_s2_annual",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Surface Reflectance Annual Geometric Median and Median Absolute Deviations, Sentinel-2",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2017-01-01T00:00:00+00:00",
+              "2021-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -27.85887555459212,
+              -48.32157137981947,
+              65.66738062829764,
+              38.99887588000829
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/gm_s2_annual/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "gm_s2_annual_lowres",
+      "title": "gm_s2_annual_lowres",
+      "type": "Collection",
+      "license": null,
+      "description": "Annual Geometric Median, Sentinel-2 - Low Resolution mosaic",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2017-07-02T12:00:00+00:00",
+              "2021-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -33.74999407366616,
+              -56.91831033804102,
+              67.50002266218846,
+              40.9819778540607
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/gm_s2_annual_lowres/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "gm_s2_semiannual",
+      "title": "gm_s2_semiannual",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Surface Reflectance Semiannual Geometric Median and Median Absolute Deviations, Sentinel-2",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2017-01-01T00:00:00+00:00",
+              "2021-07-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -27.85887555459212,
+              -48.32157137981947,
+              65.66738062829764,
+              38.99887588000829
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/gm_s2_semiannual/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "gm_s2_semiannual_lowres",
+      "title": "gm_s2_semiannual_lowres",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Surface Reflectance Semiannual Geometric Median and Median Absolute Deviations, Sentinel-2. Low resolution version used for visualisations.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2017-04-01T11:59:59.500000+00:00",
+              "2021-07-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -27.85887810173759,
+              -55.08264120874096,
+              65.66738985149446,
+              38.99888879025988
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/gm_s2_semiannual_lowres/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "gmw",
+      "title": "gmw",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Global Mangrove Watch data sourced from the UN Environment Program at https://data.unep-wcmc.org/datasets/45",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1996-07-01T23:59:59.500000+00:00",
+              "2016-07-01T23:59:59.500000+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.35999521355411,
+              -54.347353748536015,
+              64.5000225771474,
+              38.3500056214067
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/gmw/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "io_lulc",
+      "title": "io_lulc",
+      "type": "Collection",
+      "license": null,
+      "description": "Impact Observatory (ESRI) Landcover Classification",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2020-07-02T00:00:00+00:00",
+              "2020-07-02T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -29.325972141720328,
+              -47.92634917625853,
+              74.09469973117909,
+              49.64697123770234
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/io_lulc/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "jers_sar_mosaic",
+      "title": "jers_sar_mosaic",
+      "type": "Collection",
+      "license": null,
+      "description": "JERS-1 SAR annual mosaic tiles generated for use in the Data Cube 25m pixel spacing, WGS84. These tiles are derived from the orignal JAXA mosaics with conversion to GeoTIFF.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1996-07-01T23:59:59.500000+00:00",
+              "1996-07-01T23:59:59.500000+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -18.999995910801,
+              -35.01972686708247,
+              55.0000149402844,
+              40.00000334798672
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/jers_sar_mosaic/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "ls5_sr",
+      "title": "ls5_sr",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "USGS Landsat 5 Collection 2 Level-2 Surface Reflectance",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1984-03-19T10:12:16.637044+00:00",
+              "2011-11-17T07:40:47.258006+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -27.023767817598717,
+              -45.594373267343016,
+              60.731122744535014,
+              40.71573413830629
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/ls5_sr/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "ls5_st",
+      "title": "ls5_st",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "USGS Landsat 5 Collection 2 Level-2 Surface Temperature",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1984-03-19T10:12:16.637044+00:00",
+              "2011-11-17T07:40:47.258006+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -19.58328211797614,
+              -35.67836257856753,
+              57.887692106581135,
+              40.71573413830629
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/ls5_st/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "ls7_sr",
+      "title": "ls7_sr",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "USGS Landsat 7 Collection 2 Level-2 Surface Reflectance",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1999-06-30T07:07:09.826163+00:00",
+              "2022-04-06T09:36:58.972202+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -27.03570252429837,
+              -49.83876954008401,
+              65.57421371781454,
+              39.90647364858695
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/ls7_sr/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "ls7_st",
+      "title": "ls7_st",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "USGS Landsat 7 Collection 2 Level-2 Surface Temperature",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1999-06-30T07:07:09.826163+00:00",
+              "2022-04-06T09:36:58.972202+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -19.409203651824555,
+              -35.578448266000365,
+              57.83536184313864,
+              39.90647364858695
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/ls7_st/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "ls8_sr",
+      "title": "ls8_sr",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "USGS Landsat 8 Collection 2 Level-2 Surface Reflectance",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2013-03-19T06:57:17.731079+00:00",
+              "2022-06-13T11:22:14.523329+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.694181700369633,
+              -48.51661382562335,
+              65.30180583268037,
+              39.955647303598504
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/ls8_sr/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "ls8_st",
+      "title": "ls8_st",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "USGS Landsat 8 Collection 2 Level-2 Surface Temperature",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2013-03-19T06:57:17.731079+00:00",
+              "2022-06-13T11:22:14.523329+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -19.28088211814285,
+              -35.66613939041721,
+              57.59171204781162,
+              39.955647303598504
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/ls8_st/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "ls9_sr",
+      "title": "ls9_sr",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "USGS Landsat 9 Collection 2 Level-2 Surface Reflectance",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2021-11-01T08:42:42.047351+00:00",
+              "2022-06-14T11:15:54.900310+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -27.5545067381175,
+              -48.512821086222495,
+              65.02373742154877,
+              39.95191193859453
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/ls9_sr/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "ls9_st",
+      "title": "ls9_st",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "USGS Landsat 9 Collection 2 Level-2 Surface Temperature",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2021-11-01T08:42:42.047351+00:00",
+              "2022-06-14T11:15:54.900310+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -19.376236610851247,
+              -35.663257956413666,
+              57.57428594151603,
+              39.95191193859453
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/ls9_st/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "nasadem",
+      "title": "nasadem",
+      "type": "Collection",
+      "license": null,
+      "description": "NASADEM from Microsoft's Planetary Computer",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2000-02-20T00:00:00+00:00",
+              "2000-02-20T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -28.00013404215822,
+              -47.00673403294347,
+              66.00014151471527,
+              40.00014485840475
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/nasadem/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "ndvi_anomaly",
+      "title": "ndvi_anomaly",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Monthly NDVI Anomalies produced by Digital Earth Africa.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              null,
+              null
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -180.0,
+              -90.0,
+              180.0,
+              90.0
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/ndvi_anomaly/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "ndvi_climatology_ls",
+      "title": "ndvi_climatology_ls",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Monthly NDVI Climatologies produced by Digital Earth Africa.",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1984-01-01T00:00:00+00:00",
+              "1984-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -24.873995295023708,
+              -35.24827211304869,
+              51.737932142921615,
+              38.04203970568676
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/ndvi_climatology_ls/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "pc_s2_annual",
+      "title": "pc_s2_annual",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Surface Reflectance Annual Clear Pixel Count, Sentinel-2",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2017-07-02T12:00:00+00:00",
+              "2020-07-02T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -27.85887555459212,
+              -48.32157137981947,
+              65.66738062829764,
+              38.99887588000829
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/pc_s2_annual/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "rainfall_chirps_daily",
+      "title": "rainfall_chirps_daily",
+      "type": "Collection",
+      "license": null,
+      "description": "Rainfall Estimates from Rain Gauge and Satellite Observations",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1981-01-01T00:00:00+00:00",
+              "2022-04-30T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -19.99999673565503,
+              -44.383344746211435,
+              55.00002104271493,
+              40.00000334798698
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/rainfall_chirps_daily/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "rainfall_chirps_monthly",
+      "title": "rainfall_chirps_monthly",
+      "type": "Collection",
+      "license": null,
+      "description": "Rainfall Estimates from Rain Gauge and Satellite Observations",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1981-01-16T11:59:59.500000+00:00",
+              "2022-04-15T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -19.99999673565503,
+              -44.383344746211435,
+              55.00002104271493,
+              40.00000334798698
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/rainfall_chirps_monthly/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "s1_rtc",
+      "title": "s1_rtc",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Sentinel 1 Gamma0 normalised radar backscatter",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2018-01-01T02:50:58.858947+00:00",
+              "2022-06-17T04:58:31.727258+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.15180502832441,
+              -48.002819164959625,
+              60.417959181437354,
+              38.9999927717995
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/s1_rtc/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "s2_l2a",
+      "title": "s2_l2a",
+      "type": "Collection",
+      "license": null,
+      "description": "Sentinel-2a and Sentinel-2b imagery, processed to Level 2A (Surface Reflectance) and converted to Cloud Optimized GeoTIFFs",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "2016-11-02T10:01:49+00:00",
+              "2022-06-16T11:48:34+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -27.00017208992278,
+              -47.695235325348214,
+              65.01059281986201,
+              38.84898033153399
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/s2_l2a/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "wofs_ls",
+      "title": "wofs_ls",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Historic Flood Mapping Water Observations from Space",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1984-03-19T10:12:16.637044+00:00",
+              "2022-06-14T11:15:54.900310+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -27.5545067381175,
+              -49.84287003145609,
+              65.57421371781454,
+              40.71573413830629
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/wofs_ls/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "wofs_ls_summary_alltime",
+      "title": "wofs_ls_summary_alltime",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Water Observations from Space Alltime Statistics",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1984-01-01T00:00:00+00:00",
+              "1984-01-01T00:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.86391561596603,
+              -49.448744647148665,
+              65.66738083071176,
+              40.95208919707567
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/wofs_ls_summary_alltime/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    },
+    {
+      "stac_version": "1.0.0",
+      "id": "wofs_ls_summary_annual",
+      "title": "wofs_ls_summary_annual",
+      "type": "Collection",
+      "license": "CC-BY-4.0",
+      "description": "Water Observations from Space Annual Statistics",
+      "properties": {},
+      "providers": [],
+      "extent": {
+        "temporal": {
+          "interval": [
+            [
+              "1984-01-01T00:00:00+00:00",
+              "2021-07-02T12:00:00+00:00"
+            ]
+          ]
+        },
+        "spatial": {
+          "bbox": [
+            [
+              -26.86391561596603,
+              -49.448744647148665,
+              65.66738083071176,
+              40.95208919707567
+            ]
+          ]
+        }
+      },
+      "links": [
+        {
+          "rel": "items",
+          "href": "https://explorer.digitalearth.africa/stac/collections/wofs_ls_summary_annual/items"
+        },
+        {
+          "rel": "root",
+          "href": "https://explorer.digitalearth.africa/stac"
+        }
+      ]
+    }
+  ]
+}

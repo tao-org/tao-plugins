@@ -1,17 +1,19 @@
 package ro.cs.tao.quota;
 
+import ro.cs.tao.component.SystemVariable;
+import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
+import ro.cs.tao.persistence.EOProductProvider;
+import ro.cs.tao.persistence.PersistenceException;
+import ro.cs.tao.persistence.UserProvider;
+import ro.cs.tao.services.bridge.spring.SpringContextBridge;
+import ro.cs.tao.user.User;
+import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.executors.MemoryUnit;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.Principal;
-
-import ro.cs.tao.component.SystemVariable;
-import ro.cs.tao.execution.monitor.MemoryUnit;
-import ro.cs.tao.persistence.PersistenceManager;
-import ro.cs.tao.persistence.exception.PersistenceException;
-import ro.cs.tao.services.bridge.spring.SpringContextBridge;
-import ro.cs.tao.user.User;
-import ro.cs.tao.utils.FileUtilities;
 
 /**
  * Quota manager implementation based on database stored user quota
@@ -21,13 +23,17 @@ import ro.cs.tao.utils.FileUtilities;
  */
 public class DatabaseQuotaManager implements QuotaManager {
 
-	private PersistenceManager persistenceManager;
+	private final UserProvider userProvider;
+	private final ExecutionTaskProvider taskProvider;
+	private final EOProductProvider productProvider;
 
 	/**
 	 * Constructor.
 	 */
 	public DatabaseQuotaManager() {
-		this.persistenceManager = SpringContextBridge.services().getService(PersistenceManager.class);
+		this.userProvider = SpringContextBridge.services().getService(UserProvider.class);
+		this.taskProvider = SpringContextBridge.services().getService(ExecutionTaskProvider.class);
+		this.productProvider = SpringContextBridge.services().getService(EOProductProvider.class);
 	}
 
 	@Override
@@ -42,7 +48,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 	public boolean checkUserInputQuota(Principal principal, long addedQuota) throws QuotaException {
 		final User user = getUser(principal);
 		final long targetQuota = user.getInputQuota();
-		final long actualQuota = user.getActualInputQuota() + (addedQuota / (long)MemoryUnit.MEGABYTE.value());
+		final long actualQuota = user.getActualInputQuota() + (addedQuota / MemoryUnit.MB.value());
 		return targetQuota == -1 || targetQuota > actualQuota;
 	}
 
@@ -63,7 +69,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 		if(user.getMemoryQuota() == -1) {
 			return true;
 		}
-		final int requiredMemory = memory + this.persistenceManager.getMemoryForUser(user.getUsername()); 
+		final int requiredMemory = memory + this.taskProvider.getMemoryForUser(user.getUsername());
 		
 		return (user.getMemoryQuota() - requiredMemory) > 0;
 	}
@@ -77,7 +83,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 			return -1;
 		}
 		
-		return Math.max(0, user.getCpuQuota() - this.persistenceManager.getCPUsForUser(user.getUsername()));
+		return Math.max(0, user.getCpuQuota() - this.taskProvider.getCPUsForUser(user.getUsername()));
 	}
 
 	@Override
@@ -94,11 +100,11 @@ public class DatabaseQuotaManager implements QuotaManager {
 			final String location = Paths.get(SystemVariable.SHARED_WORKSPACE.value()).toUri().toString();
 
 			// compute the size of all public products assigned to the user
-			final long actualInputQuota = persistenceManager.getUserInputProductsSize(principal.getName(), location)
-					/ ((long) MemoryUnit.MEGABYTE.value());
+			final long actualInputQuota = this.productProvider.getUserInputProductsSize(principal.getName(), location)
+					/ MemoryUnit.MB.value();
 
 			// update the user info
-			persistenceManager.updateUserInputQuota(principal.getName(), (int)actualInputQuota);
+			this.userProvider.updateInputQuota(principal.getName(), (int)actualInputQuota);
 
 		} catch (PersistenceException e) {
 			throw new QuotaException(String.format("Cannot update input quota for the user '%s'. Reason: %s",
@@ -120,10 +126,10 @@ public class DatabaseQuotaManager implements QuotaManager {
 			// compute and update the quota based on the database information
 			 final String userWorkspace = SystemVariable.USER_WORKSPACE.value();
 			 // compute used space in MB
-			final long usedSpace = FileUtilities.folderSize(new File(userWorkspace).toPath()) / ((long) MemoryUnit.MEGABYTE.value());
+			final long usedSpace = FileUtilities.folderSize(new File(userWorkspace).toPath()) / MemoryUnit.MB.value();
 
 			// update the user info
-			persistenceManager.updateUserProcessingQuota(principal.getName(), (int)usedSpace);
+			this.userProvider.updateProcessingQuota(principal.getName(), (int)usedSpace);
 		} catch (PersistenceException | IOException e) {
 			throw new QuotaException(String.format("Cannot update input quota for the user '%s'. Reason: %s",
 					principal.getName(), e.getMessage()), e);
@@ -141,7 +147,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 			throw new IllegalArgumentException("[principal] null");
 		}
 		final String userName = principal.getName();
-		final User user = this.persistenceManager.findUserByUsername(userName);
+		final User user = this.userProvider.getByName(userName);
 		if (user == null) {
 			throw new QuotaException(String.format("User '%s' not found", userName));
 		}

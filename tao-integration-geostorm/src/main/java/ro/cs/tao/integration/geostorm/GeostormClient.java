@@ -37,9 +37,10 @@ import ro.cs.tao.eodata.OutputDataHandler;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.integration.geostorm.model.RasterProduct;
 import ro.cs.tao.integration.geostorm.model.Resource;
-import ro.cs.tao.persistence.PersistenceManager;
-import ro.cs.tao.persistence.exception.PersistenceException;
+import ro.cs.tao.persistence.PersistenceException;
+import ro.cs.tao.persistence.UserProvider;
 import ro.cs.tao.serialization.GeometryAdapter;
+import ro.cs.tao.user.User;
 import ro.cs.tao.utils.DateUtils;
 
 import javax.net.ssl.SSLContext;
@@ -52,7 +53,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.cert.X509Certificate;
-import java.text.DateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -71,12 +72,12 @@ import java.util.logging.Logger;
 public class GeostormClient implements OutputDataHandler<EOProduct> {
 
     private static final Logger logger = Logger.getLogger(GeostormClient.class.getName());
-    private static final DateFormat dateFormatter = DateUtils.getFormatterAtUTC("yyyy-MM-dd");
+    private static final DateTimeFormatter dateFormatter = DateUtils.getFormatterAtUTC("yyyy-MM-dd");
 
     private RestTemplate restTemplate;
 
     @Autowired
-    private PersistenceManager persistenceMng;
+    private UserProvider userProvider;
 
     private String geostormRestBaseURL;
     private String geostormRestCatalogResourceEndpoint;
@@ -375,10 +376,14 @@ public class GeostormClient implements OutputDataHandler<EOProduct> {
         }
     }
 
-    private String getUserOrganization(final String username) {
+    private String getUserOrganization(final String userName) {
         String organization = "Unknown";
         try {
-            organization = persistenceMng.getUserOrganization(username);
+            final User user = userProvider.getByName(userName);
+            if (user == null) {
+                throw new PersistenceException("No such user [%s]", userName);
+            }
+            organization = user.getOrganization();
         } catch (PersistenceException e) {
             e.printStackTrace();
         }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>ro.cs.tao</groupId>
+		<artifactId>tao-plugins</artifactId>
+		<version>1.4.3</version>
+	</parent>
+
+	<artifactId>tao-workflow-cwl</artifactId>
+	<name>TAO Workflow CWL Converter</name>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+		  <groupId>ro.cs.tao</groupId>
+		  <artifactId>tao-utils</artifactId>
+		  <version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ro.cs.tao</groupId>
+			<artifactId>tao-execution</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+            <groupId>ro.cs.tao</groupId>
+            <artifactId>tao-execution-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+		<dependency>
+			<groupId>ro.cs.tao</groupId>
+			<artifactId>tao-spring-bridge</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.snakeyaml</groupId>
+		  <artifactId>snakeyaml-engine</artifactId>
+		  <version>2.6</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.fasterxml.jackson.core</groupId>
+		  <artifactId>jackson-databind</artifactId>
+		  <version>2.14.2</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.fasterxml.jackson.dataformat</groupId>
+		  <artifactId>jackson-dataformat-yaml</artifactId>
+		  <version>2.14.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jdk8</artifactId>
+			<version>2.14.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.1</version>
+		</dependency>
+	</dependencies>
+</project>

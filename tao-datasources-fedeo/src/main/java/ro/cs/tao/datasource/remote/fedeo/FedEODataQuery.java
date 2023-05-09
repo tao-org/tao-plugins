@@ -17,7 +17,6 @@
 package ro.cs.tao.datasource.remote.fedeo;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -25,31 +24,31 @@ import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
-import ro.cs.tao.datasource.converters.DateParameterConverter;
-import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
+import ro.cs.tao.datasource.remote.fedeo.parameters.FedEODateParameterConverter;
+import ro.cs.tao.datasource.remote.fedeo.parameters.FedEOPolygon2DConverter;
 import ro.cs.tao.datasource.remote.fedeo.xml.FedEOXmlResponseHandler;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
 import ro.cs.tao.eodata.EOProduct;
-import ro.cs.tao.utils.DateUtils;
+import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
-import java.text.DateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public class FedEODataQuery extends DataQuery {
 
-    private static final String datePattern = "yyyy-MM-dd'T'HH:mm:ss.S'Z'";
-    private static final DateFormat dateFormat = DateUtils.getFormatterAtUTC(datePattern);
+    private static final int MAXIMUM_RECORDS = 50;
 
     static {
         final ConverterFactory factory = new ConverterFactory();
-        factory.register(DateParameterConverter.class, Date.class);
+        factory.register(FedEODateParameterConverter.class, LocalDateTime.class);
+        factory.register(FedEOPolygon2DConverter.class, Polygon2D.class);
         converterFactory.put(FedEODataQuery.class, factory);
     }
 
@@ -77,19 +76,13 @@ public class FedEODataQuery extends DataQuery {
             if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                 throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
             }
-            if (parameter.isOptional() &
-                    ((!parameter.isInterval() & parameter.getValue() == null) |
-                            (parameter.isInterval() & parameter.getMinValue() == null & parameter.getMaxValue() == null))) {
+            if (parameter.isOptional() &&
+                    ((!parameter.isInterval() && parameter.getValue() == null) ||
+                            (parameter.isInterval() && parameter.getMinValue() == null && parameter.getMaxValue() == null))) {
                 continue;
             }
             try {
-                if (parameter.getName().equals(CommonParameterNames.START_DATE)) {
-                    params.add(new BasicNameValuePair(CommonParameterNames.START_DATE, parameter.getMinValueAsFormattedDate(datePattern)));
-                    params.add(new BasicNameValuePair(CommonParameterNames.END_DATE, parameter.getMaxValueAsFormattedDate(datePattern)));
-                } else {
-                    params.add(new BasicNameValuePair(getRemoteName(parameter.getName()), getParameterValue(parameter)));
-
-                }
+                params.add(new BasicNameValuePair(getRemoteName(parameter.getName()), getParameterValue(parameter)));
             } catch (ConversionException e) {
                 throw new QueryException(e.getMessage());
             }
@@ -98,33 +91,42 @@ public class FedEODataQuery extends DataQuery {
 
         List<EOProduct> tmpResults;
         List<NameValuePair> queryParams = new ArrayList<>(params);
-        if (this.pageSize > 0) {
-            queryParams.add(new BasicNameValuePair("maximumRecords", String.valueOf(this.pageSize)));
-        }
-        queryParams.add(new BasicNameValuePair("startRecord", String.valueOf((this.pageNumber - 1) * this.pageSize + 1)));
+        long nrProductsFound = this.getCount();
+        int nrRecordsOnPage = Math.max(1, Math.min(this.pageSize, MAXIMUM_RECORDS));
+        long remainingProducts = Math.max(1, Math.min(this.pageSize, nrProductsFound));
+        queryParams.add(new BasicNameValuePair("maximumRecords", String.valueOf("" + nrRecordsOnPage)));
+        int startRecord = Math.max(1, (this.pageNumber - 1) * nrRecordsOnPage + 1);
         queryParams.add(new BasicNameValuePair("recordSchema", "om"));
-
-        String queryUrl = this.source.getConnectionString() + "request?" + URLEncodedUtils.format(queryParams, "UTF-8").replace("+", "%20");
-        logger.fine(String.format("Executing query %s", queryUrl));
-        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, null)) {
-            switch (response.getStatusLine().getStatusCode()) {
-                case 200:
-                    XmlResponseParser<EOProduct> parser = new XmlResponseParser<>();
-                    parser.setHandler(new FedEOXmlResponseHandler("entry"));
-                    tmpResults = parser.parse(EntityUtils.toString(response.getEntity()));
-                    if (tmpResults != null) {
-                        results.addAll(tmpResults);
-                    }
-                    break;
-                case 401:
-                    throw new QueryException("The supplied credentials are invalid!");
-                default:
-                    throw new QueryException(String.format("The request was not successful. Reason: %s",
-                            response.getStatusLine().getReasonPhrase()));
+        queryParams.add(new BasicNameValuePair("startRecord", String.valueOf("" + startRecord)));
+        do {
+            queryParams.remove(queryParams.size() - 1);
+            queryParams.add(new BasicNameValuePair("startRecord", String.valueOf("" + startRecord)));
+            String queryUrl = this.source.getConnectionString() + "request?" + URLEncodedUtils.format(queryParams, "UTF-8").replace("+", "%20");
+            logger.fine(String.format("Executing query %s", queryUrl));
+            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, null)) {
+                switch (response.getStatusLine().getStatusCode()) {
+                    case 200:
+                        XmlResponseParser<EOProduct> parser = new XmlResponseParser<>();
+                        parser.setHandler(new FedEOXmlResponseHandler("entry"));
+                        tmpResults = parser.parse(EntityUtils.toString(response.getEntity()));
+                        if (tmpResults != null) {
+                            results.addAll(tmpResults);
+                            startRecord += nrRecordsOnPage;
+                            remainingProducts -= nrRecordsOnPage;
+                        }
+                        break;
+                    case 401:
+                        throw new QueryException("The request was not successful. Reason: 401: The supplied credentials are invalid!");
+                    case 403:
+                        throw new QueryException("The request was not successful. Reason: 403: The required credentials are missing!");
+                    default:
+                        throw new QueryException(String.format("The request was not successful. Reason: %s",
+                                response.getStatusLine().getStatusCode() + ": " + response.getStatusLine().getReasonPhrase()));
+                }
+            } catch (IOException ex) {
+                throw new QueryException(ex);
             }
-        } catch (IOException ex) {
-            throw new QueryException(ex);
-        }
+        } while (tmpResults != null && !tmpResults.isEmpty() && remainingProducts > 0);
         if (this.limit > 0 && results.size() > this.limit) {
             logger.info(String.format("Query {%s-%s} returned %s products", this.source.getId(), this.sensorName, this.limit));
             return results.subList(0, this.limit);
@@ -134,4 +136,51 @@ public class FedEODataQuery extends DataQuery {
         }
     }
 
+    @Override
+    public long getCountImpl() {
+        long count = -1;
+        List<NameValuePair> params = new ArrayList<>();
+        for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
+            QueryParameter<?> parameter = entry.getValue();
+            if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
+                throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
+            }
+            if (parameter.isOptional() &&
+                    ((!parameter.isInterval() && parameter.getValue() == null) ||
+                            (parameter.isInterval() && parameter.getMinValue() == null && parameter.getMaxValue() == null))) {
+                continue;
+            }
+            try {
+                params.add(new BasicNameValuePair(getRemoteName(parameter.getName()), getParameterValue(parameter)));
+            } catch (ConversionException e) {
+                throw new QueryException(e.getMessage());
+            }
+        }
+        List<NameValuePair> queryParams = new ArrayList<>(params);
+        queryParams.add(new BasicNameValuePair("maximumRecords", "1"));
+        queryParams.add(new BasicNameValuePair("recordSchema", "om"));
+        queryParams.add(new BasicNameValuePair("startRecord", "1"));
+        String queryUrl = this.source.getConnectionString() + "request?" + URLEncodedUtils.format(queryParams, "UTF-8").replace("+", "%20");
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, null)) {
+            switch (response.getStatusLine().getStatusCode()) {
+                case 200:
+                    String countRequestResponse = EntityUtils.toString(response.getEntity());
+                    String countText = countRequestResponse.replaceAll("[\\s\\S]*?<os\\:totalResults>([\\d]*?)<\\/os:totalResults>[\\s\\S]*", "$1");
+                    if (!countText.isEmpty()) {
+                        count = Long.parseLong(countText);
+                    }
+                    break;
+                case 401:
+                    throw new QueryException("The request was not successful. Reason: 401: The supplied credentials are invalid!");
+                case 403:
+                    throw new QueryException("The request was not successful. Reason: 403: The required credentials are missing!");
+                default:
+                    throw new QueryException(String.format("The request was not successful. Reason: %s",
+                            response.getStatusLine().getStatusCode() + ": " + response.getStatusLine().getReasonPhrase()));
+            }
+        } catch (IOException ex) {
+            throw new QueryException(ex);
+        }
+        return count;
+    }
 }

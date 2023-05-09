@@ -32,4 +32,9 @@ class TorqueSession extends AbstractSession {
 
     @Override
     public String serviceName() { return "Torque"; }
+
+    @Override
+    public boolean hasOwnQueue() {
+        return true;
+    }
 }

@@ -9,11 +9,14 @@ import ro.cs.tao.utils.DateUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 abstract class XmlResponseHandler<H extends ProductHelper>
         extends ro.cs.tao.datasource.remote.result.xml.XmlResponseHandler<EOProduct> {
     private String identifiedElement;
     H helper;
+    private final DateTimeFormatter formatter = DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     XmlResponseHandler(String recordElementName) {
         super(EOProduct.class, recordElementName);
@@ -69,7 +72,7 @@ abstract class XmlResponseHandler<H extends ProductHelper>
                         break;
                     case "sensingStartDate":
                         try {
-                            this.current.setAcquisitionDate(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(elementValue));
+                            this.current.setAcquisitionDate(LocalDateTime.parse(elementValue, formatter));
                         } catch (Exception e) {
                             logger.warning(e.getMessage());
                         }
@@ -77,7 +80,7 @@ abstract class XmlResponseHandler<H extends ProductHelper>
                     case "processingDate":
                         if (this.current.getAcquisitionDate() == null) {
                             try {
-                                this.current.setAcquisitionDate(DateUtils.getFormatterAtUTC("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(elementValue));
+                                this.current.setAcquisitionDate(LocalDateTime.parse(elementValue, formatter));
                             } catch (Exception e) {
                                 logger.warning(e.getMessage());
                             }

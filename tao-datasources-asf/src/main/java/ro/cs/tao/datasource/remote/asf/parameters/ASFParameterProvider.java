@@ -20,7 +20,6 @@ import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
 import ro.cs.tao.datasource.remote.asf.ASFDataSource;
 import ro.cs.tao.datasource.remote.asf.download.AsfDownloadStrategy;
-import ro.cs.tao.datasource.remote.asf.download.SmapDownloadStrategy;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +34,6 @@ public class ASFParameterProvider extends AbstractParameterProvider {
                 new HashMap<String, ProductFetchStrategy>() {{
                     put("Sentinel1", new AsfDownloadStrategy(dataSource, targetFolder, new Properties() {{ put("auto.uncompress", "false"); }}));
                     put("ALOS", new AsfDownloadStrategy(dataSource, targetFolder, new Properties() {{ put("auto.uncompress", "false"); }}));
-                    put("SMAP", new SmapDownloadStrategy(dataSource, targetFolder, new Properties() {{ put("auto.uncompress", "false"); }}));
                 }});
     }
 }

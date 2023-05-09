@@ -1,7 +1,5 @@
 package ro.cs.tao.datasource.remote.creodias.parsers;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.creodias.model.l8.Feature;
 import ro.cs.tao.datasource.remote.creodias.model.l8.Result;
 import ro.cs.tao.datasource.remote.creodias.model.l8.ResultSet;
@@ -12,6 +10,7 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,11 +23,9 @@ public class Landsat8JsonResponseHandler implements JSonResponseHandler<EOProduc
 
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter... filters) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
         List<EOProduct> products = new ArrayList<>();
         try {
-            ResultSet results = mapper.readValue(content, ResultSet.class);
+            ResultSet results = JsonMapper.instance().readValue(content, ResultSet.class);
             List<Feature> features = results.getFeatures();
             if (features != null) {
                 for (Feature feature : features) {
@@ -73,8 +70,8 @@ public class Landsat8JsonResponseHandler implements JSonResponseHandler<EOProduc
                         product.setLocation(result.getProductIdentifier());
                         product.setAcquisitionDate(new DateAdapter().unmarshal(result.getStartDate()));
                         product.addAttribute("cloudcoverpercentage", String.valueOf(result.getCloudCover()));
-                        product.addAttribute("tiles", String.format("%03d", result.getPath()) +
-                                String.format("%03d", result.getRow()));
+                        product.addAttribute("tiles", String.format("%03d", result.getPath()) + String.format("%03d", result.getRow()));
+                        product.addAttribute("productType", result.getProductType());
                         products.add(product);
                     } catch (Exception ex) {
                         logger.warning("Error parsing JSON: " + ex.getMessage());
@@ -89,9 +86,7 @@ public class Landsat8JsonResponseHandler implements JSonResponseHandler<EOProduc
 
     @Override
     public long countValues(String content) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
-        ResultSet results = mapper.readValue(content, ResultSet.class);
+        ResultSet results = JsonMapper.instance().readValue(content, ResultSet.class);
         return results != null ? results.getProperties().getTotalResults().longValue() : 0;
     }
 }

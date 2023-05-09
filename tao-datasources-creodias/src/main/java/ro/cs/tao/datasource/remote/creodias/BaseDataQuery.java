@@ -1,7 +1,6 @@
 package ro.cs.tao.datasource.remote.creodias;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -15,7 +14,7 @@ import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.creodias.model.common.Token;
-import ro.cs.tao.datasource.remote.creodias.sentinel1.Sentinel1Query;
+import ro.cs.tao.datasource.remote.creodias.queries.Sentinel1Query;
 import ro.cs.tao.datasource.remote.result.ResponseParser;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
@@ -24,13 +23,14 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.util.TileExtent;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +43,7 @@ public abstract class BaseDataQuery extends DataQuery {
         super(source, sensorName);
         this.sensorName = sensorName;
         this.connectionString = connectionString;
+        this.queryDelay = 1;
     }
 
     @Override
@@ -79,6 +80,9 @@ public abstract class BaseDataQuery extends DataQuery {
                             tmpResults = parser.parse(rawResponse);
                             canContinue = tmpResults != null && tmpResults.size() > 0 && count != this.pageSize;
                             if (tmpResults != null) {
+                                if (this.sensorName.equals("Sentinel3")) {
+                                    filterS3(tmpResults);
+                                }
                                 actualCount += tmpResults.size();
                                 for (EOProduct result : tmpResults) {
                                     if (!results.contains(result)) {
@@ -187,9 +191,8 @@ public abstract class BaseDataQuery extends DataQuery {
             String wkt = ((Polygon2D) this.parameters.get(CommonParameterNames.FOOTPRINT).getValue()).toWKT();
             footprints = splitMultiPolygon(wkt);
         }
-        List<BasicNameValuePair> query = new ArrayList<>();
         for (String footprint : footprints) {
-            int idx = 0;
+            final List<BasicNameValuePair> query = new ArrayList<>();
             for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
                 QueryParameter<?> parameter = entry.getValue();
                 if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
@@ -225,6 +228,12 @@ public abstract class BaseDataQuery extends DataQuery {
                             throw new QueryException(e.getMessage());
                         }
                         break;
+                    case "cloudCover":
+                        query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), "[0," + parameter.getValueAsDouble().intValue() + "]"));
+                        break;
+                    case "productSize":
+                        // productSize filter will be applied after results are returned
+                        break;
                     default:
                         if (parameter.getType().isArray()) {
                             StringBuilder builder = new StringBuilder();
@@ -240,7 +249,7 @@ public abstract class BaseDataQuery extends DataQuery {
                                 builder.setLength(builder.length() - 1);
                             }
                             query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), builder.toString()));
-                        } else if (Date.class.equals(parameter.getType())) {
+                        } else if (LocalDateTime.class.equals(parameter.getType())) {
                             try {
                                 query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), getParameterValue(parameter)));
                             } catch (ConversionException e) {
@@ -254,7 +263,6 @@ public abstract class BaseDataQuery extends DataQuery {
                             }
                         }
                 }
-                idx++;
             }
             queries.add(query);
         }
@@ -280,5 +288,16 @@ public abstract class BaseDataQuery extends DataQuery {
             e.printStackTrace();
         }
         return polygons;
+    }
+
+    private void filterS3(List<EOProduct> results) {
+        if (this.parameters.containsKey("productSize")) {
+            String productSize = this.parameters.get("productSize").getValueAsString();
+            if ("STRIPE".equalsIgnoreCase(productSize)) {
+                results.removeIf(p -> !p.getName().contains("_____"));
+            } else if ("FRAME".equalsIgnoreCase(productSize)) {
+                results.removeIf(p -> p.getName().contains("_____"));
+            }
+        }
     }
 }

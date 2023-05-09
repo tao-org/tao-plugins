@@ -15,11 +15,11 @@
  */
 package ro.cs.tao.datasource.usgs.json.handlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.usgs.json.responses.DownloadInfo;
 import ro.cs.tao.datasource.usgs.json.responses.DownloadInfoResponse;
+import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,8 +30,7 @@ import java.util.List;
 public class DownloadInfoResponseHandler implements JSonResponseHandler<DownloadInfo> {
     @Override
     public List<DownloadInfo> readValues(String content, AttributeFilter...filters) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        DownloadInfoResponse response = mapper.readValue(content, DownloadInfoResponse.class);
+        DownloadInfoResponse response = JsonMapper.instance().readValue(content, DownloadInfoResponse.class);
         final String error = response.getErrorMessage();
         if (response.getData() == null) {
             throw new IOException(error != null ? error : "No data [error: null]");

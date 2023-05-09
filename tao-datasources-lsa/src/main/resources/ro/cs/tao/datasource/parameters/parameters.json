@@ -1,0 +1,235 @@
+{
+  "Sentinel1": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platformName",
+      "label": "Satellite",
+      "type": "string",
+      "defaultValue": "Sentinel-1",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "timeStart",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 1
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "timeEnd",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 2
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "geometry",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 3
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "parentId",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": "S1_SAR_SLC",
+      "required": false,
+      "valueSet": [
+        "S1_SAR_GRD",
+        "S1_SAR_OCN",
+        "S1_SAR_RAW",
+        "S1_SAR_SLC"
+      ],
+      "order": 4
+    },
+    "polarisationMode": {
+      "name": "polarisationMode",
+      "remoteName": "polarisationMode",
+      "label": "Polarisation Mode",
+      "type": "string",
+      "defaultValue": "VV VH",
+      "required": false,
+      "valueSet": [
+        "",
+        "HH",
+        "HH HV",
+        "VV",
+        "VH",
+        "VV VH"
+      ],
+      "order": 5
+    },
+    "orbitNumber": {
+      "name": "orbitNumber",
+      "remoteName": "orbitNumber",
+      "label": "Orbit Number",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 6
+    },
+    "orbitDirection": {
+      "name": "orbitDirection",
+      "remoteName": "orbitDirection",
+      "label": "Orbit Direction",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": [
+        "Ascending",
+        "Descending"],
+      "order": 7
+    },
+    "sensorMode": {
+      "name": "sensorMode",
+      "remoteName": "sensorMode",
+      "label": "Sensor Mode",
+      "type": "string",
+      "defaultValue": "IW",
+      "required": false,
+      "valueSet": [
+        "EW",
+        "IW",
+        "SM",
+        "WV"
+      ],
+      "order": 8
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "uid",
+      "label": "Product Name",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 9
+    }
+  },
+  "Sentinel2": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platformName",
+      "label": "Satellite",
+      "type": "string",
+      "defaultValue": "Sentinel-2",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "timeStart",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 1
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "timeEnd",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 2
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "geometry",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 3
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "parentId",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": "S2_MSIL1C",
+      "required": false,
+      "valueSet": [
+        "S2A_MSIL1C",
+        "S2A_MSIL2A",
+        "S2B_MSIL1C",
+        "S2B_MSIL2A",
+        "S2_MSIL1C",
+        "S2_MSIL2A"
+      ],
+      "order": 4
+    },
+    "cloudCover": {
+      "name": "cloudCover",
+      "remoteName": "cloudCover",
+      "label": "Cloud Cover",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 5
+    },
+    "snowCover": {
+      "name": "snowCover",
+      "remoteName": "snowCover",
+      "label": "Snow Cover",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 6
+    },
+    "orbitNumber": {
+      "name": "orbitNumber",
+      "remoteName": "orbitNumber",
+      "label": "Orbit Number",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 7
+    },
+    "orbitDirection": {
+      "name": "orbitDirection",
+      "remoteName": "orbitDirection",
+      "label": "Orbit Direction",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": [
+        "Ascending",
+        "Descending"],
+      "order": 8
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "uid",
+      "label": "Product Name",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 9
+    }
+  }
+}
+

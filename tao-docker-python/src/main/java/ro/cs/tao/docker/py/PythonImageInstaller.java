@@ -17,19 +17,9 @@
 package ro.cs.tao.docker.py;
 
 import org.apache.commons.lang3.SystemUtils;
-import ro.cs.tao.component.ParameterDescriptor;
-import ro.cs.tao.component.ProcessingComponent;
-import ro.cs.tao.component.SourceDescriptor;
-import ro.cs.tao.component.TargetDescriptor;
-import ro.cs.tao.component.enums.ProcessingComponentType;
-import ro.cs.tao.docker.Container;
-import ro.cs.tao.persistence.PersistenceManager;
-import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
 
 import java.nio.file.Path;
-import java.util.List;
-import java.util.UUID;
 
 public class PythonImageInstaller extends BaseImageInstaller {
     @Override
@@ -48,59 +38,17 @@ public class PythonImageInstaller extends BaseImageInstaller {
     }
 
     @Override
-    protected Container initializeContainer(Container container, String path) {
-        PersistenceManager persistenceManager = getPersistenceManager();
-        Container pyContainer = null;
-        try {
-            pyContainer = readContainerDescriptor("python_container.json");
-            pyContainer.setId(container.getId());
-            pyContainer.setName(container.getName());
-            pyContainer.setTag(container.getTag());
-            pyContainer.setApplicationPath(path);
-            pyContainer.setLogo(readContainerLogo("python_logo.png"));
-            pyContainer = persistenceManager.saveContainer(pyContainer);
-            ProcessingComponent[] components = readComponentDescriptors("python_applications.json");
-            for (ProcessingComponent component : components) {
-                if (component.getId() == null || component.getId().isEmpty()) {
-                    component.setId(UUID.randomUUID().toString());
-                }
-                component.setContainerId(pyContainer.getId());
-                component.setComponentType(ProcessingComponentType.SCRIPT);
-                component.setOwner(SystemPrincipal.instance().getName());
-                List<ParameterDescriptor> parameterDescriptors = component.getParameterDescriptors();
-                if (parameterDescriptors != null) {
-                    parameterDescriptors.forEach(p -> {
-                        if (p.getName() == null) {
-                            p.setName(p.getId());
-                            p.setId(UUID.randomUUID().toString());
-                        }
-                        String[] valueSet = p.getValueSet();
-                        if (valueSet != null && valueSet.length > 0) {
-                            p.setDefaultValue(valueSet[0]);
-                        }
-                    });
-                }
-                List<SourceDescriptor> sources = component.getSources();
-                if (sources != null) {
-                    sources.forEach(s -> {
-                        if (s.getId() == null || s.getId().isEmpty()) {
-                            s.setId(UUID.randomUUID().toString());
-                        }
-                    });
-                }
-                List<TargetDescriptor> targets = component.getTargets();
-                if (targets != null) {
-                    targets.forEach(t -> {
-                        if (t.getId() == null || t.getId().isEmpty()) {
-                            t.setId(UUID.randomUUID().toString());
-                        }
-                    });
-                }
-                persistenceManager.saveProcessingComponent(component);
-            }
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-        }
-        return pyContainer;
+    protected String getContainerDescriptorFileName() {
+        return "python_container.json";
+    }
+
+    @Override
+    protected String getComponentDescriptorFileName() {
+        return "python_applications.json";
+    }
+
+    @Override
+    protected String getLogoFileName() {
+        return "python_logo.png";
     }
 }

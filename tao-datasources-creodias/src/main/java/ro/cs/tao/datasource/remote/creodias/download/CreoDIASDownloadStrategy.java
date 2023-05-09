@@ -2,10 +2,10 @@ package ro.cs.tao.datasource.remote.creodias.download;
 
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import ro.cs.tao.datasource.InterruptedException;
+import ro.cs.tao.datasource.ProductHelperFactory;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.FetchMode;
@@ -13,6 +13,8 @@ import ro.cs.tao.datasource.remote.creodias.CreoDiasDataSource;
 import ro.cs.tao.datasource.remote.creodias.model.common.Token;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.eodata.util.ProductHelper;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
@@ -71,7 +73,7 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("token", this.apiKey.getAccessToken()));
         productUrl += "?" + URLEncodedUtils.format(params, "UTF-8");
-        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, productUrl, null, null, DOWNLOAD_TIMEOUT)) {
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, productUrl, (List<Header>)null, null, DOWNLOAD_TIMEOUT)) {
             int statusCode = response.getStatusLine().getStatusCode();
             logger.finest(String.format("%s returned http code %s", productUrl, statusCode));
             switch (statusCode) {
@@ -150,14 +152,18 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
                             logger.finest("End reading from input stream");
                             checkCancelled();
                             if (Boolean.parseBoolean(this.props.getProperty("auto.uncompress", "true"))) {
-                                productFile = extract(archivePath, computeTarget(archivePath));
+                                productFile = extract(product, archivePath, computeTarget(archivePath));
                             } else {
                                 productFile = archivePath;
                             }
                             if (productFile != null) {
                                 try {
                                     product.setLocation(productFile.toUri().toString());
-                                } catch (URISyntaxException e) {
+                                    ProductHelper helper = ProductHelperFactory.getHelper(product.getName());
+                                    if (helper != null) {
+                                        product.setEntryPoint(helper.getMetadataFileName());
+                                    }
+                                } catch (Exception e) {
                                     logger.severe(e.getMessage());
                                 }
                             }
@@ -189,11 +195,23 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
                 Paths.get(archivePath.toString().replace(".zip", ""));
     }
 
-    protected Path extract(Path archivePath, Path targetPath) throws IOException {
-        logger.fine(String.format("Begin decompressing %s into %s", archivePath.getFileName(), targetPath));
-        Path result = archivePath.toString().endsWith(".tar.gz") ?
-                Zipper.decompressTarGz(archivePath, targetPath, true) :
-                Zipper.decompressZipMT(archivePath, targetPath, false, false);
+    protected Path extract(EOProduct product, Path archivePath, Path targetPath) throws IOException {
+        String satelliteName = product.getSatelliteName();
+        final String name = FileUtilities.getFilenameWithoutExtension(archivePath)
+                + (satelliteName.equals("Sentinel1") || satelliteName.equals("Sentinel2")
+                    ? ".SAFE"
+                    : satelliteName.equals("Sentinel3")
+                        ? ".SEN3"
+                        : "");
+        logger.fine(String.format("Begin decompressing %s into %s", name, targetPath));
+        Path result;
+        if (archivePath.toString().endsWith(".tar.gz")) {
+            result = Zipper.decompressTarGz(archivePath, targetPath, true);
+            Files.move(result, result.getParent().resolve(name));
+        } else {
+            result = Zipper.decompressZipMT(archivePath, targetPath, false, true);
+        }
+        result = result.getParent().resolve(name);
         logger.fine(String.format("Decompression of %s completed",archivePath.getFileName()));
         return result;
     }
@@ -201,5 +219,13 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
     @Override
     protected String getMetadataUrl(EOProduct descriptor) {
         throw new RuntimeException("Metadata file not supported for this strategy");
+    }
+
+    @Override
+    protected Path findProductPath(Path root, EOProduct product) {
+        String location = product.getLocation();
+        return location.startsWith(root.toString())
+                ? Paths.get(location)
+                : super.findProductPath(root, product);
     }
 }

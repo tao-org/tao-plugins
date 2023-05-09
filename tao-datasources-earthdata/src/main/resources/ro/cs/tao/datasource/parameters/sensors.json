@@ -1,0 +1,156 @@
+{
+  "SMAP-SPL3SMP": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This Level-3 soil moisture product provides a composite of daily estimates of global land surface conditions retrieved by the SMAP passive microwave radiometer.",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL3SMP_E": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This enhanced Level-3 soil moisture product provides a composite of daily estimates of global land surface conditions retrieved by the Soil Moisture Active Passive radiometer.",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL4SMGP": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This SMAP Level-4 soil moisture data includes the following parameters: surface soil moisture, root zone soil moisture and additional research products (not validated).",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-NSIDC-0738": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This data set contains twice-daily, enhanced-resolution brightness temperature data derived from the SMAP radiometer.",
+    "temporalCoverage": "from march 2015 to april 2019",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL1BTB": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This Level-1B product provides calibrated estimates of time-ordered geolocated brightness temperatures measured by the Soil Moisture Active Passive passive microwave radiometer. ",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL1CTB": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This Level-1C product contains calibrated and geolocated brightness temperatures acquired by the Soil Moisture Active Passive radiometer during 6:00 a.m. descending and 6:00 p.m. ascending half-orbit passes. ",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL1CTB_E": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This enhanced Level-1C product contains calibrated and geolocated brightness temperatures acquired by the Soil Moisture Active Passive radiometer during 6:00 a.m. descending and 6:00 p.m. ascending half-orbit passes. ",
+    "temporalCoverage": "from april 2015 to july 2015",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL2SMA": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This Level-2 soil moisture product provides estimates of global land surface conditions retrieved by the SMAP active radar during 6:00 a.m. descending half-orbit passes, as well as ancillary data such as surface temperature and vegetation water content. ",
+    "temporalCoverage": "from april 2015 to july 2015",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL2SMAP": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This Level-2 soil moisture product provides estimates of global land surface conditions retrieved by both the Soil Moisture Active Passive radar and radiometer during 6:00 a.m. descending half-orbit passes.",
+    "temporalCoverage": "from april 2015 to july 2015",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL2SMAP_S": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This Level-2 soil moisture product provides estimates of land surface conditions retrieved by both the Soil Moisture Active Passive\radiometer during 6:00 a.m. descending and 6:00 p.m. ascending half-orbit passes and the Sentinel-1A and -1B radar.",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "AFRICA, ASIA, EUROPE, NORTH AMERICA, SOUTH AMERICA, OCEANIA"
+  },
+  "SMAP-SPL2SMP": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This Level-2 soil moisture product provides estimates of global land surface conditions retrieved by the Soil Moisture Active Passive passive microwave radiometer during 6:00 a.m. descending and 6:00 p.m. ascending half-orbit passes. ",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL2SMP_E": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This enhanced Level-2 product contains calibrated, geolocated, brightness temperatures acquired by the Soil Moisture Active Passive radiometer during 6:00 a.m. descending and 6:00 p.m. ascending half-orbit passes.",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL3SMA": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This Level-3 soil moisture product provides a composite of daily estimates of global land surface conditions retrieved by the Soil Moisture Active Passive radar as well as a variety of ancillary data sources.",
+    "temporalCoverage": "from april 2015 to july 2015",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL3SMAP": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This Level-3 soil moisture product provides a daily composite of global land surface conditions retrieved by both the Soil Moisture Active Passive radar and radiometer.",
+    "temporalCoverage": "from april 2015 to july 2015",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL4CMDL": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "The Level-4 carbon product provides global gridded daily estimates of net ecosystem carbon (CO2) exchange derived using a satellite data based terrestrial carbon flux model.",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL4SMAU": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This SMAP Level-4 soil moisture data includes the following parameters: surface soil moisture, root zone soil moisture and additional research products (not validated).",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  },
+  "SMAP-SPL4SMLM": {
+    "mission": "SMAP",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "This SMAP Level-4 soil moisture data includes the following parameters: surface soil moisture, root zone soil moisture and additional research products (not validated).",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  },
+  "IceSAT-2-ATL08V3": {
+    "mission": "IceSAT-2",
+    "sensorType": "ALTIMETRIC",
+    "description": "This data set (ATL08) contains along-track heights above the WGS84 ellipsoid (ITRF2014 reference frame) for the ground and canopy surfaces. ",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "IceSAT-2-ATL08V2": {
+    "mission": "IceSAT-2",
+    "sensorType": "ALTIMETRIC",
+    "description": "This data set (ATL08) contains along-track heights above the WGS84 ellipsoid (ITRF2014 reference frame) for the ground and canopy surfaces. ",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "IceSAT-2-ATL13V3": {
+    "mission": "IceSAT-2",
+    "sensorType": "ALTIMETRIC",
+    "description": "This data set (ATL13) contains along-track water surface heights and descriptive statistics for inland water bodies. Water bodies include lakes, reservoirs, bays, and estuaries. ",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "IceSAT-2-ATL13V2": {
+    "mission": "IceSAT-2",
+    "sensorType": "ALTIMETRIC",
+    "description": "This data set (ATL13) contains along-track water surface heights and descriptive statistics for inland water bodies. Water bodies include lakes, reservoirs, bays, and estuaries. ",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "GEDI": {
+    "mission": "GEDI",
+    "sensorType": "ALTIMETRIC",
+    "description": "The Global Ecosystem Dynamics Investigation (GEDI) instrument aims to characterize ecosystem structure and dynamics to enable radically improved quantification and understanding of the Earth’s carbon cycle and biodiversity.",
+    "temporalCoverage": "from 2019 to present",
+    "spatialCoverage": "Global"
+  }
+}

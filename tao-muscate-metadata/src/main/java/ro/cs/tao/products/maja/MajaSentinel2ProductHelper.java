@@ -4,21 +4,31 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class MajaSentinel2ProductHelper extends MajaProductHelper {
 
     private static final Pattern S2L2Pattern = Pattern.compile("S2([AB])_MSIL2A_(\\d{8}T\\d{6})_(N\\d{4})_R(\\d{3})_T(\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
     private static final Pattern S2L2TilePattern = Pattern.compile("SENTINEL2[AB]_(\\d{8})-(\\d{6})-(\\d{3})_L2A_T(\\d{2}\\w{3})_C_V(\\d+)-(\\d+)");
 
+    public MajaSentinel2ProductHelper() {
+        super();
+    }
+
     MajaSentinel2ProductHelper(Path productPath) {
         super(productPath);
     }
 
     @Override
+    public MajaSentinel2ProductHelper duplicate() {
+        return new MajaSentinel2ProductHelper(this.path);
+    }
+
+    @Override
     public String getGranuleFolder(String granuleIdentifier) {
         String folder = null;
-        try {
-            Path granuleFolder = Files.list(this.path)
+        try (Stream<Path> stream = Files.list(this.path)) {
+            Path granuleFolder = stream
                                       .filter(p -> S2L2TilePattern.matcher(p.getFileName().toString()).matches() && p.getFileName().toString().contains(granuleIdentifier))
                                       .findFirst().orElse(null);
             if (granuleFolder != null) {

@@ -31,7 +31,6 @@ import ro.cs.tao.eodata.util.Conversions;
 import ro.cs.tao.products.landsat.Landsat8ProductHelper;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
 import ro.cs.tao.products.landsat.LandsatProduct;
-import ro.cs.tao.utils.DateUtils;
 import ro.cs.tao.utils.HttpMethod;
 
 import javax.json.Json;
@@ -39,8 +38,9 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,8 +51,7 @@ import java.util.stream.Collectors;
 class Landsat8Query extends DataQuery {
     private static final String L8_SEARCH_URL_SUFFIX = "?delimiter=/&prefix=";
     private static final String datePattern = "yyyy-MM-dd";
-    private static final DateTimeFormatter fileDateFormat = DateTimeFormatter.ofPattern(datePattern);
-    private static final DateFormat dateFormat = DateUtils.getFormatterAtUTC(datePattern);
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(datePattern);
 
     Landsat8Query(DataSource source) {
         super(source, "Landsat8");
@@ -98,7 +97,7 @@ class Landsat8Query extends DataQuery {
                     sensingStart = currentParameter.getMinValueAsFormattedDate(datePattern);
                 }
             } else {
-                sensingStart = todayDate.minusDays(30).format(fileDateFormat);
+                sensingStart = todayDate.minusDays(30).format(dateFormat);
             }
             currentParameter = this.parameters.get(CommonParameterNames.END_DATE);
             if (currentParameter != null) {
@@ -108,11 +107,11 @@ class Landsat8Query extends DataQuery {
                     sensingEnd = currentParameter.getMaxValueAsFormattedDate(datePattern);
                 }
             } else {
-                sensingEnd = todayDate.format(fileDateFormat);
+                sensingEnd = todayDate.format(dateFormat);
             }
-            startDate.setTime(dateFormat.parse(sensingStart));
+            startDate.setTime(Date.from(LocalDateTime.parse(sensingStart, dateFormat).atZone(ZoneId.of("UTC")).toInstant()));
             Calendar endDate = Calendar.getInstance();
-            endDate.setTime(dateFormat.parse(sensingEnd));
+            endDate.setTime(Date.from(LocalDateTime.parse(sensingEnd, dateFormat).atZone(ZoneId.of("UTC")).toInstant()));
             currentParameter = this.parameters.get(CommonParameterNames.PRODUCT_TYPE);
             if (currentParameter != null) {
                 productType = Enum.valueOf(LandsatProduct.class, currentParameter.getValueAsString());
@@ -182,7 +181,7 @@ class Landsat8Query extends DataQuery {
                                         productDate.add(Calendar.MONTH, -1);
                                         logger.fine(String.format("Tile %s from %s has %.2f %% clouds",
                                                                   tile,
-                                                                  dateFormat.format(productDate.getTime()),
+                                                                  dateFormat.format(productDate.getTime().toInstant()),
                                                                   clouds));
                                     } else {
                                         EOProduct product = parseProductJson(jsonTile);
@@ -217,7 +216,7 @@ class Landsat8Query extends DataQuery {
                                         productDate.add(Calendar.MONTH, -1);
                                         logger.fine(String.format("Tile %s from %s has %.2f %% clouds",
                                                                   tile,
-                                                                  dateFormat.format(productDate.getTime()),
+                                                                  dateFormat.format(productDate.getTime().toInstant()),
                                                                   clouds));
                                     } else {
                                         EOProduct product = parseProductJson(jsonTile);
@@ -259,7 +258,7 @@ class Landsat8Query extends DataQuery {
             product.setFormatType(DataFormat.RASTER);
             product.setSensorType(SensorType.OPTICAL);
             obj = rootObject.getJsonObject("PRODUCT_METADATA");
-            product.setAcquisitionDate(dateFormat.parse(obj.getString("DATE_ACQUIRED")));
+            product.setAcquisitionDate(LocalDateTime.parse(obj.getString("DATE_ACQUIRED"), dateFormat));
             product.setWidth(obj.getInt("REFLECTIVE_SAMPLES"));
             product.setHeight(obj.getInt("REFLECTIVE_LINES"));
             Polygon2D footprint = new Polygon2D();
