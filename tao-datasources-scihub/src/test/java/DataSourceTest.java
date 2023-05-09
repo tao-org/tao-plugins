@@ -54,8 +54,6 @@ import ro.cs.tao.spi.ServiceRegistryManager;
 
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -66,12 +64,14 @@ import java.util.logging.Logger;
  * @author Cosmin Cara
  */
 public class DataSourceTest {
+    private static String user;
+    private static String password;
 
     public static void main(String[] args) throws JsonProcessingException {
         setup();
         //SciHub_Sentinel1_Test();
-        //SciHub_Sentinel2_Count_Test();
-        SciHub_Sentinel2_APIHUB_Test();
+        SciHub_Sentinel2_Count_Test();
+        //SciHub_Sentinel2_APIHUB_Test();
         //SciHub_Sentinel2_DHUS_Test();
         //printParams();
     }
@@ -89,18 +89,16 @@ public class DataSourceTest {
                 handler.setLevel(Level.INFO);
             }
             DataSource dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
-            dataSource.setCredentials("kraftek", "cei7samurai");
+            dataSource.setCredentials(user, password);
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[1]);
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
-            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(2016, 2, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(2017, 2, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
+            Class clazz = LocalDateTime.class;
+            QueryParameter begin = query.createParameter(CommonParameterNames.START_DATE,
+                                                         clazz,
+                                                         LocalDateTime.of(2020, 1, 1, 0, 0, 0, 0),
+                                                         LocalDateTime.of(2020, 12, 31, 23, 59, 59, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
                                                       "24.83885442747927 43.8379609098684," +
@@ -124,18 +122,16 @@ public class DataSourceTest {
                 handler.setLevel(Level.INFO);
             }
             DataSource<?, ?> dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
-            dataSource.setCredentials("kraftek", "cei7samurai");
+            dataSource.setCredentials(user, password);
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[1]);
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
-            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
+            Class clazz = LocalDateTime[].class;
+            QueryParameter begin = query.createParameter(CommonParameterNames.START_DATE,
+                                                         clazz,
+                                                         LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0),
+                                                         LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
                                                       "24.83885442747927 43.8379609098684," +
@@ -175,19 +171,17 @@ public class DataSourceTest {
                 handler.setLevel(Level.INFO);
             }
             DataSource<?, ?> dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
-            dataSource.setCredentials("kraftek", "cei7samurai");
+            dataSource.setCredentials(user, password);
             //dataSource.useAlternateConnectionString(true);
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[1]);
+            Class clazz = LocalDateTime[].class;
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-2");
-            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0)
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0)
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()));
+            QueryParameter begin = query.createParameter(CommonParameterNames.START_DATE,
+                                                         clazz,
+                                                         LocalDateTime.of(2019, 2, 1, 0, 0, 0, 0),
+                                                         LocalDateTime.of(2019, 3, 1, 0, 0, 0, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
                     "24.83885442747927 43.8379609098684," +
@@ -229,18 +223,16 @@ public class DataSourceTest {
             }
             DataSource dataSource = getDatasourceRegistry().getService(SciHubDataSource.class.getName());
             //new SciHubDataSource();
-            dataSource.setCredentials("kraftek", "cei7samurai");
+            dataSource.setCredentials(user, password);
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[0]);
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-1");
-            QueryParameter<Date> begin = query.createParameter(CommonParameterNames.START_DATE, Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(2019, 11, 1, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(2019, 12, 15, 0, 0, 0, 0)
-                                                .atZone(ZoneId.systemDefault())
-                                                .toInstant()));
+            Class clazz = LocalDateTime[].class;
+            QueryParameter begin = query.createParameter(CommonParameterNames.START_DATE,
+                                                         clazz,
+                                                         LocalDateTime.of(2019, 11, 1, 0, 0, 0, 0),
+                                                         LocalDateTime.of(2019, 12, 15, 0, 0, 0, 0));
             query.addParameter(begin);
             query.addParameter(CommonParameterNames.POLARISATION, "VV");
             query.addParameter("sensorOperationalMode", "IW");

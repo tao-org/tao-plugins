@@ -15,21 +15,26 @@
  */
 package ro.cs.tao.products.sentinels;
 
-import ro.cs.tao.eodata.util.ProductHelper;
+import ro.cs.tao.eodata.util.BaseProductHelper;
 
 import java.util.regex.Pattern;
 
 /**
  * @author Cosmin Cara
  */
-public class Sentinel3ProductHelper extends ProductHelper {
+public class Sentinel3ProductHelper extends BaseProductHelper {
 
     static final Pattern S3Pattern =
             Pattern.compile("(S3[AB_])_(OL|SR|SL|ST|SY|DO|MW|GN|AX)_([012_])_(EFR\\w{3}|CR0\\w{3}|CR1\\w{3}|ERR\\w{3}|RAC\\w{3}|SPC\\w{3}|INS\\w{3}|WFR\\w{3}|WRR\\w{3}|LFR\\w{3}|LRR\\w{3}|ATP\\w{3}|AER\\w{3}|LAP\\w{3}|LVI\\w{3}|SLT\\w{3}|RBT\\w{3}|WCT\\w{3}|WST\\w{3}|LST\\w{3}|MISR__|SYN\\w{3}|VGP\\w{3}|VG1\\w{3}|V10\\w{3}|LAN\\w{3}|WAT\\w{3}|SRA\\w{3}|CAL\\w{3}|FRP\\w{3})_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(((\\d{4})_(\\d{3})_(\\d{3})_(\\d{4}|____))|(\\w{17}))_(\\w{3})_([DFOR])_(NR|ST|NT)_(\\d{3})(?:.SEN3)?");
 
-    Sentinel3ProductHelper() { super(); }
+    public Sentinel3ProductHelper() { super(); }
 
     Sentinel3ProductHelper(String productName) { super(productName); }
+
+    @Override
+    public Sentinel3ProductHelper duplicate() {
+        return new Sentinel3ProductHelper(getName());
+    }
 
     @Override
     public String getProductRelativePath() {

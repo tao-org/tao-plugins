@@ -21,6 +21,7 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.serialization.DateAdapter;
+import ro.cs.tao.utils.executors.MemoryUnit;
 
 import java.net.URISyntaxException;
 
@@ -29,8 +30,6 @@ import java.net.URISyntaxException;
  */
 public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
 
-    private static final double MEGABYTE = 1024.0 * 1024.0;
-    private static final double GIGABYTE = MEGABYTE * 1024.0;
     private String identifiedElement;
     private String secondaryAttributeValue;
 
@@ -97,9 +96,9 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                         case "size":
                             long size;
                             if (elementValue.endsWith("MB")) {
-                                size = (long) (MEGABYTE * Double.parseDouble(elementValue.substring(0, elementValue.indexOf(" "))));
+                                size = (long) (MemoryUnit.MB.value() * Double.parseDouble(elementValue.substring(0, elementValue.indexOf(" "))));
                             } else if (elementValue.endsWith("GB")) {
-                                size = (long) (GIGABYTE * Double.parseDouble(elementValue.substring(0, elementValue.indexOf(" "))));
+                                size = (long) (MemoryUnit.GB.value() * Double.parseDouble(elementValue.substring(0, elementValue.indexOf(" "))));
                             } else {
                                 size = 0;
                             }
@@ -112,6 +111,9 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 } catch (Exception e) {
                     logger.warning(e.getMessage());
                 }
+                break;
+            case "int":
+                this.current.addAttribute(this.identifiedElement, elementValue);
                 break;
             case "double":
                 try {
@@ -131,7 +133,9 @@ public class SciHubXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 try {
                     switch (this.identifiedElement) {
                         case "beginposition":
-                            this.current.setAcquisitionDate(new DateAdapter().unmarshal(elementValue));
+                            int dotIdx = elementValue.lastIndexOf(".");
+                            this.current.setAcquisitionDate(new DateAdapter().unmarshal(dotIdx > 0 ?
+                                    elementValue.substring(0, dotIdx) : elementValue));
                             break;
                         default:
                             this.current.addAttribute(this.identifiedElement, elementValue);

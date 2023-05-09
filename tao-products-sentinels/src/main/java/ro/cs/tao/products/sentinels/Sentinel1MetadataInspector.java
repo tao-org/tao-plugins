@@ -125,8 +125,4 @@ public class Sentinel1MetadataInspector extends XmlMetadataInspector {
         }
         return metadata;
     }
-
-    private class BooleanWrapper {
-        private boolean value = false;
-    }
 }

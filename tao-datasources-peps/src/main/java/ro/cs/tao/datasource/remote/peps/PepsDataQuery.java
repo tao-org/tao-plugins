@@ -16,7 +16,6 @@
 package ro.cs.tao.datasource.remote.peps;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -33,12 +32,13 @@ import ro.cs.tao.datasource.remote.peps.parameters.PolygonParameterConverter;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,7 +51,7 @@ public class PepsDataQuery extends DataQuery {
     static {
         ConverterFactory factory = new ConverterFactory();
         factory.register(PolygonParameterConverter.class, Polygon2D.class);
-        factory.register(DateParameterConverter.class, Date.class);
+        factory.register(DateParameterConverter.class, LocalDateTime.class);
         factory.register(RangeParameterConverter.class, Double.class);
         factory.register(BooleanParameterConverter.class, Boolean.class);
         converterFactory.put(PepsDataQuery.class, factory);

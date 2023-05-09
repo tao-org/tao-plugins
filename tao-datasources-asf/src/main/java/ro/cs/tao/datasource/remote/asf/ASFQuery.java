@@ -16,7 +16,6 @@
 package ro.cs.tao.datasource.remote.asf;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -29,12 +28,15 @@ import ro.cs.tao.datasource.remote.asf.handlers.AsfJsonResponseHandler;
 import ro.cs.tao.datasource.remote.asf.parameters.DateParameterConverter;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.utils.CloseableHttpResponse;
+import ro.cs.tao.utils.DateUtils;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -45,9 +47,11 @@ import java.util.Map;
  */
 public class ASFQuery extends DataQuery {
 
+    private static final DateTimeFormatter dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
+
     static {
         final ConverterFactory factory = new ConverterFactory();
-        factory.register(DateParameterConverter.class, Date.class);
+        factory.register(DateParameterConverter.class, LocalDateTime.class);
         converterFactory.put(ASFQuery.class, factory);
     }
 

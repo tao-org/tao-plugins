@@ -1,12 +1,12 @@
 package ro.cs.tao.products.maccs;
 
-import ro.cs.tao.eodata.util.ProductHelper;
+import ro.cs.tao.eodata.util.BaseProductHelper;
 
 import java.nio.file.Path;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-public abstract class MaccsProductHelper extends ProductHelper {
+public abstract class MaccsProductHelper extends BaseProductHelper {
 
     public static MaccsProductHelper createHelper(Path productPath) {
         MaccsProductHelper helper = null;
@@ -19,6 +19,8 @@ public abstract class MaccsProductHelper extends ProductHelper {
     }
 
     final Logger logger = Logger.getLogger(MaccsProductHelper.class.getName());
+
+    MaccsProductHelper() { super() ;}
 
     MaccsProductHelper(Path productPath) {
         super(productPath);

@@ -12,7 +12,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "refresh_token",
         "token_type",
         "not-before-policy",
-        "session_state"
+        "session_state",
+        "scope"
 })
 public class Token {
     @JsonProperty("access_token")
@@ -29,6 +30,8 @@ public class Token {
     private int notBeforePolicy;
     @JsonProperty("session_state")
     private String sessionState;
+    @JsonProperty("scope")
+    private String scope;
 
     @JsonProperty("access_token")
     public String getAccessToken() {
@@ -86,4 +89,13 @@ public class Token {
     public void setSessionState(String sessionState) {
         this.sessionState = sessionState;
     }
+    @JsonProperty("scope")
+    public String getScope() {
+        return scope;
+    }
+    @JsonProperty("scope")
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
 }

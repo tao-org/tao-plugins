@@ -4,21 +4,29 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class MaccsLandsat8ProductHelper extends MaccsProductHelper {
 
     private static final Pattern L8L2Pattern = Pattern.compile("LC08_L2A_(\\d{6})_(\\d{8})_(\\d{8})_(\\d{2})_(T[12]|RT)");
     private static final Pattern L8L2TilePattern = Pattern.compile("L8_\\w+_L8C_L2VALD_(\\d{6})_(\\d{8}).DBL.DIR");
 
+    public MaccsLandsat8ProductHelper() { super() ;}
+
     MaccsLandsat8ProductHelper(Path productPath) {
         super(productPath);
     }
 
     @Override
+    public MaccsLandsat8ProductHelper duplicate() {
+        return new MaccsLandsat8ProductHelper(this.path);
+    }
+
+    @Override
     public String getGranuleFolder(String granuleIdentifier) {
         String folder = null;
-        try {
-            Path granuleFolder = Files.list(this.path)
+        try (Stream<Path> stream = Files.list(this.path)) {
+            Path granuleFolder = stream
                     .filter(p -> L8L2TilePattern.matcher(p.getFileName().toString()).matches() && p.getFileName().toString().contains(granuleIdentifier))
                     .findFirst().orElse(null);
             if (granuleFolder != null) {

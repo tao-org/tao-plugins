@@ -17,11 +17,10 @@ package ro.cs.tao.products.sentinels;
 
 import ro.cs.tao.utils.DateUtils;
 
-import java.text.DateFormat;
-import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -37,13 +36,18 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
 
     private boolean oldFormat;
 
-    L1CProductHelper() {
+    public L1CProductHelper() {
         super();
     }
 
     L1CProductHelper(String name) {
         super(name);
         this.version = this.oldFormat ? PSD_13 : PSD_14;
+    }
+
+    @Override
+    public L1CProductHelper duplicate() {
+        return new L1CProductHelper(getName());
     }
 
     @Override
@@ -188,18 +192,14 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
         if (this.oldFormat) {
             String[] granuleTokens = getTokens(TileV13, granuleIdentifier, null);
             String[] productTokens = getTokens(ProductV13, prodName, null);
-            DateFormat dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
+            DateTimeFormatter dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
             String dateStart = "", dateEnd = "";
             try {
-                Date date1 = dateFormat.parse(productTokens[7].substring(1, productTokens[7].length()));
-                Calendar cal1 = Calendar.getInstance();
-                cal1.setTime(date1);
-                cal1.set(cal1.get(Calendar.YEAR), cal1.get(Calendar.MONTH), cal1.get(Calendar.DAY_OF_MONTH),
-                         cal1.get(Calendar.HOUR_OF_DAY), 0, 0);
-                dateStart = dateFormat.format(cal1.getTime());
-                cal1.add(Calendar.HOUR_OF_DAY, 12);
-                dateEnd = dateFormat.format(cal1.getTime());
-            } catch (ParseException e) {
+                LocalDateTime date1 = LocalDateTime.parse(productTokens[7].substring(1), dateFormat);
+                date1 = LocalDateTime.of(date1.getYear(), date1.getMonth(), date1.getDayOfMonth(), date1.getHour(), 0, 0);
+                dateStart = dateFormat.format(date1);
+                dateEnd = dateFormat.format(date1.plusHours(12));
+            } catch (DateTimeParseException e) {
                 Logger.getLogger(L1CProductHelper.class.getName()).severe(e.getMessage());
             }
             fileName = String.join("_", productTokens[0], productTokens[1], "AUX", "ECMWFT", granuleTokens[5], "", granuleTokens[6], dateStart, dateEnd);

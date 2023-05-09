@@ -21,12 +21,12 @@
     <parent>
         <artifactId>tao-plugins</artifactId>
         <groupId>ro.cs.tao</groupId>
-        <version>1.0.4.0</version>
+        <version>1.4.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>tao-docker-python</artifactId>
-    <name>TAO Docker Python Plugin</name>
+    <name>TAO Docker Python 3 Plugin</name>
     <packaging>jar</packaging>
 
     <dependencies>

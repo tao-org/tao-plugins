@@ -5,10 +5,10 @@ import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.QueryException;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FedEOAuthentication {
-    private static final String PROTECTED_DOWNLOAD_AREA = "https://tpm-ds.eo.esa.int/oads/data/";
+
+    public static final String DOWNLOAD_URL_PROPERTY_NAME = "DOWNLOAD_URL";
     private static final String SAML_LOGIN_ADDRESS = "https://eoiam-idp.eo.esa.int/samlsso";
-    private static final String SAML2_LOGIN_ADDRESS = "https://tpm-ds.eo.esa.int/oads/Shibboleth.sso/SAML2/POST";
 
     private static final String TOKEN_NAME = "Cookie";
 
@@ -30,7 +30,7 @@ public class FedEOAuthentication {
         this.credentials = credentials;
     }
 
-    private String getSAMLResponse(String sessionDataKey) throws IOException {
+    private String[] getSAMLData(String sessionDataKey) throws IOException {
         List<NameValuePair> samlLoginParameters = new ArrayList<>();
         samlLoginParameters.add(new BasicNameValuePair("tocommonauth", "true"));
         samlLoginParameters.add(new BasicNameValuePair("username", this.credentials.getUserName()));
@@ -38,18 +38,19 @@ public class FedEOAuthentication {
         samlLoginParameters.add(new BasicNameValuePair("sessionDataKey", sessionDataKey));
         try (CloseableHttpResponse samlLoginResponse = NetUtils.openConnection(HttpMethod.POST, SAML_LOGIN_ADDRESS, (Credentials) null, samlLoginParameters)) {
             String samlLoginRequestResponseBody = EntityUtils.toString(samlLoginResponse.getEntity());
+            String saml2LoginAddress = samlLoginRequestResponseBody.replaceAll("[\\s\\S]*?method='post' action='(.*?)'[\\s\\S]*", "$1");
             String samlResponse = samlLoginRequestResponseBody.replaceAll("[\\s\\S]*?name='SAMLResponse' value='(.*?)'[\\s\\S]*", "$1");
             if (samlResponse.isEmpty()) {
                 throw new IllegalStateException("Get SAMLResponse failed.");
             }
-            return samlResponse;
+            return new String[]{saml2LoginAddress, samlResponse};
         }
     }
 
-    private String getShibbolethToken(String samlResponse) throws IOException {
+    private String getShibbolethToken(String saml2LoginAddress, String samlResponse) throws IOException {
         List<NameValuePair> samlLoginParameters = new ArrayList<>();
         samlLoginParameters.add(new BasicNameValuePair("SAMLResponse", samlResponse));
-        try (CloseableHttpResponse shibbolethLoginResponse = NetUtils.openConnection(HttpMethod.POST, SAML2_LOGIN_ADDRESS, (Credentials) null, samlLoginParameters)) {
+        try (CloseableHttpResponse shibbolethLoginResponse = NetUtils.openConnection(HttpMethod.POST, saml2LoginAddress, (Credentials) null, samlLoginParameters)) {
             Header shibbolethCookieToken = shibbolethLoginResponse.getFirstHeader("Set-Cookie");
             if (shibbolethCookieToken != null && !shibbolethCookieToken.getValue().isEmpty()) {
                 return shibbolethCookieToken.getValue();
@@ -68,21 +69,22 @@ public class FedEOAuthentication {
         return TOKEN_NAME;
     }
 
-    public String getAuthenticationTokenValue() throws IOException {
-        final String cookieToken = this.cookieToken;
+    public String getAuthenticationTokenValue(String protectedURL) throws IOException {
+        final String currentCookieToken = this.cookieToken;
         int responseStatus;
-        try (CloseableHttpResponse downloadRequestResponse = NetUtils.openConnection(HttpMethod.GET, PROTECTED_DOWNLOAD_AREA, getAuthenticationTokenName(), cookieToken, null)) {
+        try (CloseableHttpResponse downloadRequestResponse = NetUtils.openConnection(HttpMethod.GET, protectedURL, getAuthenticationTokenName(), currentCookieToken, null)) {
             responseStatus = downloadRequestResponse.getStatusLine().getStatusCode();
             if (responseStatus != HttpStatus.SC_OK) {
                 throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s", downloadRequestResponse.getStatusLine().getStatusCode(), downloadRequestResponse.getStatusLine().getReasonPhrase()));
             }
             if (downloadRequestResponse.getFirstHeader("Content-Disposition") != null) {
-                return cookieToken;
+                return currentCookieToken;
             }
             String downloadRequestResponseBody = EntityUtils.toString(downloadRequestResponse.getEntity());
             String sessionDataKey = downloadRequestResponseBody.replaceAll("[\\s\\S]*?name=\"sessionDataKey\" value='(.*?)'[\\s\\S]*", "$1");
-            String samlResponse = getSAMLResponse(sessionDataKey);
-            return getShibbolethToken(samlResponse);
+            String[] samlData = getSAMLData(sessionDataKey);
+            this.cookieToken = getShibbolethToken(samlData[0], samlData[1]);
+            return this.cookieToken;
         }
     }
 }

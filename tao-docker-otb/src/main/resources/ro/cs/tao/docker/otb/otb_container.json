@@ -1,554 +1,729 @@
 {
 	"id": "690d6747-7b76-4290-bb5d-87d775b5d23a",
-	"name": "otb-6-4-0",
-	"description": "OTB 6.4.0 Container",
+	"name": "otb-7-3-0",
+	"description": "OTB 7.3.0 Container",
 	"tag": "latest",
 	"applicationPath": null,
 	"applications": [
 		{
 			"path": "otbcli_Aggregate",
 			"name": "Aggregate",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_BandMath",
 			"name": "BandMath",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_BandMathX",
 			"name": "BandMathX",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_BinaryMorphologicalOperation",
 			"name": "BinaryMorphologicalOperation",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_BlockMatching",
 			"name": "BlockMatching",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_BundleToPerfectSensor",
 			"name": "BundleToPerfectSensor",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ClassificationMapRegularization",
 			"name": "ClassificationMapRegularization",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ColorMapping",
 			"name": "ColorMapping",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_CompareImages",
 			"name": "CompareImages",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ComputeConfusionMatrix",
 			"name": "ComputeConfusionMatrix",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ComputeImagesStatistics",
 			"name": "ComputeImagesStatistics",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ComputeModulusAndPhase",
 			"name": "ComputeModulusAndPhase",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ComputeOGRLayersFeaturesStatistics",
 			"name": "ComputeOGRLayersFeaturesStatistics",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_ComputePolylineFeatureFromImage",
-			"name": "ComputePolylineFeatureFromImage",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ConcatenateImages",
 			"name": "ConcatenateImages",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ConcatenateVectorData",
 			"name": "ConcatenateVectorData",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ConnectedComponentSegmentation",
 			"name": "ConnectedComponentSegmentation",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ContrastEnhancement",
 			"name": "ContrastEnhancement",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_Convert",
-			"name": "Convert",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ConvertCartoToGeoPoint",
 			"name": "ConvertCartoToGeoPoint",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ConvertSensorToGeoPoint",
 			"name": "ConvertSensorToGeoPoint",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_DEMConvert",
-			"name": "DEMConvert",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_Despeckle",
 			"name": "Despeckle",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_DimensionalityReduction",
 			"name": "DimensionalityReduction",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_DisparityMapToElevationMap",
 			"name": "DisparityMapToElevationMap",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_DomainTransform",
 			"name": "DomainTransform",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_DownloadSRTMTiles",
 			"name": "DownloadSRTMTiles",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_DSFuzzyModelEstimation",
-			"name": "DSFuzzyModelEstimation",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_DynamicConvert",
 			"name": "DynamicConvert",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_EdgeExtraction",
 			"name": "EdgeExtraction",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_EndmemberNumberEstimation",
+			"name": "EndmemberNumberEstimation",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ExtractROI",
 			"name": "ExtractROI",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_FastNLMeans",
+			"name": "FastNLMeans",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_FineRegistration",
 			"name": "FineRegistration",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_FusionOfClassifications",
 			"name": "FusionOfClassifications",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_GeneratePlyFile",
 			"name": "GeneratePlyFile",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_GenerateRPCSensorModel",
 			"name": "GenerateRPCSensorModel",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_GenericRegionMerging",
 			"name": "GenericRegionMerging",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_GrayScaleMorphologicalOperation",
 			"name": "GrayScaleMorphologicalOperation",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_GridBasedImageResampling",
 			"name": "GridBasedImageResampling",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_HaralickTextureExtraction",
 			"name": "HaralickTextureExtraction",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_HomologousPointsExtraction",
 			"name": "HomologousPointsExtraction",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_HooverCompareSegmentation",
 			"name": "HooverCompareSegmentation",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_HyperspectralUnmixing",
 			"name": "HyperspectralUnmixing",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ImageClassifier",
 			"name": "ImageClassifier",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_ImageDimensionalityReduction",
+			"name": "ImageDimensionalityReduction",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ImageEnvelope",
 			"name": "ImageEnvelope",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_ImageRegression",
+			"name": "ImageRegression",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ImageTimeSeriesGapFilling",
 			"name": "ImageTimeSeriesGapFilling",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_KMeansClassification",
 			"name": "KMeansClassification",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_LargeScaleMeanShift",
 			"name": "LargeScaleMeanShift",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_LineSegmentDetection",
 			"name": "LineSegmentDetection",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_LocalStatisticExtraction",
 			"name": "LocalStatisticExtraction",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_LocalRxDetection",
+			"name": "LocalRxDetection",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_LSMSSegmentation",
 			"name": "LSMSSegmentation",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_LSMSSmallRegionsMerging",
 			"name": "LSMSSmallRegionsMerging",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_LSMSVectorization",
 			"name": "LSMSVectorization",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ManageNoData",
 			"name": "ManageNoData",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_MeanShiftSmoothing",
 			"name": "MeanShiftSmoothing",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_MorphologicalClassification",
 			"name": "MorphologicalClassification",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_MorphologicalMultiScaleDecomposition",
 			"name": "MorphologicalMultiScaleDecomposition",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_MorphologicalProfilesAnalysis",
 			"name": "MorphologicalProfilesAnalysis",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_Mosaic",
 			"name": "Mosaic",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_MultiImageSamplingRate",
 			"name": "MultiImageSamplingRate",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_MultiResolutionPyramid",
 			"name": "MultiResolutionPyramid",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_MultitempFilteringFilter",
+			"name": "MultitempFilteringFilter",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_MultitempFilteringOutcore",
+			"name": "MultitempFilteringOutcore",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_MultivariateAlterationDetector",
 			"name": "MultivariateAlterationDetector",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ObjectsRadiometricStatistics",
 			"name": "ObjectsRadiometricStatistics",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ObtainUTMZoneFromGeoPoint",
 			"name": "ObtainUTMZoneFromGeoPoint",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_OGRLayerClassifier",
 			"name": "OGRLayerClassifier",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_OpticalCalibration",
 			"name": "OpticalCalibration",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_OrthoRectification",
 			"name": "OrthoRectification",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_OSMDownloader",
 			"name": "OSMDownloader",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_Pansharpening",
 			"name": "Pansharpening",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_PantexTextureExtraction",
+			"name": "PantexTextureExtraction",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_PixelValue",
 			"name": "PixelValue",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_PolygonClassStatistics",
 			"name": "PolygonClassStatistics",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_PredictGMMApp",
-			"name": "PredictGMMApp",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_PredictRegression",
-			"name": "PredictRegression",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_Quicklook",
 			"name": "Quicklook",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_RadiometricIndices",
 			"name": "RadiometricIndices",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_Rasterization",
 			"name": "Rasterization",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_ReadImageInfo",
 			"name": "ReadImageInfo",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_RefineSensorModel",
 			"name": "RefineSensorModel",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_Rescale",
 			"name": "Rescale",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_ResetMargin",
+			"name": "ResetMargin",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_RigidTransformResample",
 			"name": "RigidTransformResample",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
-			"path": "otbcli_SampleAugmentation",
-			"name": "SampleAugmentation",
-			"memoryRequirements": 2048
+			"path": "otbcli_SARAddBandInterferogram",
+			"name": "SARAddBandInterferogram",
+			"memoryRequirements": 4096
 		},
 		{
-			"path": "otbcli_SampleExtraction",
-			"name": "SampleExtraction",
-			"memoryRequirements": 2048
+			"path": "otbcli_SARAltAmbig",
+			"name": "SARAltAmbig",
+			"memoryRequirements": 4096
 		},
 		{
-			"path": "otbcli_SampleSelection",
-			"name": "SampleSelection",
-			"memoryRequirements": 2048
+			"path": "otbcli_SARAmplitudeEstimation",
+			"name": "SARAmplitudeEstimation",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARBurstExtraction",
+			"name": "SARBurstExtraction",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_SARCalibration",
 			"name": "SARCalibration",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARCartesianMeanEstimation",
+			"name": "SARCartesianMeanEstimation",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARCoRegistration",
+			"name": "SARCoRegistration",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARCompensatedComplex",
+			"name": "SARCompensatedComplex",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARConcatenateBursts",
+			"name": "SARConcatenateBursts",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARCorrectionGrid",
+			"name": "SARCorrectionGrid",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARCorrelationGrid",
+			"name": "SARCorrelationGrid",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARCorrelationRough",
+			"name": "SARCorrelationRough",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARDEMGrid",
+			"name": "SARDEMGrid",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARDEMProjection",
+			"name": "SARDEMProjection",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARDEMToAmplitude",
+			"name": "SARDEMToAmplitude",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_SARDeburst",
 			"name": "SARDeburst",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_SARDecompositions",
 			"name": "SARDecompositions",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARDeramp",
+			"name": "SARDeramp",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARDoppler0",
+			"name": "SARDoppler0",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARESD",
+			"name": "SARESD",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARFineDeformationGrid",
+			"name": "SARFineDeformationGrid",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARFineMetadata",
+			"name": "SARFineMetadata",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARGridOffset",
+			"name": "SARGridOffset",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARGridStatistics",
+			"name": "SARGridStatistics",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARInterferogram",
+			"name": "SARInterferogram",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARMetadataCorrection",
+			"name": "SARMetadataCorrection",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARMultiLook",
+			"name": "SARMultiLook",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SAROrthoInterferogram",
+			"name": "SAROrthoInterferogram",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARPhaseFiltering",
+			"name": "SARPhaseFiltering",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_SARPolarMatrixConvert",
 			"name": "SARPolarMatrixConvert",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_SARPolarSynth",
 			"name": "SARPolarSynth",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARRobustInterferogram",
+			"name": "SARRobustInterferogram",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SARTopographicPhase",
+			"name": "SARTopographicPhase",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SampleAugmentation",
+			"name": "SampleAugmentation",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SampleExtraction",
+			"name": "SampleExtraction",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SampleSelection",
+			"name": "SampleSelection",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_Segmentation",
 			"name": "Segmentation",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_SFSTextureExtraction",
 			"name": "SFSTextureExtraction",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_Smoothing",
 			"name": "Smoothing",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_SOMClassification",
 			"name": "SOMClassification",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_SpectralAngleClassification",
+			"name": "SpectralAngleClassification",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_SplitImage",
 			"name": "SplitImage",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_StereoFramework",
 			"name": "StereoFramework",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_StereoRectificationGridGenerator",
 			"name": "StereoRectificationGridGenerator",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_Superimpose",
 			"name": "Superimpose",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_Synthetize",
+			"name": "Synthetize",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_TileFusion",
 			"name": "TileFusion",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
-			"path": "otbcli_TrainGMMApp",
-			"name": "TrainGMMApp",
-			"memoryRequirements": 2048
-		},
-		{
-			"path": "otbcli_TrainGMMSelectionApp",
-			"name": "TrainGMMSelectionApp",
-			"memoryRequirements": 2048
+			"path": "otbcli_TrainDimensionalityReduction",
+			"name": "TrainDimensionalityReduction",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_TrainImagesClassifier",
 			"name": "TrainImagesClassifier",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_TrainImagesRegression",
+			"name": "TrainImagesRegression",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_TrainRegression",
 			"name": "TrainRegression",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_TrainVectorClassifier",
 			"name": "TrainVectorClassifier",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_TrainVectorRegression",
+			"name": "TrainVectorRegression",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_VectorClassifier",
 			"name": "VectorClassifier",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
-			"path": "otbcli_VectorDataDSValidation",
-			"name": "VectorDataDSValidation",
-			"memoryRequirements": 2048
+			"path": "otbcli_VectorDimensionalityReduction",
+			"name": "VectorDimensionalityReduction",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_VectorDataExtractROI",
 			"name": "VectorDataExtractROI",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_VectorDataReprojection",
 			"name": "VectorDataReprojection",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_VectorDataSetField",
 			"name": "VectorDataSetField",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_VectorDataTransform",
 			"name": "VectorDataTransform",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "otbcli_VectorRegression",
+			"name": "VectorRegression",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "otbcli_VertexComponentAnalysis",
 			"name": "VertexComponentAnalysis",
-			"memoryRequirements": 2048
+			"memoryRequirements": 4096
 		},
 		{
-			"path": "gdal_translate.exe",
-			"name": "GDALTranslate",
-			"memoryRequirements": 2048
+			"path": "otbcli_ZonalStatistics",
+			"name": "ZonalStatistics",
+			"memoryRequirements": 4096
 		}
 	]
 }

@@ -1,35 +1,8 @@
 package ro.cs.tao.otb;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.MessageSourceResolvable;
-import org.springframework.context.NoSuchMessageException;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
-import ro.cs.tao.component.ProcessingComponent;
-import ro.cs.tao.persistence.data.jsonutil.JacksonUtil;
-import ro.cs.tao.services.bridge.spring.SpringContextBridge;
-import ro.cs.tao.services.bridge.spring.SpringContextBridgedServices;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 public class OtbOptimizerTest {
     public static void main(String[] args) throws Exception {
-        ApplicationContext context = new ApplicationContext() {
+        /*ApplicationContext context = new ApplicationContext() {
             @Override
             public String getId() {
                 return null;
@@ -83,6 +56,16 @@ public class OtbOptimizerTest {
             @Override
             public String[] getBeanDefinitionNames() {
                 return new String[0];
+            }
+
+            @Override
+            public <T> ObjectProvider<T> getBeanProvider(Class<T> aClass, boolean b) {
+                return null;
+            }
+
+            @Override
+            public <T> ObjectProvider<T> getBeanProvider(ResolvableType resolvableType, boolean b) {
+                return null;
             }
 
             @Override
@@ -285,6 +268,6 @@ public class OtbOptimizerTest {
             }
 
         }
-        System.exit(0);
+        System.exit(0);*/
     }
 }

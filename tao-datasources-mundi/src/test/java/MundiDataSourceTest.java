@@ -36,7 +36,6 @@
  *
  */
 
-import ro.cs.tao.ProgressListener;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.param.CommonParameterNames;
@@ -48,11 +47,10 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
+import ro.cs.tao.utils.executors.monitoring.DownloadProgressListener;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -64,22 +62,18 @@ import java.util.logging.Logger;
  */
 public class MundiDataSourceTest {
 
-    private static final QueryParameter<Date> begin;
-    private static final QueryParameter<Date> end;
+    private static final QueryParameter<LocalDateTime> begin;
+    private static final QueryParameter<LocalDateTime> end;
     private static final QueryParameter<Polygon2D> aoi;
     private static final int pageSize;
     private static final int maxResults;
     private static final String rowTemplate;
 
     static {
-        begin = new QueryParameter<>(Date.class, CommonParameterNames.START_DATE);
-        begin.setValue(Date.from(LocalDateTime.of(2018, 9, 1, 0, 0, 0, 0)
-                                         .atZone(ZoneId.systemDefault())
-                                         .toInstant()));
-        end = new QueryParameter<>(Date.class, CommonParameterNames.END_DATE);
-        end.setValue(Date.from(LocalDateTime.of(2018, 9, 30, 0, 0, 0, 0)
-                                       .atZone(ZoneId.systemDefault())
-                                       .toInstant()));
+        begin = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.START_DATE);
+        begin.setValue(LocalDateTime.of(2018, 9, 1, 0, 0, 0, 0));
+        end = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.END_DATE);
+        end.setValue(LocalDateTime.of(2018, 9, 30, 0, 0, 0, 0));
         Polygon2D footprint = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684,24.83885442747927 43.8379609098684," +
                                                         "24.83885442747927 44.795645304033826,22.8042573604346 44.795645304033826," +
                                                         "22.8042573604346 43.8379609098684))");
@@ -91,38 +85,12 @@ public class MundiDataSourceTest {
     }
 
     public static void main(String[] args) {
-        //supportedSensorsTest();
-        //authenticate();
-        //Sentinel2_Count_Test();
+        Sentinel2_Count_Test();
         Sentinel2_Test();
-        //Sentinel1_Count_Test();
-        //Sentinel1_Test();
-        //Landsat8_Count_Test();
-        //Landsat8_Test();
-    }
-
-    public static void authenticate() {
-        try {
-            MundiDataSource dataSource = new MundiDataSource();
-            dataSource.setCredentials("user@email.com", "password");
-            dataSource.authenticate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void supportedSensorsTest() {
-        try {
-            Logger logger = LogManager.getLogManager().getLogger("");
-            for (Handler handler : logger.getHandlers()) {
-                handler.setLevel(Level.FINEST);
-            }
-            //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
-            DataSource<?, ?> dataSource = new MundiDataSource();
-            System.out.println(String.join("\n", dataSource.getSupportedSensors()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Sentinel1_Count_Test();
+        Sentinel1_Test();
+        Landsat8_Count_Test();
+        Landsat8_Test();
     }
 
     public static void Sentinel2_Count_Test() {
@@ -168,7 +136,7 @@ public class MundiDataSourceTest {
             });
             DownloadStrategy<?> downloadStrategy = (DownloadStrategy<?>) dataSource.getProductFetchStrategy("Sentinel2");
             downloadStrategy.setFetchMode(FetchMode.OVERWRITE);
-            downloadStrategy.setProgressListener(new ProgressListener() {});
+            downloadStrategy.setProgressListener(new DownloadProgressListener() {});
             Path path = downloadStrategy.fetch(results.get(0));
         } catch (Exception e) {
             e.printStackTrace();
@@ -204,7 +172,7 @@ public class MundiDataSourceTest {
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel1DataSource.class.getName());
             DataSource<?, ?> dataSource = new MundiDataSource();
-            dataSource.setCredentials("kraftek@gmail.com", "Cei7pitici.");
+            dataSource.setCredentials("", "");
             DataQuery query = dataSource.createQuery("Sentinel1");
             query.addParameter(begin);
             query.addParameter(end);
@@ -217,7 +185,7 @@ public class MundiDataSourceTest {
             });
             DownloadStrategy<?> downloadStrategy = (DownloadStrategy<?>) dataSource.getProductFetchStrategy("Sentinel1");
             downloadStrategy.setFetchMode(FetchMode.OVERWRITE);
-            downloadStrategy.setProgressListener(new ProgressListener() {});
+            downloadStrategy.setProgressListener(new DownloadProgressListener() {});
             Path path = downloadStrategy.fetch(results.get(0));
         } catch (Exception e) {
             e.printStackTrace();

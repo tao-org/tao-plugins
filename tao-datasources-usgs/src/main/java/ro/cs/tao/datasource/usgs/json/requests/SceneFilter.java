@@ -3,21 +3,12 @@ package ro.cs.tao.datasource.usgs.json.requests;
 import ro.cs.tao.datasource.usgs.json.types.AcquisitionFilter;
 
 public class SceneFilter {
-    private String datasetName;
     private SpatialFilter spatialFilter;
     private AcquisitionFilter acquisitionFilter;
     private CloudCoverFilter cloudCoverFilter;
     private TemporalFilter ingestFilter;
-    private int[] seasonalFilter;
     private SearchFilter metadataFilter;
-
-    public String getDatasetName() {
-        return datasetName;
-    }
-
-    public void setDatasetName(String datasetName) {
-        this.datasetName = datasetName;
-    }
+    private int[] seasonalFilter;
 
     public SpatialFilter getSpatialFilter() {
         return spatialFilter;
@@ -65,5 +56,13 @@ public class SceneFilter {
 
     public void setMetadataFilter(SearchFilter metadataFilter) {
         this.metadataFilter = metadataFilter;
+    }
+
+    private void addFilter(SearchFilter filter) {
+        if (this.metadataFilter == null) {
+            this.metadataFilter = new SearchFilterAnd();
+        }
+        final SearchFilterAnd metadataFilter = (SearchFilterAnd) this.metadataFilter;
+        metadataFilter.addChildFilter(filter);
     }
 }

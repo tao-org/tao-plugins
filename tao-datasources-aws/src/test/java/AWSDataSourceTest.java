@@ -12,8 +12,6 @@ import ro.cs.tao.spi.ServiceRegistryManager;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -27,8 +25,8 @@ public class AWSDataSourceTest {
 
     public static void main(String[] args) {
 //        test_ping();
-        //Sentinel2_Test();
-        Landsat8_Test();
+        Sentinel2_Test();
+//        Landsat8_Test();
     }
 
     public static void test_ping() {
@@ -37,7 +35,6 @@ public class AWSDataSourceTest {
             handler.setLevel(Level.INFO);
         }
         ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
-        //DataSource dataSource = DataSourceManager.getInstance().createInstance("Landsat8", "THEIA");
         DataSource dataSource = serviceRegistry.getService(AWSDataSource.class);
         dataSource.setCredentials("accessKeyId", "secretAccessKey");
         if (dataSource.ping()) {
@@ -60,13 +57,9 @@ public class AWSDataSourceTest {
 
             DataQuery query = dataSource.createQuery(sensors[0]);
             //query.addParameter("platformName", "S2");
-            QueryParameter<Date> begin = query.createParameter("startDate", Date.class);
-            begin.setMinValue(Date.from(LocalDateTime.of(2019, 8, 1, 0, 0, 0, 0)
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()));
-            begin.setMaxValue(Date.from(LocalDateTime.of(2019, 10, 17, 0, 0, 0, 0)
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()));
+            QueryParameter<LocalDateTime> begin = query.createParameter("startDate", LocalDateTime.class);
+            begin.setMinValue(LocalDateTime.of(2019, 8, 1, 0, 0, 0, 0));
+            begin.setMaxValue(LocalDateTime.of(2019, 10, 17, 0, 0, 0, 0));
             query.addParameter(begin);
             Polygon2D aoi = Polygon2D.fromWKT("POLYGON((22.8042573604346 43.8379609098684," +
                     "24.83885442747927 43.8379609098684," +
@@ -117,10 +110,8 @@ public class AWSDataSourceTest {
             String[] sensors = dataSource.getSupportedSensors();
             DataQuery query = dataSource.createQuery(sensors[1]);
             //query.addParameter("platformName", "Landsat8");
-            QueryParameter<Date> begin = query.createParameter("startDate", Date.class);
-            begin.setValue(Date.from(LocalDateTime.now().minusDays(60)
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()));
+            QueryParameter<LocalDateTime> begin = query.createParameter("startDate", LocalDateTime.class);
+            begin.setValue(LocalDateTime.now().minusDays(60));
             query.addParameter(begin);
             Polygon2D aoi = new Polygon2D();
             aoi.append(-9.9866909768, 23.4186029838);

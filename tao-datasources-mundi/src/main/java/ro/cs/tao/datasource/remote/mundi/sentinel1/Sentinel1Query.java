@@ -6,13 +6,13 @@ import ro.cs.tao.datasource.remote.mundi.BaseDataQuery;
 import ro.cs.tao.datasource.remote.mundi.MundiDataSource;
 import ro.cs.tao.datasource.remote.mundi.parsers.Sentinel1ResponseHandler;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Sentinel1Query extends BaseDataQuery {
 
     static {
         ConverterFactory factory = new ConverterFactory();
-        factory.register(SimpleDateParameterConverter.class, Date.class);
+        factory.register(SimpleDateParameterConverter.class, LocalDateTime.class);
         converterFactory.put(Sentinel1Query.class, factory);
     }
 

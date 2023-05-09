@@ -42,7 +42,7 @@
       {
         "id": "nirFactor",
         "type": "REGULAR",
-        "dataType": "java.lang.Float",
+        "dataType": "float",
         "defaultValue": 1.0,
         "description": "The value of the NIR source band is multiplied by this value",
         "label": "PnirFactor",
@@ -51,7 +51,7 @@
       {
         "id": "nirSourceBand",
         "type": "REGULAR",
-        "dataType": "java.lang.String",
+        "dataType": "string",
         "defaultValue": null,
         "description": "The near-infrared band for the NDVI computation. If not provided, the operator will try to find the best fitting band",
         "label": "PnirSourceBand",
@@ -60,7 +60,7 @@
       {
         "id": "redFactor",
         "type": "REGULAR",
-        "dataType": "java.lang.Float",
+        "dataType": "float",
         "defaultValue": 1.0,
         "description": "The value of the red source band is multiplied by this value",
         "label": "PredFactor",
@@ -69,7 +69,7 @@
       {
         "id": "redSourceBand",
         "type": "REGULAR",
-        "dataType": "java.lang.String",
+        "dataType": "string",
         "defaultValue": null,
         "description": "The red band for the NDVI computation. If not provided, the operator will try to find the best fitting band",
         "label": "PredSourceBand",
@@ -121,7 +121,7 @@
       {
         "id": "referenceBand",
         "type": "REGULAR",
-        "dataType": "java.lang.String",
+        "dataType": "string",
         "defaultValue": null,
         "description": "The name of the reference band",
         "label": "PreferenceBand",
@@ -130,7 +130,7 @@
       {
         "id": "targetWidth",
         "type": "REGULAR",
-        "dataType": "java.lang.Integer",
+        "dataType": "int",
         "defaultValue": null,
         "description": "The width that all bands of the target product shall have",
         "label": "PtargetWidth",
@@ -139,7 +139,7 @@
       {
         "id": "targetHeight",
         "type": "REGULAR",
-        "dataType": "java.lang.Integer",
+        "dataType": "int",
         "defaultValue": null,
         "description": "The height that all bands of the target product shall have",
         "label": "PtargetHeight",
@@ -148,7 +148,7 @@
       {
         "id": "targetResolution",
         "type": "REGULAR",
-        "dataType": "java.lang.Integer",
+        "dataType": "int",
         "defaultValue": null,
         "description": "The resolution that all bands of the target product shall have",
         "label": "PtargetResolution",
@@ -157,7 +157,7 @@
       {
         "id": "upsampling",
         "type": "REGULAR",
-        "dataType": "java.lang.String",
+        "dataType": "string",
         "defaultValue": "Nearest",
         "description": "The method used for interpolation (upsampling to a finer resolution)",
         "label": "Pupsampling",
@@ -171,7 +171,7 @@
       {
         "id": "downsampling",
         "type": "REGULAR",
-        "dataType": "java.lang.String",
+        "dataType": "string",
         "defaultValue": "First",
         "description": "The method used for aggregation (downsampling to a coarser resolution)",
         "label": "Pdownsampling",
@@ -187,7 +187,7 @@
       {
         "id": "flagDownsampling",
         "type": "REGULAR",
-        "dataType": "java.lang.String",
+        "dataType": "string",
         "defaultValue": "First",
         "description": "The method used for aggregation (downsampling to a coarser resolution) of flags",
         "label": "PflagDownsampling",
@@ -203,7 +203,7 @@
       {
         "id": "resampleOnPyramidLevels",
         "type": "REGULAR",
-        "dataType": "java.lang.Boolean",
+        "dataType": "bool",
         "defaultValue": true,
         "description": "This setting will increase performance when viewing the image, but accurate resamplings are only retrieved when zooming in on a pixel",
         "label": "PresampleOnPyramidLevels",

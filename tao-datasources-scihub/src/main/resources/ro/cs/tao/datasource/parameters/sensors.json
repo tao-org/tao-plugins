@@ -1,0 +1,24 @@
+{
+  "Sentinel1": {
+    "mission": "Sentinel1",
+    "sensorType": "RADAR",
+    "description": "The Open Access Hub provides complete, free and open access to Sentinel-1, Sentinel-2, Sentinel-3 and Sentinel-5P user products. The Sentinel-1 acquisitions zones with the related mode and polarisation are defined on a cyclic (12 days) basis in the observation scenarios.",
+    "temporalCoverage": "every 6 days (from 2014)",
+    "spatialCoverage": "Global"
+  },
+  "Sentinel2": {
+    "mission": "Sentinel2",
+    "sensorType": "OPTICAL",
+    "description": "The Open Access Hub provides complete, free and open access to Sentinel-1, Sentinel-2, Sentinel-3 and Sentinel-5P user products. The Sentinel-2 data offer for the Open Access Hub will consist of Level-1C and Level-2A user products.",
+    "temporalCoverage": "every 5 days (from 2015)",
+    "spatialCoverage": "Global"
+  },
+  "Sentinel3": {
+    "mission": "Sentinel3",
+    "sensorType": "OPTICAL",
+    "description": "The Open Access Hub provides complete, free and open access to Sentinel-1, Sentinel-2, Sentinel-3 and Sentinel-5P user products. The Sentinel-3 data offer for the Open Access Hub will consist of Level-1 and Level-2 Land user products for the OLCI, SLSTR and SRAL instruments.",
+    "temporalCoverage": "daily (from 2016)",
+    "spatialCoverage": "Global"
+  }
+}
+

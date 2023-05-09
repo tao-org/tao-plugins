@@ -7,13 +7,14 @@ import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.component.template.BasicTemplate;
 import ro.cs.tao.component.template.Template;
 import ro.cs.tao.component.template.TemplateType;
-import ro.cs.tao.persistence.PersistenceManager;
+import ro.cs.tao.persistence.ContainerProvider;
 import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -22,22 +23,24 @@ import java.util.UUID;
  * @author Alexandru Pirlea
  */
 public class OtbOptimizer extends BaseRuntimeOptimizer {
-    private static final PersistenceManager persistenceManager;
+    private static final ContainerProvider containerProvider;
 
     static {
-        persistenceManager = SpringContextBridge.services().getService(PersistenceManager.class);
+        containerProvider = SpringContextBridge.services().getService(ContainerProvider.class);
     }
 
     @Override
     public boolean isIntendedFor(String containerId) {
-        return containerId != null && persistenceManager.getContainerById(containerId).getName().toLowerCase().contains("otb");
+        return containerId != null && containerProvider.get(containerId).getName().toLowerCase().contains("otb");
     }
 
     @Override
-    protected ProcessingComponent createAggregatedComponent(ProcessingComponent... sources) throws AggregationException {
+    protected ProcessingComponent createAggregatedComponent(List<ProcessingComponent> sources,
+                                                            Map<String, Map<String, String>> values) throws AggregationException {
+        final ProcessingComponent first = sources.get(0);
         ProcessingComponent component = new ProcessingComponent();
 
-        final String newId = "otb-aggregated-component-" + UUID.randomUUID().toString();
+        final String newId = "otb-aggregated-component-" + UUID.randomUUID();
 
         component.setId(newId);
         component.setLabel(newId);
@@ -46,10 +49,10 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
         component.setAuthors(SystemPrincipal.instance().getName());
         component.setCopyright("(C)" + LocalDate.now().getYear());
         component.setFileLocation("python");
-        component.setWorkingDirectory(sources[0].getWorkingDirectory());
+        component.setWorkingDirectory(first.getWorkingDirectory());
 
         Template template = new BasicTemplate();
-        template.setName(newId + " template");
+        template.setName(newId + "_template");
         template.setTemplateType(TemplateType.VELOCITY);
 
         component.setTemplate(template);
@@ -58,15 +61,15 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
         component.setNodeAffinity("Any");
         component.setMultiThread(true);
         component.setActive(true);
-        component.setContainerId(sources[0].getContainerId());
+        component.setContainerId(first.getContainerId());
 
-        sources[0].getSources().forEach((s) -> {
+        first.getSources().forEach((s) -> {
             SourceDescriptor source = s.clone();
             source.setParentId(component.getId());
             component.addSource(source);
         });
 
-        sources[sources.length - 1].getTargets().forEach((t) -> {
+        sources.get(sources.size() - 1).getTargets().forEach((t) -> {
             TargetDescriptor target = t.clone();
             target.setParentId(component.getId());
             component.addTarget(target);

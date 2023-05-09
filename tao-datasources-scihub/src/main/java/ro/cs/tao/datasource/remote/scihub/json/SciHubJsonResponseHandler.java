@@ -15,7 +15,6 @@
  */
 package ro.cs.tao.datasource.remote.scihub.json;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.remote.scihub.SciHubDataSource;
@@ -26,6 +25,7 @@ import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.serialization.DateAdapter;
+import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -48,8 +48,7 @@ public class SciHubJsonResponseHandler implements JSonResponseHandler<EOProduct>
 
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        Result[] results = mapper.readValue(content, Result[].class);
+        Result[] results = JsonMapper.instance().readValue(content, Result[].class);
         SentinelDownloadStrategy downloader = new SentinelDownloadStrategy(dataSource, "");
         return Arrays.stream(results).map(r -> {
             try {

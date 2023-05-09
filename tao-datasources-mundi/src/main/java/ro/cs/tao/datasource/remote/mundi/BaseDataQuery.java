@@ -1,7 +1,6 @@
 package ro.cs.tao.datasource.remote.mundi;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -21,11 +20,13 @@ import ro.cs.tao.datasource.remote.result.xml.XmlResponseParser;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public abstract class BaseDataQuery extends DataQuery {
@@ -47,15 +48,15 @@ public abstract class BaseDataQuery extends DataQuery {
             this.pageSize = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, DEFAULT_LIMIT);
         }
         int page = Math.max(this.pageNumber, 1);
-        final Date start;
+        final LocalDateTime start;
         if (this.parameters.containsKey(CommonParameterNames.START_DATE)) {
-            start = (Date) this.parameters.get(CommonParameterNames.START_DATE).getValue();
+            start = (LocalDateTime) this.parameters.get(CommonParameterNames.START_DATE).getValue();
         } else {
             start = null;
         }
-        final Date end;
+        final LocalDateTime end;
         if (this.parameters.containsKey(CommonParameterNames.END_DATE)) {
-            end = (Date) this.parameters.get(CommonParameterNames.END_DATE).getValue();
+            end = (LocalDateTime) this.parameters.get(CommonParameterNames.END_DATE).getValue();
         } else {
             end = null;
         }
@@ -91,8 +92,8 @@ public abstract class BaseDataQuery extends DataQuery {
                             ((XmlResponseParser) parser).setHandler(responseHandler(null));
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null && tmpResults.size() > 0) {
-                                tmpResults.removeIf(p ->  (start != null && start.after(p.getAcquisitionDate()) ||
-                                                          (end != null && end.before(p.getAcquisitionDate())) ||
+                                tmpResults.removeIf(p ->  (start != null && start.isAfter(p.getAcquisitionDate()) ||
+                                                          (end != null && end.isBefore(p.getAcquisitionDate())) ||
                                                           (this instanceof Landsat8Query && level != null && !p.getName().contains(level))));
                                 synchronized (results) {
                                     final int currentSize = results.size();
@@ -240,7 +241,7 @@ public abstract class BaseDataQuery extends DataQuery {
                         }
                         break;
                     case CommonParameterNames.START_DATE:
-                        QueryParameter<Date> casted = (QueryParameter<Date>) parameter;
+                        QueryParameter<LocalDateTime> casted = (QueryParameter<LocalDateTime>) parameter;
                         try {
                             if (casted.isInterval()) {
                                 casted.setValue(casted.getMinValue());
@@ -254,7 +255,7 @@ public abstract class BaseDataQuery extends DataQuery {
                         }
                         break;
                     case CommonParameterNames.END_DATE:
-                        casted = (QueryParameter<Date>) parameter;
+                        casted = (QueryParameter<LocalDateTime>) parameter;
                         try {
                             if (casted.isInterval()) {
                                 casted.setValue(casted.getMaxValue());
@@ -282,7 +283,7 @@ public abstract class BaseDataQuery extends DataQuery {
                                 builder.setLength(builder.length() - 1);
                             }
                             query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), builder.toString()));
-                        } else if (Date.class.equals(parameter.getType())) {
+                        } else if (LocalDateTime.class.equals(parameter.getType())) {
                             try {
                                 query.add(new BasicNameValuePair(getRemoteName(entry.getKey()), getParameterValue(parameter)));
                             } catch (ConversionException e) {

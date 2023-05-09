@@ -1,12 +1,13 @@
 [
 	{
 		"id": "gdal_translate",
-		"label": "Translate Image",
+		"label": "Transform Image",
 		"version": "2.3.2",
 		"description": "Converts raster data between different formats",
 		"authors": "Frank Warmerdam, Even Rouault, and others",
 		"copyright": "(C) 1998-2019",
 		"nodeAffinity": "Any",
+		"category": "OPTICAL",
 		"sources": [
 			{
 				"id": null,
@@ -34,14 +35,15 @@
 		"fileLocation": "gdal_translate",
 		"workingDirectory": ".",
 		"templateType": "VELOCITY",
-		"multiThread": false,
+		"multiThread": true,
+		"parallelism": 4,
 		"visibility": "SYSTEM",
 		"active": true,
 		"parameterDescriptors": [
 			{
 				"id": "ot",
 				"type": "REGULAR",
-				"dataType": "java.lang.String",
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Force the output image bands to have a specific type",
 				"label": "Output type",
@@ -50,8 +52,8 @@
 			},
 			{
 				"id": "b",
-				"type": "ARRAY",
-				"dataType": "java.lang.Integer",
+				"type": "REGULAR",
+				"dataType": "int[]",
 				"defaultValue": null,
 				"description": "Select an input band band for output. Bands are numbered from 1",
 				"label": "Band",
@@ -64,7 +66,7 @@
 			{
 				"id": "mask",
 				"type": "REGULAR",
-				"dataType": "java.lang.Integer",
+				"dataType": "int",
 				"defaultValue": null,
 				"description": "Select an input band band to create output dataset mask band. Bands are numbered from 1. band can be set to “none” to avoid copying the global mask of the input dataset if it exists",
 				"label": "Mask",
@@ -73,7 +75,7 @@
 			{
 				"id": "expand",
 				"type": "REGULAR",
-				"dataType": "java.lang.String",
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "To expose a dataset with 1 band with a color table as a dataset with 3 (RGB) or 4 (RGBA) bands. Useful for output drivers such as JPEG, JPEG2000, MrSID, ECW that don’t support color indexed datasets. The ‘gray’ value enables to expand a dataset with a color table that only contains gray levels to a gray indexed dataset",
 				"label": "Color table",
@@ -82,8 +84,8 @@
 			},
 			{
 				"id": "outsize",
-				"type": "ARRAY",
-				"dataType": "java.lang.Integer",
+				"type": "REGULAR",
+				"dataType": "int[]",
 				"defaultValue": null,
 				"description": "Set the size of the output file. Outsize is in pixels",
 				"label": "Outsize (x y)",
@@ -95,8 +97,8 @@
 			},
 			{
 				"id": "tr",
-				"type": "ARRAY",
-				"dataType": "java.lang.Integer",
+				"type": "REGULAR",
+				"dataType": "int[]",
 				"defaultValue": null,
 				"description": "Set target resolution. The values must be expressed in georeferenced units. Both must be positive values",
 				"label": "Target resolution (x y)",
@@ -109,7 +111,7 @@
 			{
 				"id": "r",
 				"type": "REGULAR",
-				"dataType": "java.lang.String",
+				"dataType": "string",
 				"defaultValue": "nearest",
 				"description": "Select a resampling algorithm",
 				"label": "Resampling",
@@ -118,8 +120,8 @@
 			},
 			{
 				"id": "scale",
-				"type": "ARRAY",
-				"dataType": "java.lang.Integer",
+				"type": "REGULAR",
+				"dataType": "int[]",
 				"defaultValue": null,
 				"description": "Rescale the input pixels values from the range src_min to src_max to the range dst_min to dst_max",
 				"label": "Rescale (src_min src_max dst_min dst_max)",
@@ -131,8 +133,8 @@
 			},
 			{
 				"id": "srcwin",
-				"type": "ARRAY",
-				"dataType": "java.lang.Integer",
+				"type": "REGULAR",
+				"dataType": "int[]",
 				"defaultValue": null,
 				"description": "Selects a subwindow from the source image for copying based on pixel/line location",
 				"label": "Subwindow (xoff yoff xsize ysize)",
@@ -144,8 +146,8 @@
 			},
 			{
 				"id": "projwin",
-				"type": "ARRAY",
-				"dataType": "java.lang.Double",
+				"type": "REGULAR",
+				"dataType": "double[]",
 				"defaultValue": null,
 				"description": "Selects a subwindow from the source image for copying, with the corners given in georeferenced coordinates",
 				"label": "Projected subwindow (ulx uly lrx lry)",
@@ -158,7 +160,7 @@
 			{
 				"id": "projwin_srs",
 				"type": "REGULAR",
-				"dataType": "java.lang.String",
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Specifies the SRS in which to interpret the coordinates given with $projwin",
 				"label": "Projected SRS",
@@ -167,7 +169,7 @@
 			{
 				"id": "a_srs",
 				"type": "REGULAR",
-				"dataType": "java.lang.String",
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Specifies the SRS in which to interpret the coordinates given with $projwin",
 				"label": "Projected SRS",
@@ -176,7 +178,7 @@
 			{
 				"id": "a_scale",
 				"type": "REGULAR",
-				"dataType": "java.lang.String",
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Set band scaling value (no modification of pixel values is done)",
 				"label": "Output scaling",
@@ -185,7 +187,7 @@
 			{
 				"id": "a_offset",
 				"type": "REGULAR",
-				"dataType": "java.lang.String",
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Set band offset value (no modification of pixel values is done)",
 				"label": "Output offset",
@@ -193,8 +195,8 @@
 			},
 			{
 				"id": "a_ullr",
-				"type": "ARRAY",
-				"dataType": "java.lang.Double",
+				"type": "REGULAR",
+				"dataType": "double[]",
 				"defaultValue": null,
 				"description": "Assign/override the georeferenced bounds of the output file. This assigns georeferenced bounds to the output file, ignoring what would have been derived from the source file. So this does not cause reprojection to the specified SRS",
 				"label": "Output bounds (ulx uly lrx lry)",
@@ -207,7 +209,7 @@
 			{
 				"id": "a_nodata",
 				"type": "REGULAR",
-				"dataType": "java.lang.String",
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "Assign a specified nodata value to output bands. It can be set to <i>none</i> to avoid setting a nodata value to the output file if one exists for the source file",
 				"label": "NoData value",
@@ -216,7 +218,7 @@
 			{
 				"id": "co",
 				"type": "REGULAR",
-				"dataType": "java.lang.String",
+				"dataType": "string",
 				"defaultValue": null,
 				"description": "One or more optional creation options that can be used to control particulars about the file created",
 				"label": "Creation options (name=value)",
@@ -224,8 +226,8 @@
 			},
 			{
 				"id": "gcp",
-				"type": "ARRAY",
-				"dataType": "java.lang.Double",
+				"type": "REGULAR",
+				"dataType": "double[]",
 				"defaultValue": null,
 				"description": "Add the indicated ground control point to the output dataset",
 				"label": "GCP (pixel line easting northing elevation)",

@@ -21,6 +21,7 @@ import org.apache.http.NameValuePair;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.fedeo.FedEODataSource;
+import ro.cs.tao.datasource.remote.fedeo.auth.FedEOAuthentication;
 import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtilities;
@@ -29,23 +30,14 @@ import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * FedEO Download strategy
@@ -94,10 +86,6 @@ public class FedEODownloadStrategy extends DownloadStrategy<Header> {
         return downloadProduct(product, connection);
     }
 
-    private String fetchSessionDataKey() {
-        return "";
-    }
-
     protected HttpURLConnection getConnectionForProduct(EOProduct product) {
         int responseStatus;
 
@@ -105,6 +93,9 @@ public class FedEODownloadStrategy extends DownloadStrategy<Header> {
         CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
         String productDownloadUrl = getProductUrl(product);
         try {
+            Properties authProperties = new Properties();
+            authProperties.setProperty(FedEOAuthentication.DOWNLOAD_URL_PROPERTY_NAME, productDownloadUrl);
+            this.dataSource.setAdditionalProperties(authProperties);
             final Header authHeader = this.dataSource.authenticate();
             if (authHeader == null) {
                 throw new IOException("Invalid credentials");
@@ -114,11 +105,15 @@ public class FedEODownloadStrategy extends DownloadStrategy<Header> {
             connection.setInstanceFollowRedirects(false);
             connection.connect();
             responseStatus = connection.getResponseCode();
-            if (responseStatus == HttpStatus.SC_OK) {
-                return connection;
-            } else {
-                throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
-                        connection.getResponseCode(), connection.getResponseMessage()));
+            switch (responseStatus){
+                case HttpStatus.SC_OK:
+                    return connection;
+                case HttpStatus.SC_ACCEPTED:
+                    throw new QueryException(String.format("The request was successful. response code: %d: The download will be ready soon. Try again later.",
+                            connection.getResponseCode()));
+                default:
+                    throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
+                            connection.getResponseCode(), connection.getResponseMessage()));
             }
         } catch (IOException e) {
             throw new QueryException(String.format("The request was not successful. Reason: %s", e.getMessage()));

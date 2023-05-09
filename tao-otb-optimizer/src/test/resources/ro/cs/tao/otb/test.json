@@ -41,7 +41,7 @@
       {
         "id": "channels_blue_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Integer",
+        "dataType": "int",
         "defaultValue": 1,
         "description": "Blue Channel",
         "label": "channels.blue",
@@ -50,7 +50,7 @@
       {
         "id": "channels_green_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Integer",
+        "dataType": "int",
         "defaultValue": 1,
         "description": "Green Channel",
         "label": "channels.green",
@@ -59,7 +59,7 @@
       {
         "id": "channels_mir_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Integer",
+        "dataType": "int",
         "defaultValue": 1,
         "description": "Mir Channel",
         "label": "channels.mir",
@@ -68,7 +68,7 @@
       {
         "id": "channels_nir_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Integer",
+        "dataType": "int",
         "defaultValue": 1,
         "description": "NIR Channel",
         "label": "channels.nir",
@@ -77,7 +77,7 @@
       {
         "id": "channels_red_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Integer",
+        "dataType": "int",
         "defaultValue": 1,
         "description": "Red Channel",
         "label": "channels.red",
@@ -86,7 +86,7 @@
       {
         "id": "list_str",
         "type": "REGULAR",
-        "dataType": "java.lang.String",
+        "dataType": "string",
         "defaultValue": "ndvi",
         "description": "Available Radiometric Indices",
         "label": "list",
@@ -157,7 +157,7 @@
       {
         "id": "interpolator_bco_radius_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Integer",
+        "dataType": "int",
         "defaultValue": 2,
         "description": "Radius for bicubic interpolation",
         "label": "interpolator.bco.radius",
@@ -166,7 +166,7 @@
       {
         "id": "interpolator_str",
         "type": "REGULAR",
-        "dataType": "java.lang.String",
+        "dataType": "string",
         "defaultValue": "bco",
         "description": "Interpolation",
         "label": "interpolator",
@@ -180,7 +180,7 @@
       {
         "id": "transform_type_id_scalex_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Float",
+        "dataType": "float",
         "defaultValue": 1.0,
         "description": "X scaling",
         "label": "transform.type.id.scalex",
@@ -189,7 +189,7 @@
       {
         "id": "transform_type_id_scaley_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Float",
+        "dataType": "float",
         "defaultValue": 1.0,
         "description": "Y scaling",
         "label": "transform.type.id.scaley",
@@ -198,7 +198,7 @@
       {
         "id": "transform_type_rotation_angle_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Float",
+        "dataType": "float",
         "defaultValue": 0.0,
         "description": "Rotation angle",
         "label": "transform.type.rotation.angle",
@@ -207,7 +207,7 @@
       {
         "id": "transform_type_rotation_scalex_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Float",
+        "dataType": "float",
         "defaultValue": 1.0,
         "description": "X scaling",
         "label": "transform.type.rotation.scalex",
@@ -216,7 +216,7 @@
       {
         "id": "transform_type_rotation_scaley_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Float",
+        "dataType": "float",
         "defaultValue": 1.0,
         "description": "Y scaling",
         "label": "transform.type.rotation.scaley",
@@ -225,7 +225,7 @@
       {
         "id": "transform_type_str",
         "type": "REGULAR",
-        "dataType": "java.lang.String",
+        "dataType": "string",
         "defaultValue": "id",
         "description": "Type of transformation",
         "label": "transform.type",
@@ -239,7 +239,7 @@
       {
         "id": "transform_type_translation_scalex_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Float",
+        "dataType": "float",
         "defaultValue": 1.0,
         "description": "X scaling",
         "label": "transform.type.translation.scalex",
@@ -248,7 +248,7 @@
       {
         "id": "transform_type_translation_scaley_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Float",
+        "dataType": "float",
         "defaultValue": 1.0,
         "description": "Y scaling",
         "label": "transform.type.translation.scaley",
@@ -257,7 +257,7 @@
       {
         "id": "transform_type_translation_tx_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Float",
+        "dataType": "float",
         "defaultValue": 0.0,
         "description": "The X translation (in physical units)",
         "label": "transform.type.translation.tx",
@@ -266,7 +266,7 @@
       {
         "id": "transform_type_translation_ty_number",
         "type": "REGULAR",
-        "dataType": "java.lang.Float",
+        "dataType": "float",
         "defaultValue": 0.0,
         "description": "The Y translation (in physical units)",
         "label": "transform.type.translation.ty",

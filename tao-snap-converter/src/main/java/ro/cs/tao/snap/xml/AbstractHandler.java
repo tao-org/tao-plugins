@@ -3,21 +3,21 @@ package ro.cs.tao.snap.xml;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
-import ro.cs.tao.persistence.PersistenceManager;
+import ro.cs.tao.persistence.ProcessingComponentProvider;
 import ro.cs.tao.services.interfaces.WorkflowService;
 
 import java.util.logging.Logger;
 
 public abstract class AbstractHandler<T> extends DefaultHandler {
-    protected final PersistenceManager persistenceManager;
     protected final WorkflowService workflowService;
+    protected final ProcessingComponentProvider processingComponentProvider;
     protected final StringBuilder buffer = new StringBuilder(512);
     protected final Logger logger = Logger.getLogger(getClass().getName());
     protected T result;
 
-    public AbstractHandler(PersistenceManager persistenceManager, WorkflowService workflowService) {
+    public AbstractHandler(ProcessingComponentProvider processingComponentProvider, WorkflowService workflowService) {
         super();
-        this.persistenceManager = persistenceManager;
+        this.processingComponentProvider = processingComponentProvider;
         this.workflowService = workflowService;
     }
 

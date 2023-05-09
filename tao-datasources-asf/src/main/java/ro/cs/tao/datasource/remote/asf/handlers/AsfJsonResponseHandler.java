@@ -15,7 +15,6 @@
  */
 package ro.cs.tao.datasource.remote.asf.handlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.asf.json.AsfSearchResult;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
@@ -23,6 +22,7 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
-import static ro.cs.tao.utils.executors.ByteUnit.MEGABYTE;
+import static ro.cs.tao.utils.executors.MemoryUnit.MB;
 
 /**
  * ASF Search query JSON response handler
@@ -46,8 +46,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
 
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        AsfSearchResult[][] results = mapper.readValue(content, AsfSearchResult[][].class);
+        AsfSearchResult[][] results = JsonMapper.instance().readValue(content, AsfSearchResult[][].class);
         if(results.length > 0){
             return Arrays.stream(results[0]).map(r -> {
                 try {
@@ -68,7 +67,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     if(!"NA".equalsIgnoreCase(thumbnailUrl) && !"N/A".equalsIgnoreCase(thumbnailUrl)){
                         product.setQuicklookLocation(r.getThumbnailUrl());
                     }
-                    product.setApproximateSize(MEGABYTE.value() * (long) Double.parseDouble(r.getSizeMb()));
+                    product.setApproximateSize(MB.value() * (long) Double.parseDouble(r.getSizeMb()));
                     //productType read from sensor property
                     String sensor = r.getSensor().trim();
                     if(sensor.contains(" ")){

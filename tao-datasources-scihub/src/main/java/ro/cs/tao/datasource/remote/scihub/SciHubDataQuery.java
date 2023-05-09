@@ -16,7 +16,6 @@
 package ro.cs.tao.datasource.remote.scihub;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -41,13 +40,16 @@ import ro.cs.tao.eodata.util.ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.DateUtils;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,14 +62,14 @@ public class SciHubDataQuery extends DataQuery {
     static final Pattern S1Pattern =
             Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
 
-    private static final DateFormat dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
+    private static final DateTimeFormatter dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
 
     private final String sensorName;
 
     static {
         final ConverterFactory factory = new ConverterFactory();
         factory.register(SciHubPolygonParameterConverter.class, Polygon2D.class);
-        factory.register(DateParameterConverter.class, Date.class);
+        factory.register(DateParameterConverter.class, LocalDateTime.class);
         factory.register(DoubleParameterConverter.class, Double.class);
         converterFactory.put(SciHubDataQuery.class, factory);
     }
@@ -83,8 +85,9 @@ public class SciHubDataQuery extends DataQuery {
         Map<String, String> queries = buildQueriesParams();
         final boolean isS2 = "Sentinel-2".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
         final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
-        final boolean useApiHub = this.parameters.containsKey("useApihub") ?
-                Boolean.parseBoolean(this.parameters.get("useApihub").getValueAsString()) : this.source.useAlternateConnectionString();
+        final boolean isS3 = "Sentinel-3".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
+        final boolean useApiHub = this.parameters.containsKey("useApiHub") ?
+                Boolean.parseBoolean(this.parameters.get("useApiHub").getValueAsString()) : this.source.useAlternateConnectionString();
         StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
         for (String queryId : queries.keySet()) {
@@ -131,6 +134,9 @@ public class SciHubDataQuery extends DataQuery {
                             }
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null) {
+                                if (isS3) {
+                                    filterS3(tmpResults);
+                                }
                                 count = tmpResults.size();
                                 if (count > 0) {
                                     if (hasProcessingDate && this.parameters.containsKey(CommonParameterNames.CLOUD_COVER)) {
@@ -161,8 +167,8 @@ public class SciHubDataQuery extends DataQuery {
                                                 String dateString = productHelper.getProcessingDate();
                                                 if (dateString != null) {
                                                     try {
-                                                        result.setProcessingDate(dateFormat.parse(dateString));
-                                                    } catch (java.text.ParseException ignored) {
+                                                        result.setProcessingDate(LocalDateTime.parse(dateString, dateFormat));
+                                                    } catch (DateTimeParseException ignored) {
                                                     }
                                                 }
                                             }
@@ -183,7 +189,6 @@ public class SciHubDataQuery extends DataQuery {
                     throw new QueryException(ex);
                 }
                 i++;
-                sleep();
             } while (this.pageNumber == -1 && count > 0 && results.size() < actualLimit);
         }
         logger.info(String.format("Query {%s-%s} returned %s products", this.source.getId(), this.sensorName, results.size()));
@@ -230,7 +235,6 @@ public class SciHubDataQuery extends DataQuery {
                 } catch (IOException ex) {
                     throw new QueryException(ex);
                 }
-                sleep();
             }
         }
         return count;
@@ -248,7 +252,7 @@ public class SciHubDataQuery extends DataQuery {
         final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
         final boolean canUseTileParameter = this.parameters.containsKey(CommonParameterNames.TILE) && !isS1;
         if (this.parameters.containsKey(CommonParameterNames.TILE) && !isS1) {
-            final QueryParameter tileParameter = this.parameters.get(CommonParameterNames.TILE);
+            final QueryParameter<?> tileParameter = this.parameters.get(CommonParameterNames.TILE);
             final Object value = tileParameter.getValue();
             if (value != null) {
                 if (value.getClass().isArray()) {
@@ -382,29 +386,35 @@ public class SciHubDataQuery extends DataQuery {
                                 query.append(paramTypeName).append(":").append(value);
                             }
                             break;
+                        case "productSize":
+                            // productSize filter will be applied after results are returned
+                            query.setLength(query.length() - 5);
+                            break;
                         default:
                             if (parameter.getType().isArray()) {
-                                query.append("(");
-                                Object values = parameter.getValue();
-                                int length = Array.getLength(values);
-                                for (int i = 0; i < length; i++) {
-                                    query.append(Array.get(values, i).toString());
-                                    if (i < length - 1) {
-                                        query.append(" OR ");
+                                if (LocalDateTime.class.equals(parameter.getType().getComponentType())) {
+                                    query.append(getRemoteName(entry.getKey())).append(":[");
+                                    try {
+                                        query.append(getParameterValue(parameter));
+                                    } catch (ConversionException e) {
+                                        throw new QueryException(e.getMessage());
                                     }
+                                    query.append("]");
+                                } else {
+                                    query.append("(");
+                                    Object values = parameter.getValue();
+                                    int length = Array.getLength(values);
+                                    for (int i = 0; i < length; i++) {
+                                        query.append(Array.get(values, i).toString());
+                                        if (i < length - 1) {
+                                            query.append(" OR ");
+                                        }
+                                    }
+                                    if (length > 1) {
+                                        query = new StringBuilder(query.substring(0, query.length() - 4));
+                                    }
+                                    query.append(")");
                                 }
-                                if (length > 1) {
-                                    query = new StringBuilder(query.substring(0, query.length() - 4));
-                                }
-                                query.append(")");
-                            } else if (Date.class.equals(parameter.getType())) {
-                                query.append(getRemoteName(entry.getKey())).append(":[");
-                                try {
-                                    query.append(getParameterValue(parameter));
-                                } catch (ConversionException e) {
-                                    throw new QueryException(e.getMessage());
-                                }
-                                query.append("]");
                             } else {
                                 query.append(getRemoteName(entry.getKey())).append(":");
                                 try {
@@ -437,5 +447,16 @@ public class SciHubDataQuery extends DataQuery {
             value = null;
         }
         return value;
+    }
+
+    private void filterS3(List<EOProduct> results) {
+        if (this.parameters.containsKey("productSize")) {
+            String productSize = this.parameters.get("productSize").getValueAsString();
+            if ("STRIPE".equalsIgnoreCase(productSize)) {
+                results.removeIf(p -> !p.getName().contains("_____"));
+            } else if ("FRAME".equalsIgnoreCase(productSize)) {
+                results.removeIf(p -> p.getName().contains("_____"));
+            }
+        }
     }
 }

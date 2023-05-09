@@ -15,14 +15,14 @@
  */
 package ro.cs.tao.products.sentinels;
 
-import ro.cs.tao.eodata.util.ProductHelper;
+import ro.cs.tao.eodata.util.BaseProductHelper;
 
 import java.util.regex.Pattern;
 
 /**
  * @author Cosmin Cara
  */
-public class Sentinel1ProductHelper extends ProductHelper {
+public class Sentinel1ProductHelper extends BaseProductHelper {
 
     /**
      * Tokens:
@@ -43,7 +43,12 @@ public class Sentinel1ProductHelper extends ProductHelper {
     static final Pattern S1Pattern =
             Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
 
-    Sentinel1ProductHelper() { super(); }
+    public Sentinel1ProductHelper() { super(); }
+
+    @Override
+    public Sentinel1ProductHelper duplicate() {
+        return new Sentinel1ProductHelper(getName());
+    }
 
     public Sentinel1ProductHelper(String productName) { super(productName); }
 
