@@ -62,16 +62,15 @@ public class ASFDataSourceTest {
 
             DataQuery query = dataSource.createQuery(sensors[0]);
             QueryParameter<LocalDateTime> begin = query.createParameter("startDate", LocalDateTime.class);
-            begin.setValue(LocalDateTime.of(2019, 8, 1, 0, 0, 0, 0));
+            begin.setValue(LocalDateTime.of(2022, 4, 17, 0, 0, 0, 0));
             query.addParameter(begin);
-            Polygon2D aoi = Polygon2D.fromWKT("POLYGON((20.928955 43.213214," +
-                    "30.953979 43.213214," +
-                    "30.953979 48.886419," +
-                    "20.928955 48.886419," +
-                    "20.928955 43.213214))");
+            QueryParameter<LocalDateTime> end = query.createParameter("endDate", LocalDateTime.class);
+            begin.setValue(LocalDateTime.of(2022, 4, 18, 0, 0, 0, 0));
+            query.addParameter(end);
+            Polygon2D aoi = Polygon2D.fromWKT("POLYGON((-12.810058 27.480984, -2.333497 27.480984, -2.333497 33.797409, -12.810058 33.797409, -12.810058 27.480984))");
             query.addParameter("footprint", aoi);
             //get OCN product type because the download file is small
-            query.addParameter("productType", "OCN");
+            query.addParameter("productType", "SLC");
 
             query.setMaxResults(1);
 

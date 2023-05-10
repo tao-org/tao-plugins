@@ -23,9 +23,16 @@ import java.util.logging.Logger;
  * @author Cosmin Cara
  */
 public class PepsDataSourceTest {
+    private static String user;
+    private static String password;
 
     public static void main(String[] args) throws SerializationException {
+        init();
         Peps_Sentinel2_Test();
+    }
+
+    private static void init() {
+        // Set the user and pwd here
     }
 
     public static void Peps_Sentinel2_Test() throws SerializationException {
@@ -37,7 +44,7 @@ public class PepsDataSourceTest {
                 handler.setLevel(Level.INFO);
             }
             DataSource dataSource = serviceRegistry.getService(PepsDataSource.class);
-            dataSource.setCredentials("kraftek@c-s.ro", "cei7pitici.");
+            dataSource.setCredentials(user, password);
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[1]);

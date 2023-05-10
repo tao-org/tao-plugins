@@ -66,8 +66,8 @@ public class DASTest {
     private static final int pageSize;
     private static final int maxResults;
     private static final String rowTemplate;
-    private static final String user;
-    private static final String password;
+    private static String user;
+    private static String password;
     private static final DownloadProgressListener listener;
 
     static {
@@ -81,8 +81,8 @@ public class DASTest {
         pageSize = 50;
         maxResults = 50;
         rowTemplate = "ID=%s, NAME=%s, LOCATION=%s";
-        user = "kraftek@c-s.ro";
-        password = "Cei7samurai.";
+        //user = "";
+        //password = "";
         listener = new DownloadProgressListener() {
             @Override
             public void started(String taskName) {

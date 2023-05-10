@@ -85,7 +85,7 @@ public class DataSourceTest {
                 handler.setLevel(Level.INFO);
             }
             DataSource<?, ?> dataSource = getDatasourceRegistry().getService(TheiaDataSource.class);
-            dataSource.setCredentials("kraftek@c-s.ro", "cei7pitici.");
+            dataSource.setCredentials("", "");
             DataQuery query = dataSource.createQuery("Landsat8");
             query.addParameter("collection", "LANDSAT");
             QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);

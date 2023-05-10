@@ -25,6 +25,9 @@ import java.util.logging.Logger;
  */
 public class LSADataSourceTest {
 
+    private static String user;
+    private static String password;
+
     public static void main(String[] args) {
         final DataSource dataSource = initAndGetDatasource();
         //test_ping(dataSource);
@@ -59,7 +62,7 @@ public class LSADataSourceTest {
 
     private static List<EOProduct> test_search(DataSource dataSource, String sensor, String productType) {
         final DataSourceComponent component = new DataSourceComponent(sensor, dataSource.getId());
-        component.setUserCredentials("kraftek", "cei7pitici.");
+        component.setUserCredentials(user, password);
         final DataQuery query = component.createQuery();
         /*query.addParameter("productType", productType);
         final QueryParameter<LocalDateTime> begin = query.createParameter("startDate", LocalDateTime.class);
@@ -93,7 +96,7 @@ public class LSADataSourceTest {
 
     private static void testDownload(DataSource dataSource, String sensor, List<EOProduct> results) {
         final DataSourceComponent component = new DataSourceComponent(sensor, dataSource.getId());
-        component.setUserCredentials("kraftek", "cei7pitici.");
+        component.setUserCredentials(user, password);
         if (!results.isEmpty()) {
             component.setFetchMode(FetchMode.OVERWRITE);
             component.setProgressListener(new DownloadProgressListener() {

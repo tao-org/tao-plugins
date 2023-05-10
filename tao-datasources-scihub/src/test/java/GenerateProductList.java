@@ -58,7 +58,7 @@ public class GenerateProductList {
         final List<String> allLines = new ArrayList<>();
         try {
             final DataSource<?, ?> dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
-            dataSource.setCredentials("kraftek", "cei7samurai");
+            dataSource.setCredentials("", "");
             final DataQuery query = dataSource.createQuery("Sentinel-1".replace("-", ""));
             query.addParameter(CommonParameterNames.PLATFORM, "Sentinel-1");
             query.addParameter(CommonParameterNames.PRODUCT_TYPE, "SLC");

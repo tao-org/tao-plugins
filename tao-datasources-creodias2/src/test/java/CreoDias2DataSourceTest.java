@@ -81,8 +81,8 @@ public class CreoDias2DataSourceTest {
         pageSize = 50;
         maxResults = 50;
         rowTemplate = "ID=%s, NAME=%s, LOCATION=%s";
-        user = "kraftek@c-s.ro";
-        password = "cei7pitici.";
+        user = "";
+        password = "";
         listener = new DownloadProgressListener() {
             @Override
             public void started(String taskName) {

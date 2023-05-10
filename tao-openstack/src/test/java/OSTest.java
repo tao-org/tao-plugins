@@ -17,12 +17,11 @@ import java.util.List;
 public class OSTest {
 
     public static void main(String[] args) throws IOException {
-        String domain = "cloud_01569";
-        String user = "kraftek";
-        String password = "cei7pitici.";
-        String authenticationURL = "https://cf2.cloudferro.com:5000/v3";
-        String authenticationURL2 = "https://cf2.cloudferro.com:5000";
-        String projectId = "e31d0ad8bb8b45968ac5d0167b0b32a7";
+        String domain = "";
+        String user = "";
+        String password = "";
+        String authenticationURL = "";
+        String projectId = "";
         Path folder = Paths.get("W:\\");
         OSFactory.enableHttpLoggingFilter(true);
         final OSClient.OSClientV3 client = OSFactory.builderV3()

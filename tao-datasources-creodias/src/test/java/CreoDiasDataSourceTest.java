@@ -68,6 +68,8 @@ public class CreoDiasDataSourceTest {
     private static final int pageSize;
     private static final int maxResults;
     private static final String rowTemplate;
+    private static String user;
+    private static String password;
     private static final DownloadProgressListener listener;
 
     static {
@@ -81,6 +83,8 @@ public class CreoDiasDataSourceTest {
         pageSize = 50;
         maxResults = 50;
         rowTemplate = "ID=%s, NAME=%s, LOCATION=%s";
+        //user =
+        //password =
         listener = new DownloadProgressListener() {
             @Override
             public void started(String taskName) {
@@ -161,7 +165,7 @@ public class CreoDiasDataSourceTest {
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
             DataSource<?, ?> dataSource = new CreoDiasDataSource();
-            dataSource.setCredentials("kraftek@gmail.com", "cei7pitici@creodias.");
+            dataSource.setCredentials(user, password);
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery("Sentinel2");
@@ -199,7 +203,7 @@ public class CreoDiasDataSourceTest {
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel2DataSource.class);
             DataSource<?, ?> dataSource = new CreoDiasDataSource();
-            dataSource.setCredentials("kraftek@gmail.com", "cei7pitici@creodias.");
+            dataSource.setCredentials(user, password);
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery("Sentinel3");
@@ -259,7 +263,7 @@ public class CreoDiasDataSourceTest {
                 handler.setLevel(Level.FINEST);
             }
             DataSource<?, ?> dataSource = new CreoDiasDataSource();
-            dataSource.setCredentials("kraftek@c-s.ro", "cei7pitici.");
+            dataSource.setCredentials(user, password);
 
             DataQuery query = dataSource.createQuery("Sentinel1");
             query.addParameter(begin);

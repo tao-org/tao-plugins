@@ -38,7 +38,7 @@ public class LandsatUsgsTest {
             handler.setLevel(Level.INFO);
         }
         DataSource<?, ?> dataSource = getDatasourceRegistry().getService(USGSDataSource.class);
-        dataSource.setCredentials("kraftek", "cei7pitici.");
+        dataSource.setCredentials("", "");
 //        dataSource.setCredentials("lidia901", "USGS_Password1");
         String[] sensors = dataSource.getSupportedSensors();
 //        String sensor = "ECOSTRESS-WUE";
@@ -131,7 +131,7 @@ public class LandsatUsgsTest {
             handler.setLevel(Level.INFO);
         }
         DataSource<?, ?> dataSource = getDatasourceRegistry().getService(USGSDataSource.class);
-        dataSource.setCredentials("kraftek", "cei7pitici.");
+        dataSource.setCredentials("", "");
         String[] sensors = dataSource.getSupportedSensors();
 
         DataQuery query = dataSource.createQuery("Landsat8");
@@ -164,7 +164,7 @@ public class LandsatUsgsTest {
             handler.setLevel(Level.FINE);
         }
         DataSource<?, ?> dataSource = getDatasourceRegistry().getService(USGSDataSource.class);
-        dataSource.setCredentials("kraftek", "cei7pitici.");
+        dataSource.setCredentials("", "");
         String[] sensors = dataSource.getSupportedSensors();
 
         DataQuery query = dataSource.createQuery("Landsat8");

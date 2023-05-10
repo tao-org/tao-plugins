@@ -42,12 +42,12 @@ public class SMBTest {
         repository.setCreated(LocalDateTime.now());
         repository.setSystem(false);
         repository.setUrlPrefix("smb");
-        repository.setUserName("kraftek");
-        repository.addParameter("smb.server", "qnap.c-s.ro");
+        repository.setUserName("");
+        repository.addParameter("smb.server", "");
         repository.addParameter("smb.domain", null);
-        repository.addParameter("smb.share", "data5");
-        repository.addParameter("smb.user", "qnap");
-        repository.addParameter("smb.password", "qnap@aeic29");
+        repository.addParameter("smb.share", "");
+        repository.addParameter("smb.user", "");
+        repository.addParameter("smb.password", "");
         final SMBStorageService service = new SMBStorageService();
         service.associate(repository);
         return repository;
@@ -63,11 +63,11 @@ public class SMBTest {
         repository.setCreated(LocalDateTime.now());
         repository.setSystem(false);
         repository.setUrlPrefix("s3");
-        repository.setUserName("kraftek");
-        repository.addParameter("aws.bucket", "agriculture-vlab-data-staging/kraftek");
+        repository.setUserName("");
+        repository.addParameter("aws.bucket", "");
         repository.addParameter("aws.region", "eu-central-1");
-        repository.addParameter("aws.secret.key", "rGmXXLJ0gHo/F03uIAyfhWigkQxsPzYBSn/28sZg");
-        repository.addParameter("aws.access.key", "AKIA4D6IV3TWJTHJXAKS");
+        repository.addParameter("aws.secret.key", "");
+        repository.addParameter("aws.access.key", "");
         return repository;
     }
 
@@ -81,13 +81,13 @@ public class SMBTest {
         repository.setCreated(LocalDateTime.now());
         repository.setSystem(false);
         repository.setUrlPrefix("swift");
-        repository.setUserName("kraftek");
-        repository.addParameter("openstack.tenantId", "e31d0ad8bb8b45968ac5d0167b0b32a7");
-        repository.addParameter("openstack.domain", "cloud_01569");
-        repository.addParameter("openstack.user", "kraftek");
-        repository.addParameter("openstack.password", "cei7pitici.");
-        repository.addParameter("openstack.bucket", "FRA_2019_L2A");
-        repository.addParameter("openstack.auth.url", "https://cf2.cloudferro.com:5000/v3");
+        repository.setUserName("");
+        repository.addParameter("openstack.tenantId", "");
+        repository.addParameter("openstack.domain", "");
+        repository.addParameter("openstack.user", "");
+        repository.addParameter("openstack.password", "");
+        repository.addParameter("openstack.bucket", "");
+        repository.addParameter("openstack.auth.url", "3");
         return repository;
     }
 
@@ -101,8 +101,8 @@ public class SMBTest {
         repository.setCreated(LocalDateTime.now());
         repository.setSystem(false);
         repository.setUrlPrefix("swift");
-        repository.setUserName("kraftek");
-        repository.addParameter("root", "/mnt/tao/working_dir/kraftek");
+        repository.setUserName("");
+        repository.addParameter("root", "/mnt/tao/working_dir/");
         return repository;
     }
 }

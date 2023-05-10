@@ -64,6 +64,8 @@ import java.util.logging.Logger;
  * @author Cosmin Cara
  */
 public class DataSourceTest {
+    private static String user;
+    private static String password;
 
     public static void main(String[] args) throws JsonProcessingException {
         setup();
@@ -87,7 +89,7 @@ public class DataSourceTest {
                 handler.setLevel(Level.INFO);
             }
             DataSource dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
-            dataSource.setCredentials("kraftek", "cei7samurai");
+            dataSource.setCredentials(user, password);
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[1]);
@@ -120,7 +122,7 @@ public class DataSourceTest {
                 handler.setLevel(Level.INFO);
             }
             DataSource<?, ?> dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
-            dataSource.setCredentials("kraftek", "cei7samurai");
+            dataSource.setCredentials(user, password);
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[1]);
@@ -169,7 +171,7 @@ public class DataSourceTest {
                 handler.setLevel(Level.INFO);
             }
             DataSource<?, ?> dataSource = getDatasourceRegistry().getService(SciHubDataSource.class);
-            dataSource.setCredentials("kraftek", "cei7samurai");
+            dataSource.setCredentials(user, password);
             //dataSource.useAlternateConnectionString(true);
             String[] sensors = dataSource.getSupportedSensors();
 
@@ -221,7 +223,7 @@ public class DataSourceTest {
             }
             DataSource dataSource = getDatasourceRegistry().getService(SciHubDataSource.class.getName());
             //new SciHubDataSource();
-            dataSource.setCredentials("kraftek", "cei7samurai");
+            dataSource.setCredentials(user, password);
             String[] sensors = dataSource.getSupportedSensors();
 
             DataQuery query = dataSource.createQuery(sensors[0]);
