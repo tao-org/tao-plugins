@@ -45,10 +45,10 @@ public class FTPTest {
         repository.setCreated(LocalDateTime.now());
         repository.setSystem(false);
         repository.setUrlPrefix("ftp");
-        repository.setUserName("kraftek");
-        repository.addParameter("ftp.server", "ftp.ceda.ac.uk");
-        repository.addParameter("ftp.user", "kraftek");
-        repository.addParameter("ftp.password", "eB:R2(K)R'CG");
+        repository.setUserName("");
+        repository.addParameter("ftp.server", "");
+        repository.addParameter("ftp.user", "");
+        repository.addParameter("ftp.password", "");
         return repository;
     }
 }

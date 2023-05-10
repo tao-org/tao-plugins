@@ -172,7 +172,7 @@ public class MundiDataSourceTest {
             }
             //DataSource dataSource = getDatasourceRegistry().getService(CreoDIASSentinel1DataSource.class.getName());
             DataSource<?, ?> dataSource = new MundiDataSource();
-            dataSource.setCredentials("kraftek@gmail.com", "Cei7pitici.");
+            dataSource.setCredentials("", "");
             DataQuery query = dataSource.createQuery("Sentinel1");
             query.addParameter(begin);
             query.addParameter(end);
