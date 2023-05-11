@@ -21,22 +21,23 @@
 
     <parent>
         <artifactId>tao-plugins</artifactId>
-        <groupId>ro.cs.tao</groupId>
+        <groupId>ro.c-s.tao</groupId>
         <version>1.4.3</version>
     </parent>
 
     <artifactId>tao-docker-console</artifactId>
     <name>TAO Docker Shell in a Box Plugin</name>
+    <description>Module for allowing SSH terminals from the web browser</description>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>ro.cs.tao</groupId>
+            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-data-model</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>ro.cs.tao</groupId>
+            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-topology</artifactId>
             <version>${project.version}</version>
         </dependency>
