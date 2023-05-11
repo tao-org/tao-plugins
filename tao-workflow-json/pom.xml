@@ -4,23 +4,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>ro.cs.tao</groupId>
+        <groupId>ro.c-s.tao</groupId>
         <artifactId>tao-plugins</artifactId>
         <version>1.4.3</version>
     </parent>
 
     <artifactId>tao-workflow-json</artifactId>
     <name>TAO Workflow JSON Converter</name>
+    <description>Module for conversion of workflow representation in JSON or Bash scripts</description>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>ro.cs.tao</groupId>
+            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>ro.cs.tao</groupId>
+            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-data-model</artifactId>
             <version>${project.version}</version>
         </dependency>
