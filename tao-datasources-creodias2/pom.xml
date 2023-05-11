@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>ro.cs.tao</groupId>
+        <groupId>ro.c-s.tao</groupId>
         <artifactId>tao-plugins</artifactId>
         <version>1.4.3</version>
     </parent>
@@ -13,30 +13,31 @@
     <packaging>jar</packaging>
 
     <name>CreoDIAS New Datasource Plugin</name>
+    <description>Module for searching and downloading EO products from CreoDIAS using OData API</description>
 
     <dependencies>
         <dependency>
-            <groupId>ro.cs.tao</groupId>
+            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-data-model</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>ro.cs.tao</groupId>
+            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-data-sources</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>ro.cs.tao</groupId>
+            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-service-registry</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>ro.cs.tao</groupId>
+            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-products-sentinels</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>ro.cs.tao</groupId>
+            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-products-landsat</artifactId>
             <version>${project.version}</version>
         </dependency>
