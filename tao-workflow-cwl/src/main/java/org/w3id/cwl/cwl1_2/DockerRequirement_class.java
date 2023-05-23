@@ -22,10 +22,6 @@ public enum DockerRequirement_class {
   private static String[] symbols = new String[] {"DockerRequirement"};
   private String docVal;
 
-  public String getDocVal() {
-    return docVal;
-  }
-
   private DockerRequirement_class(final String docVal) {
     this.docVal = docVal;
   }
@@ -37,5 +33,10 @@ public enum DockerRequirement_class {
       }
     }
     throw new ValidationException(String.format("Expected one of %s", DockerRequirement_class.symbols, docVal));
+  }
+
+  @Override
+  public String toString() {
+    return this.docVal;
   }
 }

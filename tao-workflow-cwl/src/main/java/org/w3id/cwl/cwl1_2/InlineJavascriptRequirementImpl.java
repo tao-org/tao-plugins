@@ -20,6 +20,9 @@ import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
 import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
 import org.w3id.cwl.cwl1_2.utils.ValidationException;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#InlineJavascriptRequirement</I><BR> <BLOCKQUOTE>
  Indicates that the workflow platform must support inline Javascript expressions.
@@ -57,6 +60,18 @@ public class InlineJavascriptRequirementImpl extends SaveableImpl implements Inl
 
   public java.util.Optional<java.util.List<String>> getExpressionLib() {
     return this.expressionLib;
+  }
+
+  public void setClass_(InlineJavascriptRequirement_class class_) {
+    this.class_ = class_;
+  }
+
+  public void setExpressionLib(Optional<List<String>> expressionLib) {
+    this.expressionLib = expressionLib;
+  }
+
+  public InlineJavascriptRequirementImpl() {
+    super();
   }
 
   /**

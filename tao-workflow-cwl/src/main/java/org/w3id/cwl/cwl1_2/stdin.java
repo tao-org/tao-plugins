@@ -34,4 +34,9 @@ public enum stdin {
     }
     throw new ValidationException(String.format("Expected one of %s", stdin.symbols, docVal));
   }
+
+  @Override
+  public String toString() {
+    return this.docVal;
+  }
 }

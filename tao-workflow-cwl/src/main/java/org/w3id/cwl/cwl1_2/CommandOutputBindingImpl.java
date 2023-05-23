@@ -297,14 +297,14 @@ public class CommandOutputBindingImpl extends SaveableImpl implements CommandOut
       if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
         try {
           if (f.get(this) != null) {
-            if (f.get(this) instanceof Optional) {
+            if (f.get(this) instanceof Optional<?>) {
               outputBinding.put(f.getName(), ((Optional<?>) f.get(this)).get());
             } else {
               outputBinding.put(f.getName(), f.get(this).toString());
             }
           }
         } catch (Exception e){
-          System.out.println(e.getStackTrace());
+          System.out.println(e.getMessage() + ": " + e.getCause() );
         }
       }
     }
