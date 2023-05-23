@@ -30,4 +30,6 @@ public interface MultipleInputFeatureRequirement extends ProcessRequirement, Sav
    */
 
   MultipleInputFeatureRequirement_class getClass_();
+
+  void setClass_(MultipleInputFeatureRequirement_class class_);
 }

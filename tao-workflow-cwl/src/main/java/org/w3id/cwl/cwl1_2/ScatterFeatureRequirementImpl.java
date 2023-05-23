@@ -43,6 +43,14 @@ public class ScatterFeatureRequirementImpl extends SaveableImpl implements Scatt
     return this.class_;
   }
 
+  public void setClass_(ScatterFeatureRequirement_class class_) {
+    this.class_ = class_;
+  }
+
+  public ScatterFeatureRequirementImpl() {
+    super();
+  }
+
   /**
    * Used by {@link org.w3id.cwl.cwl1_2.utils.RootLoader} to construct instances of ScatterFeatureRequirementImpl.
    *

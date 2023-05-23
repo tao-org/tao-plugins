@@ -364,27 +364,4 @@ public class DockerRequirementImpl extends SaveableImpl implements DockerRequire
     this.dockerImageId = (java.util.Optional<String>) dockerImageId;
     this.dockerOutputDirectory = (java.util.Optional<String>) dockerOutputDirectory;
   }
-
-  @Override
-  public Map<Object, Object> save() {
-    Map<Object, Object> resourceRequirements = new LinkedHashMap<>();
-    for (Field f : this.getClass().getDeclaredFields()) {
-      if (f.getName().equalsIgnoreCase("class_")) {
-        resourceRequirements.put("- class", this.class_.getDocVal());
-      } else if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
-        try {
-          if ( f.get(this) != null) {
-            if (f.get(this) instanceof Optional) {
-              resourceRequirements.put("  " + f.getName(), ((Optional<?>) f.get(this)).get());
-            } else {
-              resourceRequirements.put("  " + f.getName(), f.get(this).toString());
-            }
-          }
-        } catch (Exception e){
-          System.out.println(e.getStackTrace());
-        }
-      }
-    }
-    return resourceRequirements;
-  }
 }

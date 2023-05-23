@@ -214,4 +214,10 @@ public class OutputArraySchemaImpl extends SaveableImpl implements OutputArraySc
     this.doc = (Object) doc;
     this.name = (java.util.Optional<String>) name;
   }
+
+  @Override
+  public String toString() {
+    return (this.items != null ? this.items.toString() : "") +
+            ((this.type != null && this.type.toString().equalsIgnoreCase("array") ? "[]" : ""));
+  }
 }
