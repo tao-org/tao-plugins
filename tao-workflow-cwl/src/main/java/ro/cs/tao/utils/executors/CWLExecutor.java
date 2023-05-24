@@ -44,6 +44,8 @@ public class CWLExecutor extends Executor<Object>
     private final WorkflowProvider workflowProvider;
     private final WorkflowNodeProvider workflowNodeProvider;
 
+
+    private final static String YAML_FILE_NAME = "inputs.yaml";
     private final static String MAIN_WF_INPUT_ID_PREFIX = "wf_in_";
     private final static String MAIN_WF_OUTPUT_ID_PREFIX = "wf_out_";
     private final static String MAIN_WF_OUTPUT_SOURCE_PREFIX = "workflow_";
@@ -83,14 +85,13 @@ public class CWLExecutor extends Executor<Object>
             ExecutionTask task = this.taskProvider.get(taskId);
             try {
                 final Path path = Paths.get(unit.getScriptTargetPath());
-                //final Path pathMainWorkflow = Paths.get(path.getParent().toString() + File.separator + "workflow.cwl");
                 long workflowId = task.getJob().getWorkflowId();
                 WorkflowDescriptor workflowDesc = this.workflowProvider.get(workflowId);
 
                 boolean createFile = false;
                 if (!Files.exists(path)) {
                     createFile = true;
-                }/* else {
+                } else {
                     WorkflowNodeDescriptor node = this.workflowNodeProvider.get(task.getWorkflowNodeId());
                     List<WorkflowNodeDescriptor> orderedNodes = orderWfDescNodes(workflowDesc);
                     int nodePosition = orderedNodes.indexOf(node);
@@ -99,7 +100,7 @@ public class CWLExecutor extends Executor<Object>
                     } else {
                         createFile = true;
                     }
-                }*/
+                }
                 Map<Object, Object> cwlMainObject = new LinkedHashMap<>();
                 cwlMainObject.put("cwlVersion", CWLVersion.V1_2.toString());
                 if (createFile) {
@@ -131,7 +132,6 @@ public class CWLExecutor extends Executor<Object>
                     String cwlWorkflowId = path.getFileName().toString().substring(0,path.getFileName().toString().indexOf("."));
                     final Workflow cwlWorkflow = new WorkflowImpl();
                     cwlWorkflow.setClass_(Workflow_class.WORKFLOW);
-                    //cwlWorkflow.setCwlVersion(Optional.of(CWLVersion.V1_2));
                     cwlWorkflow.setId(Optional.of(cwlWorkflowId));
 
                     // add requirements to second Workflow file
@@ -270,7 +270,6 @@ public class CWLExecutor extends Executor<Object>
                     createStepCWL(cwlGraphList, path, workflowDesc, task, mainWorkflow, cwlWorkflow);
 
                     cwlMainObject.put("$graph", cwlGraphList);
-                    //writeToFile(pathMainWorkflow, mainWorkflow.save());
                 } else {
                     System.out.println("Update file");
                     String cwlWorkflowId = path.getFileName().toString().substring(0,path.getFileName().toString().indexOf("."));
@@ -395,8 +394,7 @@ public class CWLExecutor extends Executor<Object>
         Map<Object, Object> tempList = new LinkedHashMap<>();
 
         String yamlPathParent = path.getParent().toString();
-        String yamlFileName = "inputs.yaml";
-        final Path yamlFile =  Paths.get(yamlPathParent + File.separator + yamlFileName);
+        final Path yamlFile =  Paths.get(yamlPathParent + File.separator + YAML_FILE_NAME);
 
         MyYAMLFactory factory =  new MyYAMLFactory();
         factory.enable(MyYAMLGenerator.Feature.MINIMIZE_QUOTES);
@@ -703,27 +701,6 @@ public class CWLExecutor extends Executor<Object>
      * @param object
      */
     private void writeToFile(Path path, Map<Object, Object> object) {
-        /*StringBuilder objectString = new StringBuilder();
-        final StringBuilder builder = new StringBuilder();
-        for (Map.Entry<?, ?> obj : object.entrySet()) {
-            //check if string builder is not empty and last characters represents a new line separator
-            if (objectString.length() > 0 &&
-                    objectString.lastIndexOf(System.lineSeparator()) + System.lineSeparator().length() != objectString.length()) {
-                objectString.append(System.lineSeparator());
-            }
-            if (obj.getKey().equals("class") || obj.getKey().equals("id") || (obj.getKey().equals("run") && obj.getValue().toString().startsWith("#"))) {
-                objectString.append(obj.getKey()).append(": \"").append(obj.getValue()).append("\"");
-            } else {
-                treatObject(objectString, obj, "");
-            }
-        }
-        builder.append(objectString);
-        try {
-            Files.write(path, builder.toString().getBytes(), StandardOpenOption.CREATE,
-                    StandardOpenOption.TRUNCATE_EXISTING);
-        } catch (IOException e) {
-            logger.severe(ExceptionUtils.getStackTrace(logger, e));
-        }*/
         Map<Object, Object> tempList = new LinkedHashMap<>();
         MyYAMLFactory factory =  new MyYAMLFactory();
         factory.enable(MyYAMLGenerator.Feature.MINIMIZE_QUOTES);
@@ -746,54 +723,6 @@ public class CWLExecutor extends Executor<Object>
             }
         } catch (IOException e) {
             logger.severe(ExceptionUtils.getStackTrace(logger, e));
-        }
-    }
-
-    /**
-     * Transform object based on type
-     * @param objectString
-     * @param object
-     * @param ident
-     */
-    private void treatObject(StringBuilder objectString, Map.Entry<?, ?> object, String ident) {
-        if (object.getValue() instanceof LinkedHashMap<?, ?> || object.getValue() instanceof Map<?, ?>) {
-            objectString.append(ident).append(object.getKey()).append(":").append(System.lineSeparator());
-            for (Map.Entry<?, ?>  elem: ((Map<?, ?>)object.getValue()).entrySet()) {
-                //check if last characters represents a new line separator
-                if (objectString.lastIndexOf(System.lineSeparator()) + System.lineSeparator().length() != objectString.length()) {
-                    objectString.append(System.lineSeparator());
-                }
-                String currentIdent = ident + " ";
-                if (elem.getValue() instanceof LinkedHashMap<?, ?> || elem.getValue() instanceof Map<?, ?>) {
-                    treatObject(objectString, elem, currentIdent);
-                } else if (elem.getValue() instanceof  ArrayList<?>) {
-                    objectString.append(currentIdent).append(elem.getKey()).append(": ").append(elem.getValue().toString().replaceAll("\"", ""));
-                } else {
-                    objectString.append(currentIdent).append(elem.getKey()).append(": ").append(elem.getValue());
-                }
-            }
-        } else if (object.getValue() instanceof  ArrayList<?>) {
-            objectString.append(ident).append(object.getKey()).append(": ").append(object.getValue().toString().replaceAll("\"", ""));
-        } else if (object.getValue() instanceof LinkedList<?>) {
-            objectString.append(ident).append(object.getKey()).append(":").append(System.lineSeparator());
-            for (Object elem: (LinkedList)object.getValue()) {
-                String currentIdent = ident + " ";
-                if (elem instanceof LinkedHashMap<?, ?> || elem instanceof Map<?, ?>) {
-                   for (Map.Entry<?, ?>  el: ((Map<?, ?>) elem).entrySet()) {
-                       treatObject(objectString, el, currentIdent);
-                   }
-                } else if (elem instanceof  ArrayList<?>) {
-                    objectString.append(currentIdent).append(elem.toString().replaceAll("\"", ""));
-                } else {
-                    objectString.append(elem);
-                }
-            }
-        } else {
-            //check if last characters represents a new line separator
-            if (objectString.lastIndexOf(System.lineSeparator()) + System.lineSeparator().length() != objectString.length()) {
-                objectString.append(System.lineSeparator());
-            }
-            objectString.append(ident).append(object.getKey()).append(": ").append(object.getValue());
         }
     }
 
