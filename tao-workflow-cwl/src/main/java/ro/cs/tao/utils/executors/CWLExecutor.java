@@ -169,7 +169,6 @@ public class CWLExecutor extends Executor<Object>
                     for (WorkflowNodeDescriptor wf  : roots) {
                         TaoComponent wfComponent = TaskUtilities.getComponentFor(wf);
                         for (SourceDescriptor source : wfComponent.getSources()) {
-                            Map<Object, Object> yamlFileObj = new HashMap<>();
                             if (DataSourceComponent.QUERY_PARAMETER.equals(source.getName())) {
                                 String inputType = getInOutType(source.getDataDescriptor().getFormatType(), source.getDataDescriptor().getLocation());
                                 String mainWfInputType = inputType + "[]";
@@ -193,15 +192,18 @@ public class CWLExecutor extends Executor<Object>
                                 mainWorkflowStep.getIn().add(stepIn);
 
                                 // add information to YAML file
-                                yamlFileObj.put("class", inputType);
                                 List<Object> inputYamlFileList = new LinkedList<>();
                                 if (source.getDataDescriptor().getLocation().contains(",")) {
                                     String[] strings = source.getDataDescriptor().getLocation().split(",");
                                     for (String sourceStr : strings) {
+                                        Map<Object, Object> yamlFileObj = new HashMap<>();
+                                        yamlFileObj.put("class", inputType);
                                         yamlFileObj.put("path", FileUtilities.toUnixPath(sourceStr));
                                         inputYamlFileList.add(yamlFileObj);
                                     }
                                 } else {
+                                    Map<Object, Object> yamlFileObj = new HashMap<>();
+                                    yamlFileObj.put("class", inputType);
                                     yamlFileObj.put("path", FileUtilities.toUnixPath(source.getDataDescriptor().getLocation()));
                                     inputYamlFileList.add(yamlFileObj);
                                 }
@@ -434,7 +436,7 @@ public class CWLExecutor extends Executor<Object>
         CommandLineTool commandLineTool = new CommandLineToolImpl();
 
         commandLineTool.setClass_(CommandLineTool_class.COMMANDLINETOOL);
-        commandLineTool.setCwlVersion(Optional.of(CWLVersion.V1_2));
+        //commandLineTool.setCwlVersion(Optional.of(CWLVersion.V1_2));
         commandLineTool.setId(Optional.of(stepCWLFileId));
 
         List<String> bashArguments;
