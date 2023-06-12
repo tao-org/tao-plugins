@@ -34,4 +34,9 @@ public enum LoadListingRequirement_class {
     }
     throw new ValidationException(String.format("Expected one of %s", LoadListingRequirement_class.symbols, docVal));
   }
+
+  @Override
+  public String toString() {
+    return this.docVal;
+  }
 }

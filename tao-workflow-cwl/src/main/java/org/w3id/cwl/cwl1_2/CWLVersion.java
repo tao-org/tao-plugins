@@ -53,4 +53,9 @@ public enum CWLVersion {
     }
     throw new ValidationException(String.format("Expected one of %s", CWLVersion.symbols, docVal));
   }
+
+  @Override
+  public String toString() {
+    return this.docVal;
+  }
 }

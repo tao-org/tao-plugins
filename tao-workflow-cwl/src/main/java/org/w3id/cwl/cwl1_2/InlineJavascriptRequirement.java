@@ -31,6 +31,8 @@ public interface InlineJavascriptRequirement extends ProcessRequirement, Saveabl
    */
 
   InlineJavascriptRequirement_class getClass_();
+
+  void setClass_(InlineJavascriptRequirement_class class_);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#InlineJavascriptRequirement/expressionLib</I><BR>
    * <BLOCKQUOTE>
@@ -41,4 +43,5 @@ public interface InlineJavascriptRequirement extends ProcessRequirement, Saveabl
    */
 
   java.util.Optional<java.util.List<String>> getExpressionLib();
+  void setExpressionLib(java.util.Optional<java.util.List<String>> expressionLib);
 }

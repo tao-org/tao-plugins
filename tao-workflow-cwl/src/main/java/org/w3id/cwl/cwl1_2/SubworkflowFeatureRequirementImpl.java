@@ -43,6 +43,14 @@ public class SubworkflowFeatureRequirementImpl extends SaveableImpl implements S
     return this.class_;
   }
 
+  public void setClass_(SubworkflowFeatureRequirement_class class_) {
+    this.class_ = class_;
+  }
+
+  public SubworkflowFeatureRequirementImpl() {
+    super();
+  }
+
   /**
    * Used by {@link org.w3id.cwl.cwl1_2.utils.RootLoader} to construct instances of SubworkflowFeatureRequirementImpl.
    *

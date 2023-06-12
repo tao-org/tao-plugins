@@ -22,10 +22,6 @@ public enum Workflow_class {
   private static String[] symbols = new String[] {"Workflow"};
   private String docVal;
 
-  public String getDocVal() {
-    return docVal;
-  }
-
   private Workflow_class(final String docVal) {
     this.docVal = docVal;
   }
@@ -37,5 +33,10 @@ public enum Workflow_class {
       }
     }
     throw new ValidationException(String.format("Expected one of %s", Workflow_class.symbols, docVal));
+  }
+
+  @Override
+  public String toString() {
+    return this.docVal;
   }
 }
