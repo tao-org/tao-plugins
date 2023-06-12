@@ -36,4 +36,9 @@ public enum ScatterMethod {
     }
     throw new ValidationException(String.format("Expected one of %s", ScatterMethod.symbols, docVal));
   }
+
+  @Override
+  public String toString() {
+    return this.docVal;
+  }
 }

@@ -42,4 +42,9 @@ public enum CWLType {
     }
     throw new ValidationException(String.format("Expected one of %s", CWLType.symbols, docVal));
   }
+
+  @Override
+  public String toString() {
+    return this.docVal;
+  }
 }

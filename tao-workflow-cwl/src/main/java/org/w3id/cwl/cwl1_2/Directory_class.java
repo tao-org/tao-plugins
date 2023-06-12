@@ -26,10 +26,6 @@ public enum Directory_class {
     this.docVal = docVal;
   }
 
-  public String getDocVal() {
-    return docVal;
-  }
-
   public static Directory_class fromDocumentVal(final String docVal) {
     for(final Directory_class val : Directory_class.values()) {
       if(val.docVal.equals(docVal)) {
@@ -37,5 +33,10 @@ public enum Directory_class {
       }
     }
     throw new ValidationException(String.format("Expected one of %s", Directory_class.symbols, docVal));
+  }
+
+  @Override
+  public String toString() {
+    return this.docVal;
   }
 }
