@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class Results {
+    @JsonProperty("@odata.nextLink")
+    private String nextLink;
     @JsonProperty("@odata.context")
     private String context;
     @JsonProperty("@odata.count")
@@ -12,8 +14,16 @@ public class Results {
     @JsonProperty("value")
     private List<Result> results;
 
+    public String getNextLink() {
+        return nextLink;
+    }
+
     public String getContext() {
         return context;
+    }
+
+    public void setNextLink(String nextLink) {
+        this.nextLink = nextLink;
     }
 
     public void setContext(String context) {

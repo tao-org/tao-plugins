@@ -199,7 +199,7 @@ public class DASQuery extends DataQuery {
             throw new RuntimeException(e);
         }
         //final int size = queries.size();
-        final String countUrl = this.source.getProperty("scihub.search.count.url");
+        final String countUrl = this.source.getProperty("search.url");
         if (countUrl != null) {
             for (Map.Entry<String, String> query : queries.entrySet()) {
                 List<NameValuePair> params = new ArrayList<>();
