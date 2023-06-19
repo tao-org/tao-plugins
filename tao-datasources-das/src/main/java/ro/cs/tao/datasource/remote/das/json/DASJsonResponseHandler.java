@@ -70,9 +70,13 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     }
                     product.setLocation(dataSource.getConnectionString() + "(" + r.getId() + ")/$value");
                     product.setAcquisitionDate(r.getContentDate().getStart());
-                    product.addAttribute("relativeOrbit", getRelativeOrbit(product.getName()));
+                    final List<Attribute> attributes = r.getAttributes();
+                    final Attribute orbitNumber = attributes.stream().filter(a -> a.getName().equals("relativeOrbitNumber")).findFirst().orElse(null);
+                    product.addAttribute("relativeOrbit", orbitNumber != null
+                                                          ? String.valueOf(orbitNumber.getValue())
+                                                          : getRelativeOrbit(product.getName()));
                     product.addAttribute("s3path", r.getS3Path());
-                    r.getAttributes().forEach(a -> product.addAttribute(a.getName(), String.valueOf(a.getValue())));
+                    attributes.forEach(a -> product.addAttribute(a.getName(), String.valueOf(a.getValue())));
                     retVal.add(product);
                 } catch (Exception ex) {
                     ex.printStackTrace();

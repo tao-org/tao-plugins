@@ -2,7 +2,7 @@
   "Sentinel1": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-1",
@@ -114,7 +114,7 @@
   "Sentinel2": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-2",
@@ -206,7 +206,7 @@
   "Sentinel3": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-3",
@@ -394,13 +394,23 @@
   "Sentinel5P": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-5P",
       "required": false,
       "valueSet": null,
       "order": 0
+    },
+    "instrumentShortName": {
+      "name": "instrumentShortName",
+      "remoteName": "instrumentShortName",
+      "label": "Instrument",
+      "type": "string",
+      "defaultValue": "TROPOMI",
+      "required": false,
+      "valueSet": null,
+      "order": 1
     },
     "productType": {
       "name": "productType",
@@ -424,12 +434,12 @@
     },
     "timeliness": {
       "name": "timeliness",
-      "remoteName": "timeliness",
+      "remoteName": "processingMode",
       "label": "Timeliness",
       "type": "string",
-      "defaultValue": "Near real Time",
+      "defaultValue": "NRTI",
       "required": false,
-      "valueSet": ["Near real Time", "Offline", "Reprocessing"],
+      "valueSet": ["NRTI", "OFFL", "RPRO"],
       "order": 6
     },
     "relativeOrbit": {

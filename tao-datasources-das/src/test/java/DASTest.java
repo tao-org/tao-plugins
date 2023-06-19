@@ -66,8 +66,8 @@ public class DASTest {
     private static final int pageSize;
     private static final int maxResults;
     private static final String rowTemplate;
-    private static String user;
-    private static String password;
+    private static String user = "kraftek@c-s.ro";
+    private static String password = "cei7pitici.";
     private static final DownloadProgressListener listener;
 
     static {
