@@ -117,6 +117,11 @@
         </dependency>
         <dependency>
             <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-docker-jupyter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-docker-otb</artifactId>
             <version>${project.version}</version>
         </dependency>
