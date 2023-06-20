@@ -1,6 +1,6 @@
 package ro.cs.tao.docker.console;
 
-import ro.cs.tao.topology.docker.BaseStandaloneInstaller;
+import ro.cs.tao.topology.docker.BaseSingletonInstaller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Cosmin Cara
  */
-public class ShellInABoxContainer extends BaseStandaloneInstaller {
+public class ShellInABoxContainer extends BaseSingletonInstaller {
 
     public ShellInABoxContainer() {
         super();
