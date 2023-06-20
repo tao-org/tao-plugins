@@ -69,6 +69,7 @@
 		<!--<module>tao-workflow-cwl</module>-->
         <module>tao-drmaa-kubernetes</module>
         <module>tao-eo-search</module>
+        <module>tao-docker-jupyter</module>
         <module>tao-plugins-kit</module>
     </modules>
 
