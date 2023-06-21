@@ -143,9 +143,9 @@ public class CWLExecutor extends Executor<Object>
                      */
                     workflowReqList.add(scatterFeatureReq);
 
-                    InlineJavascriptRequirement inlineJSReq = new InlineJavascriptRequirementImpl();
+                    /*InlineJavascriptRequirement inlineJSReq = new InlineJavascriptRequirementImpl();
                     inlineJSReq.setClass_(InlineJavascriptRequirement_class.INLINEJAVASCRIPTREQUIREMENT);
-                    workflowReqList.add(inlineJSReq);
+                    workflowReqList.add(inlineJSReq);*/
 
                     MultipleInputFeatureRequirement multipleInputFeatureReq = new MultipleInputFeatureRequirementImpl();
                     multipleInputFeatureReq.setClass_(MultipleInputFeatureRequirement_class.MULTIPLEINPUTFEATUREREQUIREMENT);
@@ -449,13 +449,13 @@ public class CWLExecutor extends Executor<Object>
 
         List<Object> baseCommandArray = new ArrayList();
         // first bash argument is always added
+        baseCommandArray.add("/bin/bash");
         baseCommandArray.add(bashArguments.get(0).replaceAll("\"", ""));
+        int bashArgsLastNonParamPosition = ListIterate.detectIndex(bashArguments, b -> b.toString().startsWith("-") && !b.toString().equals("-c"));
         if (bashArguments.get(1).startsWith(" \\")) {
             baseCommandArray.add(bashArguments.get(1).replaceAll("\"","").replaceAll("\\\\","/"));
         } else if (bashArguments.get(1).equals("-c")) {
-            baseCommandArray.add("/bin/bash");
-            int lastPosition = ListIterate.detectIndex(bashArguments, b -> b.toString().startsWith("-") && !b.toString().equals("-c"));
-            for(int i = 1 ; i < lastPosition ; i++) {
+            for(int i = 1 ; i < bashArgsLastNonParamPosition ; i++) {
                 baseCommandArray.add(bashArguments.get(i));
             }
         }
@@ -687,6 +687,33 @@ public class CWLExecutor extends Executor<Object>
                 argumentOut.setPrefix(Optional.of("-" + target.getName()));
             }
             argumentsList.add(argumentOut);
+        }
+        
+        for (int i = bashArgsLastNonParamPosition; i < bashArguments.size(); i++) {
+            CommandLineBinding argumentOut = new CommandLineBindingImpl();
+            if (bashArguments.get(i).startsWith("-")) {
+                String argOutPrefix;
+                String argOutValue;
+                if (bashArguments.get(i).matches("-\\w+=(\\w|\\/|\\.)+")) {
+                    String[] commandList = bashArguments.get(i).split("=");
+                    argOutPrefix = commandList[0] + "=";
+                    argumentOut.setPosition(argumentPosition);
+                    argOutValue = commandList[1];
+                } else {
+                    argOutPrefix = bashArguments.get(i);
+                    argOutValue = bashArguments.get(i + 1);
+                    i++;
+                }
+                boolean alreadyAdded = argumentsList.stream().anyMatch(a -> ((CommandLineBinding)a).getPrefix().get().equals(argOutPrefix)) ||
+                                        inputs.stream().anyMatch(in -> ((CommandInputParameter)in).getInputBinding().get().getPrefix().get().equals(argOutPrefix));
+                if (!alreadyAdded) {
+                    argumentPosition++;
+                    argumentOut.setPosition(argumentPosition);
+                    argumentOut.setPrefix(Optional.of(argOutPrefix));
+                    argumentOut.setValueFrom(argOutValue);
+                    argumentsList.add(argumentOut);
+                }
+            }
         }
         commandLineTool.setArguments(Optional.of(argumentsList));
         commandLineTool.setOutputs(outputs);
