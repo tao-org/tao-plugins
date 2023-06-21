@@ -3,6 +3,6 @@
 	"name": "jupyterlite",
 	"description": "Jupyter Lite",
 	"tag": "latest",
-	"applicationPath": null,
+	"applicationPath": "/home/",
 	"applications": null
 }
