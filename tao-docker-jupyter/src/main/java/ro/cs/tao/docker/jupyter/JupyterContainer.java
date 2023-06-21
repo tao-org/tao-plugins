@@ -36,7 +36,7 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
 
     @Override
     protected String getContainerDescriptorFileName() {
-        return "jupyter.json";
+        return "jupyter_container.json";
     }
 
     @Override
