@@ -3,6 +3,6 @@
 	"name": "jupyterlite",
 	"description": "Jupyter Lite",
 	"tag": "latest",
-	"applicationPath": "/home/",
+	"applicationPath": "home/jovyan/notebooks",
 	"applications": null
 }
