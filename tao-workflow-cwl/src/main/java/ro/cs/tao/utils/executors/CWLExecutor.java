@@ -143,10 +143,6 @@ public class CWLExecutor extends Executor<Object>
                      */
                     workflowReqList.add(scatterFeatureReq);
 
-                    /*InlineJavascriptRequirement inlineJSReq = new InlineJavascriptRequirementImpl();
-                    inlineJSReq.setClass_(InlineJavascriptRequirement_class.INLINEJAVASCRIPTREQUIREMENT);
-                    workflowReqList.add(inlineJSReq);*/
-
                     MultipleInputFeatureRequirement multipleInputFeatureReq = new MultipleInputFeatureRequirementImpl();
                     multipleInputFeatureReq.setClass_(MultipleInputFeatureRequirement_class.MULTIPLEINPUTFEATUREREQUIREMENT);
                     workflowReqList.add(multipleInputFeatureReq);
@@ -431,7 +427,6 @@ public class CWLExecutor extends Executor<Object>
      */
     private void createStepCWL(List<Object> cwlGraphList, Path path, WorkflowDescriptor workflowDesc, ExecutionTask task, Workflow mainExistingWorkflow, Workflow existingWorkflow) {
         String stepCWLFileId = this.unit.getMetadata().get("name").toString().toLowerCase() + "_" + task.getWorkflowNodeId();
-        Path stepPath = Paths.get(path.getParent().toString() + File.separator + stepCWLFileId + ".cwl");
         TaoComponent component = TaskUtilities.getComponentFor(task);
         CommandLineTool commandLineTool = new CommandLineToolImpl();
 
@@ -471,7 +466,8 @@ public class CWLExecutor extends Executor<Object>
             DockerRequirement requirement = new DockerRequirementImpl();
             requirement.setClass_(DockerRequirement_class.DOCKERREQUIREMENT);
             if (ExecutionConfiguration.getDockerRegistry().equals(this.unit.getContainerUnit().getContainerRegistry())) {
-                requirement.setDockerImageId(Optional.of(this.unit.getContainerUnit().getContainerRegistry() + "/" + this.unit.getContainerUnit().getContainerName()));
+                //requirement.setDockerImageId(Optional.of(this.unit.getContainerUnit().getContainerRegistry() + "/" + this.unit.getContainerUnit().getContainerName()));
+                requirement.setDockerImageId(Optional.of(this.unit.getContainerUnit().getContainerName()));
             } else {
                 requirement.setDockerPull(Optional.of(this.unit.getContainerUnit().getContainerRegistry() + "/" + this.unit.getContainerUnit().getContainerName()));
             }
@@ -666,7 +662,10 @@ public class CWLExecutor extends Executor<Object>
 
             output.setType(getInOutType(target.getDataDescriptor().getFormatType(), target.getDataDescriptor().getLocation()));
             CommandOutputBinding outputBinding = new CommandOutputBindingImpl();
-            outputBinding.setGlob(target.getDataDescriptor().getLocation());
+            String targetLocation = target.getDataDescriptor().getLocation();
+            String targetExtension = targetLocation.substring(targetLocation.lastIndexOf("."));
+            //outputBinding.setGlob(target.getDataDescriptor().getLocation());
+            outputBinding.setGlob("*" + targetExtension);
             output.setOutputBinding(Optional.of(outputBinding));
 
             outputs.add(output);
@@ -688,7 +687,7 @@ public class CWLExecutor extends Executor<Object>
             }
             argumentsList.add(argumentOut);
         }
-        
+
         for (int i = bashArgsLastNonParamPosition; i < bashArguments.size(); i++) {
             CommandLineBinding argumentOut = new CommandLineBindingImpl();
             if (bashArguments.get(i).startsWith("-")) {
