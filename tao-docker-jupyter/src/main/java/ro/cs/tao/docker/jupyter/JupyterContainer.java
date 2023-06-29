@@ -3,6 +3,7 @@ package ro.cs.tao.docker.jupyter;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.docker.DockerVolumeMap;
 import ro.cs.tao.docker.ExecutionConfiguration;
+import ro.cs.tao.topology.TopologyManager;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
 import ro.cs.tao.topology.docker.DockerManager;
 import ro.cs.tao.topology.docker.SingletonContainer;
@@ -59,7 +60,8 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
     @Override
     protected String[] additionalResources() {
         return new String[] {
-                "pyKernel0requirements.txt"
+                "pyKernel0requirements.txt", "jupyter_notebook_config.py", "jupyterlite.key", "jupyterlite.pem",
+                "custom.js"
         };
     }
 
@@ -81,6 +83,8 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
         final Properties properties = getAdditionalProperties();
         final List<String> args = new ArrayList<>();
         args.add("--init");
+        args.add("-e");
+        args.add("JUPYTER_HOST_NAME=" + TopologyManager.getInstance().getMasterNodeInfo().getId());
         Tuple<Integer, Integer> portMap = null;
         if (properties.size() > 0) {
             if (properties.containsKey("host.port") && properties.containsKey("container.port")) {
