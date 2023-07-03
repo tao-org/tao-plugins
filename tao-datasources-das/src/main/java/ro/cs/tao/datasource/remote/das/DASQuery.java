@@ -302,7 +302,12 @@ public class DASQuery extends DataQuery {
                     if (idx > 0) {
                         query.append(" AND ");
                     }
+                    String value;
                     switch (parameter.getName()) {
+                        case CommonParameterNames.PLATFORM:
+                            query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.PLATFORM),
+                                                             parameter, Condition.EQ));
+                            break;
                         case CommonParameterNames.START_DATE:
                             query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.START_DATE),
                                                              parameter, Condition.GT));
@@ -328,7 +333,7 @@ public class DASQuery extends DataQuery {
                             }
                             break;
                         case CommonParameterNames.TILE:
-                            String value = parameter.getValueAsString();
+                            value = parameter.getValueAsString();
                             if (value.startsWith("[") && value.endsWith("]")) {
                                 String[] values = value.substring(1, value.length() - 1).split(",");
                                 query.append("(");
