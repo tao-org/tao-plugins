@@ -60,7 +60,7 @@ public class DASDataSource extends URLDataSource<DASQuery, Token> {
     }
 
     @Override
-    public String defaultId() { return "CreoDIAS New"; }
+    public String defaultId() { return "Copernicus DataSpace"; }
 
     @Override
     public int getMaximumAllowedTransfers() { return 2; }
