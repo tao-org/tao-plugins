@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>tao-plugins</artifactId>
+        <groupId>ro.c-s.tao</groupId>
+        <version>1.4.3.2</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>tao-datasources-earthdata</artifactId>
+    <packaging>jar</packaging>
+
+    <name>EarthData SMAP Datasource Plugin</name>
+    <description>Module for searching and downloading EO products from the NASA EarthData</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-data-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-data-sources</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-service-registry</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven.dependency.plugin.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
