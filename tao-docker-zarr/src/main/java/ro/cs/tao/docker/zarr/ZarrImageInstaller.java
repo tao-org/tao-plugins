@@ -4,7 +4,7 @@ import ro.cs.tao.topology.docker.BaseImageInstaller;
 
 public class ZarrImageInstaller extends BaseImageInstaller {
     @Override
-    protected String getContainerName() {
+    public String getContainerName() {
         return "zarr-1-0-0";
     }
 

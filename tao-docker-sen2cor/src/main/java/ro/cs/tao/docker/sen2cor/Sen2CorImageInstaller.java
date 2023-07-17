@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public class Sen2CorImageInstaller extends BaseImageInstaller {
     @Override
-    protected String getContainerName() {
+    public String getContainerName() {
         return "sen2cor-2-8";
     }
 

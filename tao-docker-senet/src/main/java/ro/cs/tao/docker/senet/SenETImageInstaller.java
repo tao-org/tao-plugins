@@ -6,7 +6,7 @@ import ro.cs.tao.topology.docker.BaseImageInstaller;
 public class SenETImageInstaller extends BaseImageInstaller {
 
     @Override
-    protected String getContainerName() { return "senet-1-0-0"; }
+    public String getContainerName() { return "senet-1-0-0"; }
 
     @Override
     protected String getDescription() { return "SenET"; }

@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public class EnmapImageInstaller extends BaseImageInstaller {
     @Override
-    protected String getContainerName() {
+    public String getContainerName() {
         return "enmap";
     }
 
