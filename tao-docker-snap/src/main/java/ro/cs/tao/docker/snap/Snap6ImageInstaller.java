@@ -19,7 +19,7 @@ package ro.cs.tao.docker.snap;
 public class Snap6ImageInstaller extends SnapImageInstaller {
 
     @Override
-    protected String getContainerName() { return "snap-6-0-0"; }
+    public String getContainerName() { return "snap-6-0-0"; }
 
     @Override
     protected String getContainerDescriptorFileName() {

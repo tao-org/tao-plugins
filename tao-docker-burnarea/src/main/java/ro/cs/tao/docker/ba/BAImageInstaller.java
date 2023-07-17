@@ -4,7 +4,7 @@ import ro.cs.tao.topology.docker.BaseImageInstaller;
 
 public class BAImageInstaller extends BaseImageInstaller {
     @Override
-    protected String getContainerName() {
+    public String getContainerName() {
         return "ba-22-7-2";
     }
 

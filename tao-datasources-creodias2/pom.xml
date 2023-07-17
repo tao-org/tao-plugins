@@ -46,6 +46,11 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+        <dependency>
+            <groupId>de.taimos</groupId>
+            <artifactId>totp</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
