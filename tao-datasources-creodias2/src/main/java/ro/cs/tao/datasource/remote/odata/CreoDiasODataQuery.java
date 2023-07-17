@@ -79,7 +79,7 @@ public class CreoDiasODataQuery extends DataQuery {
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
         Map<String, EOProduct> results = new LinkedHashMap<>();
-        Map<String, String> queries = null;
+        Map<String, String> queries;
         try {
             queries = buildQueriesParams();
         } catch (ConversionException e) {
