@@ -1,5 +1,6 @@
 package ro.cs.tao.docker.jupyter;
 
+import org.apache.commons.lang3.SystemUtils;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.docker.DockerVolumeMap;
 import ro.cs.tao.docker.ExecutionConfiguration;
@@ -10,8 +11,10 @@ import ro.cs.tao.topology.docker.SingletonContainer;
 import ro.cs.tao.utils.DockerHelper;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.utils.Tuple;
+import ro.cs.tao.utils.executors.*;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -81,10 +84,44 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
             throw new RuntimeException(String.format("[%s] is already running", containerName));
         }
         final Properties properties = getAdditionalProperties();
+        final DockerVolumeMap map = ExecutionConfiguration.getMasterContainerVolumeMap();
         final List<String> args = new ArrayList<>();
         args.add("--init");
         args.add("-e");
         args.add("JUPYTER_HOST_NAME=" + TopologyManager.getInstance().getMasterNodeInfo().getId());
+        // handle permission denied on linux machines
+        if (SystemUtils.IS_OS_LINUX) {
+            List<String> arg = new ArrayList<>();
+            arg.add("id");
+            arg.add("-u");
+            arg.add(System.getProperty("user.name"));
+            ExecutionUnit uid_job = new ExecutionUnit(ExecutorType.PROCESS,
+                    InetAddress.getLocalHost().getHostName(),
+                    null, null,
+                    arg,
+                    ExecutionMode.USER.value(),
+                    null);
+            OutputAccumulator uid_accumulator = new OutputAccumulator();
+            Executor.execute(uid_accumulator, 10, uid_job);
+            arg.clear();
+            // recover current user id
+            int uid = Integer.parseInt(uid_accumulator.getOutput());
+            args.add("NB_UID=" + uid);
+            arg.add("setfacl");
+            arg.add("-R");
+            arg.add("-m");
+            arg.add("u:" + uid + ":rwx");
+            arg.add(map.getHostWorkspaceFolder());
+
+            ExecutionUnit setfacl_job = new ExecutionUnit(ExecutorType.PROCESS,
+                    InetAddress.getLocalHost().getHostName(),
+                    null, null,
+                    arg,
+                    ExecutionMode.USER.value(),
+                    null);
+            OutputAccumulator setfacl_accumulator = new OutputAccumulator();
+            Executor.execute(setfacl_accumulator, 10, setfacl_job);
+        }
         Tuple<Integer, Integer> portMap = null;
         if (properties.size() > 0) {
             if (properties.containsKey("host.port") && properties.containsKey("container.port")) {
@@ -102,7 +139,6 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
             }
         }
         args.add("-v");
-        final DockerVolumeMap map = ExecutionConfiguration.getMasterContainerVolumeMap();
         args.add((map.getHostWorkspaceFolder().endsWith("/")
                   ? map.getHostWorkspaceFolder()
                   : (map.getHostWorkspaceFolder() + "/"))
