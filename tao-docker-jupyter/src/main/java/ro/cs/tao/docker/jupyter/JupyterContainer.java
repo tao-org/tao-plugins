@@ -62,7 +62,7 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
 
     @Override
     protected String[] additionalResources() {
-        return new String[] {
+        return new String[]{
                 "pyKernel0requirements.txt", "jupyter_notebook_config.py", "jupyterlite.key", "jupyterlite.pem",
                 "custom.js"
         };
@@ -95,32 +95,32 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
             arg.add("id");
             arg.add("-u");
             arg.add(System.getProperty("user.name"));
-            ExecutionUnit uid_job = new ExecutionUnit(ExecutorType.PROCESS,
+            ExecutionUnit uIdJob = new ExecutionUnit(ExecutorType.PROCESS,
                     InetAddress.getLocalHost().getHostName(),
                     null, null,
                     arg,
                     ExecutionMode.USER.value(),
                     null);
-            OutputAccumulator uid_accumulator = new OutputAccumulator();
-            Executor.execute(uid_accumulator, 10, uid_job);
+            OutputAccumulator uIdAccumulator = new OutputAccumulator();
+            Executor.execute(uIdAccumulator, 10, uIdJob);
             arg.clear();
             // recover current user id
-            int uid = Integer.parseInt(uid_accumulator.getOutput());
-            args.add("NB_UID=" + uid);
+            int uId = Integer.parseInt(uIdAccumulator.getOutput());
+            args.add("NB_UID=" + uId);
             arg.add("setfacl");
             arg.add("-R");
             arg.add("-m");
-            arg.add("u:" + uid + ":rwx");
+            arg.add("u:" + uId + ":rwx");
             arg.add(map.getHostWorkspaceFolder());
 
-            ExecutionUnit setfacl_job = new ExecutionUnit(ExecutorType.PROCESS,
+            ExecutionUnit setfaclJob = new ExecutionUnit(ExecutorType.PROCESS,
                     InetAddress.getLocalHost().getHostName(),
                     null, null,
                     arg,
                     ExecutionMode.USER.value(),
                     null);
-            OutputAccumulator setfacl_accumulator = new OutputAccumulator();
-            Executor.execute(setfacl_accumulator, 10, setfacl_job);
+            OutputAccumulator setfaclAccumulator = new OutputAccumulator();
+            Executor.execute(setfaclAccumulator, 10, setfaclJob);
         }
         Tuple<Integer, Integer> portMap = null;
         if (properties.size() > 0) {
@@ -140,9 +140,9 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
         }
         args.add("-v");
         args.add((map.getHostWorkspaceFolder().endsWith("/")
-                  ? map.getHostWorkspaceFolder()
-                  : (map.getHostWorkspaceFolder() + "/"))
-                         + userName + ":" + getPathInContainer());
+                ? map.getHostWorkspaceFolder()
+                : (map.getHostWorkspaceFolder() + "/"))
+                + userName + ":" + getPathInContainer());
         return DockerManager.runDaemon(containerName, userName, portMap, userName, args);
     }
 
