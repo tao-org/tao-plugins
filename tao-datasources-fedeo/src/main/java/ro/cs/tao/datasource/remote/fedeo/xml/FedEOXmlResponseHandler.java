@@ -87,7 +87,7 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
     protected void handleEndElement(String qName) {
         final String elementValue = buffer.toString();
         switch (qName) {
-            case "title":
+            case "identifier":
                 if (this.current != null) {
                     this.current.setId(elementValue);
                     this.current.setName(elementValue);
