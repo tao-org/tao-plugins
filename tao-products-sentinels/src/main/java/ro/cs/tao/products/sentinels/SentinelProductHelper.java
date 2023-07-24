@@ -25,6 +25,8 @@ public class SentinelProductHelper {
             return new Sentinel1ProductHelper(productName);
         } else if (Sentinel3ProductHelper.S3Pattern.matcher(productName).matches()) {
             return new Sentinel3ProductHelper(productName);
+        } if (Sentinel5PProductHelper.S5PPattern.matcher(productName).matches()) {
+            return new Sentinel5PProductHelper(productName);
         } else {
             return Sentinel2ProductHelper.createHelper(productName);
         }
