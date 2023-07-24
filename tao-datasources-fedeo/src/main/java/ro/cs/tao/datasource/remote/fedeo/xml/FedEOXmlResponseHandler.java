@@ -67,6 +67,15 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
             case "product":
                 this.identifiedElement = qName;
                 break;
+            case "link":
+                if(this.current != null && attributes.getValue("title") != null && attributes.getValue("title").equals("Download") ) {
+                    try {
+                        this.current.setLocation(attributes.getValue("href"));
+                    } catch (URISyntaxException e) {
+                        logger.warning(e.getMessage());
+                    }
+                }
+                break;
             case "":
                 break;
             default:
