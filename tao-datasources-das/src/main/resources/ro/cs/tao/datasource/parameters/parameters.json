@@ -288,14 +288,14 @@
           "dependencyType": "FILTER",
           "referencedParameterId": "instrument",
           "condition": "EQ",
-          "expectedValue": "OL",
+          "expectedValue": "OLCI",
           "allowedValues": "OL_1_EFR___,OL_1_ERR___,OL_2_LFR___,OL_2_LRR___,OL_2_WFR___,OL_2_WRR___"
         },
         {
           "dependencyType": "FILTER",
           "referencedParameterId": "instrument",
           "condition": "EQ",
-          "expectedValue": "SR",
+          "expectedValue": "SRAL",
           "allowedValues": "SR_1_SRA___,SR_1_SRA_A_,SR_1_SRA_BS,SR_2_LAN___,SR_2_LAN_HY,SR_2_LAN_LI,SR_2_LAN_SI,SR_2_WAT___"
         }
       ]
