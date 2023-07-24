@@ -165,9 +165,11 @@ public class FedEODataQuery extends DataQuery {
             switch (response.getStatusLine().getStatusCode()) {
                 case 200:
                     String countRequestResponse = EntityUtils.toString(response.getEntity());
-                    String countText = countRequestResponse.replaceAll("[\\s\\S]*?<os\\:totalResults>([\\d]*?)<\\/os:totalResults>[\\s\\S]*", "$1");
-                    if (!countText.isEmpty()) {
-                        count = Long.parseLong(countText);
+                    if (countRequestResponse.contains("<os:totalResults>")) {
+                        String countText = countRequestResponse.replaceAll("[\\s\\S]*?<os:totalResults>([\\d]*?)</os:totalResults>[\\s\\S]*", "$1");
+                        if (!countText.isEmpty()) {
+                            count = Long.parseLong(countText);
+                        }
                     }
                     break;
                 case 401:
