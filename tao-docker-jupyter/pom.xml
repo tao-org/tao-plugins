@@ -6,7 +6,7 @@
     <parent>
         <groupId>ro.c-s.tao</groupId>
         <artifactId>tao-plugins</artifactId>
-        <version>1.4.3.2</version>
+        <version>1.4.4</version>
     </parent>
 
     <artifactId>tao-docker-jupyter</artifactId>
