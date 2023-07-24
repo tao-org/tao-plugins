@@ -1,6 +1,6 @@
 package ro.cs.tao.datasource.usgs.download;
 
-import org.apache.commons.lang.SerializationUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.http.HttpStatus;
 import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.QueryException;
