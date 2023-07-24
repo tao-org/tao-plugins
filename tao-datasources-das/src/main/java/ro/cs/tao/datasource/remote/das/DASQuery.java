@@ -51,6 +51,7 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
@@ -191,6 +192,21 @@ public class DASQuery extends DataQuery {
 
     @Override
     public long getCount() {
+        final Set<String> mandatoryParams = getMandatoryParams();
+        final Map<String, QueryParameter<?>> actualParameters = getParameters();
+        final List<String> errors = mandatoryParams.stream()
+                .filter(p -> !actualParameters.containsKey(p)).collect(Collectors.toList());
+        if (errors.size() > 0) {
+            QueryException ex = new QueryException("Mandatory parameter(s) not supplied");
+            ex.addAdditionalInfo("Missing", String.join(",", errors));
+            throw ex;
+        }
+        errors.addAll(checkDependencies(actualParameters));
+        if (errors.size() > 0) {
+            QueryException ex = new QueryException("Some parameter(s) dependencies are not satisfied");
+            ex.addAdditionalInfo("Dependencies", String.join(",", errors));
+            throw ex;
+        }
         long count = 0;
         Map<String, String> queries = null;
         try {
