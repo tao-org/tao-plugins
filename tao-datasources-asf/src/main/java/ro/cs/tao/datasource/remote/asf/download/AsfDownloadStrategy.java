@@ -153,7 +153,7 @@ public class AsfDownloadStrategy extends DownloadStrategy<String> {
             SeekableByteChannel outputStream = null;
             long size = currentProduct.getApproximateSize();
             //long length = connection.getContentLength();
-            long length = -1;//connection.getHeaderFieldLong("Content-Length", size);
+            long length = connection.getHeaderFieldLong("Content-Length", size);
             /*if (length == -1) {
                 //try to get the length from header
                 length = connection.getHeaderFieldLong("Content-Length", size);
