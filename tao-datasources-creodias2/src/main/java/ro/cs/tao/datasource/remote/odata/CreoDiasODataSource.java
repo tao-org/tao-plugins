@@ -15,7 +15,9 @@
  */
 package ro.cs.tao.datasource.remote.odata;
 
-import de.taimos.totp.TOTP;
+import dev.samstevens.totp.code.DefaultCodeGenerator;
+import dev.samstevens.totp.time.NtpTimeProvider;
+import dev.samstevens.totp.time.TimeProvider;
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.Credentials;
 import org.apache.http.message.BasicNameValuePair;
@@ -136,7 +138,13 @@ public class CreoDiasODataSource extends URLDataSource<CreoDiasODataQuery, Token
         if (StringUtilities.isNullOrEmpty(secret)) {
             throw new QueryException("This datasource requires 2FA, but the user secret is not set");
         }
-        params.add(new BasicNameValuePair("totp", TOTP.getOTP(secret)));
+        DefaultCodeGenerator generator = new DefaultCodeGenerator();
+        try {
+            TimeProvider timeProvider = new NtpTimeProvider("pool.ntp.org");
+            params.add(new BasicNameValuePair("totp", generator.generate(secret, timeProvider.getTime())));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, LOGIN_URL, (Credentials) null, params)) {
             switch (response.getStatusLine().getStatusCode()) {
                 case 200:
