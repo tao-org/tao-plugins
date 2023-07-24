@@ -67,6 +67,9 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
         SearchResponse response = JsonMapper.instance().readValue(content, SearchResponse.class);
         SearchResults responseData = response.getData();
+        if (responseData == null) {
+            throw new IllegalStateException("Fail to get the search results. Reason: " + response.getErrorMessage());
+        }
         List<SearchResult> results = responseData.getResults();
         return results.stream().map(r -> {
             EOProduct product = null;
@@ -93,8 +96,12 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
 
     @Override
     public long countValues(String content) throws IOException {
-        SearchResponse response = JsonMapper.instance().readValue(content, SearchResponse.class);
-        return response.getData().getTotalHits();
+        final SearchResponse response = JsonMapper.instance().readValue(content, SearchResponse.class);
+        final SearchResults responseData = response.getData();
+        if (responseData == null) {
+            throw new IllegalStateException("Fail to get the count of the search results. Reason: " + response.getErrorMessage());
+        }
+        return responseData.getTotalHits();
     }
 
     private EOProduct fillLandsat8Product(SearchResult result) {
