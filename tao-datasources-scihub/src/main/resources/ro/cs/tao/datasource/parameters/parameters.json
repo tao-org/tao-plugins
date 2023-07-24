@@ -394,7 +394,7 @@
       "remoteName": "productIdentifier",
       "label": "Product Size",
       "type": "string",
-      "defaultValue": "FRAME",
+      "defaultValue": "ALL",
       "required": false,
       "valueSet": ["ALL","FRAME", "STRIPE"],
       "order": 9
