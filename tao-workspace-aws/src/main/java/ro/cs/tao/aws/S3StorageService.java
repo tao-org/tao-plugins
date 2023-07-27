@@ -509,7 +509,7 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
         final int offset = filter.length();
         if (objects != null) {
             for (String commonPrefix : objects.getCommonPrefixes()) {
-                if (!commonPrefix.equals(repository.getUserName() + "/")) {
+                if (!commonPrefix.equals(repository.getUserId() + "/")) {
                     final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(commonPrefix.substring(offset)), true, 0);
                     fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, prefix + "://" + repository.resolve(fileObject.getRelativePath()));
                     files.add(fileObject);

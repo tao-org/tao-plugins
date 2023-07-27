@@ -46,7 +46,7 @@ public class GraphHandler extends AbstractHandler<WorkflowDescriptor> {
                 this.result.setStatus(Status.DRAFT);
                 this.result.setCreated(LocalDateTime.now());
                 this.result.setActive(true);
-                this.result.setUserName(SessionStore.currentContext().getPrincipal().getName());
+                this.result.setUserId(SessionStore.currentContext().getPrincipal().getName());
                 this.result.setVisibility(Visibility.PRIVATE);
                 this.result = workflowService.save(this.result);
                 break;
