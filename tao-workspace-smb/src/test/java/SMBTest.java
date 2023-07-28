@@ -42,7 +42,7 @@ public class SMBTest {
         repository.setCreated(LocalDateTime.now());
         repository.setSystem(false);
         repository.setUrlPrefix("smb");
-        repository.setUserName("");
+        repository.setUserId("");
         repository.addParameter("smb.server", "");
         repository.addParameter("smb.domain", null);
         repository.addParameter("smb.share", "");
@@ -63,7 +63,7 @@ public class SMBTest {
         repository.setCreated(LocalDateTime.now());
         repository.setSystem(false);
         repository.setUrlPrefix("s3");
-        repository.setUserName("");
+        repository.setUserId("");
         repository.addParameter("aws.bucket", "");
         repository.addParameter("aws.region", "eu-central-1");
         repository.addParameter("aws.secret.key", "");
@@ -81,7 +81,7 @@ public class SMBTest {
         repository.setCreated(LocalDateTime.now());
         repository.setSystem(false);
         repository.setUrlPrefix("swift");
-        repository.setUserName("");
+        repository.setUserId("");
         repository.addParameter("openstack.tenantId", "");
         repository.addParameter("openstack.domain", "");
         repository.addParameter("openstack.user", "");
@@ -101,7 +101,7 @@ public class SMBTest {
         repository.setCreated(LocalDateTime.now());
         repository.setSystem(false);
         repository.setUrlPrefix("swift");
-        repository.setUserName("");
+        repository.setUserId("");
         repository.addParameter("root", "/mnt/tao/working_dir/");
         return repository;
     }
