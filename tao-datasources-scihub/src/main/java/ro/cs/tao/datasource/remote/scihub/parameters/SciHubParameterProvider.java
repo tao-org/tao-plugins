@@ -24,6 +24,7 @@ import ro.cs.tao.datasource.remote.scihub.download.Sentinel1DownloadStrategy;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel2ArchiveDownloadStrategy;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel2DownloadStrategy;
 import ro.cs.tao.datasource.remote.scihub.download.Sentinel3DownloadStrategy;
+import ro.cs.tao.datasource.remote.scihub.download.Sentinel5PDownloadStrategy;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,6 +50,7 @@ public final class SciHubParameterProvider extends AbstractParameterProvider {
                         put("Sentinel2", new Sentinel2ArchiveDownloadStrategy(dataSource, targetFolder));
                     }
                     put("Sentinel3", new Sentinel3DownloadStrategy(dataSource, targetFolder));
+                    put("Sentinel5P", new Sentinel5PDownloadStrategy(dataSource, targetFolder));
                 }});
     }
 }
