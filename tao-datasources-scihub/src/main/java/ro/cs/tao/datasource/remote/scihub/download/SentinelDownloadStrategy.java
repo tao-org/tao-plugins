@@ -29,6 +29,7 @@ import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -92,6 +93,9 @@ public class SentinelDownloadStrategy extends DownloadStrategy<String> {
     }
 
     @Override
+    protected boolean adjustProductLength() { return true; }
+
+    @Override
     protected String getMetadataUrl(EOProduct descriptor) {
         return null;
     }
@@ -130,7 +134,21 @@ public class SentinelDownloadStrategy extends DownloadStrategy<String> {
                 }
             }
         }
-        return downloadFile(getProductUrl(product), rootPath, this.dataSource.authenticate());
+        final String productURL = getProductUrl(product);
+        final String token = this.dataSource.authenticate();
+        if (product.getApproximateSize() < 1) {
+            updateProductApproximateSize(product, productURL, token);
+        }
+        return downloadFile(productURL, rootPath, token);
+    }
+
+    protected void updateProductApproximateSize(EOProduct product, String productURL, String token) {
+        final HttpURLConnection connection = NetUtils.openConnection(productURL, token);
+        final long remoteFileLength = connection.getContentLengthLong();
+        if (remoteFileLength > 0) {
+            product.setApproximateSize(remoteFileLength);
+        }
+        connection.disconnect();
     }
 
     @Override
