@@ -62,13 +62,6 @@
     "temporalCoverage": "from 2023 to present",
     "spatialCoverage": "Global"
   },
-  "BIROS": {
-    "mission": "BIROS",
-    "sensorType": "OPTICAL",
-    "description": "The FireBIRD mission consists of two small satellites, TET-1 and BIROS. Together, the two satellites are on an Earth observation mission that aims to detect forest fires, or high-temperature events, from space. The new infrared system provides high-quality data that is capable of measuring the spread of the fire and the amount of heat generated with great accuracy very early on - almost in real time - meaning that FireBIRD can serve as an early warning system. The data acquired from this Earth observation mission can also be used as a basis for scientific climate research. In addition to the main payload of the cameras, further experiments have been planned for developing the technology on board the small satellites. Further information can be found on the following website: http://www.dlr.de/firebird/en/ and in the FireBIRD brochure available at: http://www.dlr.de/firebird/en/Portaldata/79/Resources/dokumente/FireBIRD_Broschuere_HighRes_v3_english.pdf",
-    "temporalCoverage": "from 2014 to present",
-    "spatialCoverage": "Global"
-  },
   "CORIOLIS": {
     "mission": "CORIOLIS",
     "sensorType": "RADAR",
@@ -137,13 +130,6 @@
     "sensorType": "ATMOSPHERIC",
     "description": "As part of the European Space Agency's (ESA) Sea Level Climate Change Initiative (CCI) project, a number of oceanic indicators of mean sea level changes have been produced from merging satellite altimetry measurements of sea level anomalies. The oceanic indicators dataset consists of static files covering the whole altimeter period, describing the evolution of the project's monthly sea level anomaly gridded product (see separate dataset record).The oceanic indicators that are provided are: 1) the temporal evolution of the global Mean Sea Level (MSL) DOI: 10.5270/esa-sea_level_cci-IND_MSL_MERGED-1993_2015-v_2.0-201612 ;2) the geographic distribution of Mean Sea Level changes (MSLTR) DOI: 10.5270/esa-sea_level_cci-IND_MSLTR_MERGED-1993_2015-v_2.0-201612 ;3) Maps of the amplitude and phase of the annual cycle (MSLAMPH) DOI: 10.5270/esa-sea_level_cci-IND_MSLAMPH_MERGED-1993_2015-v_2.0-201612.The complete collection of v2.0 products from the Sea Level CCI project can be referenced using the following DOI: 10.5270/esa-sea_level_cci-1993_2015-v_2.0-201612.When using or referring to the SL_cci products, please mention the associated DOIs and also use the following citation where a detailed description of the SL_cci project and products can be found:Ablain, M., Cazenave, A., Larnicol, G., Balmaseda, M., Cipollini, P., FaugÃ¨re, Y., Fernandes, M. J., Henry, O., Johannessen, J. A., Knudsen, P., Andersen, O., Legeais, J., Meyssignac, B., Picot, N., Roca, M., Rudenko, S., Scharffenberg, M. G., Stammer, D., Timms, G., and Benveniste, J.: Improved sea level record over the satellite altimetry era (1993â&#128;&#147;2010) from the Climate Change Initiative project, Ocean Sci., 11, 67-82, doi:10.5194/os-11-67-2015, 2015.For further information on the Sea Level CCI products, and to register for these products please email: info-sealevel@esa-sealevel-cci.org",
     "temporalCoverage": "from 1993 to 2015",
-    "spatialCoverage": "Global"
-  },
-  "FireBIRD": {
-    "mission": "FireBIRD",
-    "sensorType": "OPTICAL",
-    "description": "The FireBIRD mission consists of two small satellites, TET-1 and BIROS. Together, the two satellites are on an Earth observation mission that aims to detect forest fires, or high-temperature events, from space. The new infrared system provides high-quality data that is capable of measuring the spread of the fire and the amount of heat generated with great accuracy very early on - almost in real time - meaning that FireBIRD can serve as an early warning system. The data acquired from this Earth observation mission can also be used as a basis for scientific climate research. In addition to the main payload of the cameras, further experiments have been planned for developing the technology on board the small satellites. Further information can be found on the following website: http://www.dlr.de/firebird/en/ and in the FireBIRD brochure available at: http://www.dlr.de/firebird/en/Portaldata/79/Resources/dokumente/FireBIRD_Broschuere_HighRes_v3_english.pdf",
-    "temporalCoverage": "from 2014 to present",
     "spatialCoverage": "Global"
   },
   "FY-3B": {
@@ -244,32 +230,11 @@
     "temporalCoverage": "from 1999 to 2005",
     "spatialCoverage": "Global"
   },
-  "IRS-P5": {
-    "mission": "IRS-P5",
-    "sensorType": "RADAR",
-    "description": "Indian Remote Sensing satellites (IRS) are a series of Earth Observation satellites, built, launched and maintained by Indian Space Research Organisation. The IRS series provides many remote sensing services to India and international ground stations. The satellite has two panchromatic cameras that were especially designed for in flight stereo viewing. However, this collection contains the monoscopic data.",
-    "temporalCoverage": "from 2015 to present",
-    "spatialCoverage": "Global"
-  },
   "IRS-P6": {
     "mission": "IRS-P6",
     "sensorType": "RADAR",
     "description": "Indian Remote Sensing satellites (IRS) are a series of Earth Observation satellites, built, launched and maintained by Indian Space Research Organisation. The IRS series provides many remote sensing services to India and international ground stations. The revisit capability of only 5 days and the products coverage size of 370 km x 370 km make AWiFS products a valuable source for application fields such forestry and environmental monitoring",
     "temporalCoverage": "from 2010 to 2013",
-    "spatialCoverage": "Global"
-  },
-  "IRS-R2": {
-    "mission": "IRS-R2",
-    "sensorType": "RADAR",
-    "description": "Indian Remote Sensing satellites (IRS) are a series of Earth Observation satellites, built, launched and maintained by Indian Space Research Organisation. The IRS series provides many remote sensing services to India and international ground stations. With 5 m resolution and products covering areas up to 70 km x 70 km IRS LISS-IV mono data provide a cost effective solution for mapping tasks up to 1:25'000 scale.",
-    "temporalCoverage": "from 2004 to present",
-    "spatialCoverage": "Global"
-  },
-  "ISS": {
-    "mission": "ISS",
-    "sensorType": "RADAR",
-    "description": "The hyperspectral instrument DESIS (DLR Earth Sensing Imaging Spectrometer) is one of four possible payloads of MUSES (Multi-User System for Earth Sensing), which is mounted on the International Space Station (ISS). DLR developed and delivered a Visual/Near-Infrared Imaging Spectrometer to Teledyne Brown Engineering, which was responsible for integrating the instrument. Teledyne Brown designed and constructed, integrated and tested the platform before delivered to NASA. Teledyne Brown collaborates with DLR in several areas, including basic and applied research for use of data. DESIS is operated in the wavelength range from visible through the near infrared and enables precise data acquisition from Earth's surface for applications including fire-detection, change detection, maritime domain awareness, and atmospheric research. Three product types can be ordered, which are Level 1B (systematic and radiometric corrected), Level 1C (geometrically corrected) and Level 2A (atmospherically corrected). The spatial resolution is about 30m on ground. DESIS is sensitive between 400nm and 1000nm with a spectral resolution of about 3.3nm. DESIS data are delivered in tiles of about 30x30km. For more information concerning DESIS the reader is referred to https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-13614/",
-    "temporalCoverage": "from 2018 to present",
     "spatialCoverage": "Global"
   },
   "Jason-3": {
@@ -517,13 +482,6 @@
     "temporalCoverage": "from 2002 to present",
     "spatialCoverage": "Global"
   },
-  "PROBA-V": {
-    "mission": "PROBA-V",
-    "sensorType": "OPTICAL",
-    "description": "The Proba-V VEGETATION Raw products (Level 1C/P) and synthesis products (Level 3, S1 = daily, S5 = 5 days, S10 = decade) ensure coverage of all significant landmasses worldwide with, in the case of a 10-day synthesis product, a minimum effect of cloud cover, resulting from selection of cloud-free acquisitions during the 10-day period. It ensures a daily coverage between Lat. 35°N and 75°N, and between 35°S and 56°S, and a full coverage every two days at equator. The VEGETATION instrument is pre-programmed with an indefinite repeated sequence of acquisitions. This nominal acquisition scenario allows a continuous series of identical products to be generated, aiming to map land cover and vegetation growth across the entire planet every two days.Products overview • Projection: Plate carrée projection • Spectral bands: All 4 + NDVI • Format: HDF5 &amp; GeoTiFF The Proba-V VEGETATION Level 3 synthesis products are divided into so called granules, each measuring 10 degrees x 10 degrees, each granule being delivered as a single file. Level 3 products are: - Syntesys S1, with resolution 100m (TOA, TOC and TOC NDVI reflectance), 333m (TOA and TOC reflectance) and 1km (TOA and TOC reflectance) - Syntesys S5, with resolution 100m (TOA, TOC and TOC NDVI reflectance) - Syntesys S10, with resolution 333m (TOC and TOC NDVI reflectance) and 1km (TOC and TOC NDVI reflectance)",
-    "temporalCoverage": "from 2013 to present",
-    "spatialCoverage": "Global"
-  },
   "QUICKBIRD": {
     "mission": "QUICKBIRD",
     "sensorType": "OPTICAL",
@@ -727,13 +685,6 @@
     "temporalCoverage": "from 2012 to present",
     "spatialCoverage": "Global"
   },
-  "TanDEM-X": {
-    "mission": "TanDEM-X",
-    "sensorType": "RADAR",
-    "description": "TanDEM-X (TerraSAR-X add-on for Digital Elevation Measurements) is an Earth observation radar mission that consists of a SAR interferometer built by two almost identical satellites flying in close formation. With a typical separation between the satellites of 120m to 500m a global Digital Elevation Model (DEM) has been generated. The main objective of the TanDEM-X mission is to create a precise 3D map of the Earth's land surfaces that is homogeneous in quality and unprecedented in accuracy. The data acquisition was completed in 2015 and production of the global DEM was completed in September 2016. The absolute height error is with about 1m an order of magnitude below the 10m requirement.The TanDEM-X 12m DEM is the nominal product variant of the global Digital Elevation Model (DEM) acquired in the frame of the German TanDEM-X mission between 2010 and 2015 with a spatial resolution of 0.4 arcseconds (12m at the equator). It covers all Earth’s landmasses from pole to pole. For more information concerning the TanDEM-X mission, the reader is referred to: https://www.dlr.de/dlr/en/desktopdefault.aspx/tabid-10378/",
-    "temporalCoverage": "from 2010 to 2015",
-    "spatialCoverage": "Global"
-  },
   "TERRA": {
     "mission": "TERRA",
     "sensorType": "RADAR",
@@ -746,13 +697,6 @@
     "sensorType": "RADAR",
     "description": "This collection contains radar image products of the German national TerraSAR-X mission acquired in StripMap mode. StripMap imaging allows for a spatial resolution of up to 3 m at a scene size of 30 km (across swath) x 50-1650 km (in orbit direction). TerraSAR-X is a sun-synchronous polar-orbiting, all-weather, day-and-night X-band radar earth observation mission realized in the frame of a public-private partnership between the German Aerospace Center (DLR) and Airbus Defence and Space. For more information concerning the TerraSAR-X mission, the reader is referred to: http://www.dlr.de/dlr/en/desktopdefault.aspx/tabid-10377/565_read-436/",
     "temporalCoverage": "from 2007 to present",
-    "spatialCoverage": "Global"
-  },
-  "TET-1": {
-    "mission": "TET-1",
-    "sensorType": "RADAR",
-    "description": "The FireBIRD mission consists of two small satellites, TET-1 and BIROS. Together, the two satellites are on an Earth observation mission that aims to detect forest fires, or high-temperature events, from space. The new infrared system provides high-quality data that is capable of measuring the spread of the fire and the amount of heat generated with great accuracy very early on - almost in real time - meaning that FireBIRD can serve as an early warning system. The data acquired from this Earth observation mission can also be used as a basis for scientific climate research. In addition to the main payload of the cameras, further experiments have been planned for developing the technology on board the small satellites. Further information can be found on the following website: http://www.dlr.de/firebird/en/ and in the FireBIRD brochure available at: http://www.dlr.de/firebird/en/Portaldata/79/Resources/dokumente/FireBIRD_Broschuere_HighRes_v3_english.pdf",
-    "temporalCoverage": "from 2014 to present",
     "spatialCoverage": "Global"
   },
   "TOPEX POSEIDON": {
