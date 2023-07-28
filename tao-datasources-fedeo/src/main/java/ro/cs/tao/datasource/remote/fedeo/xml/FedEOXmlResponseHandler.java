@@ -95,6 +95,22 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                     this.current.setSensorType(SensorType.UNKNOWN);
                 }
                 break;
+            case "date":
+                if (elementValue.isEmpty()) {
+                    break;
+                }
+                String[] dates = elementValue.split("/");
+                if (dates.length < 2) {
+                    break;
+                }
+                try {
+                    this.current.setAcquisitionDate(new DateAdapter().unmarshal(dates[0]));
+                    this.current.addAttribute("beginPosition", dates[0]);
+                    this.current.addAttribute("endPosition", dates[1]);
+                } catch (Exception e) {
+                    logger.warning(e.getMessage());
+                }
+                break;
             case "beginPosition":
                 if (elementValue.isEmpty()) {
                     break;
