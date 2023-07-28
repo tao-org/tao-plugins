@@ -16,6 +16,7 @@
 package ro.cs.tao.datasource.usgs;
 
 import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.URLDataSource;
@@ -115,6 +116,10 @@ public class USGSDataSource extends URLDataSource<Landsat8Query, String> {
 
     public String getEarthDataToken() {
         return NetUtils.getAuthToken(earthDataUsername, earthDataPassword);
+    }
+
+    public UsernamePasswordCredentials getEarthDataCredentials() {
+        return new UsernamePasswordCredentials(earthDataUsername, earthDataPassword);
     }
 
     @Override
