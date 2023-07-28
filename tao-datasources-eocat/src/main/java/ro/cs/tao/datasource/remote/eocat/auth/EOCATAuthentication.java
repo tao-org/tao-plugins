@@ -52,6 +52,13 @@ public class EOCATAuthentication {
             if (!samlLoginAddress.isEmpty() && !samlResponse.isEmpty()) {
                 return new String[]{samlLoginAddress, samlResponse};
             }
+        } else {
+            if (samlLoginResponse.contains("name=\"sessionDataKey\"")) {
+                throw new IllegalStateException("401: Authentication failed. Reason: Wrong credentials.");
+            }
+            if (samlLoginResponse.contains("Error 502")) {
+                throw new QueryException("The request was not successful. Reason: response code: 502: response message: BAD GATEWAY");
+            }
         }
         throw new IllegalStateException("401: Authentication failed. Reason: Get SAML Data failed.");
     }
@@ -104,8 +111,8 @@ public class EOCATAuthentication {
         int responseStatus;
         try (CloseableHttpResponse downloadRequestResponse = NetUtils.openConnection(HttpMethod.GET, protectedURL, null)) {
             responseStatus = downloadRequestResponse.getStatusLine().getStatusCode();
-            if (responseStatus != HttpStatus.SC_OK) {
-                throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s", downloadRequestResponse.getStatusLine().getStatusCode(), downloadRequestResponse.getStatusLine().getReasonPhrase()));
+            if (responseStatus == HttpStatus.SC_FORBIDDEN) {
+                new IllegalStateException("403: Forbidden. Reason: Account not authorized to download data from this collection.");
             }
             if (downloadRequestResponse.getFirstHeader("Content-Disposition") != null) {
                 this.cookieToken = extractShibbolethTokenFromCookies(protectedURL);
