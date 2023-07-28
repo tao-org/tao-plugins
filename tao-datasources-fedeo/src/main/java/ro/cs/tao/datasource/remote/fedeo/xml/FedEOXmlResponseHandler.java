@@ -176,8 +176,8 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                     if (points.length >= 5) {
                         Polygon2D polygon2D = new Polygon2D();
                         for (int i = 0; i < points.length; i += 2) {
-                            polygon2D.append(Double.parseDouble(points[i + 1]),
-                                    Double.parseDouble(points[i]));
+                            polygon2D.append(Double.parseDouble(points[i + 1].replaceAll("[^e\\d\\-\\.]","")),
+                                    Double.parseDouble(points[i].replaceAll("[^e\\d\\-\\.]","")));
                         }
                         this.current.setGeometry(polygon2D.toWKT(8));
                     }
