@@ -50,6 +50,7 @@ import ro.cs.tao.utils.executors.monitoring.DownloadProgressListener;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -127,8 +128,8 @@ public class CreoDias2DataSourceTest {
     }
 
     public static void main(String[] args) {
-        Sentinel1_Test();
-        //Sentinel2_Test();
+        //Sentinel1_Test();
+        Sentinel2_Test();
         //Sentinel3_Test();
         //Landsat8_Test();
     }
@@ -141,7 +142,9 @@ public class CreoDias2DataSourceTest {
             }
             DataSource<?, ?> dataSource = new CreoDiasODataSource();
             dataSource.setCredentials(user, password);
-
+            Properties properties = new Properties();
+            properties.put("user.secret", "N5IGCVBZOE4EC4ZVGVQXMOLQHFRHCULO");
+            dataSource.setAdditionalProperties(properties);
             DataQuery query = dataSource.createQuery("Sentinel1");
             query.addParameter(begin);
             query.addParameter(end);
@@ -176,7 +179,9 @@ public class CreoDias2DataSourceTest {
             }
             DataSource<?, ?> dataSource = new CreoDiasODataSource();
             dataSource.setCredentials(user, password);
-
+            Properties properties = new Properties();
+            properties.put("user.secret", "N5IGCVBZOE4EC4ZVGVQXMOLQHFRHCULO");
+            dataSource.setAdditionalProperties(properties);
             DataQuery query = dataSource.createQuery("Sentinel2");
             query.addParameter(begin);
             query.addParameter(end);

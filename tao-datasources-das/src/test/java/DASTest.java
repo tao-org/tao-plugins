@@ -66,8 +66,8 @@ public class DASTest {
     private static final int pageSize;
     private static final int maxResults;
     private static final String rowTemplate;
-    private static String user = "kraftek@c-s.ro";
-    private static String password = "cei7pitici.";
+    private static String user = "";
+    private static String password = "";
     private static final DownloadProgressListener listener;
 
     static {
@@ -127,9 +127,9 @@ public class DASTest {
     }
 
     public static void main(String[] args) {
-        Sentinel1_Test();
+        //Sentinel1_Test();
         Sentinel2_Test();
-        Sentinel3_Test();
+        //Sentinel3_Test();
     }
 
     public static void Sentinel1_Test() {
