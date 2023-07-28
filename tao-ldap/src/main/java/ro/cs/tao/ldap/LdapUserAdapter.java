@@ -16,21 +16,22 @@ public class LdapUserAdapter implements UserModelAdapter<Attributes> {
         if (attrs != null) {
             try {
                 user = new User();
-                user.setUsername(attrs.get("samAccountName").get().toString());
+                user.setId(attrs.get(LDAPAttributes.GUID).get().toString());
+                user.setUsername(attrs.get(LDAPAttributes.ACCOUNT).get().toString());
                 user.setUserType(UserType.LDAP);
-                Attribute attribute = attrs.get("givenname");
+                Attribute attribute = attrs.get(LDAPAttributes.NAME);
                 if (attribute != null) {
                     user.setFirstName(String.valueOf(attribute.get()));
                 }
-                attribute = attrs.get("sn");
+                attribute = attrs.get(LDAPAttributes.SN);
                 if (attribute != null) {
                     user.setLastName(String.valueOf(attribute.get()));
                 }
-                attribute = attrs.get("mail");
+                attribute = attrs.get(LDAPAttributes.MAIL);
                 if (attribute != null) {
                     user.setEmail(String.valueOf(attribute.get()));
                 }
-                attribute = attrs.get("telephonenumber");
+                attribute = attrs.get(LDAPAttributes.PHONE);
                 if (attribute != null) {
                     user.setPhone(String.valueOf(attribute.get()));
                 }

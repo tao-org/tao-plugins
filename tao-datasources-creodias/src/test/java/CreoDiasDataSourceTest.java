@@ -130,7 +130,7 @@ public class CreoDiasDataSourceTest {
 
     public static void main(String[] args) {
         //Sentinel2_Count_Test();
-        Sentinel1_Test();
+        Sentinel2_Test();
         //Sentinel1_Count_Test();
         //Sentinel1_Test();
         //Landsat8_Count_Test();

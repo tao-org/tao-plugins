@@ -45,7 +45,7 @@ public class FTPTest {
         repository.setCreated(LocalDateTime.now());
         repository.setSystem(false);
         repository.setUrlPrefix("ftp");
-        repository.setUserName("");
+        repository.setUserId("");
         repository.addParameter("ftp.server", "");
         repository.addParameter("ftp.user", "");
         repository.addParameter("ftp.password", "");

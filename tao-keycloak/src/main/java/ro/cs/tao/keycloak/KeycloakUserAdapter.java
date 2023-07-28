@@ -15,6 +15,7 @@ public class KeycloakUserAdapter implements UserModelAdapter<UserRepresentation>
         User user = null;
         if (profile != null) {
             user = new User();
+            user.setId(profile.getId());
             user.setUsername(profile.getUsername());
             user.setUserType(UserType.KEYCLOAK);
             user.setFirstName(profile.getFirstName());
@@ -29,6 +30,7 @@ public class KeycloakUserAdapter implements UserModelAdapter<UserRepresentation>
     @Override
     public UserRepresentation fromTaoUser(User user) {
         final UserRepresentation kUser = new UserRepresentation();
+        kUser.setId(user.getId());
         kUser.setEnabled(true);
         kUser.setUsername(user.getUsername());
         kUser.setFirstName(user.getFirstName());
