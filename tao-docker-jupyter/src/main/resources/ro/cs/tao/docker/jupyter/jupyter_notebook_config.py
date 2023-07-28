@@ -583,7 +583,7 @@ c.NotebookApp.open_browser = False
 #  Default: {}
 c.NotebookApp.tornado_settings = {
     'headers': {
-        'Content-Security-Policy': "frame-ancestors https://pcd3368.c-s.ro 'self' "
+        'Content-Security-Policy': "frame-ancestors https://" + os.environ['JUPYTER_HOST_NAME'] + " 'self' "
     }
 }
 
