@@ -63,7 +63,11 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     product.setGeometry(r.getFootprint());
                     product.setLocation(r.getDownloadUrl());
                     product.setProcessingDate(r.getProcessingDate());
-                    product.setAcquisitionDate(r.getSceneDate());
+                    if (r.getSceneDate() != null) {
+                        product.setAcquisitionDate(r.getSceneDate());
+                    } else {
+                        product.setAcquisitionDate(r.getStartTime());
+                    }
                     String thumbnailUrl = r.getThumbnailUrl();
                     if(!"NA".equalsIgnoreCase(thumbnailUrl) && !"N/A".equalsIgnoreCase(thumbnailUrl)){
                         product.setQuicklookLocation(r.getThumbnailUrl());
