@@ -26,8 +26,8 @@ public class JaxaAuthenticationService extends FedEOAuthenticationServiceProvide
             "gportal.jaxa.jp"
     });
 
-    private static String extractAuthTokenFromCookies(String protectedURL) throws IOException {
-        final List<Cookie> jaxaCookies = NetUtils.getCookies(protectedURL);
+    private static String extractAuthTokenFromCookies(String protectedURL, Credentials credentials) throws IOException {
+        final List<Cookie> jaxaCookies = NetUtils.getCookies(protectedURL, credentials);
         if (jaxaCookies != null && !jaxaCookies.isEmpty()) {
             final StringBuilder authCookieToken = new StringBuilder();
             for (Cookie jaxaCookie : jaxaCookies) {
@@ -38,8 +38,8 @@ public class JaxaAuthenticationService extends FedEOAuthenticationServiceProvide
         return "";
     }
 
-    private static String getLoginToken(String protectedURL) throws IOException {
-        final List<Cookie> jaxaCookies = NetUtils.getCookies(protectedURL);
+    private static String getLoginToken(String protectedURL, Credentials credentials) throws IOException {
+        final List<Cookie> jaxaCookies = NetUtils.getCookies(protectedURL, credentials);
         return jaxaCookies.stream().filter(jc -> jc.getName().equals("fuel_csrf_token")).findFirst().orElse(new BasicClientCookie("", "")).getValue();
     }
 
@@ -48,9 +48,9 @@ public class JaxaAuthenticationService extends FedEOAuthenticationServiceProvide
         loginParameters.add(new BasicNameValuePair("account", credentials.getUserName()));
         loginParameters.add(new BasicNameValuePair("password", credentials.getPassword()));
         loginParameters.add(new BasicNameValuePair("fuel_csrf_token", loginToken));
-        try (CloseableHttpResponse loginResponse = NetUtils.openConnection(HttpMethod.POST, AUTH_URL, (Credentials) null, loginParameters)) {
+        try (CloseableHttpResponse loginResponse = NetUtils.openConnection(HttpMethod.POST, AUTH_URL, credentials, loginParameters)) {
             if (loginResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK && !EntityUtils.toString(loginResponse.getEntity()).contains("\"key\": null")) {
-                final String authCookieToken = extractAuthTokenFromCookies(AUTH_URL);
+                final String authCookieToken = extractAuthTokenFromCookies(AUTH_URL, credentials);
                 if (!authCookieToken.isEmpty()) {
                     return authCookieToken;
                 }
@@ -66,14 +66,14 @@ public class JaxaAuthenticationService extends FedEOAuthenticationServiceProvide
 
     @Override
     protected String getAuthenticationTokenValue(String protectedURL, UsernamePasswordCredentials credentials) throws IOException {
-        try (CloseableHttpResponse downloadRequestResponse = NetUtils.openConnection(HttpMethod.GET, protectedURL, null)) {
+        try (CloseableHttpResponse downloadRequestResponse = NetUtils.openConnection(HttpMethod.GET, protectedURL, credentials)) {
             if (downloadRequestResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s", downloadRequestResponse.getStatusLine().getStatusCode(), downloadRequestResponse.getStatusLine().getReasonPhrase()));
             }
             if (downloadRequestResponse.getFirstHeader("Content-Disposition") != null) {
-                return extractAuthTokenFromCookies(protectedURL);
+                return extractAuthTokenFromCookies(protectedURL, credentials);
             }
-            final String loginToken = getLoginToken(protectedURL);
+            final String loginToken = getLoginToken(protectedURL, credentials);
             if (loginToken.isEmpty()) {
                 throw new IllegalStateException("Fail authentication for:" + protectedURL);
             }

@@ -36,7 +36,7 @@ public class EOCATAuthentication {
         samlLoginParameters.add(new BasicNameValuePair("username", credentials.getUserName()));
         samlLoginParameters.add(new BasicNameValuePair("password", credentials.getPassword()));
         samlLoginParameters.add(new BasicNameValuePair("sessionDataKey", sessionDataKey));
-        try (CloseableHttpResponse samlLoginResponse = NetUtils.openConnection(HttpMethod.POST, SAML_LOGIN_ADDRESS, (Credentials) null, samlLoginParameters)) {
+        try (CloseableHttpResponse samlLoginResponse = NetUtils.openConnection(HttpMethod.POST, SAML_LOGIN_ADDRESS, credentials, samlLoginParameters)) {
             final String samlLoginRequestResponseBody = EntityUtils.toString(samlLoginResponse.getEntity());
             if (samlLoginRequestResponseBody.isEmpty()) {
                 throw new IllegalStateException("Get SAMLResponse failed.");
@@ -63,12 +63,12 @@ public class EOCATAuthentication {
         throw new IllegalStateException("401: Authentication failed. Reason: Get SAML Data failed.");
     }
 
-    private static String getShibbolethToken(String saml2LoginAddress, String samlResponse) throws IOException {
+    private static String getShibbolethToken(String saml2LoginAddress, String samlResponse, Credentials credentials) throws IOException {
         final List<NameValuePair> samlLoginParameters = new ArrayList<>();
         samlLoginParameters.add(new BasicNameValuePair("SAMLResponse", samlResponse));
-        try (CloseableHttpResponse shibbolethLoginResponse = NetUtils.openConnection(HttpMethod.POST, saml2LoginAddress, (Credentials) null, samlLoginParameters)) {
+        try (CloseableHttpResponse shibbolethLoginResponse = NetUtils.openConnection(HttpMethod.POST, saml2LoginAddress, credentials, samlLoginParameters)) {
             if (shibbolethLoginResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                final String shibbolethCookieToken = extractShibbolethTokenFromCookies(saml2LoginAddress);
+                final String shibbolethCookieToken = extractShibbolethTokenFromCookies(saml2LoginAddress, credentials);
                 if (!shibbolethCookieToken.isEmpty()) {
                     return shibbolethCookieToken;
                 }
@@ -88,8 +88,8 @@ public class EOCATAuthentication {
         }
     }
 
-    private static String extractShibbolethTokenFromCookies(String protectedURL) throws IOException {
-        final List<Cookie> shibbolethCookies = NetUtils.getCookies(protectedURL);
+    private static String extractShibbolethTokenFromCookies(String protectedURL, Credentials credentials) throws IOException {
+        final List<Cookie> shibbolethCookies = NetUtils.getCookies(protectedURL, credentials);
         if (shibbolethCookies != null && !shibbolethCookies.isEmpty()) {
             final StringBuilder shibbolethCookieToken = new StringBuilder();
             for (Cookie shibbolethCookie : shibbolethCookies) {
@@ -109,13 +109,13 @@ public class EOCATAuthentication {
             return this.cookieToken;
         }
         int responseStatus;
-        try (CloseableHttpResponse downloadRequestResponse = NetUtils.openConnection(HttpMethod.GET, protectedURL, null)) {
+        try (CloseableHttpResponse downloadRequestResponse = NetUtils.openConnection(HttpMethod.GET, protectedURL, this.credentials)) {
             responseStatus = downloadRequestResponse.getStatusLine().getStatusCode();
             if (responseStatus == HttpStatus.SC_FORBIDDEN) {
-                new IllegalStateException("403: Forbidden. Reason: Account not authorized to download data from this collection.");
+                throw new IllegalStateException("403: Forbidden. Reason: Account not authorized to download data from this collection.");
             }
             if (downloadRequestResponse.getFirstHeader("Content-Disposition") != null) {
-                this.cookieToken = extractShibbolethTokenFromCookies(protectedURL);
+                this.cookieToken = extractShibbolethTokenFromCookies(protectedURL, this.credentials);
                 return this.cookieToken;
             }
             final String downloadRequestResponseBody = EntityUtils.toString(downloadRequestResponse.getEntity());
@@ -126,7 +126,7 @@ public class EOCATAuthentication {
             } else {
                 samlData = getSAMLData(getSAMLLoginResponse(sessionDataKey, this.credentials));
             }
-            this.cookieToken = getShibbolethToken(samlData[0], samlData[1]);
+            this.cookieToken = getShibbolethToken(samlData[0], samlData[1], this.credentials);
             return this.cookieToken;
         }
     }
