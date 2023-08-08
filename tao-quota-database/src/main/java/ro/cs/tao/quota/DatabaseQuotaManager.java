@@ -69,7 +69,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 		if(user.getMemoryQuota() == -1) {
 			return true;
 		}
-		final int requiredMemory = memory + this.taskProvider.getMemoryForUser(user.getUsername());
+		final int requiredMemory = memory + this.taskProvider.getMemoryForUser(user.getId());
 		
 		return (user.getMemoryQuota() - requiredMemory) > 0;
 	}
@@ -83,7 +83,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 			return -1;
 		}
 		
-		return Math.max(0, user.getCpuQuota() - this.taskProvider.getCPUsForUser(user.getUsername()));
+		return Math.max(0, user.getCpuQuota() - this.taskProvider.getCPUsForUser(user.getId()));
 	}
 
 	@Override
@@ -146,10 +146,10 @@ public class DatabaseQuotaManager implements QuotaManager {
 		if (principal == null) {
 			throw new IllegalArgumentException("[principal] null");
 		}
-		final String userName = principal.getName();
-		final User user = this.userProvider.getByName(userName);
+		final String userId = principal.getName();
+		final User user = this.userProvider.get(userId);
 		if (user == null) {
-			throw new QuotaException(String.format("User '%s' not found", userName));
+			throw new QuotaException(String.format("User '%s' not found", userId));
 		}
 		return user;
 	}
