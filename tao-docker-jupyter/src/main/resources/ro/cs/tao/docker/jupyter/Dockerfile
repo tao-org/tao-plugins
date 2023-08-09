@@ -2,7 +2,7 @@ FROM jupyter/base-notebook
 
 COPY pyKernel0requirements.txt .
 RUN pip install -r pyKernel0requirements.txt
-RUN rm /home/jovyan/.jupyter/jupyter_notebook_config.py
+#RUN rm /home/jovyan/.jupyter/jupyter_notebook_config.py
 COPY jupyter_notebook_config.py /home/jovyan/.jupyter/
 COPY jupyterlite.key /home/jovyan/
 COPY jupyterlite.pem /home/jovyan/
