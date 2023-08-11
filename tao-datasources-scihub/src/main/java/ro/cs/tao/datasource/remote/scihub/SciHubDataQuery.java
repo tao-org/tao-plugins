@@ -224,7 +224,7 @@ public class SciHubDataQuery extends DataQuery {
                             List<Long> result = parser.parse(rawResponse);
                             logger.fine(String.format(QUERY_RESULT_MESSAGE, query.getKey(),
                                                       this.source.getId(), this.sensorName, 1, count));
-                            count += result.size() > 0 ? result.get(0) : 0;
+                            count += !result.isEmpty() ? result.get(0) : 0;
                             break;
                         case 401:
                             throw new QueryException("The supplied credentials are invalid!");
@@ -326,6 +326,7 @@ public class SciHubDataQuery extends DataQuery {
                     if (idx > 0) {
                         query.append(" AND ");
                     }
+                    String value;
                     switch (parameter.getName()) {
                         /*case CommonParameterNames.PRODUCT:
                             query.append(parameter.getValueAsString());
@@ -346,7 +347,7 @@ public class SciHubDataQuery extends DataQuery {
                             }
                             break;
                         case CommonParameterNames.TILE:
-                            String value = parameter.getValueAsString();
+                            value = parameter.getValueAsString();
                             if (value.startsWith("[") && value.endsWith("]")) {
                                 String[] values = value.substring(1, value.length() - 1).split(",");
                                 query.append("(");

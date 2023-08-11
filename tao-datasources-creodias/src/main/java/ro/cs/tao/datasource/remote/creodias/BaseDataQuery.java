@@ -24,6 +24,7 @@ import ro.cs.tao.eodata.util.TileExtent;
 import ro.cs.tao.products.landsat.Landsat8TileExtent;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.utils.CloseableHttpResponse;
+import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
 
@@ -78,7 +79,7 @@ public abstract class BaseDataQuery extends DataQuery {
                             String rawResponse = EntityUtils.toString(response.getEntity());
                             ResponseParser<EOProduct> parser = new JsonResponseParser<>(responseHandler());
                             tmpResults = parser.parse(rawResponse);
-                            canContinue = tmpResults != null && tmpResults.size() > 0 && count != this.pageSize;
+                            canContinue = tmpResults != null && !tmpResults.isEmpty() && count != this.pageSize;
                             if (tmpResults != null) {
                                 if (this.sensorName.equals("Sentinel3")) {
                                     filterS3(tmpResults);
@@ -285,7 +286,7 @@ public abstract class BaseDataQuery extends DataQuery {
                 polygons = new String[] { wkt };
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.warning(ExceptionUtils.getStackTrace(logger, e));
         }
         return polygons;
     }
