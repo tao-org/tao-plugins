@@ -59,7 +59,7 @@ public class ZarrMetadataInspector implements MetadataInspector {
                         }
                     }
                 }
-                if (crs != null && crs.getIdentifiers() != null && crs.getIdentifiers().size() > 0) {
+                if (crs != null && crs.getIdentifiers() != null && !crs.getIdentifiers().isEmpty()) {
                     final String bounds = jsonObject.getString("geospatial_bounds");
                     metadata.setFootprint(bounds);
                     crs.getIdentifiers().stream()

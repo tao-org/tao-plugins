@@ -392,7 +392,7 @@ public class Landsat8Query extends DataQuery {
             filter.setValue(this.sensorName.substring(this.sensorName.length() - 1));
             request.withFilter(filter);
         }
-        if (pathRowFilter != null && pathRowFilter.size() > 0) {
+        if (pathRowFilter != null && !pathRowFilter.isEmpty()) {
             SearchFilterOr orFilter = new SearchFilterOr();
             for (String pathRow : pathRowFilter) {
                 SearchFilterAnd andFilter = new SearchFilterAnd();
@@ -430,7 +430,7 @@ public class Landsat8Query extends DataQuery {
         } else {
             results = new AtomicLong(0);
         }
-        if (pathRows != null && pathRows.size() > 0) {
+        if (pathRows != null && !pathRows.isEmpty()) {
             final Set<String> single = new HashSet<>();
             pathRows.forEach(pr -> {
                 try {
@@ -497,7 +497,7 @@ public class Landsat8Query extends DataQuery {
             if (currentSize > 0 && this.limit > 0 && currentSize > this.limit) {
                 trimmed.subList(this.limit, currentSize).clear();
             }
-            if (trimmed.size() > 0) {
+            if (!trimmed.isEmpty()) {
                 fillDownloadUrls(trimmed, getDownloadInfos(trimmed));
                 trimmed.removeIf(p -> p.getLocation() == null);
             }

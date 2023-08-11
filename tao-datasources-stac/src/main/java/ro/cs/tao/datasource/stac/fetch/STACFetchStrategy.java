@@ -43,7 +43,7 @@ public class STACFetchStrategy extends DownloadStrategy<STACClient> {
     protected Path fetchImpl(EOProduct product) throws IOException {
         final Path target;
         final Set<String> files = product.getFiles();
-        if (files != null && files.size() > 0) {
+        if (files != null && !files.isEmpty()) {
             target = Paths.get(this.destination).resolve(product.getName());
             Files.createDirectories(target);
             STACClient client = this.dataSource.authenticate();;

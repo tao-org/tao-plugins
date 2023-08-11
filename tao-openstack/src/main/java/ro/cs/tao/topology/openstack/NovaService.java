@@ -280,7 +280,7 @@ public class NovaService implements NodeProvider {
                                                   .build());
         } else {
             final List<? extends VolumeAttachment> attachments = volume.getAttachments();
-            if (attachments != null && attachments.size() > 0) {
+            if (attachments != null && !attachments.isEmpty()) {
                 // the volume exists and already has attachments
                 throw new TopologyException("The volume '%s' already exists and is attached [%s]",
                                             volumeName,
@@ -424,7 +424,7 @@ public class NovaService implements NodeProvider {
                 throw new IllegalStateException("The server name '" + serverName+"' has not been deleted. Message: " + actionResponse.getFault()+".");
             }
 
-            if (floatingAddressesToDelete.size() > 0) {
+            if (!floatingAddressesToDelete.isEmpty()) {
                 List<? extends FloatingIP> floatingIPs = floatingIPService.list();
                 for (Address address : floatingAddressesToDelete) {
                     FloatingIP foundFloatingIP = null;

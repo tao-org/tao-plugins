@@ -105,7 +105,7 @@ public class SwiftService {
         List partial;
         // Some OpenStack REST implementation don't return the full list, even if it is less than the limit set.
         // Hence, at the expense of an extra call if no other result, try to retrieve the rest of the list
-        if (results.size() > 0 && (path.isEmpty() || path.equals("/")) && results.size() < this.pageLimit) {
+        if (!results.isEmpty() && (path.isEmpty() || path.equals("/")) && results.size() < this.pageLimit) {
             SwiftObject lastObject = results.get(results.size() - 1);
             if (lastObject.isDirectory()) {
                 options.marker((path.isEmpty() ? "" : (path + "/")) + lastObject.getDirectoryName());
@@ -121,7 +121,7 @@ public class SwiftService {
                 } else {
                     results.addAll(partial);
                 }
-                if (partial.size() > 0) {
+                if (!partial.isEmpty()) {
                     lastObject = (SwiftObject) partial.get(partial.size() - 1);
                     if (lastObject.isDirectory()) {
                         options.marker((path.isEmpty() ? "" : (path + "/")) + lastObject.getDirectoryName());
@@ -131,7 +131,7 @@ public class SwiftService {
                         }
                     }
                 }
-            } while (partial.size() > 0 && results.size() <= this.pageLimit);
+            } while (!partial.isEmpty() && results.size() <= this.pageLimit);
         }
         return results;
     }
