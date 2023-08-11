@@ -59,6 +59,9 @@ public class EOCATAuthentication {
             if (samlLoginResponse.contains("Error 502")) {
                 throw new QueryException("The request was not successful. Reason: response code: 502: response message: BAD GATEWAY");
             }
+            if (samlLoginResponse.contains("503 Service Unavailable")) {
+                throw new QueryException("The request was not successful. Reason: response code: 503: response message: Service Unavailable");
+            }
         }
         throw new IllegalStateException("401: Authentication failed. Reason: Get SAML Data failed.");
     }
