@@ -49,9 +49,9 @@ public class JaxaAuthenticationService extends FedEOAuthenticationServiceProvide
         loginParameters.add(new BasicNameValuePair("password", credentials.getPassword()));
         loginParameters.add(new BasicNameValuePair("fuel_csrf_token", loginToken));
         try (CloseableHttpResponse loginResponse = NetUtils.openConnection(HttpMethod.POST, AUTH_URL, credentials, loginParameters)) {
-            if (loginResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK && !EntityUtils.toString(loginResponse.getEntity()).contains("\"key\": null")) {
+            if (loginResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK && !EntityUtils.toString(loginResponse.getEntity()).contains("\"key\":null")) {
                 final String authCookieToken = extractAuthTokenFromCookies(AUTH_URL, credentials);
-                if (!authCookieToken.isEmpty()) {
+                if (authCookieToken.contains("iPlanetDirectoryPro")) {
                     return authCookieToken;
                 }
             }
