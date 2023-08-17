@@ -84,7 +84,7 @@ public class STACQuery extends DataQuery {
                         int idx = 1;
                         while (idx++ < this.pageNumber
                                 && currentPage.getFeatures() != null
-                                && currentPage.getFeatures().size() > 0) {
+                                && !currentPage.getFeatures().isEmpty()) {
                             params.put("next", extractParameterValue(link.getHref(), "next"));
                             currentPage = client.search(this.sensorName, params);
                             link = getLink(currentPage.getLinks(), "next");

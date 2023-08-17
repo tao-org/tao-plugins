@@ -156,7 +156,7 @@ public class STACClient {
      */
     public void download(Item item, Path folder) throws IOException {
         final Map<String, Asset> assets = item.getAssets();
-        if (assets != null && assets.size() > 0) {
+        if (assets != null && !assets.isEmpty()) {
             final Path target = folder.resolve(item.getId());
             Files.createDirectories(target);
             try {
