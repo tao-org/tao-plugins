@@ -3,6 +3,7 @@ package ro.cs.tao.aws;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.event.ProgressEvent;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
@@ -35,10 +36,12 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
     public static final String AWS_ACCESS_KEY = "aws.access.key";
     public static final String AWS_SECRET_KEY = "aws.secret.key";
     public static final String AWS_BUCKET = "aws.bucket";
+    public static final String AWS_ENDPOINT = "aws.endpoint";
     public static final String AWS_PAGE_LIMIT = "page.limit";
     private String region;
     private String accessKey;
     private String secretKey;
+    private String endpoint;
     private AmazonS3 client;
     private int pageLimit = 1000;
     private final Logger logger = Logger.getLogger(S3StorageService.class.getName());
@@ -83,6 +86,10 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
         value = parameters.get(AWS_PAGE_LIMIT);
         if (!StringUtilities.isNullOrEmpty(value)) {
             this.pageLimit = Integer.parseInt(value);
+        }
+        value = parameters.get(AWS_ENDPOINT);
+        if (!StringUtilities.isNullOrEmpty(value)) {
+            this.endpoint = value;
         }
     }
 
@@ -465,15 +472,26 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
         if (this.region == null) { // || this.accessKey == null || this.secretKey == null) {
             throw new IllegalArgumentException("S3 client not configured");
         }
-        return this.accessKey != null && this.secretKey != null
-                ? AmazonS3ClientBuilder.standard()
-                                        .withRegion(Regions.fromName(this.region))
-                                        .withCredentials(new AWSStaticCredentialsProvider(
-                                            new BasicAWSCredentials(this.accessKey, this.secretKey)))
-                                        .build()
-                : AmazonS3ClientBuilder.standard()
-                                        .withRegion(Regions.fromName(this.region))
-                                        .build();
+        AwsClientBuilder.EndpointConfiguration endpointConfiguration = null;
+        if (this.endpoint != null) {
+            endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(this.endpoint, this.region);
+        }
+        AmazonS3 s3client;
+        AmazonS3ClientBuilder builder;
+        if (this.accessKey != null && this.secretKey != null) {
+            builder = AmazonS3ClientBuilder.standard()
+                                           .withCredentials(new AWSStaticCredentialsProvider(
+                                                   new BasicAWSCredentials(this.accessKey, this.secretKey)));
+        } else {
+            builder = AmazonS3ClientBuilder.standard();
+        }
+        if (endpointConfiguration != null) {
+            builder.withEndpointConfiguration(endpointConfiguration);
+        } else {
+            builder.withRegion(Regions.fromName(this.region));
+        }
+        s3client = builder.build();
+        return s3client;
     }
 
     private void ensureBucketExists(String name) {

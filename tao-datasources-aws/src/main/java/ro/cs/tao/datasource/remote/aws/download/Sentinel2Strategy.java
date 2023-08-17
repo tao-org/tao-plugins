@@ -103,7 +103,7 @@ public class Sentinel2Strategy extends AWSStrategy {
     @Override
     public void setFilteredTiles(Set<String> tiles) {
         super.setFilteredTiles(tiles);
-        shouldFilterTiles = this.filteredTiles != null && this.filteredTiles.size() > 0;
+        shouldFilterTiles = this.filteredTiles != null && !this.filteredTiles.isEmpty();
     }
 
     @Override
@@ -267,7 +267,7 @@ public class Sentinel2Strategy extends AWSStrategy {
                             }
                         }
                     }
-                    if (downloadedTiles.size() > 0) {
+                    if (!downloadedTiles.isEmpty()) {
                         final Pattern tilePattern = helper.getTilePattern();
                         product.addAttribute("tiles", downloadedTiles.stream().map(t -> {
                             Matcher matcher = tilePattern.matcher(t);
@@ -346,7 +346,7 @@ public class Sentinel2Strategy extends AWSStrategy {
                                                  "GRANULE".equals(folder.getName(folder.getNameCount() - 1).toString()) ||
                                                  tileNames.stream().anyMatch(tn -> folder.toString().contains(tn)))
                                          .allMatch(folder -> checkFile(folder) &&
-                                                 FileUtilities.listFiles(folder).size() > 0);
+                                                 !FileUtilities.listFiles(folder).isEmpty());
                 if (checked)                            {
                     destinationPath = productSourcePath;
                 }
@@ -501,7 +501,7 @@ public class Sentinel2Strategy extends AWSStrategy {
                             }
                         }
                     }
-                    if (downloadedTiles.size() > 0) {
+                    if (!downloadedTiles.isEmpty()) {
                         final Pattern tilePattern = helper.getTilePattern();
                         product.addAttribute("tiles", downloadedTiles.stream().map(t -> {
                             Matcher matcher = tilePattern.matcher(t);

@@ -230,7 +230,7 @@ public class STACStorageService extends BaseStorageService<byte[], InputStream> 
         final FileObject fileObject = new FileObject();
         final String title = feature.getField("title");
         fileObject.setDisplayName(title != null ? title : feature.getId());
-        fileObject.setFolder(feature.getAssets() != null && feature.getAssets().size() > 0);
+        fileObject.setFolder(feature.getAssets() != null && !feature.getAssets().isEmpty());
         fileObject.setProtocol(PROTOCOL);
         fileObject.setProductName(fileObject.getDisplayName());
         fileObject.setLastModified(feature.getDatetime());

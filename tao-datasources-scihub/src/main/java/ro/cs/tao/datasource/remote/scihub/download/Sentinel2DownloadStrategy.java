@@ -151,7 +151,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
     @Override
     public void setFilteredTiles(Set<String> tiles) {
         this.filteredTiles = tiles;
-        if (shouldFilterTiles = (tiles != null && tiles.size() > 0)) {
+        if (shouldFilterTiles = (tiles != null && !tiles.isEmpty())) {
             StringBuilder text = new StringBuilder();
             text.append("(?:.+)(");
             int idx = 1, n = tiles.size();
@@ -386,7 +386,7 @@ public class Sentinel2DownloadStrategy extends SentinelDownloadStrategy {
                         Path dataStrip = FileUtilities.ensureExists(dataStripFolder.resolve(dsFolder));
                         downloadFile(dataStripPath, dataStrip.resolve(dsFileName), token);
                     }
-                    if (downloadedTiles.size() > 0) {
+                    if (!downloadedTiles.isEmpty()) {
                         final Pattern tilePattern = helper.getTilePattern();
                         product.addAttribute("tiles", downloadedTiles.stream().map(t -> {
                             Matcher matcher = tilePattern.matcher(t);
