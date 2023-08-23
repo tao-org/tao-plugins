@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 public class WPSExecutor extends Executor<WPSExecutionTask> {
 
@@ -40,6 +41,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
     private static WPSAuthenticationProvider authenticationProvider;
     private final Map<String, WebProcessingService> webServicesMap;
     private final ExecutorService backgroundWorker;
+    private final Logger logger = Logger.getLogger(WPSExecutor.class.getName());
 
     public static void setTaskProvider(ExecutionTaskProvider provider) {
         WPSExecutor.taskProvider = provider;
@@ -76,7 +78,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
             final URL url = new URL(address);
             task.setExecutionNodeHostName(url.getHost());
             List<Variable> values = task.getInputParameterValues();
-            if (values == null || values.size() == 0) {
+            if (values == null || values.isEmpty()) {
                 throw new ExecutionException("No input data for the task");
             }
             final WebProcessingService wps = this.webServicesMap.computeIfAbsent(address,
@@ -86,7 +88,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
                                                                                         new WPSHttpClient(authentication),
                                                                                         null);
                                                     } catch (Exception e) {
-                                                        e.printStackTrace();
+                                                        logger.severe(e.getMessage());
                                                     }
                                                     return null;
                                                 });
