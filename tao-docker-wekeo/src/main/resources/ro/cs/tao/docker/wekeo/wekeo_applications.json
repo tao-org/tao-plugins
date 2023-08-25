@@ -182,6 +182,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -282,6 +283,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -382,6 +384,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -482,6 +485,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -582,6 +586,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -682,6 +687,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -782,6 +788,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -882,6 +889,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -982,6 +990,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -1082,6 +1091,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -1182,6 +1192,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -1282,6 +1293,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -1364,6 +1376,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -1516,6 +1529,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -1657,6 +1671,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -1809,6 +1824,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -1990,6 +2006,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -2162,6 +2179,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -2325,6 +2343,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -2495,6 +2514,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
