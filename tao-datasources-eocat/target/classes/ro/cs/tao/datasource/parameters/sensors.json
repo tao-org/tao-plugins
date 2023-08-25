@@ -1,0 +1,352 @@
+{
+  "ALOS-1": {
+    "mission": "ALOS-1",
+    "sensorType": "RADAR",
+    "description": "ALOS was developed by JAXA and carried two optical instruments and an L-band active microwave sensor payload. Applications include cartography, regional observation, disaster observation and resources surveying. ESA offers access to ALOS data through the TPM scheme, over the European/African ground segment.",
+    "temporalCoverage": "from 2006 to 2011",
+    "spatialCoverage": "World"
+  },
+  "Beijing-1": {
+    "mission": "Beijing-1",
+    "sensorType": "OPTICAL",
+    "description": "Coverage captured by the DMC constellation (UK-DMC, Beijing-1 and NigeriaSat-1). Images are derived from 32 m resolution optical images from the SLIM-6 instrument. The products avaliable are L1R: Band registered product derived from the L0R product, and L1T: Orthorectified product derived from the L1R product using manually collected GCPs from IMAGE2000 and SRTM DEM V3.1 data. Access is provided through the ESA TPM scheme.",
+    "temporalCoverage": "2007",
+    "spatialCoverage": "Europe"
+  },
+  "COSMO-SkyMed": {
+  "mission": "COSMO-SkyMed",
+  "sensorType": "RADAR",
+  "description": "COSMO-SkyMed is a four-spacecraft constellation, conceived by Agenzia Spaziale Italiana (ASI) and funded by the Italian Ministry of Research (MUR) and the Italian Ministry of Defense (MoD). Each of the four satellites is equipped with a SAR instrument and is capable of operating in all visibility conditions at high resolution and in real time. The overall objective of this program is global EO and the relevant data exploitation for the needs of the military community as well as for the civil (institutional, commercial) community. The ESA TPM collection is composed by the copy of products requested by ESA supported projects over their areas of interest around the world. The dataset regularly grows as ESA collects new products over the years",
+  "temporalCoverage": "from 2008 to present",
+  "spatialCoverage": "World"
+},
+  "CryoSat-2": {
+    "mission": "CryoSat-2",
+    "sensorType": "ALTIMETRIC",
+    "description": "CryoSat-2 is the first successfully launched satellite in the CryoSat series. The mission is operated by ESA as one of their Earth Explorer missions. It monitors changes in polar ice sheets.",
+    "temporalCoverage": "from 2010 to present",
+    "spatialCoverage": "World"
+  },
+  "ERS-1": {
+    "mission": "ERS-1",
+    "sensorType": "RADAR",
+    "description": "The ERS-1 was the first environmental monitoring satellite developed by ESA. The mission detected land and ocean surface change and provided observation data on oceans, polar ice, vegetation, geology, meteorology and ecology.",
+    "temporalCoverage": "from 1991 to 2001",
+    "spatialCoverage": "World"
+  },
+  "ERS-2": {
+    "mission": "ERS-2",
+    "sensorType": "RADAR",
+    "description": "Launched in April 1995, the ERS-2 was an enhancement of the previous ERS-1 mission. ERS-2 provided microwave spectrum environmental monitoring across a range of disciplines (oceans, polar ice, forestry).",
+    "temporalCoverage": "from 1995 to 2011",
+    "spatialCoverage": "World"
+  },
+  "Envisat": {
+    "mission": "Envisat",
+    "sensorType": "RADAR",
+    "description": "Envisat was ESA's successor to ERS. Launched on 1 March 2002 on an Ariane-5 rocket from Europe’s spaceport in French Guiana, Envisat was the largest Earth observation spacecraft ever built with 10 instruments aboard and at eight tonnes was the largest civilian Earth observation mission ever launched. More advanced imaging radar, radar altimeter and temperature-measuring radiometer instruments extended ERS data sets. This was supplemented by new instruments including a medium-resolution spectrometer sensitive to both land features and ocean colour. Envisat also carried two atmospheric sensors monitoring trace gases",
+    "temporalCoverage": "from 2002 to 2012",
+    "spatialCoverage": "World"
+  },
+  "GOCE": {
+    "mission": "GOCE",
+    "sensorType": "RADAR",
+    "description": "GOCE was a geodynamics and geodetics mission with the objective of determining the stationary gravitational field. The mission ended in October 2013 after it ran out of fuel.",
+    "temporalCoverage": "from 2009 to 2013",
+    "spatialCoverage": "World"
+  },
+  "GeoEye-1": {
+    "mission": "GeoEye-1",
+    "sensorType": "RADAR",
+    "description": "GeoEye-1 is an Earth-imaging satellite operated by Maxar of the United States which launched 6 September 2008 and remains operational.",
+    "temporalCoverage": "from 2008 to present",
+    "spatialCoverage": "World"
+  },
+  "ICEYE": {
+    "mission": "ICEYE",
+    "sensorType": "RADAR",
+    "description": "The ICEYE vision is to bring a new service to the market with an emphasis on superior reliability, a vastly higher rate of revisits to individual locations, and an unprecedented objectivity. The service is based on a completely new satellite and sensor design, leveraging recent advancement in various technologies and the New Space approach.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "World"
+  },
+  "IKONOS-2": {
+    "mission": "IKONOS-2",
+    "sensorType": "OPTICAL",
+    "description": "ESA maintains an archive of IKONOS Geo Ortho Kit data previously requested through the TPM scheme and acquired between 2000 and 2008, over Europe, North Africa and the Middle East. The imagery products gathered from IKONOS are categorised according to positional accuracy, which is determined by the reliability of an object in the image to be within the specified accuracy of the actual location of the object on the ground. Within each IKONOS-derived product, location error is defined by a circular error at 90% confidence (CE90), which means that locations of objects are represented on the image within the stated accuracy 90% of the time. There are six levels of IKONOS imagery products, determined by the level of positional accuracy: Geo, Standard Ortho, Reference, Pro, Precision and PrecisionPlus. The product provided by ESA to Category-1 users is the Geo Ortho Kit, consisting of IKONOS Black-and-White images with radiometric and geometric corrections (1-metre pixels, CE90=15 metres) bundled with IKONOS multispectral images with absolute radiometry (4-metre pixels, CE90=50 metres).   IKONOS collects 1m and 4m Geo Ortho Kit imagery (nominally at nadir 0.82m for panchromatic image, 3.28m for multispectral mode) at an elevation angle between 60 and 90 degrees. To increase the positional accuracy of the final orthorectified imagery, customers should select imagery with IKONOS elevation angle between 72 and 90 degrees. The Geo Ortho Kit is tailored for sophisticated users such as photogrammetrists who want to control the orthorectification process. Geo Ortho Kit images include the camera geometry obtained at the time of image collection. Applying Geo Ortho Kit imagery, customers can produce their own highly accurate orthorectified products by using commercial off the shelf software, digital elevation models (DEMs) and optional ground control.",
+    "temporalCoverage": "from 2000 to 2008",
+    "spatialCoverage": "Europe, North Africa, Middle East"
+  },
+  "IRS-1C": {
+    "mission": "IRS-1C",
+    "sensorType": "OPTICAL",
+    "description": "IRS-1C/1D dataset is composed of products generated by the Indian Remote Sensing (IRS) Satellites 1C/1D PAN sensor. The products, acquired from 1996 to 2004 over Europe, are radiometrically and ortho corrected level 1 black and white images at 5 metre resolution and cover an area of up to 70 x 70 km.  Sensor: PAN Type: Panchromatic Resolution (m): 5 Coverage (km x km): 70 x 70  System or radiometrically corrected Ortho corrected (DN) Acquisition in Neustrelitz: 1996 - 2004 5 70 x 70 X X",
+    "temporalCoverage": "from 1996 to 2004",
+    "spatialCoverage": "Europe, Africa"
+  },
+  "IRS-1D": {
+    "mission": "IRS-1D",
+    "sensorType": "OPTICAL",
+    "description": "IRS-1C/1D dataset is composed of products generated by the Indian Remote Sensing (IRS) Satellites 1C/1D PAN sensor. The products, acquired from 1996 to 2004 over Europe, are radiometrically and ortho corrected level 1 black and white images at 5 metre resolution and cover an area of up to 70 x 70 km.  Sensor: PAN Type: Panchromatic Resolution (m): 5 Coverage (km x km): 70 x 70  System or radiometrically corrected Ortho corrected (DN) Acquisition in Neustrelitz: 1996 - 2004 5 70 x 70 X X",
+    "temporalCoverage": "from 1996 to 2004",
+    "spatialCoverage": "Europe, Africa"
+  },
+  "IRS-P6": {
+    "mission": "IRS-P6",
+    "sensorType": "OPTICAL",
+    "description": "Image 2006 collection is a SPOT-4, SPOT-5 and ResourceSat-1 (also known as IRS-P6) cloud free coverage over 38 European countries in 2006 (from February 2005 to November 2007). The Level 1 data provided in this collection originate from the SPOT-4 HRVIR instrument (with 20m spatial resolution), from SPOT-5 HRG (with 10m spatial resolution resampled to 20m) and IRS-P6 LISS III (with 23m spatial resolution), each with four spectral bands. The swath is of about 60 km for the SPOT satellites and 140 km for the IRS-P6 satellite.  In addition to the Level 1, the collection provides the same data geometrically corrected towards a European Map Projection with 25m resolution.",
+    "temporalCoverage": "from 2005 to 2007",
+    "spatialCoverage": "Europe"
+  },
+  "JERS-1": {
+    "mission": "JERS-1",
+    "sensorType": "OPTICAL",
+    "description": "The JERS-1 Optical System (OPS) is composed of a Very Near Infrared Radiometer (VNIR) and a Short Wave Infrared Radiometer (SWIR). The instrument has 8 observable spectral bands from visible to short wave infrared. Data acquired by ESA ground stations  The JERS-1 OPS products are available in GeoTIFF format. These products are available only for the VNIR sensor. All four bands are corrected. The correction consists in a vertical and horizontal destriping, the radiometry values are expanded from the range [0,63] to the range [0,255]. No geometrical correction is applied on level 1. The pixel size of approximately 18 x 24.2 metres for raw data is newly dimensioned to 18 x 18 metres for System Corrected data using a cubic convolution algorithm.  Disclaimer: Cloud coverage for JERS OPS products has not been computed using an algorithm. The cloud cover assignment was performed manually by operators at the acquisition stations. Due to missing attitude information, the Nadir looking band (band 3) and the corresponding forward looking band (band 4) are not well coregistered, resulting in some accuracy limitations. The quality control was not performed systematically for each frame. A subset of the entire JERS Optical dataset was selected and manually checked. As a result of this, users may occasionally encounter issues with some of the individual products.",
+    "temporalCoverage": "from 1992 to 1998",
+    "spatialCoverage": "World"
+  },
+  "KOMPSAT-2": {
+    "mission": "KOMPSAT-2",
+    "sensorType": "OPTICAL",
+    "description": "Kompsat-2 ESA archive collection is composed by bundle (Panchromatic and Multispectral separated images) products from the Multi-Spectral Camera (MSC) onboard KOMPSAT-2 acquired from 2007 to 2014: 1m resolution for PAN, 4m resolution for MS. Spectral Bands:  • Pan: 500 - 900 nm (locate, identify and measure surface features and objects primarily by their physical appearance) • MS1 (blue): 450 - 520 nm (mapping shallow water, differentiating soil from vegetation) • MS2 (green): 520 - 600 nm (differentiating vegetation by health) • MS3 (red): 630 - 690 nm (differentiating vegetation by species) • MS4 (near-infrared): 760 - 900 nm (mapping vegetation, mapping vegetation vigor/health, Differentiating vegetation by species)",
+    "temporalCoverage": "from 2007 to 2014",
+    "spatialCoverage": "World"
+  },
+  "Landsat-1": {
+    "mission": "Landsat-1",
+    "sensorType": "OPTICAL",
+    "description": "The Landsat program offers the longest continuous global record of the Earth’s surface; it continues to deliver visually stunning and scientifically valuable images of our planet.",
+    "temporalCoverage": "from 1972 to 1978",
+    "spatialCoverage": "Europe, North Africa, Middle East"
+  },
+  "Landsat-2": {
+    "mission": "Landsat-2",
+    "sensorType": "OPTICAL",
+    "description": "The Landsat program offers the longest continuous global record of the Earth’s surface; it continues to deliver visually stunning and scientifically valuable images of our planet.",
+    "temporalCoverage": "from 1975 to 1982",
+    "spatialCoverage": "Europe, North Africa, Middle East"
+  },
+  "Landsat-3": {
+    "mission": "Landsat-3",
+    "sensorType": "OPTICAL",
+    "description": "The Landsat program offers the longest continuous global record of the Earth’s surface; it continues to deliver visually stunning and scientifically valuable images of our planet.",
+    "temporalCoverage": "from 1975 to 1983",
+    "spatialCoverage": "Europe, North Africa, Middle East"
+  },
+  "Landsat-4": {
+    "mission": "Landsat-4",
+    "sensorType": "OPTICAL",
+    "description": "The Landsat program offers the longest continuous global record of the Earth’s surface; it continues to deliver visually stunning and scientifically valuable images of our planet.",
+    "temporalCoverage": "from 1982 to 1993",
+    "spatialCoverage": "Europe, North Africa, Middle East"
+  },
+  "Landsat-5": {
+    "mission": "Landsat-5",
+    "sensorType": "OPTICAL",
+    "description": "The Landsat program offers the longest continuous global record of the Earth’s surface; it continues to deliver visually stunning and scientifically valuable images of our planet.",
+    "temporalCoverage": "from 1984 to 2013",
+    "spatialCoverage": "Europe, North Africa, Middle East"
+  },
+  "Landsat-7": {
+    "mission": "Landsat-7",
+    "sensorType": "OPTICAL",
+    "description": "The Landsat program offers the longest continuous global record of the Earth’s surface; it continues to deliver visually stunning and scientifically valuable images of our planet.",
+    "temporalCoverage": "from 1999 to present",
+    "spatialCoverage": "Europe, North Africa, Middle East"
+  },
+  "Landsat-8": {
+    "mission": "Landsat-8",
+    "sensorType": "OPTICAL",
+    "description": "The Landsat program offers the longest continuous global record of the Earth’s surface; it continues to deliver visually stunning and scientifically valuable images of our planet.",
+    "temporalCoverage": "from 2013 to present",
+    "spatialCoverage": "Europe, North Africa, Middle East"
+  },
+  "Metop": {
+    "mission": "Metop",
+    "sensorType": "RADAR",
+    "description": "The Meteorological Operational satellite program (MetOp) is a collaboration between the European Space Agency (ESA) and the European Organisation for the Exploitation of Meteorological Satellites (EUMETSAT) with the aim to provide satellite observation and data services for weather prediction and climate monitoring. MetOp provides temperature and humidity profiles on the atmosphere, as well as wind speed and direction above the ocean data for Numerical Weather Prediction (NWP). MetOp-A, launched in 2006 and retired in 2021, began the MetOp series, followed by the launches of MetOp-B and -C in 2012 and 2018, respectively. ",
+    "temporalCoverage": "from 2006 to present",
+    "spatialCoverage": "World"
+  },
+  "NOAA POES": {
+    "mission": "NOAA POES",
+    "sensorType": "RADAR",
+    "description": "The NOAA (National Oceanic and Atmospheric Administration) Advanced Very High Resolution Radiometer (AVHRR) sensor is carried on the Polar Orbiting Environmental Satellites (POES), a constellation of polar orbiting satellites.",
+    "temporalCoverage": "from 1979 to 2009",
+    "spatialCoverage": "World"
+  },
+  "NigeriaSat-1": {
+    "mission": "NigeriaSat-1",
+    "sensorType": "RADAR",
+    "description": "Launched November 2011, NigeriaSat-2 is a Nigerian government imaging satellite and successor to NigeriaSat-1, produced by SSTL (Surrey Satellite Technology Ltd.) under a contract with the National Space Research and Development Agency (NASRDA) of Nigeria. It aims to provide high-resolution imagery of the Earth’s surface, with applications in supporting food security and agricultural data collection, mapping and security, as well as the provision of data continuity for the NigeriaSat-1 system.",
+    "temporalCoverage": "from 2003 to 2021",
+    "spatialCoverage": "World"
+  },
+  "OceanSat-2": {
+    "mission": "OceanSat-2",
+    "sensorType": "RADAR",
+    "description": "ESA, in collaboration with GAF AG, acquires and process every day OceanSat-2 passes over Neutrelitz reception station from 1 January 2016. All passes are systematically processed to levels 1B, 2B and 2C, and available for users in NRT (&lt; 3 hours). Products are available in: • Level 1B: Geophysical Data containing Radiance Data for all 8 Bands of OCM-2 • Level 2B: Geophysical Data L2B for given Geo physical parameter. Geo physical parameters: Chlorophyll, Aerosol Depth, Different Attenuation, Total Suspended Sediments • Level 2C: Georeferenced Radiance Data for given geo physical parameter. Geo physical parameters: Chlorophyll, Aerosol Depth, Different Attenuation, Total Suspended Sediments",
+    "temporalCoverage": "from 2009 to present",
+    "spatialCoverage": "World"
+  },
+  "PAZ": {
+    "mission": "PAZ",
+    "sensorType": "RADAR",
+    "description": "The PAZ (Spanish for “peace”) satellite, launched on 22 February 2018, is owned and operated by Hisdesat, and is based on the use of a high-resolution X-band Synthetic Aperture Radar (SAR). The satellite operates in the same orbit as its twin satellites TerraSAR-X and TanDEM-X, and the three satellites work together as a constellation. The objective of the PAZ mission is to provide imagery for both civilian and security and defence requirements. ESA offers worldwide access to PAZ data (both archive and new tasking) via the TPM scheme.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "World"
+  },
+  "PROBA-1": {
+    "mission": "PROBA-1",
+    "sensorType": "OPTICAL",
+    "description": "CHRIS acquires a set of up to five images of each target during each acquisition sequence, these images are acquired when Proba-1 is pointing at distinct angles with respect to the target. CHRIS Level 1A products (supplied in HDF data files, version 4.1r3) include five formal CHRIS imaging modes, classified as modes 1 to 5: • MODE 1: Full swath width, 62 spectral bands, 773nm / 1036nm, nadir ground sampling distance 34m @ 556km • MODE 2 WATER BANDS: Full swath width, 18 spectral bands, nadir ground sampling distance 17m @ 556km • MODE 3 LAND CHANNELS: Full swath width, 18 spectral bands, nadir ground sampling distance 17m @ 556km • MODE 4 CHLOROPHYL BAND SET: Full swath width, 18 spectral bands, nadir ground sampling distance 17m @ 556km • MODE 5 LAND CHANNELS: Half swath width, 37 spectral bands, nadir ground sampling distance 17m @ 556km  All Proba-1 passes are systematically acquired according to the current acquisition plan, CHRIS data are processed every day to Level 1A and made available to ESA users. Observation over a new specific area can be performed by submitting the request to add a new site to the acquisition plan.",
+    "temporalCoverage": "from 2002 to present",
+    "spatialCoverage": "World"
+  },
+  "PlanetScope": {
+    "mission": "PlanetScope",
+    "sensorType": "OPTICAL",
+    "description": "ESA is offering, for scientific research and application development, access to data from the full archive of the PlanetScope missions upon submission and acceptance of a project proposal. These products are available as part of the Planet imagery offer.",
+    "temporalCoverage": "from 2016 to present",
+    "spatialCoverage": "World"
+  },
+  "Pleiades": {
+    "mission": "Pleiades-1A",
+    "sensorType": "OPTICAL",
+    "description": "The Pleiades ESA archive is a dataset of Pleiades-1A and 1B products that ESA collected over the years. The dataset regularly grows as ESA collects new Pleiades products. Pleiades Primary, Projected and Ortho products are available in the following modes:  • Panchromatic image at 0.5m resolution • Pansharpened colour image at 0.5m resolution • Multispectral image in 4 spectral bands at 2m resolution • Bundle (0.5m panchromatic image + 2m multispectral image)",
+    "temporalCoverage": "from 2011 to present",
+    "spatialCoverage": "World"
+  },
+  "QuickBird-2": {
+    "mission": "QuickBird-2",
+    "sensorType": "OPTICAL",
+    "description": "QuickBird-2 was an Earth-imaging satellite of Maxar of the United States which launched in October 2001 and ceased operations in 2015.",
+    "temporalCoverage": "from 2001 to 2015",
+    "spatialCoverage": "World"
+  },
+  "RADARSAT-1": {
+    "mission": "RADARSAT-1",
+    "sensorType": "RADAR",
+    "description": "The RADARSAT programme consists of a pair of Canadian remote-sensing satellites. RADARSAT-1 was Canada’s first commercial EO satellite and was developed to monitor the planet’s natural resources and environmental changes. It was equipped with a SAR instrument that could be steered to collect data over a 1,175 km wide area using seven beam modes. RADARSAT-2 provides continuity from RADARSAT-1 and has the objectives of developing an EO satellite business through a private sector-led arrangement with the federal government and offering data for new applications tailored to market needs. ESA offers access to worldwide RADARSAT archived data via the TPM scheme",
+    "temporalCoverage": "from 1995 to 2013",
+    "spatialCoverage": "Europe"
+  },
+  "RapidEye": {
+    "mission": "RapidEye",
+    "sensorType": "OPTICAL",
+    "description": "The RapidEye ESA archive is a subset of the RapidEye Full archive that ESA collected over the years. The dataset regularly grows as ESA collects new RapidEye products.",
+    "temporalCoverage": "from 2009 to present",
+    "spatialCoverage": "World"
+  },
+  "SMOS": {
+    "mission": "SMOS",
+    "sensorType": "PASSIVE_MICROWAVE",
+    "description": "SMOS Level 1 data products are designed for scientific and operational users who need to work with calibrated MIRAS instrument measurements, while SMOS Level 2 data products are designed for scientific and operational users who need to work with geo-located soil moisture and sea surface salinity estimation as retrieved from the L1 dataset.",
+    "temporalCoverage": "from 2010 to present",
+    "spatialCoverage": "World"
+  },
+  "SPOT 1": {
+    "mission": "SPOT 1",
+    "sensorType": "OPTICAL",
+    "description": "The ESA SPOT1-5 collection is a dataset of SPOT-1 to 5 Panchromatic and Multispectral products that ESA collected over the years. The HRV(IR) sensor onboard SPOT 1-4 provides data at 10 m spatial resolution Panchromatic mode (-1 band) and 20 m (Multispectral mode -3 or 4 bands). The HRG sensor on board of SPOT-5 provides spatial resolution of the imagery to &lt; 3 m in the panchromatic band and to 10 m in the multispectral mode (3 bands). The SWIR band imagery remains at 20 m. The dataset mainly focuses on European and African sites but some American, Asian and Greenland areas are also covered.",
+    "temporalCoverage": "from 1986 to 2015",
+    "spatialCoverage": "World"
+  },
+  "SPOT 2": {
+    "mission": "SPOT 2",
+    "sensorType": "OPTICAL",
+    "description": "The ESA SPOT1-5 collection is a dataset of SPOT-1 to 5 Panchromatic and Multispectral products that ESA collected over the years. The HRV(IR) sensor onboard SPOT 1-4 provides data at 10 m spatial resolution Panchromatic mode (-1 band) and 20 m (Multispectral mode -3 or 4 bands). The HRG sensor on board of SPOT-5 provides spatial resolution of the imagery to &lt; 3 m in the panchromatic band and to 10 m in the multispectral mode (3 bands). The SWIR band imagery remains at 20 m. The dataset mainly focuses on European and African sites but some American, Asian and Greenland areas are also covered.",
+    "temporalCoverage": "from 1986 to 2015",
+    "spatialCoverage": "World"
+  },
+  "SPOT 3": {
+    "mission": "SPOT 3",
+    "sensorType": "OPTICAL",
+    "description": "The ESA SPOT1-5 collection is a dataset of SPOT-1 to 5 Panchromatic and Multispectral products that ESA collected over the years. The HRV(IR) sensor onboard SPOT 1-4 provides data at 10 m spatial resolution Panchromatic mode (-1 band) and 20 m (Multispectral mode -3 or 4 bands). The HRG sensor on board of SPOT-5 provides spatial resolution of the imagery to &lt; 3 m in the panchromatic band and to 10 m in the multispectral mode (3 bands). The SWIR band imagery remains at 20 m. The dataset mainly focuses on European and African sites but some American, Asian and Greenland areas are also covered.",
+    "temporalCoverage": "from 1986 to 2015",
+    "spatialCoverage": "World"
+  },
+  "SPOT 4": {
+    "mission": "SPOT 4",
+    "sensorType": "OPTICAL",
+    "description": "Image 2006 collection is a SPOT-4, SPOT-5 and ResourceSat-1 (also known as IRS-P6) cloud free coverage over 38 European countries in 2006 (from February 2005 to November 2007). The Level 1 data provided in this collection originate from the SPOT-4 HRVIR instrument (with 20m spatial resolution), from SPOT-5 HRG (with 10m spatial resolution resampled to 20m) and IRS-P6 LISS III (with 23m spatial resolution), each with four spectral bands. The swath is of about 60 km for the SPOT satellites and 140 km for the IRS-P6 satellite.  In addition to the Level 1, the collection provides the same data geometrically corrected towards a European Map Projection with 25m resolution.",
+    "temporalCoverage": "from 2005 to 2007",
+    "spatialCoverage": "Europe"
+  },
+  "SPOT 5": {
+    "mission": "SPOT 5",
+    "sensorType": "OPTICAL",
+    "description": "Image 2006 collection is a SPOT-4, SPOT-5 and ResourceSat-1 (also known as IRS-P6) cloud free coverage over 38 European countries in 2006 (from February 2005 to November 2007). The Level 1 data provided in this collection originate from the SPOT-4 HRVIR instrument (with 20m spatial resolution), from SPOT-5 HRG (with 10m spatial resolution resampled to 20m) and IRS-P6 LISS III (with 23m spatial resolution), each with four spectral bands. The swath is of about 60 km for the SPOT satellites and 140 km for the IRS-P6 satellite.  In addition to the Level 1, the collection provides the same data geometrically corrected towards a European Map Projection with 25m resolution.",
+    "temporalCoverage": "from 2005 to 2007",
+    "spatialCoverage": "Europe"
+  },
+  "SPOT 6": {
+    "mission": "SPOT 6",
+    "sensorType": "OPTICAL",
+    "description": "The SPOT 6 and 7 ESA archive is a dataset of SPOT 6 and SPOT 7 products that ESA collected over the years. The dataset regularly grows as ESA collects new SPOT 6 and 7 products.  SPOT 6 and 7 Primary, Projected and Ortho products are available in the following modes:  Panchromatic image at 1.5m resolution Pansharpened colour image at 1.5m resolution Multispectral image in 4 spectral bands at 6m resolution Bundle (1.5m panchromatic image + 6m multispectral image)",
+    "temporalCoverage": "from 2012 to present",
+    "spatialCoverage": "World"
+  },
+  "SPOT 7": {
+    "mission": "SPOT 7",
+    "sensorType": "OPTICAL",
+    "description": "The SPOT 6 and 7 ESA archive is a dataset of SPOT 6 and SPOT 7 products that ESA collected over the years. The dataset regularly grows as ESA collects new SPOT 6 and 7 products.  SPOT 6 and 7 Primary, Projected and Ortho products are available in the following modes:  Panchromatic image at 1.5m resolution Pansharpened colour image at 1.5m resolution Multispectral image in 4 spectral bands at 6m resolution Bundle (1.5m panchromatic image + 6m multispectral image)",
+    "temporalCoverage": "from 2012 to present",
+    "spatialCoverage": "World"
+  },
+  "Seasat": {
+    "mission": "Seasat",
+    "sensorType": "RADAR",
+    "description": "SeaSat was a NASA/JPL experimental EO mission launched in 1978. It carried the first space borne SAR. During its brief 106-day lifetime, SeaSat collected more information about the oceans than had been acquired in the previous 100 years of shipboard research. The SAR instrument provided a wealth of information on diverse ocean phenomena such as sea-surface winds and temperatures, surface and internal waves, currents, sea ice, wind, and rainfall, thus giving the first global view of ocean circulation. The collection is the complete SeaSat dataset acquired by ESA, and access is provided through the TPM scheme.•",
+    "temporalCoverage": "from 1978 to 1978",
+    "spatialCoverage": "World"
+  },
+  "SkySat": {
+    "mission": "SkySat",
+    "sensorType": "RADAR",
+    "description": "Planet acquired the satellites with their 2017 purchase from Google of Terra Bella (formerly Skybox Imaging), a company founded in 2009. Two distinct markets for imagery and video were foreseen: various environmental applications, including monitoring agriculture, forestry, and other natural resources; and asset tracking, where spacecraft images help customers monitor various facilities for changes.",
+    "temporalCoverage": "from 2020 to 2021",
+    "spatialCoverage": "World"
+  },
+  "TerraSAR-X": {
+    "mission": "TerraSAR-X",
+    "sensorType": "RADAR",
+    "description": "TerraSAR-X and TanDEM-X are twin German SAR satellites created and operated in a Public-Private Partnership (PPP) between the German Aerospace Centre DLR and Airbus Defence and Space. The scientific objective of the missions is to make multi-mode and high-resolution X-band radar data available for a wide spectrum of applications in fields such as hydrology, geology, climatology, oceanography, and disaster monitoring. ESA offers access to worldwide TerraSAR-X/Tandem-X data (both archived and new acquisitions) and WorldDEM products via the TPM scheme.",
+    "temporalCoverage": "from 2007 to present",
+    "spatialCoverage": "World"
+  },
+  "UK-DMC-1": {
+    "mission": "UK-DMC-1",
+    "sensorType": "RADAR",
+    "description": "Coverage captured by the DMC constellation (UK-DMC, Beijing-1 and NigeriaSat-1). Images are derived from 32 m resolution optical images from the SLIM-6 instrument. The products avaliable are L1R: Band registered product derived from the L0R product, and L1T: Orthorectified product derived from the L1R product using manually collected GCPs from IMAGE2000 and SRTM DEM V3.1 data. Access is provided through the ESA TPM scheme",
+    "temporalCoverage": "from 2003 to 2011",
+    "spatialCoverage": "World"
+  },
+  "WorldView-1": {
+    "mission": "WorldView-1",
+    "sensorType": "OPTICAL",
+    "description": "WorldView-1 is an environment-monitoring satellite from Maxar of the United States which launched on 18 September 2007 and remains operational.\n\nIt became the world's first 50 cm resolution commercial imaging satellite.",
+    "temporalCoverage": "from 2007 to present",
+    "spatialCoverage": "Europe"
+  },
+  "WorldView-2": {
+    "mission": "WorldView-2",
+    "sensorType": "OPTICAL",
+    "description": "WorldView-2 is an imaging and environment-monitoring satellite from Maxar of the United States which launched on 8 October 2009 and remains operational.",
+    "temporalCoverage": "from 2007 to present",
+    "spatialCoverage": "Europe"
+  },
+  "WorldView-3": {
+    "mission": "WorldView-3",
+    "sensorType": "OPTICAL",
+    "description": "WorldView-3 is an imaging and environment-monitoring satellite from Maxar of the United States which launched on 13 August 2014 and remains operational. It is very similar to WorldView-2 but positioned in a lower orbit.",
+    "temporalCoverage": "from 2007 to present",
+    "spatialCoverage": "Europe"
+  },
+  "WorldView-4": {
+    "mission": "WorldView-4",
+    "sensorType": "OPTICAL",
+    "description": "WorldView-4 was an imaging and environment-monitoring satellite from Maxar of the United States, which launched on 11 November 2016 to enhance European Space Imaging's customer offering with very high resolution imagery options.",
+    "temporalCoverage": "from 2007 to present",
+    "spatialCoverage": "Europe"
+  }
+}

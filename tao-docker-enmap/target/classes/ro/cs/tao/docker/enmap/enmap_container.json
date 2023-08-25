@@ -1,0 +1,860 @@
+{
+  "id": "84931b6b-eac7-4542-9be6-f4ec0f052b23",
+  "name": "enmap",
+  "description": "EnMAP-Box Container",
+  "tag": "latest",
+  "applicationPath": "/usr/bin/",
+  "formatNameParameter": null,
+  "applications": [
+    {
+      "path": "qgis_process",
+      "name": "ClassFraction",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "Classification4Simple",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "Classification4Stratified",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ClassificationFraction",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ClassificationWorkflow",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ClassifierPerformanceReport",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitCatBoostClassifier",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitGaussianProcessClassifier",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitGenericClassifier",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitLGBMClassifier",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitLinearSVC",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitLogisticRegression",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitRandomForestClassifier",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitSpectralAngleMapper",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitSVCPolynomialKernel",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitSVCRBFKernel",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitXGBClassifier",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitXGBRFClassifier",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "PredictClassProbability",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "PredictClassification",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ReclassifyRaster",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitAffinityPropagation",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitBirch",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitKMeans",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitMeanshift",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "PredictUnsupervisedClassification",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialConvolutionAiryDisk",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialConvolutionBox",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialConvolutionCustom",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialConvolutionGaussian",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialConvolutionMoffat",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialConvolutionRickerWavelet",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialConvolutionRing",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialConvolutionSavitskyGolay",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialConvolutionTopHat",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialConvolutionTrapezoid",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialGaussianGradientMagnitude",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialGeneric",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialLaplace",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMaximum",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMedian",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMinimum",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMorphologicalBinaryClosing",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMorphologicalBinaryDilation",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMorphologicalBinaryErosion",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMorphologicalBinaryFillHoles",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMorphologicalBinaryOpening",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMorphologicalBinaryPropagation",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMorphologicalBlackTopHat",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMorphologicalGradient",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMorphologicalGreyDilation",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMorphologicalGreyErosion",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMorphologicalGreyOpening",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMorphologicalLaplace",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialMorphologicalWhiteTopHat",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialPercentile",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialPrewitt",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpatialSobel",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralConvolutionBox",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralConvolutionGaussian",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralConvolutionRickerWavelet",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralConvolutionSavitskyGolay",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralConvolutionTrapezoid",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateClassificationDsFromRaster",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateClassificationDsFromLibrary",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateClassificationDsFromVector",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateClassificationDsFromVectorWithTable",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateClassificationDsFromJsonFile",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateClassificationDsFromPythonCode",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateClassificationDsFromTable",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateClassificationDsFromTextFiles",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateRegressionDsFromDsVectorWithTable",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateRegressionDsFromDsRaster",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateRegressionDsFromDsLibrary",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateRegressionDsFromDsVector",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateRegressionDsFromJsonFile",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateRegressionDsFromPythonCode",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateRegressionDsFromTable",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateRegressionDsFromTextFiles",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateRegressionDsFromClassificationDs",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateUnsupervisedDsFromFeatureRaster",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateUnsupervisedDsFromJsonFile",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateUnsupervisedDsFromPythonCode",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateUnsupervisedDsFromSpectralLibrary",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateUnsupervisedDsFromTextFile",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateUnsupervisedDsFromVectorWithTable",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "MergeClassificationDatasets",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "RandomSamplesFromClassificationDataset",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "RandomSamplesFromRegressionDataset",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SelectFeaturesFromDataset",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SaveSpectralLibraryAsGeoJSONFile",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ClassifierFeatureRanking",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "HierarchicalFeatureClustering",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ImportDesisL1BProduct",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ImportDesisL1CProduct",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ImportDesisL2AProduct",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ImportEnmapL1BProduct",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ImportEnmapL1CProduct",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ImportEnmapL2AProduct",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ImportLandsatL2Product",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ImportPrismaL1Product",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ImportPrismaL2BProduct",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ImportPrismaL2CProduct",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ImportPrismaL2DProduct",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ImportSentinel2L2AProduct",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ApplyMaskLayerToRasterLayer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateMaskRaster",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "LayerToMaskRasterLayer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "AggregateRasterLayerBands",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ConvexHull",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateSpectralIndices",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "RasterLayerZonalAggregation",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "rasterMath",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SampleRasterLayerValues",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "VrtBandMath",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateRGBImageFromClassProbability",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SaveRasterLayerAs",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "TranslateCategorizedRasterLayer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "TranslateRasterLayer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "CreateGrid",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "StackRasterLayers",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SubsetRasterLayerBands",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "GeolocateRasterLayer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitCatBoostRegressor",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitGaussianProcessRegressor",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitGenericRegressor",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitKernelRidge",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitLGBMRegressor",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitLinearRegression",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitLinearSVR",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitPLSRegression",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitRandomForestRegressor",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitSVRPolynomialKernel",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitSVRRBFKernel",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitXGBRegressor",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitXGBRFRegressor",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "PredictRegressionLayer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "ReceiverOperatingROC",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "RegressionAccuracyReport",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "RegressionWorkflow",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "RegressorPerformanceReport",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralIndexOptimizer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralResamplingToCustomSensor",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralResamplingToDesisHsi",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralResamplingToEnmap",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralResamplingToLandsat45Tm",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralResamplingToLandsat7Etm",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralResamplingToLandsat89Oli",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralResamplingToPrisma",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralResamplingToResponseFunctionLibrary",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralResamplingToSentinel2Msi",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "SpectralResamplingToSpectralRasterLayerWavelengthAndFwhm",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitFactoranalysis",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitFastica",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitFeatureagglomeration",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitKernelpca",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitMaxabsscaler",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitMinmaxscaler",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitNormalizer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitPca",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitQuantiletransformer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitRobustscaler",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "FitStandardscaler",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "TransformRasterLayer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "InverseTransformRasterLayer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "RegressionBasedUnmixing",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "RasterizeCategorizedVectorLayer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "RasterizeVectorLayer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "RandomPointsFromCategorizedRasterLayer",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "qgis_process",
+      "name": "RandomPointsFromMaskRasterLayer",
+      "memoryRequirements": 4096
+    }
+  ]
+}

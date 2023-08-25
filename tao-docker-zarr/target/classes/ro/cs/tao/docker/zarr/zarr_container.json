@@ -1,0 +1,21 @@
+{
+	"id": "e0426b19-50cf-460b-aa25-840ad6e8dd36",
+	"name": "zarr-1-0-0",
+	"description": "Zarr Converter 1.0.0 Container",
+	"tag": "latest",
+	"applicationPath": null,
+	"formatNameParameter": null,
+	"format": null,
+	"applications": [
+		{
+			"path": "gdal_to_xarray.py",
+			"name": "zarr_convert",
+			"memoryRequirements": 8192
+		},
+		{
+			"path": "union_zarrs.py",
+			"name": "union_zarr",
+			"memoryRequirements": 8192
+		}
+	]
+}

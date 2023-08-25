@@ -1,0 +1,30 @@
+{
+  "Landsat8": {
+    "mission": "Landsat8",
+    "sensorType": "OPTICAL",
+    "description": "Project Landsat-8",
+    "temporalCoverage": "from 2013 to present",
+    "spatialCoverage": "Africa, Europe, North America, Oceania, Seven seas (open ocean), South America"
+  },
+  "Sentinel2": {
+    "mission": "Sentinel2",
+    "sensorType": "OPTICAL",
+    "description": "SENTINEL2",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Africa, Asia, Europe, North America, Oceania, Seven seas (open ocean), South America"
+  },
+  "Pleiades": {
+    "mission": "Pleiades",
+    "sensorType": "OPTICAL",
+    "description": "The Pleiades 'User Thematic Commissioning' project follows the Orfeo preparatory program designed to prepare the institutional and scientific community in the use of very high resolution images provided by the Pleiades satellites. It took place from 2012 until mid-2014, with the aim to validate and consolidate the results of the preparatory program. In this context, numerous images were acquired and can be shared within French institutional users. Data are in the official distribution format DIMAP-V2 and the level of preocessing is either PRIMARY or ORTHO.",
+    "temporalCoverage": "from 2012 to 2014",
+    "spatialCoverage": "Africa, Asia, Europe, North America, Oceania, Seven seas (open ocean), South America"
+  },
+  "Venus": {
+    "mission": "Venus",
+    "sensorType": "OPTICAL",
+    "description": "Project Venµs.",
+    "temporalCoverage": "from 2017 to 2020",
+    "spatialCoverage": "Africa, Antarctica, Asia, Europe, North America, Oceania, South America"
+  }
+}

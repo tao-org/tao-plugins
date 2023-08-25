@@ -1,0 +1,10 @@
+ro\cs\tao\datasource\remote\earthdata\parameters\EarthDataParameterProvider$1.class
+ro\cs\tao\datasource\remote\earthdata\download\EarthDataDownloadStrategy$1.class
+ro\cs\tao\datasource\remote\earthdata\parameters\PolygonParameterConverter.class
+ro\cs\tao\datasource\remote\earthdata\EarthDataQuery$1.class
+ro\cs\tao\datasource\remote\earthdata\download\EarthDataDownloadStrategy.class
+ro\cs\tao\datasource\remote\earthdata\parameters\EarthDataParameterProvider.class
+ro\cs\tao\datasource\remote\earthdata\EarthDataQuery.class
+ro\cs\tao\datasource\remote\earthdata\EarthDataSource.class
+ro\cs\tao\datasource\remote\earthdata\EarthDataQueryResponseHandler.class
+ro\cs\tao\datasource\remote\earthdata\parameters\DateParameterConverter.class

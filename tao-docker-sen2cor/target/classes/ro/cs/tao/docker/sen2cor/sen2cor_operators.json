@@ -1,0 +1,65 @@
+[
+	{
+		"id": "sen2cor",
+		"label": "Sen2Cor",
+		"version": "2.8",
+		"description": "Performs atmospheric corrections and cloud screening on Sentinel-2 L1C products.",
+		"authors": "S2 PDGS MPC Team",
+		"copyright": "(C) S2 PDGS MPC Team",
+		"nodeAffinity": "Any",
+		"sources": [
+			{
+				"id": "e498f83d-673e-459e-bdd8-977b50f91b9a",
+				"parentId": "sen2cor",
+				"name": "source",
+				"cardinality": 1,
+				"dataDescriptor": {
+					"formatType": "RASTER"
+				}
+			}
+		],
+		"targets": [
+			{
+				"id": "43eae213-ff64-4402-968b-4e28f5c4feeb",
+				"parentId": "sen2cor",
+				"name": "output_dir",
+				"cardinality": 1,
+				"dataDescriptor": {
+					"formatType": "RASTER",
+					"location": "output_sen2cor"
+				}
+			}
+		],
+		"containerId": "8a0570f2-a24a-46ed-a1bc-9ef0d7b904b2",
+		"fileLocation": "L2A_Process",
+		"workingDirectory": ".",
+		"templateType": "VELOCITY",
+		"multiThread": false,
+		"parallelism": 1,
+		"visibility": "SYSTEM",
+		"active": true,
+		"parameterDescriptors": [
+			{
+				"id": "mode",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "process_tile",
+				"description": "Mode",
+				"label": "mode",
+				"valueSet": ["generate_datastrip,process_tile"],
+				"notNull": false
+			},
+			{
+				"id": "resolution",
+				"type": "REGULAR",
+				"dataType": "int",
+				"defaultValue": "20",
+				"description": "Target resolution, can be 10, 20 or 60m.",
+				"label": "Resolution",
+				"valueSet": ["10","20","60"],
+				"notNull": false
+			}
+		],
+		"templatecontents": "--mode\n$mode\n--resolution\n$resolution\n--output_dir\n$output_dir\n$source\n"
+	}
+]

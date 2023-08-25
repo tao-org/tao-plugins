@@ -1,0 +1,16 @@
+{
+  "Sentinel1": {
+    "mission": "Sentinel1",
+    "sensorType": "RADAR",
+    "description": "The SENTINEL-1 mission comprises a constellation of two polar-orbiting satellites, operating day and night performing C-band Synthetic Aperture Radar (SAR) imaging, enabling them to acquire imagery regardless of the weather. Sentinel-1 is operated in four imaging modes with different resolutions (down to 10 m) and coverage (up to 400 km swath), offering reliable wide area monitoring every 12 days with one satellite and 6 days with two satellites.",
+    "temporalCoverage": "from 2014 to present",
+    "spatialCoverage": "Global"
+  },
+  "Sentinel2": {
+    "mission": "Sentinel2",
+    "sensorType": "OPTICAL",
+    "description": "The Sentinel-2 mission systematically acquires data over land and coastal areas in a band of latitude extending from 56° South (Isla Hornos, Cape Horn, South America) to 84° North (above Greenland).",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  }
+}

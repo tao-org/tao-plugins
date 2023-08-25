@@ -1,0 +1,8 @@
+{
+	"id": "18b624c9-986e-475e-ac37-6b3f72dff03a",
+	"name": "jupyterlite",
+	"description": "Jupyter Lite",
+	"tag": "latest",
+	"applicationPath": "home/jovyan/notebooks",
+	"applications": null
+}
