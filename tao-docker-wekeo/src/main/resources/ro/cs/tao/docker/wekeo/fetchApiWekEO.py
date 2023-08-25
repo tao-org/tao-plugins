@@ -362,11 +362,8 @@ def main():
 
     username: str = args.username
     password: str = args.password
-    query: str = base64.b64decode(args.query)
+    query: str = args.query
     out: str = os.path.join(os.getcwd(), str(args.out))
-    print("username: ", username)
-    print("password: ", password)
-    print("query: ", query)
     client = Client(username, password, query, out)
     client.run_fetch()
 
