@@ -5,6 +5,9 @@ import com.fasterxml.jackson.core.TreeNode;
 import ro.cs.tao.stac.core.model.Extensible;
 import ro.cs.tao.stac.core.model.extensions.Extension;
 import ro.cs.tao.stac.core.parser.JsonValueHelper;
+
+import java.util.logging.Logger;
+
 /**
  * Projection extension
  *
@@ -24,22 +27,26 @@ public class ProjExtension<E extends Extensible> extends Extension<E> {
 
     @Override
     public void extractField(TreeNode node, String name) throws JsonProcessingException {
-        if (ProjFields.CENTROID.equals(name)) {
-            TreeNode child = node.get(name);
-            Centroid centroid = new Centroid();
-            centroid.setLat(JsonValueHelper.getDouble(child, "lat"));
-            centroid.setLon(JsonValueHelper.getDouble(child, "lon"));
-            setCentroid(centroid);
-        } else if (ProjFields.EPSG.equals(name)) {
-            setEpsg(JsonValueHelper.getInt(node, name));
-        } else if (ProjFields.PROJJSON.equals(name)) {
-            setProjjson(JsonValueHelper.getString(node, name));
-        } else if (ProjFields.SHAPE.equals(name)) {
-            setShape(JsonValueHelper.getDoubleArray1(node, name));
-        } else if (ProjFields.TRANSFORM.equals(name)) {
-            setTransform(JsonValueHelper.getDoubleArray1(node, name));
-        } else if (ProjFields.WKT_2.equals(name)) {
-            setWkt2(JsonValueHelper.getString(node, name));
+        try {
+            if (ProjFields.CENTROID.equals(name)) {
+                TreeNode child = node.get(name);
+                Centroid centroid = new Centroid();
+                centroid.setLat(JsonValueHelper.getDouble(child, "lat"));
+                centroid.setLon(JsonValueHelper.getDouble(child, "lon"));
+                setCentroid(centroid);
+            } else if (ProjFields.EPSG.equals(name)) {
+                setEpsg(JsonValueHelper.getInt(node, name));
+            } else if (ProjFields.PROJJSON.equals(name)) {
+                setProjjson(JsonValueHelper.getString(node, name));
+            } else if (ProjFields.SHAPE.equals(name)) {
+                setShape(JsonValueHelper.getDoubleArray1(node, name));
+            } else if (ProjFields.TRANSFORM.equals(name)) {
+                setTransform(JsonValueHelper.getDoubleArray1(node, name));
+            } else if (ProjFields.WKT_2.equals(name)) {
+                setWkt2(JsonValueHelper.getString(node, name));
+            }
+        } catch (Exception e) {
+            Logger.getLogger(ProjExtension.class.getName()).warning("Cannot extract field " + name + ": " + e.getMessage());
         }
     }
 
