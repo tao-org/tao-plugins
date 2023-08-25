@@ -1,0 +1,64 @@
+[
+	{
+		"id": "senET",
+		"label": "Sen ET",
+		"version": "1.0",
+		"description": "Computes daily evapo-transpiration from S2 L2A and S3 L2 LST products.",
+		"authors": "DHI Gras",
+		"copyright": "(C) DHI Gras",
+		"nodeAffinity": "Any",
+		"category": "OPTICAL",
+		"sources": [
+			{
+				"id": "08899dac-142e-416a-a11e-cfc71b7c0d29",
+				"parentId": "senET",
+				"name": "p",
+				"cardinality": 1,
+				"dataDescriptor": {
+					"formatType": "RASTER"
+				}
+			},
+			{
+				"id": "f3e284b5-3566-440f-b1fb-d601e10cf7f9",
+				"parentId": "senET",
+				"name": "s",
+				"cardinality": 1,
+				"dataDescriptor": {
+					"formatType": "RASTER"
+				}
+			}
+		],
+		"targets": [
+			{
+				"id": "149de4cf-b6d7-4f8f-b90d-6c4c48980c24",
+				"parentId": "senET",
+				"name": "t",
+				"cardinality": 1,
+				"dataDescriptor": {
+					"formatType": "RASTER",
+					"location": "output_senet"
+				}
+			}
+		],
+		"parameterDescriptors": [
+			{
+				"id": "w",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Temporary working folder",
+				"label": "Temporary folder",
+				"notNull": false,
+				"valueSet": null
+			}],
+		"containerId": "75db2435-e9a6-4e85-abba-de1f3d3e92d6",
+		"fileLocation": "/opt/senet/senET.sh",
+		"workingDirectory": ".",
+		"templateType": "VELOCITY",
+		"multiThread": false,
+		"parallelism": 8,
+		"visibility": "SYSTEM",
+		"active": true,
+		"templatecontents": "-p\n$p\n-s\n$s\n-w\n/tmp_wkd\n-t\n$t\n"
+	}
+]

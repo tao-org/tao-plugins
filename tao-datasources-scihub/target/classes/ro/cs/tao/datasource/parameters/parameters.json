@@ -1,0 +1,414 @@
+{
+  "Sentinel1": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platformName",
+      "label": "Satellite",
+      "type": "string",
+      "defaultValue": "Sentinel-1",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "satellitePlatform": {
+      "name": "satellitePlatform",
+      "remoteName": "filename",
+      "label": "Satellite Platform",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": [
+        "S1A_*",
+        "S1B_*"
+      ],
+      "order": 1
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "beginPosition",
+      "label": "Start Date",
+      "type": "date[]",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 2
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endPosition",
+      "label": "End Date",
+      "type": "date[]",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 3
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "footprint",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 4
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": "SLC",
+      "required": false,
+      "valueSet": [
+        "SLC",
+        "GRD",
+        "OCN"
+      ],
+      "order": 5
+    },
+    "polarisation": {
+      "name": "polarisation",
+      "remoteName": "polarisationMode",
+      "label": "Polarisation",
+      "type": "string",
+      "defaultValue": "VV+VH",
+      "required": false,
+      "valueSet": [
+        "HH",
+        "VV",
+        "HV",
+        "VH",
+        "HH+HV",
+        "VV+VH"
+      ],
+      "order": 6
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "relativeOrbitNumber",
+      "label": "Relative Orbit",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 7
+    },
+    "orbitDirection": {
+      "name": "orbitDirection",
+      "remoteName": "orbitdirection",
+      "label": "Orbit Direction",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["Ascending", "Descending"],
+      "order": 8
+    },
+    "sensorOperationalMode": {
+      "name": "sensorOperationalMode",
+      "remoteName": "sensorOperationalMode",
+      "label": "Operational Mode",
+      "type": "string",
+      "defaultValue": "IW",
+      "required": false,
+      "valueSet": [
+        "SM",
+        "IW",
+        "EW",
+        "WV"
+      ],
+      "order": 9
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "filename",
+      "label": "Product Name",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 10
+    },
+    "useApiHub": {
+      "name": "useApiHub",
+      "remoteName": "",
+      "label": null,
+      "type": "bool",
+      "defaultValue": true,
+      "required": false,
+      "valueSet": null,
+      "order": 11
+    }
+  },
+  "Sentinel2": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platformName",
+      "label": "Satellite",
+      "type": "string",
+      "defaultValue": "Sentinel-2",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "satellitePlatform": {
+      "name": "satellitePlatform",
+      "remoteName": "filename",
+      "label": "Satellite Platform",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": [
+        "S2A_*",
+        "S2B_*"
+      ],
+      "order": 1
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "beginPosition",
+      "label": "Start Date",
+      "type": "date[]",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 2
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endPosition",
+      "label": "End Date",
+      "type": "date[]",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 3
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "footprint",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": true,
+      "valueSet": null,
+      "order": 4
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": "S2MSI1C",
+      "required": false,
+      "valueSet": ["S2MSI1C", "S2MSI2A", "S2MSI2Ap"],
+      "order": 5
+    },
+    "cloudCover": {
+      "name": "cloudCover",
+      "remoteName": "cloudcoverpercentage",
+      "label": "Cloud Cover",
+      "type": "double",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 6
+    },
+    "relativeOrbit": {
+      "name": "relativeOrbit",
+      "remoteName": "relativeOrbitNumber",
+      "label": "Relative Orbit",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 7
+    },
+    "orbitDirection": {
+      "name": "orbitDirection",
+      "remoteName": "orbitdirection",
+      "label": "Orbit Direction",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["Ascending", "Descending"],
+      "order": 8
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "filename",
+      "label": "Product Name",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 9
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "tileId",
+      "label": "UTM Tile",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 10
+    },
+    "useApiHub": {
+      "name": "useApiHub",
+      "remoteName": "",
+      "label": null,
+      "type": "bool",
+      "defaultValue": true,
+      "required": false,
+      "valueSet": null,
+      "order": 11
+    }
+  },
+  "Sentinel3": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platformName",
+      "label": "Satellite",
+      "type": "string",
+      "defaultValue": "Sentinel-3",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "satellitePlatform": {
+      "name": "satellitePlatform",
+      "remoteName": "filename",
+      "label": "Satellite Platform",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": [
+        "S3A_*",
+        "S3B_*"
+      ],
+      "order": 1
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "beginPosition",
+      "label": "Start Date",
+      "type": "date[]",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 2
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "endPosition",
+      "label": "End Date",
+      "type": "date[]",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 3
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "footprint",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 4
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["OL_1_EFR___", "OL_1_ERR___", "OL_2_LFR___", "OL_2_LRR___", "SR_1_SRA___", "SR_1_SRA_A_", "SR_1_SRA_BS", "SR_2_LAN___", "SL_1_RBT___", "SL_2_LST___", "SY_2_SYN___", "SY_2_V10___", "SY_2_VG1___", "SY_2_VGP___"],
+      "order": 5
+    },
+    "timeliness": {
+      "name": "timeliness",
+      "remoteName": "timeliness",
+      "label": "Timeliness",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["Near Real Time", "Short Time Critical", "Non Time Critical"],
+      "order": 6
+    },
+    "relativeOrbit": {
+      "name": "relativeOrbit",
+      "remoteName": "relativeOrbitNumber",
+      "label": "Relative Orbit",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 7
+    },
+    "orbitDirection": {
+      "name": "orbitDirection",
+      "remoteName": "orbitdirection",
+      "label": "Orbit Direction",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["Ascending", "Descending"],
+      "order": 8
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "filename",
+      "label": "Product Name",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 9
+    },
+    "instrumentshortname": {
+      "name": "instrumentshortname",
+      "remoteName": "instrumentshortname",
+      "label": "Instrument",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["OLCI", "SRAL", "SLSTR", "SYNERGY"],
+      "order": 10
+    },
+    "productlevel": {
+      "name": "productlevel",
+      "remoteName": "productlevel",
+      "label": "Product Level",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["L1", "L2"],
+      "order": 11
+    },
+    "productSize": {
+      "name": "productSize",
+      "remoteName": "productIdentifier",
+      "label": "Product Size",
+      "type": "string",
+      "defaultValue": "ALL",
+      "required": false,
+      "valueSet": ["ALL","FRAME", "STRIPE"],
+      "order": 9
+    },
+    "useApiHub": {
+      "name": "useApiHub",
+      "remoteName": "",
+      "label": null,
+      "type": "bool",
+      "defaultValue": true,
+      "required": false,
+      "valueSet": null,
+      "order": 11
+    }
+  }
+}
+

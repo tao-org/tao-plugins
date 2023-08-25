@@ -1,0 +1,17 @@
+{
+	"id": "75db2435-e9a6-4e85-abba-de1f3d3e92d6",
+	"name": "senet-1-0-0",
+	"description": "SenET 1.0.0 Container",
+	"tag": "latest",
+	"applicationPath": null,
+	"commonParameters": null,
+	"formatNameParameter": null,
+	"format" : null,
+	"applications": [
+		{
+			"path": "/opt/senet/senET.sh",
+			"name": "senET",
+			"memoryRequirements": 16384
+		}
+	]
+}

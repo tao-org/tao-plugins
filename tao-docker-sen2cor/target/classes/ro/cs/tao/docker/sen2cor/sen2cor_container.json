@@ -1,0 +1,17 @@
+{
+	"id": "8a0570f2-a24a-46ed-a1bc-9ef0d7b904b2",
+	"name": "sen2cor-2-8",
+	"description": "Sen2Cor 2.8 Container",
+	"tag": "latest",
+	"applicationPath": null,
+	"commonParameters": null,
+	"formatNameParameter": null,
+	"format" : null,
+	"applications": [
+		{
+			"path": "L2A_Process",
+			"name": "L2A_Process",
+			"memoryRequirements": 8192
+		}
+	]
+}

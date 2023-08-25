@@ -1,0 +1,268 @@
+{
+  "Sentinel1": {
+    "processingLevel": {
+      "name": "processingLevel",
+      "remoteName": "processingLevel",
+      "label": "Processing Level",
+      "type": "string",
+      "defaultValue": "L1_",
+      "required": false,
+      "valueSet": ["L0_", "L1_", "L2_"],
+      "order": 0
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": "SLC",
+      "required": false,
+      "valueSet": ["GRD", "OCN", "RAW", "SLC"],
+      "order": 0
+    },
+    "sensorMode": {
+      "name": "sensorMode",
+      "remoteName": "sensorMode",
+      "label": "Sensor Mode",
+      "type": "string",
+      "defaultValue": "IW_",
+      "required": false,
+      "valueSet": ["EW_", "IW_", "SM_", "WV_"],
+      "order": 0
+    },
+    "orbitDirection": {
+      "name": "orbitDirection",
+      "remoteName": "orbitDirection",
+      "label": "Orbit Direction",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["ASCENDING", "DESCENDING"],
+      "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "orbitNumber",
+      "label": "Relative Orbit",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "timeStart",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "timeEnd",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "geometry",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "polarisation": {
+      "name": "polarisation",
+      "remoteName": "polarisationChannels",
+      "label": "Polarisation",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["HH/VV", "HH/HV", "VV/VH", "HH", "VV", "HV", "VH"],
+      "order": 0
+    }
+  },
+  "Sentinel2": {
+    "processingLevel": {
+      "name": "processingLevel",
+      "remoteName": "processingLevel",
+      "label": "Processing Level",
+      "type": "string",
+      "defaultValue": "L1C",
+      "required": false,
+      "valueSet": ["L1A", "L1B", "L1C", "L2A"],
+      "order": 0
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": "IMAGE",
+      "required": false,
+      "valueSet": ["IMAGE", "S2MSI2Ap"],
+      "order": 0
+    },
+    "relativeOrbit": {
+      "name": "relativeOrbit",
+      "remoteName": "orbitNumber",
+      "label": "Relative Orbit",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "timeStart",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "timeEnd",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "geometry",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "cloudCover": {
+      "name": "cloudCover",
+      "remoteName": "cloudCover",
+      "label": "Cloud Cover",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "title",
+      "label": "Product Name",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "uid",
+      "label": "UTM Tile",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "Landsat8": {
+    "processingLevel": {
+      "name": "processingLevel",
+      "remoteName": "processingLevel",
+      "label": "Processing Level",
+      "type": "string",
+      "defaultValue": "L1TP",
+      "required": false,
+      "valueSet": ["L1TP", "L1GT", "L1GS"],
+      "order": 0
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": "T1",
+      "required": false,
+      "valueSet": ["T1", "T2", "RT"],
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "timeStart",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "timeEnd",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "geometry",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "cloudCover": {
+      "name": "cloudCover",
+      "remoteName": "cloudCover",
+      "label": "Cloud Cover",
+      "type": "short",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "title",
+      "label": "Product Name",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName": "uid",
+      "label": "Path and Row",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  }
+}

@@ -1,0 +1,219 @@
+{
+  "Landsat9": {
+    "mission": "Landsat9",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
+  },
+  "Landsat8": {
+    "mission": "Landsat8",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
+    "temporalCoverage": "from 2013 to present",
+    "spatialCoverage": "Global"
+  },
+  "Landsat7": {
+    "mission": "Landsat7",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
+    "temporalCoverage": "from 1999-05-28 to present",
+    "spatialCoverage": "Global"
+  },
+  "Landsat5": {
+    "mission": "Landsat 4-5",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
+    "temporalCoverage": "from 1982-08-22 to 2012-05-05",
+    "spatialCoverage": "Global"
+  },
+  "Landsat4": {
+    "mission": "Landsat 1-5",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
+    "temporalCoverage": "from 1972-07-25 to 2013-01-07",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-BGEO": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO2LSTE Version 1 data product provides atmospherically corrected land surface temperature and emissivity (LST&E) values derived from five thermal infrared (TIR) bands. The ECO2LSTE data product was derived using a physics-based Temperature/Emissivity Separation (TES) algorithm. The ECO2LSTE is provided as swath data and has a spatial resolution of 70 meters (m). The corresponding ECO1BGEO data product is required to georeference the ECO2LSTE data product.\r\n\r\nThe ECO2LSTE Version 1 data product contains layers of LST, emissivity for bands 1 through 5, quality control for LST&E, LST error, emissivity error for bands 1 through 5, wideband emissivity, and Precipitable Water Vapor (PWV). For acquisitions after May 15, 2019, data products contain data values for TIR bands 2, 4 and 5 only. TIR bands 1 and 3 contain fill values to accommodate direct streaming of data from the ISS.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-LTSE": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO2LSTE Version 1 data product provides atmospherically corrected land surface temperature and emissivity (LST&E) values derived from five thermal infrared (TIR) bands. The ECO2LSTE data product was derived using a physics-based Temperature/Emissivity Separation (TES) algorithm. The ECO2LSTE is provided as swath data and has a spatial resolution of 70 meters (m). The corresponding ECO1BGEO data product is required to georeference the ECO2LSTE data product.\r\n\r\nThe ECO2LSTE Version 1 data product contains layers of LST, emissivity for bands 1 through 5, quality control for LST&E, LST error, emissivity error for bands 1 through 5, wideband emissivity, and Precipitable Water Vapor (PWV). For acquisitions after May 15, 2019, data products contain data values for TIR bands 2, 4 and 5 only. TIR bands 1 and 3 contain fill values to accommodate direct streaming of data from the ISS.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-L1BRAD": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission aims to measure the temperature of plants and use that information to better understand how much water plants need and how they respond to stress. ECOSTRESS is hosted on the International Space Station (ISS) and collects data over the Conterminous United States (CONUS), key biomes and agricultural zones around the world, and selected FLUXNET validation sites. Data are acquired by a thermal infrared (TIR) multispectral scanner with five spectral bands operating between 8 aand 12.5 microns. These data products are offered at a spatial resolution of 70 meters (m) and include: resampled radiance data, at-sensor calibrated radiance data, geolocation data and spacecraft attitude information.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-L1BMAPRAD": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission aims to measure the temperature of plants and use that information to better understand how much water plants need and how they respond to stress. ECOSTRESS is hosted on the International Space Station (ISS) and collects data over the Conterminous United States (CONUS), key biomes and agricultural zones around the world, and selected FLUXNET validation sites. Data are acquired by a thermal infrared (TIR) multispectral scanner with five spectral bands operating between 8 aand 12.5 microns. These data products are offered at a spatial resolution of 70 meters (m) and include: resampled radiance data, at-sensor calibrated radiance data, geolocation data and spacecraft attitude information.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-CLOUD": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\nThe ECO2CLD Version 1 data product provides a cloud mask that can be used to determine cloud cover for the ECO1BRAD, ECO2LSTE, ECO3ETPTJPL, ECO4ESIPTJPL, and ECO4WUE data products. The ECOSTRESS Level 2 cloud product is derived using the five calibrated thermal bands in a multispectral cloud-conservative thresholding approach. The corresponding ECO1BGEO data product is required to georeference the ECO2CLD data product.\r\nThe ECO2CLD Version 1 data product contains a single cloud mask layer.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-ESIPTJPL": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-L3ETALEXIU": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-ETPTJPL": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-ANCQA": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-L4ESIALEXIU": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-ESI": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "ECOSTRESS-WUE": {
+    "mission": "ECOSTRESS",
+    "sensorType": "OPTICAL",
+    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4WUE Version 1 data product provides Water Use Efficiency (WUE) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. WUE is the ratio of carbon stored by plants to water evaporated by plants. This ratio is given as grams of carbon stored per kilogram of water evaporated over the course of the day from sunrise to sunset on the day when the ECOSTRESS granule was acquired.\r\n\r\nThe ECO4WUE Version 1 data product contains a single layer of water use efficiency.",
+    "temporalCoverage": "from 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "Hyperion": {
+    "mission": "EO-1",
+    "sensorType": "OPTICAL",
+    "description": "The Earth Observing-1(EO-1) satellite was launched on November 21, 2000 by the U.S. Geological Survey (USGS) and the National Aeronautics and Space Administration (NASA) as a one-year technology demonstration mission to evaluate the performance of advanced capabilities for future space missions. The EO-1 mission validated highly integrated multispectral data from the Advanced Land Imager (ALI) sensor and hyperspectral imaging data from the Hyperion sensor. After the initial technology mission was accomplished, NASA and the USGS agreed to continue the EO-1 program due to high interest in the specialized data from scientific communities. \r\n\r\nEO-1 Data products consist of imagery collected during the original one-year mission, as well as more recent Data Acquisition Requests (DARs) from the EO-1 Extended Mission. EO-1 scenes are processed to Level 1Gst (L1Gst) and images with adequate ground control points are processed to Level 1T (L1T). L1Gst and L1T products are provided in GeoTIFF format. Scenes that have been processed to L1T are also available as Full Resolution Browse and GIS Ready Bundle products in JPEG format. Level 1R (L1R) products in HDF format are only available for Hyperion data.",
+    "temporalCoverage": "from 2001 to 2017",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-VI1": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "The MODIS Vegetation Indices Version 6 product provides a Vegetation Index (VI) value at a per pixel basis. There are 2 primary vegetation layers. The algorithm for this product chooses the best available pixel value from all the acquisitions from the 16 day period. The criteria used is low clouds, low view angle and the highest NDVI/EVI value. The first is the Normalized Difference Vegetation Index (NDVI), which is referred to as the continuity index to the existing National Oceanic and Atmospheric Administration-Advanced Very High Resolution Radiometer (NOAA-AVHRR) derived NDVI. The second vegetation layer is the Enhanced Vegetation Index (EVI), which has improved sensitivity over high biomass regions. Information on each individual MODIS Vegetation Indices Product along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/modis_products_table.",
+    "temporalCoverage": "from 2000 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-VI2": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "The MODIS Vegetation Indices Version 6 product provides a Vegetation Index (VI) value at a per pixel basis. There are 2 primary vegetation layers. The algorithm for this product chooses the best available pixel value from all the acquisitions from the 16 day period. The criteria used is low clouds, low view angle and the highest NDVI/EVI value. The first is the Normalized Difference Vegetation Index (NDVI), which is referred to as the continuity index to the existing National Oceanic and Atmospheric Administration-Advanced Very High Resolution Radiometer (NOAA-AVHRR) derived NDVI. The second vegetation layer is the Enhanced Vegetation Index (EVI), which has improved sensitivity over high biomass regions. Information on each individual MODIS Vegetation Indices Product along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/modis_products_table.",
+    "temporalCoverage": "from 2000 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-VI3": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "The MODIS Vegetation Indices Version 6 product provides a Vegetation Index (VI) value at a per pixel basis. There are 2 primary vegetation layers. The algorithm for this product chooses the best available pixel value from all the acquisitions from the 16 day period. The criteria used is low clouds, low view angle and the highest NDVI/EVI value. The first is the Normalized Difference Vegetation Index (NDVI), which is referred to as the continuity index to the existing National Oceanic and Atmospheric Administration-Advanced Very High Resolution Radiometer (NOAA-AVHRR) derived NDVI. The second vegetation layer is the Enhanced Vegetation Index (EVI), which has improved sensitivity over high biomass regions. Information on each individual MODIS Vegetation Indices Product along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/modis_products_table.",
+    "temporalCoverage": "from 2000 to present",
+    "spatialCoverage": "Global"
+  },
+  "VIIRS": {
+    "mission": "SNPP",
+    "sensorType": "OPTICAL",
+    "description": "The Suomi National Polar-Orbiting Partnership (S-NPP) NASA Visible Infrared Imaging Radiometer Suite (VIIRS) Vegetation Indices (VI) Version 1 data products characterize land surface vegetation and related parameters. The VNP13 data products are designed after the Moderate Resolution Imaging Spectroradiometer (MODIS) Terra and Aqua Vegetation Indices product suite to promote the continuity of the Earth Observation System (EOS) mission. These products are designed to enhance the vegetation reflected signal from measured spectral responses by making use of the distinctive soil-vegetation characteristic in the red-edge area of the spectrum. Vegetation indices combine two or more spectral bands in the red (0.6 - 0.7 micrometer), NIR wavelengths (0.7-1.1 micrometer), and Blue (0.44-0.5 micrometer) regions. The VNP13 algorithm process produces three vegetation indices: Normalized Difference Vegetation Index (NDVI), the Enhanced Vegetation Index (EVI), and Enhanced Vegetation Index-2 (EVI2). These products inform us about the status of vegetation health during the growing season and as it changes in response to environmental, climate, and anthropogenic drivers.\r\n\r\nValidation at stage 1 has been achieved for the VIIRS Vegetation Index (VI) product suite.",
+    "temporalCoverage": "from 2012 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-LAI-8": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "he level-4 MODIS global Leaf Area Index (LAI) and Fraction of Photosynthetically Active Radiation (FPAR) product is composited every 8 days at 500-meter resolution.  LAI is defined as the one-sided green leaf area per unit ground area in broadleaf canopies and as one-half the total needle surface area per unit ground area in coniferous canopies.  FPAR is defined as the fraction of incident photosynthetically active radiation (400-700nm) absorbed by the green elements of a vegetation canopy.  Information on individual MODIS Land Surface Reflectance Products along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/?f[0]=im_field_dataset_version%3A32&f[1]=im_field_product%3A7.",
+    "temporalCoverage": "from 2002 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-LAI-4": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "The level-4 MODIS global Leaf Area Index (LAI) and Fraction of Photosynthetically Active Radiation (FPAR) product is composited every 8 days at 500-meter resolution.  LAI is defined as the one-sided green leaf area per unit ground area in broadleaf canopies and as one-half the total needle surface area per unit ground area in coniferous canopies.  FPAR is defined as the fraction of incident photosynthetically active radiation (400-700nm) absorbed by the green elements of a vegetation canopy.  Information on individual MODIS Land Surface Reflectance Products along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/?f[0]=im_field_dataset_version%3A32&f[1]=im_field_product%3A7.",
+    "temporalCoverage": "from 2002 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-LTSE-1": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "The MODIS/Aqua Land Surface Temperature and Emissivity (LST/E) products provide per-pixel temperature and emissivity values in a sequence of swath-based global products. The MODIS/Aqua LST/E 5-Minute L2 Swath 1 kilometer data set is produced daily at 5-minute increments, and covers both daytime and nighttime acquisitions, including the Polar Regions.\r\nInformation on individual MODIS Land Surface Temperature and Emissivity Products along with improvements/changes for Version 6 is available at: https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table",
+    "temporalCoverage": "from 2000 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-LTSE-8": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "The MODIS/Aqua Land Surface Temperature and Emissivity (LST/E) products provide per-pixel temperature and emissivity values in a sequence of swath-based global products. The MODIS/Aqua LST/E 5-Minute L2 Swath 1 kilometer data set is produced daily at 5-minute increments, and covers both daytime and nighttime acquisitions, including the Polar Regions.\r\nInformation on individual MODIS Land Surface Temperature and Emissivity Products along with improvements/changes for Version 6 is available at: https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table",
+    "temporalCoverage": "from 2000 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-VI-16-500": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "The MODIS Vegetation Indices Version 6 product provides a Vegetation Index (VI) value at a per pixel basis. There are 2 primary vegetation layers. The algorithm for this product chooses the best available pixel value from all the acquisitions from the 16 day period. The criteria used is low clouds, low view angle and the highest NDVI/EVI value. The first is the Normalized Difference Vegetation Index (NDVI), which is referred to as the continuity index to the existing National Oceanic and Atmospheric Administration-Advanced Very High Resolution Radiometer (NOAA-AVHRR) derived NDVI. The second vegetation layer is the Enhanced Vegetation Index (EVI), which has improved sensitivity over high biomass regions. Information on each individual MODIS Vegetation Indices Product along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/modis_products_table.",
+    "temporalCoverage": "from 2000 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-VI-16-250": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "The MODIS Vegetation Indices Version 6 product provides a Vegetation Index (VI) value at a per pixel basis. There are 2 primary vegetation layers. The algorithm for this product chooses the best available pixel value from all the acquisitions from the 16 day period. The criteria used is low clouds, low view angle and the highest NDVI/EVI value. The first is the Normalized Difference Vegetation Index (NDVI), which is referred to as the continuity index to the existing National Oceanic and Atmospheric Administration-Advanced Very High Resolution Radiometer (NOAA-AVHRR) derived NDVI. The second vegetation layer is the Enhanced Vegetation Index (EVI), which has improved sensitivity over high biomass regions. Information on each individual MODIS Vegetation Indices Product along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/modis_products_table.",
+    "temporalCoverage": "from 2000 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-BURN-M": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "The Terra and Aqua combined MCD64A1 Burned Area data product is a monthly, Level 3 gridded 500 meter product containing per-pixel burning and quality information.  The MCD64A1 mapping approach employs 500 meter MODIS Surface Reflectance imagery coupled with 1 kilometer MODIS active fire observations.  The algorithm uses a burn sensitive vegetation index (VI) to create dynamic thresholds that are applied to the composite imagery.  The VI is derived from MODIS short-wave infrared atmospherically corrected surface reflectance bands 5 and 7 with a measure of temporal texture.  The algorithm ultimately identifies the date of burn for the 500 meter grid cells within each individual MODIS tile.",
+    "temporalCoverage": "from 2000 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-FIRE-8": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "MODIS Thermal Anomalies/Fire products are primarily derived from MODIS 4- and 11-micrometer radiances. The fire detection strategy is based on absolute detection of a fire (when the fire strength is sufficient to detect), and on detection relative to its background (to account for variability of the surface temperature and reflection by sunlight). Numerous tests are employed to reject typical false alarm sources like sun glint or an unmasked coastline. Information on individual MODIS Thermal Anomalies and Fire Products along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/?f[0]=im_field_dataset_version%3A32&f[1]=im_field_product%3A12.",
+    "temporalCoverage": "from 2000 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-FIRE-1": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "MODIS Thermal Anomalies/Fire products are primarily derived from MODIS 4- and 11-micrometer radiances. The fire detection strategy is based on absolute detection of a fire (when the fire strength is sufficient to detect), and on detection relative to its background (to account for variability of the surface temperature and reflection by sunlight). Numerous tests are employed to reject typical false alarm sources like sun glint or an unmasked coastline. Information on individual MODIS Thermal Anomalies and Fire Products along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/?f[0]=im_field_dataset_version%3A32&f[1]=im_field_product%3A12.",
+    "temporalCoverage": "from 2002 to present",
+    "spatialCoverage": "Global"
+  }
+}

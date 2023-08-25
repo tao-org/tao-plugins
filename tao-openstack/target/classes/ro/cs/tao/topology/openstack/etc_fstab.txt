@@ -1,0 +1,4 @@
+/dev/sda    /   xfs defaults    0 0
+/dev/sdb    /ssd    xfs defaults    0 1
+/dev/sdc    /hdd    xfs defaults    0 1
+nfs.eodata.cloudferro.com:/eodata/repository    /eodata nfs ro,_netdev,noauto,noatime,nodiratime    0 0

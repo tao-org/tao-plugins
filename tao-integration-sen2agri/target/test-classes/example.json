@@ -1,0 +1,217 @@
+{
+  "jobId" : 4875,
+  "tasks" : [
+    {
+      "id" : 7838,
+      "preceding_task_ids" : [],
+      "name" : "lai-processor-mask-flags",
+      "steps": [
+        {
+          "name": "GenerateLaiMonoDateMaskFlags",
+          "arguments":["/usr/bin/otbcli", "GenerateLaiMonoDateMaskFlags","-inxml","/mnt/archive/test/Sen4CAP_L4C_Tests/TheiaProducts/Tests/S2A_MSIL1C_20191129T104411_N0208_R008_T31TFJ_20191129T112620.SAFE/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2_MTD_ALL.xml","-out","/mnt/archive/orchestrator_temp/l3b/4875/7838-lai-processor-mask-flags/LAI_mono_date_msk_flgs_img.tif","-outres","10","-outresampled","/mnt/archive/orchestrator_temp/l3b/4875/7838-lai-processor-mask-flags/LAI_mono_date_msk_flgs_img_resampled.tif"],
+          "procs":-1,
+          "mem" : -1
+        }
+      ]
+    },
+    {
+      "id" : 7839,
+      "preceding_task_ids" : [7838],
+      "name" : "lai-processor-ndvi-extractor",
+      "steps": [
+        {
+          "name": "NdviRviExtractionNew",
+          "arguments":["/usr/bin/otbcli", "NdviRviExtractionNew","-xml","/mnt/archive/test/Sen4CAP_L4C_Tests/TheiaProducts/Tests/S2A_MSIL1C_20191129T104411_N0208_R008_T31TFJ_20191129T112620.SAFE/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2_MTD_ALL.xml","-msks","/mnt/archive/orchestrator_temp/l3b/4875/7838-lai-processor-mask-flags/LAI_mono_date_msk_flgs_img.tif","-ndvi","/mnt/archive/orchestrator_temp/l3b/4875/7839-lai-processor-ndvi-extractor/single_ndvi.tif","-outres","10","-laicfgs","/usr/share/sen2agri/Lai_Bands_Cfgs_Belcam.cfg"]
+        }
+      ]
+    },
+    {
+      "id" : 7840,
+      "preceding_task_ids" : [7838],
+      "name" : "lai-create-angles",
+      "steps": [
+        {
+          "name": "CreateAnglesRaster",
+          "arguments":["/usr/bin/otbcli", "CreateAnglesRaster","-xml","/mnt/archive/test/Sen4CAP_L4C_Tests/TheiaProducts/Tests/S2A_MSIL1C_20191129T104411_N0208_R008_T31TFJ_20191129T112620.SAFE/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2_MTD_ALL.xml","-out","/mnt/archive/orchestrator_temp/l3b/4875/7840-lai-create-angles/angles_small_res.tif"]
+        }
+      ]
+    },
+    {
+      "id" : 7841,
+      "preceding_task_ids" : [7840],
+      "name" : "gdal_translate",
+      "steps": [
+        {
+          "name": "gdal_translate",
+          "arguments":["/usr/local/bin/gdal_translate", "-of","GTiff","-a_nodata","-10000","/mnt/archive/orchestrator_temp/l3b/4875/7840-lai-create-angles/angles_small_res.tif","/mnt/archive/orchestrator_temp/l3b/4875/7841-gdal_translate/angles_small_res_no_data.tif"]
+        }
+      ]
+    },
+    {
+      "id" : 7842,
+      "preceding_task_ids" : [7841],
+      "name" : "gdalbuildvrt",
+      "steps": [
+        {
+          "name": "gdalbuildvrt",
+          "arguments":["/usr/local/bin/gdalbuildvrt", "-tr","10","10","-r","bilinear","-srcnodata","-10000","-vrtnodata","-10000","/mnt/archive/orchestrator_temp/l3b/4875/7842-gdalbuildvrt/angles.vrt","/mnt/archive/orchestrator_temp/l3b/4875/7841-gdal_translate/angles_small_res_no_data.tif"]
+        }
+      ]
+    },
+    {
+      "id" : 7843,
+      "preceding_task_ids" : [7842],
+      "name" : "gdal_translate",
+      "steps": [
+        {
+          "name": "gdal_translate",
+          "arguments":["/usr/local/bin/gdal_translate", "/mnt/archive/orchestrator_temp/l3b/4875/7842-gdalbuildvrt/angles.vrt","/mnt/archive/orchestrator_temp/l3b/4875/7843-gdal_translate/angles_resampled.tif"]
+        }
+      ]
+    },
+    {
+      "id" : 7844,
+      "preceding_task_ids" : [7843],
+      "name" : "lai-processor",
+      "steps": [
+        {
+          "name": "BVLaiNewProcessorLAI",
+          "arguments":["/usr/bin/otbcli", "BVLaiNewProcessor","-xml","/mnt/archive/test/Sen4CAP_L4C_Tests/TheiaProducts/Tests/S2A_MSIL1C_20191129T104411_N0208_R008_T31TFJ_20191129T112620.SAFE/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2_MTD_ALL.xml","-angles","/mnt/archive/orchestrator_temp/l3b/4875/7843-gdal_translate/angles_resampled.tif","-outlai","/mnt/archive/orchestrator_temp/l3b/4875/7844-lai-processor/LAI_mono_date_img.tif","-outres","10","-laicfgs","/usr/share/sen2agri/Lai_Bands_Cfgs_Belcam.cfg"]
+        }
+      ]
+    },
+    {
+      "id" : 7845,
+      "preceding_task_ids" : [7844],
+      "name" : "gen-domain-flags",
+      "steps": [
+        {
+          "name": "GenerateLAIInDomainQualityFlags",
+          "arguments":["/usr/bin/otbcli", "GenerateDomainQualityFlags","-xml","/mnt/archive/test/Sen4CAP_L4C_Tests/TheiaProducts/Tests/S2A_MSIL1C_20191129T104411_N0208_R008_T31TFJ_20191129T112620.SAFE/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2_MTD_ALL.xml","-in","/mnt/archive/orchestrator_temp/l3b/4875/7844-lai-processor/LAI_mono_date_img.tif","-laicfgs","/usr/share/sen2agri/Lai_Bands_Cfgs_Belcam.cfg","-indextype","lai","-outf","/mnt/archive/orchestrator_temp/l3b/4875/7845-lai-quantify-image/LAI_out_domain_flags.tif","-out","/mnt/archive/orchestrator_temp/l3b/4875/7845-lai-quantify-image/LAI_corrected_mono_date.tif","-outres","10"]
+        }
+      ]
+    },
+    {
+      "id" : 7846,
+      "preceding_task_ids" : [7845],
+      "name" : "lai-quantify-image",
+      "steps": [
+        {
+          "name": "QuantifyLAIImage",
+          "arguments":["/usr/bin/otbcli", "QuantifyImage","-in","/mnt/archive/orchestrator_temp/l3b/4875/7845-lai-quantify-image/LAI_corrected_mono_date.tif","-out","/mnt/archive/orchestrator_temp/l3b/4875/7846-gen-domain-flags/LAI_mono_date_img_16.tif"]
+        }
+      ]
+    },
+    {
+      "id" : 7847,
+      "preceding_task_ids" : [7843],
+      "name" : "fapar-processor",
+      "steps": [
+        {
+          "name": "BVLaiNewProcessorFAPAR",
+          "arguments":["/usr/bin/otbcli", "BVLaiNewProcessor","-xml","/mnt/archive/test/Sen4CAP_L4C_Tests/TheiaProducts/Tests/S2A_MSIL1C_20191129T104411_N0208_R008_T31TFJ_20191129T112620.SAFE/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2_MTD_ALL.xml","-angles","/mnt/archive/orchestrator_temp/l3b/4875/7843-gdal_translate/angles_resampled.tif","-outfapar","/mnt/archive/orchestrator_temp/l3b/4875/7847-fapar-processor/FAPAR_mono_date_img.tif","-outres","10","-laicfgs","/usr/share/sen2agri/Lai_Bands_Cfgs_Belcam.cfg"]
+        }
+      ]
+    },
+    {
+      "id" : 7848,
+      "preceding_task_ids" : [7847],
+      "name" : "gen-domain-flags",
+      "steps": [
+        {
+          "name": "GenerateFAPARInDomainQualityFlags",
+          "arguments":["/usr/bin/otbcli", "GenerateDomainQualityFlags","-xml","/mnt/archive/test/Sen4CAP_L4C_Tests/TheiaProducts/Tests/S2A_MSIL1C_20191129T104411_N0208_R008_T31TFJ_20191129T112620.SAFE/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2_MTD_ALL.xml","-in","/mnt/archive/orchestrator_temp/l3b/4875/7847-fapar-processor/FAPAR_mono_date_img.tif","-laicfgs","/usr/share/sen2agri/Lai_Bands_Cfgs_Belcam.cfg","-indextype","fapar","-outf","/mnt/archive/orchestrator_temp/l3b/4875/7848-fapar-quantify-image/FAPAR_out_domain_flags.tif","-out","/mnt/archive/orchestrator_temp/l3b/4875/7848-fapar-quantify-image/FAPAR_corrected_mono_date.tif","-outres","10"]
+        }
+      ]
+    },
+    {
+      "id" : 7849,
+      "preceding_task_ids" : [7848],
+      "name" : "fapar-quantify-image",
+      "steps": [
+        {
+
+          "name": "QuantifyFAPARImage",
+          "arguments":["/usr/bin/otbcli", "QuantifyImage","-in","/mnt/archive/orchestrator_temp/l3b/4875/7848-fapar-quantify-image/FAPAR_corrected_mono_date.tif","-out","/mnt/archive/orchestrator_temp/l3b/4875/7849-gen-domain-flags/FAPAR_mono_date_img_16.tif"]
+        }
+      ]
+    },
+    {
+      "id" : 7850,
+      "preceding_task_ids" : [7843],
+      "name" : "fcover-processor",
+      "steps": [
+        {
+          "name": "BVLaiNewProcessorFCOVER",
+          "arguments":["/usr/bin/otbcli", "BVLaiNewProcessor","-xml","/mnt/archive/test/Sen4CAP_L4C_Tests/TheiaProducts/Tests/S2A_MSIL1C_20191129T104411_N0208_R008_T31TFJ_20191129T112620.SAFE/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2_MTD_ALL.xml","-angles","/mnt/archive/orchestrator_temp/l3b/4875/7843-gdal_translate/angles_resampled.tif","-outfcover","/mnt/archive/orchestrator_temp/l3b/4875/7850-fcover-processor/FCOVER_mono_date_img.tif","-outres","10","-laicfgs","/usr/share/sen2agri/Lai_Bands_Cfgs_Belcam.cfg"]
+        }
+      ]
+    },
+    {
+      "id" : 7851,
+      "preceding_task_ids" : [7850],
+      "name" : "gen-domain-flags",
+      "steps": [
+        {
+          "name": "GenerateFCOVERInDomainQualityFlags",
+          "arguments":["/usr/bin/otbcli", "GenerateDomainQualityFlags","-xml","/mnt/archive/test/Sen4CAP_L4C_Tests/TheiaProducts/Tests/S2A_MSIL1C_20191129T104411_N0208_R008_T31TFJ_20191129T112620.SAFE/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2_MTD_ALL.xml","-in","/mnt/archive/orchestrator_temp/l3b/4875/7850-fcover-processor/FCOVER_mono_date_img.tif","-laicfgs","/usr/share/sen2agri/Lai_Bands_Cfgs_Belcam.cfg","-indextype","fcover","-outf","/mnt/archive/orchestrator_temp/l3b/4875/7851-fcover-quantify-image/FCOVER_out_domain_flags.tif","-out","/mnt/archive/orchestrator_temp/l3b/4875/7851-fcover-quantify-image/FCOVER_corrected_mono_date.tif","-outres","10"]
+        }
+      ]
+    },
+    {
+      "id" : 7852,
+      "preceding_task_ids" : [7851],
+      "name" : "fcover-quantify-image",
+      "steps": [
+        {
+          "name": "QuantifyFCOVERImage",
+          "arguments":["/usr/bin/otbcli", "QuantifyImage","-in","/mnt/archive/orchestrator_temp/l3b/4875/7851-fcover-quantify-image/FCOVER_corrected_mono_date.tif","-out","/mnt/archive/orchestrator_temp/l3b/4875/7852-gen-domain-flags/FCOVER_mono_date_img_16.tif"]
+        }
+      ]
+    },
+    {
+      "id" : 7853,
+      "preceding_task_ids" : [7838],
+      "name" : "gen-domain-flags",
+      "steps": [
+        {
+          "name": "GenerateInDomainQualityFlags",
+          "arguments":["/usr/bin/otbcli", "GenerateDomainQualityFlags","-xml","/mnt/archive/test/Sen4CAP_L4C_Tests/TheiaProducts/Tests/S2A_MSIL1C_20191129T104411_N0208_R008_T31TFJ_20191129T112620.SAFE/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2_MTD_ALL.xml","-laicfgs","/usr/share/sen2agri/Lai_Bands_Cfgs_Belcam.cfg","-outf","/mnt/archive/orchestrator_temp/l3b/4875/7853-gen-domain-flags/Input_domain_flags.tif","-outres","10"]
+        }
+      ]
+    },
+    {
+      "id" : 7854,
+      "preceding_task_ids" : [7839,7846,7849,7852,7853],
+      "name" : "lai-processor-product-formatter",
+      "steps": [
+        {
+          "name": "ProductFormatter",
+          "arguments":["/usr/bin/otbcli", "ProductFormatter","-destroot","/mnt/archive/test_theia/l3b_lai/","-fileclass","OPER","-level","L3B","-baseline","01.00","-siteid","44","-processor","vegetation","-compress","1","-gipp","/mnt/archive/orchestrator_temp/l3b/4875/7854-lai-processor-product-formatter/executionInfos.xml","-outprops","/mnt/archive/orchestrator_temp/l3b/4875/7854-lai-processor-product-formatter/product_properties.txt","-il","/mnt/archive/test/Sen4CAP_L4C_Tests/TheiaProducts/Tests/S2A_MSIL1C_20191129T104411_N0208_R008_T31TFJ_20191129T112620.SAFE/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2/SENTINEL2A_20191129-104849-539_L2A_T31TFJ_C_V2-2_MTD_ALL.xml","-lut","/usr/share/sen2agri/lai.map","-processor.vegetation.laistatusflgs","TILE_31TFJ","/mnt/archive/orchestrator_temp/l3b/4875/7838-lai-processor-mask-flags/LAI_mono_date_msk_flgs_img_resampled.tif","-processor.vegetation.indomainflgs","TILE_31TFJ","/mnt/archive/orchestrator_temp/l3b/4875/7853-gen-domain-flags/Input_domain_flags.tif","-processor.vegetation.laindvi","TILE_31TFJ","/mnt/archive/orchestrator_temp/l3b/4875/7839-lai-processor-ndvi-extractor/single_ndvi.tif","-processor.vegetation.laimonodate","TILE_31TFJ","/mnt/archive/orchestrator_temp/l3b/4875/7846-gen-domain-flags/LAI_mono_date_img_16.tif","-processor.vegetation.laidomainflgs","TILE_31TFJ","/mnt/archive/orchestrator_temp/l3b/4875/7845-lai-quantify-image/LAI_out_domain_flags.tif","-processor.vegetation.faparmonodate","TILE_31TFJ","/mnt/archive/orchestrator_temp/l3b/4875/7849-gen-domain-flags/FAPAR_mono_date_img_16.tif","-processor.vegetation.fapardomainflgs","TILE_31TFJ","/mnt/archive/orchestrator_temp/l3b/4875/7848-fapar-quantify-image/FAPAR_out_domain_flags.tif","-processor.vegetation.fcovermonodate","TILE_31TFJ","/mnt/archive/orchestrator_temp/l3b/4875/7852-gen-domain-flags/FCOVER_mono_date_img_16.tif","-processor.vegetation.fcoverdomaniflgs","TILE_31TFJ","/mnt/archive/orchestrator_temp/l3b/4875/7851-fcover-quantify-image/FCOVER_out_domain_flags.tif"]
+        }
+      ]
+    },
+    {
+      "id" : 7855,
+      "preceding_task_ids" : [7854],
+      "name" : "files-remover",
+      "steps": [
+        {
+          "name": "CleanupTemporaryFiles",
+          "arguments":["/usr/bin/otbcli", "/mnt/archive/orchestrator_temp/l3b/4875/7838-lai-processor-mask-flags/LAI_mono_date_msk_flgs_img.tif","/mnt/archive/orchestrator_temp/l3b/4875/7838-lai-processor-mask-flags/LAI_mono_date_msk_flgs_img_resampled.tif","/mnt/archive/orchestrator_temp/l3b/4875/7839-lai-processor-ndvi-extractor/single_ndvi.tif","/mnt/archive/orchestrator_temp/l3b/4875/7840-lai-create-angles/angles_small_res.tif","/mnt/archive/orchestrator_temp/l3b/4875/7841-gdal_translate/angles_small_res_no_data.tif","/mnt/archive/orchestrator_temp/l3b/4875/7842-gdalbuildvrt/angles.vrt","/mnt/archive/orchestrator_temp/l3b/4875/7843-gdal_translate/angles_resampled.tif","/mnt/archive/orchestrator_temp/l3b/4875/7844-lai-processor/LAI_mono_date_img.tif","/mnt/archive/orchestrator_temp/l3b/4875/7845-lai-quantify-image/LAI_corrected_mono_date.tif","/mnt/archive/orchestrator_temp/l3b/4875/7846-gen-domain-flags/LAI_mono_date_img_16.tif","/mnt/archive/orchestrator_temp/l3b/4875/7847-fapar-processor/FAPAR_mono_date_img.tif","/mnt/archive/orchestrator_temp/l3b/4875/7848-fapar-quantify-image/FAPAR_corrected_mono_date.tif","/mnt/archive/orchestrator_temp/l3b/4875/7849-gen-domain-flags/FAPAR_mono_date_img_16.tif","/mnt/archive/orchestrator_temp/l3b/4875/7850-fcover-processor/FCOVER_mono_date_img.tif","/mnt/archive/orchestrator_temp/l3b/4875/7851-fcover-quantify-image/FCOVER_corrected_mono_date.tif","/mnt/archive/orchestrator_temp/l3b/4875/7852-gen-domain-flags/FCOVER_mono_date_img_16.tif"]
+        }
+      ]
+    },
+    {
+      "id" : 7856,
+      "preceding_task_ids" : [7854],
+      "name" : "lai-processor-end-of-job",
+      "steps": [
+        {
+          "name": "EndOfLAIDummy",
+          "arguments":["/usr/bin/true"]
+        }
+      ]
+    }
+  ]
+}

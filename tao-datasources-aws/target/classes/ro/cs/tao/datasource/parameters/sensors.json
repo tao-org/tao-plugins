@@ -1,0 +1,16 @@
+{
+  "Landsat8": {
+    "mission": "Landsat8",
+    "sensorType": "OPTICAL",
+    "description": "Landsat 8 data is available for anyone to use via Amazon S3. All Landsat 8 scenes are available from the start of imagery capture. All new Landsat 8 scenes are made available each day, often within hours of production.",
+    "temporalCoverage": "from 2008 to present",
+    "spatialCoverage": "Global"
+  },
+  "Sentinel2": {
+    "mission": "Sentinel2",
+    "sensorType": "OPTICAL",
+    "description": "Sentinel 2 data is available for anyone to use via Amazon S3. All Sentinel 2 scenes are available from the start of imagery capture. All new Sentinel 2 scenes are made available each day, often within few hours after they are available on Copernicus OpenHub.",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  }
+}

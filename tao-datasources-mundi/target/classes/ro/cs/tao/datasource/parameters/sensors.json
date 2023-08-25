@@ -1,0 +1,23 @@
+{
+  "Sentinel1": {
+    "mission": "Sentinel1",
+    "sensorType": "RADAR",
+    "description": "Provides interoperable access, following ISO/OGC interface guidelines, to Earth Observation metadata.",
+    "temporalCoverage": "from 2014 to present",
+    "spatialCoverage": "Europe (SLC, GRD) and Global"
+  },
+  "Sentinel2": {
+    "mission": "Sentinel2",
+    "sensorType": "OPTICAL",
+    "description": "Provides interoperable access, following ISO/OGC interface guidelines, to Earth Observation metadata.",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Europe (L1C, L2A) and Global"
+  },
+  "Landsat8": {
+    "mission": "Landsat8",
+    "sensorType": "OPTICAL",
+    "description": "Provides interoperable access, following ISO/OGC interface guidelines, to Earth Observation metadata.",
+    "temporalCoverage": "from 2013 to present",
+    "spatialCoverage": "Europe"
+  }
+}

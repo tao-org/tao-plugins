@@ -1,0 +1,7 @@
+ro\cs\tao\topology\openstack\ObjectStorageService.class
+ro\cs\tao\topology\openstack\SwiftService$1.class
+ro\cs\tao\topology\openstack\CloudConfigHelper.class
+ro\cs\tao\topology\openstack\NovaService.class
+ro\cs\tao\topology\openstack\commons\OpenStackSession.class
+ro\cs\tao\topology\openstack\commons\Constants.class
+ro\cs\tao\topology\openstack\SwiftService.class
