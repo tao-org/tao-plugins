@@ -1,7 +1,0 @@
-ro\cs\tao\datasource\stac\parameters\DateParameterConverter.class
-ro\cs\tao\datasource\stac\STACSource.class
-ro\cs\tao\datasource\stac\parameters\STACParameterProvider$1$1.class
-ro\cs\tao\datasource\stac\parameters\STACParameterProvider$1.class
-ro\cs\tao\datasource\stac\STACQuery.class
-ro\cs\tao\datasource\stac\fetch\STACFetchStrategy.class
-ro\cs\tao\datasource\stac\parameters\STACParameterProvider.class

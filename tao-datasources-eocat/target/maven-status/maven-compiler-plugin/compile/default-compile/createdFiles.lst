@@ -1,8 +1,0 @@
-ro\cs\tao\datasource\remote\eocat\EOCATDataQuery.class
-ro\cs\tao\datasource\remote\eocat\xml\EOCATXmlResponseHandler.class
-ro\cs\tao\datasource\remote\eocat\auth\EOCATAuthentication.class
-ro\cs\tao\datasource\remote\eocat\download\EOCATDownloadStrategy$1.class
-ro\cs\tao\datasource\remote\eocat\EOCATDataSource.class
-ro\cs\tao\datasource\remote\eocat\parameters\EOCATParameterProvider.class
-ro\cs\tao\datasource\remote\eocat\download\EOCATDownloadStrategy.class
-ro\cs\tao\datasource\remote\eocat\parameters\EOCATDateParameterConverter.class
