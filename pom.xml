@@ -30,6 +30,7 @@
         <module>tao-datasources-stac</module>
         <module>tao-datasources-theia</module>
         <module>tao-datasources-usgs</module>
+        <module>tao-docker-wekeo</module>
         <module>tao-datasources-creodias2</module>
         <module>tao-datasources-das</module>
         <module>tao-docker-burnarea</module>
