@@ -1,9 +1,0 @@
-ro\cs\tao\datasource\remote\lsa\download\LSADownloadStrategy$1.class
-ro\cs\tao\datasource\remote\lsa\LSADataSource.class
-ro\cs\tao\datasource\remote\lsa\parameters\LSAParameterProvider.class
-ro\cs\tao\datasource\remote\lsa\LSADataSource$1.class
-ro\cs\tao\datasource\remote\lsa\auth\LSAAuthentication.class
-ro\cs\tao\datasource\remote\lsa\download\LSADownloadStrategy.class
-ro\cs\tao\datasource\remote\lsa\LSADataQuery.class
-ro\cs\tao\datasource\remote\lsa\xml\LSAXmlResponseHandler.class
-ro\cs\tao\datasource\remote\lsa\parameters\LSADateParameterConverter.class
