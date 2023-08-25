@@ -3,7 +3,7 @@ package ro.cs.tao.docker.wekeo;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
 
 
-public class wekeoImageInstaller extends BaseImageInstaller{
+public class WekeoImageInstaller extends BaseImageInstaller{
 	
 	@Override
     public String getContainerName() {
