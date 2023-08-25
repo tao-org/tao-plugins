@@ -1238,7 +1238,7 @@
 			},
 			{
 				"id": "start",
-				"name": "start_date"
+				"name": "start_date",
 				"type": "REGULAR",
 				"dataType": "date",
 				"defaultValue": null,
