@@ -31,7 +31,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -81,6 +81,7 @@
 				"dataType": "string",
 				"description": "The query in json format which describes the parameters and arguments for the request data",
 				"label": "query",
+				"format": "JSON",
 				"notNull": true,
 				"parameters": [
 					{
@@ -131,7 +132,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -231,7 +232,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -331,7 +332,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -431,7 +432,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -531,7 +532,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -631,7 +632,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -731,7 +732,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -831,7 +832,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -931,7 +932,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -1031,7 +1032,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -1131,7 +1132,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -1231,7 +1232,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -1331,7 +1332,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -1483,7 +1484,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -1615,7 +1616,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -1776,7 +1777,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -1948,7 +1949,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -2129,7 +2130,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -2292,7 +2293,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
@@ -2444,7 +2445,7 @@
 				}
 			}
 		],
-		"containerId": "zufe2qde-pdzq-99cx-9d65-t7mb4x53czjb",
+		"containerId": "2210edb4-e719-4d57-8094-251901444ba2",
 		"fileLocation": "/app/fetchApiWekEO.py",
 		"workingDirectory": "/app",
 		"templateType": "VELOCITY",
