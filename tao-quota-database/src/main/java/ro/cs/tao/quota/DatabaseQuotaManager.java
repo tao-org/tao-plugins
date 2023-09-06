@@ -2,6 +2,8 @@ package ro.cs.tao.quota;
 
 import ro.cs.tao.component.SystemVariable;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
+import ro.cs.tao.messaging.Message;
+import ro.cs.tao.messaging.Messaging;
 import ro.cs.tao.persistence.EOProductProvider;
 import ro.cs.tao.persistence.PersistenceException;
 import ro.cs.tao.persistence.UserProvider;
@@ -105,7 +107,8 @@ public class DatabaseQuotaManager implements QuotaManager {
 
 			// update the user info
 			this.userProvider.updateInputQuota(principal.getName(), (int)actualInputQuota);
-
+			Messaging.send(principal.getName(), QuotaTopic.USER_STORAGE_USAGE.value(),
+						   Message.create(principal.getName(), "QuotaManager", "User storage updated", String.valueOf(actualInputQuota), false));
 		} catch (PersistenceException e) {
 			throw new QuotaException(String.format("Cannot update input quota for the user '%s'. Reason: %s",
 					principal.getName(), e.getMessage()), e);
@@ -134,6 +137,13 @@ public class DatabaseQuotaManager implements QuotaManager {
 			throw new QuotaException(String.format("Cannot update input quota for the user '%s'. Reason: %s",
 					principal.getName(), e.getMessage()), e);
 		}
+	}
+
+	@Override
+	public void updateUserCPU(Principal principal) throws QuotaException {
+		final int cpus = taskProvider.getCPUsForUser(principal.getName());
+		Messaging.send(principal, QuotaTopic.USER_CPU_USAGE.value(),
+					   Message.create(principal.getName(), "QuotaManager", "CPU usage updated", String.valueOf(cpus), false));
 	}
 
 	/** 
