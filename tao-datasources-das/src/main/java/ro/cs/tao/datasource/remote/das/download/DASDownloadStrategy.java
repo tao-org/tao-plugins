@@ -184,7 +184,7 @@ public class DASDownloadStrategy extends DownloadStrategy<Token> {
     }
 
     protected Path extract(EOProduct product, Path archivePath, Path targetPath) throws IOException {
-        String satelliteName = product.getSatelliteName();
+        String satelliteName = product.getSatelliteName().replace("-", "");
         final String name = FileUtilities.getFilenameWithoutExtension(archivePath)
                 + (satelliteName.equals("Sentinel1") || satelliteName.equals("Sentinel2")
                     ? ".SAFE"

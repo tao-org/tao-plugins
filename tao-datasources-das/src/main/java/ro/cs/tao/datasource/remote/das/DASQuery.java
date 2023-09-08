@@ -344,7 +344,9 @@ public class DASQuery extends DataQuery {
                                 }
                             } else {
                                 // remove the last " AND " because parameter is skipped
-                                query.setLength(query.length() - 5);
+                                if (query.length() >= 5 && " AND ".equals(query.substring(query.length() - 5))) {
+                                    query.setLength(query.length() - 5);
+                                }
                                 idx--;
                             }
                             break;
