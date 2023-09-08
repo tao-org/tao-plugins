@@ -23,6 +23,7 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.security.Token;
 import ro.cs.tao.security.TokenProvider;
 import ro.cs.tao.user.User;
+import ro.cs.tao.utils.ExceptionUtils;
 
 import javax.ws.rs.core.Response;
 import java.math.BigInteger;
@@ -91,7 +92,7 @@ public class KeycloakClient implements TokenProvider {
     public Token newToken(String user, String password) {
         final AuthzClient authClient = getAuthClient();
         final AuthorizationRequest request = new AuthorizationRequest();
-        request.addPermission("taoclient");
+        request.addPermission(this.clientId);
         final AccessTokenResponse response = authClient.obtainAccessToken(user, password);
         return new Token(response.getToken(), response.getRefreshToken(), (int) response.getExpiresIn());
     }
@@ -104,7 +105,7 @@ public class KeycloakClient implements TokenProvider {
     public User checkLoginCredentials(final String username, final String password) {
         final AuthzClient authClient = getAuthClient();
         final AuthorizationRequest request = new AuthorizationRequest();
-        request.addPermission("taoclient");
+        request.addPermission(this.clientId);
         final AccessTokenResponse tokenResponse = authClient.obtainAccessToken(username, password);
         final String token = tokenResponse.getToken();
         if (token == null) {
@@ -131,7 +132,7 @@ public class KeycloakClient implements TokenProvider {
         if (token == null) {
             throw new RuntimeException("Invalid token");
         }
-        RSATokenVerifier verifier = RSATokenVerifier.create(token);
+        final RSATokenVerifier verifier = RSATokenVerifier.create(token);
         if (realmKeys == null) {
             synchronized (lock) {
                 realmKeys = new HashMap<>();
@@ -237,7 +238,7 @@ public class KeycloakClient implements TokenProvider {
     @Override
     public boolean validate(String token) {
         if (token == null) return false;
-        RSATokenVerifier verifier = RSATokenVerifier.create(token);
+        final RSATokenVerifier verifier = RSATokenVerifier.create(token);
         if (realmKeys == null) {
             synchronized (lock) {
                 realmKeys = new HashMap<>();
@@ -290,7 +291,7 @@ public class KeycloakClient implements TokenProvider {
                 realmKeys.put((String) key.get("kid"), toPublicKey(key));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warning(ExceptionUtils.getStackTrace(logger, e));
         }
     }
 
