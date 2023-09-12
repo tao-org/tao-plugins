@@ -264,7 +264,7 @@ c.NotebookApp.certfile = '/home/jovyan/jupyterlite.pem'
 #          cannot be determined reliably by the Jupyter notebook server (proxified
 #          or containerized setups for example).
 #  Default: ''
-c.NotebookApp.custom_display_url = 'https://' + os.environ['JUPYTER_HOST_NAME'] + ':' + os.environ['JUPYTER_PORT']
+c.NotebookApp.custom_display_url = os.environ['JUPYTER_HOST_URL'] + ':' + os.environ['JUPYTER_PORT']
 
 ## The default URL to redirect to from `/`
 #  Default: '/tree'
@@ -379,7 +379,7 @@ c.NotebookApp.keyfile = '/home/jovyan/jupyterlite.key'
 #         Local IP addresses (such as 127.0.0.1 and ::1) are automatically accepted
 #         as local as well.
 #  Default: ['localhost']
-c.NotebookApp.local_hostnames = ['localhost', os.environ['JUPYTER_HOST_NAME']]
+c.NotebookApp.local_hostnames = [os.environ['JUPYTER_HOST_NAME']]
 
 ## The date format used by logging formatters for %(asctime)s
 #  See also: Application.log_datefmt
@@ -583,7 +583,7 @@ c.NotebookApp.open_browser = False
 #  Default: {}
 c.NotebookApp.tornado_settings = {
     'headers': {
-        'Content-Security-Policy': "frame-ancestors https://" + os.environ['JUPYTER_HOST_NAME'] + " 'self' "
+        'Content-Security-Policy': "frame-ancestors " + os.environ['JUPYTER_HOST_URL'] + " 'self' "
     }
 }
 

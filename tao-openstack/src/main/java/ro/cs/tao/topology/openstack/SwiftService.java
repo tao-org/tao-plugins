@@ -6,6 +6,7 @@ import org.openstack4j.api.storage.ObjectStorageService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.common.Payloads;
 import org.openstack4j.model.storage.object.SwiftObject;
+import org.openstack4j.model.storage.object.options.CreateUpdateContainerOptions;
 import org.openstack4j.model.storage.object.options.ObjectListOptions;
 import org.openstack4j.model.storage.object.options.ObjectPutOptions;
 import ro.cs.tao.security.SessionStore;
@@ -47,6 +48,26 @@ public class SwiftService {
             if (limit != null) {
                 this.pageLimit = Integer.parseInt(limit);
             }
+        }
+    }
+
+    public void createBucket(String containerName) throws IOException {
+        if (StringUtilities.isNullOrEmpty(containerName)) {
+            throw new IllegalArgumentException("[containerName] is null or empty");
+        }
+        final ObjectStorageService objectStorageService = authenticate();
+        try {
+            final ObjectStorageContainerService containerService = objectStorageService.containers();
+            final CreateUpdateContainerOptions options = CreateUpdateContainerOptions.create().accessAnybodyRead().accessWrite("*:*");
+            final ActionResponse actionResponse = containerService.create(containerName, options);
+            if (actionResponse != null && !actionResponse.isSuccess()) {
+                throw new IOException(String.format("Failed to create container %s. Response code: %d; fault: %s",
+                                                    containerName, actionResponse.getCode(), actionResponse.getFault()));
+            } else {
+                logger.finest(String.format("Container %s created", containerName));
+            }
+        } catch (Exception ex) {
+            throw new IOException(String.format("Cannot create container %s. Reason: %s", containerName, ex.getMessage()));
         }
     }
 
