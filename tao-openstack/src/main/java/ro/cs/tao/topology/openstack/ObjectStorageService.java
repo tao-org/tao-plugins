@@ -40,6 +40,11 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
     }
 
     @Override
+    public void createRoot(String root) throws IOException {
+        swiftService.createBucket(root);
+    }
+
+    @Override
     public Path createFolder(String folderRelativePath, boolean userOnly) throws IOException {
         final Repository repository = repository();
         final Path path = Paths.get(repository.resolve(folderRelativePath));

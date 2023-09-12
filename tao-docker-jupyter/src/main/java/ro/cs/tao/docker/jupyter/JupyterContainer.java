@@ -6,7 +6,6 @@ import ro.cs.tao.docker.Container;
 import ro.cs.tao.docker.ContainerType;
 import ro.cs.tao.docker.DockerVolumeMap;
 import ro.cs.tao.docker.ExecutionConfiguration;
-import ro.cs.tao.topology.TopologyManager;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
 import ro.cs.tao.topology.docker.DockerManager;
 import ro.cs.tao.topology.docker.SingletonContainer;
@@ -25,7 +24,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class JupyterContainer extends BaseImageInstaller implements SingletonContainer {
 
@@ -164,12 +162,18 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
         if (id != null) {
             throw new RuntimeException(String.format("[%s] is already running", containerName));
         }
-        final Properties properties = getAdditionalProperties();
+        //final Properties properties = getAdditionalProperties();
         final DockerVolumeMap map = ExecutionConfiguration.getMasterContainerVolumeMap();
         final List<String> args = new ArrayList<>();
         args.add("--init");
         args.add("-e");
-        args.add("JUPYTER_HOST_NAME=" + TopologyManager.getInstance().getMasterNodeInfo().getId());
+        final String siteUrl = ConfigurationManager.getInstance().getValue("tao.services.base");
+        int columnIdx = siteUrl.indexOf(":", siteUrl.indexOf("//") + 2);
+        args.add("JUPYTER_HOST_NAME=" + (columnIdx > 0
+                                         ? siteUrl.substring(siteUrl.indexOf("//") + 2, columnIdx)
+                                         : siteUrl.substring(siteUrl.indexOf("//") + 2)));
+        args.add("-e");
+        args.add("JUPYTER_HOST_URL=" + siteUrl);
         // handle permission denied on linux machines
         if (SystemUtils.IS_OS_LINUX) {
             List<String> arg = new ArrayList<>();
@@ -203,28 +207,20 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
             OutputAccumulator setfaclAccumulator = new OutputAccumulator();
             Executor.execute(setfaclAccumulator, 10, setfaclJob);
         }
-        Tuple<Integer, Integer> portMap = null;
-        if (!properties.isEmpty()) {
-            if (properties.containsKey("host.port") && properties.containsKey("container.port")) {
-                final String containerPort = properties.getProperty("container.port");
-                if (!StringUtilities.isNullOrEmpty(containerPort)) {
-                    final int hostPort = DockerManager.getNextFreePort();
-                    portMap = new Tuple<>(hostPort, Integer.parseInt(containerPort));
-                }
-            }
-            if (properties.containsKey("env.JUPYTER_TOKEN")) {
-                final String env = properties.getProperty("env.JUPYTER_TOKEN");
-                String authToken = StringUtilities.isNullOrEmpty(env) ? token : env;
-                args.add("-e");
-                args.add("JUPYTER_TOKEN=" + authToken);
-            }
-        }
+
+        final int hostPort = DockerManager.getNextFreePort();
+        args.add("-e");
+        args.add("JUPYTER_PORT=" + hostPort);
+        Tuple<Integer, Integer> portMap = new Tuple<>(hostPort, hostPort);
+        args.add("-e");
+        args.add("JUPYTER_TOKEN=" + token);
         args.add("-v");
         args.add((map.getHostWorkspaceFolder().endsWith("/")
                 ? map.getHostWorkspaceFolder()
                 : (map.getHostWorkspaceFolder() + "/"))
                 + userName + ":" + getPathInContainer());
-        return DockerManager.runDaemon(containerName, userName, portMap, userName, args);
+        String instanceId = DockerManager.runDaemon(containerName, userName, portMap, userName, args);
+        return instanceId + ":" + hostPort;
     }
 
     @Override
