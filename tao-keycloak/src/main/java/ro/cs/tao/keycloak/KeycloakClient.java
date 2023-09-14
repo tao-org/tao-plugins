@@ -182,7 +182,7 @@ public class KeycloakClient implements TokenProvider {
             throw new RuntimeException("Invalid token");
         }
         final RSATokenVerifier verifier = RSATokenVerifier.create(token);
-        if (realmKeys == null) {
+        if (realmKeys == null || realmKeys.isEmpty()) {
             synchronized (lock) {
                 realmKeys = new HashMap<>();
                 try {
