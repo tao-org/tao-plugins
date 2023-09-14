@@ -1,7 +1,13 @@
 package ro.cs.tao.keycloak;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.RSATokenVerifier;
 import org.keycloak.admin.client.CreatedResponseUtil;
@@ -23,9 +29,13 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.security.Token;
 import ro.cs.tao.security.TokenProvider;
 import ro.cs.tao.user.User;
+import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.ExceptionUtils;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.security.KeyFactory;
@@ -93,8 +103,33 @@ public class KeycloakClient implements TokenProvider {
         final AuthzClient authClient = getAuthClient();
         final AuthorizationRequest request = new AuthorizationRequest();
         request.addPermission(this.clientId);
+
         final AccessTokenResponse response = authClient.obtainAccessToken(user, password);
         return new Token(response.getToken(), response.getRefreshToken(), (int) response.getExpiresIn());
+    }
+
+    @Override
+    public Token newTokenFromCode(String code) {
+        Header header = new BasicHeader("Content-Type", "application/x-www-form-urlencoded");
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("grant_type", "authorization_code"));
+        params.add(new BasicNameValuePair("client_id", this.clientId));
+        params.add(new BasicNameValuePair("client_secret", this.clientSecret));
+        params.add(new BasicNameValuePair("code", code));
+        params.add(new BasicNameValuePair("redirect_uri", ConfigurationManager.getInstance().getValue("tao.services.base") + "/ui/login.html"));
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, this.realmUrl + "/protocol/openid-connect/token", header, params)) {
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            final AccessTokenResponse tokenResponse = mapper.readerFor(AccessTokenResponse.class)
+                                                            .readValue(EntityUtils.toString(response.getEntity()));
+            if (tokenResponse.getError() != null) {
+                throw new RuntimeException(tokenResponse.getErrorDescription());
+            }
+            return new Token(tokenResponse.getToken(), tokenResponse.getRefreshToken(), (int) tokenResponse.getExpiresIn());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -128,6 +163,18 @@ public class KeycloakClient implements TokenProvider {
             }
             return user;
         }
+    }
+
+    public User checkLoginCredentials(final String code) {
+        Token token = newTokenFromCode(code);
+        if (token == null) {
+            throw new RuntimeException("Invalid credentials supplied");
+        }
+        final User user = checkToken(token.getToken());
+        if (this.tokenKeeper != null) {
+            this.tokenKeeper.accept(token, user.getUsername());
+        }
+        return user;
     }
 
     public User checkToken(final String token) {
