@@ -14,10 +14,7 @@ import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.utils.Tuple;
 import ro.cs.tao.utils.executors.*;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -116,11 +113,11 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
                     }
                     if (container == null) {
                         this.logger.info(String.format("Image %s was not found in Docker registry. Registration starting.\n" +
-                                                               "Until registration completes, the corresponding components will not be available.", getContainerName()));
+                                "Until registration completes, the corresponding components will not be available.", getContainerName()));
                         for (String resource : additionalResources()) {
                             //Files.write(dockerfilePath.getParent().resolve(Paths.get(resource).getFileName()), readResource(resource));
                             Files.write(dockerfilePath.getParent().resolve(Paths.get(resource)),
-                                        readResource(resource));
+                                    readResource(resource));
                         }
                         DockerManager.registerImage(dockerfilePath.toRealPath(), getContainerName(), getDescription());
                         this.logger.info(String.format("Registration completed for docker image %s.", getContainerName()));
@@ -131,7 +128,7 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
                 }
             } catch (IOException e) {
                 logger.warning(String.format("Error occurred while registering %s: %s",
-                                             getContainerName(), e.getMessage()));
+                        getContainerName(), e.getMessage()));
             }
         }
         Container dbContainer = this.containerProvider.get(container != null ? container.getId() : getContainerName());
@@ -170,8 +167,8 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
         final String siteUrl = ConfigurationManager.getInstance().getValue("tao.services.base");
         int columnIdx = siteUrl.indexOf(":", siteUrl.indexOf("//") + 2);
         args.add("JUPYTER_HOST_NAME=" + (columnIdx > 0
-                                         ? siteUrl.substring(siteUrl.indexOf("//") + 2, columnIdx)
-                                         : siteUrl.substring(siteUrl.indexOf("//") + 2)));
+                ? siteUrl.substring(siteUrl.indexOf("//") + 2, columnIdx)
+                : siteUrl.substring(siteUrl.indexOf("//") + 2)));
         args.add("-e");
         args.add("JUPYTER_HOST_URL=" + siteUrl);
         // handle permission denied on linux machines
@@ -215,10 +212,17 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
         args.add("-e");
         args.add("JUPYTER_TOKEN=" + token);
         args.add("-v");
-        args.add((map.getHostWorkspaceFolder().endsWith("/")
+
+        String mapVolumePath = (map.getHostWorkspaceFolder().endsWith("/")
                 ? map.getHostWorkspaceFolder()
                 : (map.getHostWorkspaceFolder() + "/"))
-                + userName + ":" + getPathInContainer());
+                + userName;
+        File file = new File(mapVolumePath);
+        if(!file.exists())
+        {
+            file.mkdir();
+        }
+        args.add(mapVolumePath + ":" + getPathInContainer());
         String instanceId = DockerManager.runDaemon(containerName, userName, portMap, userName, args);
         return instanceId + ":" + hostPort;
     }
