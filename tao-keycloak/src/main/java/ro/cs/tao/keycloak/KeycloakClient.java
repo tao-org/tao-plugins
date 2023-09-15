@@ -116,7 +116,7 @@ public class KeycloakClient implements TokenProvider {
         params.add(new BasicNameValuePair("client_id", this.clientId));
         params.add(new BasicNameValuePair("client_secret", this.clientSecret));
         params.add(new BasicNameValuePair("code", code));
-        params.add(new BasicNameValuePair("redirect_uri", ConfigurationManager.getInstance().getValue("tao.services.base") + "/ui/login.html"));
+        params.add(new BasicNameValuePair("redirect_uri", ConfigurationManager.getInstance().getValue("tao.services.base") + "ui/login.html"));
         try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, this.realmUrl + "/protocol/openid-connect/token", header, params)) {
             final ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
