@@ -4,9 +4,15 @@ public class Constants {
     public static final String OPENSTACK_USER = "openstack.user";
     public static final String OPENSTACK_PASSWORD = "openstack.password";
     public static final String OPENSTACK_AUTH_URL = "openstack.auth.url";
+    public static final String OPENSTACK_REGION = "openstack.region";
     public static final String OPENSTACK_DOMAIN = "openstack.domain";
     public static final String OPENSTACK_TENANT_ID = "openstack.tenantId";
     public static final String OPENSTACK_BUCKET = "openstack.bucket";
+    public static final String OPENSTACK_TOKEN_URL = "openstack.token.url";
+    public static final String OPENSTACK_IDENTITY_PROVIDER = "openstack.identity.provider";
+    public static final String OPENSTACK_CLIENT = "openstack.client";
+    public static final String OPENSTACK_CLIENT_SECRET = "openstack.client.secret";
+    public static final String OPENSTACK_USER_SECRET = "openstack.user.secret";
     public static final String OPENSTACK_DEFAULT_SECURITY_GROUP = "openstack.default.security.group";
     public static final String OPENSTACK_FLOATING_IP_POOL = "openstack.floating.ip.pool";
     public static final String OPENSTACK_VOLUME_TYPE_SSD = "openstack.volume.type.ssd";
