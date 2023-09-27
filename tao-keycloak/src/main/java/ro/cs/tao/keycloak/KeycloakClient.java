@@ -80,7 +80,7 @@ public class KeycloakClient implements TokenProvider {
         this.adminPwd = ConfigurationManager.getInstance().getValue(Keys.ADMIN_PWD);
     }
 
-    KeycloakClient(String authUrl, String realm, String clientId, String secret, String admin, String admPwd) {
+    public KeycloakClient(String authUrl, String realm, String clientId, String secret, String admin, String admPwd) {
         this.realm = realm;
         this.authUrl = authUrl;
         this.clientId = clientId;

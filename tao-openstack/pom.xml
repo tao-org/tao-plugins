@@ -29,6 +29,7 @@
             <groupId>com.github.openstack4j.core</groupId>
             <artifactId>openstack4j</artifactId>
             <version>3.11</version>
+            <classifier>withdeps</classifier>
             <exclusions>
                 <exclusion>
                     <groupId>org.jboss.resteasy</groupId>
@@ -56,14 +57,11 @@
             <groupId>com.github.openstack4j.core.connectors</groupId>
             <artifactId>openstack4j-httpclient</artifactId>
             <version>3.11</version>
-<!--
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
--->
+        </dependency>
+        <dependency>
+            <groupId>dev.samstevens.totp</groupId>
+            <artifactId>totp</artifactId>
+            <version>1.7.1</version>
         </dependency>
     </dependencies>
 
