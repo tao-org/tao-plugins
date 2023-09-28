@@ -188,6 +188,7 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
             arg.clear();
             // recover current user id
             int uId = Integer.parseInt(uIdAccumulator.getOutput());
+            args.add("-e");
             args.add("NB_UID=" + uId);
             arg.add("setfacl");
             arg.add("-R");
