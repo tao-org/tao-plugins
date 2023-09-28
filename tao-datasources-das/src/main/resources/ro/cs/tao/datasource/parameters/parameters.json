@@ -184,7 +184,7 @@
     },
     "productIdentifier": {
       "name": "productIdentifier",
-      "remoteName": "productIdentifier",
+      "remoteName": "Name",
       "label": "Product Name",
       "type": "string",
       "defaultValue": null,
