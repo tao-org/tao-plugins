@@ -5,7 +5,9 @@ import org.openstack4j.api.storage.ObjectStorageContainerService;
 import org.openstack4j.api.storage.ObjectStorageService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.common.Payloads;
+import org.openstack4j.model.storage.object.SwiftContainer;
 import org.openstack4j.model.storage.object.SwiftObject;
+import org.openstack4j.model.storage.object.options.ContainerListOptions;
 import org.openstack4j.model.storage.object.options.CreateUpdateContainerOptions;
 import org.openstack4j.model.storage.object.options.ObjectListOptions;
 import org.openstack4j.model.storage.object.options.ObjectPutOptions;
@@ -26,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SwiftService {
@@ -48,6 +51,34 @@ public class SwiftService {
             if (limit != null) {
                 this.pageLimit = Integer.parseInt(limit);
             }
+        }
+    }
+
+    public long getContainerSize(String containerName) throws IOException {
+        if (StringUtilities.isNullOrEmpty(containerName)) {
+            throw new IllegalArgumentException("[containerName] is null or empty");
+        }
+        final ObjectStorageService objectStorageService = authenticate();
+        try {
+            final ObjectStorageContainerService containerService = objectStorageService.containers();
+            final List<? extends SwiftContainer> list = containerService.list(ContainerListOptions.create().path(containerName));
+            if (list == null || list.size() != 1) {
+                throw new IOException(String.format("Container %s doesn't exist", containerName));
+            }
+            return list.get(0).getTotalSize();
+        } catch (Exception ex) {
+            throw new IOException(String.format("Cannot create container %s. Reason: %s", containerName, ex.getMessage()));
+        }
+    }
+
+    public Map<String, Long> getContainerSizes() throws IOException {
+        final ObjectStorageService objectStorageService = authenticate();
+        try {
+            final ObjectStorageContainerService containerService = objectStorageService.containers();
+            final List<? extends SwiftContainer> list = containerService.list();
+            return list.stream().collect(Collectors.toMap(SwiftContainer::getName, SwiftContainer::getTotalSize));
+        } catch (Exception ex) {
+            throw new IOException(String.format("Cannot list containers. Reason: %s", ex.getMessage()));
         }
     }
 
