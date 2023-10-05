@@ -59,6 +59,8 @@ public class TaoLdapClient {
         ldapEnv.put(Context.SECURITY_AUTHENTICATION, securityAuthentication);
         ldapEnv.put(Context.SECURITY_PRINCIPAL, simpleUserName + "@" + userDomain);
         ldapEnv.put(Context.SECURITY_CREDENTIALS, password);
+        // for returning the guid as byte[]
+        ldapEnv.put("java.naming.ldap.attributes.binary", "ObjectGUID");
         User user = null;
         try {
             DirContext ctx = new InitialDirContext(ldapEnv);
