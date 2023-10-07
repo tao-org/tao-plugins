@@ -1,5 +1,8 @@
 package ro.cs.tao.topology.openstack;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.samstevens.totp.code.CodeGenerator;
 import dev.samstevens.totp.code.DefaultCodeGenerator;
@@ -29,6 +32,8 @@ import org.openstack4j.model.storage.block.Volume;
 import org.openstack4j.model.storage.block.VolumeAttachment;
 import org.openstack4j.model.storage.block.VolumeType;
 import org.openstack4j.openstack.OSFactory;
+import org.openstack4j.openstack.identity.v3.domain.KeystoneAuth;
+import org.openstack4j.openstack.identity.v3.domain.KeystoneToken;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.topology.NodeDescription;
@@ -44,6 +49,10 @@ import ro.cs.tao.utils.executors.ExecutorType;
 import ro.cs.tao.utils.executors.MemoryUnit;
 import ro.cs.tao.utils.executors.OutputAccumulator;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -64,7 +73,7 @@ public class NovaService implements NodeProvider {
 
     private Server master;
 
-    protected OSClient.OSClientV3 client;
+    //protected OSClient.OSClientV3 client;
 
     public NovaService() {
     }
@@ -123,6 +132,7 @@ public class NovaService implements NodeProvider {
                 logger.severe("Cannot obtain token for OpenStack pre-authentication");
             }
         }
+        OSFactory.enableHttpLoggingFilter(true);
         OSClient.OSClientV3 client = token == null
                                      ? OSFactory.builderV3()
                                                 .endpoint(authUrl)
@@ -132,21 +142,22 @@ public class NovaService implements NodeProvider {
                                      : OSFactory.builderV3()
                                                 .token(token)
                                                 .endpoint(authUrl)
-                                                .scopeToProject(Identifier.byId(tenantId), Identifier.byId(domain))
+                                                .scopeToProject(Identifier.byId(tenantId))
                                                 .authenticate();
         if (region != null) {
             client = client.useRegion(region);
         }
-        // hack to force the retrieval of newest version of a service
-        List<? extends Service> catalog = client.getToken().getCatalog();
-        catalog.sort((Comparator<Service>) (o1, o2) -> o2.getType().compareTo(o1.getType()));
-
-        this.client = client;
-        authToken = this.client.getToken();
+        //authToken = getAuthToken(authUrl + "/auth/tokens", token, tenantId, domain);
+        //if (authToken != null) {
+        if (client != null) {
+            // hack to force the retrieval of newest version of a service
+            List<? extends Service> catalog = client.getToken().getCatalog();
+            catalog.sort((Comparator<Service>) (o1, o2) -> o2.getType().compareTo(o1.getType()));
+        }
     }
 
     private void checkAuthenticate() {
-        if (this.client == null) {
+        if (authToken == null) {
             throw new IllegalStateException("The client is not authenticated.");
         }
     }
@@ -562,7 +573,7 @@ public class NovaService implements NodeProvider {
             throw new NullPointerException("The flavor name '" + flavorName + "' does not exist.");
         }
 
-        ServerService serverService = this.client.compute().servers();
+        ServerService serverService = getClient().compute().servers();
         ServerCreateBuilder builder = serverService.serverBuilder();
         builder.name(serverName)
                 .flavor(flavor)
@@ -583,7 +594,7 @@ public class NovaService implements NodeProvider {
             throw new IllegalStateException("The server '" + serverName +"' is not active. Its status is " + server.getStatus() + ".");
         }
 
-        ComputeFloatingIPService computeFloatingIPService = this.client.compute().floatingIps();
+        ComputeFloatingIPService computeFloatingIPService = getClient().compute().floatingIps();
         boolean success = false;
         String floatingIpAddress;
         FloatingIP floatingIP = computeFloatingIPService.allocateIP(publicNetworkName);
@@ -672,6 +683,30 @@ public class NovaService implements NodeProvider {
             Executor.getEnvironment().remove(key);
         }
         return null;
+    }
+
+    private Token getAuthToken(String tokenUrl, String osToken, String tenantId, String domain) {
+        Token authToken = null;
+        try {
+            KeystoneAuth auth = new KeystoneAuth(osToken, KeystoneAuth.AuthScope.project(Identifier.byId(tenantId), Identifier.byId(domain)));
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+            HashMap<String, KeystoneAuth> body = new HashMap<>();
+            body.put("auth", auth);
+            final String json = mapper.writerFor(HashMap.class).writeValueAsString(body);
+            HttpRequest request = HttpRequest.newBuilder()
+                                             .uri(URI.create(tokenUrl))
+                                             .header("cookie", "SERVERID=keystone001.waw2")
+                                             .header("Content-Type", "application/json")
+                                             .method("POST", HttpRequest.BodyPublishers.ofString(json))
+                                             .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            authToken = mapper.readerFor(KeystoneToken.class).readValue(response.body());
+        } catch (Exception e) {
+            logger.severe("Cannot obtain token for OpenStack pre-authentication");
+        }
+        return authToken;
     }
 
     private OSClient.OSClientV3 getClient() {
