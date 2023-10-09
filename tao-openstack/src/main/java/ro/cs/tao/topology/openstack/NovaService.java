@@ -36,10 +36,7 @@ import org.openstack4j.openstack.identity.v3.domain.KeystoneAuth;
 import org.openstack4j.openstack.identity.v3.domain.KeystoneToken;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
-import ro.cs.tao.topology.NodeDescription;
-import ro.cs.tao.topology.NodeFlavor;
-import ro.cs.tao.topology.NodeProvider;
-import ro.cs.tao.topology.TopologyException;
+import ro.cs.tao.topology.*;
 import ro.cs.tao.topology.openstack.commons.Constants;
 import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
@@ -237,37 +234,40 @@ public class NovaService implements NodeProvider {
             checkVolumeType(osClient, hddType);
             final String defaultSecGroup = cfgProvider.getValue(Constants.OPENSTACK_DEFAULT_SECURITY_GROUP);
             final ServerService serverService = osClient.compute().servers();
-            final ServerCreateBuilder builder = serverService.serverBuilder();
-            final Flavor flavor = osClient.compute().flavors().list().stream().filter(f -> f.getName().equals(node.getFlavor().getId())).findFirst().orElse(null);
-            final List<String> networkIds = getNetworks();
-            final String ssdVolumeName = node.getId() + "-ssd";
-            final String hddVolumeName = node.getId() + "-hdd";
-            final int ssdSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_SIZE, "100"));
-            final int hddSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_SIZE, "0"));
-            //int idx = 1;
-            if (ssdSize > 0) {
-                ssdVolume = createVolume(osClient, ssdVolumeName, ssdType, ssdSize);
-            }
-            if (hddSize > 0) {
-                hddVolume = createVolume(osClient, hddVolumeName, hddType, hddSize);
-            }
-            builder.name(node.getId())
-                   .flavor(flavor)
-                   .image(cfgProvider.getValue(Constants.OPENSTACK_OS_IMAGE, "CentOS 7"));
-            builder.networks(networkIds);//.addSecurityGroup(defaultSecGroup);
-            final ServerCreate newServer = builder.addAdminPass(node.getUserPass())
-                                                  .keypairName(cfgProvider.getValue("openstack.keypair.name", ""))
-                                                  .availabilityZone("nova")
-                                                  .build();
-            server = serverService.bootAndWaitActive(newServer, WAIT_TIMEOUT_MILLISECONDS);
+            server = serverService.list().stream().filter(s -> node.getId().equals(s.getName())).findFirst().orElse(null);
             if (server == null) {
-                throw new TopologyException("OpenStack node was not created");
-            }
-            if (ssdVolume != null) {
-                serverService.attachVolume(server.getId(), ssdVolume.getId(), "/dev/sds");
-            }
-            if (hddVolume != null) {
-                serverService.attachVolume(server.getId(), hddVolume.getId(), "/dev/sdh");
+                final ServerCreateBuilder builder = serverService.serverBuilder();
+                final Flavor flavor = osClient.compute().flavors().list().stream().filter(f -> f.getName().equals(node.getFlavor().getId())).findFirst().orElse(null);
+                final List<String> networkIds = getNetworks();
+                final String ssdVolumeName = node.getId() + "-ssd";
+                final String hddVolumeName = node.getId() + "-hdd";
+                final int ssdSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_SIZE, "100"));
+                final int hddSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_SIZE, "0"));
+                //int idx = 1;
+                if (ssdSize > 0) {
+                    ssdVolume = createVolume(osClient, ssdVolumeName, ssdType, ssdSize);
+                }
+                if (hddSize > 0) {
+                    hddVolume = createVolume(osClient, hddVolumeName, hddType, hddSize);
+                }
+                builder.name(node.getId())
+                       .flavor(flavor)
+                       .image(cfgProvider.getValue(Constants.OPENSTACK_OS_IMAGE, "CentOS 7"));
+                builder.networks(networkIds);//.addSecurityGroup(defaultSecGroup);
+                final ServerCreate newServer = builder.addAdminPass(node.getUserPass())
+                                                      .keypairName(cfgProvider.getValue("openstack.keypair.name", ""))
+                                                      .availabilityZone("nova")
+                                                      .build();
+                server = serverService.bootAndWaitActive(newServer, WAIT_TIMEOUT_MILLISECONDS);
+                if (server == null) {
+                    throw new TopologyException("OpenStack node was not created");
+                }
+                if (ssdVolume != null) {
+                    serverService.attachVolume(server.getId(), ssdVolume.getId(), "/dev/sds");
+                }
+                if (hddVolume != null) {
+                    serverService.attachVolume(server.getId(), hddVolume.getId(), "/dev/sdh");
+                }
             }
             final NodeDescription newNode = convert(node, server, node.getVolatile());
             newNode.setUserPass(node.getUserPass());
@@ -470,13 +470,14 @@ public class NovaService implements NodeProvider {
         NodeDescription node = null;
         if (server != null) {
             node = new NodeDescription();
-            node.setId(server.getHost());
+            node.setId(initial.getId());
             node.setFlavor(convert(server.getFlavor()));
             node.setUserName(initial.getUserName());
             node.setUserPass(initial.getUserPass());
             node.setSshKey(initial.getSshKey());
-            node.setDescription(server.getAccessIPv4());
+            node.setDescription(initial.getDescription());
             node.setActive(server.getStatus() == Server.Status.ACTIVE);
+            node.setRole(NodeRole.WORKER);
             node.setVolatile(isVolatile);
         }
         return node;
