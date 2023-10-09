@@ -150,8 +150,9 @@ public class NovaService implements NodeProvider {
         //authToken = getAuthToken(authUrl + "/auth/tokens", token, tenantId, domain);
         //if (authToken != null) {
         if (client != null) {
+            authToken = client.getToken();
             // hack to force the retrieval of newest version of a service
-            List<? extends Service> catalog = client.getToken().getCatalog();
+            List<? extends Service> catalog = authToken.getCatalog();
             catalog.sort((Comparator<Service>) (o1, o2) -> o2.getType().compareTo(o1.getType()));
         }
     }
