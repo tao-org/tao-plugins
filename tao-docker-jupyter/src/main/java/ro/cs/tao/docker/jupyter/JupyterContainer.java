@@ -13,7 +13,7 @@ import ro.cs.tao.utils.DockerHelper;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.utils.Tuple;
 import ro.cs.tao.utils.executors.*;
-
+import ro.cs.tao.component.SystemVariable;
 import java.io.*;
 import java.net.InetAddress;
 import java.nio.file.Files;
@@ -213,10 +213,10 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
         args.add("-e");
         args.add("JUPYTER_TOKEN=" + token);
         args.add("-v");
-
-        String mapVolumePath = (map.getHostWorkspaceFolder().endsWith("/")
-                ? map.getHostWorkspaceFolder()
-                : (map.getHostWorkspaceFolder() + "/"))
+        Path absolutePath = Paths.get(SystemVariable.ROOT.value()).toAbsolutePath();
+        String mapVolumePath = (absolutePath.endsWith("/")
+                ? absolutePath
+                : (absolutePath + "/"))
                 + userName;
         File file = new File(mapVolumePath);
         if(!file.exists())
