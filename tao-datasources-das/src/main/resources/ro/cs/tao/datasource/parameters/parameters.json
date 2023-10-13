@@ -502,5 +502,57 @@
       "valueSet": null,
       "order": 8
     }
+  },
+  "Sentinel1-orbits": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platformShortName",
+      "label": "Platform",
+      "type": "string",
+      "defaultValue": "SENTINEL-1",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "ContentDate/Start",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 1
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "ContentDate/End",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 2
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": "AUX_POEORB",
+      "required": false,
+      "valueSet": ["AUX_POEORB", "AUX_RESORB", "AUX_PREORB", "AUX_GNSSRD", "AUX_PROQUA"],
+      "order": 3
+    },
+    "platformIdentifier": {
+      "name": "platformIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B"],
+      "order": 4
+    }
   }
 }
