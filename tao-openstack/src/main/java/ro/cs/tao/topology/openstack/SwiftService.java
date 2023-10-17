@@ -339,12 +339,12 @@ public class SwiftService {
     }
 
     private ObjectStorageService authenticate() {
-        //if (this.objectStorageService == null) {
-            try {
-                return OpenStackSession.objectStorageService(parameters);
-            } catch (AuthenticationException ex) {
-                throw new TopologyException(String.format("OpenStack authentication failed. Reason: %s", ex.getMessage()));
-            }
-        //}
+        try {
+            return parameters == null || parameters.size() == 1
+                   ? OpenStackSession.objectStorageService()
+                   : OpenStackSession.objectStorageService(parameters);
+        } catch (AuthenticationException ex) {
+            throw new TopologyException(String.format("OpenStack authentication failed. Reason: %s", ex.getMessage()));
+        }
     }
 }

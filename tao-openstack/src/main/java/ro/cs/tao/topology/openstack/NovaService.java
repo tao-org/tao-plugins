@@ -1,55 +1,27 @@
 package ro.cs.tao.topology.openstack;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.samstevens.totp.code.CodeGenerator;
-import dev.samstevens.totp.code.DefaultCodeGenerator;
-import dev.samstevens.totp.exceptions.CodeGenerationException;
-import dev.samstevens.totp.time.SystemTimeProvider;
-import dev.samstevens.totp.time.TimeProvider;
-import org.apache.http.Header;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.openstack4j.api.Builders;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.api.compute.ComputeFloatingIPService;
+import org.openstack4j.api.compute.ComputeService;
 import org.openstack4j.api.compute.ServerService;
 import org.openstack4j.api.networking.NetFloatingIPService;
 import org.openstack4j.api.storage.BlockVolumeService;
 import org.openstack4j.model.common.ActionResponse;
-import org.openstack4j.model.common.Identifier;
 import org.openstack4j.model.compute.*;
 import org.openstack4j.model.compute.builder.ServerCreateBuilder;
-import org.openstack4j.model.identity.v3.Service;
-import org.openstack4j.model.identity.v3.Token;
 import org.openstack4j.model.network.NetFloatingIP;
 import org.openstack4j.model.network.Network;
 import org.openstack4j.model.storage.block.Volume;
 import org.openstack4j.model.storage.block.VolumeAttachment;
 import org.openstack4j.model.storage.block.VolumeType;
-import org.openstack4j.openstack.OSFactory;
-import org.openstack4j.openstack.identity.v3.domain.KeystoneAuth;
-import org.openstack4j.openstack.identity.v3.domain.KeystoneToken;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.topology.*;
 import ro.cs.tao.topology.openstack.commons.Constants;
-import ro.cs.tao.utils.CloseableHttpResponse;
-import ro.cs.tao.utils.HttpMethod;
-import ro.cs.tao.utils.NetUtils;
-import ro.cs.tao.utils.executors.Executor;
-import ro.cs.tao.utils.executors.ExecutorType;
+import ro.cs.tao.topology.openstack.commons.OpenStackSession;
 import ro.cs.tao.utils.executors.MemoryUnit;
-import ro.cs.tao.utils.executors.OutputAccumulator;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -66,96 +38,18 @@ public class NovaService implements NodeProvider {
 
     private static final int WAIT_TIMEOUT_MILLISECONDS = 60 * 1000;
 
-    private static Token authToken;
-
-    private Server master;
-
-    //protected OSClient.OSClientV3 client;
+    private OpenStackSession session;
 
     public NovaService() {
     }
 
     @Override
     public void authenticate() {
-        final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
-        final String domain = cfgProvider.getValue(Constants.OPENSTACK_DOMAIN, null);
-        if (domain == null || domain.isEmpty()) {
-            throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_DOMAIN));
-        }
-        final String user = cfgProvider.getValue(Constants.OPENSTACK_USER, null);
-        if (user == null || user.isEmpty()) {
-            throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_USER));
-        }
-        final String password = cfgProvider.getValue(Constants.OPENSTACK_PASSWORD, null);
-        if (password == null || password.isEmpty()) {
-            throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_PASSWORD));
-        }
-        final String authUrl = cfgProvider.getValue(Constants.OPENSTACK_AUTH_URL, null);
-        if (authUrl == null || authUrl.isEmpty()) {
-            throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_AUTH_URL));
-        }
-        final String tenantId = cfgProvider.getValue(Constants.OPENSTACK_TENANT_ID, null);
-        if (tenantId == null || tenantId.isEmpty()) {
-            throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_TENANT_ID));
-        }
-        final String region = cfgProvider.getValue(Constants.OPENSTACK_REGION, null);
-        final String appClient = cfgProvider.getValue(Constants.OPENSTACK_CLIENT, null);
-        final String appClientSecret = cfgProvider.getValue(Constants.OPENSTACK_CLIENT_SECRET, null);
-        final String userSecret = cfgProvider.getValue(Constants.OPENSTACK_USER_SECRET, null);
-        final String tokenUrl = cfgProvider.getValue(Constants.OPENSTACK_TOKEN_URL, null);
-        final String identityProvider = cfgProvider.getValue(Constants.OPENSTACK_IDENTITY_PROVIDER, null);
-        String token = null;
-        if (appClient != null && appClientSecret != null && tokenUrl != null && identityProvider != null) {
-            // We need first to get a token from Keycloak
-            try {
-                Header header = new BasicHeader("Content-Type", "application/x-www-form-urlencoded");
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("password", password));
-                params.add(new BasicNameValuePair("grant_type", "password"));
-                params.add(new BasicNameValuePair("username", user));
-                params.add(new BasicNameValuePair("client_id", appClient));
-                params.add(new BasicNameValuePair("client_secret", appClientSecret));
-                if (userSecret != null) {
-                    params.add(new BasicNameValuePair("totp", generateOTP(userSecret)));
-                }
-                try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, tokenUrl, header, params)) {
-                    token = EntityUtils.toString(response.getEntity());
-                    Map<String, String> map = new LinkedHashMap<>();
-                    map.putAll(new ObjectMapper().readValue(token, map.getClass()));
-                    token = map.get("access_token");
-                    token = getOSToken(authUrl, user, region, tenantId, domain, appClient, appClientSecret, identityProvider, token);
-                }
-            } catch (Exception e) {
-                logger.severe("Cannot obtain token for OpenStack pre-authentication");
-            }
-        }
-        OSFactory.enableHttpLoggingFilter(true);
-        OSClient.OSClientV3 client = token == null
-                                     ? OSFactory.builderV3()
-                                                .endpoint(authUrl)
-                                                .credentials(user, password, Identifier.byId(domain))
-                                                .scopeToProject(Identifier.byId(tenantId))
-                                                .authenticate()
-                                     : OSFactory.builderV3()
-                                                .token(token)
-                                                .endpoint(authUrl)
-                                                .scopeToProject(Identifier.byId(tenantId))
-                                                .authenticate();
-        if (region != null) {
-            client = client.useRegion(region);
-        }
-        //authToken = getAuthToken(authUrl + "/auth/tokens", token, tenantId, domain);
-        //if (authToken != null) {
-        if (client != null) {
-            authToken = client.getToken();
-            // hack to force the retrieval of newest version of a service
-            List<? extends Service> catalog = authToken.getCatalog();
-            catalog.sort((Comparator<Service>) (o1, o2) -> o2.getType().compareTo(o1.getType()));
-        }
+        session = OpenStackSession.getInstance();
     }
 
     private void checkAuthenticate() {
-        if (authToken == null) {
+        if (session == null) {
             throw new IllegalStateException("The client is not authenticated.");
         }
     }
@@ -164,7 +58,7 @@ public class NovaService implements NodeProvider {
     public List<NodeFlavor> listFlavors() throws TopologyException {
         checkAuthenticate();
 
-        final List<? extends Flavor> remoteFlavors = getClient().compute().flavors().list();
+        final List<? extends Flavor> remoteFlavors = session.computeService().flavors().list();
         List<NodeFlavor> flavors = new ArrayList<>();
         if (remoteFlavors != null) {
             for (Flavor flavor : remoteFlavors) {
@@ -182,7 +76,7 @@ public class NovaService implements NodeProvider {
     public List<NodeDescription> listNodes(Boolean addNodeWithoutFloatingIpAddress) {
         checkAuthenticate();
 
-        List<? extends Server> servers = getClient().compute().servers().list();
+        List<? extends Server> servers = session.computeService().servers().list();
         List<NodeDescription> remoteNodes = new ArrayList<>();
         if (servers != null) {
             for (Server server : servers) {
@@ -210,7 +104,7 @@ public class NovaService implements NodeProvider {
         if ("localhost".equals(nodeName)) {
             return null;
         }
-        final Server server = getClient().compute().servers().get(nodeName);
+        final Server server = session.computeService().servers().get(nodeName);
         NodeDescription node = null;
         if (server == null) {
             logger.warning(String.format("Node '%s' not found in OpenStack topology", nodeName));
@@ -229,15 +123,15 @@ public class NovaService implements NodeProvider {
             final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
             final String ssdType = cfgProvider.getValue(Constants.OPENSTACK_VOLUME_TYPE_SSD, "ssd");
             final String hddType = cfgProvider.getValue(Constants.OPENSTACK_VOLUME_TYPE_HDD, "hdd");
-            final OSClient.OSClientV3 osClient = getClient();
-            checkVolumeType(osClient, ssdType);
-            checkVolumeType(osClient, hddType);
+            final ComputeService service = session.computeService();
+            checkVolumeType(ssdType);
+            checkVolumeType(hddType);
             final String defaultSecGroup = cfgProvider.getValue(Constants.OPENSTACK_DEFAULT_SECURITY_GROUP);
-            final ServerService serverService = osClient.compute().servers();
+            final ServerService serverService = service.servers();
             server = serverService.list().stream().filter(s -> node.getId().equals(s.getName())).findFirst().orElse(null);
             if (server == null) {
                 final ServerCreateBuilder builder = serverService.serverBuilder();
-                final Flavor flavor = osClient.compute().flavors().list().stream().filter(f -> f.getName().equals(node.getFlavor().getId())).findFirst().orElse(null);
+                final Flavor flavor = service.flavors().list().stream().filter(f -> f.getName().equals(node.getFlavor().getId())).findFirst().orElse(null);
                 final List<String> networkIds = getNetworks();
                 final String ssdVolumeName = node.getId() + "-ssd";
                 final String hddVolumeName = node.getId() + "-hdd";
@@ -245,10 +139,10 @@ public class NovaService implements NodeProvider {
                 final int hddSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_SIZE, "0"));
                 //int idx = 1;
                 if (ssdSize > 0) {
-                    ssdVolume = createVolume(osClient, ssdVolumeName, ssdType, ssdSize);
+                    ssdVolume = createVolume(ssdVolumeName, ssdType, ssdSize);
                 }
                 if (hddSize > 0) {
-                    hddVolume = createVolume(osClient, hddVolumeName, hddType, hddSize);
+                    hddVolume = createVolume(hddVolumeName, hddType, hddSize);
                 }
                 builder.name(node.getId())
                        .flavor(flavor)
@@ -294,14 +188,13 @@ public class NovaService implements NodeProvider {
     @Override
     public void remove(String nodeName) throws TopologyException {
         checkAuthenticate();
-        final OSClient.OSClientV3 osClient = getClient();
-        final ServerService serverService = osClient.compute().servers();
+        final ServerService serverService = session.computeService().servers();
         Server server = serverService.get(nodeName);
         if (server == null) {
             logger.warning(String.format("Node %s doesn't exist on %s", nodeName, getClass().getSimpleName()));
         } else {
             final List<Address> IPtoDelete = new ArrayList<>();
-            final NetFloatingIPService floatingIPService = osClient.networking().floatingip();
+            final NetFloatingIPService floatingIPService = session.networkService().floatingip();
             for (List<? extends Address> addresses : server.getAddresses().getAddresses().values()) {
                 addresses.stream().filter(a -> a.getType().equalsIgnoreCase("floating")).findFirst().ifPresent(IPtoDelete::add);
             }
@@ -318,8 +211,7 @@ public class NovaService implements NodeProvider {
     @Override
     public void suspend(String nodeName) throws TopologyException {
         checkAuthenticate();
-        final OSClient.OSClientV3 osClient = getClient();
-        final ServerService serverService = osClient.compute().servers();
+        final ServerService serverService = session.computeService().servers();
         final Server server = serverService.get(nodeName);
         if (server == null) {
             throw new TopologyException(String.format("Node '%s' is not created", nodeName));
@@ -334,8 +226,7 @@ public class NovaService implements NodeProvider {
     @Override
     public void resume(String nodeName) throws TopologyException {
         checkAuthenticate();
-        final OSClient.OSClientV3 osClient = getClient();
-        final ServerService serverService = osClient.compute().servers();
+        final ServerService serverService = session.computeService().servers();
         final Server server = serverService.get(nodeName);
         if (server == null) {
             throw new TopologyException(String.format("Node '%s' is not created", nodeName));
@@ -353,8 +244,8 @@ public class NovaService implements NodeProvider {
         return node;
     }
 
-    private Volume createVolume(OSClient.OSClientV3 osClient, String volumeName, String volumeType, int sizeGB) {
-        final BlockVolumeService volumeService = osClient.blockStorage().volumes();
+    private Volume createVolume(String volumeName, String volumeType, int sizeGB) {
+        final BlockVolumeService volumeService = session.blockStorageService().volumes();
         Volume volume = volumeService.get(volumeName);
         if (volume == null) { // the volume doesn't exist
             volume = volumeService.create(Builders.volume()
@@ -376,8 +267,7 @@ public class NovaService implements NodeProvider {
 
     private void deleteVolume(Volume volume) {
         if (volume != null) {
-            final OSClient.OSClientV3 osClient = getClient();
-            final BlockVolumeService volumeService = osClient.blockStorage().volumes();
+            final BlockVolumeService volumeService = session.blockStorageService().volumes();
             if (volumeService.get(volume.getId()) != null) { // make sure it exists
                 final ActionResponse response = volumeService.delete(volume.getId());
                 if (!response.isSuccess()) {
@@ -390,8 +280,7 @@ public class NovaService implements NodeProvider {
 
     private void deleteServer(Server server) {
         if (server != null) {
-            final OSClient.OSClientV3 osClient = getClient();
-            final ServerService serverService = osClient.compute().servers();
+            final ServerService serverService = session.computeService().servers();
             if (serverService.get(server.getId()) != null) { // make sure it exists
                 final ActionResponse response = serverService.delete(server.getId());
                 if (!response.isSuccess()) {
@@ -403,28 +292,24 @@ public class NovaService implements NodeProvider {
     }
 
     private List<String> getNetworks() {
-        final List<String> networkIds = this.master != null ?
-                new ArrayList<>(this.master.getAddresses().getAddresses().keySet()) : new ArrayList<>();
-        if (networkIds.isEmpty()) {
-            final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
-            final String privateNetworkName = cfgProvider.getValue(Constants.OPENSTACK_PRIVATE_NETWORK);
-            final String eoDataNetworkName = cfgProvider.getValue(Constants.OPENSTACK_DATA_NETWORK);
-            if (privateNetworkName != null || eoDataNetworkName != null) {
-                final OSClient.OSClientV3 osClient = getClient();
-                final List<? extends Network> networks = osClient.networking().network().list();
-                for (Network network : networks) {
-                    if ((privateNetworkName != null && privateNetworkName.equals(network.getName())) ||
-                            (eoDataNetworkName != null && eoDataNetworkName.equals(network.getName()))) {
-                        networkIds.add(network.getId());
-                    }
+        final List<String> networkIds = new ArrayList<>();
+        final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
+        final String privateNetworkName = cfgProvider.getValue(Constants.OPENSTACK_PRIVATE_NETWORK);
+        final String eoDataNetworkName = cfgProvider.getValue(Constants.OPENSTACK_DATA_NETWORK);
+        if (privateNetworkName != null || eoDataNetworkName != null) {
+            final List<? extends Network> networks = session.networkService().network().list();
+            for (Network network : networks) {
+                if ((privateNetworkName != null && privateNetworkName.equals(network.getName())) ||
+                        (eoDataNetworkName != null && eoDataNetworkName.equals(network.getName()))) {
+                    networkIds.add(network.getId());
                 }
             }
         }
         return networkIds;
     }
 
-    private void checkVolumeType(OSClient.OSClientV3 osClient, String volumeType) {
-        final List<? extends VolumeType> volumeTypes = osClient.blockStorage().volumes().listVolumeTypes();
+    private void checkVolumeType(String volumeType) {
+        final List<? extends VolumeType> volumeTypes = session.blockStorageService().volumes().listVolumeTypes();
         if (volumeType == null) {
             throw new TopologyException("The remote provider API returned an empty VolumeType list");
         }
@@ -442,7 +327,7 @@ public class NovaService implements NodeProvider {
     }
 
     private org.openstack4j.model.image.v2.Image findImageByName(String imageName) {
-        final OSClient.OSClientV3 osClient = getClient();
+        final OSClient.OSClientV3 osClient = session.getService();
         String projectId = osClient.getToken().getProject().getId();
         List<? extends org.openstack4j.model.image.v2.Image> images = osClient.imagesV2().list();
         for (org.openstack4j.model.image.v2.Image image : images) {
@@ -498,8 +383,7 @@ public class NovaService implements NodeProvider {
     }
 
     private Server findServerByName(String serverName) {
-        final OSClient.OSClientV3 osClient = getClient();
-        List<? extends Server> servers = osClient.compute().servers().list();
+        List<? extends Server> servers = session.computeService().servers().list();
         for (Server server : servers) {
             if (serverName.equals(server.getName())) {
                 return server;
@@ -513,9 +397,8 @@ public class NovaService implements NodeProvider {
 
         Server server = findServerByName(serverName);
         if (server != null) {
-            final OSClient.OSClientV3 osClient = getClient();
             // the server exists in the Openstack
-            ComputeFloatingIPService floatingIPService = osClient.compute().floatingIps();
+            ComputeFloatingIPService floatingIPService = session.computeService().floatingIps();
             List<Address> floatingAddressesToDelete = new ArrayList<>();
             final Collection<List<? extends Address>> values = server.getAddresses().getAddresses().values();
             for (List<? extends Address> addresses : values) {
@@ -527,7 +410,7 @@ public class NovaService implements NodeProvider {
             }
 
             // delete the server from the Openstack
-            ActionResponse actionResponse = osClient.compute().servers().delete(server.getId());
+            ActionResponse actionResponse = session.computeService().servers().delete(server.getId());
             if (actionResponse.getFault() != null) {
                 throw new IllegalStateException("The server name '" + serverName+"' has not been deleted. Message: " + actionResponse.getFault()+".");
             }
@@ -575,7 +458,7 @@ public class NovaService implements NodeProvider {
             throw new NullPointerException("The flavor name '" + flavorName + "' does not exist.");
         }
 
-        ServerService serverService = getClient().compute().servers();
+        ServerService serverService = session.computeService().servers();
         ServerCreateBuilder builder = serverService.serverBuilder();
         builder.name(serverName)
                 .flavor(flavor)
@@ -596,7 +479,7 @@ public class NovaService implements NodeProvider {
             throw new IllegalStateException("The server '" + serverName +"' is not active. Its status is " + server.getStatus() + ".");
         }
 
-        ComputeFloatingIPService computeFloatingIPService = getClient().compute().floatingIps();
+        ComputeFloatingIPService computeFloatingIPService = session.computeService().floatingIps();
         boolean success = false;
         String floatingIpAddress;
         FloatingIP floatingIP = computeFloatingIPService.allocateIP(publicNetworkName);
@@ -618,8 +501,7 @@ public class NovaService implements NodeProvider {
     }
 
     private Flavor findFlavorByName(String flavorName) {
-        final OSClient.OSClientV3 osClient = getClient();
-        List<? extends Flavor> flavors = osClient.compute().flavors().list();
+        List<? extends Flavor> flavors = session.computeService().flavors().list();
         for (Flavor flavor : flavors) {
             if (flavorName.equals(flavor.getName())) {
                 return flavor;
@@ -629,95 +511,13 @@ public class NovaService implements NodeProvider {
     }
 
     private Network findNetworkByName(String networkName) {
-        final OSClient.OSClientV3 osClient = getClient();
-        List<? extends Network> networks = osClient.networking().network().list();
+        List<? extends Network> networks = session.networkService().network().list();
         for (Network network : networks) {
             if (networkName.equals(network.getName())) {
                 return network;
             }
         }
         return null;
-    }
-
-    private String generateOTP(String secret) throws CodeGenerationException {
-        TimeProvider timeProvider = new SystemTimeProvider();
-        CodeGenerator codeGenerator = new DefaultCodeGenerator();
-        long counter = timeProvider.getTime() / 30;
-        return codeGenerator.generate(secret, counter);
-    }
-
-    private String getOSToken(String authUrl, String userName, String region,
-                              String projectId, String domainId, String clientId,
-                              String clientSecret, String identityProvider,
-                              String jwtToken) throws Exception {
-        final Map<String, String> env = new HashMap<>();
-        env.put("OS_AUTH_URL", authUrl);
-        env.put("OS_INTERFACE", "public");
-        env.put("OS_IDENTITY_API_VERSION", "3");
-        env.put("OS_USERNAME", userName);
-        env.put("OS_REGION_NAME", region);
-        env.put("OS_PROJECT_ID", projectId);
-        env.put("OS_PROJECT_DOMAIN_ID", domainId);
-        env.put("OS_CLIENT_ID", clientId);
-        env.put("OS_CLIENT_SECRET", clientSecret);
-        env.put("OS_PROTOCOL", "openid");
-        env.put("OS_IDENTITY_PROVIDER", identityProvider);
-        env.put("OS_AUTH_TYPE", "v3oidcaccesstoken");
-        env.put("OS_ACCESS_TOKEN", jwtToken);
-        final List<String> args = new ArrayList<>();
-        args.add("openstack");
-        args.add("token");
-        args.add("issue");
-        args.add("-f");
-        args.add("value");
-        args.add("-c");
-        args.add("id");
-        Executor.setEnvironment(env);
-        final Executor<?> executor = Executor.create(ExecutorType.PROCESS, "localhost", args);
-        final OutputAccumulator consumer = new OutputAccumulator();
-        executor.setOutputConsumer(consumer);
-        final int code = executor.execute(false);
-        if (code == 0) {
-            return consumer.getOutput();
-        }
-        final Set<String> keySet = env.keySet();
-        for (String key : keySet) {
-            Executor.getEnvironment().remove(key);
-        }
-        return null;
-    }
-
-    private Token getAuthToken(String tokenUrl, String osToken, String tenantId, String domain) {
-        Token authToken = null;
-        try {
-            KeystoneAuth auth = new KeystoneAuth(osToken, KeystoneAuth.AuthScope.project(Identifier.byId(tenantId), Identifier.byId(domain)));
-            final ObjectMapper mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-            HashMap<String, KeystoneAuth> body = new HashMap<>();
-            body.put("auth", auth);
-            final String json = mapper.writerFor(HashMap.class).writeValueAsString(body);
-            HttpRequest request = HttpRequest.newBuilder()
-                                             .uri(URI.create(tokenUrl))
-                                             .header("cookie", "SERVERID=keystone001.waw2")
-                                             .header("Content-Type", "application/json")
-                                             .method("POST", HttpRequest.BodyPublishers.ofString(json))
-                                             .build();
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            authToken = mapper.readerFor(KeystoneToken.class).readValue(response.body());
-        } catch (Exception e) {
-            logger.severe("Cannot obtain token for OpenStack pre-authentication");
-        }
-        return authToken;
-    }
-
-    private OSClient.OSClientV3 getClient() {
-        final String region = ConfigurationManager.getInstance().getValue(Constants.OPENSTACK_REGION, null);
-        final OSClient.OSClientV3 osClientV3 = OSFactory.clientFromToken(authToken);
-        if (region != null) {
-            osClientV3.useRegion(region);
-        }
-        return osClientV3;
     }
 
     protected static String getServerFloatingIP(Server server) {
