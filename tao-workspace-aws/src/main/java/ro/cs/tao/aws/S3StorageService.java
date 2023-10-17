@@ -631,11 +631,11 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
     }
 
     private boolean isNotFolderPlaceholder(S3ObjectSummary summary) {
-        return !summary.getKey().endsWith(AVLFOLDER);
+        return !summary.getKey().endsWith(FOLDER_PLACEHOLDER);
     }
 
     private boolean isNotFolderPlaceholder(S3Object object) {
-        return !object.getKey().endsWith(AVLFOLDER);
+        return !object.getKey().endsWith(FOLDER_PLACEHOLDER);
     }
 
     private static class ProgressListener implements com.amazonaws.event.ProgressListener {
