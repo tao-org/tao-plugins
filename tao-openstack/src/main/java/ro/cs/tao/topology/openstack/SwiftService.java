@@ -12,6 +12,7 @@ import org.openstack4j.model.storage.object.options.CreateUpdateContainerOptions
 import org.openstack4j.model.storage.object.options.ObjectListOptions;
 import org.openstack4j.model.storage.object.options.ObjectPutOptions;
 import ro.cs.tao.security.SessionStore;
+import ro.cs.tao.services.model.FileObject;
 import ro.cs.tao.topology.TopologyException;
 import ro.cs.tao.topology.openstack.commons.Constants;
 import ro.cs.tao.topology.openstack.commons.OpenStackSession;
@@ -32,12 +33,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SwiftService {
+    private static final String CONTENTS = "contents";
     private final Logger logger;
-        private Map<String, String> parameters;
+    private Map<String, String> parameters;
     private int pageLimit = 1000;
+    private String folderPlaceholder;
 
     public SwiftService() {
         this.logger = Logger.getLogger(SwiftService.class.getName());
+        this.folderPlaceholder = ".folder";
+    }
+
+    public void setFolderPlaceholder(String folderPlaceholder) {
+        this.folderPlaceholder = folderPlaceholder;
     }
 
     public Map<String, String> getParameters() {
@@ -106,13 +114,18 @@ public class SwiftService {
         if (name == null) {
             throw new IllegalArgumentException("[name] is null");
         }
-        if (!Paths.get(name).isAbsolute()) {
-            throw new IllegalArgumentException("[name] must be an absolute path");
+        if (Paths.get(name).isAbsolute()) {
+            throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket");
         }
         if (StringUtilities.isNullOrEmpty(containerName)) {
             throw new IllegalArgumentException("[containerName] is null or empty");
         }
+        if (!name.endsWith("/")) {
+            name += "/";
+        }
         final ObjectStorageService objectStorageService = authenticate();
+        // Since "folders" do not exist in S3, there has to be a dummy file uploaded in order to create the "folder"
+        final FileObject fakeObject = emptyFolderItem();
         try {
             final ObjectStorageContainerService containerService = objectStorageService.containers();
             final ActionResponse actionResponse = containerService.create(containerName);
@@ -122,7 +135,18 @@ public class SwiftService {
             } else {
                 logger.finest(String.format("Connected to container %s", containerName));
             }
-            return containerService.createPath(containerName, name);
+            String path = containerService.createPath(containerName, name);
+            if (path == null) {
+                try (ByteArrayInputStream is = new ByteArrayInputStream(fakeObject.getAttributes().get(CONTENTS).getBytes())) {
+                    final Map<String, String> metadata = new HashMap<>();
+                    metadata.put("description", "placeholder");
+                    objectStorageService.objects().put(containerName, name + fakeObject.getRelativePath(),
+                                                       Payloads.create(is),
+                                                       ObjectPutOptions.create().metadata(metadata));
+                    path = name;
+                }
+            }
+            return path;
         } catch (Exception ex) {
             throw new IOException(String.format("Cannot create path %s in container. Reason: %s", name, ex.getMessage()));
         }
@@ -184,6 +208,17 @@ public class SwiftService {
                     }
                 }
             } while (!partial.isEmpty() && results.size() <= this.pageLimit);
+        }
+        if (this.folderPlaceholder != null) {
+            results.removeIf(r -> {
+                if (r.getName() != null) {
+                    final int idx = r.getName().lastIndexOf('/');
+                    return idx > 0
+                           ? r.getName().substring(idx + 1).equals(this.folderPlaceholder)
+                           : r.getName().equals(this.folderPlaceholder);
+                }
+                return false;
+            });
         }
         return results;
     }
@@ -346,5 +381,11 @@ public class SwiftService {
         } catch (AuthenticationException ex) {
             throw new TopologyException(String.format("OpenStack authentication failed. Reason: %s", ex.getMessage()));
         }
+    }
+
+    private FileObject emptyFolderItem() {
+        final FileObject object = new FileObject("", this.folderPlaceholder, false, 0, this.folderPlaceholder);
+        object.addAttribute(CONTENTS, ".");
+        return object;
     }
 }

@@ -26,6 +26,7 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
     public ObjectStorageService() {
         super();
         this.swiftService = new SwiftService();
+        this.swiftService.setFolderPlaceholder(FOLDER_PLACEHOLDER);
     }
 
     @Override
