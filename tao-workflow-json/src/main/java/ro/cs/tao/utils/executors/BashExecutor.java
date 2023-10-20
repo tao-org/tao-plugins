@@ -154,7 +154,7 @@ public class BashExecutor extends Executor<Object>
                     variable = "argument" + index;
                     for (int j = 1; j < arguments.size(); j++) {
                         if (arguments.get(j).equals(arg)) {
-                            arguments.set(j, "$" + variable);
+                            arguments.set(j, "$" + (isBash ? "{" + variable + "}" : variable));
                         }
                     }
                     //appendLine(builder, variable + "=" + positionalArgument);
@@ -168,16 +168,17 @@ public class BashExecutor extends Executor<Object>
                 for (int idx = 1; idx < inputSet.size(); idx++) {
                     helpArgs += "<product_" + idx + "> ";
                 }
-                String text = String.format(skeleton, Paths.get(unit.getScriptTargetPath()).getFileName(), helpArgs);
+                final StringBuilder text = new StringBuilder();
+                text.append(String.format(skeleton, Paths.get(unit.getScriptTargetPath()).getFileName(), helpArgs));
                 for (int i = 1; i <= inputSet.size(); i++) {
-                    text += "\n$argument" + i + "=$" + i;
+                    text.append("\n$argument").append(i).append("=$").append(i);
                 }
-                text += "\n";
+                text.append("\n");
 
                 builder.insert(0, text);
             }
             if (isBash) {
-                args.set(2, String.join(" ", arguments));
+                args.set(2, "\"" + String.join(" ", arguments) + "\"");
             }
         }
         appendLine(builder, comment);
@@ -196,11 +197,11 @@ public class BashExecutor extends Executor<Object>
         }
         Long memory = unit.getMinMemory();
         if (memory != null && memory > 0) {
-            append(builder, " --memory " + memory + "MB");
+            append(builder, " --memory " + memory + "MB ");
         }
         String registry = container.getContainerRegistry();
         if (!StringUtilities.isNullOrEmpty(registry)) {
-            append(builder, " " + registry + "/");
+            append(builder, registry + "/");
         }
         append(builder, container.getContainerName());
         append(builder, " " + String.join(" ", args));

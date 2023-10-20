@@ -27,6 +27,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.authorization.AuthorizationRequest;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.security.Token;
+import ro.cs.tao.security.TokenKeeper;
 import ro.cs.tao.security.TokenProvider;
 import ro.cs.tao.user.User;
 import ro.cs.tao.utils.CloseableHttpResponse;
@@ -46,7 +47,6 @@ import java.security.spec.RSAPublicKeySpec;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 public class KeycloakClient implements TokenProvider {
@@ -61,7 +61,7 @@ public class KeycloakClient implements TokenProvider {
     private final String clientSecret;
     private final String adminUser;
     private final String adminPwd;
-    private BiConsumer<Token, String> tokenKeeper;
+    private TokenKeeper tokenKeeper;
 
     public KeycloakClient() {
         this(ConfigurationManager.getInstance().getValue(Keys.AUTH_SERVER_URL),
@@ -90,7 +90,7 @@ public class KeycloakClient implements TokenProvider {
         this.adminPwd = admPwd;
     }
 
-    public void setTokenKeeper(BiConsumer<Token, String> tokenKeeper) {
+    public void setTokenKeeper(TokenKeeper tokenKeeper) {
         this.tokenKeeper = tokenKeeper;
     }
 
@@ -100,12 +100,19 @@ public class KeycloakClient implements TokenProvider {
 
     @Override
     public Token newToken(String user, String password) {
-        final AuthzClient authClient = getAuthClient();
-        final AuthorizationRequest request = new AuthorizationRequest();
-        request.addPermission(this.clientId);
+        Token token = null;
+        if (this.tokenKeeper != null) {
+            token = this.tokenKeeper.getToken(user);
+        }
+        if (token == null) {
+            final AuthzClient authClient = getAuthClient();
+            final AuthorizationRequest request = new AuthorizationRequest();
+            request.addPermission(this.clientId);
 
-        final AccessTokenResponse response = authClient.obtainAccessToken(user, password);
-        return new Token(response.getToken(), response.getRefreshToken(), (int) response.getExpiresIn());
+            final AccessTokenResponse response = authClient.obtainAccessToken(user, password);
+            token = new Token(response.getToken(), response.getRefreshToken(), (int) response.getExpiresIn());
+        }
+        return token;
     }
 
     @Override
@@ -125,7 +132,7 @@ public class KeycloakClient implements TokenProvider {
             if (tokenResponse.getError() != null) {
                 throw new RuntimeException(tokenResponse.getErrorDescription());
             }
-            return new Token(tokenResponse.getToken(), tokenResponse.getRefreshToken(), (int) tokenResponse.getExpiresIn());
+            return new Token(tokenResponse.getToken(), tokenResponse.getRefreshToken(), tokenResponse.getIdToken (), (int) tokenResponse.getExpiresIn());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -147,8 +154,11 @@ public class KeycloakClient implements TokenProvider {
             throw new RuntimeException("Invalid credentials supplied");
         }
         if (this.tokenKeeper != null) {
-            this.tokenKeeper.accept(new Token(tokenResponse.getToken(), tokenResponse.getRefreshToken(), (int) tokenResponse.getExpiresIn()),
-                                    username);
+            this.tokenKeeper.put(new Token(tokenResponse.getToken(),
+                                           tokenResponse.getRefreshToken(),
+                                           tokenResponse.getIdToken(),
+                                           (int) tokenResponse.getExpiresIn()),
+                                 username);
         }
         try (Keycloak adminClient = getAdminClient()) {
             final List<UserRepresentation> list = adminClient.realm(this.realm).users().search(username, true);
@@ -172,7 +182,7 @@ public class KeycloakClient implements TokenProvider {
         }
         final User user = checkToken(token.getToken());
         if (this.tokenKeeper != null) {
-            this.tokenKeeper.accept(token, user.getId());
+            this.tokenKeeper.put(token, user.getId());
         }
         return user;
     }
@@ -200,9 +210,9 @@ public class KeycloakClient implements TokenProvider {
             AccessToken accessToken = verifier.getToken();
             String username = accessToken.getPreferredUsername();
             if (this.tokenKeeper != null) {
-                this.tokenKeeper.accept(new Token(token, null, (int) Duration.between(Instant.ofEpochSecond(accessToken.getIat()),
+                this.tokenKeeper.put(new Token(token, null, (int) Duration.between(Instant.ofEpochSecond(accessToken.getIat()),
                                                                                       Instant.ofEpochSecond(accessToken.getExp())).getSeconds()),
-                                        username);
+                                     username);
             }
             try (Keycloak adminClient = getAdminClient()) {
                 final List<UserRepresentation> list = adminClient.realm(this.realm).users().search(username, true);
