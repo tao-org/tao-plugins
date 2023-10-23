@@ -275,6 +275,11 @@
             <artifactId>tao-zarr-metadata</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-dunia-session</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

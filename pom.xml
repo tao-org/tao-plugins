@@ -72,6 +72,7 @@
         <module>tao-eo-search</module>
         <module>tao-docker-jupyter</module>
         <module>tao-plugins-kit</module>
+        <module>tao-dunia-session</module>
     </modules>
 
     <properties>
