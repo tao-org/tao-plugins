@@ -89,7 +89,7 @@ public class DASQuery extends DataQuery {
         final boolean isS2 = "Sentinel-2".equalsIgnoreCase(platform);
         final boolean isS1 = "Sentinel-1".equalsIgnoreCase(platform);
         final boolean isS3 = "Sentinel-3".equalsIgnoreCase(platform);
-        final boolean isS1Aux = "Sentinel1-orbits".equals(this.sensorName);
+        final boolean isS1Aux = "Sentinel1-orbit-files".equals(this.sensorName);
         StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
         for (String queryId : queries.keySet()) {
@@ -255,7 +255,7 @@ public class DASQuery extends DataQuery {
 
     private Map<String, String> buildQueriesParams() throws ConversionException {
         Map<String, String> queries = new HashMap<>();
-        final boolean isS1Aux = this.sensorName.equals("Sentinel1-orbits");
+        final boolean isS1Aux = this.sensorName.equals("Sentinel1-orbit-files");
         if (!isS1Aux && !this.parameters.containsKey(CommonParameterNames.PLATFORM)) {
             addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }

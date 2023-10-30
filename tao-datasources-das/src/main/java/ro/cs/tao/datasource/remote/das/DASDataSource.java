@@ -82,7 +82,7 @@ public class DASDataSource extends URLDataSource<DASQuery, Token> {
 
     @Override
     public String getConnectionString(String sensorName) {
-        return /*sensorName.equals("Sentinel1-orbits") ? DOWNLOAD_URL : */super.getConnectionString(sensorName);
+        return /*sensorName.equals("Sentinel1-orbit-files") ? DOWNLOAD_URL : */super.getConnectionString(sensorName);
     }
 
     @Override
