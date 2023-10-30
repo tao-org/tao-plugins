@@ -504,6 +504,16 @@
     }
   },
   "Sentinel1-orbits": {
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "Name",
+      "label": "Product Name",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
     "platformName": {
       "name": "platformName",
       "remoteName": "platformShortName",

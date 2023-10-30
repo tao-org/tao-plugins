@@ -300,7 +300,7 @@ public class DASQuery extends DataQuery {
         StringBuilder query = new StringBuilder();
         if (this.parameters.containsKey(CommonParameterNames.PRODUCT)) {
             String productName = this.parameters.get(CommonParameterNames.PRODUCT).getValueAsString();
-            if (!productName.endsWith(".SAFE")) {
+            if (!productName.endsWith(".SAFE") && !isS1Aux) {
                 productName += ".SAFE";
             }
             query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.PRODUCT), productName, Condition.EQ));
@@ -316,6 +316,11 @@ public class DASQuery extends DataQuery {
                     QueryParameter parameter = entry.getValue();
                     if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                         throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
+                    }
+                    if (parameter.getName().equalsIgnoreCase(CommonParameterNames.PRODUCT)) {
+                        query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.PRODUCT),
+                                                         parameter, Condition.EQ));
+                        break;
                     }
                     if (parameter.isOptional() &
                             ((!parameter.isInterval() & parameter.getValue() == null) |
