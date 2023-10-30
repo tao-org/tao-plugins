@@ -6,7 +6,7 @@
     <parent>
         <groupId>ro.c-s.tao</groupId>
         <artifactId>tao-plugins</artifactId>
-        <version>1.4.8</version>
+        <version>1.4.9</version>
     </parent>
 
     <artifactId>tao-dunia-session</artifactId>
