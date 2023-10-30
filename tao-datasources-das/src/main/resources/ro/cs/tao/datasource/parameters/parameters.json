@@ -503,7 +503,7 @@
       "order": 8
     }
   },
-  "Sentinel1-orbits": {
+  "Sentinel1-orbit-files": {
     "productIdentifier": {
       "name": "productIdentifier",
       "remoteName": "Name",

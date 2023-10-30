@@ -77,7 +77,7 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                         product.setProductType(value.toString());
                     }
                     product.setLocation((r.getName().contains("AUX")
-                                            ? dataSource.getConnectionString("Sentinel1-orbits")
+                                            ? dataSource.getConnectionString("Sentinel1-orbit-files")
                                             : dataSource.getConnectionString("Download")) + "(" + r.getId() + ")/$value");
                     product.setAcquisitionDate(r.getContentDate().getStart());
                     final List<Attribute> attributes = r.getAttributes();

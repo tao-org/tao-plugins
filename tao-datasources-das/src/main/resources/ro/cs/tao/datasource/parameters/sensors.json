@@ -27,8 +27,8 @@
     "temporalCoverage": "from october 2018 to present",
     "spatialCoverage": "Global"
   },
-  "Sentinel1-orbits": {
-    "mission": "Sentinel1-orbits",
+  "Sentinel1-orbit-files": {
+    "mission": "Sentinel1-orbit-files",
     "sensorType": "RADAR",
     "description": "Orbit files for Sentinel-1 acquisitions",
     "temporalCoverage": "from 2014 to present",
