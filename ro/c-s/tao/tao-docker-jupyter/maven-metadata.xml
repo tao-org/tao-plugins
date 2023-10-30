@@ -3,7 +3,7 @@
   <groupId>ro.c-s.tao</groupId>
   <artifactId>tao-docker-jupyter</artifactId>
   <versioning>
-    <release>1.4.8</release>
+    <release>1.4.9</release>
     <versions>
       <version>1.4.3.2</version>
       <version>1.4.4</version>
@@ -11,7 +11,8 @@
       <version>1.4.6</version>
       <version>1.4.7</version>
       <version>1.4.8</version>
+      <version>1.4.9</version>
     </versions>
-    <lastUpdated>20231002132101</lastUpdated>
+    <lastUpdated>20231030102259</lastUpdated>
   </versioning>
 </metadata>
