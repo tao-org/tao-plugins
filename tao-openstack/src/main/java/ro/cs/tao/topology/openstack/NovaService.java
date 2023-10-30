@@ -5,12 +5,10 @@ import org.openstack4j.api.OSClient;
 import org.openstack4j.api.compute.ComputeFloatingIPService;
 import org.openstack4j.api.compute.ComputeService;
 import org.openstack4j.api.compute.ServerService;
-import org.openstack4j.api.networking.NetFloatingIPService;
 import org.openstack4j.api.storage.BlockVolumeService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.compute.*;
 import org.openstack4j.model.compute.builder.ServerCreateBuilder;
-import org.openstack4j.model.network.NetFloatingIP;
 import org.openstack4j.model.network.Network;
 import org.openstack4j.model.storage.block.Volume;
 import org.openstack4j.model.storage.block.VolumeAttachment;
@@ -22,8 +20,10 @@ import ro.cs.tao.topology.openstack.commons.Constants;
 import ro.cs.tao.topology.openstack.commons.OpenStackSession;
 import ro.cs.tao.utils.executors.MemoryUnit;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -126,7 +126,7 @@ public class NovaService implements NodeProvider {
             final ComputeService service = session.computeService();
             checkVolumeType(ssdType);
             checkVolumeType(hddType);
-            final String defaultSecGroup = cfgProvider.getValue(Constants.OPENSTACK_DEFAULT_SECURITY_GROUP);
+            //final String defaultSecGroup = cfgProvider.getValue(Constants.OPENSTACK_DEFAULT_SECURITY_GROUP);
             final ServerService serverService = service.servers();
             server = serverService.list().stream().filter(s -> node.getId().equals(s.getName())).findFirst().orElse(null);
             if (server == null) {
@@ -193,18 +193,16 @@ public class NovaService implements NodeProvider {
         if (server == null) {
             logger.warning(String.format("Node %s doesn't exist on %s", nodeName, getClass().getSimpleName()));
         } else {
-            final List<Address> IPtoDelete = new ArrayList<>();
-            final NetFloatingIPService floatingIPService = session.networkService().floatingip();
-            for (List<? extends Address> addresses : server.getAddresses().getAddresses().values()) {
-                addresses.stream().filter(a -> a.getType().equalsIgnoreCase("floating")).findFirst().ifPresent(IPtoDelete::add);
+            final BlockVolumeService volumeService = session.blockStorageService().volumes();
+            Volume volume = volumeService.get(nodeName + "-ssd");
+            if (volume != null) {
+                deleteVolume(volume);
             }
-            serverService.delete(nodeName);
-            final Map<String, ? extends NetFloatingIP> ipMap = floatingIPService.list().stream()
-                                                                                .collect(Collectors.toMap(NetFloatingIP::getFixedIpAddress,
-                                                                                                          Function.identity()));
-            for (Address address : IPtoDelete) {
-                floatingIPService.delete(ipMap.get(address.getAddr()).getId());
+            volume = volumeService.get(nodeName + "-hdd");
+            if (volume != null) {
+                deleteVolume(volume);
             }
+            deleteServer(server);
         }
     }
 
@@ -364,6 +362,7 @@ public class NovaService implements NodeProvider {
             node.setActive(server.getStatus() == Server.Status.ACTIVE);
             node.setRole(NodeRole.WORKER);
             node.setVolatile(isVolatile);
+            node.setServerId(server.getId());
         }
         return node;
     }
