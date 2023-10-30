@@ -50,14 +50,15 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
             results.getResults().forEach(r -> {
                 try {
                     EOProduct product = new EOProduct();
+                    final boolean isAux = r.getName().contains("AUX");
                     product.setName(r.getName());
                     product.setId(r.getId());
-                    product.setFormatType(DataFormat.RASTER);
+                    product.setFormatType(isAux ? DataFormat.OTHER : DataFormat.RASTER);
                     Object value = getAttributeValue(r, "platformShortName");
                     if (value != null) {
                         String platform = value.toString();
                         platform = platform.substring(0, 1).toUpperCase() + platform.substring(1).toLowerCase();
-                        product.setSensorType(platform.startsWith("Sentinel1")
+                        product.setSensorType(platform.startsWith("Sentinel1") || isAux
                                               ? SensorType.RADAR
                                               : platform.equalsIgnoreCase("sentinel5p")
                                                 ? SensorType.ATMOSPHERIC
@@ -75,9 +76,9 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     if (value != null) {
                         product.setProductType(value.toString());
                     }
-                    product.setLocation(r.getName().contains("AUX")
-                                            ? (dataSource.getConnectionString("Sentinel1-orbits") + r.getId())
-                                            : (dataSource.getConnectionString("Download") + "(" + r.getId() + ")/$value"));
+                    product.setLocation((r.getName().contains("AUX")
+                                            ? dataSource.getConnectionString("Sentinel1-orbits")
+                                            : dataSource.getConnectionString("Download")) + "(" + r.getId() + ")/$value");
                     product.setAcquisitionDate(r.getContentDate().getStart());
                     final List<Attribute> attributes = r.getAttributes();
                     final Attribute orbitNumber = attributes.stream().filter(a -> a.getName().equals("relativeOrbitNumber")).findFirst().orElse(null);
