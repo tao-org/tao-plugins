@@ -87,9 +87,9 @@ public class DASQuery extends DataQuery {
         }
         String platform = this.parameters.get(CommonParameterNames.PLATFORM).getValue().toString();
         final boolean isS2 = "Sentinel-2".equalsIgnoreCase(platform);
-        final boolean isS1 = "Sentinel-1".equalsIgnoreCase(platform);
-        final boolean isS3 = "Sentinel-3".equalsIgnoreCase(platform);
         final boolean isS1Aux = "Sentinel1-orbit-files".equals(this.sensorName);
+        final boolean isS1 = "Sentinel-1".equalsIgnoreCase(platform) && !isS1Aux;
+        final boolean isS3 = "Sentinel-3".equalsIgnoreCase(platform);
         StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
         for (String queryId : queries.keySet()) {
@@ -144,13 +144,11 @@ public class DASQuery extends DataQuery {
                                     ProductHelper productHelper = null;
                                     for (EOProduct result : tmpResults) {
                                         if (!results.containsKey(result.getName())) {
-                                            if (!isS1Aux) {
-                                                try {
-                                                    productHelper = SentinelProductHelper.create(result.getName());
-                                                } catch (Exception ex) {
-                                                    logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
-                                                    continue;
-                                                }
+                                            try {
+                                                productHelper = SentinelProductHelper.create(result.getName());
+                                            } catch (Exception ex) {
+                                                logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
+                                                continue;
                                             }
                                             if (isS2) {
                                                 if (result.getAttributeValue("tileId") == null) {
@@ -158,7 +156,7 @@ public class DASQuery extends DataQuery {
                                                 } else {
                                                     result.addAttribute("tiles", result.getAttributeValue("tileId"));
                                                 }
-                                            } else if (isS1) {
+                                            } else if (isS1 && !isS1Aux) {
                                                 result.addAttribute("relativeOrbit", getRelativeOrbit(result.getName()));
                                             }
                                             if (hasProcessingDate) {
