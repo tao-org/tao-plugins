@@ -317,17 +317,17 @@ public class DASQuery extends DataQuery {
                     if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                         throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
                     }
-                    if (parameter.getName().equalsIgnoreCase(CommonParameterNames.PRODUCT)) {
+                    /*if (parameter.getName().equalsIgnoreCase(CommonParameterNames.PRODUCT)) {
                         query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.PRODUCT),
                                                          parameter, Condition.EQ));
                         break;
-                    }
+                    }*/
                     if (parameter.isOptional() &
                             ((!parameter.isInterval() & parameter.getValue() == null) |
                                     (parameter.isInterval() & parameter.getMinValue() == null & parameter.getMaxValue() == null))) {
                         continue;
                     }
-                    if (idx > 0) {
+                    if (idx > 0 && query.length() > 0) {
                         query.append(" AND ");
                     }
                     String value;
