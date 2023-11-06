@@ -254,11 +254,11 @@ public class DASQuery extends DataQuery {
     private Map<String, String> buildQueriesParams() throws ConversionException {
         Map<String, String> queries = new HashMap<>();
         final boolean isS1Aux = this.sensorName.equals("Sentinel1-orbit-files");
-        if (!isS1Aux && !this.parameters.containsKey(CommonParameterNames.PLATFORM)) {
+        if (!this.parameters.containsKey(CommonParameterNames.PLATFORM)) {
             addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }
         String[] footprints = new String[0];
-        final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
+        final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue()) && !isS1Aux;
         final boolean canUseTileParameter = this.parameters.containsKey(CommonParameterNames.TILE) && !isS1;
         if (this.parameters.containsKey(CommonParameterNames.TILE) && !isS1) {
             final QueryParameter<?> tileParameter = this.parameters.get(CommonParameterNames.TILE);
@@ -331,10 +331,12 @@ public class DASQuery extends DataQuery {
                     String value;
                     switch (parameter.getName()) {
                         case CommonParameterNames.PLATFORM:
-                            if (!isS1Aux) {
-                                query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.PLATFORM),
-                                                                 parameter, Condition.EQ));
-                            }
+                            //if (!isS1Aux) {
+                                query.append(isS1Aux
+                                             ? buildAttributeFilter(getRemoteName(CommonParameterNames.PLATFORM), parameter, Condition.EQ)
+                                             : buildPropertyFilter(getRemoteName(CommonParameterNames.PLATFORM), parameter, Condition.EQ));
+                            ;
+                            //}
                             break;
                         case CommonParameterNames.START_DATE:
                             query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.START_DATE),
