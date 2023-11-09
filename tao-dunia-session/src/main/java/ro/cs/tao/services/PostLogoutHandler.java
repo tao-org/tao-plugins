@@ -30,7 +30,7 @@ public class PostLogoutHandler implements LogoutListener {
             header = null;
             token = null;
         }
-        final String json = "{ \"usage_secs\": " + (includeSessionTime * sessionDuration.getDuration() + processingTime);
+        final String json = "{ \"usage_secs\": " + (includeSessionTime * sessionDuration.getDuration() + processingTime) + "}";
         try (CloseableHttpResponse response = token != null
                                               ? NetUtils.openConnection(HttpMethod.POST, serviceAPIUrl,
                                                                         header,
