@@ -197,7 +197,7 @@ public class DASDownloadStrategy extends DownloadStrategy<Token> {
             result = Zipper.decompressTarGz(archivePath, targetPath, true);
             Files.move(result, result.getParent().resolve(name));
             result = result.getParent().resolve(name);
-        } else if (archivePath.endsWith(".zip")){
+        } else if (archivePath.toString().endsWith(".zip")){
             result = Zipper.decompressZipMT(archivePath, targetPath, false, true);
             result = result.getParent().resolve(name);
         } else {
