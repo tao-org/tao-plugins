@@ -1,8 +1,11 @@
 package ro.cs.tao.utils.executors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ro.cs.tao.component.Variable;
 import ro.cs.tao.docker.DockerVolumeMap;
 import ro.cs.tao.docker.ExecutionConfiguration;
+import ro.cs.tao.execution.JobCompletedListener;
+import ro.cs.tao.execution.model.ExecutionJob;
 import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.ExecutionUnitFormat;
 import ro.cs.tao.utils.StringUtilities;
@@ -20,7 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BashExecutor extends Executor<Object>
-                            implements ExecutionDescriptorConverter {
+                            implements ExecutionDescriptorConverter, JobCompletedListener {
     private static final String skeleton = "Help()\n" +
             "{\n" +
             "   # Display Help\n" +
@@ -77,6 +80,20 @@ public class BashExecutor extends Executor<Object>
         return true;
     }
 
+    @Override
+    public void onCompleted(ExecutionJob job) {
+        final Path outputsFile = Paths.get(unit.getScriptTargetPath()).getParent().resolve("outputs.txt");
+        if (Files.exists(outputsFile)) {
+            final Map<String, Integer> outSet = new LinkedHashMap<>();
+            try {
+                outSet.putAll((Map<String, Integer>) new ObjectMapper().readValue(Files.readAllBytes(outputsFile), LinkedHashMap.class));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+    }
+
     private String asCommandLine(ExecutionUnit unit, boolean isFirst) {
         final StringBuilder builder = new StringBuilder();
         final ContainerUnit container = unit.getContainerUnit();
@@ -127,6 +144,38 @@ public class BashExecutor extends Executor<Object>
                         inputSet.putAll((Map<String, Integer>) new ObjectMapper().readValue(Files.readAllBytes(inputsFile), LinkedHashMap.class));
                     } catch (IOException e) {
                         logger.severe(ExceptionUtils.getStackTrace(logger, e));
+                    }
+                }
+                final Map<String, Integer> outSet = new LinkedHashMap<>();
+                int idx = inputSet.size() + 1;
+                if (metadata.containsKey("isTerminal") && (Boolean) metadata.get("isTerminal")) {
+                    final Path outputsFile = Paths.get(unit.getScriptTargetPath()).getParent().resolve("outputs.txt");
+                    final List<Variable> outList = (List<Variable>) metadata.get("canDelete");
+                    String hostWorkspaceFolder = map.getHostWorkspaceFolder();
+                    if (hostWorkspaceFolder.endsWith("/")) {
+                        hostWorkspaceFolder = hostWorkspaceFolder.substring(0, hostWorkspaceFolder.length() - 1);
+                    }
+                    String containerWorkspaceFolder = map.getContainerWorkspaceFolder();
+                    if (containerWorkspaceFolder.endsWith("/")) {
+                        containerWorkspaceFolder = containerWorkspaceFolder.substring(0, containerWorkspaceFolder.length() - 1);
+                    }
+                    if (outList != null && !outList.isEmpty()) {
+                        try {
+                            if (Files.exists(outputsFile)) {
+                                outSet.putAll((Map<String, Integer>) new ObjectMapper().readValue(Files.readAllBytes(outputsFile), LinkedHashMap.class));
+                                idx += outSet.size();
+                            }
+                            for (Variable output : outList) {
+                                outSet.put(output.getValue().replace("file:///", "/").replace(":", "")
+                                                 .replace(hostWorkspaceFolder, containerWorkspaceFolder)
+                                                 .replace(map.getHostEODataFolder(), map.getContainerEoDataFolder())
+                                                 .replace(map.getHostConfigurationFolder(), map.getContainerConfigurationFolder()),
+                                           idx);
+                            }
+                            Files.write(outputsFile, new ObjectMapper().writeValueAsBytes(outSet), StandardOpenOption.TRUNCATE_EXISTING);
+                        } catch (IOException e) {
+                            logger.severe(ExceptionUtils.getStackTrace(logger, e));
+                        }
                     }
                 }
             }
