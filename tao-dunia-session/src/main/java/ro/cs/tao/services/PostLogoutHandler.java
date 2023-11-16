@@ -13,30 +13,25 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 public class PostLogoutHandler implements LogoutListener {
+    private final static String templateJson = "{\"user_id\":\"%s\",\"usage_secs\":%d}";
     private final Logger logger = Logger.getLogger(PostLogoutHandler.class.getName());
 
     @Override
-    public void doAction(String userId, SessionDuration sessionDuration, int processingTime) {
+    public void doAction(String userId, String token, SessionDuration sessionDuration, int processingTime) {
         final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
         final int includeSessionTime = cfgProvider.getBooleanValue("quota.include.session.time") ? 1 : 0;
-        final String serviceAPIUrl = cfgProvider.getValue("dunia.service.api.url", "https://dunia.esa.int/api/quota/user");
+        final String serviceAPIUrl = cfgProvider.getValue("dunia.service.api.url", "https://dunia.esa.int/api/quota/tao");
         final String serviceAPIHeader = cfgProvider.getValue("dunia.service.api.key");
-        final String token, header;
+        final String header;
         if (serviceAPIHeader != null) {
             final String[] items = serviceAPIHeader.split(":");
             header = items[0];
             token = items[1];
         } else {
-            header = null;
-            token = null;
+            header = "X-Auth-Token";
         }
-        final String json = "{ \"usage_secs\": " + (includeSessionTime * sessionDuration.getDuration() + processingTime) + "}";
-        try (CloseableHttpResponse response = token != null
-                                              ? NetUtils.openConnection(HttpMethod.POST, serviceAPIUrl,
-                                                                        header,
-                                                                        token,
-                                                                        json)
-                                              : NetUtils.openConnection(HttpMethod.POST, serviceAPIUrl, null, json) ) {
+        final String json = String.format(templateJson, userId, includeSessionTime * sessionDuration.getDuration() + processingTime);
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, serviceAPIUrl, header, token, json)) {
             if (response.getStatusLine().getStatusCode() > 201) {
                 throw new IOException(EntityUtils.toString(response.getEntity()));
             }
