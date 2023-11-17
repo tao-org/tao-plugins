@@ -46,6 +46,7 @@ public class OpenStackSession {
     private static Token authToken;
     private static String region;
     //private static final OpenStackSession session = new OpenStackSession();
+    private Token instanceToken;
 
     private OpenStackSession() {
     }
@@ -75,7 +76,7 @@ public class OpenStackSession {
     }
 
     public static ObjectStorageService objectStorageService(Map<String, String> parameters) {
-        final OSClient.OSClientV3 service = getInstance(parameters).getService();
+        final OSClient.OSClientV3 service = getInstance().getService(parameters);
         if (!service.supportsObjectStorage()) {
             throw new TopologyException("The remote provider doesn't support Object Storage API");
         }
@@ -100,43 +101,6 @@ public class OpenStackSession {
 
     public static OpenStackSession getInstance() {
         return new OpenStackSession();
-    }
-
-    public static OpenStackSession getInstance(Map<String, String> parameters) {
-        if (parameters == null) {
-            throw new IllegalArgumentException("OpenStack client not configured");
-        }
-        // if the service client of the instance is null, it means there is no main (system) OpenStack realm,
-        // hence we may receive the details for a private bucket
-        if (getInstance().getService() == null) {
-            final String domain = parameters.get(Constants.OPENSTACK_DOMAIN);
-            if (domain == null || domain.isEmpty()) {
-                throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_DOMAIN));
-            }
-            final String user = parameters.get(Constants.OPENSTACK_USER);
-            if (user == null || user.isEmpty()) {
-                throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_USER));
-            }
-            final String password = parameters.get(Constants.OPENSTACK_PASSWORD);
-            if (password == null || password.isEmpty()) {
-                throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_PASSWORD));
-            }
-            final String authUrl = parameters.get(Constants.OPENSTACK_AUTH_URL);
-            if (authUrl == null || authUrl.isEmpty()) {
-                throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_AUTH_URL));
-            }
-            final String tenantId = parameters.get(Constants.OPENSTACK_TENANT_ID);
-            if (tenantId == null || tenantId.isEmpty()) {
-                throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_TENANT_ID));
-            }
-            final int hash = Objects.hash(domain, user, password, tenantId);
-            if (!sessions.containsKey(hash)) {
-                sessions.put(hash, new OpenStackSession());
-            }
-            return sessions.get(hash);
-        } else {
-            return new OpenStackSession();
-        }
     }
 
     public OSClient.OSClientV3 getService() {
@@ -224,6 +188,48 @@ public class OpenStackSession {
             }
         }
         return client;
+    }
+
+    public OSClient.OSClientV3 getService(Map<String, String> parameters) {
+        if (parameters == null) {
+            throw new IllegalArgumentException("OpenStack client not configured");
+        }
+        // if the service client of the instance is null, it means there is no main (system) OpenStack realm,
+        // hence we may receive the details for a private bucket
+        final String domain = parameters.get(Constants.OPENSTACK_DOMAIN);
+        if (domain == null || domain.isEmpty()) {
+            throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_DOMAIN));
+        }
+        final String user = parameters.get(Constants.OPENSTACK_USER);
+        if (user == null || user.isEmpty()) {
+            throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_USER));
+        }
+        final String password = parameters.get(Constants.OPENSTACK_PASSWORD);
+        if (password == null || password.isEmpty()) {
+            throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_PASSWORD));
+        }
+        final String authUrl = parameters.get(Constants.OPENSTACK_AUTH_URL);
+        if (authUrl == null || authUrl.isEmpty()) {
+            throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_AUTH_URL));
+        }
+        final String tenantId = parameters.get(Constants.OPENSTACK_TENANT_ID);
+        if (tenantId == null || tenantId.isEmpty()) {
+            throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_TENANT_ID));
+        }
+        OSClient.OSClientV3 service;
+        if (this.instanceToken == null) {
+            service = OSFactory.builderV3()
+                               .endpoint(authUrl)
+                               .credentials(user, password, Identifier.byName(domain))
+                               .scopeToProject(Identifier.byId(tenantId))
+                               .authenticate();
+            this.instanceToken = service.getToken();
+        } else {
+            service = OSFactory.clientFromToken(this.instanceToken);
+        }
+        // hack to force the retrieval of newest version of a service
+        service.getToken().getCatalog().sort((Comparator<Service>) (o1, o2) -> o2.getType().compareTo(o1.getType()));
+        return service;
     }
 
     private String generateOTP(String secret) throws CodeGenerationException {
