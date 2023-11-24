@@ -105,6 +105,10 @@ public class OpenStackSession {
 
     public OSClient.OSClientV3 getService() {
         OSClient.OSClientV3 client;
+        if (authToken != null && authToken.getExpires() != null && authToken.getExpires().before(new Date())) {
+            logger.fine("OpenStack system token expired, re-authenticating");
+            authToken = null;
+        }
         if (authToken == null) {
             final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
             final String domain = cfgProvider.getValue(Constants.OPENSTACK_DOMAIN, null);
@@ -217,6 +221,10 @@ public class OpenStackSession {
             throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_TENANT_ID));
         }
         OSClient.OSClientV3 service;
+        if (this.instanceToken != null && this.instanceToken.getExpires().before(new Date())) {
+            logger.fine("OpenStack token expired, re-authenticating");
+            this.instanceToken = null;
+        }
         if (this.instanceToken == null) {
             service = OSFactory.builderV3()
                                .endpoint(authUrl)
