@@ -69,9 +69,14 @@ public class SwiftService {
         final ObjectStorageService objectStorageService = authenticate();
         try {
             final ObjectStorageContainerService containerService = objectStorageService.containers();
-            final List<? extends SwiftContainer> list = containerService.list(ContainerListOptions.create().path(containerName));
-            if (list == null || list.size() != 1) {
-                throw new IOException(String.format("Container %s doesn't exist", containerName));
+            List<? extends SwiftContainer> list = containerService.list(ContainerListOptions.create().path(containerName));
+            if (list == null || list.isEmpty()) {
+                logger.warning(() -> String.format("Container %s doesn't exist", containerName));
+                createBucket(containerName);
+            }
+            list = containerService.list(ContainerListOptions.create().path(containerName));
+            if (list == null || list.isEmpty()) {
+                throw new IOException(String.format("Container %s could not be created", containerName));
             }
             return list.get(0).getTotalSize();
         } catch (Exception ex) {
