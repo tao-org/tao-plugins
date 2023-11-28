@@ -157,10 +157,12 @@ public class NovaService implements NodeProvider {
                     throw new TopologyException("OpenStack node was not created");
                 }
                 if (ssdVolume != null) {
-                    serverService.attachVolume(server.getId(), ssdVolume.getId(), "/dev/sds");
+                    serverService.attachVolume(server.getId(), ssdVolume.getId(),
+                                               cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_DEVICE, "/dev/sds"));
                 }
                 if (hddVolume != null) {
-                    serverService.attachVolume(server.getId(), hddVolume.getId(), "/dev/sdh");
+                    serverService.attachVolume(server.getId(), hddVolume.getId(),
+                                               cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_DEVICE, "/dev/sdh"));
                 }
             }
             final NodeDescription newNode = convert(node, server, node.getVolatile());
@@ -363,6 +365,8 @@ public class NovaService implements NodeProvider {
             node.setRole(NodeRole.WORKER);
             node.setVolatile(isVolatile);
             node.setServerId(server.getId());
+            node.setAppId(initial.getAppId());
+            node.setOwner(initial.getOwner());
         }
         return node;
     }

@@ -17,8 +17,10 @@ public class Constants {
     public static final String OPENSTACK_FLOATING_IP_POOL = "openstack.floating.ip.pool";
     public static final String OPENSTACK_VOLUME_TYPE_SSD = "openstack.volume.type.ssd";
     public static final String OPENSTACK_VOLUME_SSD_SIZE = "openstack.volume.ssd.size";
+    public static final String OPENSTACK_VOLUME_SSD_DEVICE = "openstack.volume.ssd.device";
     public static final String OPENSTACK_VOLUME_TYPE_HDD = "openstack.volume.type.hdd";
     public static final String OPENSTACK_VOLUME_HDD_SIZE = "openstack.volume.hdd.size";
+    public static final String OPENSTACK_VOLUME_HDD_DEVICE = "openstack.volume.hdd.device";
     public static final String OPENSTACK_PRIVATE_NETWORK = "openstack.private.network";
     public static final String OPENSTACK_DATA_NETWORK = "openstack.eodata.network";
     public static final String OPENSTACK_OS_IMAGE = "openstack.default.image";
