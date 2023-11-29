@@ -9,6 +9,7 @@ import org.openstack4j.api.storage.BlockVolumeService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.compute.*;
 import org.openstack4j.model.compute.builder.ServerCreateBuilder;
+import org.openstack4j.model.image.Image;
 import org.openstack4j.model.network.Network;
 import org.openstack4j.model.storage.block.Volume;
 import org.openstack4j.model.storage.block.VolumeAttachment;
@@ -18,6 +19,7 @@ import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.topology.*;
 import ro.cs.tao.topology.openstack.commons.Constants;
 import ro.cs.tao.topology.openstack.commons.OpenStackSession;
+import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.utils.executors.MemoryUnit;
 
 import java.util.ArrayList;
@@ -131,7 +133,16 @@ public class NovaService implements NodeProvider {
             server = serverService.list().stream().filter(s -> node.getId().equals(s.getName())).findFirst().orElse(null);
             if (server == null) {
                 final ServerCreateBuilder builder = serverService.serverBuilder();
-                final Flavor flavor = service.flavors().list().stream().filter(f -> f.getName().equals(node.getFlavor().getId())).findFirst().orElse(null);
+                final String defaultFlavourName = cfgProvider.getValue(Constants.OPENSTACK_DEFAULT_FLAVOUR);
+                Flavor defaultFlavour = null;
+                if (!StringUtilities.isNullOrEmpty(defaultFlavourName)) {
+                    defaultFlavour = service.flavors().list().stream().filter(f -> f.getName().equals(defaultFlavourName)).findFirst().get();
+                }
+                Flavor flavour = service.flavors().list().stream().filter(f -> f.getName().equals(node.getFlavor().getId())).findFirst().orElse(null);
+                if (defaultFlavour != null &&
+                        (flavour != null && (flavour.getVcpus() < defaultFlavour.getVcpus() || flavour.getRam() < defaultFlavour.getRam()))) {
+                    flavour = defaultFlavour;
+                }
                 final List<String> networkIds = getNetworks();
                 final String ssdVolumeName = node.getId() + "-ssd";
                 final String hddVolumeName = node.getId() + "-hdd";
@@ -144,9 +155,19 @@ public class NovaService implements NodeProvider {
                 if (hddSize > 0) {
                     hddVolume = createVolume(hddVolumeName, hddType, hddSize);
                 }
+                String imageId = cfgProvider.getValue(Constants.OPENSTACK_OS_IMAGE);
+                if (imageId == null) {
+                    final Image image = session.imageService().listAll().stream().filter(i -> i.getName().equals("CentOS 7")).findFirst().orElse(null);
+                    if (image != null) {
+                        imageId = image.getId();
+                    }
+                }
+                if (imageId == null) {
+                    throw new TopologyException("No base image defined");
+                }
                 builder.name(node.getId())
-                       .flavor(flavor)
-                       .image(cfgProvider.getValue(Constants.OPENSTACK_OS_IMAGE, "CentOS 7"));
+                       .flavor(flavour)
+                       .image(imageId);
                 builder.networks(networkIds);//.addSecurityGroup(defaultSecGroup);
                 final ServerCreate newServer = builder.addAdminPass(node.getUserPass())
                                                       .keypairName(cfgProvider.getValue("openstack.keypair.name", ""))
