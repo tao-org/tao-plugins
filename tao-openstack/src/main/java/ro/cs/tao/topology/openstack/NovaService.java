@@ -156,6 +156,17 @@ public class NovaService implements NodeProvider {
                 if (server == null) {
                     throw new TopologyException("OpenStack node was not created");
                 }
+                // It may take some time until the new server services are started, so let's poll for login prompt
+                String consoleLog = serverService.getConsoleOutput(server.getId(), 5);
+                final int maxWaitTime = 3 * 60 * 1000;
+                int waitTime = 0;
+                while (!consoleLog.contains(node.getId() + " login:") && waitTime < maxWaitTime) {
+                    try {
+                        Thread.sleep(5000);
+                        waitTime += 5000;
+                    } catch (InterruptedException ignored) { }
+                    consoleLog = serverService.getConsoleOutput(server.getId(), 5);
+                }
                 if (ssdVolume != null) {
                     serverService.attachVolume(server.getId(), ssdVolume.getId(),
                                                cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_DEVICE, "/dev/sds"));
