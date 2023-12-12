@@ -22,6 +22,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.component.enums.Condition;
 import ro.cs.tao.datasource.DataQuery;
+import ro.cs.tao.datasource.ProductHelperFactory;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
@@ -38,7 +39,6 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.util.ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
-import ro.cs.tao.products.sentinels.SentinelProductHelper;
 import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.DateUtils;
 import ro.cs.tao.utils.HttpMethod;
@@ -144,7 +144,7 @@ public class CreoDiasODataQuery extends DataQuery {
                                     for (EOProduct result : tmpResults) {
                                         if (!results.containsKey(result.getName())) {
                                             try {
-                                                productHelper = SentinelProductHelper.create(result.getName());
+                                                productHelper = ProductHelperFactory.getHelper(result.getName());
                                             } catch (Exception ex) {
                                                 logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
                                                 continue;
@@ -158,7 +158,7 @@ public class CreoDiasODataQuery extends DataQuery {
                                             } else if (isS1) {
                                                 result.addAttribute("relativeOrbit", getRelativeOrbit(result.getName()));
                                             }
-                                            if (hasProcessingDate) {
+                                            if (hasProcessingDate && productHelper != null) {
                                                 String dateString = productHelper.getProcessingDate();
                                                 if (dateString != null) {
                                                     try {
