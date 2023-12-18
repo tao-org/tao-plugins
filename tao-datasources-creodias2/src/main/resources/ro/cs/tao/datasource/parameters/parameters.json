@@ -2,7 +2,7 @@
   "Sentinel1": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-1",
@@ -68,7 +68,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0,
+      "order": 1,
       "dependencies": [
         {
           "dependencyType": "REQUIRED_IF",
@@ -87,7 +87,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 1
+      "order": 2
     },
     "footprint": {
       "name": "footprint",
@@ -133,7 +133,7 @@
   "Sentinel2": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-2",
@@ -243,7 +243,7 @@
   "Sentinel3": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-3",
@@ -449,7 +449,7 @@
   "Sentinel5P": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-5P",
@@ -559,7 +559,7 @@
   "Landsat8": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "LANDSAT-8",
