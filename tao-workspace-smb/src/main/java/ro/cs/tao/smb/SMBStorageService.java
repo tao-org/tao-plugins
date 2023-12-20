@@ -84,7 +84,13 @@ public class SMBStorageService extends BaseStorageService<byte[], InputStream> {
 
     @Override
     public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
-        SmbFile smbfile = new SmbFile(repository().resolve(relativeFolder) + (relativeFolder.endsWith("/") ? "" : "/") + description);
+        SmbFile smbfile = new SmbFile(repository().resolve(relativeFolder));
+    	// make sure that the folder exists.
+        try (SmbFile smbParent = new SmbFile(smbfile.getParent())) {
+        	if (!smbParent.exists()) {
+        		smbParent.mkdirs();
+        	}
+        }
         try (OutputStream out = new SmbFileOutputStream(smbfile);
              InputStream toPass = wrapStream(stream)) {
             FileUtilities.copyStream(toPass, out);
