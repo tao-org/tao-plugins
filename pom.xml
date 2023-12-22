@@ -24,22 +24,22 @@
         <module>tao-datasources-fedeo</module>
         <module>tao-datasources-localdb</module>
         <module>tao-datasources-lsa</module>
-        <module>tao-datasources-mundi</module>
+        <!--<module>tao-datasources-mundi</module>-->
         <module>tao-datasources-peps</module>
-        <module>tao-datasources-scihub</module>
+        <!--<module>tao-datasources-scihub</module>-->
         <module>tao-datasources-stac</module>
         <module>tao-datasources-theia</module>
         <module>tao-datasources-usgs</module>
         <module>tao-docker-wekeo</module>
         <module>tao-datasources-creodias2</module>
         <module>tao-datasources-das</module>
-        <module>tao-docker-burnarea</module>
+        <!--<module>tao-docker-burnarea</module>-->
         <module>tao-docker-console</module>
         <module>tao-docker-enmap</module>
         <module>tao-docker-gdal</module>
         <module>tao-docker-otb</module>
         <module>tao-docker-python</module>
-        <module>tao-docker-sen2cor</module>
+        <!--<module>tao-docker-sen2cor</module>-->
         <module>tao-docker-senet</module>
         <module>tao-docker-snap</module>
         <module>tao-docker-zarr</module>
@@ -47,8 +47,8 @@
         <module>tao-drmaa-torque</module>
         <module>tao-executor-wps</module>
         <module>tao-gdalinfo</module>
-        <module>tao-integration-geostorm</module>
-        <module>tao-integration-sen2agri</module>
+        <!--<module>tao-integration-geostorm</module>
+        <module>tao-integration-sen2agri</module>-->
         <module>tao-keycloak</module>
         <module>tao-ldap</module>
         <module>tao-muscate-metadata</module>
@@ -72,7 +72,8 @@
         <module>tao-eo-search</module>
         <module>tao-docker-jupyter</module>
         <module>tao-plugins-kit</module>
-        <module>tao-dunia-session</module>
+        <module>tao-executor-wms</module>
+        <!--<module>tao-dunia-session</module>-->
     </modules>
 
     <properties>
