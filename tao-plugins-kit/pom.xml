@@ -75,11 +75,11 @@
             <artifactId>tao-datasources-peps</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-datasources-scihub</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-datasources-stac</artifactId>
@@ -95,11 +95,11 @@
             <artifactId>tao-datasources-usgs</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-docker-burnarea</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-docker-console</artifactId>
@@ -130,11 +130,11 @@
             <artifactId>tao-docker-python</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-docker-sen2cor</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-docker-senet</artifactId>
@@ -178,6 +178,11 @@
         <dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-executor-wps</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-executor-wms</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -275,11 +280,11 @@
             <artifactId>tao-zarr-metadata</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-dunia-session</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <build>

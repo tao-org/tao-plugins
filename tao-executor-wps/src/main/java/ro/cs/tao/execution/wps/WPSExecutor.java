@@ -19,7 +19,7 @@ import ro.cs.tao.execution.model.WPSExecutionTask;
 import ro.cs.tao.execution.persistence.ExecutionJobProvider;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
 import ro.cs.tao.persistence.PersistenceException;
-import ro.cs.tao.persistence.WPSAuthenticationProvider;
+import ro.cs.tao.persistence.WebServiceAuthenticationProvider;
 import ro.cs.tao.utils.ExceptionUtils;
 
 import java.net.URL;
@@ -38,7 +38,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
     //private WPSComponent wpsComponent;
     private static ExecutionTaskProvider taskProvider;
     private static ExecutionJobProvider jobProvider;
-    private static WPSAuthenticationProvider authenticationProvider;
+    private static WebServiceAuthenticationProvider authenticationProvider;
     private final Map<String, WebProcessingService> webServicesMap;
     private final ExecutorService backgroundWorker;
     private final Logger logger = Logger.getLogger(WPSExecutor.class.getName());
@@ -51,7 +51,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
         WPSExecutor.jobProvider = jobProvider;
     }
 
-    public static void setAuthenticationProvider(WPSAuthenticationProvider authenticationProvider) {
+    public static void setAuthenticationProvider(WebServiceAuthenticationProvider authenticationProvider) {
         WPSExecutor.authenticationProvider = authenticationProvider;
     }
 
@@ -169,7 +169,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
         if(!isInitialized.get()) {
             return;
         }
-        List<ExecutionTask> tasks = taskProvider.listRemoteExecuting();
+        List<ExecutionTask> tasks = taskProvider.listWPSExecuting();
         if (tasks != null) {
             for (ExecutionTask task : tasks) {
                 try {
