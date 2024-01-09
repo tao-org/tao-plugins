@@ -47,7 +47,7 @@ class Client:
         Get the current token for using at the header of the requests.
         """
         try:
-            author_response = requests.get('https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker/gettoken',
+            author_response = requests.get('https://wekeo-broker.prod.wekeo2.eu/databroker/gettoken',
                                            headers={'Authorization': 'Basic ' + self.encode_credentials()})
             self.token = author_response.json()['access_token']
             print(Fore.CYAN + "Received a new access token.")
@@ -76,10 +76,10 @@ class Client:
         while tries < self.max_tries:
             try:
                 terms_c_response = requests.put(
-                    'https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker/termsaccepted/Copernicus_General_License',
+                    'https://wekeo-broker.prod.wekeo2.eu/databroker/termsaccepted/Copernicus_General_License',
                     data='accepted=true', headers={'Accept': 'application/json', 'Authorization': self.token})
                 res = requests.get(
-                    'https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker/termsaccepted/Copernicus_General_License',
+                    'https://wekeo-broker.prod.wekeo2.eu/databroker/termsaccepted/Copernicus_General_License',
                     headers={'Accept': 'application/json', 'Authorization': self.token})
                 if res.json()['accepted']:
                     print(Fore.GREEN + "Terms and conditions accepted!")
@@ -104,7 +104,7 @@ class Client:
 
         while tries < self.max_tries:
             try:
-                post_response = requests.post('https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker/datarequest',
+                post_response = requests.post('https://wekeo-broker.prod.wekeo2.eu/databroker/datarequest',
                                               headers={'Authorization': self.token, 'Content-Type': 'application/json',
                                                        'Accept': 'application/json'}, data=self.query)
                 if 'status' in post_response.json() and post_response.json()['status'] == 'started':
@@ -130,7 +130,7 @@ class Client:
         while tries < self.max_tries:
             try:
                 poll_response = requests.get(
-                    'https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker/datarequest/status/' + post_response.json()[
+                    'https://wekeo-broker.prod.wekeo2.eu/databroker/datarequest/status/' + post_response.json()[
                         'jobId'], headers={'Authorization': self.token})
                 print(Fore.GREEN + "Poll status of requested data =", poll_response.json()['status'])
                 break
@@ -153,7 +153,7 @@ class Client:
                 return False
             try:
                 poll_response = requests.get(
-                    'https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker/datarequest/status/' + post_response.json()[
+                    'https://wekeo-broker.prod.wekeo2.eu/databroker/datarequest/status/' + post_response.json()[
                         'jobId'], headers={'Authorization': self.token})
                 status = poll_response.json()['status']
                 print(Fore.GREEN + "Poll status of requested data =", poll_response.json()['status'])
@@ -178,7 +178,7 @@ class Client:
         while tries < self.max_tries:
             try:
                 result_response = requests.get(
-                    'https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker/datarequest/jobs/' +
+                    'https://wekeo-broker.prod.wekeo2.eu/databroker/datarequest/jobs/' +
                     self.request_post_response.json()['jobId'] + '/result', headers={'Authorization': self.token})
                 if 'pages' in result_response.json():  # this means we got a valid response
                     self.content_result = result_response
@@ -200,7 +200,7 @@ class Client:
             c = None
             while tries < self.max_tries:
                 try:
-                    result_response = requests.get('https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker/datarequest/jobs/'+self.request_post_response.json()['jobId']+'/result?'+'page='+str(i)+'&size='+str(items_in_page), headers={'Authorization': self.token})
+                    result_response = requests.get('https://wekeo-broker.prod.wekeo2.eu/databroker/datarequest/jobs/'+self.request_post_response.json()['jobId']+'/result?'+'page='+str(i)+'&size='+str(items_in_page), headers={'Authorization': self.token})
                     if 'content' in result_response.json():
                         c = result_response
                         break
@@ -234,7 +234,7 @@ class Client:
             while tries < self.max_tries:
                 # posting data
                 try:
-                    order_response = requests.post('https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker/dataorder', data=data_json, headers={'Authorization': self.token, 'Content-Type': 'application/json', 'Accept': 'application/json'})
+                    order_response = requests.post('https://wekeo-broker.prod.wekeo2.eu/databroker/dataorder', data=data_json, headers={'Authorization': self.token, 'Content-Type': 'application/json', 'Accept': 'application/json'})
                     print(Fore.GREEN + "Poll status of ordered data = ", order_response.json()['status'])
                     self.order_response_list.append([order_response, 0, size])  # (order_item, un/finished, size)
                     break
@@ -253,7 +253,7 @@ class Client:
                 try:
                     if not element[1]:
                         poll_response = requests.get(
-                            'https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker/dataorder/status/' +
+                            'https://wekeo-broker.prod.wekeo2.eu/databroker/dataorder/status/' +
                             element[0].json()[
                                 'orderId'], headers={'Authorization': self.token})
                         print(Fore.GREEN + "Poll status of ordered data ready for download = ", poll_response.json()['status'])
@@ -284,7 +284,7 @@ class Client:
             try:
                 t = poll_response.json()['url']
                 download_response = requests.get(
-                    'https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker/dataorder/download/' +
+                    'https://wekeo-broker.prod.wekeo2.eu/databroker/dataorder/download/' +
                     order_response.json()[
                         'orderId'], headers={'Accept': 'application/json', 'Authorization': self.token}, stream=True, timeout=60)
                 filename = t.split('/')[-1]
