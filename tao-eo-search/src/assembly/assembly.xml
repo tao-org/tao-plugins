@@ -58,11 +58,11 @@
             <outputDirectory>modules</outputDirectory>
             <destName>tao-datasources-fedeo-${artifact.version}.jar</destName>
         </file>
-        <file>
+        <!--<file>
             <source>../tao-datasources-scihub/target/tao-datasources-scihub-${artifact.version}.jar</source>
             <outputDirectory>modules</outputDirectory>
             <destName>tao-datasources-scihub-${artifact.version}.jar</destName>
-        </file>
+        </file>-->
         <file>
             <source>../tao-datasources-theia/target/tao-datasources-theia-${artifact.version}.jar</source>
             <outputDirectory>modules</outputDirectory>

@@ -64,7 +64,7 @@
                 <exclude>ro.c-s.tao:tao-drmaa-api</exclude>
                 <exclude>ro.c-s.tao:tao-execution</exclude>
                 <exclude>ro.c-s.tao:tao-execution-api</exclude>
-                <exclude>ro.c-s.tao:tao-execution-model</exclude>
+                <!--<exclude>ro.c-s.tao:tao-execution-model</exclude>-->
                 <exclude>ro.c-s.tao:tao-gdal</exclude>
                 <exclude>ro.c-s.tao:tao-mail</exclude>
                 <exclude>ro.c-s.tao:tao-notification</exclude>
