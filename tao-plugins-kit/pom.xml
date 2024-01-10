@@ -5,7 +5,7 @@
     <parent>
         <artifactId>tao-plugins</artifactId>
         <groupId>ro.c-s.tao</groupId>
-        <version>1.4.9</version>
+        <version>1.5.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -65,11 +65,11 @@
             <artifactId>tao-datasources-lsa</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-datasources-mundi</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-datasources-peps</artifactId>
