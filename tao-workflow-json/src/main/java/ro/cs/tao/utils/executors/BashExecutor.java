@@ -1,7 +1,6 @@
 package ro.cs.tao.utils.executors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ro.cs.tao.component.Variable;
 import ro.cs.tao.docker.DockerVolumeMap;
 import ro.cs.tao.docker.ExecutionConfiguration;
 import ro.cs.tao.execution.JobCompletedListener;
@@ -70,6 +69,7 @@ public class BashExecutor extends Executor<Object>
                 this.outputConsumer.consume(cmdLine);
             } catch (IOException e) {
                 logger.severe(ExceptionUtils.getStackTrace(logger, e));
+                return 1;
             }
         }
         return 0;
@@ -116,8 +116,15 @@ public class BashExecutor extends Executor<Object>
             }
             Map<String, Integer> inputSet = new LinkedHashMap<>();
             final Path inputsFile = Paths.get(unit.getScriptTargetPath()).getParent().resolve("inputs.txt");
-            if (isFirst && metadata.containsKey("inputs")) {
-                String[] inputs = ((String) metadata.get("inputs")).split(",");
+            if (isFirst) {
+                String inputList = (String) metadata.get("inputs");
+                String[] inputs;
+                if (inputList == null) {
+                    Map<String, String> outputs = (Map<String, String>) metadata.get("taskOutput");
+                    inputs = outputs.values().toArray(new String[0]);
+                } else {
+                    inputs = inputList.split(",");
+                }
                 String hostWorkspaceFolder = map.getHostWorkspaceFolder();
                 if (hostWorkspaceFolder.endsWith("/")) {
                     hostWorkspaceFolder = hostWorkspaceFolder.substring(0, hostWorkspaceFolder.length() - 1);
@@ -150,7 +157,7 @@ public class BashExecutor extends Executor<Object>
                 int idx = inputSet.size() + 1;
                 if (metadata.containsKey("isTerminal") && (Boolean) metadata.get("isTerminal")) {
                     final Path outputsFile = Paths.get(unit.getScriptTargetPath()).getParent().resolve("outputs.txt");
-                    final List<Variable> outList = (List<Variable>) metadata.get("canDelete");
+                    final Map<String, String> outList = (Map<String, String>) metadata.get("taskOutput");
                     String hostWorkspaceFolder = map.getHostWorkspaceFolder();
                     if (hostWorkspaceFolder.endsWith("/")) {
                         hostWorkspaceFolder = hostWorkspaceFolder.substring(0, hostWorkspaceFolder.length() - 1);
@@ -164,9 +171,11 @@ public class BashExecutor extends Executor<Object>
                             if (Files.exists(outputsFile)) {
                                 outSet.putAll((Map<String, Integer>) new ObjectMapper().readValue(Files.readAllBytes(outputsFile), LinkedHashMap.class));
                                 idx += outSet.size();
+                            } else {
+                                Files.createFile(outputsFile);
                             }
-                            for (Variable output : outList) {
-                                outSet.put(output.getValue().replace("file:///", "/").replace(":", "")
+                            for (Map.Entry<String, String> entry : outList.entrySet()) {
+                                outSet.put(entry.getValue().replace("file:///", "/").replace(":", "")
                                                  .replace(hostWorkspaceFolder, containerWorkspaceFolder)
                                                  .replace(map.getHostEODataFolder(), map.getContainerEoDataFolder())
                                                  .replace(map.getHostConfigurationFolder(), map.getContainerConfigurationFolder()),
@@ -227,7 +236,7 @@ public class BashExecutor extends Executor<Object>
                 builder.insert(0, text);
             }
             if (isBash) {
-                args.set(2, "\"" + String.join(" ", arguments) + "\"");
+                args.set(2, String.join(" ", arguments));
             }
         }
         appendLine(builder, comment);
