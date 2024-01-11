@@ -2,6 +2,7 @@ package ro.cs.tao.stac.core.model.extensions;
 
 import ro.cs.tao.stac.core.model.Extensible;
 import ro.cs.tao.stac.core.model.extensions.eo.EOExtension;
+import ro.cs.tao.stac.core.model.extensions.fileinfo.FileInfoExtension;
 import ro.cs.tao.stac.core.model.extensions.projection.ProjExtension;
 import ro.cs.tao.stac.core.model.extensions.view.ViewExtension;
 
@@ -30,6 +31,8 @@ public class ExtensionFactory {
             case VIEW:
                 extension = new ViewExtension<>(parent);
                 break;
+            case FILE:
+                extension = new FileInfoExtension<>(parent);
         }
         return extension;
     }

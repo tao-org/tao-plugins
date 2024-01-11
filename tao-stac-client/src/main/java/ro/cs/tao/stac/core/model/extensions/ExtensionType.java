@@ -3,6 +3,8 @@ package ro.cs.tao.stac.core.model.extensions;
 import ro.cs.tao.TaoEnum;
 import ro.cs.tao.stac.core.model.extensions.eo.EOExtension;
 import ro.cs.tao.stac.core.model.extensions.eo.EoFields;
+import ro.cs.tao.stac.core.model.extensions.fileinfo.FileInfoExtension;
+import ro.cs.tao.stac.core.model.extensions.fileinfo.FileInfoFields;
 import ro.cs.tao.stac.core.model.extensions.projection.ProjExtension;
 import ro.cs.tao.stac.core.model.extensions.projection.ProjFields;
 import ro.cs.tao.stac.core.model.extensions.view.ViewExtension;
@@ -21,7 +23,10 @@ public enum ExtensionType implements TaoEnum<String> {
          "https://stac-extensions.github.io/projection/v1.0.0/schema.json"),
     VIEW(ViewExtension.class,
          ViewFields.PREFIX,
-         "https://stac-extensions.github.io/view/v1.0.0/schema.json");
+         "https://stac-extensions.github.io/view/v1.0.0/schema.json"),
+    FILE(FileInfoExtension.class,
+         FileInfoFields.PREFIX,
+         "https://stac-extensions.github.io/file/v1.0.0/schema.json");
 
     private final String value;
     private final String description;
