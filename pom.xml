@@ -73,6 +73,7 @@
         <module>tao-docker-jupyter</module>
         <module>tao-plugins-kit</module>
         <module>tao-executor-wms</module>
+        <!--<module>tao-executor-wmts</module>-->
         <!--<module>tao-dunia-session</module>-->
     </modules>
 
