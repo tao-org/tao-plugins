@@ -2,8 +2,8 @@ package ro.cs.tao.execution.wms;
 
 import ro.cs.tao.component.TaoComponent;
 import ro.cs.tao.component.Variable;
-import ro.cs.tao.component.WMSComponent;
 import ro.cs.tao.component.WebServiceAuthentication;
+import ro.cs.tao.component.ogc.WMSComponent;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.execution.ExecutionException;
 import ro.cs.tao.execution.Executor;
