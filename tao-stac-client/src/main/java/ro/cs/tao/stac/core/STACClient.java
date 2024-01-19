@@ -85,7 +85,7 @@ public class STACClient {
     public ItemCollection listItems(String collectionName, int pageNumber, int pageSize) throws IOException {
         String href = this.stacURL + "/collections/" + collectionName + "/items";
         if (pageNumber > 0 & pageSize > 0) {
-            href += "?page=" + pageSize + "&limit=" + pageSize;
+            href += "?page=" + pageNumber + "&limit=" + pageSize;
         }
         final HTTPResponse response = this.client.get(new URL(href));
         try (InputStream inStream = response.getResponseStream()) {
