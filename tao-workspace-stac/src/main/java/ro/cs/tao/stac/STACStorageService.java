@@ -109,8 +109,8 @@ public class STACStorageService extends BaseStorageService<byte[], InputStream> 
                     ItemCollection itemCollection = client.listItems(tokens[0], page, pageSize);
                     files.addAll(itemCollection.getFeatures().stream().map(i -> toFileObject(tokens[0], i)).collect(Collectors.toList()));
                     break;
-                case 2: // item
-                    Item item = client.getItem(tokens[0], tokens[1]);
+                default: // item
+                    Item item = client.getItem(String.join("/", Arrays.copyOfRange(tokens, 0, tokens.length - 1)), tokens[tokens.length - 1]);
                     Map<String, Asset> assets = item.getAssets();
                     if (assets != null) {
                         for (Asset asset : assets.values()) {
@@ -118,11 +118,7 @@ public class STACStorageService extends BaseStorageService<byte[], InputStream> 
                         }
                     }
                     break;
-                case 3: // asset
-                default: // other
-                    throw new IOException("Invalid path");
             }
-
         }
         return files;
     }
