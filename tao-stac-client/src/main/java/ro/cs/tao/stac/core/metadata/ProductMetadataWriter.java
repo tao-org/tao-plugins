@@ -104,7 +104,7 @@ public class ProductMetadataWriter implements OutputDataHandler<EOProduct> {
                 links.add(link);
                 link = new Link();
                 link.setRel("canonical");
-                link.setType(MediaType.APPLICATION_JSON_VALUE);
+                link.setType("application/json");
                 link.setHref(metadataPath.toUri().toString());
                 links.add(link);
                 link = new Link();
