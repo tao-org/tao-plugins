@@ -315,6 +315,14 @@ public class KeycloakClient implements TokenProvider {
             verifier.realmUrl(this.realmUrl)
                     .publicKey(realmKeys.get(verifier.getHeader().getKeyId()))
                     .verify();
+            AccessToken accessToken = verifier.getToken();
+            //String username = accessToken.getPreferredUsername();
+            String userId = accessToken.getSubject();
+            if (this.tokenKeeper != null && this.tokenKeeper.getFullToken(token) == null) {
+                this.tokenKeeper.put(new Token(token, null, (int) Duration.between(Instant.ofEpochSecond(accessToken.getIat()),
+                                                                                   Instant.ofEpochSecond(accessToken.getExp())).getSeconds()),
+                                     userId);
+            }
             return true;
         } catch (VerificationException e) {
             logger.finest(String.format("Verification of token %s failed [%s]",
