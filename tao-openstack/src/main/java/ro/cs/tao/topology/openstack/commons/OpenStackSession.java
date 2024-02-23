@@ -252,39 +252,43 @@ public class OpenStackSession {
                               String clientSecret, String identityProvider,
                               String jwtToken) throws Exception {
         final Map<String, String> env = new HashMap<>();
-        env.put("OS_AUTH_URL", authUrl);
-        env.put("OS_INTERFACE", "public");
-        env.put("OS_IDENTITY_API_VERSION", "3");
-        env.put("OS_USERNAME", userName);
-        env.put("OS_REGION_NAME", region);
-        env.put("OS_PROJECT_ID", projectId);
-        env.put("OS_PROJECT_DOMAIN_ID", domainId);
-        env.put("OS_CLIENT_ID", clientId);
-        env.put("OS_CLIENT_SECRET", clientSecret);
-        env.put("OS_PROTOCOL", "openid");
-        env.put("OS_IDENTITY_PROVIDER", identityProvider);
-        env.put("OS_AUTH_TYPE", "v3oidcaccesstoken");
-        env.put("OS_ACCESS_TOKEN", jwtToken);
-        final List<String> args = new ArrayList<>();
-        args.add("openstack");
-        args.add("token");
-        args.add("issue");
-        args.add("-f");
-        args.add("value");
-        args.add("-c");
-        args.add("id");
-        Executor.setEnvironment(env);
-        final Executor<?> executor = Executor.create(ExecutorType.PROCESS, "localhost", args);
-        final OutputAccumulator consumer = new OutputAccumulator();
-        executor.setOutputConsumer(consumer);
-        final int code = executor.execute(false);
-        if (code == 0) {
-            return consumer.getOutput();
+        try {
+            env.put("OS_AUTH_URL", authUrl);
+            env.put("OS_INTERFACE", "public");
+            env.put("OS_IDENTITY_API_VERSION", "3");
+            env.put("OS_USERNAME", userName);
+            env.put("OS_REGION_NAME", region);
+            env.put("OS_PROJECT_ID", projectId);
+            env.put("OS_PROJECT_DOMAIN_ID", domainId);
+            env.put("OS_CLIENT_ID", clientId);
+            env.put("OS_CLIENT_SECRET", clientSecret);
+            env.put("OS_PROTOCOL", "openid");
+            env.put("OS_IDENTITY_PROVIDER", identityProvider);
+            env.put("OS_AUTH_TYPE", "v3oidcaccesstoken");
+            env.put("OS_ACCESS_TOKEN", jwtToken);
+            final List<String> args = new ArrayList<>();
+            args.add("openstack");
+            args.add("token");
+            args.add("issue");
+            args.add("-f");
+            args.add("value");
+            args.add("-c");
+            args.add("id");
+            Executor.setEnvironment(env);
+            final Executor<?> executor = Executor.create(ExecutorType.PROCESS, "localhost", args);
+            final OutputAccumulator consumer = new OutputAccumulator();
+            executor.setOutputConsumer(consumer);
+            final int code = executor.execute(false);
+            if (code == 0) {
+                return consumer.getOutput();
+            } else {
+                throw new TopologyException(consumer.getOutput());
+            }
+        } finally {
+            final Set<String> keySet = env.keySet();
+            for (String key : keySet) {
+                Executor.getEnvironment().remove(key);
+            }
         }
-        final Set<String> keySet = env.keySet();
-        for (String key : keySet) {
-            Executor.getEnvironment().remove(key);
-        }
-        return null;
     }
 }
