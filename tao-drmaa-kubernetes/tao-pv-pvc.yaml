@@ -1,0 +1,83 @@
+# Config for mounts with source like: "/D/mnt/tao/..." 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tao-pv  
+spec:
+  storageClassName: local-path
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/d/mnt/tao"
+    type: Directory
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tao-pvc
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  volumeName: tao-pv   
+---
+# Config for mounts with source like: "/D/home/taouser/..."
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tao-user-pv  
+spec:
+  storageClassName: local-path
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/d/home/taouser"
+    type: Directory
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tao-user-pvc
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  volumeName: tao-user-pv
+---
+# Config for mounts with source like: "/D/eodata/..."
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tao-eodata-pv  
+spec:
+  storageClassName: local-path
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/d/eodata"
+    type: Directory
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tao-eodata-pvc
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  volumeName: tao-eodata-pv
