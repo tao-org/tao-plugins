@@ -59,6 +59,8 @@ public class Result {
     private GeoFootprint geoFootprint;
     @JsonProperty("Attributes")
     private List<Attribute> attributes;
+    @JsonProperty("Assets")
+    private List<Asset> assets;
 
     /**
      * No args constructor for use in serialization
@@ -193,5 +195,13 @@ public class Result {
 
     public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
+    }
+
+    public List<Asset> getAssets() {
+        return assets;
+    }
+
+    public void setAssets(List<Asset> assets) {
+        this.assets = assets;
     }
 }
