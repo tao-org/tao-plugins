@@ -16,6 +16,7 @@
 package ro.cs.tao.execution.drmaa.torque;
 
 import org.ggf.drmaa.Session;
+import ro.cs.tao.drmaa.Environment;
 import ro.cs.tao.execution.drmaa.AbstractSessionFactory;
 
 /**
@@ -28,6 +29,11 @@ public class TorqueSessionFactory extends AbstractSessionFactory {
      */
     public TorqueSessionFactory() {
         super();
+    }
+
+    @Override
+    public Environment getEnvironment() {
+        return Environment.DEFAULT;
     }
 
     @Override
