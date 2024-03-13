@@ -477,14 +477,14 @@
       "valueSet": ["L1b", "L2"],
       "order": 5
     },
-    "timeliness": {
-      "name": "timeliness",
-      "remoteName": "timeliness",
-      "label": "Timeliness",
+    "processingMode": {
+      "name": "processingMode",
+      "remoteName": "processingMode",
+      "label": "Processing Mode",
       "type": "string",
-      "defaultValue": "Near real Time",
+      "defaultValue": "NRTI",
       "required": false,
-      "valueSet": ["Near real Time", "Offline", "Reprocessing"],
+      "valueSet": ["NRTI", "OFFL", "RPRO"],
       "order": 6
     },
     "relativeOrbit": {
