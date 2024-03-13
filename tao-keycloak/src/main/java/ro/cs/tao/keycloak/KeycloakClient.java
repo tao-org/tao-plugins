@@ -301,7 +301,7 @@ public class KeycloakClient implements TokenProvider {
     public boolean validate(String token) {
         if (token == null) return false;
         final RSATokenVerifier verifier = RSATokenVerifier.create(token);
-        if (realmKeys == null) {
+        if (realmKeys == null || realmKeys.isEmpty()) {
             synchronized (lock) {
                 realmKeys = new HashMap<>();
                 try {
