@@ -117,6 +117,7 @@ public class DASQuery extends DataQuery {
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("$filter", query.getValue()));
                 params.add(new BasicNameValuePair("$expand", "Attributes"));
+                params.add(new BasicNameValuePair("$expand", "Assets"));
                 params.add(new BasicNameValuePair("$top", String.valueOf(pageSize)));
                 params.add(new BasicNameValuePair("$skip", String.valueOf((i - 1) * pageSize)));
                 params.add(new BasicNameValuePair("$orderby", "ContentDate/Start asc"));
