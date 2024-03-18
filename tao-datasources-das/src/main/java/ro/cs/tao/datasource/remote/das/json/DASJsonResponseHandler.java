@@ -87,6 +87,11 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                                                           : getRelativeOrbit(product.getName()));
                     product.addAttribute("s3path", r.getS3Path());
                     attributes.forEach(a -> product.addAttribute(a.getName(), String.valueOf(a.getValue())));
+                    final List<Asset> assets = r.getAssets();
+                    if (assets != null) {
+                        final Asset asset = assets.stream().filter(a -> "quicklook".equalsIgnoreCase(a.getType())).findFirst().orElse(null);
+                        product.setQuicklookLocation(asset != null ? asset.getDownloadLink() : null);
+                    }
                     retVal.add(product);
                 } catch (Exception ex) {
                     ex.printStackTrace();
