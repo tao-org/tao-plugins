@@ -26,6 +26,7 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.authorization.AuthorizationRequest;
 import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.persistence.UserProvider;
 import ro.cs.tao.security.Token;
 import ro.cs.tao.security.TokenKeeper;
 import ro.cs.tao.security.TokenProvider;
@@ -47,6 +48,7 @@ import java.security.spec.RSAPublicKeySpec;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class KeycloakClient implements TokenProvider {
@@ -62,6 +64,7 @@ public class KeycloakClient implements TokenProvider {
     private final String adminUser;
     private final String adminPwd;
     private TokenKeeper tokenKeeper;
+    private Supplier<UserProvider> userProvider;
 
     public KeycloakClient() {
         this(ConfigurationManager.getInstance().getValue(Keys.AUTH_SERVER_URL),
@@ -92,6 +95,10 @@ public class KeycloakClient implements TokenProvider {
 
     public void setTokenKeeper(TokenKeeper tokenKeeper) {
         this.tokenKeeper = tokenKeeper;
+    }
+
+    public void setUserProvider(Supplier<UserProvider> provider) {
+        this.userProvider = provider;
     }
 
     public String getAdminUser() {
@@ -160,19 +167,27 @@ public class KeycloakClient implements TokenProvider {
                                            (int) tokenResponse.getExpiresIn()),
                                  username);
         }
-        try (Keycloak adminClient = getAdminClient()) {
-            final List<UserRepresentation> list = adminClient.realm(this.realm).users().search(username, true);
-            final User user;
-            if (list != null && list.size() == 1) {
-                final UserRepresentation profile = list.get(0);
-                user = new KeycloakUserAdapter().toTaoUser(profile);
-                user.setPassword(password);
-                //user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
-            } else {
-                user = null;
-            }
-            return user;
+        User user = null;
+        if (this.userProvider != null) {
+            user = this.userProvider.get().getByName(username);
         }
+        if (user == null) {
+            try (Keycloak adminClient = getAdminClient()) {
+                final List<UserRepresentation> list = adminClient.realm(this.realm).users().search(username, true);
+                if (list != null && list.size() == 1) {
+                    final UserRepresentation profile = list.get(0);
+                    user = new KeycloakUserAdapter().toTaoUser(profile);
+                    user.setPassword(password);
+                    //user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
+                } else {
+                    user = null;
+                }
+            } catch (Throwable t) {
+                logger.severe(t.getMessage());
+                throw t;
+            }
+        }
+        return user;
     }
 
     public User checkLoginCredentials(final String code) {
@@ -214,13 +229,18 @@ public class KeycloakClient implements TokenProvider {
                                                                                       Instant.ofEpochSecond(accessToken.getExp())).getSeconds()),
                                      username);
             }
-            try (Keycloak adminClient = getAdminClient()) {
-                final List<UserRepresentation> list = adminClient.realm(this.realm).users().search(username, true);
-                if (list != null && list.size() == 1) {
-                    final UserRepresentation profile = list.get(0);
-                    user = new KeycloakUserAdapter().toTaoUser(profile);
-                    //user.setPassword(password);
-                    //user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
+            if (this.userProvider != null) {
+                user = this.userProvider.get().getByName(username);
+            }
+            if (user == null) {
+                try (Keycloak adminClient = getAdminClient()) {
+                    final List<UserRepresentation> list = adminClient.realm(this.realm).users().search(username, true);
+                    if (list != null && list.size() == 1) {
+                        final UserRepresentation profile = list.get(0);
+                        user = new KeycloakUserAdapter().toTaoUser(profile);
+                        //user.setPassword(password);
+                        //user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
+                    }
                 }
             }
         } catch (VerificationException e) {
