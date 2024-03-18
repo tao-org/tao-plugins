@@ -64,6 +64,7 @@
         <module>tao-products-enmap</module>
         <module>tao-workflow-json</module>
 		<module>tao-workflow-cwl</module>
+        <module>tao-workflow-argo</module>
         <module>tao-drmaa-kubernetes</module>
         <module>tao-eo-search</module>
         <module>tao-docker-jupyter</module>
