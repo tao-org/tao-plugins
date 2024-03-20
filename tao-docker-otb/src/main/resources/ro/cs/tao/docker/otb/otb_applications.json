@@ -8606,7 +8606,7 @@
         "defaultValue": 1,
         "description": "Blue channel index",
         "label": "channels.blue",
-        "notNull": true
+        "notNull": false
       },
       {
         "id": "channels_green_number",
@@ -8615,7 +8615,7 @@
         "defaultValue": 1,
         "description": "Green channel index",
         "label": "channels.green",
-        "notNull": true
+        "notNull": false
       },
       {
         "id": "channels_red_number",
@@ -8624,7 +8624,7 @@
         "defaultValue": 1,
         "description": "Red channel index",
         "label": "channels.red",
-        "notNull": true
+        "notNull": false
       },
       {
         "id": "channels_nir_number",
@@ -8633,7 +8633,7 @@
         "defaultValue": 1,
         "description": "NIR channel index",
         "label": "channels.nir",
-        "notNull": true
+        "notNull": false
       },
       {
         "id": "channels_mir_number",
@@ -8642,7 +8642,7 @@
         "defaultValue": 1,
         "description": "Mir channel index",
         "label": "channels.mir",
-        "notNull": true
+        "notNull": false
       },
       {
         "id": "list_None",
