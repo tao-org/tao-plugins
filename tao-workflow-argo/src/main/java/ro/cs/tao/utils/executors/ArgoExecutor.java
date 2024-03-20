@@ -1,23 +1,18 @@
 package ro.cs.tao.utils.executors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.gs.collections.impl.utility.ListIterate;
-import io.fabric8.kubernetes.api.model.Container;
-import io.fabric8.kubernetes.api.model.EmptyDirVolumeSource;
-import io.fabric8.kubernetes.api.model.Volume;
+import io.fabric8.kubernetes.api.model.*;
 import ro.cs.tao.argo.workflow.model.*;
 import ro.cs.tao.component.ComponentLink;
 import ro.cs.tao.component.SourceDescriptor;
 import ro.cs.tao.component.TaoComponent;
 import ro.cs.tao.component.TargetDescriptor;
 import ro.cs.tao.datasource.DataSourceComponent;
-import ro.cs.tao.datasource.beans.Parameter;
 import ro.cs.tao.docker.ExecutionConfiguration;
-import ro.cs.tao.eodata.enums.DataFormat;
-import ro.cs.tao.execution.model.ExecutionJob;
-import ro.cs.tao.execution.model.ExecutionStatus;
 import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.persistence.ExecutionJobProvider;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
@@ -34,12 +29,12 @@ import ro.cs.tao.workflow.WorkflowDescriptor;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 import ro.cs.tao.workflow.enums.ComponentType;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ArgoExecutor extends Executor<Object>
         implements ExecutionDescriptorConverter {
@@ -83,29 +78,34 @@ public class ArgoExecutor extends Executor<Object>
         return true;
     }
 
-
-
     @Override
     public int execute(boolean logMessages) throws Exception {
-        ensureExecutionUnit();
-        ensureScriptPath();
-
+        checkExecutionUnit();
+        checkScriptPath();
         try{
             final Path scriptTargetPath = Paths.get(executionUnit.getScriptTargetPath());
-
-            if (Files.exists(scriptTargetPath)) {
-                return 0;
-            }
             WorkflowDescriptor workflowDescriptor = getWorkflowDescriptor();
             initializeArgoWorkflow();
             parseNodes(workflowDescriptor);
-            createYAMLFile(scriptTargetPath);
-            System.out.println("Create Argo Graph File");
+            updateContainerInformation();
+            // synchronize on final variable as the update and create yaml part is a critical section
+            synchronized (this.workflowProvider) {
+                if (Files.exists(scriptTargetPath)) {
+                    // will be replaced with Update function
+                    createUpdateYamlFile(scriptTargetPath);
+                    System.out.println("Update Argo Graph File");
+                    return 0;
+                }
+                createUpdateYamlFile(scriptTargetPath);
+                System.out.println("Create Argo Graph File");
+            }
         } catch (Exception e){
             logger.severe(ExceptionUtils.getStackTrace(logger, e));
         }
         return 0;
     }
+
+
 
     private void initializeArgoWorkflow() {
         argoWorkflow.setApiVersion(ARGO_VERSION);
@@ -132,7 +132,6 @@ public class ArgoExecutor extends Executor<Object>
         argoWorkflow.setSpec(spec);
     }
 
-    //how to add volumes, what are volumes in tao-context?
     private void initializeSpecVolumes(WorkflowSpec spec){
         List<Volume> volumes = new ArrayList<>();
         Volume basicOutputVolume = new Volume();
@@ -168,8 +167,7 @@ public class ArgoExecutor extends Executor<Object>
 
 
 
-    private void createYAMLFile(Path path) {
-
+    private void createUpdateYamlFile(Path path) {
         ArgoWorkflowYAMLFactory factory =  new ArgoWorkflowYAMLFactory();
         factory.enable(ArgoWorkflowYAMLGenerator.Feature.MINIMIZE_QUOTES);
         factory.disable(ArgoWorkflowYAMLGenerator.Feature.WRITE_DOC_START_MARKER);
@@ -178,14 +176,36 @@ public class ArgoExecutor extends Executor<Object>
         mapper.registerModule(new Jdk8Module());
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         try {
-//            if (Files.exists(path)) {
-//                Map<Object, Object> existingInputList = mapper.readValue(path.toFile(), Map.class);
-//                if (existingInputList != null && existingInputList.size() > 0) {
-//                    tempList.putAll(existingInputList);
-//                }
-//            }
-            mapper.writeValue(path.toFile(), argoWorkflow);
-
+            if (Files.exists(path)) {
+                // move update to separate function
+                Map<String, Object> workflowMap= mapper.readValue(path.toFile(), Map.class);
+                if (workflowMap != null && !workflowMap.isEmpty()) {
+                    String executionUnitName = executionUnit.getMetadata().get("name").toString().toLowerCase();
+                    List<LinkedHashMap<String,Object>> templates = (ArrayList<LinkedHashMap<String,Object>>)((LinkedHashMap<String, Object>) workflowMap.get("spec")).get("templates");
+                    Map<String, Object> templateFromFile = new LinkedHashMap<>();
+                    for(Map<String, Object> templateMap : templates){
+                        String templateName = (String) templateMap.get("name");
+                        if(templateName.contains(executionUnitName)){
+                            templateFromFile = templateMap;
+                        }
+                    }
+                    Optional<WorkflowTemplate> optionalTemplateFromArgoWorkflow = argoWorkflow.getSpec().getTemplates()
+                            .stream()
+                            .filter(template -> template.getName().contains(executionUnitName))
+                            .findFirst();
+                    if(optionalTemplateFromArgoWorkflow.isEmpty())
+                        throw new NullPointerException("No Template exists for the specified execution unit!");
+                    WorkflowTemplate templateFromArgo = optionalTemplateFromArgoWorkflow.get();
+                    Map<String, Object> containerMap = mapper.convertValue(templateFromArgo.getContainer(), new TypeReference<>() {
+                    });
+                    templateFromFile.put("container", containerMap);
+                    mapper.writeValue(path.toFile(), workflowMap);
+                    return;
+                }
+            }
+            Map<String, Object> workflowMap = mapper.convertValue(argoWorkflow, new TypeReference<>() {
+            });
+            mapper.writeValue(path.toFile(), workflowMap);
         } catch (IOException e) {
             logger.severe(ExceptionUtils.getStackTrace(logger, e));
         }
@@ -234,10 +254,8 @@ public class ArgoExecutor extends Executor<Object>
     }
 
     private void parseNode(WorkflowNodeDescriptor node){
-        //DatSources will be skipped
         if(node.getComponentType().equals(ComponentType.DATASOURCE))
             return;
-        // de verificat
         List<WorkflowTemplate> templates = argoWorkflow.getSpec().getTemplates();
         List<DAGTask> dagTasks = templates.get(0).getDAG().getTasks();
         DAGTask dagTask = createNewDAGTask(node);
@@ -247,22 +265,27 @@ public class ArgoExecutor extends Executor<Object>
         parseLinksForDependencies(node, dagTask.getDependencies());
         parseSourcesForTaskTemplateInputs(node, dagTask, workflowTemplate);
         parseCustomValuesForTaskTemplateInputs(node, dagTask, workflowTemplate);
-        setContainerForNode(node, workflowTemplate);
         setReferences(node, argoWorkflow.getSpec().getArguments(), dagTasks);
 
     }
 
-    private void setContainerForNode(WorkflowNodeDescriptor currentNode, WorkflowTemplate currentTemplate) {
-        ensureContainerUnit();
+    private void updateContainerInformation() {
+        // refactor required
+        checkContainerUnit();
+        String executionUnitName = executionUnit.getMetadata().get("name").toString().toLowerCase();
+        Optional<WorkflowTemplate> optionalTemplate = argoWorkflow.getSpec().getTemplates()
+                .stream()
+                .filter(template -> template.getName().contains(executionUnitName))
+                .findFirst();
+        if(optionalTemplate.isEmpty())
+            throw new NullPointerException("No Template exists for the specified execution unit!");
+        WorkflowTemplate currentTemplate = optionalTemplate.get();
         Container container = new Container();
         currentTemplate.setContainer(container);
 
-        // work in progress for container information setting
+        //work in progress for container information setting
         long taskId = (Long) executionUnit.getMetadata().get("id");
         ExecutionTask task = this.taskProvider.get(taskId);
-        long workflowId = task.getJob().getWorkflowId();
-       List<ExecutionJob> jobs = jobProvider.list(ExecutionStatus.QUEUED_ACTIVE);
-       WorkflowDescriptor workflowDescriptor = workflowProvider.get(workflowId);
         TaoComponent component = TaskUtilities.getComponentFor(task);
 
         List<String> bashArguments;
@@ -281,7 +304,7 @@ public class ArgoExecutor extends Executor<Object>
                         .filter(p -> p.getName().contains(bashArgument.substring(1)))
                         .findFirst();
                 if(workflowParameterOptional.isPresent()){
-                    mainArguments.add(bashArgument + " " + "{{" + currentTemplate.getName() + ".inputs" + workflowParameterOptional.get().getName() + "}}");
+                    mainArguments.add(bashArgument + " " + "{{" + currentTemplate.getName() + ".inputs." + workflowParameterOptional.get().getName() + "}}");
                 } else if(i < bashArguments.size()-1) {
                     mainArguments.add(bashArgument + " " + bashArguments.get(i+1));
                 }
@@ -297,6 +320,13 @@ public class ArgoExecutor extends Executor<Object>
                 mainArguments.set(mainArguments.size() - 1, mainArguments.get(mainArguments.size() - 1).concat(extraArguments.toString()));
             }
             extraArguments.setLength(0);
+        }
+        // add all execution Unit arguments and environment variables
+        mainArguments.addAll(executionUnit.getContainerArguments());
+        for(Map.Entry<String, String> entry : executionUnit.getContainerEnvironmentVariables().entrySet()){
+            EnvVar envVar = new EnvVar();
+            envVar.setName(entry.getKey());
+            envVar.setValue(entry.getValue());
         }
 
         List<String> baseCommandArray = new ArrayList<>();
@@ -322,8 +352,6 @@ public class ArgoExecutor extends Executor<Object>
     }
 
 
-
-
     private DAGTask createNewDAGTask(WorkflowNodeDescriptor currentNode) {
         DAGTask dagTask = new DAGTask();
         initializeDAGTask(dagTask);
@@ -344,7 +372,7 @@ public class ArgoExecutor extends Executor<Object>
         WorkflowTemplate workflowTemplate = new WorkflowTemplate();
         initializeTemplateInputs(workflowTemplate);
         initializeTemplateOutputs(workflowTemplate);
-        workflowTemplate.setName(currentNode.getComponentId().toLowerCase());
+        workflowTemplate.setName(currentNode.getComponentId().toLowerCase() + "_" + currentNode.getId());
 
         List<WorkflowArtifact> outputArtifacts = workflowTemplate.getOutputs().getArtifacts();
         TaoComponent nodeComponent = TaskUtilities.getComponentFor(currentNode);
@@ -489,17 +517,17 @@ public class ArgoExecutor extends Executor<Object>
         return this.workflowProvider.get(workflowId);
     }
 
-    private void ensureExecutionUnit(){
+    private void checkExecutionUnit(){
         if (executionUnit == null)
             throw new NullPointerException("Execution unit is not set");
     }
 
-    private void ensureScriptPath(){
+    private void checkScriptPath(){
         if (executionUnit.getScriptTargetPath() == null)
             throw new RuntimeException("Script Target Path is not set");
     }
 
-    private void ensureContainerUnit(){
+    private void checkContainerUnit(){
         if(this.executionUnit.getContainerUnit() == null){
             throw new RuntimeException("Container unit is null");
         }
