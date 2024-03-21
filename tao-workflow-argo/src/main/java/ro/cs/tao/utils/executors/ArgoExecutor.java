@@ -11,6 +11,7 @@ import ro.cs.tao.component.ComponentLink;
 import ro.cs.tao.component.SourceDescriptor;
 import ro.cs.tao.component.TaoComponent;
 import ro.cs.tao.component.TargetDescriptor;
+import ro.cs.tao.component.template.Template;
 import ro.cs.tao.datasource.DataSourceComponent;
 import ro.cs.tao.docker.ExecutionConfiguration;
 import ro.cs.tao.execution.model.ExecutionTask;
@@ -248,9 +249,25 @@ public class ArgoExecutor extends Executor<Object>
                 WorkflowNodeDescriptor nodeS = nodesToBeVisited.remove(0);
                 List<WorkflowNodeDescriptor> children = workflowDescriptor.findChildren(workflowDescriptor.getNodes(), nodeS);
                 nodesToBeVisited.addAll(children);
+                removeNodesAlreadyVisited(nodesToBeVisited);
                 parseNode(nodeS);
             }
         }
+    }
+
+    private void removeNodesAlreadyVisited(List<WorkflowNodeDescriptor> nodesToBeVisited) {
+        if(nodesToBeVisited.isEmpty())
+            return;
+        List<WorkflowTemplate> argoTemplates = argoWorkflow.getSpec().getTemplates();
+        List<WorkflowNodeDescriptor> nodesAlreadyVisited = new ArrayList<>();
+        for(WorkflowTemplate argoTemplate : argoTemplates){
+            for(WorkflowNodeDescriptor nodeToBeVisited : nodesToBeVisited){
+                if(argoTemplate.getName().contains(nodeToBeVisited.getName().toLowerCase())){
+                    nodesAlreadyVisited.add(nodeToBeVisited);
+                }
+            }
+        }
+        nodesToBeVisited.removeAll(nodesAlreadyVisited);
     }
 
     private void parseNode(WorkflowNodeDescriptor node){
@@ -272,7 +289,10 @@ public class ArgoExecutor extends Executor<Object>
     private void updateContainerInformation() {
         // refactor required
         checkContainerUnit();
-        String executionUnitName = executionUnit.getMetadata().get("name").toString().toLowerCase();
+        long taskId = (Long) executionUnit.getMetadata().get("id");
+        ExecutionTask task = this.taskProvider.get(taskId);
+        TaoComponent component = TaskUtilities.getComponentFor(task);
+        String executionUnitName = component.getId().toLowerCase();
         Optional<WorkflowTemplate> optionalTemplate = argoWorkflow.getSpec().getTemplates()
                 .stream()
                 .filter(template -> template.getName().contains(executionUnitName))
@@ -282,11 +302,6 @@ public class ArgoExecutor extends Executor<Object>
         WorkflowTemplate currentTemplate = optionalTemplate.get();
         Container container = new Container();
         currentTemplate.setContainer(container);
-
-        //work in progress for container information setting
-        long taskId = (Long) executionUnit.getMetadata().get("id");
-        ExecutionTask task = this.taskProvider.get(taskId);
-        TaoComponent component = TaskUtilities.getComponentFor(task);
 
         List<String> bashArguments;
         final boolean isBash = this.executionUnit.getArguments().get(0).equals("/bin/bash");
@@ -418,6 +433,11 @@ public class ArgoExecutor extends Executor<Object>
     }
 
     private void parseCustomValuesForTaskTemplateInputs(WorkflowNodeDescriptor node, DAGTask dagTask, WorkflowTemplate workflowTemplate) {
+        long taskId = (Long) executionUnit.getMetadata().get("id");
+        ExecutionTask task = this.taskProvider.get(taskId);
+        TaoComponent component = TaskUtilities.getComponentFor(task);
+        // to do berification for processing compoenents
+
         List<WorkflowParameter> dagTaskInputParameters = dagTask.getArguments().getParameters();
         List<WorkflowParameter> inputParameters = workflowTemplate.getInputs().getParameters();
         for(ParameterValue param : node.getCustomValues()){
@@ -469,7 +489,7 @@ public class ArgoExecutor extends Executor<Object>
 
     private void computeSpecArtifacts(SourceDescriptor source, String artifactName){
         WorkflowArguments specArguments = argoWorkflow.getSpec().getArguments();
-        List<WorkflowArtifact> workflowArtifacts = new ArrayList<>();
+        List<WorkflowArtifact> workflowArtifacts = specArguments.getArtifacts() == null ? new ArrayList<>() : specArguments.getArtifacts();
         if (source.getDataDescriptor().getLocation().contains(",")) {
             String[] strings = source.getDataDescriptor().getLocation().split(",");
             for (int i=0; i < strings.length; i++) {
