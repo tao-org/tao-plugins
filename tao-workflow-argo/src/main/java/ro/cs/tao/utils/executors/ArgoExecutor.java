@@ -11,7 +11,6 @@ import ro.cs.tao.component.ComponentLink;
 import ro.cs.tao.component.SourceDescriptor;
 import ro.cs.tao.component.TaoComponent;
 import ro.cs.tao.component.TargetDescriptor;
-import ro.cs.tao.component.template.Template;
 import ro.cs.tao.datasource.DataSourceComponent;
 import ro.cs.tao.docker.ExecutionConfiguration;
 import ro.cs.tao.execution.model.ExecutionTask;
@@ -30,7 +29,6 @@ import ro.cs.tao.workflow.WorkflowDescriptor;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 import ro.cs.tao.workflow.enums.ComponentType;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -80,7 +78,7 @@ public class ArgoExecutor extends Executor<Object>
     }
 
     @Override
-    public int execute(boolean logMessages) throws Exception {
+    public int execute(boolean logMessages) {
         checkExecutionUnit();
         checkScriptPath();
         try{
@@ -88,7 +86,7 @@ public class ArgoExecutor extends Executor<Object>
             WorkflowDescriptor workflowDescriptor = getWorkflowDescriptor();
             initializeArgoWorkflow();
             parseNodes(workflowDescriptor);
-            updateContainerInformation();
+            updateContainerInfo();
             // synchronize on final variable as the update and create yaml part is a critical section
             synchronized (this.workflowProvider) {
                 if (Files.exists(scriptTargetPath)) {
@@ -286,9 +284,31 @@ public class ArgoExecutor extends Executor<Object>
 
     }
 
-    private void updateContainerInformation() {
-        // refactor required
+    private void updateContainerInfo() {
         checkContainerUnit();
+        WorkflowTemplate currentTemplate = getTemplateToBeUpdatedWithContainerInfo();
+        Container container = new Container();
+        currentTemplate.setContainer(container);
+        List<String> bashArguments = getBashArguments();
+        container.setArgs(getArgumentsForContainer(currentTemplate, bashArguments));
+        container.setEnv(getEnvVarForContainer());
+        container.setCommand(getCommandsForContainer(bashArguments));
+        container.setImage(getImageForContainer());
+
+    }
+
+    private List<EnvVar> getEnvVarForContainer() {
+        List<EnvVar> envVars = new ArrayList<>();
+        for(Map.Entry<String, String> entry : executionUnit.getContainerEnvironmentVariables().entrySet()){
+            EnvVar envVar = new EnvVar();
+            envVar.setName(entry.getKey());
+            envVar.setValue(entry.getValue());
+            envVars.add(envVar);
+        }
+        return envVars;
+    }
+
+    private WorkflowTemplate getTemplateToBeUpdatedWithContainerInfo() {
         long taskId = (Long) executionUnit.getMetadata().get("id");
         ExecutionTask task = this.taskProvider.get(taskId);
         TaoComponent component = TaskUtilities.getComponentFor(task);
@@ -299,10 +319,10 @@ public class ArgoExecutor extends Executor<Object>
                 .findFirst();
         if(optionalTemplate.isEmpty())
             throw new NullPointerException("No Template exists for the specified execution unit!");
-        WorkflowTemplate currentTemplate = optionalTemplate.get();
-        Container container = new Container();
-        currentTemplate.setContainer(container);
+        return optionalTemplate.get();
+    }
 
+    private List<String> getBashArguments() {
         List<String> bashArguments;
         final boolean isBash = this.executionUnit.getArguments().get(0).equals("/bin/bash");
         if (isBash) {
@@ -310,6 +330,10 @@ public class ArgoExecutor extends Executor<Object>
         } else {
             bashArguments = this.executionUnit.getArguments();
         }
+        return bashArguments;
+    }
+
+    private List<String> getArgumentsForContainer(WorkflowTemplate currentTemplate, List<String> bashArguments) {
         List<String> mainArguments = new ArrayList<>();
         StringBuilder extraArguments = new StringBuilder();
         for(int i=1; i < bashArguments.size(); i++){
@@ -336,14 +360,11 @@ public class ArgoExecutor extends Executor<Object>
             }
             extraArguments.setLength(0);
         }
-        // add all execution Unit arguments and environment variables
         mainArguments.addAll(executionUnit.getContainerArguments());
-        for(Map.Entry<String, String> entry : executionUnit.getContainerEnvironmentVariables().entrySet()){
-            EnvVar envVar = new EnvVar();
-            envVar.setName(entry.getKey());
-            envVar.setValue(entry.getValue());
-        }
+        return mainArguments;
+    }
 
+    private List<String> getCommandsForContainer(List<String> bashArguments) {
         List<String> baseCommandArray = new ArrayList<>();
         // first bash argument is always added
         baseCommandArray.add("/bin/bash");
@@ -356,14 +377,14 @@ public class ArgoExecutor extends Executor<Object>
                 baseCommandArray.add(bashArguments.get(i));
             }
         }
+        return baseCommandArray;
+    }
+
+    private String getImageForContainer() {
         ContainerUnit containerUnit = this.executionUnit.getContainerUnit();
-        if(ExecutionConfiguration.getDockerRegistry().equals(containerUnit.getContainerRegistry())) {
-            container.setImage(containerUnit.getContainerName());
-        }else{
-            container.setImage(containerUnit.getContainerRegistry() + "/" + containerUnit.getContainerName());
-        }
-        container.setCommand(baseCommandArray);
-        container.setArgs(mainArguments);
+        if(ExecutionConfiguration.getDockerRegistry().equals(containerUnit.getContainerRegistry()))
+            return containerUnit.getContainerName();
+        return containerUnit.getContainerRegistry() + "/" + containerUnit.getContainerName();
     }
 
 
