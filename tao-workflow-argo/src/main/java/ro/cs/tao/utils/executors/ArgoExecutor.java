@@ -90,12 +90,11 @@ public class ArgoExecutor extends Executor<Object>
             // synchronize on final variable as the update and create yaml part is a critical section
             synchronized (this.workflowProvider) {
                 if (Files.exists(scriptTargetPath)) {
-                    // will be replaced with Update function
-                    createUpdateYamlFile(scriptTargetPath);
+                    updateYaml(scriptTargetPath);
                     System.out.println("Update Argo Graph File");
                     return 0;
                 }
-                createUpdateYamlFile(scriptTargetPath);
+                createYaml(scriptTargetPath);
                 System.out.println("Create Argo Graph File");
             }
         } catch (Exception e){
@@ -103,6 +102,7 @@ public class ArgoExecutor extends Executor<Object>
         }
         return 0;
     }
+
 
 
 
@@ -166,7 +166,7 @@ public class ArgoExecutor extends Executor<Object>
 
 
 
-    private void createUpdateYamlFile(Path path) {
+    private void createYaml(Path path) {
         ArgoWorkflowYAMLFactory factory =  new ArgoWorkflowYAMLFactory();
         factory.enable(ArgoWorkflowYAMLGenerator.Feature.MINIMIZE_QUOTES);
         factory.disable(ArgoWorkflowYAMLGenerator.Feature.WRITE_DOC_START_MARKER);
@@ -175,36 +175,46 @@ public class ArgoExecutor extends Executor<Object>
         mapper.registerModule(new Jdk8Module());
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         try {
-            if (Files.exists(path)) {
-                // move update to separate function
-                Map<String, Object> workflowMap= mapper.readValue(path.toFile(), Map.class);
-                if (workflowMap != null && !workflowMap.isEmpty()) {
-                    String executionUnitName = executionUnit.getMetadata().get("name").toString().toLowerCase();
-                    List<LinkedHashMap<String,Object>> templates = (ArrayList<LinkedHashMap<String,Object>>)((LinkedHashMap<String, Object>) workflowMap.get("spec")).get("templates");
-                    Map<String, Object> templateFromFile = new LinkedHashMap<>();
-                    for(Map<String, Object> templateMap : templates){
-                        String templateName = (String) templateMap.get("name");
-                        if(templateName.contains(executionUnitName)){
-                            templateFromFile = templateMap;
-                        }
-                    }
-                    Optional<WorkflowTemplate> optionalTemplateFromArgoWorkflow = argoWorkflow.getSpec().getTemplates()
-                            .stream()
-                            .filter(template -> template.getName().contains(executionUnitName))
-                            .findFirst();
-                    if(optionalTemplateFromArgoWorkflow.isEmpty())
-                        throw new NullPointerException("No Template exists for the specified execution unit!");
-                    WorkflowTemplate templateFromArgo = optionalTemplateFromArgoWorkflow.get();
-                    Map<String, Object> containerMap = mapper.convertValue(templateFromArgo.getContainer(), new TypeReference<>() {
-                    });
-                    templateFromFile.put("container", containerMap);
-                    mapper.writeValue(path.toFile(), workflowMap);
-                    return;
-                }
-            }
             Map<String, Object> workflowMap = mapper.convertValue(argoWorkflow, new TypeReference<>() {
             });
             mapper.writeValue(path.toFile(), workflowMap);
+        } catch (IOException e) {
+            logger.severe(ExceptionUtils.getStackTrace(logger, e));
+        }
+    }
+
+    private void updateYaml(Path path) {
+        ArgoWorkflowYAMLFactory factory =  new ArgoWorkflowYAMLFactory();
+        factory.enable(ArgoWorkflowYAMLGenerator.Feature.MINIMIZE_QUOTES);
+        factory.disable(ArgoWorkflowYAMLGenerator.Feature.WRITE_DOC_START_MARKER);
+
+        ObjectMapper mapper = new ObjectMapper(factory);
+        mapper.registerModule(new Jdk8Module());
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        try {
+            Map<String, Object> workflowMap= mapper.readValue(path.toFile(), Map.class);
+            if (workflowMap != null && !workflowMap.isEmpty()) {
+                String executionUnitName = executionUnit.getMetadata().get("name").toString().toLowerCase();
+                List<LinkedHashMap<String,Object>> templates = (ArrayList<LinkedHashMap<String,Object>>)((LinkedHashMap<String, Object>) workflowMap.get("spec")).get("templates");
+                Map<String, Object> templateFromFile = new LinkedHashMap<>();
+                for(Map<String, Object> templateMap : templates){
+                    String templateName = (String) templateMap.get("name");
+                    if(templateName.contains(executionUnitName)){
+                        templateFromFile = templateMap;
+                    }
+                }
+                Optional<WorkflowTemplate> optionalTemplateFromArgoWorkflow = argoWorkflow.getSpec().getTemplates()
+                        .stream()
+                        .filter(template -> template.getName().contains(executionUnitName))
+                        .findFirst();
+                if(optionalTemplateFromArgoWorkflow.isEmpty())
+                    throw new NullPointerException("No Template exists for the specified execution unit!");
+                WorkflowTemplate templateFromArgo = optionalTemplateFromArgoWorkflow.get();
+                Map<String, Object> containerMap = mapper.convertValue(templateFromArgo.getContainer(), new TypeReference<>() {
+                });
+                templateFromFile.put("container", containerMap);
+                mapper.writeValue(path.toFile(), workflowMap);
+            }
         } catch (IOException e) {
             logger.severe(ExceptionUtils.getStackTrace(logger, e));
         }
@@ -224,9 +234,15 @@ public class ArgoExecutor extends Executor<Object>
     private void findParameterToChange(List<WorkflowArtifact> workflowArtifacts, List<DAGTask> tasks, String dependencyName, String parameterName, ComponentLink link){
         for(WorkflowArtifact artifact : workflowArtifacts){
             if(artifact.getName().contains(dependencyName + "_" + link.getSourceNodeId())){
-                Optional<WorkflowParameter> dependentParameterOptional = tasks.stream()
-                        .flatMap(task -> task.getArguments().getParameters().stream())
-                        .filter(param -> param.getName().contains(parameterName))
+                Optional<DAGTask> dagTaskOptional = tasks.stream()
+                        .filter(task -> task.getName().contains(link.getOutput().getParentId().toLowerCase()))
+                        .findFirst();
+                if(dagTaskOptional.isEmpty())
+                    throw new NoSuchElementException("Optional DAG task is empty");
+                DAGTask dagTask = dagTaskOptional.get();
+                List<WorkflowParameter> parameters = dagTask.getArguments().getParameters();
+                Optional<WorkflowParameter> dependentParameterOptional = parameters.stream()
+                        .filter(p -> p.getName().contains(parameterName))
                         .findFirst();
                 if(dependentParameterOptional.isEmpty())
                     throw new NoSuchElementException("Optional parameter is empty");
@@ -244,11 +260,11 @@ public class ArgoExecutor extends Executor<Object>
             nodesToBeVisited.add(node);
             parseSourceDescriptorsForInputs(node);
             while(!nodesToBeVisited.isEmpty()) {
-                WorkflowNodeDescriptor nodeS = nodesToBeVisited.remove(0);
-                List<WorkflowNodeDescriptor> children = workflowDescriptor.findChildren(workflowDescriptor.getNodes(), nodeS);
+                WorkflowNodeDescriptor nextNode = nodesToBeVisited.remove(0);
+                List<WorkflowNodeDescriptor> children = workflowDescriptor.findChildren(workflowDescriptor.getNodes(), nextNode);
                 nodesToBeVisited.addAll(children);
                 removeNodesAlreadyVisited(nodesToBeVisited);
-                parseNode(nodeS);
+                parseNode(nextNode);
             }
         }
     }
