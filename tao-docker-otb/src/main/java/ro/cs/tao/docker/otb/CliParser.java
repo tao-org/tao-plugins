@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import ro.cs.tao.component.*;
+import ro.cs.tao.component.enums.ComponentCategory;
 import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.component.template.TemplateType;
@@ -78,23 +79,33 @@ public class CliParser {
                 application.setMemoryRequirements(4096);
                 container.addApplication(application);
                 ProcessingComponent component = new ProcessingComponent();
-                component.setId(FileUtilities.getFilenameWithoutExtension(app));
+                component.setId(application.getName());
                 component.setContainerId(container.getId());
                 component.setVisibility(ProcessingComponentVisibility.SYSTEM);
                 component.setActive(true);
                 component.setAuthors("CNES");
                 component.setCopyright("(C)CNES");
                 component.setComponentType(ProcessingComponentType.EXECUTABLE);
+                component.setCategory(ComponentCategory.RASTER);
                 component.setFileLocation(app.getFileName().toString().replace(".bat", ""));
                 component.setMultiThread(true);
                 component.setParallelism(4);
+                component.setNodeAffinity("Any");
                 component.setTemplateType(TemplateType.VELOCITY);
                 component.setOwner(SystemPrincipal.instance().getName());
                 parse(lines, component);
                 final List<ParameterDescriptor> params = component.getParameterDescriptors();
+                final List<SourceDescriptor> sources = component.getSources();
+                final List<TargetDescriptor> targets = component.getTargets();
                 final StringBuilder builder = new StringBuilder();
+                for (SourceDescriptor src : sources) {
+                    builder.append("-").append(src.getName()).append(" ").append("$").append(src.getName()).append("\n");
+                }
                 for (ParameterDescriptor param : params) {
                     builder.append("-").append(param.getName()).append(" ").append("$").append(param.getName()).append("\n");
+                }
+                for (TargetDescriptor target : targets) {
+                    builder.append("-").append(target.getName()).append(" ").append("$").append(target.getName()).append("\n");
                 }
                 component.setTemplateContents(builder.toString());
                 String value = objectMapper.writerFor(ProcessingComponent.class).writeValueAsString(component);
@@ -141,9 +152,9 @@ public class CliParser {
             if (!line.trim().isEmpty()) {
                 if (line.startsWith("This is the ")) {
                     component.setLabel(line.substring(12, line.indexOf(",")));
-                    component.setVersion(line.substring(line.indexOf("version") + 7));
+                    component.setVersion(line.substring(line.indexOf("version") + 8));
                 } else {
-                    component.setDescription(component.getDescription() + "\n" + line);
+                    component.setDescription(component.getDescription() + line + "\n");
                 }
             }
             idx++;
@@ -171,6 +182,7 @@ public class CliParser {
                     DataDescriptor data = new DataDescriptor();
                     final String lowerCase = descr.toLowerCase();
                     data.setFormatType(lowerCase.contains("image") ? DataFormat.RASTER : lowerCase.contains("vector") ? DataFormat.VECTOR : DataFormat.OTHER);
+                    data.setLocation("output_" + component.getId().toLowerCase() + (data.getFormatType() == DataFormat.RASTER ? ".tif" : data.getFormatType() == DataFormat.VECTOR ? ".shp" : ".csv"));
                     trg.setDataDescriptor(data);
                     component.addTarget(trg);
                 } else if (!"help".equals(paramId) && !"<group>".equals(strType)) {
