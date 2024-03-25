@@ -91,11 +91,11 @@ public class ArgoExecutor extends Executor<Object>
             synchronized (this.workflowProvider) {
                 if (Files.exists(scriptTargetPath)) {
                     updateYaml(scriptTargetPath);
-                    System.out.println("Update Argo Graph File");
+                    logger.fine("Update Argo Graph File");
                     return 0;
                 }
                 createYaml(scriptTargetPath);
-                System.out.println("Create Argo Graph File");
+                logger.fine("Create Argo Graph File");
             }
         } catch (Exception e){
             logger.severe(ExceptionUtils.getStackTrace(logger, e));
@@ -470,11 +470,6 @@ public class ArgoExecutor extends Executor<Object>
     }
 
     private void parseCustomValuesForTaskTemplateInputs(WorkflowNodeDescriptor node, DAGTask dagTask, WorkflowTemplate workflowTemplate) {
-        long taskId = (Long) executionUnit.getMetadata().get("id");
-        ExecutionTask task = this.taskProvider.get(taskId);
-        TaoComponent component = TaskUtilities.getComponentFor(task);
-        // to do berification for processing compoenents
-
         List<WorkflowParameter> dagTaskInputParameters = dagTask.getArguments().getParameters();
         List<WorkflowParameter> inputParameters = workflowTemplate.getInputs().getParameters();
         for(ParameterValue param : node.getCustomValues()){
@@ -498,7 +493,7 @@ public class ArgoExecutor extends Executor<Object>
                 workflowArtifact.setName(templateOutputName + "_" + i);
                 workflowArtifact.setPath(FileUtilities.toUnixPath(strings[i]));
                 ArchiveStrategy archiveStrategy = new ArchiveStrategy();
-                archiveStrategy.setNone("{}");
+                archiveStrategy.setNone(new NoneStrategy());
                 workflowArtifact.setArchive(archiveStrategy);
                 outputArtifacts.add(workflowArtifact);
             }
@@ -507,7 +502,7 @@ public class ArgoExecutor extends Executor<Object>
             workflowArtifact.setName(templateOutputName);
             workflowArtifact.setPath(FileUtilities.toUnixPath(target.getDataDescriptor().getLocation()));
             ArchiveStrategy archiveStrategy = new ArchiveStrategy();
-            archiveStrategy.setNone("{}");
+            archiveStrategy.setNone(new NoneStrategy());
             workflowArtifact.setArchive(archiveStrategy);
             outputArtifacts.add(workflowArtifact);
         }
