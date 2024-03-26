@@ -13,6 +13,7 @@ import ro.cs.tao.component.TaoComponent;
 import ro.cs.tao.component.TargetDescriptor;
 import ro.cs.tao.datasource.DataSourceComponent;
 import ro.cs.tao.docker.ExecutionConfiguration;
+import ro.cs.tao.execution.model.ExecutionJob;
 import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.persistence.ExecutionJobProvider;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
@@ -34,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ArgoExecutor extends Executor<Object>
         implements ExecutionDescriptorConverter {
@@ -194,7 +196,10 @@ public class ArgoExecutor extends Executor<Object>
         try {
             Map<String, Object> workflowMap= mapper.readValue(path.toFile(), Map.class);
             if (workflowMap != null && !workflowMap.isEmpty()) {
-                String executionUnitName = executionUnit.getMetadata().get("name").toString().toLowerCase();
+                long taskId = (Long) executionUnit.getMetadata().get("id");
+                ExecutionTask task = this.taskProvider.get(taskId);
+                TaoComponent component = TaskUtilities.getComponentFor(task);
+                String executionUnitName = component.getId().toLowerCase() + "_" + task.getWorkflowNodeId();
                 List<LinkedHashMap<String,Object>> templates = (ArrayList<LinkedHashMap<String,Object>>)((LinkedHashMap<String, Object>) workflowMap.get("spec")).get("templates");
                 Map<String, Object> templateFromFile = new LinkedHashMap<>();
                 for(Map<String, Object> templateMap : templates){
@@ -220,39 +225,6 @@ public class ArgoExecutor extends Executor<Object>
         }
     }
 
-    private void setReferences(WorkflowNodeDescriptor currentNode, WorkflowArguments workflowArguments, List<DAGTask> tasks) {
-        List<WorkflowArtifact> workflowArtifacts = workflowArguments.getArtifacts();
-        if(Objects.isNull(workflowArtifacts) || workflowArtifacts.isEmpty())
-            return;
-        for(ComponentLink link : currentNode.getIncomingLinks()){
-            String dependencyName = link.getInput().getName();
-            String parameterName = link.getOutput().getName();
-            findParameterToChange(workflowArtifacts, tasks, dependencyName, parameterName, link);
-        }
-    }
-
-    private void findParameterToChange(List<WorkflowArtifact> workflowArtifacts, List<DAGTask> tasks, String dependencyName, String parameterName, ComponentLink link){
-        for(WorkflowArtifact artifact : workflowArtifacts){
-            if(artifact.getName().contains(dependencyName + "_" + link.getSourceNodeId())){
-                Optional<DAGTask> dagTaskOptional = tasks.stream()
-                        .filter(task -> task.getName().contains(link.getOutput().getParentId().toLowerCase()))
-                        .findFirst();
-                if(dagTaskOptional.isEmpty())
-                    throw new NoSuchElementException("Optional DAG task is empty");
-                DAGTask dagTask = dagTaskOptional.get();
-                List<WorkflowParameter> parameters = dagTask.getArguments().getParameters();
-                Optional<WorkflowParameter> dependentParameterOptional = parameters.stream()
-                        .filter(p -> p.getName().contains(parameterName))
-                        .findFirst();
-                if(dependentParameterOptional.isEmpty())
-                    throw new NoSuchElementException("Optional parameter is empty");
-                WorkflowParameter dependentParameter = dependentParameterOptional.get();
-                String value = "{{workflow.artifacts." + artifact.getName() + "}}";
-                dependentParameter.setValue(value);
-            }
-        }
-    }
-
     private void parseNodes(WorkflowDescriptor workflowDescriptor){
         List<WorkflowNodeDescriptor> roots = workflowDescriptor.findRoots(workflowDescriptor.getNodes());
         for (WorkflowNodeDescriptor node  : roots) {
@@ -262,7 +234,10 @@ public class ArgoExecutor extends Executor<Object>
             while(!nodesToBeVisited.isEmpty()) {
                 WorkflowNodeDescriptor nextNode = nodesToBeVisited.remove(0);
                 List<WorkflowNodeDescriptor> children = workflowDescriptor.findChildren(workflowDescriptor.getNodes(), nextNode);
-                nodesToBeVisited.addAll(children);
+                List<WorkflowNodeDescriptor> orderedNodes = orderWfDescNodes(workflowDescriptor);
+                orderedNodes.retainAll(children);
+                orderedNodes.removeIf(nodesToBeVisited::contains);
+                nodesToBeVisited.addAll(orderedNodes);
                 removeNodesAlreadyVisited(nodesToBeVisited);
                 parseNode(nextNode);
             }
@@ -296,111 +271,7 @@ public class ArgoExecutor extends Executor<Object>
         parseLinksForDependencies(node, dagTask.getDependencies());
         parseSourcesForTaskTemplateInputs(node, dagTask, workflowTemplate);
         parseCustomValuesForTaskTemplateInputs(node, dagTask, workflowTemplate);
-        setReferences(node, argoWorkflow.getSpec().getArguments(), dagTasks);
-
-    }
-
-    private void updateContainerInfo() {
-        checkContainerUnit();
-        WorkflowTemplate currentTemplate = getTemplateToBeUpdatedWithContainerInfo();
-        Container container = new Container();
-        currentTemplate.setContainer(container);
-        List<String> bashArguments = getBashArguments();
-        container.setArgs(getArgumentsForContainer(currentTemplate, bashArguments));
-        container.setEnv(getEnvVarForContainer());
-        container.setCommand(getCommandsForContainer(bashArguments));
-        container.setImage(getImageForContainer());
-
-    }
-
-    private List<EnvVar> getEnvVarForContainer() {
-        List<EnvVar> envVars = new ArrayList<>();
-        for(Map.Entry<String, String> entry : executionUnit.getContainerEnvironmentVariables().entrySet()){
-            EnvVar envVar = new EnvVar();
-            envVar.setName(entry.getKey());
-            envVar.setValue(entry.getValue());
-            envVars.add(envVar);
-        }
-        return envVars;
-    }
-
-    private WorkflowTemplate getTemplateToBeUpdatedWithContainerInfo() {
-        long taskId = (Long) executionUnit.getMetadata().get("id");
-        ExecutionTask task = this.taskProvider.get(taskId);
-        TaoComponent component = TaskUtilities.getComponentFor(task);
-        String executionUnitName = component.getId().toLowerCase();
-        Optional<WorkflowTemplate> optionalTemplate = argoWorkflow.getSpec().getTemplates()
-                .stream()
-                .filter(template -> template.getName().contains(executionUnitName))
-                .findFirst();
-        if(optionalTemplate.isEmpty())
-            throw new NullPointerException("No Template exists for the specified execution unit!");
-        return optionalTemplate.get();
-    }
-
-    private List<String> getBashArguments() {
-        List<String> bashArguments;
-        final boolean isBash = this.executionUnit.getArguments().get(0).equals("/bin/bash");
-        if (isBash) {
-            bashArguments = Arrays.asList(this.executionUnit.getArguments().get(2).split(" "));
-        } else {
-            bashArguments = this.executionUnit.getArguments();
-        }
-        return bashArguments;
-    }
-
-    private List<String> getArgumentsForContainer(WorkflowTemplate currentTemplate, List<String> bashArguments) {
-        List<String> mainArguments = new ArrayList<>();
-        StringBuilder extraArguments = new StringBuilder();
-        for(int i=1; i < bashArguments.size(); i++){
-            String bashArgument = bashArguments.get(i);
-            if(bashArgument.startsWith("-")){
-                Optional<WorkflowParameter> workflowParameterOptional = currentTemplate.getInputs().getParameters().stream()
-                        .filter(p -> p.getName().contains(bashArgument.substring(1)))
-                        .findFirst();
-                if(workflowParameterOptional.isPresent()){
-                    mainArguments.add(bashArgument + " " + "{{" + currentTemplate.getName() + ".inputs." + workflowParameterOptional.get().getName() + "}}");
-                } else if(i < bashArguments.size()-1) {
-                    mainArguments.add(bashArgument + " " + bashArguments.get(i+1));
-                }
-                i++;
-            }
-            while(!bashArgument.startsWith("-") && i < bashArguments.size()) {
-                extraArguments.append(" ").append(bashArguments.get(i));
-                i++;
-            }
-            if(mainArguments.isEmpty()){
-                mainArguments.add(extraArguments.toString());
-            }else {
-                mainArguments.set(mainArguments.size() - 1, mainArguments.get(mainArguments.size() - 1).concat(extraArguments.toString()));
-            }
-            extraArguments.setLength(0);
-        }
-        mainArguments.addAll(executionUnit.getContainerArguments());
-        return mainArguments;
-    }
-
-    private List<String> getCommandsForContainer(List<String> bashArguments) {
-        List<String> baseCommandArray = new ArrayList<>();
-        // first bash argument is always added
-        baseCommandArray.add("/bin/bash");
-        baseCommandArray.add(bashArguments.get(0).replaceAll("\"", ""));
-        int bashArgsLastNonParamPosition = ListIterate.detectIndex(bashArguments, b -> b.startsWith("-") && !b.equals("-c"));
-        if (bashArguments.get(1).startsWith(" \\")) {
-            baseCommandArray.add(bashArguments.get(1).replaceAll("\"","").replaceAll("\\\\","/"));
-        } else if (bashArguments.get(1).equals("-c")) {
-            for(int i = 1 ; i < bashArgsLastNonParamPosition ; i++) {
-                baseCommandArray.add(bashArguments.get(i));
-            }
-        }
-        return baseCommandArray;
-    }
-
-    private String getImageForContainer() {
-        ContainerUnit containerUnit = this.executionUnit.getContainerUnit();
-        if(ExecutionConfiguration.getDockerRegistry().equals(containerUnit.getContainerRegistry()))
-            return containerUnit.getContainerName();
-        return containerUnit.getContainerRegistry() + "/" + containerUnit.getContainerName();
+        setNodeReferences(node);
     }
 
 
@@ -560,6 +431,186 @@ public class ArgoExecutor extends Executor<Object>
                 }
             }
         }
+    }
+
+    private void setNodeReferences(WorkflowNodeDescriptor currentNode) {
+        List<WorkflowArtifact> workflowArtifacts = argoWorkflow.getSpec().getArguments().getArtifacts();
+        if(Objects.isNull(workflowArtifacts) || workflowArtifacts.isEmpty())
+            return;
+        for(ComponentLink link : currentNode.getIncomingLinks()){
+            String dependencyName = link.getInput().getName() + "_" + link.getSourceNodeId();
+            String parameterName = link.getOutput().getName() + "_" + currentNode.getId();
+            // verify of the node is linked to a datasource node(to a WorkflowArtifact)
+            Optional<WorkflowArtifact> isLinkedToArtifact = workflowArtifacts.stream()
+                    .filter(artifact -> artifact.getName().contains(dependencyName))
+                    .findFirst();
+            if(isLinkedToArtifact.isPresent()){
+                setTaskReferenceToWorkflow(isLinkedToArtifact.get(), parameterName);
+            } else {
+                String templateName = link.getInput().getParentId().toLowerCase() + "_" +link.getSourceNodeId();
+                setTaskReferenceToTemplateOutput(templateName, dependencyName, parameterName);
+            }
+        }
+    }
+
+    private void setTaskReferenceToWorkflow(WorkflowArtifact artifact, String parameterName){
+        String dagTaskId = parameterName.split("_")[1];
+        List<DAGTask> tasks = argoWorkflow.getSpec().getTemplates().get(0).getDAG().getTasks();
+        Optional<DAGTask> dagTaskOptional = tasks.stream()
+                .filter(task -> task.getName().contains(dagTaskId))
+                .findFirst();
+        if(dagTaskOptional.isEmpty())
+            throw new NoSuchElementException("Optional DAG task is empty");
+        DAGTask dagTask = dagTaskOptional.get();
+        List<WorkflowParameter> parameters = dagTask.getArguments().getParameters();
+        Optional<WorkflowParameter> dependentParameterOptional = parameters.stream()
+                .filter(p -> p.getName().contains(parameterName))
+                .findFirst();
+        if(dependentParameterOptional.isEmpty())
+            throw new NoSuchElementException("Optional parameter is empty");
+        WorkflowParameter dependentParameter = dependentParameterOptional.get();
+        String value = "{{workflow.artifacts." + artifact.getName() + "}}";
+        // if the link is dependent on another node, do not overwrite the Reference
+        String dependentParameterValue = dependentParameter.getValue();
+        if(dependentParameterValue == null || dependentParameterValue.isEmpty())
+            dependentParameter.setValue(value);
+    }
+
+    private void setTaskReferenceToTemplateOutput(String templateName, String dependencyName, String parameterName) {
+        // de gasit template pe baza Template name si DagTask/Parameter pe baza parameterName, de facut referinta
+        // {{tasks.templateName.outputs.artifacts.artifactName}}
+        List<WorkflowTemplate> templates = argoWorkflow.getSpec().getTemplates();
+        Optional<WorkflowTemplate> templateOptional = templates.stream()
+                .filter(t -> t.getName().equals(templateName))
+                .findFirst();
+        if(templateOptional.isEmpty())
+            throw new NoSuchElementException("Optional Template is empty");
+        WorkflowTemplate template = templateOptional.get();
+
+        Optional<WorkflowArtifact> optionalTemplateOutput = template.getOutputs().getArtifacts()
+                .stream()
+                .filter(output -> output.getName().contains(dependencyName))
+                .findFirst();
+        if(optionalTemplateOutput.isEmpty())
+            throw new NoSuchElementException("Optional Template is empty");
+        WorkflowArtifact templateOutput = optionalTemplateOutput.get();
+
+        List<DAGTask> dagTasks = argoWorkflow.getSpec().getTemplates().get(0).getDAG().getTasks();
+        for(DAGTask task : dagTasks){
+            for(WorkflowParameter param : task.getArguments().getParameters()){
+                if(param.getName().contains(parameterName))
+                    param.setValue("{{tasks." + template.getName() + ".outputs.artifacts." + templateOutput.getName() + "}}");
+            }
+        }
+
+    }
+
+    private void updateContainerInfo() {
+        checkContainerUnit();
+        WorkflowTemplate currentTemplate = getTemplateToBeUpdatedWithContainerInfo();
+        Container container = new Container();
+        currentTemplate.setContainer(container);
+        List<String> bashArguments = getBashArguments();
+        container.setArgs(getArgumentsForContainer(currentTemplate, bashArguments));
+        container.setEnv(getEnvVarForContainer());
+        container.setCommand(getCommandsForContainer(bashArguments));
+        container.setImage(getImageForContainer());
+    }
+
+    private List<EnvVar> getEnvVarForContainer() {
+        List<EnvVar> envVars = new ArrayList<>();
+        for(Map.Entry<String, String> entry : executionUnit.getContainerEnvironmentVariables().entrySet()){
+            EnvVar envVar = new EnvVar();
+            envVar.setName(entry.getKey());
+            envVar.setValue(entry.getValue());
+            envVars.add(envVar);
+        }
+        return envVars;
+    }
+
+    private WorkflowTemplate getTemplateToBeUpdatedWithContainerInfo() {
+        long taskId = (Long) executionUnit.getMetadata().get("id");
+        ExecutionTask task = this.taskProvider.get(taskId);
+        TaoComponent component = TaskUtilities.getComponentFor(task);
+        String executionUnitName = component.getId().toLowerCase() + "_" + task.getWorkflowNodeId();
+        Optional<WorkflowTemplate> optionalTemplate = argoWorkflow.getSpec().getTemplates()
+                .stream()
+                .filter(template -> template.getName().contains(executionUnitName))
+                .findFirst();
+        if(optionalTemplate.isEmpty())
+            throw new NullPointerException("No Template exists for the specified execution unit!");
+        return optionalTemplate.get();
+    }
+
+    private List<String> getBashArguments() {
+        List<String> bashArguments;
+        final boolean isBash = this.executionUnit.getArguments().get(0).equals("/bin/bash");
+        if (isBash) {
+            bashArguments = Arrays.asList(this.executionUnit.getArguments().get(2).split(" "));
+        } else {
+            bashArguments = this.executionUnit.getArguments();
+        }
+        return bashArguments;
+    }
+
+    private List<String> getArgumentsForContainer(WorkflowTemplate currentTemplate, List<String> bashArguments) {
+        List<String> mainArguments = new ArrayList<>();
+        StringBuilder extraArguments = new StringBuilder();
+        for(int i=1; i < bashArguments.size(); i++){
+            String bashArgument = bashArguments.get(i);
+            if(bashArgument.startsWith("-")){
+                Optional<WorkflowParameter> workflowParameterOptional = currentTemplate.getInputs().getParameters().stream()
+                        .filter(p -> p.getName().contains(bashArgument.substring(1)))
+                        .findFirst();
+                if(workflowParameterOptional.isPresent()){
+                    mainArguments.add(bashArgument + " " + "{{" + currentTemplate.getName() + ".inputs." + workflowParameterOptional.get().getName() + "}}");
+                } else if(i < bashArguments.size()-1) {
+                    mainArguments.add(bashArgument + " " + bashArguments.get(i+1));
+                }
+                i++;
+            }
+            while(!bashArgument.startsWith("-") && i < bashArguments.size()) {
+                extraArguments.append(" ").append(bashArguments.get(i));
+                i++;
+            }
+            if(mainArguments.isEmpty()){
+                mainArguments.add(extraArguments.toString());
+            }else {
+                mainArguments.set(mainArguments.size() - 1, mainArguments.get(mainArguments.size() - 1).concat(extraArguments.toString()));
+            }
+            extraArguments.setLength(0);
+        }
+        mainArguments.addAll(executionUnit.getContainerArguments());
+        return mainArguments;
+    }
+
+    private List<String> getCommandsForContainer(List<String> bashArguments) {
+        List<String> baseCommandArray = new ArrayList<>();
+        // first bash argument is always added
+        baseCommandArray.add("/bin/bash");
+        baseCommandArray.add(bashArguments.get(0).replaceAll("\"", ""));
+        int bashArgsLastNonParamPosition = ListIterate.detectIndex(bashArguments, b -> b.startsWith("-") && !b.equals("-c"));
+        if (bashArguments.get(1).startsWith(" \\")) {
+            baseCommandArray.add(bashArguments.get(1).replaceAll("\"","").replaceAll("\\\\","/"));
+        } else if (bashArguments.get(1).equals("-c")) {
+            for(int i = 1 ; i < bashArgsLastNonParamPosition ; i++) {
+                baseCommandArray.add(bashArguments.get(i));
+            }
+        }
+        return baseCommandArray;
+    }
+
+    private String getImageForContainer() {
+        ContainerUnit containerUnit = this.executionUnit.getContainerUnit();
+        if(ExecutionConfiguration.getDockerRegistry().equals(containerUnit.getContainerRegistry()))
+            return containerUnit.getContainerName();
+        return containerUnit.getContainerRegistry() + "/" + containerUnit.getContainerName();
+    }
+
+    private List<WorkflowNodeDescriptor> orderWfDescNodes(WorkflowDescriptor workflowDesc) {
+        List<WorkflowNodeDescriptor> nodes = workflowDesc.orderNodes(workflowDesc.getNodes(),null);
+        // order nodes by level too.
+        return nodes.stream().sorted(Comparator.comparing(WorkflowNodeDescriptor::getLevel)).collect(Collectors.toList());
     }
 
     private WorkflowDescriptor getWorkflowDescriptor(){
