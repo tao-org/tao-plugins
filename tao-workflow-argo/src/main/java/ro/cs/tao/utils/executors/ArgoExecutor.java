@@ -13,7 +13,6 @@ import ro.cs.tao.component.TaoComponent;
 import ro.cs.tao.component.TargetDescriptor;
 import ro.cs.tao.datasource.DataSourceComponent;
 import ro.cs.tao.docker.ExecutionConfiguration;
-import ro.cs.tao.execution.model.ExecutionJob;
 import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.persistence.ExecutionJobProvider;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
@@ -21,6 +20,7 @@ import ro.cs.tao.execution.util.TaskUtilities;
 import ro.cs.tao.persistence.WorkflowNodeProvider;
 import ro.cs.tao.persistence.WorkflowProvider;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
+import ro.cs.tao.services.utils.WorkflowUtilities;
 import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.ExecutionUnitFormat;
 import ro.cs.tao.utils.FileUtilities;
@@ -50,6 +50,7 @@ public class ArgoExecutor extends Executor<Object>
     private final WorkflowNodeProvider workflowNodeProvider;
     private final ExecutionJobProvider jobProvider;
     private final ArgoWorkflow argoWorkflow;
+    private final Set<WorkflowNodeDescriptor> visitedNodes;
 
     public ArgoExecutor() {
         this.taskProvider = SpringContextBridge.services().getService(ExecutionTaskProvider.class);
@@ -57,6 +58,7 @@ public class ArgoExecutor extends Executor<Object>
         this.workflowNodeProvider = SpringContextBridge.services().getService(WorkflowNodeProvider.class);
         this.jobProvider = SpringContextBridge.services().getService(ExecutionJobProvider.class);
         this.argoWorkflow = new ArgoWorkflow();
+        this.visitedNodes = new HashSet<>();
     }
 
     public ArgoExecutor(ExecutionUnit unit) {
@@ -67,6 +69,7 @@ public class ArgoExecutor extends Executor<Object>
         this.workflowNodeProvider = SpringContextBridge.services().getService(WorkflowNodeProvider.class);
         this.jobProvider = SpringContextBridge.services().getService(ExecutionJobProvider.class);
         this.argoWorkflow = new ArgoWorkflow();
+        this.visitedNodes = new HashSet<>();
     }
 
     @Override
@@ -227,36 +230,35 @@ public class ArgoExecutor extends Executor<Object>
 
     private void parseNodes(WorkflowDescriptor workflowDescriptor){
         List<WorkflowNodeDescriptor> roots = workflowDescriptor.findRoots(workflowDescriptor.getNodes());
-        for (WorkflowNodeDescriptor node  : roots) {
-            List<WorkflowNodeDescriptor> nodesToBeVisited = new ArrayList<>();
-            nodesToBeVisited.add(node);
+        // parse root nodes at the start to create the workflow artifacts
+        for(WorkflowNodeDescriptor node : roots){
             parseSourceDescriptorsForInputs(node);
-            while(!nodesToBeVisited.isEmpty()) {
-                WorkflowNodeDescriptor nextNode = nodesToBeVisited.remove(0);
-                List<WorkflowNodeDescriptor> children = workflowDescriptor.findChildren(workflowDescriptor.getNodes(), nextNode);
-                List<WorkflowNodeDescriptor> orderedNodes = orderWfDescNodes(workflowDescriptor);
-                orderedNodes.retainAll(children);
-                orderedNodes.removeIf(nodesToBeVisited::contains);
-                nodesToBeVisited.addAll(orderedNodes);
-                removeNodesAlreadyVisited(nodesToBeVisited);
-                parseNode(nextNode);
+        }
+
+        for (WorkflowNodeDescriptor node  : roots) {
+            computeNextNodes(workflowDescriptor, node);
+        }
+    }
+
+    private void computeNextNodes(WorkflowDescriptor workflowDescriptor, WorkflowNodeDescriptor node) {
+        List<WorkflowNodeDescriptor> children = workflowDescriptor.findChildren(workflowDescriptor.getNodes(), node);
+        List<WorkflowNodeDescriptor> orderedNodes = orderWorkflowNodes(workflowDescriptor, node);
+        orderedNodes.retainAll(children);
+        orderedNodes.removeIf(visitedNodes::contains);
+        parseNode(node);
+        visitedNodes.add(node);
+        for(WorkflowNodeDescriptor nextNode : orderedNodes){
+            if(hasParentsVisited(nextNode) && !visitedNodes.contains(nextNode)) {
+                computeNextNodes(workflowDescriptor, nextNode);
             }
         }
     }
 
-    private void removeNodesAlreadyVisited(List<WorkflowNodeDescriptor> nodesToBeVisited) {
-        if(nodesToBeVisited.isEmpty())
-            return;
-        List<WorkflowTemplate> argoTemplates = argoWorkflow.getSpec().getTemplates();
-        List<WorkflowNodeDescriptor> nodesAlreadyVisited = new ArrayList<>();
-        for(WorkflowTemplate argoTemplate : argoTemplates){
-            for(WorkflowNodeDescriptor nodeToBeVisited : nodesToBeVisited){
-                if(argoTemplate.getName().contains(nodeToBeVisited.getName().toLowerCase())){
-                    nodesAlreadyVisited.add(nodeToBeVisited);
-                }
-            }
-        }
-        nodesToBeVisited.removeAll(nodesAlreadyVisited);
+    private boolean hasParentsVisited(WorkflowNodeDescriptor nextNode) {
+        List<WorkflowNodeDescriptor> parents = WorkflowUtilities.findAncestors(nextNode);
+        parents.removeIf(p -> p.getComponentType().equals((ComponentType.DATASOURCE)));
+        parents.removeAll(visitedNodes);
+        return parents.isEmpty();
     }
 
     private void parseNode(WorkflowNodeDescriptor node){
@@ -296,10 +298,7 @@ public class ArgoExecutor extends Executor<Object>
         initializeTemplateInputs(workflowTemplate);
         initializeTemplateOutputs(workflowTemplate);
         workflowTemplate.setName(currentNode.getComponentId().toLowerCase() + "_" + currentNode.getId());
-
-        List<WorkflowArtifact> outputArtifacts = workflowTemplate.getOutputs().getArtifacts();
-        TaoComponent nodeComponent = TaskUtilities.getComponentFor(currentNode);
-        parseTargetDescriptorsForOutputs(currentNode, nodeComponent, outputArtifacts);
+        parseTargetDescriptorsForOutputs(currentNode, workflowTemplate);
         return workflowTemplate;
     }
 
@@ -315,7 +314,10 @@ public class ArgoExecutor extends Executor<Object>
         workflowTemplate.setOutputs(templateOutputs);
     }
 
-    private void parseTargetDescriptorsForOutputs(WorkflowNodeDescriptor currentNode, TaoComponent nodeComponent, List<WorkflowArtifact> outputArtifacts) {
+    // to refactor
+    private void parseTargetDescriptorsForOutputs(WorkflowNodeDescriptor currentNode, WorkflowTemplate template) {
+        List<WorkflowArtifact> outputArtifacts = template.getOutputs().getArtifacts();
+        TaoComponent nodeComponent = TaskUtilities.getComponentFor(currentNode);
         for (TargetDescriptor target : nodeComponent.getTargets()) {
             String outParamId = target.getName() + "_" + currentNode.getId() ;
             String outputId = currentNode.getComponentId().toLowerCase() + "_" + outParamId;
@@ -362,7 +364,7 @@ public class ArgoExecutor extends Executor<Object>
             for (int i=0; i < strings.length; i++) {
                 WorkflowArtifact workflowArtifact = new WorkflowArtifact();
                 workflowArtifact.setName(templateOutputName + "_" + i);
-                workflowArtifact.setPath(FileUtilities.toUnixPath(strings[i]));
+                workflowArtifact.setPath(templateOutputName + "/" + FileUtilities.toUnixPath(strings[i]));
                 ArchiveStrategy archiveStrategy = new ArchiveStrategy();
                 archiveStrategy.setNone(new NoneStrategy());
                 workflowArtifact.setArchive(archiveStrategy);
@@ -371,7 +373,7 @@ public class ArgoExecutor extends Executor<Object>
         } else {
             WorkflowArtifact workflowArtifact = new WorkflowArtifact();
             workflowArtifact.setName(templateOutputName);
-            workflowArtifact.setPath(FileUtilities.toUnixPath(target.getDataDescriptor().getLocation()));
+            workflowArtifact.setPath(FileUtilities.toUnixPath(templateOutputName + "/" + target.getDataDescriptor().getLocation()));
             ArchiveStrategy archiveStrategy = new ArchiveStrategy();
             archiveStrategy.setNone(new NoneStrategy());
             workflowArtifact.setArchive(archiveStrategy);
@@ -420,8 +422,6 @@ public class ArgoExecutor extends Executor<Object>
                         .filter(r -> r.getComponentType().equals(ComponentType.DATASOURCE))
                         .toList();
         nodesExceptDataSources.removeAll(dataSourceRootNodes);
-
-
         for(ComponentLink link : currentNode.getIncomingLinks()){
             String dependencyId = link.getInput().getParentId().toLowerCase() + "_" + link.getSourceNodeId();
             for(WorkflowNodeDescriptor leafNode : nodesExceptDataSources){
@@ -438,37 +438,25 @@ public class ArgoExecutor extends Executor<Object>
         if(Objects.isNull(workflowArtifacts) || workflowArtifacts.isEmpty())
             return;
         for(ComponentLink link : currentNode.getIncomingLinks()){
-            String dependencyName = link.getInput().getName() + "_" + link.getSourceNodeId();
+            String incomingLinkName = link.getInput().getName() + "_" + link.getSourceNodeId();
             String parameterName = link.getOutput().getName() + "_" + currentNode.getId();
             // verify of the node is linked to a datasource node(to a WorkflowArtifact)
             Optional<WorkflowArtifact> isLinkedToArtifact = workflowArtifacts.stream()
-                    .filter(artifact -> artifact.getName().contains(dependencyName))
+                    .filter(artifact -> artifact.getName().contains(incomingLinkName))
                     .findFirst();
             if(isLinkedToArtifact.isPresent()){
                 setTaskReferenceToWorkflow(isLinkedToArtifact.get(), parameterName);
             } else {
                 String templateName = link.getInput().getParentId().toLowerCase() + "_" +link.getSourceNodeId();
-                setTaskReferenceToTemplateOutput(templateName, dependencyName, parameterName);
+                setTaskReferenceToTemplateOutput(templateName, incomingLinkName, parameterName);
             }
         }
     }
 
     private void setTaskReferenceToWorkflow(WorkflowArtifact artifact, String parameterName){
         String dagTaskId = parameterName.split("_")[1];
-        List<DAGTask> tasks = argoWorkflow.getSpec().getTemplates().get(0).getDAG().getTasks();
-        Optional<DAGTask> dagTaskOptional = tasks.stream()
-                .filter(task -> task.getName().contains(dagTaskId))
-                .findFirst();
-        if(dagTaskOptional.isEmpty())
-            throw new NoSuchElementException("Optional DAG task is empty");
-        DAGTask dagTask = dagTaskOptional.get();
-        List<WorkflowParameter> parameters = dagTask.getArguments().getParameters();
-        Optional<WorkflowParameter> dependentParameterOptional = parameters.stream()
-                .filter(p -> p.getName().contains(parameterName))
-                .findFirst();
-        if(dependentParameterOptional.isEmpty())
-            throw new NoSuchElementException("Optional parameter is empty");
-        WorkflowParameter dependentParameter = dependentParameterOptional.get();
+        List<WorkflowParameter> parameters = getParametersOfDagTaskById(dagTaskId);
+        WorkflowParameter dependentParameter = getParameterByName(parameters, parameterName);
         String value = "{{workflow.artifacts." + artifact.getName() + "}}";
         // if the link is dependent on another node, do not overwrite the Reference
         String dependentParameterValue = dependentParameter.getValue();
@@ -476,33 +464,57 @@ public class ArgoExecutor extends Executor<Object>
             dependentParameter.setValue(value);
     }
 
-    private void setTaskReferenceToTemplateOutput(String templateName, String dependencyName, String parameterName) {
-        // de gasit template pe baza Template name si DagTask/Parameter pe baza parameterName, de facut referinta
-        // {{tasks.templateName.outputs.artifacts.artifactName}}
+    private List<WorkflowParameter> getParametersOfDagTaskById(String dagTaskId) {
+        List<DAGTask> tasks = argoWorkflow.getSpec().getTemplates().get(0).getDAG().getTasks();
+        Optional<DAGTask> dagTaskOptional = tasks.stream()
+                .filter(task -> task.getName().contains(dagTaskId))
+                .findFirst();
+        if(dagTaskOptional.isEmpty())
+            throw new NoSuchElementException("Optional DAG task is empty");
+        DAGTask dagTask = dagTaskOptional.get();
+        return dagTask.getArguments().getParameters();
+    }
+
+    private WorkflowParameter getParameterByName(List<WorkflowParameter> parameters, String parameterName) {
+        Optional<WorkflowParameter> dependentParameterOptional = parameters.stream()
+                .filter(p -> p.getName().contains(parameterName))
+                .findFirst();
+        if(dependentParameterOptional.isEmpty())
+            throw new NoSuchElementException("Optional parameter is empty");
+        return dependentParameterOptional.get();
+    }
+
+    private void setTaskReferenceToTemplateOutput(String templateName, String incomingLinkName, String parameterName) {
+        WorkflowTemplate templateToBeReferenced = getTemplateByName(templateName);
+        WorkflowArtifact templateOutput = getTemplateOutputByLinkName(templateToBeReferenced, incomingLinkName);
+        List<DAGTask> dagTasks = argoWorkflow.getSpec().getTemplates().get(0).getDAG().getTasks();
+        for(DAGTask task : dagTasks){
+            for(WorkflowParameter param : task.getArguments().getParameters()){
+                if(param.getName().contains(parameterName))
+                    param.setValue("{{tasks." + templateToBeReferenced.getName() + ".outputs.artifacts." + templateOutput.getName() + "}}");
+            }
+        }
+
+    }
+
+    private WorkflowArtifact getTemplateOutputByLinkName(WorkflowTemplate template, String incomingLinkName) {
+        Optional<WorkflowArtifact> optionalTemplateOutput = template.getOutputs().getArtifacts()
+                .stream()
+                .filter(output -> output.getName().contains(incomingLinkName))
+                .findFirst();
+        if(optionalTemplateOutput.isEmpty())
+            throw new NoSuchElementException("Optional Template is empty");
+        return optionalTemplateOutput.get();
+    }
+
+    private WorkflowTemplate getTemplateByName(String templateName) {
         List<WorkflowTemplate> templates = argoWorkflow.getSpec().getTemplates();
         Optional<WorkflowTemplate> templateOptional = templates.stream()
                 .filter(t -> t.getName().equals(templateName))
                 .findFirst();
         if(templateOptional.isEmpty())
             throw new NoSuchElementException("Optional Template is empty");
-        WorkflowTemplate template = templateOptional.get();
-
-        Optional<WorkflowArtifact> optionalTemplateOutput = template.getOutputs().getArtifacts()
-                .stream()
-                .filter(output -> output.getName().contains(dependencyName))
-                .findFirst();
-        if(optionalTemplateOutput.isEmpty())
-            throw new NoSuchElementException("Optional Template is empty");
-        WorkflowArtifact templateOutput = optionalTemplateOutput.get();
-
-        List<DAGTask> dagTasks = argoWorkflow.getSpec().getTemplates().get(0).getDAG().getTasks();
-        for(DAGTask task : dagTasks){
-            for(WorkflowParameter param : task.getArguments().getParameters()){
-                if(param.getName().contains(parameterName))
-                    param.setValue("{{tasks." + template.getName() + ".outputs.artifacts." + templateOutput.getName() + "}}");
-            }
-        }
-
+        return templateOptional.get();
     }
 
     private void updateContainerInfo() {
@@ -607,10 +619,56 @@ public class ArgoExecutor extends Executor<Object>
         return containerUnit.getContainerRegistry() + "/" + containerUnit.getContainerName();
     }
 
-    private List<WorkflowNodeDescriptor> orderWfDescNodes(WorkflowDescriptor workflowDesc) {
+    private List<WorkflowNodeDescriptor> orderWorkflowNodes(WorkflowDescriptor workflowDesc, WorkflowNodeDescriptor parentNode) {
         List<WorkflowNodeDescriptor> nodes = workflowDesc.orderNodes(workflowDesc.getNodes(),null);
-        // order nodes by level too.
-        return nodes.stream().sorted(Comparator.comparing(WorkflowNodeDescriptor::getLevel)).collect(Collectors.toList());
+        List<WorkflowNodeDescriptor> levelOrderedNodes = nodes.stream().sorted(Comparator.comparing(WorkflowNodeDescriptor::getLevel)).collect(Collectors.toList());
+        Map<Integer, List<WorkflowNodeDescriptor>> nodesPerLevelMap = new HashMap<>();
+        for(WorkflowNodeDescriptor node : levelOrderedNodes){
+            nodesPerLevelMap.computeIfAbsent(node.getLevel(), k -> new ArrayList<>());
+            nodesPerLevelMap.computeIfPresent(node.getLevel(), (k,v) -> {v.add(node); return v;});
+        }
+        List<List<WorkflowNodeDescriptor>> listPerLevels = nodesPerLevelMap.values().stream().collect(Collectors.toList());
+        List<List<WorkflowNodeDescriptor>> correctOrderLists = new ArrayList<>();
+        //does not work for multiple swaps
+        for(List<WorkflowNodeDescriptor> levelNodes : listPerLevels){
+            List<WorkflowNodeDescriptor> correctOrder = new ArrayList<>(levelNodes);
+            for(WorkflowNodeDescriptor node : levelNodes){
+                List<WorkflowNodeDescriptor> ancestors = findAncestorsArgo(levelNodes, node);
+                for(WorkflowNodeDescriptor ancestor : ancestors){
+                    int ancestorId = levelNodes.indexOf(ancestor);
+                    int nodeId = levelNodes.indexOf(node);
+                    if(ancestorId > nodeId){
+                        Collections.swap(correctOrder, nodeId, ancestorId);
+                    }
+                }
+            }
+            correctOrderLists.add(correctOrder);
+        }
+        return correctOrderLists.stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<WorkflowNodeDescriptor> findAncestorsArgo(List<WorkflowNodeDescriptor> masterList, WorkflowNodeDescriptor node) {
+        if (masterList == null || masterList.isEmpty() || node == null) {
+            return null;
+        }
+        final List<WorkflowNodeDescriptor> ancestors = new ArrayList<>();
+        final Set<ComponentLink> componentLinks = node.getIncomingLinks();
+        if (componentLinks != null && !componentLinks.isEmpty()) {
+            for (ComponentLink link : componentLinks) {
+                final WorkflowNodeDescriptor previous = masterList.stream().filter(n -> n.getId().equals(link.getSourceNodeId())).findFirst().orElse(null);
+                if (previous != null) {
+                    ancestors.add(previous);
+                    if (previous.getIncomingLinks() == null || previous.getIncomingLinks().isEmpty()) {
+                        continue;
+                    }
+                    List<WorkflowNodeDescriptor> recursiveAncestors = findAncestorsArgo(masterList, previous);
+                    ancestors.addAll(recursiveAncestors);
+                }
+            }
+        }
+        return ancestors;
     }
 
     private WorkflowDescriptor getWorkflowDescriptor(){
