@@ -230,28 +230,35 @@ public class ArgoExecutor extends Executor<Object>
 
     private void parseNodes(WorkflowDescriptor workflowDescriptor){
         List<WorkflowNodeDescriptor> roots = workflowDescriptor.findRoots(workflowDescriptor.getNodes());
-        // parse root nodes at the start to create the workflow artifacts
-        for(WorkflowNodeDescriptor node : roots){
-            parseSourceDescriptorsForInputs(node);
-        }
-
+        setupWorkflowArtifactsFromRoots(roots);
         for (WorkflowNodeDescriptor node  : roots) {
-            computeNextNodes(workflowDescriptor, node);
+            parseNode(workflowDescriptor, node);
         }
     }
 
-    private void computeNextNodes(WorkflowDescriptor workflowDescriptor, WorkflowNodeDescriptor node) {
-        List<WorkflowNodeDescriptor> children = workflowDescriptor.findChildren(workflowDescriptor.getNodes(), node);
-        List<WorkflowNodeDescriptor> orderedNodes = orderWorkflowNodes(workflowDescriptor, node);
-        orderedNodes.retainAll(children);
-        orderedNodes.removeIf(visitedNodes::contains);
-        parseNode(node);
+    private void setupWorkflowArtifactsFromRoots(List<WorkflowNodeDescriptor> roots) {
+        for(WorkflowNodeDescriptor node : roots){
+            parseSourceDescriptorsForInputs(node);
+        }
+    }
+
+    private void parseNode(WorkflowDescriptor workflowDescriptor, WorkflowNodeDescriptor node) {
+        List<WorkflowNodeDescriptor> children = getChildrenNodesToParse(workflowDescriptor, node);
+        setupArgoNode(node);
         visitedNodes.add(node);
-        for(WorkflowNodeDescriptor nextNode : orderedNodes){
+        for(WorkflowNodeDescriptor nextNode : children){
             if(hasParentsVisited(nextNode) && !visitedNodes.contains(nextNode)) {
-                computeNextNodes(workflowDescriptor, nextNode);
+                parseNode(workflowDescriptor, nextNode);
             }
         }
+    }
+
+    private List<WorkflowNodeDescriptor> getChildrenNodesToParse(WorkflowDescriptor workflowDescriptor, WorkflowNodeDescriptor node) {
+        List<WorkflowNodeDescriptor> children = workflowDescriptor.findChildren(workflowDescriptor.getNodes(), node);
+        List<WorkflowNodeDescriptor> orderedNodes = orderWorkflowNodes(workflowDescriptor);
+        orderedNodes.retainAll(children);
+        orderedNodes.removeIf(visitedNodes::contains);
+        return orderedNodes;
     }
 
     private boolean hasParentsVisited(WorkflowNodeDescriptor nextNode) {
@@ -261,7 +268,7 @@ public class ArgoExecutor extends Executor<Object>
         return parents.isEmpty();
     }
 
-    private void parseNode(WorkflowNodeDescriptor node){
+    private void setupArgoNode(WorkflowNodeDescriptor node){
         if(node.getComponentType().equals(ComponentType.DATASOURCE))
             return;
         List<WorkflowTemplate> templates = argoWorkflow.getSpec().getTemplates();
@@ -619,58 +626,10 @@ public class ArgoExecutor extends Executor<Object>
         return containerUnit.getContainerRegistry() + "/" + containerUnit.getContainerName();
     }
 
-    private List<WorkflowNodeDescriptor> orderWorkflowNodes(WorkflowDescriptor workflowDesc, WorkflowNodeDescriptor parentNode) {
+    private List<WorkflowNodeDescriptor> orderWorkflowNodes(WorkflowDescriptor workflowDesc) {
         List<WorkflowNodeDescriptor> nodes = workflowDesc.orderNodes(workflowDesc.getNodes(),null);
-        List<WorkflowNodeDescriptor> levelOrderedNodes = nodes.stream().sorted(Comparator.comparing(WorkflowNodeDescriptor::getLevel)).collect(Collectors.toList());
-        Map<Integer, List<WorkflowNodeDescriptor>> nodesPerLevelMap = new HashMap<>();
-        for(WorkflowNodeDescriptor node : levelOrderedNodes){
-            nodesPerLevelMap.computeIfAbsent(node.getLevel(), k -> new ArrayList<>());
-            nodesPerLevelMap.computeIfPresent(node.getLevel(), (k,v) -> {v.add(node); return v;});
-        }
-        List<List<WorkflowNodeDescriptor>> listPerLevels = nodesPerLevelMap.values().stream().collect(Collectors.toList());
-        List<List<WorkflowNodeDescriptor>> correctOrderLists = new ArrayList<>();
-        //does not work for multiple swaps
-        for(List<WorkflowNodeDescriptor> levelNodes : listPerLevels){
-            List<WorkflowNodeDescriptor> correctOrder = new ArrayList<>(levelNodes);
-            for(WorkflowNodeDescriptor node : levelNodes){
-                List<WorkflowNodeDescriptor> ancestors = findAncestorsArgo(levelNodes, node);
-                for(WorkflowNodeDescriptor ancestor : ancestors){
-                    int ancestorId = levelNodes.indexOf(ancestor);
-                    int nodeId = levelNodes.indexOf(node);
-                    if(ancestorId > nodeId){
-                        Collections.swap(correctOrder, nodeId, ancestorId);
-                    }
-                }
-            }
-            correctOrderLists.add(correctOrder);
-        }
-        return correctOrderLists.stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+        return nodes.stream().sorted(Comparator.comparing(WorkflowNodeDescriptor::getLevel)).collect(Collectors.toList());
     }
-
-    private List<WorkflowNodeDescriptor> findAncestorsArgo(List<WorkflowNodeDescriptor> masterList, WorkflowNodeDescriptor node) {
-        if (masterList == null || masterList.isEmpty() || node == null) {
-            return null;
-        }
-        final List<WorkflowNodeDescriptor> ancestors = new ArrayList<>();
-        final Set<ComponentLink> componentLinks = node.getIncomingLinks();
-        if (componentLinks != null && !componentLinks.isEmpty()) {
-            for (ComponentLink link : componentLinks) {
-                final WorkflowNodeDescriptor previous = masterList.stream().filter(n -> n.getId().equals(link.getSourceNodeId())).findFirst().orElse(null);
-                if (previous != null) {
-                    ancestors.add(previous);
-                    if (previous.getIncomingLinks() == null || previous.getIncomingLinks().isEmpty()) {
-                        continue;
-                    }
-                    List<WorkflowNodeDescriptor> recursiveAncestors = findAncestorsArgo(masterList, previous);
-                    ancestors.addAll(recursiveAncestors);
-                }
-            }
-        }
-        return ancestors;
-    }
-
     private WorkflowDescriptor getWorkflowDescriptor(){
         long taskId = (Long) executionUnit.getMetadata().get("id");
         ExecutionTask task = this.taskProvider.get(taskId);
