@@ -47,16 +47,12 @@ public class ArgoExecutor extends Executor<Object>
     private ExecutionUnit executionUnit;
     private final ExecutionTaskProvider taskProvider;
     private final WorkflowProvider workflowProvider;
-    private final WorkflowNodeProvider workflowNodeProvider;
-    private final ExecutionJobProvider jobProvider;
     private final ArgoWorkflow argoWorkflow;
     private final Set<WorkflowNodeDescriptor> visitedNodes;
 
     public ArgoExecutor() {
         this.taskProvider = SpringContextBridge.services().getService(ExecutionTaskProvider.class);
         this.workflowProvider = SpringContextBridge.services().getService(WorkflowProvider.class);
-        this.workflowNodeProvider = SpringContextBridge.services().getService(WorkflowNodeProvider.class);
-        this.jobProvider = SpringContextBridge.services().getService(ExecutionJobProvider.class);
         this.argoWorkflow = new ArgoWorkflow();
         this.visitedNodes = new HashSet<>();
     }
@@ -66,8 +62,6 @@ public class ArgoExecutor extends Executor<Object>
         this.executionUnit = unit;
         this.taskProvider = SpringContextBridge.services().getService(ExecutionTaskProvider.class);
         this.workflowProvider = SpringContextBridge.services().getService(WorkflowProvider.class);
-        this.workflowNodeProvider = SpringContextBridge.services().getService(WorkflowNodeProvider.class);
-        this.jobProvider = SpringContextBridge.services().getService(ExecutionJobProvider.class);
         this.argoWorkflow = new ArgoWorkflow();
         this.visitedNodes = new HashSet<>();
     }
