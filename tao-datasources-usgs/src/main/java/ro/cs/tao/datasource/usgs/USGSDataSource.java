@@ -36,7 +36,7 @@ import java.util.Properties;
 /**
  * @author Cosmin Cara
  */
-public class USGSDataSource extends URLDataSource<Landsat8Query, String> {
+public class USGSDataSource extends URLDataSource<USGSQuery, String> {
     private static final Properties props;
     private static String URL;
     private static String earthDataUsername;
@@ -123,7 +123,7 @@ public class USGSDataSource extends URLDataSource<Landsat8Query, String> {
     }
 
     @Override
-    protected Landsat8Query createQueryImpl(String code) {
-        return new Landsat8Query(this, code);
+    protected USGSQuery createQueryImpl(String code) {
+        return new USGSQuery(this, code);
     }
 }

@@ -9,6 +9,7 @@ public class SearchRequest extends BaseRequest {
     private int maxResults = 10;
     private int startingNumber = 1;
     private String sortDirection = "ASC";
+    private String compareListName;
 
     public String getDatasetName() {
         return datasetName;
@@ -32,6 +33,14 @@ public class SearchRequest extends BaseRequest {
 
     public String getSortDirection() { return sortDirection; }
     private void setSortDirection(String sortDirection) { this.sortDirection = sortDirection; }
+
+    public String getCompareListName() {
+        return compareListName;
+    }
+
+    public void setCompareListName(String compareListName) {
+        this.compareListName = compareListName;
+    }
 
     private void addFilter(SearchFilter filter) {
         if (this.sceneFilter == null) {
@@ -115,6 +124,11 @@ public class SearchRequest extends BaseRequest {
         }
         this.sceneFilter.getCloudCoverFilter().setIncludeUnknown(false);
         this.sceneFilter.getCloudCoverFilter().setMax(clouds);
+        return this;
+    }
+
+    public SearchRequest withCompareListName(String value) {
+        setCompareListName(value);
         return this;
     }
 

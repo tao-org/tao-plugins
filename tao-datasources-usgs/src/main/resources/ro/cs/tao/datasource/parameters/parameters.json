@@ -576,7 +576,7 @@
       "label": "EarthData username",
       "type": "string",
       "defaultValue": null,
-      "required": true,
+      "required": false,
       "valueSet": null,
       "order": 0
     },
@@ -586,7 +586,7 @@
       "label": "EarthData password",
       "type": "string",
       "defaultValue": null,
-      "required": true,
+      "required": false,
       "valueSet": null,
       "order": 0
     },
@@ -615,6 +615,16 @@
       "remoteName": "spatialFilter",
       "label": "Area of Interest",
       "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "Entity ID",
+      "label": "Product",
+      "type": "string",
       "defaultValue": null,
       "required": false,
       "valueSet": null,
