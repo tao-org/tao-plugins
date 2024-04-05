@@ -34,10 +34,7 @@ import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -71,7 +68,7 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             throw new IllegalStateException("Fail to get the search results. Reason: " + response.getErrorMessage());
         }
         List<SearchResult> results = responseData.getResults();
-        return results.stream().map(r -> {
+        return results != null ? results.stream().map(r -> {
             EOProduct product = null;
             String displayId = r.getDisplayId();
             if (LANDSAT8.matcher(displayId).matches()) {
@@ -91,7 +88,7 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
                 Logger.getLogger(SearchResponseHandler.class.getName()).finest(displayId + " is not a supported product");
             }
             return product;
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+        }).filter(Objects::nonNull).collect(Collectors.toList()) : new ArrayList<>();
     }
 
     @Override

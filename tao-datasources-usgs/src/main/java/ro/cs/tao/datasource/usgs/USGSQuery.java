@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 /**
  * @author Cosmin Cara
  */
-public class Landsat8Query extends DataQuery {
+public class USGSQuery extends DataQuery {
 
     private static final Map<String, String> fieldIds;
     private static final String C2_LEVEL1_COLLECTION = "landsat_ot_c2_l1";
@@ -66,11 +66,11 @@ public class Landsat8Query extends DataQuery {
     static {
         ConverterFactory factory = new ConverterFactory();
         factory.register(USGSDateParameterConverter.class, LocalDateTime.class);
-        converterFactory.put(Landsat8Query.class, factory);
+        converterFactory.put(USGSQuery.class, factory);
         fieldIds = new HashMap<>();
     }
 
-    Landsat8Query(USGSDataSource source, String mission) {
+    USGSQuery(USGSDataSource source, String mission) {
         super(source, mission);
     }
 
@@ -81,7 +81,6 @@ public class Landsat8Query extends DataQuery {
 
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
-        //Set<String> pathRows = getPathRows();
         try {
             return (List<EOProduct>) executeQuery(this.pageNumber, this.pageSize, null, false);
         } catch (Exception e) {
@@ -92,7 +91,6 @@ public class Landsat8Query extends DataQuery {
     @Override
     protected long getCountImpl() {
         long retVal = 0;
-        //Set<String> pathRows = getPathRows();
         try {
             retVal = (long) executeQuery(1, 1, null, true);
         } catch (Exception e) {
@@ -299,15 +297,12 @@ public class Landsat8Query extends DataQuery {
         if (!this.parameters.containsKey(CommonParameterNames.PLATFORM)) {
             addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }
-        SearchRequest request = new SearchRequest().withDataSet(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
-                this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
-                                                                        C2_LEVEL1_COLLECTION);
+        SearchRequest request = new SearchRequest()
+                .withDataSet(this.parameters.containsKey(CommonParameterNames.PLATFORM)
+                             ? this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString()
+                             : C2_LEVEL1_COLLECTION);
         SearchFilterValue filter;
         Map<String, QueryParameter> parameters = new HashMap<>(this.parameters);
-        /*if ((parameters.containsKey("row") && parameters.containsKey("path")) ||
-             parameters.containsKey(CommonParameterNames.TILE)) {
-            parameters.remove(CommonParameterNames.FOOTPRINT);
-        }*/
         if (parameters.containsKey("earthDataUsername") && parameters.containsKey("earthDataPassword")) {
             String username = parameters.get("earthDataUsername").getValueAsString();
             String password = parameters.get("earthDataPassword").getValueAsString();
@@ -333,7 +328,7 @@ public class Landsat8Query extends DataQuery {
                         break;
                     case CommonParameterNames.PRODUCT:
                         filter = new SearchFilterValue();
-                        filter.setFilterId(fieldIds.get("Landsat Product Identifier"));
+                        filter.setFilterId(fieldIds.get(getRemoteName(CommonParameterNames.PRODUCT)));
                         filter.setOperand("=");
                         filter.setValue(parameter.getValueAsString());
                         request.withFilter(filter);
@@ -414,7 +409,7 @@ public class Landsat8Query extends DataQuery {
             request.startingAtIndex((pgNumber - 1) * pgSize + 1);
             request.withMaxResults(pgSize);
         } else {
-            request.withMaxResults(Math.max(this.limit, pgSize));
+            request.withMaxResults(Math.max(Math.max(this.limit, pgSize), 1));
         }
         return request;
     }
