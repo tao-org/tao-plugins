@@ -19,6 +19,8 @@ import ro.cs.tao.workspaces.Repository;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -460,6 +462,14 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
     }
 
     @Override
+    public String computeHash(String path) throws IOException, NoSuchAlgorithmException {
+        String bucket = path.substring(1, path.indexOf("/"));
+        final MessageDigest md5Digest = MessageDigest.getInstance("MD5");
+        traverseHash(bucket, path, md5Digest);
+        return StringUtilities.byteArrayToHexString(md5Digest.digest());
+    }
+
+    @Override
     public S3StorageService clone() throws CloneNotSupportedException {
         final S3StorageService clone = new S3StorageService();
         clone.region = this.region;
@@ -620,6 +630,36 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
                             file.addAttribute(REMOTE_PATH_ATTRIBUTE, PROTOCOL + "://" + repository.resolve(file.getRelativePath()));
                             files.add(file);
                         }
+                    }
+                    if (!objects.isTruncated()) {
+                        break;
+                    }
+                    objects = this.client.listNextBatchOfObjects(objects);
+                }
+            }
+        }
+    }
+
+    private void traverseHash(String bucketName, String fromPath, MessageDigest digest) {
+        ListObjectsRequest request = new ListObjectsRequest();
+        request.setBucketName(bucketName);
+        request.setDelimiter("/");
+        request.setPrefix(fromPath);
+        Repository repository = repository();
+        String filter = repository.root().replaceFirst(bucketName, "");
+        if (filter.startsWith("/")) {
+            filter = filter.substring(1);
+        }
+        final int offset = filter.length();
+        ObjectListing objects = this.client.listObjects(request);
+        if (objects != null) {
+            for (String commonPrefix : objects.getCommonPrefixes()) {
+                traverseHash(bucketName, commonPrefix, digest);
+            }
+            if (objects.getObjectSummaries() != null) {
+                while (true) {
+                    for (S3ObjectSummary summary : objects.getObjectSummaries()) {
+                        digest.update(StringUtilities.hexStringToByteArray(summary.getETag()));
                     }
                     if (!objects.isTruncated()) {
                         break;
