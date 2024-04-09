@@ -279,7 +279,11 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
         List<? extends SwiftObject> objects = this.swiftService.list(relativePath, bucket, null);
         if (objects != null) {
             for (SwiftObject object : objects) {
-                digest.update(StringUtilities.hexStringToByteArray(object.getETag()));
+                if (object.isDirectory()) {
+                    traverseHash(bucket + "/" + object.getDirectoryName(), digest);
+                } else {
+                    digest.update(StringUtilities.hexStringToByteArray(object.getETag()));
+                }
             }
         }
     }
