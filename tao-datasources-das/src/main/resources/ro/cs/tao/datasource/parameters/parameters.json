@@ -10,16 +10,6 @@
       "valueSet": null,
       "order": 0
     },
-    "processingLevel": {
-      "name": "processingLevel",
-      "remoteName": "processingLevel",
-      "label": "Processing Level",
-      "type": "string",
-      "defaultValue": "LEVEL1",
-      "required": false,
-      "valueSet": ["LEVEL0", "LEVEL1", "LEVEL2"],
-      "order": 0
-    },
     "productType": {
       "name": "productType",
       "remoteName": "productType",
@@ -27,7 +17,8 @@
       "type": "string",
       "defaultValue": "SLC",
       "required": false,
-      "valueSet": ["CARD-BS", "CARD-COH6","GRD", "GRD-COG","OCN", "PLANNED","RAW", "SLC", "CARD-COH12"],
+      "valueSet": ["GRD", "GRD-COG","OCN", "RAW", "SLC",
+        "S1_ETA__AX", "S2_ETA__AX", "S3_ETA__AX", "S4_ETA__AX", "S5_ETA__AX", "S6_ETA__AX", "EW_ETA__AX", "IW_ETA__AX"],
       "order": 0
     },
     "sensorMode": {
@@ -97,7 +88,7 @@
       "type": "string",
       "defaultValue": null,
       "required": false,
-      "valueSet": ["VV", "VH", "VV VH"],
+      "valueSet": ["HH", "VV", "VV&VH", "HH&HV"],
       "order": 0
     },
     "productIdentifier": {
@@ -139,7 +130,7 @@
       "type": "string",
       "defaultValue": "S2MSI1C",
       "required": false,
-      "valueSet": ["S2MSI1C", "S2MSI2A"],
+      "valueSet": ["L1C", "L2A"],
       "order": 0
     },
     "relativeOrbit": {
@@ -231,7 +222,7 @@
       "type": "string",
       "defaultValue": "OLCI",
       "required": false,
-      "valueSet": ["OLCI", "SRAL", "SLSTR"],
+      "valueSet": ["OLCI", "SRAL", "SLSTR", "SYNERGY"],
       "order": 0
     },
     "landCover": {

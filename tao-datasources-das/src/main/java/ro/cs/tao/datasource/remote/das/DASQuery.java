@@ -398,14 +398,14 @@ public class DASQuery extends DataQuery {
                                 String[] values = value.substring(1, value.length() - 1).split(",");
                                 query.append("(");
                                 for (int i = 0; i < values.length; i++) {
-                                    query.append(buildAttributeFilter(paramTypeName, values[i], Condition.EQ));
+                                    query.append(buildTyprFilter(values[i]));
                                     if (i < values.length - 1) {
                                         query.append(" OR ");
                                     }
                                 }
                                 query.append(")");
                             } else {
-                                query.append(buildAttributeFilter(paramTypeName, value, Condition.EQ));
+                                query.append(buildTyprFilter(value));
                             }
                             break;
                         case "productSize":
@@ -529,5 +529,30 @@ public class DASQuery extends DataQuery {
         return "Attributes/" + oDataType + "/any(att:att/Name eq '" + name +
                 "' and att/" + oDataType + "/Value " + cond + " " +
                 (shouldQuote ? "'" : "") + value + (shouldQuote ? "')" : ")");
+    }
+
+    private String buildTyprFilter(Object value) throws ConversionException {
+        String stringVal = value.toString();
+        List<String> tokens = new ArrayList<>();
+        if (stringVal.contains("-")) {
+            tokens.addAll(Arrays.stream(stringVal.split("-")).collect(Collectors.toList()));
+        } else {
+            tokens.add(stringVal);
+        }
+        final StringBuilder builder = new StringBuilder();
+        builder.append("(");
+        final int size = tokens.size();
+        for (int i = 0; i < size; i++) {
+            builder.append("contains(Name,'");
+            if (i > 0) {
+                builder.append("_");
+            }
+            builder.append(tokens.get(i)).append("')");
+            if (i < size - 1 && i >= 0) {
+                builder.append(" AND ");
+            }
+        }
+        builder.append(")");
+        return builder.toString();
     }
 }
