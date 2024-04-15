@@ -35,6 +35,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -57,7 +58,10 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
     private final Pattern HYPERION = Pattern.compile("EO.H.*");
     private final Pattern VIIRS = Pattern.compile("VN.*");
 
-    public SearchResponseHandler() {
+    private final Predicate<EOProduct> filter;
+
+    public SearchResponseHandler(Predicate<EOProduct> filter) {
+        this.filter = filter;
     }
 
     @Override
@@ -84,9 +88,9 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             } else if (VIIRS.matcher(displayId).matches()) {
                 product = fillViirsProduct(r);
             }
-            if (product == null) {
+            /*if (product == null) {
                 Logger.getLogger(SearchResponseHandler.class.getName()).finest(displayId + " is not a supported product");
-            }
+            }*/
             return product;
         }).filter(Objects::nonNull).collect(Collectors.toList()) : new ArrayList<>();
     }
@@ -103,6 +107,17 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
 
     private EOProduct fillLandsat8Product(SearchResult result) {
         EOProduct product = new EOProduct();
+        if (result.getSpatialCoverage() != null) {
+            Polygon2D polygon2D = new Polygon2D();
+            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
+            for (double[] point : coordinates[0]) {
+                polygon2D.append(point[0], point[1]);
+            }
+            product.setGeometry(polygon2D.toWKT());
+            if (this.filter != null && this.filter.test(product)) {
+                return null;
+            }
+        }
         product.setFormatType(DataFormat.RASTER);
         product.setSensorType(SensorType.OPTICAL);
         product.setPixelType(PixelType.UINT16);
@@ -113,14 +128,6 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
         } catch (DateTimeParseException e) {
             product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
-        }
-        if (result.getSpatialCoverage() != null) {
-            Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
-            for (double[] point : coordinates[0]) {
-                polygon2D.append(point[0], point[1]);
-            }
-            product.setGeometry(polygon2D.toWKT());
         }
         try {
             Browse browse = result.getBrowse().stream().filter(b -> quickLookElements.contains(b.getBrowseName())).findFirst().orElse(null);
@@ -142,6 +149,17 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
 
     private EOProduct fillLandsat9Product(SearchResult result) {
         EOProduct product = new EOProduct();
+        if (result.getSpatialCoverage() != null) {
+            Polygon2D polygon2D = new Polygon2D();
+            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
+            for (double[] point : coordinates[0]) {
+                polygon2D.append(point[0], point[1]);
+            }
+            product.setGeometry(polygon2D.toWKT());
+            if (this.filter != null && this.filter.test(product)) {
+                return null;
+            }
+        }
         product.setFormatType(DataFormat.RASTER);
         product.setSensorType(SensorType.OPTICAL);
         product.setPixelType(PixelType.UINT16);
@@ -152,14 +170,6 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
         } catch (DateTimeParseException e) {
             product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
-        }
-        if (result.getSpatialCoverage() != null) {
-            Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
-            for (double[] point : coordinates[0]) {
-                polygon2D.append(point[0], point[1]);
-            }
-            product.setGeometry(polygon2D.toWKT());
         }
         try {
             Browse browse = result.getBrowse().stream().filter(b -> quickLookElements.contains(b.getBrowseName())).findFirst().orElse(null);
@@ -181,6 +191,17 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
 
     private EOProduct fillEcostressProduct(SearchResult result) {
         EOProduct product = new EOProduct();
+        if (result.getSpatialCoverage() != null) {
+            Polygon2D polygon2D = new Polygon2D();
+            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
+            for (double[] point : coordinates[0]) {
+                polygon2D.append(point[0], point[1]);
+            }
+            product.setGeometry(polygon2D.toWKT());
+            if (this.filter != null && this.filter.test(product)) {
+                return null;
+            }
+        }
         product.setFormatType(DataFormat.RASTER);
         product.setSensorType(SensorType.OPTICAL);
         product.setPixelType(PixelType.UINT16);
@@ -191,14 +212,6 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
         } catch (DateTimeParseException e) {
             product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
-        }
-        if (result.getSpatialCoverage() != null) {
-            Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
-            for (double[] point : coordinates[0]) {
-                polygon2D.append(point[0], point[1]);
-            }
-            product.setGeometry(polygon2D.toWKT());
         }
         try {
             List<Browse> browseList = result.getBrowse();
@@ -213,6 +226,17 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
 
     private EOProduct fillModisProduct(SearchResult result) {
         EOProduct product = new EOProduct();
+        if (result.getSpatialCoverage() != null) {
+            Polygon2D polygon2D = new Polygon2D();
+            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
+            for (double[] point : coordinates[0]) {
+                polygon2D.append(point[0], point[1]);
+            }
+            product.setGeometry(polygon2D.toWKT());
+            if (this.filter != null && this.filter.test(product)) {
+                return null;
+            }
+        }
         product.setFormatType(DataFormat.RASTER);
         product.setSensorType(SensorType.OPTICAL);
         product.setPixelType(PixelType.UINT16);
@@ -223,14 +247,6 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
         } catch (DateTimeParseException e) {
             product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
-        }
-        if (result.getSpatialCoverage() != null) {
-            Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
-            for (double[] point : coordinates[0]) {
-                polygon2D.append(point[0], point[1]);
-            }
-            product.setGeometry(polygon2D.toWKT());
         }
         try {
             List<Browse> browseList = result.getBrowse();
@@ -245,6 +261,17 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
 
     private EOProduct fillViirsProduct(SearchResult result) {
         EOProduct product = new EOProduct();
+        if (result.getSpatialCoverage() != null) {
+            Polygon2D polygon2D = new Polygon2D();
+            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
+            for (double[] point : coordinates[0]) {
+                polygon2D.append(point[0], point[1]);
+            }
+            product.setGeometry(polygon2D.toWKT());
+            if (this.filter != null && this.filter.test(product)) {
+                return null;
+            }
+        }
         product.setFormatType(DataFormat.RASTER);
         product.setSensorType(SensorType.OPTICAL);
         product.setPixelType(PixelType.UINT16);
@@ -255,14 +282,6 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
         } catch (DateTimeParseException e) {
             product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
-        }
-        if (result.getSpatialCoverage() != null) {
-            Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
-            for (double[] point : coordinates[0]) {
-                polygon2D.append(point[0], point[1]);
-            }
-            product.setGeometry(polygon2D.toWKT());
         }
         try {
             List<Browse> browseList = result.getBrowse();
@@ -277,6 +296,17 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
 
     private EOProduct fillHyperionProduct(SearchResult result) {
         EOProduct product = new EOProduct();
+        if (result.getSpatialCoverage() != null) {
+            Polygon2D polygon2D = new Polygon2D();
+            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
+            for (double[] point : coordinates[0]) {
+                polygon2D.append(point[0], point[1]);
+            }
+            product.setGeometry(polygon2D.toWKT());
+            if (this.filter != null && this.filter.test(product)) {
+                return null;
+            }
+        }
         product.setFormatType(DataFormat.RASTER);
         product.setSensorType(SensorType.OPTICAL);
         product.setPixelType(PixelType.UINT16);
@@ -287,14 +317,6 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
             product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
         } catch (DateTimeParseException e) {
             product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
-        }
-        if (result.getSpatialCoverage() != null) {
-            Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
-            for (double[] point : coordinates[0]) {
-                polygon2D.append(point[0], point[1]);
-            }
-            product.setGeometry(polygon2D.toWKT());
         }
         try {
             List<Browse> browseList = result.getBrowse();

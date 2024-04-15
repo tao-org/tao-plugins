@@ -234,7 +234,9 @@ class Sentinel2Query extends DataQuery {
                                                             if (processingDate != null) {
                                                                 product.setProcessingDate(LocalDateTime.parse(processingDate, nameDateFormat));
                                                             }
-                                                            results.put(product.getName(), product);
+                                                            if (this.coverageFilter == null || !this.coverageFilter.test(product)) {
+                                                                results.put(product.getName(), product);
+                                                            }
                                                         }
                                                     }
                                                 }

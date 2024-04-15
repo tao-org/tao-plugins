@@ -188,7 +188,9 @@ class Landsat8Query extends DataQuery {
                                         if (this.limit > 0 && this.limit < results.size()) {
                                             break;
                                         }
-                                        results.put(product.getName(), product);
+                                        if (this.coverageFilter == null || !this.coverageFilter.test(product)) {
+                                            results.put(product.getName(), product);
+                                        }
                                     }
                                 }
                             }
@@ -223,7 +225,9 @@ class Landsat8Query extends DataQuery {
                                         if (this.limit > 0 && this.limit < results.size()) {
                                             break;
                                         }
-                                        results.put(product.getName(), product);
+                                        if (this.coverageFilter == null || !this.coverageFilter.test(product)) {
+                                            results.put(product.getName(), product);
+                                        }
                                     }
                                 }
                             }

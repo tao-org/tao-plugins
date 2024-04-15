@@ -108,7 +108,7 @@ public class LSADataQuery extends DataQuery {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
                         final XmlResponseParser<EOProduct> parser = new XmlResponseParser<>();
-                        parser.setHandler(new LSAXmlResponseHandler("entry"));
+                        parser.setHandler(new LSAXmlResponseHandler("entry", this.coverageFilter));
                         tmpResults = parser.parse(EntityUtils.toString(response.getEntity()));
                         if (tmpResults != null) {
                             final String downloadUrl = this.source.getConnectionString("Download");

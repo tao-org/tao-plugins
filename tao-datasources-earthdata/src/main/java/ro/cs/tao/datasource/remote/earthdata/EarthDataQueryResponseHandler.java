@@ -13,8 +13,15 @@ import java.net.URI;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProduct> {
+
+    private final Predicate<EOProduct> filter;
+
+    public EarthDataQueryResponseHandler(Predicate<EOProduct> filter) {
+        this.filter = filter;
+    }
 
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
         List<EOProduct> results = new ArrayList<>();
@@ -23,8 +30,8 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
 
         JsonObject feedObject = rootObject.getJsonObject("feed");
         JsonArray jsonArray = feedObject.getJsonArray("entry");
-
-        for (int i = 0; i< jsonArray.size(); i++) {
+        final int size = jsonArray.size();
+        for (int i = 0; i < size; i++) {
             try {
                 boolean hasDownloadLink = false;
                 JsonObject jsonObject = jsonArray.getJsonObject(i);
@@ -45,6 +52,9 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
                     }
                 }
                 result.setGeometry(createFootprint(jsonObject));
+                if (this.filter != null && this.filter.test(result)) {
+                    continue;
+                }
                 result.setApproximateSize((long)Float.parseFloat(jsonObject.getString("granule_size")));
                 result.setProductType(jsonObject.getString("original_format"));
                 if (hasDownloadLink) {
