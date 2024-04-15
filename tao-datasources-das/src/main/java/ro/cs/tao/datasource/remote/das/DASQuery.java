@@ -128,7 +128,8 @@ public class DASQuery extends DataQuery {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
                             String rawResponse = EntityUtils.toString(response.getEntity());
-                            ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source));
+                            ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source,
+                                                                                                                   this.coverageFilter));
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null) {
                                 if (isS3) {

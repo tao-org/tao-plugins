@@ -127,7 +127,8 @@ public class CreoDiasODataQuery extends DataQuery {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
                             String rawResponse = EntityUtils.toString(response.getEntity());
-                            ResponseParser<EOProduct> parser = new JsonResponseParser<>(new CreodiasJsonResponseHandler((CreoDiasODataSource) this.source));
+                            ResponseParser<EOProduct> parser = new JsonResponseParser<>(new CreodiasJsonResponseHandler((CreoDiasODataSource) this.source,
+                                                                                                                        this.coverageFilter));
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null) {
                                 if (isS3) {

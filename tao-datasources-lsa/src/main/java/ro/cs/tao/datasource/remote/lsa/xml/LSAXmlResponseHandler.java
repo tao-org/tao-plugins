@@ -25,14 +25,18 @@ import ro.cs.tao.serialization.DateAdapter;
 import ro.cs.tao.utils.executors.MemoryUnit;
 
 import java.net.URISyntaxException;
+import java.util.function.Predicate;
 
 /**
  * @author Cosmin Cara
  */
 public class LSAXmlResponseHandler extends XmlResponseHandler<EOProduct> {
 
-    public LSAXmlResponseHandler(String recordElementName) {
+    private final Predicate<EOProduct> filter;
+
+    public LSAXmlResponseHandler(String recordElementName, Predicate<EOProduct> filter) {
         super(EOProduct.class, recordElementName);
+        this.filter = filter;
     }
 
     @Override
@@ -140,6 +144,9 @@ public class LSAXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 break;
             default:
                 break;
+        }
+        if (this.recordElement.equals(qName) && this.filter != null && this.filter.test(this.current)) {
+            this.current = null;
         }
     }
 }

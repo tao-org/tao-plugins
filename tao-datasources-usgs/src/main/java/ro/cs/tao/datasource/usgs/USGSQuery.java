@@ -438,9 +438,13 @@ public class USGSQuery extends DataQuery {
                         switch (response.getStatusLine().getStatusCode()) {
                             case 200:
                                 String body = EntityUtils.toString(response.getEntity());
-                                ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(), "totalHits");
+                                ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(this.coverageFilter),
+                                                                                            "totalHits");
                                 if (!count) {
                                     ((List<EOProduct>) results).addAll(parser.parse(body));
+                                    if (this.coverageFilter == null) {
+                                        ((List<EOProduct>) results).removeIf(this.coverageFilter);
+                                    }
                                 } else {
                                     ((AtomicLong) results).addAndGet(parser.parseCount(body));
                                 }
@@ -469,9 +473,13 @@ public class USGSQuery extends DataQuery {
                         if (body.contains("SERVER_ERROR")) {
                             throw new QueryException("The request was not successful. Reason: API Server Error");
                         }
-                        ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(), "totalHits");
+                        ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(this.coverageFilter),
+                                                                                    "totalHits");
                         if (!count) {
                             ((List<EOProduct>) results).addAll(parser.parse(body));
+                            if (this.coverageFilter == null) {
+                                ((List<EOProduct>) results).removeIf(this.coverageFilter);
+                            }
                         } else {
                             ((AtomicLong) results).addAndGet(parser.parseCount(body));
                         }

@@ -54,6 +54,11 @@ public class DASDownloadStrategy extends DownloadStrategy<Token> {
     }
 
     @Override
+    public void setAuthentication(Token authentication) {
+        this.apiKey = authentication;
+    }
+
+    @Override
     public String getProductUrl(EOProduct descriptor) {
         String location = descriptor.getLocation();
         return location != null ? location : this.dataSource.getConnectionString("Download") + "(" + descriptor.getId() + ")/$value";
