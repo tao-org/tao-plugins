@@ -7,11 +7,9 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.gs.collections.impl.utility.ListIterate;
 import io.fabric8.kubernetes.api.model.*;
 import ro.cs.tao.argo.workflow.model.*;
-import ro.cs.tao.component.ComponentLink;
-import ro.cs.tao.component.SourceDescriptor;
-import ro.cs.tao.component.TaoComponent;
-import ro.cs.tao.component.TargetDescriptor;
+import ro.cs.tao.component.*;
 import ro.cs.tao.datasource.DataSourceComponent;
+import ro.cs.tao.datasource.beans.Parameter;
 import ro.cs.tao.docker.ExecutionConfiguration;
 import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.persistence.ExecutionJobProvider;
@@ -330,7 +328,9 @@ public class ArgoExecutor extends Executor<Object>
 
 
     private void parseSourcesForTaskTemplateInputs(WorkflowNodeDescriptor currentNode, DAGTask dagTask, WorkflowTemplate workflowTemplate) {
-        TaoComponent nodeComponent = TaskUtilities.getComponentFor(currentNode);
+        TaoComponent taoComponent = TaskUtilities.getComponentFor(currentNode);
+        if(!(taoComponent instanceof ProcessingComponent nodeComponent))
+            throw new RuntimeException("Tao component " + taoComponent + " is not a processing component");
         List<WorkflowParameter> dagTaskInputParameters = dagTask.getArguments().getParameters();
         List<WorkflowParameter> inputParameters = workflowTemplate.getInputs().getParameters();
         //parse parameters for parameters
@@ -342,12 +342,44 @@ public class ArgoExecutor extends Executor<Object>
             dagTaskInputParameters.add(parameter);
             inputParameters.add(templateParameter);
         }
+        parseProcessingParameters(nodeComponent, currentNode, workflowTemplate, dagTask);
     }
 
+    //to refactor, de verificat daca e okay cu defaultValue
+    private void parseProcessingParameters(ProcessingComponent nodeComponent, WorkflowNodeDescriptor currentNode, WorkflowTemplate workflowTemplate, DAGTask dagTask) {
+        Set<ParameterDescriptor> paramsToBeAddedAsInputs = new HashSet<>(nodeComponent.getParameterDescriptors());
+        for(ParameterDescriptor param : paramsToBeAddedAsInputs){
+            Optional<WorkflowParameter> optionalParam = dagTask.getArguments().getParameters()
+                    .stream().filter(p -> p.getName().contains(param.getName())).findFirst();
+            if(optionalParam.isPresent()){
+                WorkflowParameter parameter = optionalParam.get();
+                parameter.setDefaultValue(param.getDefaultValue());
+                continue;
+            }
+            WorkflowParameter parameter = new WorkflowParameter();
+            parameter.setName(param.getName() + CONNECTOR_STRING + currentNode.getId());
+            parameter.setDefaultValue(param.getDefaultValue());
+            WorkflowParameter templateParameter = new WorkflowParameter();
+            templateParameter.setName(param.getName() + CONNECTOR_STRING + currentNode.getId());
+            dagTask.getArguments().getParameters().add(parameter);
+            workflowTemplate.getInputs().getParameters().add(templateParameter);
+        }
+    }
+
+    //to refactor
     private void parseCustomValuesForTaskTemplateInputs(WorkflowNodeDescriptor node, DAGTask dagTask, WorkflowTemplate workflowTemplate) {
+        TaoComponent nodeComponent = TaskUtilities.getComponentFor(node);
         List<WorkflowParameter> dagTaskInputParameters = dagTask.getArguments().getParameters();
         List<WorkflowParameter> inputParameters = workflowTemplate.getInputs().getParameters();
         for(ParameterValue param : node.getCustomValues()){
+            if(isCustomValueAnOutput(param, workflowTemplate))
+                continue;
+            Optional<WorkflowParameter> optionalParam = dagTaskInputParameters.stream().filter(p -> p.getName().contains(param.getParameterName())).findFirst();
+            if(optionalParam.isPresent()){
+                WorkflowParameter parameter = optionalParam.get();
+                parameter.setValue(param.getParameterValue());
+                continue;
+            }
             WorkflowParameter inputDAGParameter = new WorkflowParameter();
             inputDAGParameter.setName(param.getParameterName());
             inputDAGParameter.setValue(param.getParameterValue());
@@ -358,6 +390,12 @@ public class ArgoExecutor extends Executor<Object>
         }
     }
 
+    private boolean isCustomValueAnOutput(ParameterValue param, WorkflowTemplate workflowTemplate) {
+        Optional<WorkflowArtifact> optionalArtifact = workflowTemplate.getOutputs().getArtifacts().stream()
+                .filter(output -> output.getName().contains(param.getParameterName() + CONNECTOR_STRING))
+                .findFirst();
+        return optionalArtifact.isPresent();
+    }
 
 
     private void computeWorkflowTemplateOutputArtifacts(TargetDescriptor target, String templateOutputName, List<WorkflowArtifact> outputArtifacts) {
@@ -456,7 +494,7 @@ public class ArgoExecutor extends Executor<Object>
     }
 
     private void setTaskReferenceToWorkflow(WorkflowArtifact artifact, String parameterName){
-        String dagTaskId = parameterName.split("_")[1];
+        String dagTaskId = parameterName.split("-")[1];
         List<WorkflowParameter> parameters = getParametersOfDagTaskById(dagTaskId);
         WorkflowParameter dependentParameter = getParameterByName(parameters, parameterName);
         String value = "{{workflow.artifacts." + artifact.getName() + "}}";
@@ -522,6 +560,7 @@ public class ArgoExecutor extends Executor<Object>
     private void updateContainerInfo() {
         checkContainerUnit();
         WorkflowTemplate currentTemplate = getTemplateToBeUpdatedWithContainerInfo();
+        //parseProcessingVariablesForEnvVariables
         Container container = new Container();
         currentTemplate.setContainer(container);
         List<String> bashArguments = getBashArguments();
@@ -531,12 +570,24 @@ public class ArgoExecutor extends Executor<Object>
         container.setImage(getImageForContainer());
     }
 
+    // to refactor
     private List<EnvVar> getEnvVarForContainer() {
         List<EnvVar> envVars = new ArrayList<>();
         for(Map.Entry<String, String> entry : executionUnit.getContainerEnvironmentVariables().entrySet()){
             EnvVar envVar = new EnvVar();
             envVar.setName(entry.getKey());
             envVar.setValue(entry.getValue());
+            envVars.add(envVar);
+        }
+        long taskId = (Long) executionUnit.getMetadata().get("id");
+        ExecutionTask task = this.taskProvider.get(taskId);
+        TaoComponent component = TaskUtilities.getComponentFor(task);
+        if(!(component instanceof ProcessingComponent nodeComponent))
+            throw new RuntimeException("Tao component " + component + " is not a processing component");
+        for(Variable envVarComponent : nodeComponent.getVariables()){
+            EnvVar envVar = new EnvVar();
+            envVar.setName(envVarComponent.getKey());
+            envVar.setValue(envVarComponent.getValue());
             envVars.add(envVar);
         }
         return envVars;
