@@ -122,6 +122,7 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         product.setSensorType(SensorType.OPTICAL);
         product.setPixelType(PixelType.UINT16);
         product.setProductType("Landsat8");
+        product.setSatelliteName("Landsat8");
         product.setId(result.getEntityId());
         product.setName(result.getDisplayId());
         try {
@@ -164,6 +165,7 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         product.setSensorType(SensorType.OPTICAL);
         product.setPixelType(PixelType.UINT16);
         product.setProductType("Landsat9");
+        product.setSatelliteName("Landsat9");
         product.setId(result.getEntityId());
         product.setName(result.getDisplayId());
         try {
@@ -206,6 +208,7 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         product.setSensorType(SensorType.OPTICAL);
         product.setPixelType(PixelType.UINT16);
         product.setProductType("ECOSTRESS");
+        product.setSatelliteName("ECOSTRESS");
         product.setId(result.getEntityId());
         product.setName(result.getDisplayId());
         try {
@@ -241,6 +244,7 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         product.setSensorType(SensorType.OPTICAL);
         product.setPixelType(PixelType.UINT16);
         product.setProductType("MODIS");
+        product.setSatelliteName("MODIS");
         product.setId(result.getEntityId());
         product.setName(result.getDisplayId());
         try {
@@ -276,6 +280,7 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         product.setSensorType(SensorType.OPTICAL);
         product.setPixelType(PixelType.UINT16);
         product.setProductType("VIIRS");
+        product.setSatelliteName("VIIRS");
         product.setId(result.getEntityId());
         product.setName(result.getDisplayId());
         try {
@@ -311,6 +316,7 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         product.setSensorType(SensorType.OPTICAL);
         product.setPixelType(PixelType.UINT16);
         product.setProductType("HYPERION");
+        product.setSatelliteName("HYPERION");
         product.setId(result.getEntityId());
         product.setName(result.getDisplayId());
         try {
