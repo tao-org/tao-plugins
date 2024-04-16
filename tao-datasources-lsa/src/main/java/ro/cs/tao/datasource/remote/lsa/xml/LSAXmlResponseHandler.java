@@ -112,6 +112,7 @@ public class LSAXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 idx = content.indexOf("<td>", content.indexOf("Platform Short Name")) + 4;
                 val = content.substring(idx, content.indexOf("</td>", idx)).trim();
                 this.current.setProductType(val);
+                this.current.setSatelliteName(val);
                 idx = content.indexOf("<td>", content.indexOf("Sensing Start Date")) + 4;
                 val = content.substring(idx, content.indexOf("</td>", idx)).trim();
                 try {
@@ -119,9 +120,11 @@ public class LSAXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 } catch (Exception e) {
                     logger.warning(e.getMessage());
                 }
-                idx = content.indexOf("<td>", content.indexOf("Platform Serial Identifier")) + 4;
-                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
-                this.current.setSatelliteName(val);
+                // Platform Serial Identifier is returned as "B" which is not very useful (as it would be also Sentinel-2B).
+                // Instead, Platform Short Name is returned as "Sentinel-2", for example, which makes more sense
+                // idx = content.indexOf("<td>", content.indexOf("Platform Serial Identifier")) + 4;
+                // val = content.substring(idx, content.indexOf("</td>", idx)).trim();
+                // this.current.setSatelliteName(val);
                 idx = content.indexOf("<td>", content.indexOf("Instrument Short Name")) + 4;
                 val = content.substring(idx, content.indexOf("</td>", idx)).trim();
                 this.current.addAttribute("instrument", val);
