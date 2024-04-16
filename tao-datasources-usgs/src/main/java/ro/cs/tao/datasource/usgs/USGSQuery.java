@@ -477,9 +477,6 @@ public class USGSQuery extends DataQuery {
                                                                                     "totalHits");
                         if (!count) {
                             ((List<EOProduct>) results).addAll(parser.parse(body));
-                            if (this.coverageFilter == null) {
-                                ((List<EOProduct>) results).removeIf(this.coverageFilter);
-                            }
                         } else {
                             ((AtomicLong) results).addAndGet(parser.parseCount(body));
                         }
