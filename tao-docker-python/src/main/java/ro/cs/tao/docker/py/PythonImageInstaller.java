@@ -23,7 +23,7 @@ import java.nio.file.Path;
 
 public class PythonImageInstaller extends BaseImageInstaller {
     @Override
-    protected String getContainerName() { return "python-2-7-15"; }
+    public String getContainerName() { return "python-2-7-15"; }
 
     @Override
     protected String getDescription() { return "PYTHON2.7"; }

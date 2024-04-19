@@ -100,7 +100,7 @@ public class ASFQuery extends DataQuery {
         try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
             switch (response.getStatusLine().getStatusCode()) {
                 case 200:
-                    JsonResponseParser<EOProduct> parser = new JsonResponseParser<EOProduct>(new AsfJsonResponseHandler()) {
+                    JsonResponseParser<EOProduct> parser = new JsonResponseParser<EOProduct>(new AsfJsonResponseHandler(this.coverageFilter)) {
                         @Override
                         public String[] getExcludedAttributes() {
                             return new String[]{"keywords", "links", "services"};

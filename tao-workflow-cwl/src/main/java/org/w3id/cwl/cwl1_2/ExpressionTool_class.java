@@ -34,4 +34,9 @@ public enum ExpressionTool_class {
     }
     throw new ValidationException(String.format("Expected one of %s", ExpressionTool_class.symbols, docVal));
   }
+
+  @Override
+  public String toString() {
+    return this.docVal;
+  }
 }

@@ -1,5 +1,6 @@
 package ro.cs.tao.eodata.quicklook;
 
+import org.apache.commons.lang3.SystemUtils;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.eodata.DataHandlingException;
@@ -17,6 +18,7 @@ import java.util.logging.Logger;
 public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> {
     protected static final String gdalDockerImage;
     protected static final boolean useDocker;
+    protected static final boolean isDockerStyleVolumeMap;
     protected static final Map<String, String> driverMap = new HashMap<String, String>() {{
         put(".tif", "GTiff"); put(".tiff", "GTiff");
         put(".png", "PNG"); put(".jpg", "JPEG"); put(".bmp", "BMP");
@@ -30,6 +32,10 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
         ConfigurationProvider configurationManager = ConfigurationManager.getInstance();
         useDocker = "docker".equals(configurationManager.getValue("plugins.use", "")) && DockerHelper.isDockerFound();
         gdalDockerImage = configurationManager.getValue("docker.gdal.image", "geodata/gdal");
+        isDockerStyleVolumeMap = SystemUtils.IS_OS_LINUX ||
+                                 ConfigurationManager.getInstance()
+                                                     .getValue("docker.volume.map.style", "docker")
+                                                     .equals("docker");
         Logger.getLogger(GenericQuicklookGenerator.class.getName())
                 .fine(String.format("'gdal_translate' will be run %s", useDocker ? "using Docker [" + gdalDockerImage + "]" : "from command line"));
     }
@@ -77,7 +83,9 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
         List<String> arguments = new ArrayList<>();
         for (String arg : args) {
             arguments.add(arg.replace("$FULL_PATH", FileUtilities.asUnixPath(productPath, false))
-                    .replace("$FOLDER", FileUtilities.asUnixPath(productPath.getParent(), false))
+                    .replace("$FOLDER", isDockerStyleVolumeMap
+                                        ? FileUtilities.asUnixPath(productPath.getParent(), false)
+                                        : productPath.getParent().toAbsolutePath().toString())
                     .replace("$FILE", productPath.getFileName().toString()));
         }
         if (this.factory == null) {

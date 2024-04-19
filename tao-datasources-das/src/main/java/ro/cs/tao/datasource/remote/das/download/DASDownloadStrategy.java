@@ -54,6 +54,11 @@ public class DASDownloadStrategy extends DownloadStrategy<Token> {
     }
 
     @Override
+    public void setAuthentication(Token authentication) {
+        this.apiKey = authentication;
+    }
+
+    @Override
     public String getProductUrl(EOProduct descriptor) {
         String location = descriptor.getLocation();
         return location != null ? location : this.dataSource.getConnectionString("Download") + "(" + descriptor.getId() + ")/$value";
@@ -184,7 +189,7 @@ public class DASDownloadStrategy extends DownloadStrategy<Token> {
     }
 
     protected Path extract(EOProduct product, Path archivePath, Path targetPath) throws IOException {
-        String satelliteName = product.getSatelliteName();
+        String satelliteName = product.getSatelliteName().replace("-", "");
         final String name = FileUtilities.getFilenameWithoutExtension(archivePath)
                 + (satelliteName.equals("Sentinel1") || satelliteName.equals("Sentinel2")
                     ? ".SAFE"
@@ -196,10 +201,13 @@ public class DASDownloadStrategy extends DownloadStrategy<Token> {
         if (archivePath.toString().endsWith(".tar.gz")) {
             result = Zipper.decompressTarGz(archivePath, targetPath, true);
             Files.move(result, result.getParent().resolve(name));
-        } else {
+            result = result.getParent().resolve(name);
+        } else if (archivePath.toString().endsWith(".zip")){
             result = Zipper.decompressZipMT(archivePath, targetPath, false, true);
+            result = result.getParent().resolve(name);
+        } else {
+            result = targetPath;
         }
-        result = result.getParent().resolve(name);
         logger.fine(String.format("Decompression of %s completed",archivePath.getFileName()));
         return result;
     }

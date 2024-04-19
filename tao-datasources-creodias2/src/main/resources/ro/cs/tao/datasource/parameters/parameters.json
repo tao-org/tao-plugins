@@ -2,7 +2,7 @@
   "Sentinel1": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-1",
@@ -18,7 +18,7 @@
       "defaultValue": "LEVEL1",
       "required": false,
       "valueSet": ["LEVEL0", "LEVEL1", "LEVEL2"],
-      "order": 0
+      "order": 2
     },
     "productType": {
       "name": "productType",
@@ -28,7 +28,7 @@
       "defaultValue": "SLC",
       "required": false,
       "valueSet": ["CARD-BS", "CARD-COH6","GRD", "GRD-COG","OCN", "PLANNED","RAW", "SLC", "CARD-COH12"],
-      "order": 0
+      "order": 3
     },
     "sensorMode": {
       "name": "sensorMode",
@@ -38,7 +38,7 @@
       "defaultValue": "IW",
       "required": false,
       "valueSet": ["EW", "IW", "SM", "WV"],
-      "order": 0
+      "order": 4
     },
     "orbitDirection": {
       "name": "orbitDirection",
@@ -48,7 +48,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": ["ASCENDING", "DESCENDING"],
-      "order": 0
+      "order": 5
     },
     "relativeOrbit": {
       "name": "relativeOrbit",
@@ -58,7 +58,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 6
     },
     "startDate": {
       "name": "startDate",
@@ -68,7 +68,16 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 1,
+      "dependencies": [
+        {
+          "dependencyType": "REQUIRED_IF",
+          "referencedParameterId": "productIdentifier",
+          "condition": "NOTSET",
+          "expectedValue": null,
+          "allowedValues": null
+        }
+      ]
     },
     "endDate": {
       "name": "endDate",
@@ -78,7 +87,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 2
     },
     "footprint": {
       "name": "footprint",
@@ -88,7 +97,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 8
     },
     "polarisation": {
       "name": "polarisation",
@@ -98,7 +107,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": ["VV", "VH", "VV VH"],
-      "order": 0
+      "order": 7
     },
     "tileId": {
       "name": "tileId",
@@ -108,79 +117,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
-    }
-  },
-  "Sentinel2": {
-    "platformName": {
-      "name": "platformName",
-      "remoteName": "platformShortName",
-      "label": "Platform",
-      "type": "string",
-      "defaultValue": "SENTINEL-2",
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "productType": {
-      "name": "productType",
-      "remoteName": "productType",
-      "label": "Product Type",
-      "type": "string",
-      "defaultValue": "S2MSI1C",
-      "required": false,
-      "valueSet": ["S2MSI1C", "S2MSI2A"],
-      "order": 0
-    },
-    "relativeOrbit": {
-      "name": "relativeOrbit",
-      "remoteName": "relativeOrbitNumber",
-      "label": "Relative Orbit",
-      "type": "int",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "startDate": {
-      "name": "startDate",
-      "remoteName": "ContentDate/Start",
-      "label": "Start Date",
-      "type": "date",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "endDate": {
-      "name": "endDate",
-      "remoteName": "ContentDate/End",
-      "label": "End Date",
-      "type": "date",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "footprint": {
-      "name": "footprint",
-      "remoteName": "Footprint",
-      "label": "Area of Interest",
-      "type": "polygon",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "cloudCover": {
-      "name": "cloudCover",
-      "remoteName": "cloudCover",
-      "label": "Cloud Cover",
-      "type": "double",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
+      "order": 9
     },
     "productIdentifier": {
       "name": "productIdentifier",
@@ -190,7 +127,107 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 10
+    }
+  },
+  "Sentinel2": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "Collection/Name",
+      "label": "Platform",
+      "type": "string",
+      "defaultValue": "SENTINEL-2",
+      "required": false,
+      "valueSet": null,
+      "order": 2
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": "S2MSI1C",
+      "required": false,
+      "valueSet": ["S2MSI1C", "S2MSI2A"],
+      "order": 3
+    },
+    "relativeOrbit": {
+      "name": "relativeOrbit",
+      "remoteName": "relativeOrbitNumber",
+      "label": "Relative Orbit",
+      "type": "int",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 4
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "ContentDate/Start",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0,
+      "dependencies": [
+        {
+          "dependencyType": "REQUIRED_IF",
+          "referencedParameterId": "productIdentifier",
+          "condition": "NOTSET",
+          "expectedValue": null,
+          "allowedValues": null
+        }
+      ]
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "ContentDate/End",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 1,
+      "dependencies": [
+        {
+          "dependencyType": "REQUIRED_IF",
+          "referencedParameterId": "productIdentifier",
+          "condition": "NOTSET",
+          "expectedValue": null,
+          "allowedValues": null
+        }
+      ]
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "Footprint",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 5
+    },
+    "cloudCover": {
+      "name": "cloudCover",
+      "remoteName": "cloudCover",
+      "label": "Cloud Cover",
+      "type": "double",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 6
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "productIdentifier",
+      "label": "Product Name",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 7
     },
     "tileId": {
       "name": "tileId",
@@ -200,13 +237,13 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 8
     }
   },
   "Sentinel3": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-3",
@@ -338,7 +375,16 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 3
+      "order": 3,
+      "dependencies": [
+        {
+          "dependencyType": "REQUIRED_IF",
+          "referencedParameterId": "productIdentifier",
+          "condition": "NOTSET",
+          "expectedValue": null,
+          "allowedValues": null
+        }
+      ]
     },
     "endDate": {
       "name": "endDate",
@@ -348,7 +394,16 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 4
+      "order": 4,
+      "dependencies": [
+        {
+          "dependencyType": "REQUIRED_IF",
+          "referencedParameterId": "productIdentifier",
+          "condition": "NOTSET",
+          "expectedValue": null,
+          "allowedValues": null
+        }
+      ]
     },
     "footprint": {
       "name": "footprint",
@@ -394,7 +449,7 @@
   "Sentinel5P": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-5P",
@@ -422,14 +477,14 @@
       "valueSet": ["L1b", "L2"],
       "order": 5
     },
-    "timeliness": {
-      "name": "timeliness",
-      "remoteName": "timeliness",
-      "label": "Timeliness",
+    "processingMode": {
+      "name": "processingMode",
+      "remoteName": "processingMode",
+      "label": "Processing Mode",
       "type": "string",
-      "defaultValue": "Near real Time",
+      "defaultValue": "NRTI",
       "required": false,
-      "valueSet": ["Near real Time", "Offline", "Reprocessing"],
+      "valueSet": ["NRTI", "OFFL", "RPRO"],
       "order": 6
     },
     "relativeOrbit": {
@@ -450,7 +505,16 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 1
+      "order": 1,
+      "dependencies": [
+        {
+          "dependencyType": "REQUIRED_IF",
+          "referencedParameterId": "productIdentifier",
+          "condition": "NOTSET",
+          "expectedValue": null,
+          "allowedValues": null
+        }
+      ]
     },
     "endDate": {
       "name": "endDate",
@@ -460,7 +524,16 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 2
+      "order": 2,
+      "dependencies": [
+        {
+          "dependencyType": "REQUIRED_IF",
+          "referencedParameterId": "productIdentifier",
+          "condition": "NOTSET",
+          "expectedValue": null,
+          "allowedValues": null
+        }
+      ]
     },
     "footprint": {
       "name": "footprint",
@@ -486,7 +559,7 @@
   "Landsat8": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "LANDSAT-8",
@@ -509,7 +582,7 @@
         "LEVEL2SP",
         "LEVEL2"
       ],
-      "order": 0
+      "order": 2
     },
     "productType": {
       "name": "productType",
@@ -524,7 +597,7 @@
         "L1TP",
         "L2SP"
       ],
-      "order": 0
+      "order": 3
     },
     "tileId": {
       "name": "tileId",
@@ -534,7 +607,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 6
     },
     "path": {
       "name": "path",
@@ -544,7 +617,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 4
     },
     "row": {
       "name": "row",
@@ -554,7 +627,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 5
     },
     "startDate": {
       "name": "startDate",
@@ -564,7 +637,16 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 0,
+      "dependencies": [
+        {
+          "dependencyType": "REQUIRED_IF",
+          "referencedParameterId": "productIdentifier",
+          "condition": "NOTSET",
+          "expectedValue": null,
+          "allowedValues": null
+        }
+      ]
     },
     "endDate": {
       "name": "endDate",
@@ -574,7 +656,16 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 1,
+      "dependencies": [
+        {
+          "dependencyType": "REQUIRED_IF",
+          "referencedParameterId": "productIdentifier",
+          "condition": "NOTSET",
+          "expectedValue": null,
+          "allowedValues": null
+        }
+      ]
     },
     "footprint": {
       "name": "footprint",
@@ -584,7 +675,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 7
     },
     "cloudCover": {
       "name": "cloudCover",
@@ -594,7 +685,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 8
     },
     "productIdentifier": {
       "name": "productIdentifier",
@@ -604,7 +695,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 0
+      "order": 9
     }
   }
 }

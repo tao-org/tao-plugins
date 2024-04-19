@@ -42,6 +42,7 @@ public class DASDataSource extends URLDataSource<DASQuery, Token> {
     private static final Properties props;
     private static String LOGIN_URL;
     private static String SEARCH_URL;
+    private static String DOWNLOAD_URL;
 
     static {
         props = new Properties();
@@ -49,6 +50,7 @@ public class DASDataSource extends URLDataSource<DASQuery, Token> {
             props.load(DASDataSource.class.getResourceAsStream("das.properties"));
             SEARCH_URL = props.getProperty("search.url");
             LOGIN_URL = props.getProperty("login.url");
+            DOWNLOAD_URL = props.getProperty("download.url");
         } catch (IOException ignored) {
         }
     }
@@ -60,7 +62,7 @@ public class DASDataSource extends URLDataSource<DASQuery, Token> {
     }
 
     @Override
-    public String defaultId() { return "CreoDIAS New"; }
+    public String defaultId() { return "Copernicus DataSpace"; }
 
     @Override
     public int getMaximumAllowedTransfers() { return 2; }
@@ -76,6 +78,11 @@ public class DASDataSource extends URLDataSource<DASQuery, Token> {
     @Override
     public void setCredentials(String username, String password) {
         super.setCredentials(username, password);
+    }
+
+    @Override
+    public String getConnectionString(String sensorName) {
+        return /*sensorName.equals("Sentinel1-orbit-files") ? DOWNLOAD_URL : */super.getConnectionString(sensorName);
     }
 
     @Override

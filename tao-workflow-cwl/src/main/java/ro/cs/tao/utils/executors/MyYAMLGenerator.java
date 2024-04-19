@@ -42,8 +42,12 @@ public class MyYAMLGenerator extends YAMLGenerator {
                     || (Feature.ALWAYS_QUOTE_NUMBERS_AS_STRINGS.enabledIn(_formatFeatures)
                     && PLAIN_NUMBER_P.matcher(text).matches())
             ) {
-                style = DumperOptions.ScalarStyle.DOUBLE_QUOTED;
-            } else if (text.matches("-?\\d+(\\.\\d+)?")) {
+                if (_quotingChecker.needToQuoteValue(text) && text.matches("^\\w+\\[\\]$")) {
+                    style = DumperOptions.ScalarStyle.PLAIN;
+                } else {
+                    style = DumperOptions.ScalarStyle.DOUBLE_QUOTED;
+                }
+            } else if (text.matches("-?\\d+(\\.\\d+)?") || text.startsWith("#")) {
                 style = DumperOptions.ScalarStyle.DOUBLE_QUOTED;
             } else {
                 style = DumperOptions.ScalarStyle.PLAIN;

@@ -34,4 +34,9 @@ public enum InlineJavascriptRequirement_class {
     }
     throw new ValidationException(String.format("Expected one of %s", InlineJavascriptRequirement_class.symbols, docVal));
   }
+
+  @Override
+  public String toString() {
+    return this.docVal;
+  }
 }

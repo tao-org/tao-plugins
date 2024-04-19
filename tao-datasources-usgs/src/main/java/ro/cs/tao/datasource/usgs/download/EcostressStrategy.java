@@ -1,9 +1,12 @@
 package ro.cs.tao.datasource.usgs.download;
 
-import org.apache.commons.lang.SerializationUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.http.HttpStatus;
+import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.InterruptedException;
 import ro.cs.tao.datasource.QueryException;
+import ro.cs.tao.datasource.param.CommonParameterNames;
+import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.SimpleArchiveDownloadStrategy;
 import ro.cs.tao.datasource.usgs.USGSDataSource;
 import ro.cs.tao.datasource.util.Zipper;
@@ -20,10 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.EnumSet;
-import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,14 +63,15 @@ public class EcostressStrategy extends SimpleArchiveDownloadStrategy {
     protected Path connectAndDownload(EOProduct product) throws QueryException, IOException {
         boolean toDownloadBGeo = !(product.getLocation().contains("ECO1BMAPRAD") || product.getLocation().contains("ECO3ETALEXIU") || product.getLocation().contains("ECO4ESIALEXIU") || product.getLocation().contains("ECO1BGEO"));
         HttpURLConnection connection = getConnectionForProduct(product, false);
-        EOProduct bgeoProduct = null;
-        if (toDownloadBGeo) {
-            // product should be cloned before the download occurs, otherwise the location is overwritten
-            bgeoProduct = createBGeoProduct(product);
-        }
         Path downloaded = downloadProduct(product, connection);
-        if (bgeoProduct != null) {
-            downloadBGEO(bgeoProduct);
+        if (toDownloadBGeo) {
+            logger.finest("Begin finding the BGeo product corresponding to product: " + product.getName());
+            // product should be cloned before the download occurs, otherwise the location is overwritten
+            EOProduct bgeoProduct = createBGeoProduct(product);
+            if (bgeoProduct != null) {
+                logger.finest("Begin downloading the found BGeo product: " + bgeoProduct.getName());
+                downloadBGEO(bgeoProduct);
+            }
         }
         return downloaded;
     }
@@ -269,6 +271,9 @@ public class EcostressStrategy extends SimpleArchiveDownloadStrategy {
         EOProduct bgeoProduct = (EOProduct) SerializationUtils.clone(product);
         try {
             final String productBGEOUrl = getProductBGEOUrl(bgeoProduct);
+            if (productBGEOUrl == null) {
+                return null;
+            }
             bgeoProduct.setLocation(productBGEOUrl);
             bgeoProduct.setName(getProductBGEOName(bgeoProduct));
         } catch (URISyntaxException e) {
@@ -300,21 +305,42 @@ public class EcostressStrategy extends SimpleArchiveDownloadStrategy {
         return "";
     }
 
-    protected String getProductBGEOUrl(EOProduct product){
-        String sLocation = product.getLocation();
-        URI location = null;
-        try {
-            Pattern pattern = Pattern.compile("https?://\\w+.*/(ECO[A-Z])/ECOSTRESS/(\\w+.*)/.*/ECOSTRESS_([A-Za-z0-9]+)_([A-Za-z0-9]+).*.h5$");
-            Matcher matcher = pattern.matcher(sLocation);
-            if (matcher.matches()) {
-                sLocation = sLocation.replace(matcher.group(1), "ECOA");
-                sLocation = sLocation.replace(matcher.group(2), "ECO1BGEO.001");
-                sLocation = sLocation.replace(matcher.group(3), "L1B");
-                sLocation = sLocation.replace(matcher.group(4), "GEO");
+    private String fetchProductBGEOUrl(EOProduct targetProduct){
+        final String targetProductNameTemplate = targetProduct.getName().replaceAll("(ECOSTRESS_[A-Z\\d]{3}_)[A-Z\\d]{3}_(\\d{5}_)(\\d{3}_|)(\\d{8}T\\d{6}_)(\\d{4}_)(\\d{2})", "$1$2$4$5$6");
+        final DataQuery query = this.dataSource.createQuery("ECOSTRESS");
+        final QueryParameter<LocalDateTime> begin = query.createParameter(CommonParameterNames.START_DATE, LocalDateTime.class);
+        begin.setValue(targetProduct.getAcquisitionDate().minusDays(1));
+        query.addParameter(begin);
+        final QueryParameter<LocalDateTime> end = query.createParameter(CommonParameterNames.END_DATE, LocalDateTime.class);
+        end.setValue(targetProduct.getAcquisitionDate().plusDays(1));
+        query.addParameter(end);
+        query.addParameter(CommonParameterNames.PLATFORM, "ecostress_eco1bgeo");
+        query.addParameter("earthDataUsername", ((USGSDataSource) this.dataSource).getEarthDataCredentials().getUserName());
+        query.addParameter("earthDataPassword", ((USGSDataSource) this.dataSource).getEarthDataCredentials().getPassword());
+        query.setPageSize(10);
+        query.setPageNumber(1);
+        List<EOProduct> products = query.execute();
+        for(int page = 2; !isCancelled() && !products.isEmpty(); page++) {
+            for (final EOProduct product : products) {
+                final String productNameTemplate = product.getName().replaceAll("(ECOSTRESS_[A-Z\\d]{3}_)[A-Z\\d]{3}_(\\d{5}_)(\\d{3}_|)(\\d{8}T\\d{6}_)(\\d{4}_)(\\d{2})", "$1$2$4$5$6");
+                if (productNameTemplate.equals(targetProductNameTemplate)) {
+                    return product.getLocation();
+                }
             }
-            location = new URI(sLocation);
-        } catch (URISyntaxException ignored) {
+            query.setPageNumber(page);
+            products = query.execute();
         }
-        return location != null ? location.toString() : null;
+        return null;
+    }
+
+    protected String getProductBGEOUrl(EOProduct product){
+        try {
+            final String productBGEOUrl = fetchProductBGEOUrl(product);
+            if (productBGEOUrl != null) {
+                return new URI(productBGEOUrl).toString();
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
     }
 }

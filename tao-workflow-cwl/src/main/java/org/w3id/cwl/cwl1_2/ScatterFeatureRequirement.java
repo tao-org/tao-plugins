@@ -30,4 +30,6 @@ public interface ScatterFeatureRequirement extends ProcessRequirement, Saveable 
    */
 
   ScatterFeatureRequirement_class getClass_();
+
+  void setClass_(ScatterFeatureRequirement_class class_);
 }

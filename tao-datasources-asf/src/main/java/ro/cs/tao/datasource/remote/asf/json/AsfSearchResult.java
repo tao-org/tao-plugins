@@ -34,6 +34,7 @@ import java.util.Map;
         "downloadUrl",
         "thumbnailUrl",
         "sceneDate",
+        "startTime",
         "processingDate",
         "sizeMB",
         "fileName",
@@ -64,6 +65,8 @@ public class AsfSearchResult {
     private String browseUrl;
     @JsonProperty("sceneDate")
     private LocalDateTime sceneDate;
+    @JsonProperty("startTime")
+    private LocalDateTime startTime;
     @JsonProperty("processingDate")
     private LocalDateTime processingDate;
     @JsonProperty("sizeMB")
@@ -155,6 +158,10 @@ public class AsfSearchResult {
     public LocalDateTime getSceneDate() { return sceneDate; }
 
     public void setSceneDate(LocalDateTime sceneDate) { this.sceneDate = sceneDate; }
+
+    public LocalDateTime getStartTime() { return startTime; }
+
+    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
 
     public LocalDateTime getProcessingDate() {
         return processingDate;

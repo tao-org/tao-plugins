@@ -26,11 +26,10 @@ import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static ro.cs.tao.utils.executors.MemoryUnit.MB;
@@ -44,14 +43,25 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
     static final Pattern S1Pattern =
             Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
 
+    private final Predicate<EOProduct> filter;
+
+    public AsfJsonResponseHandler(Predicate<EOProduct> filter) {
+        this.filter = filter;
+    }
+
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
         AsfSearchResult[][] results = JsonMapper.instance().readValue(content, AsfSearchResult[][].class);
-        if(results.length > 0){
-            return Arrays.stream(results[0]).map(r -> {
+        final List<EOProduct> retVal = new ArrayList<>();
+        if (results.length > 0) {
+            for (AsfSearchResult r : results[0]) {
                 try {
                     EOProduct product = new EOProduct();
                     //product.setSatelliteName(r.getPlatform());
+                    product.setGeometry(r.getFootprint());
+                    if (this.filter != null && this.filter.test(product)) {
+                        continue;
+                    }
                     product.setName(r.getProductName());
                     product.setId(r.getFileId());
                     product.setFormatType(DataFormat.RASTER);
@@ -59,10 +69,13 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     product.setPixelType(PixelType.UINT16);
                     product.setWidth(-1);
                     product.setHeight(-1);
-                    product.setGeometry(r.getFootprint());
                     product.setLocation(r.getDownloadUrl());
                     product.setProcessingDate(r.getProcessingDate());
-                    product.setAcquisitionDate(r.getSceneDate());
+                    if (r.getSceneDate() != null) {
+                        product.setAcquisitionDate(r.getSceneDate());
+                    } else {
+                        product.setAcquisitionDate(r.getStartTime());
+                    }
                     String thumbnailUrl = r.getThumbnailUrl();
                     if(!"NA".equalsIgnoreCase(thumbnailUrl) && !"N/A".equalsIgnoreCase(thumbnailUrl)){
                         product.setQuicklookLocation(r.getThumbnailUrl());
@@ -107,15 +120,13 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     } else if (product.getName().startsWith("S1")) {
                         product.addAttribute("relativeOrbit", getRelativeOrbit(product.getName()));
                     }
-
-                    return product;
+                    retVal.add(product);
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    return null;
                 }
-            }).collect(Collectors.toList());
+            }
         }
-        return new ArrayList<>();
+        return retVal;
     }
 
     private String getRelativeOrbit(String productName) {

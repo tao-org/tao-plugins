@@ -20234,5 +20234,49 @@
       }
     ],
     "templatecontents": "Write\n-Ssource=$Ssource\n-Pfile=$file\n-PformatName=$formatName\n-PdeleteOutputOnFailure=$deleteOutputOnFailure\n-PwriteEntireTileRows=$writeEntireTileRows\n-PclearCacheAfterRowWrite=$clearCacheAfterRowWrite\n-t\n$t\n"
+  },
+  {
+    "id": "snap-flood-detection",
+    "label": "Flood Detection",
+    "version": "1.0",
+    "description": "Flood detection operator",
+    "authors": "SNAP Team",
+    "copyright": "(C) SNAP Team",
+    "category": "RADAR",
+    "nodeAffinity": "Any",
+    "sources": [
+      {
+        "id": null,
+        "parentId": "snap-flood-detection",
+        "name": "Ssource",
+        "cardinality": 1,
+        "dataDescriptor": {
+          "formatType": "RASTER"
+        }
+      }
+    ],
+    "targets": [
+      {
+        "id": null,
+        "parentId": "snap-flood-detection",
+        "name": "t",
+        "dataDescriptor": {
+          "formatType": "RASTER",
+          "location": "output_snap-flood-detection.tif"
+        }
+      }
+    ],
+    "containerId": "caefe468-3830-45ba-a7b8-053397460899",
+    "fileLocation": "gpt",
+    "workingDirectory": ".",
+    "templateType": "VELOCITY",
+    "multiThread": true,
+    "parallelism": 8,
+    "visibility": "SYSTEM",
+    "active": true,
+    "parameterDescriptors": [
+    ],
+    "templatecontents": "Flood-Detection\n-Ssource=$Ssource\n-t\n$t\n"
   }
+
 ]

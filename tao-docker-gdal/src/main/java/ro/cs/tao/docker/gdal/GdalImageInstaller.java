@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public class GdalImageInstaller extends BaseImageInstaller {
     @Override
-    protected String getContainerName() {
+    public String getContainerName() {
         return "gdal-3-3-2";
     }
 

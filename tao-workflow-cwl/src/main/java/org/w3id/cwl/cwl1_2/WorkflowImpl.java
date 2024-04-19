@@ -14,12 +14,10 @@
 
 package org.w3id.cwl.cwl1_2;
 
+import com.sun.jna.WString;
 import org.apache.commons.lang3.StringUtils;
-import org.w3id.cwl.cwl1_2.utils.LoaderInstances;
-import org.w3id.cwl.cwl1_2.utils.LoadingOptions;
-import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
-import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
-import org.w3id.cwl.cwl1_2.utils.ValidationException;
+import org.w3id.cwl.cwl1_2.utils.*;
+
 import java.lang.reflect.Field;
 
 import java.util.*;
@@ -547,14 +545,23 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
   @Override
   public  Map<Object, Object> save() {
     Map<Object, Object> workflow = new LinkedHashMap<>();
-    workflow.put("class", this.class_.getDocVal());
+    workflow.put("class", this.class_.toString());
     String filePath = "";
     String outputStr = ((WorkflowOutputParameter)outputs.get(0)).getOutputSource().toString();
     if (outputStr.contains("#")) {
       int chIdx = outputStr.indexOf("#");
-      chIdx = outputStr.substring(0, chIdx).lastIndexOf("/") + 1;
-      filePath = outputStr.substring(0, chIdx).replaceAll("file:///|file://|file:/","");
+      filePath = outputStr.substring(0, chIdx).replaceAll("file:/|file://|file:///", "");
     }
+    String wfId = "";
+    if (this.id != null && this.id.isPresent() && !this.id.isEmpty()) {
+      wfId = this.id.get();
+      if (this.id.get().contains("#")) {
+        int chIdx = this.id.get().indexOf("#");
+        wfId = this.id.get().substring(chIdx + 1);
+      }
+      workflow.put("id", wfId.toString());
+    }
+
     if (this.cwlVersion != null && this.cwlVersion.isPresent() && !this.cwlVersion.isEmpty()) {
       workflow.put("cwlVersion",this.cwlVersion.get().toString());
     }
@@ -565,12 +572,22 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
       workflow.put("doc",this.doc);
     }
 
+    if (requirements != null) {
+      List<Object> reqList = new LinkedList<>();
+      for(Object req : this.requirements.get()) {
+        if(req instanceof Saveable) {
+          reqList.add(((Saveable) req).save());
+        }
+      }
+      workflow.put("requirements", reqList);
+    }
+
     if (inputs != null) {
-      workflow.put("inputs", treatInOut(inputs));
+      workflow.put("inputs", treatInOut(inputs, wfId));
     }
 
     if (outputs != null) {
-      workflow.put("outputs", treatInOut(outputs));
+      workflow.put("outputs", treatInOut(outputs, wfId));
     }
 
     if (steps != null) {
@@ -586,46 +603,85 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
               if (field.getName().equalsIgnoreCase("id")) {
                 stepId = ((Optional)field.get(step)).get().toString();
                 if (stepId.contains("#")) {
-                  int chIdx = stepId.indexOf("#");
-                  stepId = stepId.substring(chIdx + 1);
+                  stepId = stepId.replaceAll(this.id.get() + "/", "");
                 }
               } else if (field.getName().equalsIgnoreCase("in")) {
                 Map<String,String> inList = new LinkedHashMap<>();
-                for (Object in : (ArrayList) field.get(step)) {
-                  if (((WorkflowStepInput) in).getDefault() != null) {
-                    inList.put(((WorkflowStepInput) in).getId().get(), ((WorkflowStepInput) in).getDefault().toString());
-                  } else {
-                    if (((WorkflowStepInput) in).getId().get().contains("#")) {
-                      int indexId = ((WorkflowStepInput) in).getId().get().indexOf("#") + 1;
-                      int indexSource = ((WorkflowStepInput) in).getSource().toString().indexOf("#") + 1;
-                      inList.put(((WorkflowStepInput) in).getId().get().substring(indexId).replaceAll(stepId + "|/",""), ((WorkflowStepInput) in).getSource().toString().substring(indexSource));
+                for (Object in : (ArrayList<?>) field.get(step)) {
+                  if (((WorkflowStepInput) in).getId().get().contains("#")) {
+                    if (((WorkflowStepInput) in).getDefault() != null) {
+                      inList.put(((WorkflowStepInput) in).getId().get().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
+                                      .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""),
+                              ((WorkflowStepInput) in).getDefault().toString().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
+                                      .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
                     } else {
-                      inList.put(((WorkflowStepInput) in).getId().get(), ((WorkflowStepInput) in).getSource().toString());
+                      inList.put(((WorkflowStepInput) in).getId().get().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
+                              .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""),
+                              ((WorkflowStepInput) in).getSource().toString().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
+                                      .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
+                    }
+                  } else {
+                    if (((WorkflowStepInput) in).getDefault() != null) {
+                      inList.put(((WorkflowStepInput) in).getId().get(),
+                              ((WorkflowStepInput) in).getDefault().toString());
+                    } else {
+                      inList.put(((WorkflowStepInput) in).getId().get(),
+                              ((WorkflowStepInput) in).getSource().toString());
                     }
                   }
                 }
                 temp.put(field.getName(), inList);
               } else if (field.getName().equalsIgnoreCase("out")) {
                 List<String> outList = new ArrayList<>();
-                for (Object out : (ArrayList) field.get(step)) {
+                for (Object out : (ArrayList<?>) field.get(step)) {
                   if (out instanceof WorkflowStepOutput) {
                     outList.add(((WorkflowStepOutput) out).getId().get());
-                  } else if (out instanceof ArrayList<?>){
+                  } else if (out instanceof ArrayList<?>) {
                     for (String outStr: (ArrayList<String>)out) {
-                      int indexId = ((String) outStr).indexOf("#") + 1;
-                      outList.add(((String) outStr).substring(indexId).replaceAll(stepId + "|/",""));
+                      outList.add(((String) outStr).replace(filePath, "").replaceAll("file:/|file://|file:///", "")
+                              .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
                     }
                   } else {
-                    int indexId = ((String) out).indexOf("#") + 1;
-                    outList.add(((String) out).substring(indexId).replaceAll(stepId + "|/",""));
+                    outList.add(((String) out).replace(filePath, "").replaceAll("file:/|file://|file:///", "")
+                            .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
                   }
                 }
                 temp.put(field.getName(), outList);
-              } else if (field.get(step) != null) {
-                if (filePath != "" && field.get(step).toString().contains(filePath)){
-                  temp.put(field.getName(), field.get(step).toString().replaceAll(filePath + "|file:///|file://|file:/",""));
+              } else if (field.getName().equalsIgnoreCase("run") && field.get(step) != null) {
+                if (field.get(step).toString().startsWith("#") || field.get(step).toString().endsWith(".cwl")) {
+                    temp.put(field.getName(), field.get(step).toString());
+                } else if (field.get(step).toString().contains("#")) {
+                    temp.put(field.getName(), field.get(step).toString().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
+                            .replace(wfId, "").replace("/", ""));
                 } else {
-                  temp.put(field.getName(), field.get(step));
+                  temp.put(field.getName(), "#" + field.get(step).toString());
+                }
+              } else if (field.get(step) != null) {
+                if (field.get(step) instanceof Optional<?>) {
+                  if (((Optional<?>)field.get(step)).get().toString().contains("#")) {
+                    temp.put(field.getName(), ((Optional<?>) field.get(step)).get().toString().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
+                            .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
+                  } else {
+                    temp.put(field.getName(), ((Optional<?>) field.get(step)).get().toString());
+                  }
+                } else if (field.get(step) instanceof List<?>) {
+                  List<String> valueList = new LinkedList<>();
+                  for (Object val : (List<?>)field.get(step)) {
+                    if (val.toString().contains("#")) {
+                        valueList.add(val.toString().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
+                                .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
+                    } else {
+                      valueList.add(val.toString());
+                    }
+                  }
+                  temp.put(field.getName(), valueList);
+                } else {
+                  if (field.get(step).toString().contains("#")) {
+                    temp.put(field.getName(), field.get(step).toString().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
+                            .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
+                  } else {
+                    temp.put(field.getName(), field.get(step).toString());
+                  }
                 }
               }
             }

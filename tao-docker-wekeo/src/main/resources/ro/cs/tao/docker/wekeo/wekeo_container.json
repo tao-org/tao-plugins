@@ -1,0 +1,117 @@
+{
+    "id": "2210edb4-e719-4d57-8094-251901444ba2",
+    "name": "wekeo-fetching",
+    "description": "Wekeo Fetcher 1.0.0 Container",
+    "tag": "latest",
+    "applicationPath": null,
+    "formatNameParameter": null,
+    "format": null,
+    "applications": [
+        {
+            "path": "fetchApiWekEO.py",
+            "name": "10_daily_WB_Africa",
+            "memoryRequirements": 4096
+        },
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Normalized_diff_v_idx_0",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Normalized_diff_v_idx_1",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Normalized_diff_v_idx_2",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Normalized_diff_v_idx_3",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Normalized_diff_v_idx_4",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Normalized_diff_v_idx_5",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Leaf_area_index_0",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Leaf_area_index_1",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Leaf_area_index_2",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Land_surface_temp",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Dry_matter_productivity",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Fraction_of_absorbed_PAR",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "CAMS_global_inversion",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Essential_climate_variables",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Agrometeorological_indicators",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Soil_moisture",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "River_discharge",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Fire_danger_indices",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "CAMS_European_air_q",
+            "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "CAMS_Global_biomass",
+            "memoryRequirements": 4096
+		}
+			
+    ]
+}

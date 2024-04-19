@@ -1,7 +1,10 @@
 package org.w3id.cwl.cwl1_2.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.w3id.cwl.cwl1_2.ArraySchema;
 import org.w3id.cwl.cwl1_2.CommandOutputBinding;
+import org.w3id.cwl.cwl1_2.InputArraySchema;
+import org.w3id.cwl.cwl1_2.OutputArraySchema;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -14,7 +17,7 @@ public interface Saveable {
                 f.setAccessible(true);
                 try {
                     if (f.get(this) != null) {
-                        if (f.get(this) instanceof Optional) {
+                        if (f.get(this) instanceof Optional<?>) {
                             objectList.put(f.getName(), ((Optional<?>) f.get(this)).get());
                         } else if (f.get(this).equals(f.get(this).toString().toUpperCase())) {
                             objectList.put(f.getName(), StringUtils.capitalize(f.get(this).toString().toLowerCase()));
@@ -23,11 +26,11 @@ public interface Saveable {
                         }
                     }
                 } catch (Exception e) {
-                    System.out.println(e.getStackTrace());
+                    System.out.println(e.getMessage() + ": " + e.getCause() );
                 }
             }
         }
-        System.out.println("Interface implementation of the save method!");
+        System.out.println("Saveable Interface implementation of the save method!");
         return objectList;
     }
 
@@ -46,7 +49,7 @@ public interface Saveable {
     /**
      * write input and output elements in a LinkedHashMap
      */
-    public default Map<String, Object> treatInOut(java.util.List<Object> objects) {
+    public default Map<String, Object> treatInOut(java.util.List<Object> objects, String wfId) {
         Map<String, Object> objectList = new LinkedHashMap<>();
         try {
             for (Object object : objects) {
@@ -57,10 +60,19 @@ public interface Saveable {
                     if (!field.getName().equalsIgnoreCase("loadingOptions_") && !field.getName().equalsIgnoreCase("extensionFields_")) {
                         field.setAccessible(true);
                         if (field.getName().equalsIgnoreCase("id")) {
-                            inputId = ((Optional)field.get(object)).get().toString();
+                            inputId = ((Optional)field.get(object)).get().toString().replaceAll(wfId + "/", "");
                             if (inputId.contains("#")) {
                                 int chIdx = inputId.indexOf("#");
                                 inputId = inputId.substring(chIdx + 1);
+                            }
+                            if (wfId == null || wfId.equals("")) {
+                                wfId = inputId;
+                            }
+                        } else if (field.getName().equalsIgnoreCase("type")) {
+                            if (field.get(object) instanceof InputArraySchema || field.get(object) instanceof OutputArraySchema) {
+                                temp.put(field.getName(), field.get(object).toString());
+                            } else {
+                                temp.put(field.getName(), field.get(object).toString());
                             }
                         } else if (field.get(object) != null) {
                             if (field.get(object) instanceof Optional<?> && ((Optional) field.get(object)).get() instanceof Saveable) {
@@ -77,7 +89,8 @@ public interface Saveable {
                             } else {
                                 if (field.get(object).toString().contains("#")) {
                                     int chIdx = field.get(object).toString().indexOf("#") + 1;
-                                    temp.put(field.getName(), field.get(object).toString().substring(chIdx));
+                                    temp.put(field.getName(), field.get(object).toString().substring(chIdx).replaceAll(wfId + "/|" + wfId, "")
+                                            .replaceAll(inputId + "/|" + inputId, ""));
                                 } else if (field.get(object).toString().equals(field.get(object).toString().toUpperCase())) {
                                     temp.put(field.getName(), StringUtils.capitalize(field.get(object).toString().toLowerCase()));
                                 } else {

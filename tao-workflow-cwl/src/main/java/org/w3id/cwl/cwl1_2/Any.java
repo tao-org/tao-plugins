@@ -26,10 +26,6 @@ public enum Any {
     this.docVal = docVal;
   }
 
-  public String getDocVal() {
-    return docVal;
-  }
-
   public static Any fromDocumentVal(final String docVal) {
     for(final Any val : Any.values()) {
       if(val.docVal.equals(docVal)) {
@@ -37,5 +33,10 @@ public enum Any {
       }
     }
     throw new ValidationException(String.format("Expected one of %s", Any.symbols, docVal));
+  }
+
+  @Override
+  public String toString() {
+    return this.docVal;
   }
 }

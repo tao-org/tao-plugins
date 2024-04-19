@@ -97,7 +97,7 @@ public class ProductMetadataWriter implements OutputDataHandler<EOProduct> {
                 } catch (Exception e) {
                     path = Paths.get(location);
                 }
-                Path metadataPath = path.getParent().resolve(product.getName() + ".json");
+                Path metadataPath = (Files.isDirectory(path) ? path : path.getParent()).resolve(product.getName() + ".json");
                 Link link = new Link();
                 link.setRel("self");
                 link.setHref(path.toUri().toString());

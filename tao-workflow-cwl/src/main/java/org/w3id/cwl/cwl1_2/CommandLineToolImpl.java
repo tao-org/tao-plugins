@@ -779,7 +779,15 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
   @Override
   public Map<Object, Object> save() {
     Map<Object, Object> commandLineTool = new LinkedHashMap<>();
-    commandLineTool.put("class", this.class_.getDocVal());
+    commandLineTool.put("class", this.class_.toString());
+    if (this.id != null && this.id.isPresent() && !this.id.isEmpty()) {
+      if (this.id.get().contains("#")) {
+        int chIdx = this.id.get().indexOf("#");
+        commandLineTool.put("id", this.id.get().substring(chIdx + 1));
+      } else {
+        commandLineTool.put("id", this.id.get());
+      }
+    }
     if (this.cwlVersion != null && this.cwlVersion.isPresent() && !this.cwlVersion.isEmpty()) {
       commandLineTool.put("cwlVersion",this.cwlVersion.get().toString());
     }
@@ -793,11 +801,12 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
       if (this.baseCommand instanceof ArrayList<?> && !((ArrayList<?>) this.baseCommand).isEmpty()) {
         List<Object> commandList = new ArrayList<>();
         for (String command: ((ArrayList<String>) this.baseCommand)) {
-          commandList.add("\"" + command + "\"");
+          commandList.add(command);
         }
-        commandLineTool.put("baseCommand", commandList.toString());
+        commandLineTool.put("baseCommand", commandList);
       } else if (this.baseCommand instanceof String) {
-        commandLineTool.put("baseCommand", "[\"" + this.baseCommand.toString() + "\"]");
+        //commandLineTool.put("baseCommand", "[\"" + this.baseCommand.toString() + "\"]");
+        commandLineTool.put("baseCommand", this.baseCommand);
       }
     }
     if (this.requirements != null) {
@@ -816,19 +825,17 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
           Map<Object, Object> argList = new LinkedHashMap<>();
           for (Field f : arg.getClass().getDeclaredFields()) {
             f.setAccessible(true);
-            if (f.getName().equalsIgnoreCase("valueFrom")) {
-              argList.put("- valueFrom", ((CommandLineBindingImpl) arg).getValueFrom());
-            } else if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
+            if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
               try {
                 if ( f.get(arg) != null) {
-                  if (f.get(arg) instanceof Optional) {
-                    argList.put("  " + f.getName(), ((Optional<?>) f.get(arg)).get());
+                  if (f.get(arg) instanceof Optional<?>) {
+                    argList.put(f.getName(), ((Optional<?>) f.get(arg)).get());
                   } else {
-                    argList.put("  " + f.getName(), f.get(arg).toString());
+                    argList.put(f.getName(), f.get(arg));
                   }
                 }
               } catch (Exception e){
-                System.out.println(e.getStackTrace());
+                System.out.println(e.getMessage() + ": " + e.getCause() );
               }
             }
           }
@@ -840,10 +847,10 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
       commandLineTool.put("arguments", argumentsList);
     }
     if (this.inputs != null) {
-      commandLineTool.put("inputs", treatInOut(inputs));
+      commandLineTool.put("inputs", treatInOut(inputs, null));
     }
     if (this.outputs != null) {
-      commandLineTool.put("outputs", treatInOut(outputs));
+      commandLineTool.put("outputs", treatInOut(outputs, null));
     }
     return commandLineTool;
   }

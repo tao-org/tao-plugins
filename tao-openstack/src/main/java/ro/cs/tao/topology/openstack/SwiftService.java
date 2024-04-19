@@ -5,10 +5,14 @@ import org.openstack4j.api.storage.ObjectStorageContainerService;
 import org.openstack4j.api.storage.ObjectStorageService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.common.Payloads;
+import org.openstack4j.model.storage.object.SwiftContainer;
 import org.openstack4j.model.storage.object.SwiftObject;
+import org.openstack4j.model.storage.object.options.ContainerListOptions;
+import org.openstack4j.model.storage.object.options.CreateUpdateContainerOptions;
 import org.openstack4j.model.storage.object.options.ObjectListOptions;
 import org.openstack4j.model.storage.object.options.ObjectPutOptions;
 import ro.cs.tao.security.SessionStore;
+import ro.cs.tao.services.model.FileObject;
 import ro.cs.tao.topology.TopologyException;
 import ro.cs.tao.topology.openstack.commons.Constants;
 import ro.cs.tao.topology.openstack.commons.OpenStackSession;
@@ -25,15 +29,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SwiftService {
+    private static final String CONTENTS = "contents";
     private final Logger logger;
-        private Map<String, String> parameters;
+    private Map<String, String> parameters;
     private int pageLimit = 1000;
+    private String folderPlaceholder;
 
     public SwiftService() {
         this.logger = Logger.getLogger(SwiftService.class.getName());
+        this.folderPlaceholder = ".folder";
+    }
+
+    public void setFolderPlaceholder(String folderPlaceholder) {
+        this.folderPlaceholder = folderPlaceholder;
     }
 
     public Map<String, String> getParameters() {
@@ -50,17 +62,75 @@ public class SwiftService {
         }
     }
 
-    public String createFolder(String name, String containerName) throws IOException {
-        if (name == null) {
-            throw new IllegalArgumentException("[name] is null");
-        }
-        if (!Paths.get(name).isAbsolute()) {
-            throw new IllegalArgumentException("[name] must be an absolute path");
-        }
+    public long getContainerSize(String containerName) throws IOException {
         if (StringUtilities.isNullOrEmpty(containerName)) {
             throw new IllegalArgumentException("[containerName] is null or empty");
         }
         final ObjectStorageService objectStorageService = authenticate();
+        try {
+            final ObjectStorageContainerService containerService = objectStorageService.containers();
+            List<? extends SwiftContainer> list = containerService.list(ContainerListOptions.create().path(containerName));
+            if (list == null || list.isEmpty()) {
+                logger.warning(() -> String.format("Container %s doesn't exist", containerName));
+                createBucket(containerName);
+            }
+            list = containerService.list(ContainerListOptions.create().path(containerName));
+            if (list == null || list.isEmpty()) {
+                throw new IOException(String.format("Container %s could not be created", containerName));
+            }
+            return list.get(0).getTotalSize();
+        } catch (Exception ex) {
+            throw new IOException(String.format("Cannot create container %s. Reason: %s", containerName, ex.getMessage()));
+        }
+    }
+
+    public Map<String, Long> getContainerSizes() throws IOException {
+        final ObjectStorageService objectStorageService = authenticate();
+        try {
+            final ObjectStorageContainerService containerService = objectStorageService.containers();
+            final List<? extends SwiftContainer> list = containerService.list();
+            return list.stream().collect(Collectors.toMap(SwiftContainer::getName, SwiftContainer::getTotalSize));
+        } catch (Exception ex) {
+            throw new IOException(String.format("Cannot list containers. Reason: %s", ex.getMessage()));
+        }
+    }
+
+    public void createBucket(String containerName) throws IOException {
+        if (StringUtilities.isNullOrEmpty(containerName)) {
+            throw new IllegalArgumentException("[containerName] is null or empty");
+        }
+        final ObjectStorageService objectStorageService = authenticate();
+        try {
+            final ObjectStorageContainerService containerService = objectStorageService.containers();
+            final CreateUpdateContainerOptions options = CreateUpdateContainerOptions.create().accessAnybodyRead().accessWrite("*:*");
+            final ActionResponse actionResponse = containerService.create(containerName, options);
+            if (actionResponse != null && !actionResponse.isSuccess()) {
+                throw new IOException(String.format("Failed to create container %s. Response code: %d; fault: %s",
+                                                    containerName, actionResponse.getCode(), actionResponse.getFault()));
+            } else {
+                logger.finest(String.format("Container %s created", containerName));
+            }
+        } catch (Exception ex) {
+            throw new IOException(String.format("Cannot create container %s. Reason: %s", containerName, ex.getMessage()));
+        }
+    }
+
+    public String createFolder(String name, String containerName) throws IOException {
+        if (name == null) {
+            throw new IllegalArgumentException("[name] is null");
+        }
+        if (Paths.get(name).isAbsolute()) {
+            throw new IllegalArgumentException("[name] Path should be relative to the S3 bucket");
+        }
+        if (StringUtilities.isNullOrEmpty(containerName)) {
+            throw new IllegalArgumentException("[containerName] is null or empty");
+        }
+        if (!name.endsWith("/")) {
+            name += "/";
+        }
+        final ObjectStorageService objectStorageService = authenticate();
+        // Since "folders" do not exist in S3, there has to be a dummy file uploaded in order to create the "folder"
+        final FileObject fakeObject = emptyFolderItem();
         try {
             final ObjectStorageContainerService containerService = objectStorageService.containers();
             final ActionResponse actionResponse = containerService.create(containerName);
@@ -70,7 +140,18 @@ public class SwiftService {
             } else {
                 logger.finest(String.format("Connected to container %s", containerName));
             }
-            return containerService.createPath(containerName, name);
+            String path = containerService.createPath(containerName, name);
+            if (path == null) {
+                try (ByteArrayInputStream is = new ByteArrayInputStream(fakeObject.getAttributes().get(CONTENTS).getBytes())) {
+                    final Map<String, String> metadata = new HashMap<>();
+                    metadata.put("description", "placeholder");
+                    objectStorageService.objects().put(containerName, name + fakeObject.getRelativePath(),
+                                                       Payloads.create(is),
+                                                       ObjectPutOptions.create().metadata(metadata));
+                    path = name;
+                }
+            }
+            return path;
         } catch (Exception ex) {
             throw new IOException(String.format("Cannot create path %s in container. Reason: %s", name, ex.getMessage()));
         }
@@ -105,7 +186,7 @@ public class SwiftService {
         List partial;
         // Some OpenStack REST implementation don't return the full list, even if it is less than the limit set.
         // Hence, at the expense of an extra call if no other result, try to retrieve the rest of the list
-        if (results.size() > 0 && (path.isEmpty() || path.equals("/")) && results.size() < this.pageLimit) {
+        if (!results.isEmpty() && (path.isEmpty() || path.equals("/")) && results.size() < this.pageLimit) {
             SwiftObject lastObject = results.get(results.size() - 1);
             if (lastObject.isDirectory()) {
                 options.marker((path.isEmpty() ? "" : (path + "/")) + lastObject.getDirectoryName());
@@ -121,7 +202,7 @@ public class SwiftService {
                 } else {
                     results.addAll(partial);
                 }
-                if (partial.size() > 0) {
+                if (!partial.isEmpty()) {
                     lastObject = (SwiftObject) partial.get(partial.size() - 1);
                     if (lastObject.isDirectory()) {
                         options.marker((path.isEmpty() ? "" : (path + "/")) + lastObject.getDirectoryName());
@@ -131,7 +212,18 @@ public class SwiftService {
                         }
                     }
                 }
-            } while (partial.size() > 0 && results.size() <= this.pageLimit);
+            } while (!partial.isEmpty() && results.size() <= this.pageLimit);
+        }
+        if (this.folderPlaceholder != null) {
+            results.removeIf(r -> {
+                if (r.getName() != null) {
+                    final int idx = r.getName().lastIndexOf('/');
+                    return idx > 0
+                           ? r.getName().substring(idx + 1).equals(this.folderPlaceholder)
+                           : r.getName().equals(this.folderPlaceholder);
+                }
+                return false;
+            });
         }
         return results;
     }
@@ -287,12 +379,18 @@ public class SwiftService {
     }
 
     private ObjectStorageService authenticate() {
-        //if (this.objectStorageService == null) {
-            try {
-                return OpenStackSession.objectStorageService(parameters);
-            } catch (AuthenticationException ex) {
-                throw new TopologyException(String.format("OpenStack authentication failed. Reason: %s", ex.getMessage()));
-            }
-        //}
+        try {
+            return parameters == null || parameters.size() == 1
+                   ? OpenStackSession.objectStorageService()
+                   : OpenStackSession.objectStorageService(parameters);
+        } catch (AuthenticationException ex) {
+            throw new TopologyException(String.format("OpenStack authentication failed. Reason: %s", ex.getMessage()));
+        }
+    }
+
+    private FileObject emptyFolderItem() {
+        final FileObject object = new FileObject("", this.folderPlaceholder, false, 0, this.folderPlaceholder);
+        object.addAttribute(CONTENTS, ".");
+        return object;
     }
 }

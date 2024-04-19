@@ -23,8 +23,15 @@
   "Sentinel5P": {
     "mission": "Sentinel5P",
     "sensorType": "ATMOSPHERIC",
-    "description": "",
+    "description": "The Copernicus Sentinel-5 Precursor mission dedicated to monitoring our atmosphere, consists of one satellite carrying the TROPOspheric Monitoring Instrument (TROPOMI) instrument. The primary goal of TROPOMI is to provide daily global observations of key atmospheric constituents related to monitoring and forecasting air quality, the ozone layer, and climate change. Level 2 data provide total columns of ozone, sulfur dioxide, nitrogen dioxide, carbon monoxide, formaldehyde, tropospheric columns of ozone, vertical profiles of ozone and cloud & aerosol information. Level 2 data has been available since April 2018. These measurements are used to improve air quality forecasts and monitor the concentrations of atmospheric constituents.",
     "temporalCoverage": "from october 2018 to present",
+    "spatialCoverage": "Global"
+  },
+  "Sentinel1-orbit-files": {
+    "mission": "Sentinel1-orbit-files",
+    "sensorType": "RADAR",
+    "description": "Orbit files for Sentinel-1 acquisitions",
+    "temporalCoverage": "from 2014 to present",
     "spatialCoverage": "Global"
   }
 }

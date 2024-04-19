@@ -27,9 +27,11 @@ public class LandsatUsgsTest {
 
     public static void main(String[] args) throws Exception {
         setup();
-        downloadTest();
+        //downloadTest();
+        searchEcostressTest();
 //        searchLandsat8Test();
 //        searchNewLandsat8Test();
+        System.exit(0);
     }
 
     static void downloadTest() throws IOException {
@@ -149,6 +151,31 @@ public class LandsatUsgsTest {
         query.addParameter(CommonParameterNames.PRODUCT_TYPE, "L1TP");
         query.addParameter("maxClouds", 100);
         query.setMaxResults(5);
+        List<EOProduct> results = query.execute();
+        results.forEach(r -> {
+            System.out.println("ID=" + r.getId());
+            System.out.println("NAME=" + r.getName());
+            System.out.println("LOCATION=" + r.getLocation());
+            System.out.println("FOOTPRINT=" + r.getGeometry());
+        });
+    }
+
+    static void searchEcostressTest() throws Exception {
+        Logger logger = LogManager.getLogManager().getLogger("");
+        for (Handler handler : logger.getHandlers()) {
+            handler.setLevel(Level.INFO);
+        }
+        DataSource<?, ?> dataSource = getDatasourceRegistry().getService(USGSDataSource.class);
+        dataSource.setCredentials("kraftek", "cei7pitici.");
+        String[] sensors = dataSource.getSupportedSensors();
+
+        DataQuery query = dataSource.createQuery("ECOSTRESS");
+        QueryParameter<String> product = query.createParameter(CommonParameterNames.PRODUCT, String.class);
+        product.setValue("L1B_ATT_32259_20240314T231351");
+        query.addParameter(product);
+        QueryParameter<String> collection = query.createParameter(CommonParameterNames.PLATFORM, String.class);
+        collection.setValue("ecostress_eco1batt");
+        query.addParameter(collection);
         List<EOProduct> results = query.execute();
         results.forEach(r -> {
             System.out.println("ID=" + r.getId());

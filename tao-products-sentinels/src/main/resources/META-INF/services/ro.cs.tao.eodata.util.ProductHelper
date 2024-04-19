@@ -2,4 +2,5 @@ ro.cs.tao.products.sentinels.Sentinel1ProductHelper
 ro.cs.tao.products.sentinels.L1CProductHelper
 ro.cs.tao.products.sentinels.L2AProductHelper
 ro.cs.tao.products.sentinels.Sentinel3ProductHelper
+ro.cs.tao.products.sentinels.Sentinel5PProductHelper
 

@@ -90,6 +90,7 @@ public class LSADataQuery extends DataQuery {
             final String remoteName = getRemoteName(CommonParameterNames.PRODUCT);
             params.removeIf(p -> !remoteName.equals(p.getName()));
         }
+        final String productType = getProductType();
         List<EOProduct> tmpResults;
         final List<NameValuePair> queryParams = new ArrayList<>(params);
         final long nrProductsFound = this.getCount();
@@ -108,13 +109,16 @@ public class LSADataQuery extends DataQuery {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
                         final XmlResponseParser<EOProduct> parser = new XmlResponseParser<>();
-                        parser.setHandler(new LSAXmlResponseHandler("entry"));
+                        parser.setHandler(new LSAXmlResponseHandler("entry", this.coverageFilter));
                         tmpResults = parser.parse(EntityUtils.toString(response.getEntity()));
                         if (tmpResults != null) {
                             final String downloadUrl = this.source.getConnectionString("Download");
                             tmpResults.forEach(tr -> {
                                 try {
                                     tr.setLocation(downloadUrl + tr.getLocation());
+                                    if(productType != null) {
+                                        tr.addAttribute("productType", productType);
+                                    }
                                 } catch (URISyntaxException e) {
                                     logger.warning(e.getMessage());
                                 }
@@ -191,5 +195,20 @@ public class LSADataQuery extends DataQuery {
             throw new QueryException(ex);
         }
         return count;
+    }
+    private String getProductType() {
+        String productType = null;
+        if (parameters.containsKey(CommonParameterNames.PRODUCT_TYPE)) {
+            final QueryParameter<?> parameter = parameters.get(CommonParameterNames.PRODUCT_TYPE);
+            if(parameter.getValue() != null) {
+                String value = parameter.getValue().toString();
+                if ("S2_MSIL1C".equals(value)) {
+                    productType = "S2MSI1C";
+                } else if ("S2_MSIL2A".equals(value)) {
+                    productType = "S2MSI2A";
+                }
+            }
+        }
+        return productType;
     }
 }

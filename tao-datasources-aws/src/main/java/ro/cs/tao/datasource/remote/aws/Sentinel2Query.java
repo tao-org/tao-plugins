@@ -122,7 +122,7 @@ class Sentinel2Query extends DataQuery {
             } else {
                 sensingStart = todayDate.minusDays(30).format(dateFormat);
             }
-            startDate.setTime(Date.from(LocalDateTime.parse(sensingStart, dateFormat).atZone(ZoneId.of("UTC")).toInstant()));
+            startDate.setTime(Date.from(LocalDate.parse(sensingStart, dateFormat).atStartOfDay(ZoneId.of("UTC")).toInstant()));
             currentParameter = this.parameters.get(CommonParameterNames.END_DATE);
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
@@ -137,7 +137,7 @@ class Sentinel2Query extends DataQuery {
             } else {
                 sensingEnd = todayDate.format(dateFormat);
             }
-            endDate.setTime(Date.from(LocalDateTime.parse(sensingEnd, dateFormat).atZone(ZoneId.of("UTC")).toInstant()));
+            endDate.setTime(Date.from(LocalDate.parse(sensingEnd, dateFormat).atStartOfDay(ZoneId.of("UTC")).toInstant()));
             //http://sentinel-s2-l1c.s3.amazonaws.com/?delimiter=/&prefix=tiles/15/R/TM/
 
             currentParameter = this.parameters.get(CommonParameterNames.CLOUD_COVER);
@@ -234,7 +234,9 @@ class Sentinel2Query extends DataQuery {
                                                             if (processingDate != null) {
                                                                 product.setProcessingDate(LocalDateTime.parse(processingDate, nameDateFormat));
                                                             }
-                                                            results.put(product.getName(), product);
+                                                            if (this.coverageFilter == null || !this.coverageFilter.test(product)) {
+                                                                results.put(product.getName(), product);
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -300,7 +302,7 @@ class Sentinel2Query extends DataQuery {
             } else {
                 sensingStart = todayDate.minusDays(30).format(dateFormat);
             }
-            startDate.setTime(Date.from(LocalDateTime.parse(sensingStart, dateFormat).atZone(ZoneId.of("UTC")).toInstant()));
+            startDate.setTime(Date.from(LocalDate.parse(sensingStart, dateFormat).atStartOfDay(ZoneId.of("UTC")).toInstant()));
             currentParameter = this.parameters.get(CommonParameterNames.END_DATE);
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
@@ -315,7 +317,7 @@ class Sentinel2Query extends DataQuery {
             } else {
                 sensingEnd = todayDate.format(dateFormat);
             }
-            endDate.setTime(Date.from(LocalDateTime.parse(sensingEnd, dateFormat).atZone(ZoneId.of("UTC")).toInstant()));
+            endDate.setTime(Date.from(LocalDate.parse(sensingEnd, dateFormat).atStartOfDay(ZoneId.of("UTC")).toInstant()));
             //http://sentinel-s2-l1c.s3.amazonaws.com/?delimiter=/&prefix=tiles/15/R/TM/
 
             /*currentParameter = this.parameters.get("cloudcoverpercentage");

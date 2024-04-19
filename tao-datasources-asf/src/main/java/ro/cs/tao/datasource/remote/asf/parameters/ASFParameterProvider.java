@@ -34,6 +34,7 @@ public class ASFParameterProvider extends AbstractParameterProvider {
                 new HashMap<String, ProductFetchStrategy>() {{
                     put("Sentinel1", new AsfDownloadStrategy(dataSource, targetFolder, new Properties() {{ put("auto.uncompress", "false"); }}));
                     put("ALOS", new AsfDownloadStrategy(dataSource, targetFolder, new Properties() {{ put("auto.uncompress", "false"); }}));
+                    put("SMAP", new AsfDownloadStrategy(dataSource, targetFolder, new Properties() {{ put("auto.uncompress", "false"); }}));
                 }});
     }
 }

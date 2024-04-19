@@ -16,6 +16,7 @@
 package ro.cs.tao.execution.drmaa.slurm;
 
 import org.ggf.drmaa.Session;
+import ro.cs.tao.drmaa.Environment;
 import ro.cs.tao.execution.drmaa.AbstractSessionFactory;
 
 /**
@@ -29,6 +30,11 @@ public class SlurmSessionFactory extends AbstractSessionFactory {
 
     public SlurmSessionFactory() {
         super();
+    }
+
+    @Override
+    public Environment getEnvironment() {
+        return Environment.DEFAULT;
     }
 
     @Override

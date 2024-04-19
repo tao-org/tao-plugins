@@ -109,9 +109,9 @@ class Landsat8Query extends DataQuery {
             } else {
                 sensingEnd = todayDate.format(dateFormat);
             }
-            startDate.setTime(Date.from(LocalDateTime.parse(sensingStart, dateFormat).atZone(ZoneId.of("UTC")).toInstant()));
+            startDate.setTime(Date.from(LocalDate.parse(sensingStart, dateFormat).atStartOfDay(ZoneId.of("UTC")).toInstant()));
             Calendar endDate = Calendar.getInstance();
-            endDate.setTime(Date.from(LocalDateTime.parse(sensingEnd, dateFormat).atZone(ZoneId.of("UTC")).toInstant()));
+            endDate.setTime(Date.from(LocalDate.parse(sensingEnd, dateFormat).plusDays(1).atStartOfDay(ZoneId.of("UTC")).toInstant()));
             currentParameter = this.parameters.get(CommonParameterNames.PRODUCT_TYPE);
             if (currentParameter != null) {
                 productType = Enum.valueOf(LandsatProduct.class, currentParameter.getValueAsString());
@@ -188,7 +188,9 @@ class Landsat8Query extends DataQuery {
                                         if (this.limit > 0 && this.limit < results.size()) {
                                             break;
                                         }
-                                        results.put(product.getName(), product);
+                                        if (this.coverageFilter == null || !this.coverageFilter.test(product)) {
+                                            results.put(product.getName(), product);
+                                        }
                                     }
                                 }
                             }
@@ -223,7 +225,9 @@ class Landsat8Query extends DataQuery {
                                         if (this.limit > 0 && this.limit < results.size()) {
                                             break;
                                         }
-                                        results.put(product.getName(), product);
+                                        if (this.coverageFilter == null || !this.coverageFilter.test(product)) {
+                                            results.put(product.getName(), product);
+                                        }
                                     }
                                 }
                             }

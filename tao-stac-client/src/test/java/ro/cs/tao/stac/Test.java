@@ -54,7 +54,7 @@ public class Test {
         ItemCollection results = client.search(collectionName, params);
         assert (results != null);
         List<Item> features = results.getFeatures();
-        if (features != null && features.size() > 0) {
+        if (features != null && !features.isEmpty()) {
             Item it = features.get(0);
             Map<String, Asset> assets = it.getAssets();
             System.out.println(mapper.writer().writeValueAsString(it));

@@ -20,6 +20,8 @@ import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
 import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
 import org.w3id.cwl.cwl1_2.utils.ValidationException;
 
+import java.util.Map;
+
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#InputArraySchema</I><BR>
  */
@@ -213,5 +215,11 @@ public class InputArraySchemaImpl extends SaveableImpl implements InputArraySche
     this.label = (java.util.Optional<String>) label;
     this.doc = (Object) doc;
     this.name = (java.util.Optional<String>) name;
+  }
+
+  @Override
+  public String toString() {
+    return (this.items != null ? this.items.toString() : "") +
+            ((this.type != null && this.type.toString().equalsIgnoreCase("array") ? "[]" : ""));
   }
 }

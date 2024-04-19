@@ -102,7 +102,7 @@ public class FedEODownloadStrategy extends DownloadStrategy<Header> {
             }
             List<NameValuePair> requestProperties = new ArrayList<>();
             HttpURLConnection connection = NetUtils.openURLConnection(HttpMethod.GET, productDownloadUrl, authHeader, requestProperties);
-            connection.setInstanceFollowRedirects(false);
+            connection.setInstanceFollowRedirects(true);
             connection.connect();
             responseStatus = connection.getResponseCode();
             switch (responseStatus){

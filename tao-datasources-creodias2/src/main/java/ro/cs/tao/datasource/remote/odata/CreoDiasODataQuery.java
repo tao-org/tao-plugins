@@ -22,6 +22,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.component.enums.Condition;
 import ro.cs.tao.datasource.DataQuery;
+import ro.cs.tao.datasource.ProductHelperFactory;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
@@ -38,7 +39,6 @@ import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.util.ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
-import ro.cs.tao.products.sentinels.SentinelProductHelper;
 import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.DateUtils;
 import ro.cs.tao.utils.HttpMethod;
@@ -79,7 +79,7 @@ public class CreoDiasODataQuery extends DataQuery {
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
         Map<String, EOProduct> results = new LinkedHashMap<>();
-        Map<String, String> queries = null;
+        Map<String, String> queries;
         try {
             queries = buildQueriesParams();
         } catch (ConversionException e) {
@@ -116,6 +116,7 @@ public class CreoDiasODataQuery extends DataQuery {
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("$filter", query.getValue()));
                 params.add(new BasicNameValuePair("$expand", "Attributes"));
+                params.add(new BasicNameValuePair("$expand", "Assets"));
                 params.add(new BasicNameValuePair("$top", String.valueOf(pageSize)));
                 params.add(new BasicNameValuePair("$skip", String.valueOf((i - 1) * pageSize)));
                 params.add(new BasicNameValuePair("$orderby", "ContentDate/Start asc"));
@@ -126,7 +127,8 @@ public class CreoDiasODataQuery extends DataQuery {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
                             String rawResponse = EntityUtils.toString(response.getEntity());
-                            ResponseParser<EOProduct> parser = new JsonResponseParser<>(new CreodiasJsonResponseHandler((CreoDiasODataSource) this.source));
+                            ResponseParser<EOProduct> parser = new JsonResponseParser<>(new CreodiasJsonResponseHandler((CreoDiasODataSource) this.source,
+                                                                                                                        this.coverageFilter));
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null) {
                                 if (isS3) {
@@ -144,7 +146,7 @@ public class CreoDiasODataQuery extends DataQuery {
                                     for (EOProduct result : tmpResults) {
                                         if (!results.containsKey(result.getName())) {
                                             try {
-                                                productHelper = SentinelProductHelper.create(result.getName());
+                                                productHelper = ProductHelperFactory.getHelper(result.getName());
                                             } catch (Exception ex) {
                                                 logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
                                                 continue;
@@ -158,7 +160,7 @@ public class CreoDiasODataQuery extends DataQuery {
                                             } else if (isS1) {
                                                 result.addAttribute("relativeOrbit", getRelativeOrbit(result.getName()));
                                             }
-                                            if (hasProcessingDate) {
+                                            if (hasProcessingDate && productHelper != null) {
                                                 String dateString = productHelper.getProcessingDate();
                                                 if (dateString != null) {
                                                     try {
@@ -200,7 +202,7 @@ public class CreoDiasODataQuery extends DataQuery {
             throw new RuntimeException(e);
         }
         //final int size = queries.size();
-        final String countUrl = this.source.getProperty("scihub.search.count.url");
+        final String countUrl = this.source.getProperty("search.url");
         if (countUrl != null) {
             for (Map.Entry<String, String> query : queries.entrySet()) {
                 List<NameValuePair> params = new ArrayList<>();
@@ -303,7 +305,12 @@ public class CreoDiasODataQuery extends DataQuery {
                     if (idx > 0) {
                         query.append(" AND ");
                     }
+                    String value;
                     switch (parameter.getName()) {
+                        case CommonParameterNames.PLATFORM:
+                            query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.PLATFORM),
+                                                             parameter, Condition.EQ));
+                            break;
                         case CommonParameterNames.START_DATE:
                             query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.START_DATE),
                                                              parameter, Condition.GT));
@@ -324,12 +331,14 @@ public class CreoDiasODataQuery extends DataQuery {
                                 }
                             } else {
                                 // remove the last " AND " because parameter is skipped
-                                query.setLength(query.length() - 5);
+                                if (query.length() >= 5 && " AND ".equals(query.substring(query.length() - 5))) {
+                                    query.setLength(query.length() - 5);
+                                }
                                 idx--;
                             }
                             break;
                         case CommonParameterNames.TILE:
-                            String value = parameter.getValueAsString();
+                            value = parameter.getValueAsString();
                             if (value.startsWith("[") && value.endsWith("]")) {
                                 String[] values = value.substring(1, value.length() - 1).split(",");
                                 query.append("(");

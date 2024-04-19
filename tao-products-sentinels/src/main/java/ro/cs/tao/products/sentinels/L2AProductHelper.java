@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  */
 public class L2AProductHelper extends Sentinel2ProductHelper {
 
-    static final Pattern ProductV14 = Pattern.compile("(S2[A-B])_(MSIL1C|MSIL2A)_(\\d{8}T\\d{6})_(N\\d{4})_R(\\d{3})_T(\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
+    static final Pattern ProductV14 = Pattern.compile("(S2[A-B])_(MSIL2A)_(\\d{8}T\\d{6})_(N\\d{4})_R(\\d{3})_T(\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
 
     public L2AProductHelper() {
         super();

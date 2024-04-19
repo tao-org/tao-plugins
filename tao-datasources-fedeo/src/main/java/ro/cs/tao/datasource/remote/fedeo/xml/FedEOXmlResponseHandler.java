@@ -67,6 +67,15 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
             case "product":
                 this.identifiedElement = qName;
                 break;
+            case "link":
+                if(this.current != null && attributes.getValue("title") != null && attributes.getValue("title").equals("Download") ) {
+                    try {
+                        this.current.setLocation(attributes.getValue("href"));
+                    } catch (URISyntaxException e) {
+                        logger.warning(e.getMessage());
+                    }
+                }
+                break;
             case "":
                 break;
             default:
@@ -78,12 +87,28 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
     protected void handleEndElement(String qName) {
         final String elementValue = buffer.toString();
         switch (qName) {
-            case "title":
+            case "identifier":
                 if (this.current != null) {
                     this.current.setId(elementValue);
                     this.current.setName(elementValue);
                     this.current.setPixelType(PixelType.UINT16);
                     this.current.setSensorType(SensorType.UNKNOWN);
+                }
+                break;
+            case "date":
+                if (elementValue.isEmpty()) {
+                    break;
+                }
+                String[] dates = elementValue.split("/");
+                if (dates.length < 2) {
+                    break;
+                }
+                try {
+                    this.current.setAcquisitionDate(new DateAdapter().unmarshal(dates[0]));
+                    this.current.addAttribute("beginPosition", dates[0]);
+                    this.current.addAttribute("endPosition", dates[1]);
+                } catch (Exception e) {
+                    logger.warning(e.getMessage());
                 }
                 break;
             case "beginPosition":
@@ -151,8 +176,8 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                     if (points.length >= 5) {
                         Polygon2D polygon2D = new Polygon2D();
                         for (int i = 0; i < points.length; i += 2) {
-                            polygon2D.append(Double.parseDouble(points[i + 1]),
-                                    Double.parseDouble(points[i]));
+                            polygon2D.append(Double.parseDouble(points[i + 1].replaceAll("[^e\\d\\-\\.]","")),
+                                    Double.parseDouble(points[i].replaceAll("[^e\\d\\-\\.]","")));
                         }
                         this.current.setGeometry(polygon2D.toWKT(8));
                     }

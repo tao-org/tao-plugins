@@ -85,7 +85,7 @@ public class STACClient {
     public ItemCollection listItems(String collectionName, int pageNumber, int pageSize) throws IOException {
         String href = this.stacURL + "/collections/" + collectionName + "/items";
         if (pageNumber > 0 & pageSize > 0) {
-            href += "?page=" + pageSize + "&limit=" + pageSize;
+            href += "?page=" + pageNumber + "&limit=" + pageSize;
         }
         final HTTPResponse response = this.client.get(new URL(href));
         try (InputStream inStream = response.getResponseStream()) {
@@ -156,7 +156,7 @@ public class STACClient {
      */
     public void download(Item item, Path folder) throws IOException {
         final Map<String, Asset> assets = item.getAssets();
-        if (assets != null && assets.size() > 0) {
+        if (assets != null && !assets.isEmpty()) {
             final Path target = folder.resolve(item.getId());
             Files.createDirectories(target);
             try {

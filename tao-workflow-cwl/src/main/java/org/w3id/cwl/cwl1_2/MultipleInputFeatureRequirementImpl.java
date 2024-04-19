@@ -43,6 +43,14 @@ public class MultipleInputFeatureRequirementImpl extends SaveableImpl implements
     return this.class_;
   }
 
+  public void setClass_(MultipleInputFeatureRequirement_class class_) {
+    this.class_ = class_;
+  }
+
+  public MultipleInputFeatureRequirementImpl() {
+    super();
+  }
+
   /**
    * Used by {@link org.w3id.cwl.cwl1_2.utils.RootLoader} to construct instances of MultipleInputFeatureRequirementImpl.
    *

@@ -16,7 +16,7 @@
             <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}
             </outputFileNameMapping>
             <excludes>
-                <exclude>ro.cs.tao:tao-*</exclude>
+                <exclude>ro.c-s.tao:tao-*</exclude>
                 <!-- Unwanted dependencies -->
                 <exclude>commons-lang:commons-lang:jar:2.4</exclude>
                 <exclude>org.apache.httpcomponents:httpclient:jar:4.5.13</exclude>
@@ -55,31 +55,31 @@
             <outputDirectory>plugins</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>
             <includes>
-                <include>ro.cs.tao:*</include>
+                <include>ro.c-s.tao:*</include>
             </includes>
             <excludes>
-                <exclude>ro.cs.tao:tao-config</exclude>
-                <exclude>ro.cs.tao:tao-data-model</exclude>
-                <exclude>ro.cs.tao:tao-data-sources</exclude>
-                <exclude>ro.cs.tao:tao-drmaa-api</exclude>
-                <exclude>ro.cs.tao:tao-execution</exclude>
-                <exclude>ro.cs.tao:tao-execution-api</exclude>
-                <exclude>ro.cs.tao:tao-execution-model</exclude>
-                <exclude>ro.cs.tao:tao-gdal</exclude>
-                <exclude>ro.cs.tao:tao-mail</exclude>
-                <exclude>ro.cs.tao:tao-notification</exclude>
-                <exclude>ro.cs.tao:tao-orchestration</exclude>
-                <exclude>ro.cs.tao:tao-persistence</exclude>
-                <exclude>ro.cs.tao:tao-quota</exclude>
-                <exclude>ro.cs.tao:tao-scheduling</exclude>
-                <exclude>ro.cs.tao:tao-service-api</exclude>
-                <exclude>ro.cs.tao:tao-service-base-api</exclude>
-                <exclude>ro.cs.tao:tao-service-registry</exclude>
-                <exclude>ro.cs.tao:tao-spring-bridge</exclude>
-                <exclude>ro.cs.tao:tao-topology</exclude>
-                <exclude>ro.cs.tao:tao-transfer</exclude>
-                <exclude>ro.cs.tao:tao-utils</exclude>
-                <exclude>ro.cs.tao:tao-workflow-optimizer</exclude>
+                <exclude>ro.c-s.tao:tao-config</exclude>
+                <exclude>ro.c-s.tao:tao-data-model</exclude>
+                <exclude>ro.c-s.tao:tao-data-sources</exclude>
+                <exclude>ro.c-s.tao:tao-drmaa-api</exclude>
+                <exclude>ro.c-s.tao:tao-execution</exclude>
+                <exclude>ro.c-s.tao:tao-execution-api</exclude>
+                <!--<exclude>ro.c-s.tao:tao-execution-model</exclude>-->
+                <exclude>ro.c-s.tao:tao-gdal</exclude>
+                <exclude>ro.c-s.tao:tao-mail</exclude>
+                <exclude>ro.c-s.tao:tao-notification</exclude>
+                <exclude>ro.c-s.tao:tao-orchestration</exclude>
+                <exclude>ro.c-s.tao:tao-persistence</exclude>
+                <exclude>ro.c-s.tao:tao-quota</exclude>
+                <exclude>ro.c-s.tao:tao-scheduling</exclude>
+                <exclude>ro.c-s.tao:tao-service-api</exclude>
+                <exclude>ro.c-s.tao:tao-service-base-api</exclude>
+                <exclude>ro.c-s.tao:tao-service-registry</exclude>
+                <exclude>ro.c-s.tao:tao-spring-bridge</exclude>
+                <exclude>ro.c-s.tao:tao-topology</exclude>
+                <exclude>ro.c-s.tao:tao-transfer</exclude>
+                <exclude>ro.c-s.tao:tao-utils</exclude>
+                <exclude>ro.c-s.tao:tao-workflow-optimizer</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>

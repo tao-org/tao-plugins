@@ -34,4 +34,9 @@ public enum Operation_class {
     }
     throw new ValidationException(String.format("Expected one of %s", Operation_class.symbols, docVal));
   }
+
+  @Override
+  public String toString() {
+    return this.docVal;
+  }
 }

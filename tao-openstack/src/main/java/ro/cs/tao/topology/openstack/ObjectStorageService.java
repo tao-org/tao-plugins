@@ -4,11 +4,14 @@ import org.openstack4j.model.storage.object.SwiftObject;
 import ro.cs.tao.services.model.FileObject;
 import ro.cs.tao.services.storage.BaseStorageService;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workspaces.Repository;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,7 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
     public ObjectStorageService() {
         super();
         this.swiftService = new SwiftService();
+        this.swiftService.setFolderPlaceholder(FOLDER_PLACEHOLDER);
     }
 
     @Override
@@ -37,6 +41,11 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
     public void associate(Repository repository) {
         super.associate(repository);
         swiftService.setParameters(repository().getParameters());
+    }
+
+    @Override
+    public void createRoot(String root) throws IOException {
+        swiftService.createBucket(root);
     }
 
     @Override
@@ -203,6 +212,13 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
         }
     }
 
+    @Override
+    public String computeHash(String path) throws IOException, NoSuchAlgorithmException {
+        final MessageDigest md5Digest = MessageDigest.getInstance("MD5");
+        traverseHash(path, md5Digest);
+        return StringUtilities.byteArrayToHexString(md5Digest.digest());
+    }
+
     private List<FileObject> list(String folderPath, Set<String> exclusions, String lastItem) {
         final Path path = Paths.get(folderPath);
         if (path.isAbsolute()) {
@@ -250,6 +266,23 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
                     if (object.isDirectory()) {
                         traverse(bucket + "/" + oPath, exclusions, files);
                     }
+                }
+            }
+        }
+    }
+
+    private void traverseHash(String fromPath, MessageDigest digest) {
+        Repository repository = repository();
+        final String bucket = repository.bucketName();
+        final String relativePath = repository.relativizeToBucket(fromPath);
+        String prefix = repository.getUrlPrefix();
+        List<? extends SwiftObject> objects = this.swiftService.list(relativePath, bucket, null);
+        if (objects != null) {
+            for (SwiftObject object : objects) {
+                if (object.isDirectory()) {
+                    traverseHash(bucket + "/" + object.getDirectoryName(), digest);
+                } else {
+                    digest.update(StringUtilities.hexStringToByteArray(object.getETag()));
                 }
             }
         }

@@ -30,4 +30,6 @@ public interface SubworkflowFeatureRequirement extends ProcessRequirement, Savea
    */
 
   SubworkflowFeatureRequirement_class getClass_();
+
+  void setClass_(SubworkflowFeatureRequirement_class class_);
 }

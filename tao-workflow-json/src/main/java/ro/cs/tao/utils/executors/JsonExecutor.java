@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -91,8 +92,9 @@ public class JsonExecutor extends Executor<Object>
             if (metadata.containsKey("dependsOn")) {
                 view.setDependencies((List<Long>) metadata.get("dependsOn"));
             }
-            if (metadata.containsKey("canDelete")) {
-                view.setTemporaries((List<String>) metadata.get("canDelete"));
+            if (metadata.containsKey("taskOutput")) {
+                Map<String, String> list = (Map<String, String>) metadata.get("taskOutput");
+                view.setTemporaries(new ArrayList<>(list.values()));
             }
         }
         return view;
