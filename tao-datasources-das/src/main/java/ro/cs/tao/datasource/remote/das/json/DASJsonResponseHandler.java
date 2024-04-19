@@ -27,6 +27,7 @@ import ro.cs.tao.serialization.JsonMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,47 +38,72 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
     static final Pattern S1Pattern =
             Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
     private final DASDataSource dataSource;
+    private final Predicate<EOProduct> filter;
 
-    public DASJsonResponseHandler(DASDataSource dataSource) {
+    public DASJsonResponseHandler(DASDataSource dataSource, Predicate<EOProduct> filter) {
         this.dataSource = dataSource;
+        this.filter = filter;
     }
 
     @Override
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
         Results results = JsonMapper.instance().readValue(content, Results.class);
         final List<EOProduct> retVal = new ArrayList<>();
-        if (results.getResults() != null) {
-            results.getResults().forEach(r -> {
+        final List<Result> resultList = results.getResults();
+        if (resultList != null) {
+            for (Result r : resultList) {
                 try {
                     EOProduct product = new EOProduct();
+                    final String footprint = r.getFootprint();
+                    if (footprint != null) {
+                        product.setGeometry(footprint.replace("geography'SRID=4326;", "").replace("'", ""));
+                        if (this.filter != null && this.filter.test(product)) {
+                            continue;
+                        }
+                    }
+                    final boolean isAux = r.getName().contains("AUX");
                     product.setName(r.getName());
                     product.setId(r.getId());
-                    product.setFormatType(DataFormat.RASTER);
+                    product.setFormatType(isAux ? DataFormat.OTHER : DataFormat.RASTER);
                     Object value = getAttributeValue(r, "platformShortName");
                     if (value != null) {
                         String platform = value.toString();
                         platform = platform.substring(0, 1).toUpperCase() + platform.substring(1).toLowerCase();
-                        product.setSensorType(platform.equalsIgnoreCase("sentinel1") ? SensorType.RADAR : SensorType.OPTICAL);
+                        product.setSensorType(platform.startsWith("Sentinel1") || isAux
+                                              ? SensorType.RADAR
+                                              : platform.equalsIgnoreCase("sentinel5p")
+                                                ? SensorType.ATMOSPHERIC
+                                                : SensorType.OPTICAL);
                         product.setSatelliteName(platform);
                     }
                     product.setPixelType(PixelType.UINT16);
                     product.setWidth(-1);
                     product.setHeight(-1);
-                    product.setGeometry(r.getFootprint().replace("geography'SRID=4326;", "").replace("'", ""));
                     value = getAttributeValue(r, "productType");
                     if (value != null) {
                         product.setProductType(value.toString());
                     }
-                    product.setLocation(dataSource.getConnectionString() + "(" + r.getId() + ")/$value");
+                    product.setLocation((r.getName().contains("AUX")
+                                            ? dataSource.getConnectionString("Sentinel1-orbit-files")
+                                            : dataSource.getConnectionString("Download")) + "(" + r.getId() + ")/$value");
                     product.setAcquisitionDate(r.getContentDate().getStart());
-                    product.addAttribute("relativeOrbit", getRelativeOrbit(product.getName()));
+                    final List<Attribute> attributes = r.getAttributes();
+                    final Attribute orbitNumber = attributes.stream().filter(a -> a.getName().equals("relativeOrbitNumber")).findFirst().orElse(null);
+                    product.addAttribute("relativeOrbit", orbitNumber != null
+                                                          ? String.valueOf(orbitNumber.getValue())
+                                                          : getRelativeOrbit(product.getName()));
                     product.addAttribute("s3path", r.getS3Path());
-                    r.getAttributes().forEach(a -> product.addAttribute(a.getName(), String.valueOf(a.getValue())));
+                    attributes.forEach(a -> product.addAttribute(a.getName(), String.valueOf(a.getValue())));
+                    final List<Asset> assets = r.getAssets();
+                    if (assets != null) {
+                        final Asset asset = assets.stream().filter(a -> "quicklook".equalsIgnoreCase(a.getType())).findFirst().orElse(null);
+                        product.setQuicklookLocation(asset != null ? asset.getDownloadLink() : null);
+                    }
                     retVal.add(product);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            });
+            }
         }
         return retVal;
     }

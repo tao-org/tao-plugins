@@ -33,7 +33,6 @@ import java.util.logging.Logger;
  * @author Oana H.
  */
 public class TaoLdapClient {
-
     private static final Logger logger = Logger.getLogger(TaoLdapClient.class.getName());
 
     // LDAP configuration properties
@@ -60,6 +59,8 @@ public class TaoLdapClient {
         ldapEnv.put(Context.SECURITY_AUTHENTICATION, securityAuthentication);
         ldapEnv.put(Context.SECURITY_PRINCIPAL, simpleUserName + "@" + userDomain);
         ldapEnv.put(Context.SECURITY_CREDENTIALS, password);
+        // for returning the guid as byte[]
+        ldapEnv.put("java.naming.ldap.attributes.binary", "ObjectGUID");
         User user = null;
         try {
             DirContext ctx = new InitialDirContext(ldapEnv);
@@ -74,9 +75,8 @@ public class TaoLdapClient {
             }
             SearchControls cons = new SearchControls();
             cons.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            String[] attrIDs = {"samAccountName", "distinguishedName", "sn", "givenname", "mail", "telephonenumber"};
-            cons.setReturningAttributes(attrIDs);
-            NamingEnumeration<SearchResult> answer = ctx.search(dn.toString(), "samAccountName=" + simpleUserName, cons);
+            cons.setReturningAttributes(LDAPAttributes.ALL);
+            NamingEnumeration<SearchResult> answer = ctx.search(dn.toString(), LDAPAttributes.ACCOUNT + "=" + simpleUserName, cons);
             if (answer.hasMore()) {
                 final Attributes attrs = answer.next().getAttributes();
                 user = new LdapUserAdapter().toTaoUser(attrs);

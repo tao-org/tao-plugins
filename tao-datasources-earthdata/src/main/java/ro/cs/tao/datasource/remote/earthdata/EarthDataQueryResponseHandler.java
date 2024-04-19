@@ -13,8 +13,15 @@ import java.net.URI;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProduct> {
+
+    private final Predicate<EOProduct> filter;
+
+    public EarthDataQueryResponseHandler(Predicate<EOProduct> filter) {
+        this.filter = filter;
+    }
 
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
         List<EOProduct> results = new ArrayList<>();
@@ -23,8 +30,8 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
 
         JsonObject feedObject = rootObject.getJsonObject("feed");
         JsonArray jsonArray = feedObject.getJsonArray("entry");
-
-        for (int i = 0; i< jsonArray.size(); i++) {
+        final int size = jsonArray.size();
+        for (int i = 0; i < size; i++) {
             try {
                 boolean hasDownloadLink = false;
                 JsonObject jsonObject = jsonArray.getJsonObject(i);
@@ -45,6 +52,9 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
                     }
                 }
                 result.setGeometry(createFootprint(jsonObject));
+                if (this.filter != null && this.filter.test(result)) {
+                    continue;
+                }
                 result.setApproximateSize((long)Float.parseFloat(jsonObject.getString("granule_size")));
                 result.setProductType(jsonObject.getString("original_format"));
                 if (hasDownloadLink) {
@@ -69,9 +79,9 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
     private String createFootprint(JsonObject jsonObject) {
         Polygon2D footprint = new Polygon2D();
         // footprint can be obtained from boxes or polygons object
-        if (jsonObject.getJsonArray("boxes") != null && jsonObject.getJsonArray("boxes").size() > 0) {
+        if (jsonObject.getJsonArray("boxes") != null && !jsonObject.getJsonArray("boxes").isEmpty()) {
             String coordinates = jsonObject.getJsonArray("boxes").getString(0).replace("\"", "");
-            String points[] = coordinates.split("\\s");
+            String[] points = coordinates.split("\\s");
             int length = points.length;
             if (length == 4) {
                 double latMin = Double.parseDouble(points[0]);
@@ -93,12 +103,12 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
                     footprint.append(currentCoordinate, nextCoordinate);
                 }
             }
-        } else if (jsonObject.getJsonArray("polygons") != null && jsonObject.getJsonArray("polygons").size() > 0) {
+        } else if (jsonObject.getJsonArray("polygons") != null && !jsonObject.getJsonArray("polygons").isEmpty()) {
            JsonArray polygons = jsonObject.getJsonArray("polygons");
             int length = polygons.size();
             if (length == 1) {
                 JsonValue coordinates = polygons.get(0).asJsonArray().get(0);
-                String points[] = coordinates.toString().replaceAll("\"","").split("\\s");
+                String[] points = coordinates.toString().replaceAll("\"","").split("\\s");
                 double currentCoordinate;
                 double nextCoordinate;
                 for (int j = 0; j < points.length - 1; j++) {
@@ -111,7 +121,7 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
                 int countPolygons = 0;
                 for (JsonValue polygon: polygons) {
                     JsonValue coordinates = polygon.asJsonArray().get(0);
-                    String points[] = coordinates.toString().replaceAll("\"","").split("\\s");
+                    String[] points = coordinates.toString().replaceAll("\"","").split("\\s");
                     double currentCoordinate;
                     double nextCoordinate;
                     for (int j = 0; j < points.length - 1; j++) {

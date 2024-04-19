@@ -7,18 +7,19 @@ import ro.cs.tao.user.User;
 public class KeycloakTest {
 
     public static void main(String[] args) throws JsonProcessingException {
-        final String url = "";
-        final String realm = "TAO";
-        final String appClient = "admin-cli";//"taoclient";
-        final String secret = "";
-        final String admin = "";
-        final String pwd = "";
+        final String url = "https://identity.cloudferro.com/auth";
+        final String realm = "DUNIA";
+        final String appClient = "tao";//"taoclient";
+        final String secret = "Sg8YMYzpYuTr0TOk503CBw8Zc1un5hPJ";
+        final String admin = "dunia.admin.api@cloudferro.com";
+        final String pwd = "77X#8WhC%VHG$OoG#kt$8Zlf";
         final KeycloakClient client = new KeycloakClient(url, realm, appClient, secret, admin, pwd);
         User user;
-        final ObjectMapper mapper = new ObjectMapper();
+        client.checkLoginCredentials("nicust@yahoo.com", "0change1me");
+        /*final ObjectMapper mapper = new ObjectMapper();
         String token = "";
         user = client.checkToken(token);
-        System.out.println(mapper.writeValueAsString(user));
+        System.out.println(mapper.writeValueAsString(user));*/
         //final String token = user.getPreferences().get(0).getValue();
         //System.out.println(client.validate(token) ? "Token valid" : "Cannot validate token");
         System.exit(0);

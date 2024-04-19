@@ -1,6 +1,7 @@
 package ro.cs.tao.execution.drmaa.kubernetes;
 
 import org.ggf.drmaa.Session;
+import ro.cs.tao.drmaa.Environment;
 import ro.cs.tao.execution.drmaa.AbstractSessionFactory;
 
 public class KubernetesSessionFactory extends AbstractSessionFactory {
@@ -12,6 +13,11 @@ public class KubernetesSessionFactory extends AbstractSessionFactory {
     @Override
     protected void initLibrary() {
         // NO-OP
+    }
+
+    @Override
+    public Environment getEnvironment() {
+        return Environment.KUBERNETES;
     }
 
     @Override

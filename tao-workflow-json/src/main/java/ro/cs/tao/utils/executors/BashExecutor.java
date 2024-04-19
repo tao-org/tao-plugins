@@ -3,6 +3,8 @@ package ro.cs.tao.utils.executors;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.docker.DockerVolumeMap;
 import ro.cs.tao.docker.ExecutionConfiguration;
+import ro.cs.tao.execution.JobCompletedListener;
+import ro.cs.tao.execution.model.ExecutionJob;
 import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.ExecutionUnitFormat;
 import ro.cs.tao.utils.StringUtilities;
@@ -20,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BashExecutor extends Executor<Object>
-                            implements ExecutionDescriptorConverter {
+                            implements ExecutionDescriptorConverter, JobCompletedListener {
     private static final String skeleton = "Help()\n" +
             "{\n" +
             "   # Display Help\n" +
@@ -67,6 +69,7 @@ public class BashExecutor extends Executor<Object>
                 this.outputConsumer.consume(cmdLine);
             } catch (IOException e) {
                 logger.severe(ExceptionUtils.getStackTrace(logger, e));
+                return 1;
             }
         }
         return 0;
@@ -75,6 +78,20 @@ public class BashExecutor extends Executor<Object>
     @Override
     public boolean canConnect() {
         return true;
+    }
+
+    @Override
+    public void onCompleted(ExecutionJob job) {
+        final Path outputsFile = Paths.get(unit.getScriptTargetPath()).getParent().resolve("outputs.txt");
+        if (Files.exists(outputsFile)) {
+            final Map<String, Integer> outSet = new LinkedHashMap<>();
+            try {
+                outSet.putAll((Map<String, Integer>) new ObjectMapper().readValue(Files.readAllBytes(outputsFile), LinkedHashMap.class));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
     }
 
     private String asCommandLine(ExecutionUnit unit, boolean isFirst) {
@@ -99,8 +116,15 @@ public class BashExecutor extends Executor<Object>
             }
             Map<String, Integer> inputSet = new LinkedHashMap<>();
             final Path inputsFile = Paths.get(unit.getScriptTargetPath()).getParent().resolve("inputs.txt");
-            if (isFirst && metadata.containsKey("inputs")) {
-                String[] inputs = ((String) metadata.get("inputs")).split(",");
+            if (isFirst) {
+                String inputList = (String) metadata.get("inputs");
+                String[] inputs;
+                if (inputList == null) {
+                    Map<String, String> outputs = (Map<String, String>) metadata.get("taskOutput");
+                    inputs = outputs.values().toArray(new String[0]);
+                } else {
+                    inputs = inputList.split(",");
+                }
                 String hostWorkspaceFolder = map.getHostWorkspaceFolder();
                 if (hostWorkspaceFolder.endsWith("/")) {
                     hostWorkspaceFolder = hostWorkspaceFolder.substring(0, hostWorkspaceFolder.length() - 1);
@@ -129,6 +153,40 @@ public class BashExecutor extends Executor<Object>
                         logger.severe(ExceptionUtils.getStackTrace(logger, e));
                     }
                 }
+                final Map<String, Integer> outSet = new LinkedHashMap<>();
+                int idx = inputSet.size() + 1;
+                if (metadata.containsKey("isTerminal") && (Boolean) metadata.get("isTerminal")) {
+                    final Path outputsFile = Paths.get(unit.getScriptTargetPath()).getParent().resolve("outputs.txt");
+                    final Map<String, String> outList = (Map<String, String>) metadata.get("taskOutput");
+                    String hostWorkspaceFolder = map.getHostWorkspaceFolder();
+                    if (hostWorkspaceFolder.endsWith("/")) {
+                        hostWorkspaceFolder = hostWorkspaceFolder.substring(0, hostWorkspaceFolder.length() - 1);
+                    }
+                    String containerWorkspaceFolder = map.getContainerWorkspaceFolder();
+                    if (containerWorkspaceFolder.endsWith("/")) {
+                        containerWorkspaceFolder = containerWorkspaceFolder.substring(0, containerWorkspaceFolder.length() - 1);
+                    }
+                    if (outList != null && !outList.isEmpty()) {
+                        try {
+                            if (Files.exists(outputsFile)) {
+                                outSet.putAll((Map<String, Integer>) new ObjectMapper().readValue(Files.readAllBytes(outputsFile), LinkedHashMap.class));
+                                idx += outSet.size();
+                            } else {
+                                Files.createFile(outputsFile);
+                            }
+                            for (Map.Entry<String, String> entry : outList.entrySet()) {
+                                outSet.put(entry.getValue().replace("file:///", "/").replace(":", "")
+                                                 .replace(hostWorkspaceFolder, containerWorkspaceFolder)
+                                                 .replace(map.getHostEODataFolder(), map.getContainerEoDataFolder())
+                                                 .replace(map.getHostConfigurationFolder(), map.getContainerConfigurationFolder()),
+                                           idx);
+                            }
+                            Files.write(outputsFile, new ObjectMapper().writeValueAsBytes(outSet), StandardOpenOption.TRUNCATE_EXISTING);
+                        } catch (IOException e) {
+                            logger.severe(ExceptionUtils.getStackTrace(logger, e));
+                        }
+                    }
+                }
             }
             List<String> arguments;
             final boolean isBash = args.get(0).equals("/bin/bash");
@@ -154,7 +212,7 @@ public class BashExecutor extends Executor<Object>
                     variable = "argument" + index;
                     for (int j = 1; j < arguments.size(); j++) {
                         if (arguments.get(j).equals(arg)) {
-                            arguments.set(j, "$" + variable);
+                            arguments.set(j, "$" + (isBash ? "{" + variable + "}" : variable));
                         }
                     }
                     //appendLine(builder, variable + "=" + positionalArgument);
@@ -168,11 +226,12 @@ public class BashExecutor extends Executor<Object>
                 for (int idx = 1; idx < inputSet.size(); idx++) {
                     helpArgs += "<product_" + idx + "> ";
                 }
-                String text = String.format(skeleton, Paths.get(unit.getScriptTargetPath()).getFileName(), helpArgs);
+                final StringBuilder text = new StringBuilder();
+                text.append(String.format(skeleton, Paths.get(unit.getScriptTargetPath()).getFileName(), helpArgs));
                 for (int i = 1; i <= inputSet.size(); i++) {
-                    text += "\n$argument" + i + "=$" + i;
+                    text.append("\n$argument").append(i).append("=$").append(i);
                 }
-                text += "\n";
+                text.append("\n");
 
                 builder.insert(0, text);
             }
@@ -196,11 +255,11 @@ public class BashExecutor extends Executor<Object>
         }
         Long memory = unit.getMinMemory();
         if (memory != null && memory > 0) {
-            append(builder, " --memory " + memory + "MB");
+            append(builder, " --memory " + memory + "MB ");
         }
         String registry = container.getContainerRegistry();
         if (!StringUtilities.isNullOrEmpty(registry)) {
-            append(builder, " " + registry + "/");
+            append(builder, registry + "/");
         }
         append(builder, container.getContainerName());
         append(builder, " " + String.join(" ", args));

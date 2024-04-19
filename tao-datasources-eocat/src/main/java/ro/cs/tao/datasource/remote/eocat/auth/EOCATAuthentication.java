@@ -1,10 +1,10 @@
 package ro.cs.tao.datasource.remote.eocat.auth;
 
-import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.QueryException;
@@ -30,39 +30,77 @@ public class EOCATAuthentication {
         this.credentials = credentials;
     }
 
-    private String[] getSAMLData(String sessionDataKey) throws IOException {
-        List<NameValuePair> samlLoginParameters = new ArrayList<>();
+    private static String getSAMLLoginResponse(String sessionDataKey, UsernamePasswordCredentials credentials) throws IOException {
+        final List<NameValuePair> samlLoginParameters = new ArrayList<>();
         samlLoginParameters.add(new BasicNameValuePair("tocommonauth", "true"));
-        samlLoginParameters.add(new BasicNameValuePair("username", this.credentials.getUserName()));
-        samlLoginParameters.add(new BasicNameValuePair("password", this.credentials.getPassword()));
+        samlLoginParameters.add(new BasicNameValuePair("username", credentials.getUserName()));
+        samlLoginParameters.add(new BasicNameValuePair("password", credentials.getPassword()));
         samlLoginParameters.add(new BasicNameValuePair("sessionDataKey", sessionDataKey));
-        try (CloseableHttpResponse samlLoginResponse = NetUtils.openConnection(HttpMethod.POST, SAML_LOGIN_ADDRESS, (Credentials) null, samlLoginParameters)) {
-            String samlLoginRequestResponseBody = EntityUtils.toString(samlLoginResponse.getEntity());
-            String saml2LoginAddress = samlLoginRequestResponseBody.replaceAll("[\\s\\S]*?method='post' action='(.*?)'[\\s\\S]*", "$1");
-            String samlResponse = samlLoginRequestResponseBody.replaceAll("[\\s\\S]*?name='SAMLResponse' value='(.*?)'[\\s\\S]*", "$1");
-            if (samlResponse.isEmpty()) {
+        try (CloseableHttpResponse samlLoginResponse = NetUtils.openConnection(HttpMethod.POST, SAML_LOGIN_ADDRESS, credentials, samlLoginParameters)) {
+            final String samlLoginRequestResponseBody = EntityUtils.toString(samlLoginResponse.getEntity());
+            if (samlLoginRequestResponseBody.isEmpty()) {
                 throw new IllegalStateException("Get SAMLResponse failed.");
             }
-            return new String[]{saml2LoginAddress, samlResponse};
+            return samlLoginRequestResponseBody;
         }
     }
 
-    private String getShibbolethToken(String saml2LoginAddress, String samlResponse) throws IOException {
-        List<NameValuePair> samlLoginParameters = new ArrayList<>();
-        samlLoginParameters.add(new BasicNameValuePair("SAMLResponse", samlResponse));
-        try (CloseableHttpResponse shibbolethLoginResponse = NetUtils.openConnection(HttpMethod.POST, saml2LoginAddress, (Credentials) null, samlLoginParameters)) {
-            Header shibbolethCookieToken = shibbolethLoginResponse.getFirstHeader("Set-Cookie");
-            if (shibbolethCookieToken != null && !shibbolethCookieToken.getValue().isEmpty()) {
-                return shibbolethCookieToken.getValue();
+    private static String[] getSAMLData(String samlLoginResponse) {
+        if (samlLoginResponse.contains("name='SAMLResponse'")) {
+            final String samlLoginAddress = samlLoginResponse.replaceAll("[\\s\\S]*?method='post' action='(.*?)'[\\s\\S]*", "$1");
+            final String samlResponse = samlLoginResponse.replaceAll("[\\s\\S]*?name='SAMLResponse' value='(.*?)'[\\s\\S]*", "$1");
+            if (!samlLoginAddress.isEmpty() && !samlResponse.isEmpty()) {
+                return new String[]{samlLoginAddress, samlResponse};
             }
-            String errMsg = "Get shibboleth cookie token failed. Reason: ";
-            if (shibbolethLoginResponse.getStatusLine().getStatusCode() != HttpStatus.SC_MOVED_TEMPORARILY) {
-                errMsg = errMsg + "Status: " + shibbolethLoginResponse.getStatusLine().getStatusCode();
-            } else {
-                errMsg = errMsg + shibbolethLoginResponse.getFirstHeader("Location").getValue();
+        } else {
+            if (samlLoginResponse.contains("name=\"sessionDataKey\"")) {
+                throw new IllegalStateException("401: Authentication failed. Reason: Wrong credentials.");
             }
-            throw new IllegalStateException(errMsg);
+            if (samlLoginResponse.contains("Error 502")) {
+                throw new QueryException("The request was not successful. Reason: response code: 502: response message: BAD GATEWAY");
+            }
+            if (samlLoginResponse.contains("503 Service Unavailable")) {
+                throw new QueryException("The request was not successful. Reason: response code: 503: response message: Service Unavailable");
+            }
         }
+        throw new IllegalStateException("401: Authentication failed. Reason: Get SAML Data failed.");
+    }
+
+    private static String getShibbolethToken(String saml2LoginAddress, String samlResponse, Credentials credentials) throws IOException {
+        final List<NameValuePair> samlLoginParameters = new ArrayList<>();
+        samlLoginParameters.add(new BasicNameValuePair("SAMLResponse", samlResponse));
+        try (CloseableHttpResponse shibbolethLoginResponse = NetUtils.openConnection(HttpMethod.POST, saml2LoginAddress, credentials, samlLoginParameters)) {
+            if (shibbolethLoginResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                final String shibbolethCookieToken = extractShibbolethTokenFromCookies(saml2LoginAddress, credentials);
+                if (!shibbolethCookieToken.isEmpty()) {
+                    return shibbolethCookieToken;
+                }
+            }
+            throw new IllegalStateException("401: Authentication failed. Reason: Get shibboleth cookie token failed.");
+        }
+    }
+
+    private static String getSessionDataKey(String loginRequestResponseBody){
+        if (loginRequestResponseBody.contains("Error 502")) {
+            throw new QueryException("The request was not successful. Reason: response code: 502: response message: BAD GATEWAY");
+        }
+        if (loginRequestResponseBody.contains("name=\"sessionDataKey\"")) {
+            return loginRequestResponseBody.replaceAll("[\\s\\S]*?name=\"sessionDataKey\" value='(.*?)'[\\s\\S]*", "$1");
+        } else {
+            return "";
+        }
+    }
+
+    private static String extractShibbolethTokenFromCookies(String protectedURL, Credentials credentials) throws IOException {
+        final List<Cookie> shibbolethCookies = NetUtils.getCookies(protectedURL, credentials);
+        if (shibbolethCookies != null && !shibbolethCookies.isEmpty()) {
+            final StringBuilder shibbolethCookieToken = new StringBuilder();
+            for (Cookie shibbolethCookie : shibbolethCookies) {
+                shibbolethCookieToken.append(shibbolethCookie.getName()).append("=").append(shibbolethCookie.getValue()).append(";");
+            }
+            return shibbolethCookieToken.toString();
+        }
+        return "";
     }
 
     public String getAuthenticationTokenName() {
@@ -70,20 +108,28 @@ public class EOCATAuthentication {
     }
 
     public String getAuthenticationTokenValue(String protectedURL) throws IOException {
-        final String currentCookieToken = this.cookieToken;
+        if (!this.cookieToken.isEmpty()) {
+            return this.cookieToken;
+        }
         int responseStatus;
-        try (CloseableHttpResponse downloadRequestResponse = NetUtils.openConnection(HttpMethod.GET, protectedURL, getAuthenticationTokenName(), currentCookieToken, null)) {
+        try (CloseableHttpResponse downloadRequestResponse = NetUtils.openConnection(HttpMethod.GET, protectedURL, this.credentials)) {
             responseStatus = downloadRequestResponse.getStatusLine().getStatusCode();
-            if (responseStatus != HttpStatus.SC_OK) {
-                throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s", downloadRequestResponse.getStatusLine().getStatusCode(), downloadRequestResponse.getStatusLine().getReasonPhrase()));
+            if (responseStatus == HttpStatus.SC_FORBIDDEN) {
+                throw new IllegalStateException("403: Forbidden. Reason: Account not authorized to download data from this collection.");
             }
             if (downloadRequestResponse.getFirstHeader("Content-Disposition") != null) {
-                return currentCookieToken;
+                this.cookieToken = extractShibbolethTokenFromCookies(protectedURL, this.credentials);
+                return this.cookieToken;
             }
-            String downloadRequestResponseBody = EntityUtils.toString(downloadRequestResponse.getEntity());
-            String sessionDataKey = downloadRequestResponseBody.replaceAll("[\\s\\S]*?name=\"sessionDataKey\" value='(.*?)'[\\s\\S]*", "$1");
-            String[] samlData = getSAMLData(sessionDataKey);
-            this.cookieToken = getShibbolethToken(samlData[0], samlData[1]);
+            final String downloadRequestResponseBody = EntityUtils.toString(downloadRequestResponse.getEntity());
+            final String sessionDataKey = getSessionDataKey(downloadRequestResponseBody);
+            String[] samlData;
+            if (sessionDataKey.isEmpty()) {
+                samlData = getSAMLData(downloadRequestResponseBody);
+            } else {
+                samlData = getSAMLData(getSAMLLoginResponse(sessionDataKey, this.credentials));
+            }
+            this.cookieToken = getShibbolethToken(samlData[0], samlData[1], this.credentials);
             return this.cookieToken;
         }
     }

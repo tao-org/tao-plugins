@@ -2,6 +2,8 @@ package ro.cs.tao.quota;
 
 import ro.cs.tao.component.SystemVariable;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
+import ro.cs.tao.messaging.Message;
+import ro.cs.tao.messaging.Messaging;
 import ro.cs.tao.persistence.EOProductProvider;
 import ro.cs.tao.persistence.PersistenceException;
 import ro.cs.tao.persistence.UserProvider;
@@ -69,7 +71,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 		if(user.getMemoryQuota() == -1) {
 			return true;
 		}
-		final int requiredMemory = memory + this.taskProvider.getMemoryForUser(user.getUsername());
+		final int requiredMemory = memory + this.taskProvider.getMemoryForUser(user.getId());
 		
 		return (user.getMemoryQuota() - requiredMemory) > 0;
 	}
@@ -83,7 +85,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 			return -1;
 		}
 		
-		return Math.max(0, user.getCpuQuota() - this.taskProvider.getCPUsForUser(user.getUsername()));
+		return Math.max(0, user.getCpuQuota() - this.taskProvider.getCPUsForUser(user.getId()));
 	}
 
 	@Override
@@ -105,7 +107,8 @@ public class DatabaseQuotaManager implements QuotaManager {
 
 			// update the user info
 			this.userProvider.updateInputQuota(principal.getName(), (int)actualInputQuota);
-
+			Messaging.send(principal.getName(), QuotaTopic.USER_STORAGE_USAGE.value(),
+						   Message.create(principal.getName(), "QuotaManager", "User storage updated", String.valueOf(actualInputQuota), false));
 		} catch (PersistenceException e) {
 			throw new QuotaException(String.format("Cannot update input quota for the user '%s'. Reason: %s",
 					principal.getName(), e.getMessage()), e);
@@ -136,6 +139,13 @@ public class DatabaseQuotaManager implements QuotaManager {
 		}
 	}
 
+	@Override
+	public void updateUserCPU(Principal principal) throws QuotaException {
+		final int cpus = taskProvider.getCPUsForUser(principal.getName());
+		Messaging.send(principal, QuotaTopic.USER_CPU_USAGE.value(),
+					   Message.create(principal.getName(), "QuotaManager", "CPU usage updated", String.valueOf(cpus), false));
+	}
+
 	/** 
 	 * Get he user's details from the database
 	 * @param principal the used security data
@@ -146,10 +156,10 @@ public class DatabaseQuotaManager implements QuotaManager {
 		if (principal == null) {
 			throw new IllegalArgumentException("[principal] null");
 		}
-		final String userName = principal.getName();
-		final User user = this.userProvider.getByName(userName);
+		final String userId = principal.getName();
+		final User user = this.userProvider.get(userId);
 		if (user == null) {
-			throw new QuotaException(String.format("User '%s' not found", userName));
+			throw new QuotaException(String.format("User '%s' not found", userId));
 		}
 		return user;
 	}

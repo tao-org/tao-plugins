@@ -51,6 +51,7 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
@@ -86,7 +87,8 @@ public class DASQuery extends DataQuery {
         }
         String platform = this.parameters.get(CommonParameterNames.PLATFORM).getValue().toString();
         final boolean isS2 = "Sentinel-2".equalsIgnoreCase(platform);
-        final boolean isS1 = "Sentinel-1".equalsIgnoreCase(platform);
+        final boolean isS1Aux = "Sentinel1-orbit-files".equals(this.sensorName);
+        final boolean isS1 = "Sentinel-1".equalsIgnoreCase(platform) && !isS1Aux;
         final boolean isS3 = "Sentinel-3".equalsIgnoreCase(platform);
         StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
@@ -115,6 +117,7 @@ public class DASQuery extends DataQuery {
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("$filter", query.getValue()));
                 params.add(new BasicNameValuePair("$expand", "Attributes"));
+                params.add(new BasicNameValuePair("$expand", "Assets"));
                 params.add(new BasicNameValuePair("$top", String.valueOf(pageSize)));
                 params.add(new BasicNameValuePair("$skip", String.valueOf((i - 1) * pageSize)));
                 params.add(new BasicNameValuePair("$orderby", "ContentDate/Start asc"));
@@ -125,7 +128,8 @@ public class DASQuery extends DataQuery {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
                             String rawResponse = EntityUtils.toString(response.getEntity());
-                            ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source));
+                            ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source,
+                                                                                                                   this.coverageFilter));
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null) {
                                 if (isS3) {
@@ -139,7 +143,7 @@ public class DASQuery extends DataQuery {
                                                 .filter(r -> Double.parseDouble(r.getAttributeValue("cloudCover")) <= clouds)
                                                 .collect(Collectors.toList());
                                     }*/
-                                    ProductHelper productHelper;
+                                    ProductHelper productHelper = null;
                                     for (EOProduct result : tmpResults) {
                                         if (!results.containsKey(result.getName())) {
                                             try {
@@ -154,7 +158,7 @@ public class DASQuery extends DataQuery {
                                                 } else {
                                                     result.addAttribute("tiles", result.getAttributeValue("tileId"));
                                                 }
-                                            } else if (isS1) {
+                                            } else if (isS1 && !isS1Aux) {
                                                 result.addAttribute("relativeOrbit", getRelativeOrbit(result.getName()));
                                             }
                                             if (hasProcessingDate) {
@@ -191,6 +195,21 @@ public class DASQuery extends DataQuery {
 
     @Override
     public long getCount() {
+        final Set<String> mandatoryParams = getMandatoryParams();
+        final Map<String, QueryParameter<?>> actualParameters = getParameters();
+        final List<String> errors = mandatoryParams.stream()
+                .filter(p -> !actualParameters.containsKey(p)).collect(Collectors.toList());
+        if (!errors.isEmpty()) {
+            QueryException ex = new QueryException("Mandatory parameter(s) not supplied");
+            ex.addAdditionalInfo("Missing", String.join(",", errors));
+            throw ex;
+        }
+        errors.addAll(checkDependencies(actualParameters));
+        if (!errors.isEmpty()) {
+            QueryException ex = new QueryException("Some parameter(s) dependencies are not satisfied");
+            ex.addAdditionalInfo("Dependencies", String.join(",", errors));
+            throw ex;
+        }
         long count = 0;
         Map<String, String> queries = null;
         try {
@@ -199,7 +218,7 @@ public class DASQuery extends DataQuery {
             throw new RuntimeException(e);
         }
         //final int size = queries.size();
-        final String countUrl = this.source.getProperty("scihub.search.count.url");
+        final String countUrl = this.source.getProperty("search.url");
         if (countUrl != null) {
             for (Map.Entry<String, String> query : queries.entrySet()) {
                 List<NameValuePair> params = new ArrayList<>();
@@ -236,11 +255,12 @@ public class DASQuery extends DataQuery {
 
     private Map<String, String> buildQueriesParams() throws ConversionException {
         Map<String, String> queries = new HashMap<>();
+        final boolean isS1Aux = this.sensorName.equals("Sentinel1-orbit-files");
         if (!this.parameters.containsKey(CommonParameterNames.PLATFORM)) {
             addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }
         String[] footprints = new String[0];
-        final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue());
+        final boolean isS1 = "Sentinel-1".equals(this.parameters.get(CommonParameterNames.PLATFORM).getValue()) && !isS1Aux;
         final boolean canUseTileParameter = this.parameters.containsKey(CommonParameterNames.TILE) && !isS1;
         if (this.parameters.containsKey(CommonParameterNames.TILE) && !isS1) {
             final QueryParameter<?> tileParameter = this.parameters.get(CommonParameterNames.TILE);
@@ -280,13 +300,16 @@ public class DASQuery extends DataQuery {
         StringBuilder query = new StringBuilder();
         if (this.parameters.containsKey(CommonParameterNames.PRODUCT)) {
             String productName = this.parameters.get(CommonParameterNames.PRODUCT).getValueAsString();
-            if (!productName.endsWith(".SAFE")) {
+            if (!productName.endsWith(".SAFE") && !isS1Aux) {
                 productName += ".SAFE";
             }
             query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.PRODUCT), productName, Condition.EQ));
             queries.put(UUID.randomUUID().toString(), query.toString());
             query.setLength(0);
         } else {
+            if (footprints.length == 0) {
+                footprints = new String[] { "" };
+            }
             for (String footprint : footprints) {
                 int idx = 0;
                 for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
@@ -294,15 +317,29 @@ public class DASQuery extends DataQuery {
                     if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
                         throw new QueryException(String.format("Parameter [%s] is required but no value is supplied", parameter.getName()));
                     }
+                    /*if (parameter.getName().equalsIgnoreCase(CommonParameterNames.PRODUCT)) {
+                        query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.PRODUCT),
+                                                         parameter, Condition.EQ));
+                        break;
+                    }*/
                     if (parameter.isOptional() &
                             ((!parameter.isInterval() & parameter.getValue() == null) |
                                     (parameter.isInterval() & parameter.getMinValue() == null & parameter.getMaxValue() == null))) {
                         continue;
                     }
-                    if (idx > 0) {
+                    if (idx > 0 && query.length() > 0) {
                         query.append(" AND ");
                     }
+                    String value;
                     switch (parameter.getName()) {
+                        case CommonParameterNames.PLATFORM:
+                            //if (!isS1Aux) {
+                                query.append(isS1Aux
+                                             ? buildAttributeFilter(getRemoteName(CommonParameterNames.PLATFORM), parameter, Condition.EQ)
+                                             : buildPropertyFilter(getRemoteName(CommonParameterNames.PLATFORM), parameter, Condition.EQ));
+                            ;
+                            //}
+                            break;
                         case CommonParameterNames.START_DATE:
                             query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.START_DATE),
                                                              parameter, Condition.GT));
@@ -312,23 +349,27 @@ public class DASQuery extends DataQuery {
                                                              parameter, Condition.LT));
                             break;
                         case CommonParameterNames.FOOTPRINT:
-                            if (!canUseTileParameter) {
-                                try {
-                                    QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
-                                                                                               "footprint",
-                                                                                               Polygon2D.fromWKT(footprint));
-                                    query.append(getParameterValue(fakeParam));
-                                } catch (ConversionException e) {
-                                    throw new QueryException(e.getMessage());
+                            if (!isS1Aux) {
+                                if (!canUseTileParameter) {
+                                    try {
+                                        QueryParameter<Polygon2D> fakeParam = new QueryParameter<>(Polygon2D.class,
+                                                                                                   "footprint",
+                                                                                                   Polygon2D.fromWKT(footprint));
+                                        query.append(getParameterValue(fakeParam));
+                                    } catch (ConversionException e) {
+                                        throw new QueryException(e.getMessage());
+                                    }
+                                } else {
+                                    // remove the last " AND " because parameter is skipped
+                                    if (query.length() >= 5 && " AND ".equals(query.substring(query.length() - 5))) {
+                                        query.setLength(query.length() - 5);
+                                    }
+                                    idx--;
                                 }
-                            } else {
-                                // remove the last " AND " because parameter is skipped
-                                query.setLength(query.length() - 5);
-                                idx--;
                             }
                             break;
                         case CommonParameterNames.TILE:
-                            String value = parameter.getValueAsString();
+                            value = parameter.getValueAsString();
                             if (value.startsWith("[") && value.endsWith("]")) {
                                 String[] values = value.substring(1, value.length() - 1).split(",");
                                 query.append("(");
@@ -358,14 +399,14 @@ public class DASQuery extends DataQuery {
                                 String[] values = value.substring(1, value.length() - 1).split(",");
                                 query.append("(");
                                 for (int i = 0; i < values.length; i++) {
-                                    query.append(buildAttributeFilter(paramTypeName, values[i], Condition.EQ));
+                                    query.append(buildTyprFilter(values[i]));
                                     if (i < values.length - 1) {
                                         query.append(" OR ");
                                     }
                                 }
                                 query.append(")");
                             } else {
-                                query.append(buildAttributeFilter(paramTypeName, value, Condition.EQ));
+                                query.append(buildTyprFilter(value));
                             }
                             break;
                         case "productSize":
@@ -396,7 +437,8 @@ public class DASQuery extends DataQuery {
                     }
                     idx++;
                 }
-                queries.put(UUID.randomUUID().toString(), query.toString());
+                final String strQuery = query.toString();
+                queries.put(UUID.randomUUID().toString(), strQuery.endsWith(" AND ") ? strQuery.substring(0, strQuery.length() - 5) : strQuery);
                 query.setLength(0);
             }
         }
@@ -488,5 +530,30 @@ public class DASQuery extends DataQuery {
         return "Attributes/" + oDataType + "/any(att:att/Name eq '" + name +
                 "' and att/" + oDataType + "/Value " + cond + " " +
                 (shouldQuote ? "'" : "") + value + (shouldQuote ? "')" : ")");
+    }
+
+    private String buildTyprFilter(Object value) throws ConversionException {
+        String stringVal = value.toString();
+        List<String> tokens = new ArrayList<>();
+        if (stringVal.contains("-")) {
+            tokens.addAll(Arrays.stream(stringVal.split("-")).collect(Collectors.toList()));
+        } else {
+            tokens.add(stringVal);
+        }
+        final StringBuilder builder = new StringBuilder();
+        builder.append("(");
+        final int size = tokens.size();
+        for (int i = 0; i < size; i++) {
+            builder.append("contains(Name,'");
+            if (i > 0) {
+                builder.append("_");
+            }
+            builder.append(tokens.get(i)).append("')");
+            if (i < size - 1 && i >= 0) {
+                builder.append(" AND ");
+            }
+        }
+        builder.append(")");
+        return builder.toString();
     }
 }

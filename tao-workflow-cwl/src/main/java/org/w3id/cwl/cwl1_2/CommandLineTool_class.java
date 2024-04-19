@@ -22,10 +22,6 @@ public enum CommandLineTool_class {
   private static String[] symbols = new String[] {"CommandLineTool"};
   private String docVal;
 
-  public String getDocVal() {
-    return docVal;
-  }
-
   private CommandLineTool_class(final String docVal) {
     this.docVal = docVal;
   }
@@ -37,5 +33,10 @@ public enum CommandLineTool_class {
       }
     }
     throw new ValidationException(String.format("Expected one of %s", CommandLineTool_class.symbols, docVal));
+  }
+
+  @Override
+  public String toString() {
+    return this.docVal;
   }
 }

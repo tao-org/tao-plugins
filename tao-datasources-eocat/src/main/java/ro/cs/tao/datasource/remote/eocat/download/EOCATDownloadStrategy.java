@@ -111,6 +111,8 @@ public class EOCATDownloadStrategy extends DownloadStrategy<Header> {
                 case HttpStatus.SC_ACCEPTED:
                     throw new QueryException(String.format("The request was successful. response code: %d: The download will be ready soon. Try again later.",
                             connection.getResponseCode()));
+                case HttpStatus.SC_FORBIDDEN:
+                    throw new IOException("403: Forbidden. Reason: Account not authorized to download data from this collection.");
                 default:
                     throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
                             connection.getResponseCode(), connection.getResponseMessage()));

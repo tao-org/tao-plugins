@@ -7,7 +7,11 @@ import org.geotools.data.wps.request.DescribeProcessRequest;
 import org.geotools.data.wps.response.DescribeProcessResponse;
 import org.geotools.data.wps.response.ExecuteProcessResponse;
 import org.geotools.process.Process;
-import ro.cs.tao.component.*;
+import ro.cs.tao.component.ParameterDescriptor;
+import ro.cs.tao.component.TaoComponent;
+import ro.cs.tao.component.Variable;
+import ro.cs.tao.component.WebServiceAuthentication;
+import ro.cs.tao.component.ogc.WPSComponent;
 import ro.cs.tao.datasource.param.JavaType;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.execution.ExecutionException;
@@ -19,7 +23,7 @@ import ro.cs.tao.execution.model.WPSExecutionTask;
 import ro.cs.tao.execution.persistence.ExecutionJobProvider;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
 import ro.cs.tao.persistence.PersistenceException;
-import ro.cs.tao.persistence.WPSAuthenticationProvider;
+import ro.cs.tao.persistence.WebServiceAuthenticationProvider;
 import ro.cs.tao.utils.ExceptionUtils;
 
 import java.net.URL;
@@ -30,6 +34,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 public class WPSExecutor extends Executor<WPSExecutionTask> {
 
@@ -37,9 +42,10 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
     //private WPSComponent wpsComponent;
     private static ExecutionTaskProvider taskProvider;
     private static ExecutionJobProvider jobProvider;
-    private static WPSAuthenticationProvider authenticationProvider;
+    private static WebServiceAuthenticationProvider authenticationProvider;
     private final Map<String, WebProcessingService> webServicesMap;
     private final ExecutorService backgroundWorker;
+    private final Logger logger = Logger.getLogger(WPSExecutor.class.getName());
 
     public static void setTaskProvider(ExecutionTaskProvider provider) {
         WPSExecutor.taskProvider = provider;
@@ -49,7 +55,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
         WPSExecutor.jobProvider = jobProvider;
     }
 
-    public static void setAuthenticationProvider(WPSAuthenticationProvider authenticationProvider) {
+    public static void setAuthenticationProvider(WebServiceAuthenticationProvider authenticationProvider) {
         WPSExecutor.authenticationProvider = authenticationProvider;
     }
 
@@ -76,7 +82,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
             final URL url = new URL(address);
             task.setExecutionNodeHostName(url.getHost());
             List<Variable> values = task.getInputParameterValues();
-            if (values == null || values.size() == 0) {
+            if (values == null || values.isEmpty()) {
                 throw new ExecutionException("No input data for the task");
             }
             final WebProcessingService wps = this.webServicesMap.computeIfAbsent(address,
@@ -86,7 +92,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
                                                                                         new WPSHttpClient(authentication),
                                                                                         null);
                                                     } catch (Exception e) {
-                                                        e.printStackTrace();
+                                                        logger.severe(e.getMessage());
                                                     }
                                                     return null;
                                                 });
@@ -167,7 +173,7 @@ public class WPSExecutor extends Executor<WPSExecutionTask> {
         if(!isInitialized.get()) {
             return;
         }
-        List<ExecutionTask> tasks = taskProvider.listRemoteExecuting();
+        List<ExecutionTask> tasks = taskProvider.listWPSExecuting();
         if (tasks != null) {
             for (ExecutionTask task : tasks) {
                 try {

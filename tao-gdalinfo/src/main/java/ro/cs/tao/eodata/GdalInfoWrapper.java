@@ -220,7 +220,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                 }
                 if (crsObject != null) {
                     CoordinateReferenceSystem crs = CRS.parseWKT(isNetCDF ? crsObject.getString("SRS") : crsObject.getString("wkt"));
-                    if (crs != null && crs.getIdentifiers() != null && crs.getIdentifiers().size() > 0) {
+                    if (crs != null && crs.getIdentifiers() != null && !crs.getIdentifiers().isEmpty()) {
                         Metadata finalMetadata = metadata;
                         crs.getIdentifiers().stream()
                                 .findFirst().ifPresent(identifier -> finalMetadata.setCrs(identifier.getCodeSpace() + ":" + identifier.getCode()));
@@ -258,7 +258,7 @@ public class GdalInfoWrapper implements MetadataInspector {
                     metadata.setWgs84footprint(polygon2D.toWKT(8));
                 }
                 JsonArray bandsArray = root.getJsonArray("bands");
-                JsonObject jsonObject = bandsArray.size() > 0 ? bandsArray.getJsonObject(0) : null;
+                JsonObject jsonObject = !bandsArray.isEmpty() ? bandsArray.getJsonObject(0) : null;
                 if (jsonObject != null) {
                     String type = jsonObject.getString("type");
                     if (type != null) {
@@ -315,7 +315,8 @@ public class GdalInfoWrapper implements MetadataInspector {
             try {
                 this.factory.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                final Logger logger = Logger.getLogger(getClass().getName());
+                logger.warning(ExceptionUtils.getStackTrace(logger, e));
             }
         }
         return metadata;

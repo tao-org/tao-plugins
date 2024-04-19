@@ -61,6 +61,11 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
     }
 
     @Override
+    public void setAuthentication(Token authentication) {
+        this.apiKey = authentication;
+    }
+
+    @Override
     protected Path fetchImpl(EOProduct product) throws IOException, InterruptedException {
         checkCancelled();
         Path productFile = null;

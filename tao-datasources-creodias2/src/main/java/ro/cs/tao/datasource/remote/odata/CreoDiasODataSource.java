@@ -15,6 +15,9 @@
  */
 package ro.cs.tao.datasource.remote.odata;
 
+import dev.samstevens.totp.code.DefaultCodeGenerator;
+import dev.samstevens.totp.time.NtpTimeProvider;
+import dev.samstevens.totp.time.TimeProvider;
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.Credentials;
 import org.apache.http.message.BasicNameValuePair;
@@ -29,6 +32,7 @@ import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
+import ro.cs.tao.utils.StringUtilities;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -75,8 +79,49 @@ public class CreoDiasODataSource extends URLDataSource<CreoDiasODataQuery, Token
     public boolean requiresAuthentication() { return true; }
 
     @Override
+    public boolean is2FAEnabled() {
+        return true;
+    }
+
+    @Override
     public void setCredentials(String username, String password) {
         super.setCredentials(username, password);
+    }
+
+    @Override
+    public Token authenticate(String oneTimePassword) throws IOException {
+        if (credentials == null) {
+            throw new QueryException(String.format("Credentials not set for %s", getId()));
+        }
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("client_id", "CLOUDFERRO_PUBLIC"));
+        params.add(new BasicNameValuePair("username", credentials.getUserName()));
+        params.add(new BasicNameValuePair("password", credentials.getPassword()));
+        params.add(new BasicNameValuePair("grant_type", "password"));
+        params.add(new BasicNameValuePair("totp", oneTimePassword));
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, LOGIN_URL, (Credentials) null, params)) {
+            switch (response.getStatusLine().getStatusCode()) {
+                case 200:
+                    String body = EntityUtils.toString(response.getEntity());
+                    if (body == null) {
+                        throw new QueryException("Cannot retrieve API key [empty response body]");
+                    }
+                    ResponseParser<Token> parser = new JsonResponseParser<>(new LoginResponseHandler());
+                    final Token token = parser.parseValue(body);
+                    if (token != null) {
+                        return token;
+                    } else {
+                        throw new QueryException(String.format("Cannot retrieve API key [received: %s]", body));
+                    }
+                case 401:
+                    throw new QueryException("Cannot retrieve API key [401:not authorized]");
+                default:
+                    throw new QueryException(String.format("The request was not successful. Reason: %s",
+                                                           response.getStatusLine().getReasonPhrase()));
+            }
+        } catch (Exception ex) {
+            throw new QueryException(ex);
+        }
     }
 
     @Override
@@ -89,6 +134,17 @@ public class CreoDiasODataSource extends URLDataSource<CreoDiasODataQuery, Token
         params.add(new BasicNameValuePair("username", credentials.getUserName()));
         params.add(new BasicNameValuePair("password", credentials.getPassword()));
         params.add(new BasicNameValuePair("grant_type", "password"));
+        final String secret = getProperty("user.secret");
+        if (StringUtilities.isNullOrEmpty(secret)) {
+            throw new QueryException("This datasource requires 2FA, but the user secret is not set");
+        }
+        DefaultCodeGenerator generator = new DefaultCodeGenerator();
+        try {
+            TimeProvider timeProvider = new NtpTimeProvider("pool.ntp.org");
+            params.add(new BasicNameValuePair("totp", generator.generate(secret, timeProvider.getTime())));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, LOGIN_URL, (Credentials) null, params)) {
             switch (response.getStatusLine().getStatusCode()) {
                 case 200:

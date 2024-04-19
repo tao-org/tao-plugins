@@ -1,21 +1,20 @@
 package ro.cs.tao.execution.drmaa.kubernetes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.api.model.batch.v1.JobBuilder;
-import io.fabric8.kubernetes.client.Config;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import io.fabric8.kubernetes.client.dsl.LogWatch;
-import io.fabric8.kubernetes.client.dsl.NonNamespaceOperation;
-import io.fabric8.kubernetes.client.dsl.PodResource;
+import org.apache.commons.lang3.StringUtils;
 import org.ggf.drmaa.*;
 import ro.cs.tao.EnumUtils;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.execution.DrmaaJobExtensions;
 import ro.cs.tao.execution.local.DefaultSession;
 import ro.cs.tao.execution.local.DefaultSessionFactory;
+import ro.cs.tao.serialization.JsonMapper;
 import ro.cs.tao.spi.ServiceRegistry;
 import ro.cs.tao.spi.ServiceRegistryManager;
 import ro.cs.tao.topology.NodeDescription;
@@ -24,11 +23,9 @@ import ro.cs.tao.utils.executors.ExecutionUnit;
 import ro.cs.tao.utils.executors.ExecutorType;
 import ro.cs.tao.utils.executors.OutputAccumulator;
 import ro.cs.tao.utils.executors.SSHMode;
-import ro.cs.tao.utils.executors.container.ContainerCmdBuilder;
 import ro.cs.tao.utils.executors.container.ContainerType;
 import ro.cs.tao.utils.executors.container.ContainerUnit;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,17 +34,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 public class KubernetesSession implements Session {
     private static final String configFileName = "kubernetes.config";
     private static final String token = "tao.kubernetes.token";
     private static final String namespace = "argo";
     private static final String masterURL = "tao.kubernetes.master.url";
     private static final String caCertFile = "tao.kubernetes.ca.cert.file";
+    private static final String pvcMappingsKey = "tao.kubernetes.pvc.mappings";
     private final io.fabric8.kubernetes.client.Config builder;
     private KubernetesClient client;
     private Map<String, JobTemplate> jobTemplates;
@@ -57,6 +50,7 @@ public class KubernetesSession implements Session {
     private AtomicInteger nodeCounter;
     private final Logger logger = Logger.getLogger(DefaultSession.class.getName());
     private List <LogWatch> jobsLog;
+    private Map<String, String> pvcMappings;
 
     public KubernetesSession() {
         /*
@@ -66,18 +60,18 @@ public class KubernetesSession implements Session {
         }
         */
         try {
-            final String url =  ConfigurationManager.getInstance().getValue(this.masterURL);
+            final String url =  ConfigurationManager.getInstance().getValue(KubernetesSession.masterURL);
             if (url == null) {
                 throw new RuntimeException("Kubernetes master url not found in config file");
             }
-            final String serviceAccountToken = ConfigurationManager.getInstance().getValue(this.token);
+            final String serviceAccountToken = ConfigurationManager.getInstance().getValue(KubernetesSession.token);
 
             if (serviceAccountToken == null) {
                 throw new RuntimeException("Kubernetes service account token not found in config file");
             }
 
             //String namespace = ConfigurationManager.getInstance().getValue(this.namespace);
-            final Path fileToTest = Paths.get(ConfigurationManager.getInstance().getValue(this.caCertFile));
+            final Path fileToTest = Paths.get(ConfigurationManager.getInstance().getValue(KubernetesSession.caCertFile));
             if (!Files.exists(fileToTest)) {
                 throw new RuntimeException("No Kubernetes ca certification file found");
             }
@@ -93,6 +87,18 @@ public class KubernetesSession implements Session {
             this.client = new KubernetesClientBuilder()
                     .withConfig(this.builder)
                     .build();
+
+            final String pvcMappingsValue = ConfigurationManager.getInstance().getValue(KubernetesSession.pvcMappingsKey);
+            if (pvcMappingsValue == null) {
+                throw new RuntimeException("No PVC mappings found for Kubernetes!");
+            }
+            pvcMappings = new HashMap<>();
+            try {
+                pvcMappings = JsonMapper.instance().readerFor(pvcMappings.getClass()).readValue(pvcMappingsValue);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
             /* //TODO: this creates a pod by using an yaml file
             logger.info("Test");
             String fileName = "/home/alex/prj/tao/aws/test_pod.yaml";
@@ -220,33 +226,59 @@ public class KubernetesSession implements Session {
             throw new InvalidJobTemplateException();
         }
         synchronized (this) {
+            ContainerUnit containerUnit = null;
+            Long jobId = null;
+            Long taskId = null;
             Long memConstraint = null;
             NodeDescription node = null;
             final List<String> args = new ArrayList<>();
             ExecutionUnitFormat format = ExecutionUnitFormat.TAO;
+
             if (jt instanceof JobTemplateExtension) {
                 JobTemplateExtension job = (JobTemplateExtension) jt;
+                if (job.hasAttribute(DrmaaJobExtensions.CONTAINER_ATTRIBUTE)) {
+                    containerUnit = (ContainerUnit) job.getAttribute(DrmaaJobExtensions.CONTAINER_ATTRIBUTE);
+                    //args.addAll(ContainerCmdBuilder.buildCommandLineArguments(containerUnit));
+                }
                 if (job.hasAttribute(DrmaaJobExtensions.MEMORY_REQUIREMENTS_ATTRIBUTE)) {
                     Object value = job.getAttribute(DrmaaJobExtensions.MEMORY_REQUIREMENTS_ATTRIBUTE);
                     memConstraint = value != null ? Long.parseLong(value.toString()) : null;
                 }
-                if (job.hasAttribute(DrmaaJobExtensions.CONTAINER_ATTRIBUTE)) {
-                    ContainerUnit unit = (ContainerUnit) job.getAttribute(DrmaaJobExtensions.CONTAINER_ATTRIBUTE);
-                    args.addAll(ContainerCmdBuilder.buildCommandLineArguments(unit));
+                if (job.hasAttribute(DrmaaJobExtensions.JOB_ID)) {
+                    Object value = job.getAttribute(DrmaaJobExtensions.JOB_ID);
+                    jobId = value != null ? Long.parseLong(value.toString()) : null;
                 }
+                if (job.hasAttribute(DrmaaJobExtensions.TASK_ID)) {
+                    Object value = job.getAttribute(DrmaaJobExtensions.TASK_ID);
+                    taskId = value != null ? Long.parseLong(value.toString()) : null;
+                }
+
             }
             args.add(jt.getRemoteCommand());
             args.addAll(jt.getArgs());
-            final ExecutionUnit unit = new ExecutionUnit(ExecutorType.SSH2, jt.getJobName(), null, null,
-                                                         args, false, SSHMode.EXEC,
-                                                         false,
-                                                         jt.getJobName() + "_" + System.nanoTime(), ExecutionUnitFormat.TAO);
+
+            final ExecutionUnit unit = new ExecutionUnit(
+                    ExecutorType.SSH2,
+                    jt.getJobName(),
+                    null,
+                    null,
+                    args,
+                    false,
+                    SSHMode.EXEC,
+                    false,
+                    jt.getJobName() + "_" + System.nanoTime(),
+                    ExecutionUnitFormat.TAO
+            );
+            unit.setContainerUnit(containerUnit);
+
             if (memConstraint != null) {
                 unit.setMinMemory(memConstraint);
             }
-            final String jobId = jt.getJobName() + ":" + System.nanoTime();
-            Job newJob = execute(jobId, unit);
-            this.runningJobs.put(jobId, newJob);
+            //final String jobId = jt.getJobName() + ":" + System.nanoTime();
+            final String jobName = "job-id-"+jobId+"-"+taskId;
+            Job newJob = execute(jobName, unit);
+            this.runningJobs.put(jobName, newJob);
+
             // TODO: maybe the log should be used only at the end of the job
             /*
             // streaming to System.out
@@ -254,7 +286,7 @@ public class KubernetesSession implements Session {
             this.logWatchers.put(jobId, lw);
             // end TODO
              */
-            return jobId;
+            return jobName;
         }
     }
 
@@ -424,31 +456,40 @@ public class KubernetesSession implements Session {
             throw new InvalidJobTemplateException();
         }
     }
-    private Job execute(String jobId, ExecutionUnit unit) {
+    private Job execute(String jobName, ExecutionUnit unit) {
         Container container = new Container();
         ContainerUnit containerUnit = new ContainerUnit(ContainerType.KUBERNETES);
 
         try {
-            //containerUnit.setArguments(unit.getArguments());
-            // TODO: tests only
-            containerUnit.addEnvironmentVariable("TEST_POD", "values");
-            containerUnit.setArguments(Arrays.asList("sh", "-c", "echo 'The app is running!'; cd /tst_pod; ls -all; cat tst.txt; sleep 5; echo 'Second'; sleep 10 ; echo 'Third' ; sleep 2 "));
-            //end TODO
-
-            //TODO: implement the container name on an upper layer
-            containerUnit.setContainerName("test-pod-job");
-            //end TODO
+            containerUnit.setContainerName(unit.getContainerUnit().getContainerName());
+            containerUnit.setContainerRegistry(unit.getContainerUnit().getContainerRegistry());
+            unit.getContainerUnit().getVolumeMap().forEach(containerUnit::addVolumeMapping);
+            containerUnit.setEnvironmentVariables(unit.getContainerUnit().getEnvironmentVariables());
+            containerUnit.setArguments(unit.getContainerUnit().getArguments());
 
             container.setName(containerUnit.getContainerName());
-            // TODO: implement the image name on an upper layer
-            //container.setImage(unit.getImage())
-            container.setImage("501872996718.dkr.ecr.eu-central-1.amazonaws.com/world-cereal/ewoc_general:latest");
+            container.setImage(containerUnit.getContainerRegistry()+"/"+containerUnit.getContainerName());
+            container.setCommand(unit.getArguments());
 
-            container.setCommand(containerUnit.getArguments());
+            //TODO tests
+//            ArrayList<String> args = new ArrayList<>();
+//            for(String s : unit.getArguments()) {
+//                args.add(StringUtils.strip(s.replace("-channels.blue 0", "")
+//                        .replace("-channels.green 0", "")
+//                        .replace("-channels.mir 0", "-list Vegetation:NDVI"), "\""));
+//            }
+//            container.setCommand(args);
 
-            // TODO: tests only
-            containerUnit.addVolumeMapping("/tst", "/tst_pod");
-            // end TODO
+//            logger.info("Pod cmd: " + container.getCommand().toString());
+//            logger.info("Pod args: " + container.getArgs().toString());
+
+            // TODO tests
+//            container.setImage("alpine:latest");
+//            container.setCommand(Arrays.asList("/bin/bash"));
+//            container.setArgs(List.of("-c", "while true; do sleep 30; done;"));
+
+            Map<String, Volume> pvcVolumeMap = new HashMap<>();
+
             List<Volume> volumes = null;
             if (containerUnit.getVolumeMap() != null) {
                 final List<VolumeMount> mounts = new ArrayList<>();
@@ -456,16 +497,31 @@ public class KubernetesSession implements Session {
                 int volIdx = 0;
                 // TODO: This is for hostPath mount only ! Implement it for s3 as well
                 for (Map.Entry<String, String> entry : containerUnit.getVolumeMap().entrySet()) {
-                    VolumeMount mount = new VolumeMount();
-                    String volName = "volume-" + volIdx++;
-                    mount.setName(volName);
-                    mount.setMountPath(entry.getValue());
-                    mounts.add(mount);
 
-                    Volume volToAdd = new Volume();
-                    volToAdd.setHostPath(new HostPathVolumeSource(entry.getKey(), "DirectoryOrCreate"));
-                    volToAdd.setName(volName);
-                    volumes.add(volToAdd);
+                    for (Map.Entry<String, String> pvcEntry : pvcMappings.entrySet()) {
+                        if(entry.getKey().startsWith(pvcEntry.getKey())) {
+
+                            Volume volToAdd = pvcVolumeMap.get(pvcEntry.getValue());
+
+                            VolumeMount mount = new VolumeMount();
+                            String volName = volToAdd != null ? volToAdd.getName() : "volume-" + volIdx++;
+                            mount.setName(volName);
+                            mount.setMountPath(StringUtils.stripEnd(entry.getValue(), "/"));
+                            mount.setSubPath(StringUtils.strip(entry.getKey().substring(pvcEntry.getKey().length()), "/"));
+                            mounts.add(mount);
+
+                            if(volToAdd == null) {
+                                volToAdd = new Volume();
+                                //volToAdd.setHostPath(new HostPathVolumeSource(entry.getKey(), "DirectoryOrCreate"));// replace For tests
+                                volToAdd.setPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcEntry.getValue()).build());
+                                volToAdd.setName(volName);
+                                volumes.add(volToAdd);
+
+                                pvcVolumeMap.put(pvcEntry.getValue(), volToAdd);
+                            }
+                        }
+                    }
+
                 }
                 container.setVolumeMounts(mounts);
             }
@@ -477,13 +533,15 @@ public class KubernetesSession implements Session {
                 }
                 container.setEnv(envVars);
             }
+
             //ResourceRequirements resourceRequirements = new ResourceRequirements();
             //resourceRequirements.setAdditionalProperty("memory", new Quantity(unit.getMinMemory() + "Mi"));
             //container.setResources(resourceRequirements);
+
             final Job job = new JobBuilder()
                     .withApiVersion("batch/v1")
                     .withNewMetadata()
-                    .withName("job-id-111")
+                    .withName(jobName)
                     //.withLabels(Collections.singletonMap("Label", //put job label here))
                     .endMetadata()
                     .withNewSpec()
@@ -492,7 +550,7 @@ public class KubernetesSession implements Session {
                     .withTtlSecondsAfterFinished(200)
                     .withNewTemplate()
                     .withNewSpec()
-                    .withNodeSelector(Collections.singletonMap("role-pg", "db"))
+                    //.withNodeSelector(Collections.singletonMap("role-pg", "db"))
                     .addNewContainerLike(container)
                     .endContainer()
                     .withVolumes(volumes)

@@ -1,7 +1,13 @@
 package ro.cs.tao.keycloak;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.RSATokenVerifier;
 import org.keycloak.admin.client.CreatedResponseUtil;
@@ -20,11 +26,18 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.authorization.AuthorizationRequest;
 import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.persistence.UserProvider;
 import ro.cs.tao.security.Token;
+import ro.cs.tao.security.TokenKeeper;
 import ro.cs.tao.security.TokenProvider;
 import ro.cs.tao.user.User;
+import ro.cs.tao.utils.CloseableHttpResponse;
+import ro.cs.tao.utils.ExceptionUtils;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.security.KeyFactory;
@@ -35,7 +48,7 @@ import java.security.spec.RSAPublicKeySpec;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class KeycloakClient implements TokenProvider {
@@ -50,7 +63,8 @@ public class KeycloakClient implements TokenProvider {
     private final String clientSecret;
     private final String adminUser;
     private final String adminPwd;
-    private BiConsumer<Token, String> tokenKeeper;
+    private TokenKeeper tokenKeeper;
+    private Supplier<UserProvider> userProvider;
 
     public KeycloakClient() {
         this(ConfigurationManager.getInstance().getValue(Keys.AUTH_SERVER_URL),
@@ -69,7 +83,7 @@ public class KeycloakClient implements TokenProvider {
         this.adminPwd = ConfigurationManager.getInstance().getValue(Keys.ADMIN_PWD);
     }
 
-    KeycloakClient(String authUrl, String realm, String clientId, String secret, String admin, String admPwd) {
+    public KeycloakClient(String authUrl, String realm, String clientId, String secret, String admin, String admPwd) {
         this.realm = realm;
         this.authUrl = authUrl;
         this.clientId = clientId;
@@ -79,8 +93,12 @@ public class KeycloakClient implements TokenProvider {
         this.adminPwd = admPwd;
     }
 
-    public void setTokenKeeper(BiConsumer<Token, String> tokenKeeper) {
+    public void setTokenKeeper(TokenKeeper tokenKeeper) {
         this.tokenKeeper = tokenKeeper;
+    }
+
+    public void setUserProvider(Supplier<UserProvider> provider) {
+        this.userProvider = provider;
     }
 
     public String getAdminUser() {
@@ -89,11 +107,43 @@ public class KeycloakClient implements TokenProvider {
 
     @Override
     public Token newToken(String user, String password) {
-        final AuthzClient authClient = getAuthClient();
-        final AuthorizationRequest request = new AuthorizationRequest();
-        request.addPermission("taoclient");
-        final AccessTokenResponse response = authClient.obtainAccessToken(user, password);
-        return new Token(response.getToken(), response.getRefreshToken(), (int) response.getExpiresIn());
+        Token token = null;
+        if (this.tokenKeeper != null) {
+            token = this.tokenKeeper.getToken(user);
+        }
+        if (token == null) {
+            final AuthzClient authClient = getAuthClient();
+            final AuthorizationRequest request = new AuthorizationRequest();
+            request.addPermission(this.clientId);
+
+            final AccessTokenResponse response = authClient.obtainAccessToken(user, password);
+            token = new Token(response.getToken(), response.getRefreshToken(), (int) response.getExpiresIn());
+        }
+        return token;
+    }
+
+    @Override
+    public Token newTokenFromCode(String code) {
+        Header header = new BasicHeader("Content-Type", "application/x-www-form-urlencoded");
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("grant_type", "authorization_code"));
+        params.add(new BasicNameValuePair("client_id", this.clientId));
+        params.add(new BasicNameValuePair("client_secret", this.clientSecret));
+        params.add(new BasicNameValuePair("code", code));
+        params.add(new BasicNameValuePair("redirect_uri", ConfigurationManager.getInstance().getValue("tao.ui.base") + "/login.html"));
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, this.realmUrl + "/protocol/openid-connect/token", header, params)) {
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            final AccessTokenResponse tokenResponse = mapper.readerFor(AccessTokenResponse.class)
+                                                            .readValue(EntityUtils.toString(response.getEntity()));
+            if (tokenResponse.getError() != null) {
+                throw new RuntimeException(tokenResponse.getErrorDescription());
+            }
+            return new Token(tokenResponse.getToken(), tokenResponse.getRefreshToken(), tokenResponse.getIdToken (), (int) tokenResponse.getExpiresIn());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -104,25 +154,50 @@ public class KeycloakClient implements TokenProvider {
     public User checkLoginCredentials(final String username, final String password) {
         final AuthzClient authClient = getAuthClient();
         final AuthorizationRequest request = new AuthorizationRequest();
-        request.addPermission("taoclient");
+        request.addPermission(this.clientId);
         final AccessTokenResponse tokenResponse = authClient.obtainAccessToken(username, password);
         final String token = tokenResponse.getToken();
         if (token == null) {
             throw new RuntimeException("Invalid credentials supplied");
         }
         if (this.tokenKeeper != null) {
-            this.tokenKeeper.accept(new Token(tokenResponse.getToken(), tokenResponse.getRefreshToken(), (int) tokenResponse.getExpiresIn()),
-                                    username);
+            this.tokenKeeper.put(new Token(tokenResponse.getToken(),
+                                           tokenResponse.getRefreshToken(),
+                                           tokenResponse.getIdToken(),
+                                           (int) tokenResponse.getExpiresIn()),
+                                 username);
         }
-        final List<UserRepresentation> list = getAdminClient().realm(this.realm).users().search(username, true);
-        final User user;
-        if (list != null && list.size() == 1) {
-            final UserRepresentation profile = list.get(0);
-            user = new KeycloakUserAdapter().toTaoUser(profile);
-            user.setPassword(password);
-            //user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
-        } else {
-            user = null;
+        User user = null;
+        if (this.userProvider != null) {
+            user = this.userProvider.get().getByName(username);
+        }
+        if (user == null) {
+            try (Keycloak adminClient = getAdminClient()) {
+                final List<UserRepresentation> list = adminClient.realm(this.realm).users().search(username, true);
+                if (list != null && list.size() == 1) {
+                    final UserRepresentation profile = list.get(0);
+                    user = new KeycloakUserAdapter().toTaoUser(profile);
+                    user.setPassword(password);
+                    //user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
+                } else {
+                    user = null;
+                }
+            } catch (Throwable t) {
+                logger.severe(t.getMessage());
+                throw t;
+            }
+        }
+        return user;
+    }
+
+    public User checkLoginCredentials(final String code) {
+        Token token = newTokenFromCode(code);
+        if (token == null) {
+            throw new RuntimeException("Invalid credentials supplied");
+        }
+        final User user = checkToken(token.getToken());
+        if (this.tokenKeeper != null) {
+            this.tokenKeeper.put(token, user.getId());
         }
         return user;
     }
@@ -131,8 +206,8 @@ public class KeycloakClient implements TokenProvider {
         if (token == null) {
             throw new RuntimeException("Invalid token");
         }
-        RSATokenVerifier verifier = RSATokenVerifier.create(token);
-        if (realmKeys == null) {
+        final RSATokenVerifier verifier = RSATokenVerifier.create(token);
+        if (realmKeys == null || realmKeys.isEmpty()) {
             synchronized (lock) {
                 realmKeys = new HashMap<>();
                 try {
@@ -150,16 +225,23 @@ public class KeycloakClient implements TokenProvider {
             AccessToken accessToken = verifier.getToken();
             String username = accessToken.getPreferredUsername();
             if (this.tokenKeeper != null) {
-                this.tokenKeeper.accept(new Token(token, null, (int) Duration.between(Instant.ofEpochSecond(accessToken.getIat()),
+                this.tokenKeeper.put(new Token(token, null, (int) Duration.between(Instant.ofEpochSecond(accessToken.getIat()),
                                                                                       Instant.ofEpochSecond(accessToken.getExp())).getSeconds()),
-                                        username);
+                                     username);
             }
-            final List<UserRepresentation> list = getAdminClient().realm(this.realm).users().search(username, true);
-            if (list != null && list.size() == 1) {
-                final UserRepresentation profile = list.get(0);
-                user = new KeycloakUserAdapter().toTaoUser(profile);
-                //user.setPassword(password);
-                //user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
+            if (this.userProvider != null) {
+                user = this.userProvider.get().getByName(username);
+            }
+            if (user == null) {
+                try (Keycloak adminClient = getAdminClient()) {
+                    final List<UserRepresentation> list = adminClient.realm(this.realm).users().search(username, true);
+                    if (list != null && list.size() == 1) {
+                        final UserRepresentation profile = list.get(0);
+                        user = new KeycloakUserAdapter().toTaoUser(profile);
+                        //user.setPassword(password);
+                        //user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
+                    }
+                }
             }
         } catch (VerificationException e) {
             logger.finest(String.format("Verification of token %s failed [%s]",
@@ -171,31 +253,32 @@ public class KeycloakClient implements TokenProvider {
 
     public User createUser(final String username, final String password,
                            final String email, final String firstName, final String lastName) {
-        final Keycloak client = getAdminClient();
-        final UsersResource usersResource = client.realm(this.realm).users();
-        final List<UserRepresentation> list = usersResource.search(username, true);
-        if (list.size() == 1) {
-            throw new IllegalArgumentException("Account already exists");
-        } else {
-            final UserRepresentation user = new UserRepresentation();
-            user.setEnabled(true);
-            user.setUsername(username);
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
-            user.setEmail(email);
-            user.setAttributes(Collections.singletonMap("origin", Collections.singletonList("tao")));
-            final Response response = usersResource.create(user);
-            logger.fine(String.format("create user response: %s %s", response.getStatus(), response.getStatusInfo()));
-            final String userId = CreatedResponseUtil.getCreatedId(response);
-            logger.fine("new user id: " + userId);
-            final CredentialRepresentation pwdCred = new CredentialRepresentation();
-            pwdCred.setTemporary(false);
-            pwdCred.setType(CredentialRepresentation.PASSWORD);
-            pwdCred.setValue(password);
-            final UserResource userResource = usersResource.get(userId);
-            userResource.resetPassword(pwdCred);
+        try (Keycloak client = getAdminClient()) {
+            final UsersResource usersResource = client.realm(this.realm).users();
+            final List<UserRepresentation> list = usersResource.search(username, true);
+            if (list.size() == 1) {
+                throw new IllegalArgumentException("Account already exists");
+            } else {
+                final UserRepresentation user = new UserRepresentation();
+                user.setEnabled(true);
+                user.setUsername(username);
+                user.setFirstName(firstName);
+                user.setLastName(lastName);
+                user.setEmail(email);
+                user.setAttributes(Collections.singletonMap("origin", Collections.singletonList("tao")));
+                final Response response = usersResource.create(user);
+                logger.fine(String.format("create user response: %s %s", response.getStatus(), response.getStatusInfo()));
+                final String userId = CreatedResponseUtil.getCreatedId(response);
+                logger.fine("new user id: " + userId);
+                final CredentialRepresentation pwdCred = new CredentialRepresentation();
+                pwdCred.setTemporary(false);
+                pwdCred.setType(CredentialRepresentation.PASSWORD);
+                pwdCred.setValue(password);
+                final UserResource userResource = usersResource.get(userId);
+                userResource.resetPassword(pwdCred);
+            }
+            return checkLoginCredentials(username, password);
         }
-        return checkLoginCredentials(username, password);
     }
 
     public void changeUserProfile(final String username, final String password,
@@ -237,8 +320,8 @@ public class KeycloakClient implements TokenProvider {
     @Override
     public boolean validate(String token) {
         if (token == null) return false;
-        RSATokenVerifier verifier = RSATokenVerifier.create(token);
-        if (realmKeys == null) {
+        final RSATokenVerifier verifier = RSATokenVerifier.create(token);
+        if (realmKeys == null || realmKeys.isEmpty()) {
             synchronized (lock) {
                 realmKeys = new HashMap<>();
                 try {
@@ -252,6 +335,14 @@ public class KeycloakClient implements TokenProvider {
             verifier.realmUrl(this.realmUrl)
                     .publicKey(realmKeys.get(verifier.getHeader().getKeyId()))
                     .verify();
+            AccessToken accessToken = verifier.getToken();
+            //String username = accessToken.getPreferredUsername();
+            String userId = accessToken.getSubject();
+            if (this.tokenKeeper != null && this.tokenKeeper.getFullToken(token) == null) {
+                this.tokenKeeper.put(new Token(token, null, (int) Duration.between(Instant.ofEpochSecond(accessToken.getIat()),
+                                                                                   Instant.ofEpochSecond(accessToken.getExp())).getSeconds()),
+                                     userId);
+            }
             return true;
         } catch (VerificationException e) {
             logger.finest(String.format("Verification of token %s failed [%s]",
@@ -290,31 +381,34 @@ public class KeycloakClient implements TokenProvider {
                 realmKeys.put((String) key.get("kid"), toPublicKey(key));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warning(ExceptionUtils.getStackTrace(logger, e));
         }
     }
 
     private Keycloak getAdminClient() {
         return KeycloakBuilder.builder()
-                .serverUrl(this.authUrl)
-                .realm(this.realm)
-                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
-                /*.username(this.adminUser)
-                .password(this.adminPwd)*/
-                .clientId(this.clientId)
-                .clientSecret(this.clientSecret)
-                .build();
+                              .serverUrl(this.authUrl)
+                              .realm(this.realm)
+                              .grantType(OAuth2Constants.PASSWORD)
+                              .clientId("admin-cli")
+                              .username(this.adminUser)
+                              .password(this.adminPwd)
+                              .build();
     }
 
     private AuthzClient getAuthClient() {
         Configuration configuration = new Configuration(this.authUrl, this.realm, this.clientId,
-                new HashMap<String, Object>() {{ put("secret", clientSecret); }}, null);
+                                                        new HashMap<>() {{
+                                                            put("secret", clientSecret);
+                                                        }}, null);
         return AuthzClient.create(configuration);
     }
 
     private Token refreshToken(String refreshToken) {
         final Configuration configuration = new Configuration(this.authUrl, this.realm, this.clientId,
-                                                        new HashMap<String, Object>() {{ put("secret", clientSecret); }}, null);
+                                                              new HashMap<>() {{
+                                                                  put("secret", clientSecret);
+                                                              }}, null);
         final Http http = new Http(configuration, (params, headers) -> {});
         final String url = this.realmUrl + "/protocol/openid-connect/token";
         final AccessTokenResponse response = http.<AccessTokenResponse>post(url)

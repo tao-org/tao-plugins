@@ -25,14 +25,18 @@ import ro.cs.tao.serialization.DateAdapter;
 import ro.cs.tao.utils.executors.MemoryUnit;
 
 import java.net.URISyntaxException;
+import java.util.function.Predicate;
 
 /**
  * @author Cosmin Cara
  */
 public class LSAXmlResponseHandler extends XmlResponseHandler<EOProduct> {
 
-    public LSAXmlResponseHandler(String recordElementName) {
+    private final Predicate<EOProduct> filter;
+
+    public LSAXmlResponseHandler(String recordElementName, Predicate<EOProduct> filter) {
         super(EOProduct.class, recordElementName);
+        this.filter = filter;
     }
 
     @Override
@@ -108,6 +112,7 @@ public class LSAXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 idx = content.indexOf("<td>", content.indexOf("Platform Short Name")) + 4;
                 val = content.substring(idx, content.indexOf("</td>", idx)).trim();
                 this.current.setProductType(val);
+                this.current.setSatelliteName(val);
                 idx = content.indexOf("<td>", content.indexOf("Sensing Start Date")) + 4;
                 val = content.substring(idx, content.indexOf("</td>", idx)).trim();
                 try {
@@ -115,9 +120,11 @@ public class LSAXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 } catch (Exception e) {
                     logger.warning(e.getMessage());
                 }
-                idx = content.indexOf("<td>", content.indexOf("Platform Serial Identifier")) + 4;
-                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
-                this.current.setSatelliteName(val);
+                // Platform Serial Identifier is returned as "B" which is not very useful (as it would be also Sentinel-2B).
+                // Instead, Platform Short Name is returned as "Sentinel-2", for example, which makes more sense
+                // idx = content.indexOf("<td>", content.indexOf("Platform Serial Identifier")) + 4;
+                // val = content.substring(idx, content.indexOf("</td>", idx)).trim();
+                // this.current.setSatelliteName(val);
                 idx = content.indexOf("<td>", content.indexOf("Instrument Short Name")) + 4;
                 val = content.substring(idx, content.indexOf("</td>", idx)).trim();
                 this.current.addAttribute("instrument", val);
@@ -140,6 +147,9 @@ public class LSAXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 break;
             default:
                 break;
+        }
+        if (this.recordElement.equals(qName) && this.filter != null && this.filter.test(this.current)) {
+            this.current = null;
         }
     }
 }

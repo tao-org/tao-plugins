@@ -34,4 +34,9 @@ public enum WorkReuse_class {
     }
     throw new ValidationException(String.format("Expected one of %s", WorkReuse_class.symbols, docVal));
   }
+
+  @Override
+  public String toString() {
+    return this.docVal;
+  }
 }

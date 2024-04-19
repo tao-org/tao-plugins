@@ -23,7 +23,7 @@ import java.nio.file.Path;
 
 public class OTBImageInstaller extends BaseImageInstaller {
     @Override
-    protected String getContainerName() { return "otb-7-3-0"; }
+    public String getContainerName() { return "otb-7-3-0"; }
 
     @Override
     protected String getDescription() { return "OTB"; }

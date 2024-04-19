@@ -165,15 +165,17 @@ public class FedEODataQuery extends DataQuery {
             switch (response.getStatusLine().getStatusCode()) {
                 case 200:
                     String countRequestResponse = EntityUtils.toString(response.getEntity());
-                    String countText = countRequestResponse.replaceAll("[\\s\\S]*?<os\\:totalResults>([\\d]*?)<\\/os:totalResults>[\\s\\S]*", "$1");
-                    if (!countText.isEmpty()) {
-                        count = Long.parseLong(countText);
+                    if (countRequestResponse.contains("<os:totalResults>")) {
+                        String countText = countRequestResponse.replaceAll("[\\s\\S]*?<os:totalResults>([\\d]*?)</os:totalResults>[\\s\\S]*", "$1");
+                        if (!countText.isEmpty()) {
+                            count = Long.parseLong(countText);
+                        }
                     }
                     break;
-                case 401:
-                    throw new QueryException("The request was not successful. Reason: 401: The supplied credentials are invalid!");
                 case 403:
-                    throw new QueryException("The request was not successful. Reason: 403: The required credentials are missing!");
+                    throw new QueryException("The request was not successful. Reason: 403: The supplied credentials are invalid!");
+                case 401:
+                    throw new QueryException("The request was not successful. Reason: 401: The required credentials are missing!");
                 default:
                     throw new QueryException(String.format("The request was not successful. Reason: %s",
                             response.getStatusLine().getStatusCode() + ": " + response.getStatusLine().getReasonPhrase()));

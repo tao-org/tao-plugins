@@ -2,22 +2,12 @@
   "Sentinel1": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-1",
       "required": false,
       "valueSet": null,
-      "order": 0
-    },
-    "processingLevel": {
-      "name": "processingLevel",
-      "remoteName": "processingLevel",
-      "label": "Processing Level",
-      "type": "string",
-      "defaultValue": "LEVEL1",
-      "required": false,
-      "valueSet": ["LEVEL0", "LEVEL1", "LEVEL2"],
       "order": 0
     },
     "productType": {
@@ -27,7 +17,8 @@
       "type": "string",
       "defaultValue": "SLC",
       "required": false,
-      "valueSet": ["CARD-BS", "CARD-COH6","GRD", "GRD-COG","OCN", "PLANNED","RAW", "SLC", "CARD-COH12"],
+      "valueSet": ["GRD", "GRD-COG","OCN", "RAW", "SLC",
+        "S1_ETA__AX", "S2_ETA__AX", "S3_ETA__AX", "S4_ETA__AX", "S5_ETA__AX", "S6_ETA__AX", "EW_ETA__AX", "IW_ETA__AX"],
       "order": 0
     },
     "sensorMode": {
@@ -97,7 +88,17 @@
       "type": "string",
       "defaultValue": null,
       "required": false,
-      "valueSet": ["VV", "VH", "VV VH"],
+      "valueSet": ["HH", "VV", "VV&VH", "HH&HV"],
+      "order": 0
+    },
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "Name",
+      "label": "Product Name",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
       "order": 0
     },
     "tileId": {
@@ -114,7 +115,7 @@
   "Sentinel2": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-2",
@@ -129,7 +130,7 @@
       "type": "string",
       "defaultValue": "S2MSI1C",
       "required": false,
-      "valueSet": ["S2MSI1C", "S2MSI2A"],
+      "valueSet": ["L1C", "L2A"],
       "order": 0
     },
     "relativeOrbit": {
@@ -184,7 +185,7 @@
     },
     "productIdentifier": {
       "name": "productIdentifier",
-      "remoteName": "productIdentifier",
+      "remoteName": "Name",
       "label": "Product Name",
       "type": "string",
       "defaultValue": null,
@@ -206,7 +207,7 @@
   "Sentinel3": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-3",
@@ -221,7 +222,7 @@
       "type": "string",
       "defaultValue": "OLCI",
       "required": false,
-      "valueSet": ["OLCI", "SRAL", "SLSTR"],
+      "valueSet": ["OLCI", "SRAL", "SLSTR", "SYNERGY"],
       "order": 0
     },
     "landCover": {
@@ -288,14 +289,14 @@
           "dependencyType": "FILTER",
           "referencedParameterId": "instrument",
           "condition": "EQ",
-          "expectedValue": "OL",
+          "expectedValue": "OLCI",
           "allowedValues": "OL_1_EFR___,OL_1_ERR___,OL_2_LFR___,OL_2_LRR___,OL_2_WFR___,OL_2_WRR___"
         },
         {
           "dependencyType": "FILTER",
           "referencedParameterId": "instrument",
           "condition": "EQ",
-          "expectedValue": "SR",
+          "expectedValue": "SRAL",
           "allowedValues": "SR_1_SRA___,SR_1_SRA_A_,SR_1_SRA_BS,SR_2_LAN___,SR_2_LAN_HY,SR_2_LAN_LI,SR_2_LAN_SI,SR_2_WAT___"
         }
       ]
@@ -394,13 +395,23 @@
   "Sentinel5P": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "platformShortName",
+      "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
       "defaultValue": "SENTINEL-5P",
       "required": false,
       "valueSet": null,
       "order": 0
+    },
+    "instrumentShortName": {
+      "name": "instrumentShortName",
+      "remoteName": "instrumentShortName",
+      "label": "Instrument",
+      "type": "string",
+      "defaultValue": "TROPOMI",
+      "required": false,
+      "valueSet": null,
+      "order": 1
     },
     "productType": {
       "name": "productType",
@@ -424,12 +435,12 @@
     },
     "timeliness": {
       "name": "timeliness",
-      "remoteName": "timeliness",
+      "remoteName": "processingMode",
       "label": "Timeliness",
       "type": "string",
-      "defaultValue": "Near real Time",
+      "defaultValue": "NRTI",
       "required": false,
-      "valueSet": ["Near real Time", "Offline", "Reprocessing"],
+      "valueSet": ["NRTI", "OFFL", "RPRO"],
       "order": 6
     },
     "relativeOrbit": {
@@ -481,6 +492,68 @@
       "required": false,
       "valueSet": null,
       "order": 8
+    }
+  },
+  "Sentinel1-orbit-files": {
+    "productIdentifier": {
+      "name": "productIdentifier",
+      "remoteName": "Name",
+      "label": "Product Name",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "platformShortName",
+      "label": "Platform",
+      "type": "string",
+      "defaultValue": "SENTINEL-1",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName": "ContentDate/Start",
+      "label": "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 1
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName": "ContentDate/End",
+      "label": "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 2
+    },
+    "productType": {
+      "name": "productType",
+      "remoteName": "productType",
+      "label": "Product Type",
+      "type": "string",
+      "defaultValue": "AUX_POEORB",
+      "required": false,
+      "valueSet": ["AUX_POEORB", "AUX_RESORB", "AUX_PREORB", "AUX_GNSSRD", "AUX_PROQUA"],
+      "order": 3
+    },
+    "platformIdentifier": {
+      "name": "platformIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B"],
+      "order": 4
     }
   }
 }

@@ -66,21 +66,22 @@ public class DASTest {
     private static final int pageSize;
     private static final int maxResults;
     private static final String rowTemplate;
-    private static String user;
-    private static String password;
+    private static String user = "";
+    private static String password = "";
+    private static String destination = "";
     private static final DownloadProgressListener listener;
 
     static {
         begin = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.START_DATE);
-        begin.setValue(LocalDateTime.of(2023, 3, 1, 0, 0, 0, 0));
+        begin.setValue(LocalDateTime.of(2023, 10, 1, 0, 0, 0, 0));
         end = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.END_DATE);
-        end.setValue(LocalDateTime.of(2023, 3, 7, 23, 59, 59, 0));
+        end.setValue(LocalDateTime.of(2023, 10, 6, 23, 59, 59, 0));
         Polygon2D footprint = Polygon2D.fromWKT("POLYGON((4.67 53.134,5.964 53.108,5.839 51.44,4.608 51.463,4.67 53.134))");
         aoi = new QueryParameter<>(Polygon2D.class, CommonParameterNames.FOOTPRINT);
         aoi.setValue(footprint);
         pageSize = 50;
         maxResults = 50;
-        rowTemplate = "ID=%s, NAME=%s, LOCATION=%s";
+        rowTemplate = "ID=%s, NAME=%s, LOCATION=%s, QUICKLOOK=%s";
         //user = "";
         //password = "";
         listener = new DownloadProgressListener() {
@@ -127,12 +128,22 @@ public class DASTest {
     }
 
     public static void main(String[] args) {
-        Sentinel1_Test();
-        Sentinel2_Test();
-        Sentinel3_Test();
+        if (args != null && args.length != 3) {
+            throw new IllegalArgumentException("Invalid arguments");
+        }
+        user = args[0];
+        password = args[1];
+        destination = args[2];
+        Sentinel1_Test("SLC");
+        Sentinel1_Test("GRD-COG");
+        Sentinel1_Test("S4_ETA__AX");
+        //Sentinel1_Orbit_Files_Test();
+        Sentinel2_Test("L2A");
+        //Sentinel3_Test();
+        System.exit(0);
     }
 
-    public static void Sentinel1_Test() {
+    public static void Sentinel1_Test(String productType) {
         try {
             Logger logger = LogManager.getLogManager().getLogger("");
             for (Handler handler : logger.getHandlers()) {
@@ -145,15 +156,16 @@ public class DASTest {
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
-            query.addParameter(CommonParameterNames.PRODUCT_TYPE, "SLC");
+            query.addParameter(CommonParameterNames.PRODUCT_TYPE, productType);
             query.setMaxResults(maxResults);
             List<EOProduct> results = query.execute();
             results.forEach(r -> {
-                System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation());
+                System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation(), r.getQuicklookLocation());
             });
-            final DASDownloadStrategy strategy = (DASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel1");
+            /*final DASDownloadStrategy strategy = (DASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel1");
             if (!results.isEmpty()) {
                 strategy.setFetchMode(FetchMode.OVERWRITE);
+                strategy.setDestination(destination);
                 strategy.setProgressListener(listener);
                 Path path = strategy.fetch(results.get(0));
                 if (path != null) {
@@ -161,13 +173,51 @@ public class DASTest {
                 } else {
                     System.out.println("Product not downloaded");
                 }
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void Sentinel2_Test() {
+    public static void Sentinel1_Orbit_Files_Test() {
+        try {
+            Logger logger = LogManager.getLogManager().getLogger("");
+            for (Handler handler : logger.getHandlers()) {
+                handler.setLevel(Level.FINEST);
+            }
+            DataSource<?, ?> dataSource = new DASDataSource();
+            dataSource.setCredentials(user, password);
+
+            DataQuery query = dataSource.createQuery("Sentinel1-orbit-files");
+            query.addParameter(CommonParameterNames.PLATFORM, "SENTINEL-1");
+            query.addParameter(begin);
+            query.addParameter(end);
+            query.addParameter(CommonParameterNames.PRODUCT_TYPE, "AUX_POEORB");
+            //query.setMaxResults(1);
+            //query.addParameter(CommonParameterNames.PRODUCT, "S1A_OPER_AUX_PREORB_OPOD_20231012T012019_V20231012T004406_20231012T071906.EOF");
+            System.out.println(query.getCount());
+            List<EOProduct> results = query.execute();
+            results.forEach(r -> {
+                System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation(), r.getQuicklookLocation());
+            });
+            /*final DASDownloadStrategy strategy = (DASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel1");
+            if (!results.isEmpty()) {
+                strategy.setFetchMode(FetchMode.OVERWRITE);
+                strategy.setDestination(destination);
+                strategy.setProgressListener(listener);
+                Path path = strategy.fetch(results.get(0));
+                if (path != null) {
+                    System.out.println("Product downloaded at " + path.toString());
+                } else {
+                    System.out.println("Product not downloaded");
+                }
+            }*/
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void Sentinel2_Test(String productType) {
         try {
             Logger logger = LogManager.getLogManager().getLogger("");
             for (Handler handler : logger.getHandlers()) {
@@ -180,15 +230,17 @@ public class DASTest {
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
-            query.addParameter(CommonParameterNames.PRODUCT_TYPE, "S2MSI1C");
+            query.addParameter(CommonParameterNames.PRODUCT_TYPE, productType);
             query.setMaxResults(maxResults);
+            //query.addParameter(CommonParameterNames.PRODUCT, "S2B_MSIL1C_20220501T093029_N0400_R136_T34TEP_20220501T102949.SAFE");
             List<EOProduct> results = query.execute();
             results.forEach(r -> {
-                System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation());
+                System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation(), r.getQuicklookLocation());
             });
-            final DASDownloadStrategy strategy = (DASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel2");
+            /*final DASDownloadStrategy strategy = (DASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel2");
             if (!results.isEmpty()) {
                 strategy.setFetchMode(FetchMode.OVERWRITE);
+                strategy.setDestination(destination);
                 strategy.setProgressListener(listener);
                 Path path = strategy.fetch(results.get(0));
                 strategy.cancel();
@@ -197,7 +249,7 @@ public class DASTest {
                 } else {
                     System.out.println("Product not downloaded");
                 }
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -223,11 +275,12 @@ public class DASTest {
             query.setMaxResults(maxResults);
             List<EOProduct> results = query.execute();
             results.forEach(r -> {
-                System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation());
+                System.out.printf((rowTemplate) + "%n", r.getId(), r.getName(), r.getLocation(), r.getQuicklookLocation());
             });
-            final DASDownloadStrategy strategy = (DASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel3");
+            /*final DASDownloadStrategy strategy = (DASDownloadStrategy) dataSource.getProductFetchStrategy("Sentinel3");
             if (!results.isEmpty()) {
                 strategy.setFetchMode(FetchMode.OVERWRITE);
+                strategy.setDestination(destination);
                 strategy.setProgressListener(listener);
                 Path path = strategy.fetch(results.get(0));
                 if (path != null) {
@@ -235,7 +288,7 @@ public class DASTest {
                 } else {
                     System.out.println("Product not downloaded");
                 }
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -264,6 +317,7 @@ public class DASTest {
             final DASDownloadStrategy strategy = (DASDownloadStrategy) dataSource.getProductFetchStrategy("Landsat8");
             if (!results.isEmpty()) {
                 strategy.setFetchMode(FetchMode.OVERWRITE);
+                strategy.setDestination(destination);
                 strategy.setProgressListener(listener);
                 Path path = strategy.fetch(results.get(0));
                 if (path != null) {
