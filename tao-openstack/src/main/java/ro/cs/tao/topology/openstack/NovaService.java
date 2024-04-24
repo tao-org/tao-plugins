@@ -138,11 +138,31 @@ public class NovaService implements NodeProvider {
                 if (!StringUtilities.isNullOrEmpty(defaultFlavourName)) {
                     defaultFlavour = service.flavors().list().stream().filter(f -> f.getName().equals(defaultFlavourName)).findFirst().get();
                 }
+                String imageId = cfgProvider.getValue(Constants.OPENSTACK_OS_IMAGE);
+                Image image;
                 Flavor flavour = service.flavors().list().stream().filter(f -> f.getName().equals(node.getFlavor().getId())).findFirst().orElse(null);
-                if (defaultFlavour != null &&
-                        (flavour != null && (flavour.getVcpus() < defaultFlavour.getVcpus() || flavour.getRam() < defaultFlavour.getRam()))) {
+                if (flavour == null) {
                     flavour = defaultFlavour;
                 }
+                if (imageId == null) {
+                    image = session.imageService().listAll().stream().filter(i -> i.getName().equals("CentOS 7")).findFirst().orElse(null);
+                    if (image != null) {
+                        imageId = image.getId();
+                    }
+                } else {
+                    final String iid = imageId;
+                    image = session.imageService().listAll().stream().filter(i -> i.getId().equals(iid)).findFirst().orElse(null);
+                    if (flavour != null && flavour.getRam() < image.getMinRam()) {
+                        throw new TopologyException("Flavor has less RAM than required by the OS image");
+                    }
+                }
+                if (imageId == null) {
+                    throw new TopologyException("No base image defined");
+                }
+                /*if (defaultFlavour != null &&
+                        (flavour != null && (flavour.getVcpus() < defaultFlavour.getVcpus() || flavour.getRam() < defaultFlavour.getRam()))) {
+                    flavour = defaultFlavour;
+                }*/
                 final List<String> networkIds = getNetworks();
                 final String ssdVolumeName = node.getId() + "-ssd";
                 final String hddVolumeName = node.getId() + "-hdd";
@@ -154,16 +174,6 @@ public class NovaService implements NodeProvider {
                 }
                 if (hddSize > 0) {
                     hddVolume = createVolume(hddVolumeName, hddType, hddSize);
-                }
-                String imageId = cfgProvider.getValue(Constants.OPENSTACK_OS_IMAGE);
-                if (imageId == null) {
-                    final Image image = session.imageService().listAll().stream().filter(i -> i.getName().equals("CentOS 7")).findFirst().orElse(null);
-                    if (image != null) {
-                        imageId = image.getId();
-                    }
-                }
-                if (imageId == null) {
-                    throw new TopologyException("No base image defined");
                 }
                 builder.name(node.getId())
                        .flavor(flavour)
