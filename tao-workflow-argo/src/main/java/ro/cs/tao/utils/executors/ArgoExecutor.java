@@ -97,10 +97,6 @@ public class ArgoExecutor extends Executor<Object>
         }
         return 0;
     }
-
-
-
-
     private void initializeArgoWorkflow() {
         argoWorkflow.setApiVersion(ARGO_VERSION);
         argoWorkflow.setKind("Workflow");
@@ -301,7 +297,7 @@ public class ArgoExecutor extends Executor<Object>
         templates.add(workflowTemplate);
         computeTemplateDependencies(node, dagTask.getDependencies());
         computeTemplateInputs(node, dagTask, workflowTemplate);
-        setNodeReferences(node);
+        createNodeReferences(node);
     }
 
 
@@ -382,12 +378,14 @@ public class ArgoExecutor extends Executor<Object>
         Set<ParameterDescriptor> paramsToBeAddedAsInputs = new HashSet<>(nodeComponent.getParameterDescriptors());
         for(ParameterDescriptor param : paramsToBeAddedAsInputs){
             if(isParamAlreadyAnInput(param, dagTaskInputParameters)) {
-                updateInputDefaultValue(param, dagTaskInputParameters);
+                updateInputValue(param, dagTaskInputParameters);
                 continue;
             }
             WorkflowParameter parameter = new WorkflowParameter();
             parameter.setName(replaceWithConnectorString(param.getName()) + CONNECTOR_STRING + node.getId());
             parameter.setDefaultValue(param.getDefaultValue());
+            //set the value to default value as well
+            parameter.setValue(param.getDefaultValue());
             WorkflowParameter templateParameter = new WorkflowParameter();
             templateParameter.setName(replaceWithConnectorString(param.getName()) + CONNECTOR_STRING + node.getId());
             dagTask.getArguments().getParameters().add(parameter);
@@ -401,12 +399,14 @@ public class ArgoExecutor extends Executor<Object>
         return optionalWorkflowParameter.isPresent();
     }
 
-    private void updateInputDefaultValue(ParameterDescriptor parameter, List<WorkflowParameter> dagTaskInputParameters) {
+    private void updateInputValue(ParameterDescriptor parameter, List<WorkflowParameter> dagTaskInputParameters) {
         Optional<WorkflowParameter> optionalWorkflowParameter = dagTaskInputParameters
                 .stream().filter(p -> p.getName().contains(parameter.getName())).findFirst();
         if(optionalWorkflowParameter.isPresent()){
             WorkflowParameter workflowParameter = optionalWorkflowParameter.get();
             workflowParameter.setDefaultValue(parameter.getDefaultValue());
+            // also set actual value - argo requirement
+            workflowParameter.setValue(parameter.getDefaultValue());
         }
     }
 
@@ -501,14 +501,16 @@ public class ArgoExecutor extends Executor<Object>
         return nodesExceptDataSources;
     }
 
-    private void setNodeReferences(WorkflowNodeDescriptor currentNode) {
+    private void createNodeReferences(WorkflowNodeDescriptor currentNode) {
         List<WorkflowArtifact> workflowArtifacts = argoWorkflow.getSpec().getArguments().getArtifacts();
-        if(Objects.isNull(workflowArtifacts) || workflowArtifacts.isEmpty())
+        if(Objects.isNull(workflowArtifacts) || workflowArtifacts.isEmpty()) {
+            parseLinksToSetReferencesToTemplateOutput(currentNode);
             return;
+        }
+        // parse links for spec references and if not, output references
         for(ComponentLink link : currentNode.getIncomingLinks()){
             String incomingLinkName = replaceWithConnectorString(link.getInput().getName()) + CONNECTOR_STRING + link.getSourceNodeId();
             String parameterName = replaceWithConnectorString(link.getOutput().getName()) + CONNECTOR_STRING + currentNode.getId();
-            // verify of the node is linked to a datasource node(to a WorkflowArtifact)
             Optional<WorkflowArtifact> isLinkedToArtifact = workflowArtifacts.stream()
                     .filter(artifact -> artifact.getName().contains(incomingLinkName))
                     .findFirst();
@@ -518,6 +520,15 @@ public class ArgoExecutor extends Executor<Object>
                 String templateName = replaceWithConnectorString(link.getInput().getParentId().toLowerCase()) + CONNECTOR_STRING +link.getSourceNodeId();
                 setTaskReferenceToTemplateOutput(templateName, incomingLinkName, parameterName);
             }
+        }
+    }
+
+    private void parseLinksToSetReferencesToTemplateOutput(WorkflowNodeDescriptor node) {
+        for(ComponentLink link : node.getIncomingLinks()){
+            String incomingLinkName = replaceWithConnectorString(link.getInput().getName()) + CONNECTOR_STRING + link.getSourceNodeId();
+            String parameterName = replaceWithConnectorString(link.getOutput().getName()) + CONNECTOR_STRING + node.getId();
+            String templateName = replaceWithConnectorString(link.getInput().getParentId().toLowerCase()) + CONNECTOR_STRING +link.getSourceNodeId();
+            setTaskReferenceToTemplateOutput(templateName, incomingLinkName, parameterName);
         }
     }
 
