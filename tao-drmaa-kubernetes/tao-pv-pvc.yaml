@@ -10,7 +10,7 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: "/mnt/d/mnt/tao"
+    path: "/mnt/d/mnt/tao/working_dir"
     type: Directory
 ---
 apiVersion: v1
