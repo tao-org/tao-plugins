@@ -9,7 +9,7 @@ import org.openstack4j.api.storage.BlockVolumeService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.compute.*;
 import org.openstack4j.model.compute.builder.ServerCreateBuilder;
-import org.openstack4j.model.image.Image;
+import org.openstack4j.model.image.v2.Image;
 import org.openstack4j.model.network.Network;
 import org.openstack4j.model.storage.block.Volume;
 import org.openstack4j.model.storage.block.VolumeAttachment;
@@ -145,13 +145,13 @@ public class NovaService implements NodeProvider {
                     flavour = defaultFlavour;
                 }
                 if (imageId == null) {
-                    image = session.imageService().listAll().stream().filter(i -> i.getName().equals("CentOS 7")).findFirst().orElse(null);
+                    image = session.imageService().list().stream().filter(i -> i.getName().equals("CentOS 7")).findFirst().orElse(null);
                     if (image != null) {
                         imageId = image.getId();
                     }
                 } else {
                     final String iid = imageId;
-                    image = session.imageService().listAll().stream().filter(i -> i.getId().equals(iid)).findFirst().orElse(null);
+                    image = session.imageService().get(iid);//list().stream().filter(i -> i.getId().equals(iid)).findFirst().orElse(null);
                     if (flavour != null && flavour.getRam() < image.getMinRam()) {
                         throw new TopologyException("Flavor has less RAM than required by the OS image");
                     }
