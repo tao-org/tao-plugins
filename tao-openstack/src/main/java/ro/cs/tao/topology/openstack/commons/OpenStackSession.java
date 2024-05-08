@@ -13,7 +13,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.api.compute.ComputeService;
-import org.openstack4j.api.image.ImageService;
+import org.openstack4j.api.image.v2.ImageService;
 import org.openstack4j.api.networking.NetworkingService;
 import org.openstack4j.api.storage.BlockStorageService;
 import org.openstack4j.api.storage.ObjectStorageService;
@@ -45,6 +45,7 @@ public class OpenStackSession {
     private static final Map<Integer, OpenStackSession> sessions = Collections.synchronizedMap(new HashMap<>());
     private static Token authToken;
     private static String region;
+    private static Boolean usesImagesV2;
     //private static final OpenStackSession session = new OpenStackSession();
     private Token instanceToken;
 
@@ -96,7 +97,7 @@ public class OpenStackSession {
         if (!service.supportsImage()) {
             throw new TopologyException("The remote provider doesn't support Image API");
         }
-        return service.images();
+        return service.imagesV2();
     }
 
     public static OpenStackSession getInstance() {
