@@ -109,7 +109,8 @@ public class ArgoExecutor extends Executor<Object>
     private void initializeWorkflowMetadata(Path scriptTargetPath) {
         WorkflowMetadata metadata = new WorkflowMetadata();
         String workflowName = scriptTargetPath.getFileName().toString().substring(0,scriptTargetPath.getFileName().toString().indexOf("."));
-        metadata.setGenerateName(workflowName);
+        String modifiedWorkflowName = workflowName.toLowerCase().replaceAll("_", "");
+        metadata.setGenerateName(modifiedWorkflowName);
         argoWorkflow.setMetadata(metadata);
     }
 
