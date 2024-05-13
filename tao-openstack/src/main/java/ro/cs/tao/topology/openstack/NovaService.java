@@ -152,7 +152,10 @@ public class NovaService implements NodeProvider {
                 } else {
                     final String iid = imageId;
                     image = session.imageService().get(iid);//list().stream().filter(i -> i.getId().equals(iid)).findFirst().orElse(null);
-                    if (flavour != null && flavour.getRam() < image.getMinRam()) {
+                    if (image == null) {
+                        throw new TopologyException("Base image not found");
+                    }
+                    if (flavour != null && image.getMinRam() != null && flavour.getRam() < image.getMinRam()) {
                         throw new TopologyException("Flavor has less RAM than required by the OS image");
                     }
                 }
