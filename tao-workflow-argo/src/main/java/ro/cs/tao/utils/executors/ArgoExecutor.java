@@ -1,9 +1,6 @@
 package ro.cs.tao.utils.executors;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+
 import com.gs.collections.impl.utility.ListIterate;
 import io.fabric8.kubernetes.api.model.*;
 import ro.cs.tao.argo.workflow.model.*;
@@ -20,25 +17,22 @@ import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.ExecutionUnitFormat;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.container.ContainerUnit;
+import ro.cs.tao.utils.yaml.ArgoYAMLWriter;
 import ro.cs.tao.workflow.ParameterValue;
 import ro.cs.tao.workflow.WorkflowDescriptor;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 import ro.cs.tao.workflow.enums.ComponentType;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ro.cs.tao.utils.constants.ArgoConstants.*;
+
 public class ArgoExecutor extends Executor<Object>
         implements ExecutionDescriptorConverter {
-    private final static String ARGO_VERSION = "argoproj.io/v1alpha1";
-    private final static String ENTRYPOINT = "workflow-start";
-    private final static String MAIN_WF_INPUT_PREFIX = "wf-input-";
-    private final static String MAIN_WF_OUTPUT_PREFIX = "wf-out-";
-    private final static String CONNECTOR_STRING = "-";
 
     private ExecutionUnit executionUnit;
     private final ExecutionTaskProvider taskProvider;
@@ -82,14 +76,13 @@ public class ArgoExecutor extends Executor<Object>
             initializeArgoWorkflow();
             parseNodes(workflowDescriptor);
             updateContainerInfo();
-            // synchronize on final variable as the update and create yaml part is a critical section
             synchronized (this.workflowProvider) {
                 if (Files.exists(scriptTargetPath)) {
-                    updateYaml(scriptTargetPath);
+                    ArgoYAMLWriter.updateYaml(argoWorkflow, executionUnit, taskProvider, scriptTargetPath);
                     logger.fine("Update Argo Graph File");
                     return 0;
                 }
-                createYaml(scriptTargetPath);
+                ArgoYAMLWriter.createYaml(argoWorkflow, scriptTargetPath);
                 logger.fine("Create Argo Graph File");
             }
         } catch (Exception e){
@@ -103,7 +96,6 @@ public class ArgoExecutor extends Executor<Object>
         final Path scriptTargetPath = Paths.get(executionUnit.getScriptTargetPath());
         initializeWorkflowMetadata(scriptTargetPath);
         initializeWorkflowSpec();
-        //argoWorkflow.setStatus(new LinkedHashMap<>());
     }
 
     private void initializeWorkflowMetadata(Path scriptTargetPath) {
@@ -158,63 +150,7 @@ public class ArgoExecutor extends Executor<Object>
 
 
 
-    private void createYaml(Path path) {
-        ArgoWorkflowYAMLFactory factory =  new ArgoWorkflowYAMLFactory();
-        factory.enable(ArgoWorkflowYAMLGenerator.Feature.MINIMIZE_QUOTES);
-        factory.disable(ArgoWorkflowYAMLGenerator.Feature.WRITE_DOC_START_MARKER);
 
-        ObjectMapper mapper = new ObjectMapper(factory);
-        mapper.registerModule(new Jdk8Module());
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        try {
-            Map<String, Object> workflowMap = mapper.convertValue(argoWorkflow, new TypeReference<>() {
-            });
-            mapper.writeValue(path.toFile(), workflowMap);
-        } catch (IOException e) {
-            logger.severe(ExceptionUtils.getStackTrace(logger, e));
-        }
-    }
-
-    private void updateYaml(Path path) {
-        ArgoWorkflowYAMLFactory factory =  new ArgoWorkflowYAMLFactory();
-        factory.enable(ArgoWorkflowYAMLGenerator.Feature.MINIMIZE_QUOTES);
-        factory.disable(ArgoWorkflowYAMLGenerator.Feature.WRITE_DOC_START_MARKER);
-
-        ObjectMapper mapper = new ObjectMapper(factory);
-        mapper.registerModule(new Jdk8Module());
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        try {
-            Map<String, Object> workflowMap= mapper.readValue(path.toFile(), Map.class);
-            if (workflowMap != null && !workflowMap.isEmpty()) {
-                long taskId = (Long) executionUnit.getMetadata().get("id");
-                ExecutionTask task = this.taskProvider.get(taskId);
-                TaoComponent component = TaskUtilities.getComponentFor(task);
-                String executionUnitName = replaceWithConnectorString(component.getId().toLowerCase())
-                        + CONNECTOR_STRING + task.getWorkflowNodeId();
-                List<LinkedHashMap<String,Object>> templates = (ArrayList<LinkedHashMap<String,Object>>)((LinkedHashMap<String, Object>) workflowMap.get("spec")).get("templates");
-                Map<String, Object> templateFromFile = new LinkedHashMap<>();
-                for(Map<String, Object> templateMap : templates){
-                    String templateName = (String) templateMap.get("name");
-                    if(templateName.contains(executionUnitName)){
-                        templateFromFile = templateMap;
-                    }
-                }
-                Optional<WorkflowTemplate> optionalTemplateFromArgoWorkflow = argoWorkflow.getSpec().getTemplates()
-                        .stream()
-                        .filter(template -> template.getName().contains(executionUnitName))
-                        .findFirst();
-                if(optionalTemplateFromArgoWorkflow.isEmpty())
-                    throw new NullPointerException("No Template exists for the specified execution unit!");
-                WorkflowTemplate templateFromArgo = optionalTemplateFromArgoWorkflow.get();
-                Map<String, Object> containerMap = mapper.convertValue(templateFromArgo.getContainer(), new TypeReference<>() {
-                });
-                templateFromFile.put("container", containerMap);
-                mapper.writeValue(path.toFile(), workflowMap);
-            }
-        } catch (IOException e) {
-            logger.severe(ExceptionUtils.getStackTrace(logger, e));
-        }
-    }
 
     private void parseNodes(WorkflowDescriptor workflowDescriptor){
         List<WorkflowNodeDescriptor> roots = workflowDescriptor.findRoots(workflowDescriptor.getNodes());
@@ -339,7 +275,6 @@ public class ArgoExecutor extends Executor<Object>
         workflowTemplate.setOutputs(templateOutputs);
     }
 
-    // to refactor
     private void parseTargetsForOutputs(WorkflowNodeDescriptor currentNode, WorkflowTemplate template) {
         List<WorkflowArtifact> outputArtifacts = template.getOutputs().getArtifacts();
         TaoComponent nodeComponent = TaskUtilities.getComponentFor(currentNode);
@@ -731,10 +666,6 @@ public class ArgoExecutor extends Executor<Object>
         ExecutionTask task = this.taskProvider.get(taskId);
         long workflowId = task.getJob().getWorkflowId();
         return this.workflowProvider.get(workflowId);
-    }
-
-    private String replaceWithConnectorString(String s){
-        return s.replaceAll("_", "-");
     }
 
     private void checkExecutionUnit(){
