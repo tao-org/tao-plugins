@@ -17,6 +17,7 @@ import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.ExecutionUnitFormat;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.container.ContainerUnit;
+import ro.cs.tao.utils.initializers.ArgoWorkflowInitializer;
 import ro.cs.tao.utils.yaml.ArgoYAMLWriter;
 import ro.cs.tao.workflow.ParameterValue;
 import ro.cs.tao.workflow.WorkflowDescriptor;
@@ -37,14 +38,14 @@ public class ArgoExecutor extends Executor<Object>
     private ExecutionUnit executionUnit;
     private final ExecutionTaskProvider taskProvider;
     private final WorkflowProvider workflowProvider;
-    private final ArgoWorkflow argoWorkflow;
     private final Set<WorkflowNodeDescriptor> visitedNodes;
+    private final ArgoWorkflow argoWorkflow;
 
     public ArgoExecutor() {
         this.taskProvider = SpringContextBridge.services().getService(ExecutionTaskProvider.class);
         this.workflowProvider = SpringContextBridge.services().getService(WorkflowProvider.class);
-        this.argoWorkflow = new ArgoWorkflow();
         this.visitedNodes = new HashSet<>();
+        this.argoWorkflow = new ArgoWorkflow();
     }
 
     public ArgoExecutor(ExecutionUnit unit) {
@@ -52,8 +53,8 @@ public class ArgoExecutor extends Executor<Object>
         this.executionUnit = unit;
         this.taskProvider = SpringContextBridge.services().getService(ExecutionTaskProvider.class);
         this.workflowProvider = SpringContextBridge.services().getService(WorkflowProvider.class);
-        this.argoWorkflow = new ArgoWorkflow();
         this.visitedNodes = new HashSet<>();
+        this.argoWorkflow = new ArgoWorkflow();
     }
 
     @Override
@@ -71,18 +72,18 @@ public class ArgoExecutor extends Executor<Object>
         checkExecutionUnit();
         checkScriptPath();
         try{
-            final Path scriptTargetPath = Paths.get(executionUnit.getScriptTargetPath());
+            final Path targetPath = Paths.get(executionUnit.getScriptTargetPath());
             WorkflowDescriptor workflowDescriptor = getWorkflowDescriptor();
-            initializeArgoWorkflow();
+            initializeWorkflow(targetPath);
             parseNodes(workflowDescriptor);
             updateContainerInfo();
             synchronized (this.workflowProvider) {
-                if (Files.exists(scriptTargetPath)) {
-                    ArgoYAMLWriter.updateYaml(argoWorkflow, executionUnit, taskProvider, scriptTargetPath);
+                if (Files.exists(targetPath)) {
+                    ArgoYAMLWriter.updateYaml(argoWorkflow, executionUnit, getExecutionUnitName());
                     logger.fine("Update Argo Graph File");
                     return 0;
                 }
-                ArgoYAMLWriter.createYaml(argoWorkflow, scriptTargetPath);
+                ArgoYAMLWriter.createYaml(argoWorkflow, executionUnit);
                 logger.fine("Create Argo Graph File");
             }
         } catch (Exception e){
@@ -90,67 +91,11 @@ public class ArgoExecutor extends Executor<Object>
         }
         return 0;
     }
-    private void initializeArgoWorkflow() {
-        argoWorkflow.setApiVersion(ARGO_VERSION);
-        argoWorkflow.setKind("Workflow");
-        final Path scriptTargetPath = Paths.get(executionUnit.getScriptTargetPath());
-        initializeWorkflowMetadata(scriptTargetPath);
-        initializeWorkflowSpec();
+
+    private void initializeWorkflow(Path path) {
+        ArgoWorkflowInitializer initializer = new ArgoWorkflowInitializer(argoWorkflow, path);
+        initializer.initializeArgoWorkflow();
     }
-
-    private void initializeWorkflowMetadata(Path scriptTargetPath) {
-        WorkflowMetadata metadata = new WorkflowMetadata();
-        String workflowName = scriptTargetPath.getFileName().toString().substring(0,scriptTargetPath.getFileName().toString().indexOf("."));
-        String modifiedWorkflowName = workflowName.toLowerCase().replaceAll("_", "");
-        metadata.setGenerateName(modifiedWorkflowName);
-        argoWorkflow.setMetadata(metadata);
-    }
-
-    private void initializeWorkflowSpec() {
-        WorkflowSpec spec = new WorkflowSpec();
-        spec.setEntrypoint(ENTRYPOINT);
-        initializeSpecVolumes(spec);
-        initializeSpecTemplates(spec);
-        initializeSpecArguments(spec);
-        argoWorkflow.setSpec(spec);
-    }
-
-    private void initializeSpecVolumes(WorkflowSpec spec){
-        List<Volume> volumes = new ArrayList<>();
-        Volume basicOutputVolume = new Volume();
-        basicOutputVolume.setName("out-volume");
-        basicOutputVolume.setEmptyDir(new EmptyDirVolumeSource());
-        volumes.add(basicOutputVolume);
-        spec.setVolumes(volumes);
-    }
-
-    private void initializeSpecTemplates(WorkflowSpec spec) {
-        List<WorkflowTemplate> templates = new ArrayList<>();
-        initializeDAGTemplate(templates);
-        spec.setTemplates(templates);
-    }
-
-    private void initializeDAGTemplate(List<WorkflowTemplate> templates) {
-        WorkflowTemplate dagTemplate = new WorkflowTemplate();
-        dagTemplate.setName(ENTRYPOINT);
-        DAG dag = new DAG();
-        initializeDAGTasksList(dag);
-        dagTemplate.setDAG(dag);
-        templates.add(dagTemplate);
-    }
-
-    private void initializeDAGTasksList(DAG dag) {
-        dag.setTasks(new ArrayList<>());
-    }
-
-    private void initializeSpecArguments(WorkflowSpec spec) {
-        WorkflowArguments workflowArguments = new WorkflowArguments();
-        spec.setArguments(workflowArguments);
-    }
-
-
-
-
 
     private void parseNodes(WorkflowDescriptor workflowDescriptor){
         List<WorkflowNodeDescriptor> roots = workflowDescriptor.findRoots(workflowDescriptor.getNodes());
@@ -666,6 +611,14 @@ public class ArgoExecutor extends Executor<Object>
         ExecutionTask task = this.taskProvider.get(taskId);
         long workflowId = task.getJob().getWorkflowId();
         return this.workflowProvider.get(workflowId);
+    }
+
+    private String getExecutionUnitName(){
+        long taskId = (Long) executionUnit.getMetadata().get("id");
+        ExecutionTask task = taskProvider.get(taskId);
+        TaoComponent component = TaskUtilities.getComponentFor(task);
+        return replaceWithConnectorString(component.getId().toLowerCase())
+                + CONNECTOR_STRING + task.getWorkflowNodeId();
     }
 
     private void checkExecutionUnit(){

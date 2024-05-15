@@ -14,13 +14,15 @@ import ro.cs.tao.utils.executors.ExecutionUnit;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static ro.cs.tao.utils.constants.ArgoConstants.*;
 
 public class ArgoYAMLWriter {
 
-    public static void createYaml(ArgoWorkflow argoWorkflow, Path path) throws IOException {
+    public static void createYaml(ArgoWorkflow argoWorkflow, ExecutionUnit executionUnit) throws IOException {
+        final Path path = Paths.get(executionUnit.getScriptTargetPath());
         ArgoWorkflowYAMLFactory factory =  new ArgoWorkflowYAMLFactory();
         factory.enable(ArgoWorkflowYAMLGenerator.Feature.MINIMIZE_QUOTES);
         factory.disable(ArgoWorkflowYAMLGenerator.Feature.WRITE_DOC_START_MARKER);
@@ -37,22 +39,17 @@ public class ArgoYAMLWriter {
         }
     }
 
-    public static void  updateYaml(ArgoWorkflow argoWorkflow, ExecutionUnit executionUnit, ExecutionTaskProvider taskProvider, Path path) throws IOException {
+    public static void updateYaml(ArgoWorkflow argoWorkflow, ExecutionUnit executionUnit, String executionUnitName) throws IOException {
+        final Path path = Paths.get(executionUnit.getScriptTargetPath());
         ArgoWorkflowYAMLFactory factory =  new ArgoWorkflowYAMLFactory();
         factory.enable(ArgoWorkflowYAMLGenerator.Feature.MINIMIZE_QUOTES);
         factory.disable(ArgoWorkflowYAMLGenerator.Feature.WRITE_DOC_START_MARKER);
-
         ObjectMapper mapper = new ObjectMapper(factory);
         mapper.registerModule(new Jdk8Module());
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         try {
             Map<String, Object> workflowMap= mapper.readValue(path.toFile(), Map.class);
             if (workflowMap != null && !workflowMap.isEmpty()) {
-                long taskId = (Long) executionUnit.getMetadata().get("id");
-                ExecutionTask task = taskProvider.get(taskId);
-                TaoComponent component = TaskUtilities.getComponentFor(task);
-                String executionUnitName = replaceWithConnectorString(component.getId().toLowerCase())
-                        + CONNECTOR_STRING + task.getWorkflowNodeId();
                 List<LinkedHashMap<String,Object>> templates = (ArrayList<LinkedHashMap<String,Object>>)((LinkedHashMap<String, Object>) workflowMap.get("spec")).get("templates");
                 Map<String, Object> templateFromFile = new LinkedHashMap<>();
                 for(Map<String, Object> templateMap : templates){
