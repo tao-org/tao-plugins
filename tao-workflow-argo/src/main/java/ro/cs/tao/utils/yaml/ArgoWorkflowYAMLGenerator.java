@@ -1,4 +1,4 @@
-package ro.cs.tao.utils.executors;
+package ro.cs.tao.utils.yaml;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.ObjectCodec;
