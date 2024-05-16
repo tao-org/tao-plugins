@@ -21,6 +21,8 @@ import ro.cs.tao.topology.openstack.commons.Constants;
 import ro.cs.tao.topology.openstack.commons.OpenStackSession;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.utils.executors.MemoryUnit;
+import ro.cs.tao.utils.executors.SSHExecutor;
+import ro.cs.tao.utils.executors.SSHMode;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -167,17 +169,6 @@ public class NovaService implements NodeProvider {
                     flavour = defaultFlavour;
                 }*/
                 final List<String> networkIds = getNetworks();
-                final String ssdVolumeName = node.getId() + "-ssd";
-                final String hddVolumeName = node.getId() + "-hdd";
-                final int ssdSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_SIZE, "100"));
-                final int hddSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_SIZE, "0"));
-                //int idx = 1;
-                if (ssdSize > 0) {
-                    ssdVolume = createVolume(ssdVolumeName, ssdType, ssdSize);
-                }
-                if (hddSize > 0) {
-                    hddVolume = createVolume(hddVolumeName, hddType, hddSize);
-                }
                 builder.name(node.getId())
                        .flavor(flavour)
                        .image(imageId);
@@ -201,13 +192,36 @@ public class NovaService implements NodeProvider {
                     } catch (InterruptedException ignored) { }
                     consoleLog = serverService.getConsoleOutput(server.getId(), 5);
                 }
+                final String ssdVolumeName = node.getId() + "-ssd";
+                final String hddVolumeName = node.getId() + "-hdd";
+                final int ssdSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_SIZE, "100"));
+                final int hddSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_SIZE, "0"));
+                if (ssdSize > 0) {
+                    ssdVolume = createVolume(ssdVolumeName, ssdType, ssdSize);
+                }
+                if (hddSize > 0) {
+                    hddVolume = createVolume(hddVolumeName, hddType, hddSize);
+                }
+                final boolean useKey = node.getSshKey() != null;
                 if (ssdVolume != null) {
-                    serverService.attachVolume(server.getId(), ssdVolume.getId(),
-                                               cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_DEVICE, "/dev/sds"));
+                    final String ssdDevice = cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_DEVICE, "/dev/sds");
+                    serverService.attachVolume(server.getId(), ssdVolume.getId(), ssdDevice);
+                    if (mountDevice(server.getName(), node.getUserName(),
+                                    useKey ? node.getSshKey() : node.getUserPass(), useKey, ssdDevice)) {
+                        logger.fine("Volume " + ssdVolumeName + " was mounted on " + ssdDevice);
+                    } else {
+                        logger.warning("Volume " + ssdVolumeName + " was not mounted");
+                    }
                 }
                 if (hddVolume != null) {
-                    serverService.attachVolume(server.getId(), hddVolume.getId(),
-                                               cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_DEVICE, "/dev/sdh"));
+                    final String hddDevice = cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_DEVICE, "/dev/sdh");
+                    serverService.attachVolume(server.getId(), hddVolume.getId(), hddDevice);
+                    if (mountDevice(server.getName(), node.getUserName(),
+                                    useKey ? node.getSshKey() : node.getUserPass(), useKey, hddDevice)) {
+                        logger.fine("Volume " + hddVolumeName + " was mounted on " + hddDevice);
+                    } else {
+                        logger.warning("Volume " + hddVolumeName + " was not mounted");
+                    }
                 }
             }
             final NodeDescription newNode = convert(node, server, node.getVolatile());
@@ -579,6 +593,25 @@ public class NovaService implements NodeProvider {
         return null;
     }
 
+    private boolean mountDevice(String hostName, String user, String credential, boolean passwordCredential, String deviceName) {
+        final List<String> args = new ArrayList<>();
+        final String name = deviceName.substring(deviceName.lastIndexOf('/') + 1);
+        args.add("DEVICE=\"" + deviceName + "\" && umount $DEVICE 2> /dev/null && echo -e \"o\\nn\\np\\n1\\n\\n\\nw\" | fdisk $DEFICE && " +
+                         "partprobe $DEVICE && mkfs.ext4 ${DEVICE}1 && mkdir -p /mnt/wrk && mount ${DEVICE}1 /mnt/" + name + " && " +
+                         "echo \"${DEVICE}1 /mnt/" + name + " ext4 defaults 0 0\" >> /etc/fstab");
+        final SSHExecutor executor = new SSHExecutor(hostName, args, true, SSHMode.EXEC);
+        executor.setUser(user);
+        if (passwordCredential) {
+            executor.setPassword(credential);
+        } else {
+            executor.setCertificate(credential);
+        }
+        try {
+            return executor.execute(true) == 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     private static String buildAddGroupCommand(String groupName, Integer groupId) {
         String command = "groupadd";
