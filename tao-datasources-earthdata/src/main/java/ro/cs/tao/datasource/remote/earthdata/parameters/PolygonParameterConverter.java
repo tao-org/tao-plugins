@@ -4,7 +4,8 @@ import ro.cs.tao.datasource.converters.DefaultParameterConverter;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.eodata.Polygon2D;
 
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.Point2D;
+import java.util.List;
 
 public class PolygonParameterConverter extends DefaultParameterConverter {
 
@@ -20,19 +21,16 @@ public class PolygonParameterConverter extends DefaultParameterConverter {
         Polygon2D polygon2D = (Polygon2D) this.parameter.getValue();
         if (polygon2D != null && polygon2D.getNumPoints() > 0) {
             final StringBuilder polygonParam = new StringBuilder();
-            final Rectangle2D bounds = polygon2D.getBounds2D();
-            polygonParam.append(bounds.getMinX()).append(",").append(bounds.getMinY()).append(",")
-                        .append(bounds.getMaxX()).append(",").append(bounds.getMaxY());
-            /*List<Point2D> point2DList = polygon2D.getPoints();
+            List<Point2D> point2DList = polygon2D.getPoints();
             int numPoints = point2DList.size();
             for (int pointIndex = 0; pointIndex < numPoints; pointIndex++) {
                 Point2D currentPoint = point2DList.get(pointIndex);
                 polygonParam.append(currentPoint.getX()).append(",");
                 polygonParam.append(currentPoint.getY());
-                if(pointIndex != numPoints - 1) {
+                if (pointIndex != numPoints - 1) {
                     polygonParam.append(",");
                 }
-            }*/
+            }
             return polygonParam.toString();
         } else {
             return null;

@@ -42,7 +42,7 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
                 for (int indexLink = 0; indexLink < links.size() ; indexLink++){
                     JsonObject currentLink = links.getJsonObject(indexLink);
                     String url = currentLink.getString("href");
-                    if(url.matches(".*(h5|nc|nc4|tif)$") && (!url.contains(".xml") && !url.contains(".iso")
+                    if(url.matches(".*(h5|hdf|nc|nc4|tif)$") && (!url.contains(".xml") && !url.contains(".iso")
                             && !url.contains(".html") && !url.contains(".pdf"))){
                         result.setLocation(url);
                         String filename = Paths.get(new URI(url).getPath()).getFileName().toString();
