@@ -27,25 +27,27 @@ public class NasaDataSourceTest {
     static {
         begin = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.START_DATE);
         end = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.END_DATE);
-        begin.setMinValue(LocalDateTime.of(2020, 2, 1, 0, 0, 0, 0));
-        begin.setMaxValue(LocalDateTime.of(2020, 2, 2, 23, 59, 59, 0));
+        begin.setValue(LocalDateTime.of(2024, 5, 19, 0, 0, 0, 0));
+        //begin.setMaxValue(LocalDateTime.of(2023, 2, 2, 23, 59, 59, 0));
 //            begin.setValue(Date.from(LocalDateTime.of(2020, 2, 1, 0, 0, 0, 0)
 //                    .atZone(ZoneId.systemDefault())
 //                    .toInstant()));
-        end.setMinValue(LocalDateTime.of(2020, 2, 1, 0, 0, 0, 0));
-        end.setMaxValue(LocalDateTime.of(2020, 2, 2, 23, 59, 59, 0));
+        //end.setMinValue(LocalDateTime.of(2023, 2, 1, 0, 0, 0, 0));
+        end.setValue(LocalDateTime.of(2024, 5, 20, 0, 0, 0, 0));
 //            end.setValue(Date.from(LocalDateTime.of(2020, 2, 2, 23, 59, 59, 0)
 //                    .atZone(ZoneId.systemDefault())
 //                    .toInstant()));
-        Polygon2D footprint = Polygon2D.fromWKT("POLYGON((23.76563 6.07764,22.35938 3.40672,27 0.59522,28.96875 5.09362,27.28125 9.31086,23.76563 6.07764))");
+        Polygon2D footprint = Polygon2D.fromWKT("POLYGON((29.15771 38.50595,29.13574 37.71082,30.15527 37.724,30.1377 38.60699,29.15771 38.50595))");
         aoi = new QueryParameter<>(Polygon2D.class, CommonParameterNames.FOOTPRINT);
         aoi.setValue(footprint);
     }
 
     public static void main(String[] args) {
         downloadH5();
-//        downloadH5IceSAT2();
-//        downloadGedi();
+        downloadH5IceSAT2();
+        downloadGedi();
+        downloadModisMCDWD_L3_F1_NRT();
+        System.exit(0);
     }
 
     public static void downloadH5(){
@@ -150,7 +152,7 @@ public class NasaDataSourceTest {
             dataSource.setCredentials("lidia901", "SMAPassword1");
             String[] sensors = dataSource.getSupportedSensors();
 
-            DataQuery query = dataSource.createQuery("GEDI");
+            DataQuery query = dataSource.createQuery("GEDI-L3V2");
 
             query.setMaxResults(40);
 //            query.addParameter(CommonParameterNames.TILE, "*_2019108015252_*");
@@ -172,7 +174,54 @@ public class NasaDataSourceTest {
 
             if (!results.isEmpty()) {
                 strategy.setFetchMode(FetchMode.OVERWRITE);
-                strategy.setDestination("E:\\testTAO");
+                strategy.setDestination("E:\\eodata");
+                Path path = strategy.fetch(results.get(0));
+                if (path != null) {
+                    System.out.println("Product downloaded at " + path.toString());
+                } else {
+                    System.out.println("Product not downloaded");
+                }
+            }
+        }catch ( Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void downloadModisMCDWD_L3_F1_NRT(){
+        try {
+            Logger logger = LogManager.getLogManager().getLogger("");
+            for (Handler handler : logger.getHandlers()) {
+                handler.setLevel(Level.INFO);
+            }
+            ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
+            DataSource dataSource = serviceRegistry.getService(EarthDataSource.class);
+
+            dataSource.setCredentials("lidia901", "SMAPassword1");
+            String[] sensors = dataSource.getSupportedSensors();
+
+            DataQuery query = dataSource.createQuery("MODIS-MCD19A1N");
+
+            query.setMaxResults(1);
+//            query.addParameter(CommonParameterNames.TILE, "*_2019108015252_*");
+
+            query.addParameter(begin);
+            query.addParameter(end);
+            query.addParameter(aoi);
+
+            List<EOProduct> results = query.execute();
+            results.forEach(r -> {
+                System.out.println("ID=" + r.getId());
+                System.out.println("NAME=" + r.getName());
+                System.out.println("LOCATION=" + r.getLocation());
+                System.out.println("APPROXIMATE SIZE=" + r.getApproximateSize());
+                System.out.println("PRODUCT TYPE=" + r.getProductType());
+            });
+
+            final EarthDataDownloadStrategy strategy = (EarthDataDownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
+
+            if (!results.isEmpty()) {
+                strategy.setFetchMode(FetchMode.OVERWRITE);
+                strategy.setDestination("E:\\eodata");
                 Path path = strategy.fetch(results.get(0));
                 if (path != null) {
                     System.out.println("Product downloaded at " + path.toString());

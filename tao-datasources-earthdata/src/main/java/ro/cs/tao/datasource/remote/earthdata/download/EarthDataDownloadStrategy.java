@@ -83,9 +83,9 @@ public class EarthDataDownloadStrategy extends DownloadStrategy<String> {
                 responseStatus = connection.getResponseCode();
                 switch (responseStatus) {
                     case HttpStatus.SC_OK:
-                        connection = NetUtils.openConnection(connection.getURL().toString(), token);
+                        /*connection = NetUtils.openConnection(connection.getURL().toString(), token);
                         connection.setInstanceFollowRedirects(true);
-                        connection.connect();
+                        connection.connect();*/
                         return connection;
                     case HttpStatus.SC_UNAUTHORIZED:
                         connection = NetUtils.openConnection(connection.getURL().toString(), token);
@@ -102,7 +102,7 @@ public class EarthDataDownloadStrategy extends DownloadStrategy<String> {
         } catch (IOException e) {
             throw new QueryException(String.format("The request was not successful. Reason: %s", e.getMessage()));
         } finally {
-            if (connection != null) {
+            if (numberOfTries == 3 && connection != null) {
                 connection.disconnect();
             }
         }
