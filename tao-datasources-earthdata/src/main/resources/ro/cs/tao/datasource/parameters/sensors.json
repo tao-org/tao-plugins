@@ -152,5 +152,82 @@
     "description": "The Global Ecosystem Dynamics Investigation (GEDI) instrument aims to characterize ecosystem structure and dynamics to enable radically improved quantification and understanding of the Earth’s carbon cycle and biodiversity.",
     "temporalCoverage": "from 2019 to present",
     "spatialCoverage": "Global"
+  },
+  "MODIS-MCDWD_L3_F1_NRT": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "MODIS/Aqua+Terra Global Flood Product L3 NRT 250m 1-day GeoTIFF",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-MCDWD_L3_F2_NRT": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "MODIS/Aqua+Terra Global Flood Product L3 NRT 250m 2-day GeoTIFF",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-MCDWD_L3_F3_NRT": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "MODIS/Aqua+Terra Global Flood Product L3 NRT 250m 3-day GeoTIFF",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-MCDWD_L3_NRT": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "MODIS/Aqua+Terra Global Flood Product L3 NRT 250m",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-MCD19A1N": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "MODIS/Terra+Aqua Land Surface BRF Daily L2G Global 500m and 1km SIN Grid (MAIAC)",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-MCD19A2N": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "MODIS/Terra+Aqua Land Aerosol Optical Depth Daily L2G Global 1km SIN Grid (MAIAC)",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-MCD19A3N": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "MODIS/Terra+Aqua BRDF Model Parameters Daily NRT L3 Global 1km SIN Grid (MAIAC)",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-MCD43A1N": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "MODIS/Terra+Aqua BRDF/Albedo Model Parameters Daily L3 Global 500 m SIN Grid",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-MCD43A2N": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "MODIS/Terra+Aqua BRDF/Albedo Quality Daily L3 Global 500 m SIN Grid",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-MCD43A3N": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "MODIS/Terra+Aqua Albedo Daily L3 Global 500 m SIN Grid",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
+  },
+  "MODIS-MCD43A4N": {
+    "mission": "MODIS",
+    "sensorType": "OPTICAL",
+    "description": "MODIS/Terra+Aqua Nadir BRDF-Adjusted Reflectance Daily L3 Global 500 m SIN Grid",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
   }
 }

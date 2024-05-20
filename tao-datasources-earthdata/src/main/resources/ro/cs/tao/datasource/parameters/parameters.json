@@ -1504,7 +1504,7 @@
   "GEDI": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
       "defaultValue": "C1656767133-LPDAAC_ECS",
@@ -1554,7 +1554,7 @@
     },
     "footprint": {
       "name": "footprint",
-      "remoteName": "polygon",
+      "remoteName": "bounding_box",
       "label": "Area of Interest",
       "type": "polygon",
       "defaultValue": null,
@@ -1607,6 +1607,216 @@
       "remoteName" : "orbit_number[max]",
       "label" : "Orbit number[max]",
       "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCDWD_L3_F1_NRT": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2018623526-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "bounding_box",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCDWD_L3_F2_NRT": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2018695846-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "bounding_box",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCDWD_L3_F3_NRT": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2019424090-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "bounding_box",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCDWD_L3_NRT": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2018599131-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "bounding_box",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCD19A1N": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2018599131-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "bounding_box",
+      "label": "Area of Interest",
+      "type": "polygon",
       "defaultValue": null,
       "required": false,
       "valueSet": null,
