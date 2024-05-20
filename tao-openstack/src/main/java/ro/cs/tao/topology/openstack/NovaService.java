@@ -593,7 +593,7 @@ public class NovaService implements NodeProvider {
         return null;
     }
 
-    private boolean mountDevice(String hostName, String user, String credential, boolean passwordCredential, String deviceName) {
+    private boolean mountDevice(String hostName, String user, String credential, boolean useKey, String deviceName) {
         final List<String> args = new ArrayList<>();
         final String name = deviceName.substring(deviceName.lastIndexOf('/') + 1);
         args.add("DEVICE=\"" + deviceName + "\" && umount $DEVICE 2> /dev/null && echo -e \"o\\nn\\np\\n1\\n\\n\\nw\" | fdisk $DEFICE && " +
@@ -601,10 +601,10 @@ public class NovaService implements NodeProvider {
                          "echo \"${DEVICE}1 /mnt/" + name + " ext4 defaults 0 0\" >> /etc/fstab");
         final SSHExecutor executor = new SSHExecutor(hostName, args, true, SSHMode.EXEC);
         executor.setUser(user);
-        if (passwordCredential) {
-            executor.setPassword(credential);
-        } else {
+        if (useKey) {
             executor.setCertificate(credential);
+        } else {
+            executor.setPassword(credential);
         }
         try {
             return executor.execute(true) == 0;
