@@ -41,6 +41,7 @@ public class EarthDataParameterProvider extends AbstractParameterProvider {
                     put("IceSAT-2-ATL13V3", new EarthDataDownloadStrategy(dataSource, targetFolder, properties));
                     put("IceSAT-2-ATL13V2", new EarthDataDownloadStrategy(dataSource, targetFolder, properties));
                     put("GEDI", new EarthDataDownloadStrategy(dataSource, targetFolder, properties));
+                    put("MODIS-MCDWD_L3_F1_NRT", new EarthDataDownloadStrategy(dataSource, targetFolder, properties));
                 }});
     }
 }
