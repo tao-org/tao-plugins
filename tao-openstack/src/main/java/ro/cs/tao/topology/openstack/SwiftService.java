@@ -41,7 +41,7 @@ public class SwiftService {
 
     public SwiftService() {
         this.logger = Logger.getLogger(SwiftService.class.getName());
-        this.folderPlaceholder = ".folder";
+        this.folderPlaceholder = ".s3keep";
     }
 
     public void setFolderPlaceholder(String folderPlaceholder) {
@@ -109,6 +109,14 @@ public class SwiftService {
                                                     containerName, actionResponse.getCode(), actionResponse.getFault()));
             } else {
                 logger.finest(String.format("Container %s created", containerName));
+            }
+            final FileObject fakeObject = emptyFolderItem();
+            try (ByteArrayInputStream is = new ByteArrayInputStream(fakeObject.getAttributes().get(CONTENTS).getBytes())) {
+                final Map<String, String> metadata = new HashMap<>();
+                metadata.put("description", "placeholder");
+                objectStorageService.objects().put(containerName, fakeObject.getRelativePath(),
+                                                   Payloads.create(is),
+                                                   ObjectPutOptions.create().metadata(metadata));
             }
         } catch (Exception ex) {
             throw new IOException(String.format("Cannot create container %s. Reason: %s", containerName, ex.getMessage()));
