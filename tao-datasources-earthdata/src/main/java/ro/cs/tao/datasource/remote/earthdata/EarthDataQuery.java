@@ -94,7 +94,8 @@ public class EarthDataQuery extends DataQuery {
             try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, queryUrl, this.source.getCredentials(), queryParams)) {
                 switch (response.getStatusLine().getStatusCode()) {
                     case 200:
-                        JsonResponseParser<EOProduct> parser = new JsonResponseParser<EOProduct>(new EarthDataQueryResponseHandler(this.coverageFilter)) {
+                        JsonResponseParser<EOProduct> parser = new JsonResponseParser<EOProduct>(new EarthDataQueryResponseHandler(this.source.getSensorTypes().get(this.sensorName).getSensorType(),
+                                                                                                                                   this.coverageFilter)) {
                             @Override
                             public String[] getExcludedAttributes() {
                                 return new String[]{"keywords", "links", "services"};

@@ -5,6 +5,9 @@ import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
+import ro.cs.tao.eodata.enums.PixelType;
+import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.utils.DateUtils;
 
 import javax.json.*;
 import java.io.IOException;
@@ -18,9 +21,11 @@ import java.util.function.Predicate;
 public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProduct> {
 
     private final Predicate<EOProduct> filter;
+    private final SensorType sensorType;
 
-    public EarthDataQueryResponseHandler(Predicate<EOProduct> filter) {
+    public EarthDataQueryResponseHandler(SensorType type, Predicate<EOProduct> filter) {
         this.filter = filter;
+        this.sensorType = type;
     }
 
     public List<EOProduct> readValues(String content, AttributeFilter...filters) throws IOException {
@@ -36,8 +41,10 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
                 boolean hasDownloadLink = false;
                 JsonObject jsonObject = jsonArray.getJsonObject(i);
                 EOProduct result = new EOProduct();
+                result.setSensorType(this.sensorType);
                 result.setId(jsonObject.getString("id"));
                 result.setFormatType(DataFormat.RASTER);
+                result.setPixelType(PixelType.UNKNOWN);
                 JsonArray links = jsonObject.getJsonArray("links");
                 for (int indexLink = 0; indexLink < links.size() ; indexLink++){
                     JsonObject currentLink = links.getJsonObject(indexLink);
@@ -60,6 +67,7 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
                 } else {
                     result.setApproximateSize(-1);
                 }
+                result.setAcquisitionDate(DateUtils.parseDateTime(jsonObject.getString("time_end")));
                 result.setProductType(jsonObject.getString("original_format"));
                 if (hasDownloadLink) {
                     results.add(result);
