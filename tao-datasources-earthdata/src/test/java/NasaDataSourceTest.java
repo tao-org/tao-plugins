@@ -1,3 +1,4 @@
+import ro.cs.tao.datasource.CollectionDescription;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.param.CommonParameterNames;
@@ -13,6 +14,7 @@ import ro.cs.tao.spi.ServiceRegistryManager;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -23,17 +25,18 @@ public class NasaDataSourceTest {
     private static final QueryParameter<LocalDateTime> begin;
     private static final QueryParameter<LocalDateTime> end;
     private static final QueryParameter<Polygon2D> aoi;
+    private static final String token = "eyJ0eXAiOiJKV1QiLCJvcmlnaW4iOiJFYXJ0aGRhdGEgTG9naW4iLCJzaWciOiJlZGxqd3RwdWJrZXlfb3BzIiwiYWxnIjoiUlMyNTYifQ.eyJ0eXBlIjoiVXNlciIsInVpZCI6InZuZXRvaXUiLCJleHAiOjE3MjE1NTE4MzksImlhdCI6MTcxNjM2NzgzOSwiaXNzIjoiRWFydGhkYXRhIExvZ2luIn0.QgZSZf4NsqNanuHaJLDE3LGW9ShgFAdgRHj2vNL3-ahFwnUsTc7KY5bhj0BRtEHTgEdRM_Ak029uqhVOBtEoo5yIFa9qa5dYCihICio7mskE7ddBH7qHWOUz0Iq-yJQXBTWif1uOqUPeFsNxscsics-VQyvrJ4_fZhKr-Q1UGcJi-EzQrl--S-K-ipDFm6abhRYCT8tiTwOMz0a0EQOWNnbgf7-SBKAlGDHo4rzHlhxvY8v6JbGUQ05r0YwKdfWOHkanNMi0eqS1p1OxEI2pMGlRIL0RQ3DAuojJfDRabIvcOkOZ0G3IXf8BZDoCW-4hPTQ52arGX_9c5thCqEIE9g";
 
     static {
         begin = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.START_DATE);
         end = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.END_DATE);
-        begin.setValue(LocalDateTime.of(2024, 5, 19, 0, 0, 0, 0));
+        begin.setValue(LocalDateTime.of(2023, 3, 15, 0, 0, 0, 0));
         //begin.setMaxValue(LocalDateTime.of(2023, 2, 2, 23, 59, 59, 0));
 //            begin.setValue(Date.from(LocalDateTime.of(2020, 2, 1, 0, 0, 0, 0)
 //                    .atZone(ZoneId.systemDefault())
 //                    .toInstant()));
         //end.setMinValue(LocalDateTime.of(2023, 2, 1, 0, 0, 0, 0));
-        end.setValue(LocalDateTime.of(2024, 5, 20, 0, 0, 0, 0));
+        end.setValue(LocalDateTime.of(2023, 3, 17, 0, 0, 0, 0));
 //            end.setValue(Date.from(LocalDateTime.of(2020, 2, 2, 23, 59, 59, 0)
 //                    .atZone(ZoneId.systemDefault())
 //                    .toInstant()));
@@ -43,14 +46,18 @@ public class NasaDataSourceTest {
     }
 
     public static void main(String[] args) {
-        downloadH5();
-        downloadH5IceSAT2();
-        downloadGedi();
-        downloadModisMCDWD_L3_F1_NRT();
+        ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
+        DataSource dataSource = serviceRegistry.getService(EarthDataSource.class);
+        final String[] sensors = dataSource.getSupportedSensors();
+        for (String sensor : sensors) {
+            if (sensor.startsWith("MODIS-CHL")) {
+                searchAndDownload(sensor);
+            }
+        }
         System.exit(0);
     }
 
-    public static void downloadH5(){
+    public static void searchAndDownload(String collection){
         try {
             Logger logger = LogManager.getLogManager().getLogger("");
             for (Handler handler : logger.getHandlers()) {
@@ -59,147 +66,10 @@ public class NasaDataSourceTest {
             ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
             DataSource dataSource = serviceRegistry.getService(EarthDataSource.class);
 
-            dataSource.setCredentials("lidia901", "SMAPassword1");
-            String[] sensors = dataSource.getSupportedSensors();
-
-            DataQuery query = dataSource.createQuery(sensors[1]);
-
-//            query.addParameter(CommonParameterNames.TILE, "*_20210117_*");
-            query.addParameter(begin);
-            query.addParameter(end);
-            query.addParameter(aoi);
-
-            List<EOProduct> results = query.execute();
-            results.forEach(r -> {
-                System.out.println("ID=" + r.getId());
-                System.out.println("NAME=" + r.getName());
-                System.out.println("LOCATION=" + r.getLocation());
-                System.out.println("APPROXIMATE SIZE=" + r.getApproximateSize());
-                System.out.println("PRODUCT TYPE=" + r.getProductType());
-            });
-
-            final EarthDataDownloadStrategy strategy = (EarthDataDownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
-
-            if (!results.isEmpty()) {
-                strategy.setFetchMode(FetchMode.OVERWRITE);
-                strategy.setDestination("E:\\testTAO");
-                Path path = strategy.fetch(results.get(0));
-                if (path != null) {
-                    System.out.println("Product downloaded at " + path.toString());
-                } else {
-                    System.out.println("Product not downloaded");
-                }
-            }
-        }catch ( Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public static void downloadH5IceSAT2(){
-        try {
-            Logger logger = LogManager.getLogManager().getLogger("");
-            for (Handler handler : logger.getHandlers()) {
-                handler.setLevel(Level.INFO);
-            }
-            ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
-            DataSource dataSource = serviceRegistry.getService(EarthDataSource.class);
-
-            dataSource.setCredentials("lidia901", "SMAPassword1");
-            String[] sensors = dataSource.getSupportedSensors();
-
-            DataQuery query = dataSource.createQuery("IceSAT-2-ATL08V3");
-
-//            query.addParameter("equatorCrossingDate", "2020-11-01T00:00:00.000Z,2020-11-13T23:59:59.999Z");
-            query.addParameter("equatorCrossingLongMin",0);
-            query.addParameter("equatorCrossingLongMax",3);
-            query.addParameter("orbitNumberMax",500);
-
-            List<EOProduct> results = query.execute();
-            results.forEach(r -> {
-                System.out.println("ID=" + r.getId());
-                System.out.println("NAME=" + r.getName());
-                System.out.println("LOCATION=" + r.getLocation());
-                System.out.println("APPROXIMATE SIZE=" + r.getApproximateSize());
-                System.out.println("PRODUCT TYPE=" + r.getProductType());
-            });
-
-            final EarthDataDownloadStrategy strategy = (EarthDataDownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
-
-            if (!results.isEmpty()) {
-                strategy.setFetchMode(FetchMode.OVERWRITE);
-                strategy.setDestination("E:\\testTAO");
-                Path path = strategy.fetch(results.get(0));
-                if (path != null) {
-                    System.out.println("Product downloaded at " + path.toString());
-                } else {
-                    System.out.println("Product not downloaded");
-                }
-            }
-        }catch ( Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public static void downloadGedi(){
-        try {
-            Logger logger = LogManager.getLogManager().getLogger("");
-            for (Handler handler : logger.getHandlers()) {
-                handler.setLevel(Level.INFO);
-            }
-            ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
-            DataSource dataSource = serviceRegistry.getService(EarthDataSource.class);
-
-            dataSource.setCredentials("lidia901", "SMAPassword1");
-            String[] sensors = dataSource.getSupportedSensors();
-
-            DataQuery query = dataSource.createQuery("GEDI-L3V2");
-
-            query.setMaxResults(40);
-//            query.addParameter(CommonParameterNames.TILE, "*_2019108015252_*");
-
-            query.addParameter(begin);
-            query.addParameter(end);
-            query.addParameter(aoi);
-
-            List<EOProduct> results = query.execute();
-            results.forEach(r -> {
-                System.out.println("ID=" + r.getId());
-                System.out.println("NAME=" + r.getName());
-                System.out.println("LOCATION=" + r.getLocation());
-                System.out.println("APPROXIMATE SIZE=" + r.getApproximateSize());
-                System.out.println("PRODUCT TYPE=" + r.getProductType());
-            });
-
-            final EarthDataDownloadStrategy strategy = (EarthDataDownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
-
-            if (!results.isEmpty()) {
-                strategy.setFetchMode(FetchMode.OVERWRITE);
-                strategy.setDestination("E:\\eodata");
-                Path path = strategy.fetch(results.get(0));
-                if (path != null) {
-                    System.out.println("Product downloaded at " + path.toString());
-                } else {
-                    System.out.println("Product not downloaded");
-                }
-            }
-        }catch ( Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public static void downloadModisMCDWD_L3_F1_NRT(){
-        try {
-            Logger logger = LogManager.getLogManager().getLogger("");
-            for (Handler handler : logger.getHandlers()) {
-                handler.setLevel(Level.INFO);
-            }
-            ServiceRegistry<DataSource> serviceRegistry = getServiceRegistry();
-            DataSource dataSource = serviceRegistry.getService(EarthDataSource.class);
-
-            dataSource.setCredentials("lidia901", "SMAPassword1");
-            String[] sensors = dataSource.getSupportedSensors();
-
-            DataQuery query = dataSource.createQuery("MODIS-MCD19A1N");
+            dataSource.setCredentials("vnetoiu", "ASF_x2019");
+            //String[] sensors = dataSource.getSupportedSensors();
+            setTokenIfNeeded(dataSource, collection);
+            DataQuery query = dataSource.createQuery(collection);
 
             query.setMaxResults(1);
 //            query.addParameter(CommonParameterNames.TILE, "*_2019108015252_*");
@@ -207,7 +77,7 @@ public class NasaDataSourceTest {
             query.addParameter(begin);
             query.addParameter(end);
             query.addParameter(aoi);
-
+            query.setMaxResults(1);
             List<EOProduct> results = query.execute();
             results.forEach(r -> {
                 System.out.println("ID=" + r.getId());
@@ -217,7 +87,7 @@ public class NasaDataSourceTest {
                 System.out.println("PRODUCT TYPE=" + r.getProductType());
             });
 
-            final EarthDataDownloadStrategy strategy = (EarthDataDownloadStrategy) dataSource.getProductFetchStrategy(sensors[0]);
+            final EarthDataDownloadStrategy strategy = (EarthDataDownloadStrategy) dataSource.getProductFetchStrategy(collection);
 
             if (!results.isEmpty()) {
                 strategy.setFetchMode(FetchMode.OVERWRITE);
@@ -229,8 +99,15 @@ public class NasaDataSourceTest {
                     System.out.println("Product not downloaded");
                 }
             }
-        }catch ( Exception e){
-            e.printStackTrace();
+        } catch ( Exception e){
+            System.err.println("Downloading from " + collection + " failed: " + e.getMessage());
+        }
+    }
+
+    private static void setTokenIfNeeded(DataSource dataSource, String sensor) {
+        final Map<String, CollectionDescription> sensorTypes = dataSource.getSensorTypes();
+        if (sensorTypes.get(sensor).isTokenNeeded()) {
+            dataSource.setBearerToken(token);
         }
     }
 

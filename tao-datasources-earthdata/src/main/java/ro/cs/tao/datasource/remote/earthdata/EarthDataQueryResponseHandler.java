@@ -55,7 +55,11 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
                 if (this.filter != null && this.filter.test(result)) {
                     continue;
                 }
-                result.setApproximateSize((long)Float.parseFloat(jsonObject.getString("granule_size")));
+                if (jsonObject.containsKey("granule_size")) {
+                    result.setApproximateSize((long) Float.parseFloat(jsonObject.getString("granule_size")));
+                } else {
+                    result.setApproximateSize(-1);
+                }
                 result.setProductType(jsonObject.getString("original_format"));
                 if (hasDownloadLink) {
                     results.add(result);

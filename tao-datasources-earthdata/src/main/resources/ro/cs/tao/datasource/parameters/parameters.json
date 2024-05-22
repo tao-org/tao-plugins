@@ -2368,5 +2368,89 @@
       "valueSet": null,
       "order": 0
     }
+  },
+  "MODIS-CHLB": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2330511478-OB_DAAC",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-CHLM": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2330512018-OB_DAAC",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
   }
 }
