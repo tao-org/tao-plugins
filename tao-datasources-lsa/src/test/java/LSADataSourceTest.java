@@ -62,7 +62,7 @@ public class LSADataSourceTest {
 
     private static List<EOProduct> test_search(DataSource dataSource, String sensor, String productType) {
         final DataSourceComponent component = new DataSourceComponent(sensor, dataSource.getId());
-        component.setUserCredentials(user, password);
+        component.setUserCredentials(user, password, null);
         final DataQuery query = component.createQuery();
         /*query.addParameter("productType", productType);
         final QueryParameter<LocalDateTime> begin = query.createParameter("startDate", LocalDateTime.class);
@@ -96,7 +96,7 @@ public class LSADataSourceTest {
 
     private static void testDownload(DataSource dataSource, String sensor, List<EOProduct> results) {
         final DataSourceComponent component = new DataSourceComponent(sensor, dataSource.getId());
-        component.setUserCredentials(user, password);
+        component.setUserCredentials(user, password, null);
         if (!results.isEmpty()) {
             component.setFetchMode(FetchMode.OVERWRITE);
             component.setProgressListener(new DownloadProgressListener() {
