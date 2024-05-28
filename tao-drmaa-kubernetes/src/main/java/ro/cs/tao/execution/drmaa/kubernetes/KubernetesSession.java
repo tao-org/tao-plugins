@@ -36,11 +36,11 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class KubernetesSession implements Session {
-    private static final String configFileName = "kubernetes.config";
-    private static final String token = "tao.kubernetes.token";
-    private static final String namespace = "argo";
-    private static final String masterURL = "tao.kubernetes.master.url";
-    private static final String caCertFile = "tao.kubernetes.ca.cert.file";
+    static final String configFileName = "kubernetes.config";
+    static final String token = "tao.kubernetes.token";
+    static final String namespace = "argo";
+    static final String masterURL = "tao.kubernetes.master.url";
+    static final String caCertFile = "tao.kubernetes.ca.cert.file";
     private static final String pvcMappingsKey = "tao.kubernetes.pvc.mappings";
     private static final Map<String, String> configuration = new HashMap<>();
     private io.fabric8.kubernetes.client.Config builder;
@@ -67,7 +67,7 @@ public class KubernetesSession implements Session {
             }
 
             String serviceAccountToken = ConfigurationManager.getInstance().getValue(KubernetesSession.token);
-            configuration.put(KubernetesSession.token, token);
+            configuration.put(KubernetesSession.token, serviceAccountToken);
             if (serviceAccountToken == null) {
                 //throw new RuntimeException("Kubernetes service account token not found in config file");
                 logger.warning("Kubernetes service account token not found in configuration");
