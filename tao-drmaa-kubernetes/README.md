@@ -30,58 +30,11 @@ For more info see: https://kubernetes.io/docs/concepts/storage/storage-classes/
 $ kubectl apply -f tao-pv-pvc.yml -n argo
 ```
 
-[//]: # (## ??? Install Longhorn and add a storage class to work with S3 storage)
-
-[//]: # ()
-[//]: # (```bash)
-
-[//]: # ($ kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.5.4/deploy/longhorn.yaml)
-
-[//]: # (```)
-
-[//]: # ()
-[//]: # (```bash)
-
-[//]: # ($ kubectl apply -f longhorn-sc.yaml)
-
-[//]: # (```)
-
-[//]: # ()
-[//]: # (See https://longhorn.io/docs/1.5.4/volumes-and-nodes/create-volumes/)
-
-[//]: # ()
-[//]: # (Create storage class and persistence volume claim for the storage bucket. )
-
-[//]: # ()
-[//]: # (```bash)
-
-[//]: # ($ kubectl apply -f tao-s3-sc-pvc.yaml -n argo)
-
-[//]: # (```)
-
-## Install AWS S3 CSI driver to work with S3 storage (https://github.com/awslabs/mountpoint-s3-csi-driver/blob/main/docs/install.md)
-
-```bash
-$ helm repo add aws-mountpoint-s3-csi-driver https://awslabs.github.io/mountpoint-s3-csi-driver
-```
-
-```bash
-$ helm repo update
-```
-
-```bash
-$ helm upgrade --install aws-mountpoint-s3-csi-driver --namespace kube-system aws-mountpoint-s3-csi-driver/aws-mountpoint-s3-csi-driver
-```
-Create PV and PVC for the storage bucket. 
-
-```bash
-$ kubectl apply -f tao-s3-pv-pvc.yaml -n argo
-```
-
 ## Install CSI driver SMB
 
 ```bash
 $ helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
+$ helm repo update
 $ helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version v1.14.0
 ```
 
@@ -92,3 +45,27 @@ $ kubectl create secret generic tao-smbcreds --from-literal username=USERNAME --
 ```
 
 ## Create a storage class
+```bash
+$ kubectl apply -f tao-smb-sc.yaml -n argo
+```
+
+## PV and PVC creation
+
+Create persistent volumes and persistent volume claims used to access shared data from "tao-staging-master". PVCs are used in pod volume mapping.
+
+```bash
+$ kubectl apply -f tao-smb-pv-pvc.yaml -n argo
+```
+
+Create persistent volumes and persistent volume claims used to access shared data from local S3 EODATA. PVCs are used in pod volume mapping.
+
+```bash
+$ kubectl apply -f tao-eodata-pv-pvc.yaml -n argo
+```
+
+## Fix permissions for service account if needed
+
+```bash
+$ kubectl apply -f tao-role.yaml -n argo
+$ kubectl apply -f tao-rolebinding.yaml -n argo
+```

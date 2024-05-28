@@ -1,0 +1,27 @@
+# Config for mounts with source like: "/eodata/..."
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tao-eodata-pv  
+spec:
+  storageClassName: cinder-ssd
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/eodata"
+    # type: Directory
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tao-eodata-pvc
+spec:
+  storageClassName: cinder-ssd
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  volumeName: tao-eodata-pv
