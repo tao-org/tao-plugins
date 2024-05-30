@@ -12,7 +12,6 @@ import org.ggf.drmaa.*;
 import ro.cs.tao.EnumUtils;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.execution.DrmaaJobExtensions;
-import ro.cs.tao.execution.local.DefaultSession;
 import ro.cs.tao.execution.local.DefaultSessionFactory;
 import ro.cs.tao.serialization.JsonMapper;
 import ro.cs.tao.spi.ServiceRegistry;
@@ -27,10 +26,8 @@ import ro.cs.tao.utils.executors.container.ContainerType;
 import ro.cs.tao.utils.executors.container.ContainerUnit;
 
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -41,80 +38,23 @@ public class KubernetesSession implements Session {
     static final String namespace = "argo";
     static final String masterURL = "tao.kubernetes.master.url";
     static final String caCertFile = "tao.kubernetes.ca.cert.file";
-    private static final String pvcMappingsKey = "tao.kubernetes.pvc.mappings";
-    private static final Map<String, String> configuration = new HashMap<>();
-    private io.fabric8.kubernetes.client.Config builder;
+    static final String pvcMappingsKey = "tao.kubernetes.pvc.mappings";
+    private final static Logger logger = Logger.getLogger(KubernetesSession.class.getName());
+    private Map<String, String> configuration;
     private KubernetesClient client;
     private Map<String, JobTemplate> jobTemplates;
     private Map<String, Job> runningJobs;
     private Map<String, LogWatch> logWatchers;
     private Map<String, OutputAccumulator> jobOutputs;
     private AtomicInteger nodeCounter;
-    private final Logger logger = Logger.getLogger(DefaultSession.class.getName());
     private List <LogWatch> jobsLog;
     private Map<String, String> pvcMappings;
 
     public KubernetesSession() {
-
-        boolean hasConfigurationErrors = false;
-        try {
-            final String url =  ConfigurationManager.getInstance().getValue(KubernetesSession.masterURL);
-            configuration.put(KubernetesSession.masterURL, url);
-            if (url == null) {
-                //throw new RuntimeException("Kubernetes master url not found in config file");
-                logger.warning("Kubernetes Cluster URL not found in configuration");
-                hasConfigurationErrors = true;
-            }
-
-            String serviceAccountToken = ConfigurationManager.getInstance().getValue(KubernetesSession.token);
-            configuration.put(KubernetesSession.token, serviceAccountToken);
-            if (serviceAccountToken == null) {
-                //throw new RuntimeException("Kubernetes service account token not found in config file");
-                logger.warning("Kubernetes service account token not found in configuration");
-                hasConfigurationErrors = true;
-            }
-
-            //String namespace = ConfigurationManager.getInstance().getValue(this.namespace);
-
-            String serviceAccountCertFilepath = ConfigurationManager.getInstance().getValue(KubernetesSession.caCertFile);
-            configuration.put(KubernetesSession.caCertFile, serviceAccountCertFilepath);
-            final Path serviceAccountCertPath = Paths.get(serviceAccountCertFilepath);
-            if (!Files.exists(serviceAccountCertPath)) {
-                //throw new RuntimeException("No Kubernetes ca certification file found");
-                logger.warning("Kubernetes service account certificate file not found");
-                hasConfigurationErrors = true;
-            }
-
-            if(!hasConfigurationErrors) {
-                this.builder = new io.fabric8.kubernetes.client.ConfigBuilder()
-                        .withMasterUrl(url)
-                        .withNamespace(namespace)
-                        .withCaCertFile(serviceAccountCertFilepath)
-                        .withOauthToken(serviceAccountToken)
-                        .build();
-
-
-                this.client = new KubernetesClientBuilder()
-                        .withConfig(this.builder)
-                        .build();
-            }
-
-            String pvcMappingsValue = ConfigurationManager.getInstance().getValue(KubernetesSession.pvcMappingsKey);
-            configuration.put(KubernetesSession.pvcMappingsKey, pvcMappingsValue);
-            if (pvcMappingsValue == null) {
-                //throw new RuntimeException("No PVC mappings found for Kubernetes");
-                logger.warning("No PVC mappings found for Kubernetes");
-            }
-            pvcMappings = new HashMap<>();
-            try {
-                pvcMappings = JsonMapper.instance().readerFor(pvcMappings.getClass()).readValue(pvcMappingsValue);
-            } catch (JsonProcessingException e) {
-                //throw new RuntimeException(e);
-                logger.warning("Invalid PVC mappings for Kubernetes");
-            }
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        this.configuration = KubernetesSession.getConfiguration();
+        this.client = KubernetesSession.getClient(this.configuration);
+        if (this.client != null) {
+            this.pvcMappings = this.parsePvcMappings();
         }
     }
 
@@ -130,22 +70,12 @@ public class KubernetesSession implements Session {
             this.jobOutputs = Collections.synchronizedMap(new HashMap<>());
             this.nodeCounter = new AtomicInteger(0);
 
-            Map<String, String> newConfiguration = KubernetesSession.getNewConfiguration();
-            if(KubernetesSession.configurationHasChanged(newConfiguration)) {
-                if(!KubernetesSession.configurationHasErrors(newConfiguration)) {
-                    this.builder = new io.fabric8.kubernetes.client.ConfigBuilder()
-                            .withMasterUrl(newConfiguration.get(KubernetesSession.masterURL))
-                            .withNamespace(namespace)
-                            .withCaCertFile(newConfiguration.get(KubernetesSession.caCertFile))
-                            .withOauthToken(newConfiguration.get(KubernetesSession.token))
-                            .build();
-
-                    this.client = new KubernetesClientBuilder()
-                            .withConfig(this.builder)
-                            .build();
-                } else {
-                    this.builder = null;
-                    this.client = null;
+            Map<String, String> newConfiguration = KubernetesSession.getConfiguration();
+            if(KubernetesSession.configurationHasChanged(this.configuration, newConfiguration)) {
+                this.configuration = newConfiguration;
+                this.client = KubernetesSession.getClient(newConfiguration);
+                if (this.client != null) {
+                    this.pvcMappings = this.parsePvcMappings();
                 }
             }
         }
@@ -482,23 +412,14 @@ public class KubernetesSession implements Session {
 
             logger.info("Pod original cmd: " + container.getCommand().toString());
 
-            //TODO tests
             ArrayList<String> args = new ArrayList<>();
             for(String s : unit.getArguments()) {
-//                args.add(StringUtils.strip(s.replace("-channels.blue 0", "")
-//                        .replace("-channels.green 0", "")
-//                        .replace("-channels.mir 0", "-list Vegetation:NDVI"), "\""));
                 args.add(StringUtils.strip(s, "\""));
             }
             container.setCommand(args);
-//
+
             logger.info("Pod cmd: " + container.getCommand().toString());
             logger.info("Pod args: " + container.getArgs().toString());
-
-            // TODO tests
-//            container.setImage("alpine:latest");
-//            container.setCommand(Arrays.asList("/bin/bash"));
-//            container.setArgs(List.of("-c", "while true; do sleep 30; done;"));
 
             Map<String, Volume> pvcVolumeMap = new HashMap<>();
 
@@ -590,7 +511,7 @@ public class KubernetesSession implements Session {
         client.resource(job).inNamespace(namespace).delete();
     }
 
-    private static Map<String, String> getNewConfiguration() {
+    static Map<String, String> getConfiguration() {
         Map<String, String> configuration = new HashMap<>();
 
         String url =  ConfigurationManager.getInstance().getValue(KubernetesSession.masterURL);
@@ -608,37 +529,70 @@ public class KubernetesSession implements Session {
         return configuration;
     }
 
-    private static boolean configurationHasChanged(Map<String, String> newConfiguration) {
-        AtomicBoolean hasChanged = new AtomicBoolean(false);
-
-        configuration.forEach((k,v) -> {
-            if(!StringUtils.equals(newConfiguration.get(k), v)) {
-                hasChanged.set(true);
-            }
-        });
-
-        return hasChanged.get();
+    static boolean configurationHasChanged(Map<String, String> configuration, Map<String, String> newConfiguration) {
+        if(configuration != null && newConfiguration != null) {
+            return !configuration.equals(newConfiguration);
+        } else {
+            return configuration != null || newConfiguration != null;
+        }
     }
 
-    private static boolean configurationHasErrors(Map<String, String> newConfiguration) {
+    static boolean configurationHasErrors(Map<String, String> configuration) {
+        if (configuration == null) return true;
+
         boolean hasErrors = false;
-
-        if (newConfiguration.get(KubernetesSession.masterURL) == null) {
+        if (configuration.get(KubernetesSession.masterURL) == null) {
+            logger.warning("Kubernetes Cluster URL not found in configuration");
             hasErrors = true;
         }
-
-        if (newConfiguration.get(KubernetesSession.token) == null) {
+        if (configuration.get(KubernetesSession.token) == null) {
+            logger.warning("Kubernetes service account token not found in configuration");
             hasErrors = true;
         }
-
-        if (newConfiguration.get(KubernetesSession.caCertFile) == null || !Files.exists(Paths.get(newConfiguration.get(KubernetesSession.caCertFile)))) {
+        if (configuration.get(KubernetesSession.caCertFile) == null || !Files.exists(Paths.get(configuration.get(KubernetesSession.caCertFile)))) {
+            logger.warning("Kubernetes service account certificate file not found");
             hasErrors = true;
         }
-
-        if (newConfiguration.get(KubernetesSession.pvcMappingsKey) == null) {
+        if (configuration.get(KubernetesSession.pvcMappingsKey) == null) {
+            logger.warning("No PVC mappings found for Kubernetes");
             hasErrors = true;
         }
-
         return hasErrors;
+    }
+
+    static KubernetesClient getClient(Map<String, String> configuration) {
+        if(!KubernetesSession.configurationHasErrors(configuration)) {
+            try {
+                io.fabric8.kubernetes.client.Config builder = new io.fabric8.kubernetes.client.ConfigBuilder()
+                        .withMasterUrl(configuration.get(KubernetesSession.masterURL))
+                        .withNamespace(configuration.get(KubernetesSession.namespace))
+                        .withCaCertFile(configuration.get(KubernetesSession.caCertFile))
+                        .withOauthToken(configuration.get(KubernetesSession.token))
+                        .build();
+
+                return new KubernetesClientBuilder()
+                        .withConfig(builder)
+                        .build();
+            } catch (Exception e) {
+                logger.severe(e.getMessage());
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private Map<String, String> parsePvcMappings() {
+        if (this.configuration != null) {
+            pvcMappings = new HashMap<>();
+            try {
+                return JsonMapper.instance().readerFor(pvcMappings.getClass()).readValue(this.configuration.get(KubernetesSession.pvcMappingsKey));
+            } catch (JsonProcessingException e) {
+                logger.warning("Invalid PVC mappings for Kubernetes");
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 }

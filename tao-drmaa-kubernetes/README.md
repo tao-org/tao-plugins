@@ -57,6 +57,8 @@ Create persistent volumes and persistent volume claims used to access shared dat
 $ kubectl apply -f tao-smb-pv-pvc.yaml -n argo
 ```
 
+SELINUX can block file access through SAMBA, set it to "Permissive" (setenforce 0) if needed!
+
 Create persistent volumes and persistent volume claims used to access shared data from local S3 EODATA. PVCs are used in pod volume mapping.
 
 ```bash
