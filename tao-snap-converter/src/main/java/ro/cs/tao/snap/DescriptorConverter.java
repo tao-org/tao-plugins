@@ -27,6 +27,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Utility class that performs bidirectional conversion between TAO nodes and SNAP operator XML descriptors.
@@ -118,7 +119,7 @@ public class DescriptorConverter {
             builder.append("\t\t\t\t</sources>\n");
         }
         builder.append("\t\t\t\t<parameters class=\"com.bc.ceres.binding.dom.XppDomElement\">\n");
-        List<ParameterDescriptor> parameters = component.getParameterDescriptors();
+        Set<ParameterDescriptor> parameters = component.getParameterDescriptors();
         if (parameters != null) {
             for (ParameterDescriptor parameter : parameters) {
                 builder.append(parameterToXml(component.getId(), parameter));
@@ -147,7 +148,7 @@ public class DescriptorConverter {
                     .append("xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\n")
                     .append("\t<xsl:output method=\"xml\" indent=\"yes\" encoding=\"UTF-8\"/>\n");
             for (ProcessingComponent component : components) {
-                List<ParameterDescriptor> descriptors = component.getParameterDescriptors();
+                Set<ParameterDescriptor> descriptors = component.getParameterDescriptors();
                 final Map<String, String> overwrittenValues = values.get(component.getId());
                 for (ParameterDescriptor descriptor : descriptors) {
                     builder.append(parameterToXslParam(component.getId(), descriptor, overwrittenValues.get(descriptor.getId())));

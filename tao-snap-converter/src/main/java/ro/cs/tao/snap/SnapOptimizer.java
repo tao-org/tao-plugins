@@ -28,10 +28,7 @@ import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Runtime optimizer class for SNAP processing components.
@@ -77,7 +74,7 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
         aggregator.setActive(true);
         aggregator.setContainerId(first.getContainerId());
         //Path graphPath = Paths.get(SystemVariable.USER_WORKSPACE.value(), newId + ".xml");
-        final List<ParameterDescriptor> params = first.getParameterDescriptors();
+        final Set<ParameterDescriptor> params = first.getParameterDescriptors();
         first.getSources().forEach((s) -> {
             final ParameterDescriptor param = params.stream().filter(p -> p.getName().equals(s.getName())).findFirst().orElse(null);
             if (param == null) {
@@ -95,8 +92,8 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
             aggregator.addTarget(target);
         });
 
-        final List<ParameterDescriptor> parameterDescriptors = new ArrayList<>();
-        List<ParameterDescriptor> sourceParameterDescriptors;
+        final Set<ParameterDescriptor> parameterDescriptors = new LinkedHashSet<>();
+        Set<ParameterDescriptor> sourceParameterDescriptors;
         for (ProcessingComponent source : sources) {
             sourceParameterDescriptors = source.getParameterDescriptors();
             for (ParameterDescriptor descriptor : sourceParameterDescriptors) {

@@ -24,10 +24,7 @@ import ro.cs.tao.component.*;
 import ro.cs.tao.component.enums.ParameterType;
 import ro.cs.tao.eodata.enums.DataFormat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -87,7 +84,7 @@ public class OperatorHandler extends DefaultHandler {
                     this.result.addTarget(targetDescriptor);
                     break;
                 case "parameters":
-                    this.result.setParameterDescriptors(this.parameters);
+                    this.result.setParameterDescriptors(new LinkedHashSet<>(this.parameters));
                     break;
                 case "version":
                     this.result.setVersion(value);
