@@ -12,10 +12,7 @@ import ro.cs.tao.security.SystemPrincipal;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Runtime optimizer class for OTB processing components.
@@ -75,7 +72,7 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
             component.addTarget(target);
         });
 
-        List<ParameterDescriptor> parameterDescriptors = new ArrayList<>();
+        Set<ParameterDescriptor> parameterDescriptors = new LinkedHashSet<>();
 
         for (ProcessingComponent source : sources) {
             for (ParameterDescriptor descriptor : source.getParameterDescriptors()) {

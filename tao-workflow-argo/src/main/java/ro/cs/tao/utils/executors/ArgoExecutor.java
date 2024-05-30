@@ -256,7 +256,7 @@ public class ArgoExecutor extends Executor<Object>
     private void parseProcessingParameters(ProcessingComponent nodeComponent, WorkflowNodeDescriptor node, WorkflowTemplate workflowTemplate, DAGTask dagTask) {
         List<WorkflowParameter> dagTaskInputParameters = dagTask.getArguments().getParameters();
         List<WorkflowParameter> inputParameters = workflowTemplate.getInputs().getParameters();
-        Set<ParameterDescriptor> paramsToBeAddedAsInputs = new HashSet<>(nodeComponent.getParameterDescriptors());
+        Set<ParameterDescriptor> paramsToBeAddedAsInputs = nodeComponent.getParameterDescriptors();
         for(ParameterDescriptor param : paramsToBeAddedAsInputs){
             if(isParamAlreadyAnInput(param, dagTaskInputParameters)) {
                 updateInputValue(param, dagTaskInputParameters);
