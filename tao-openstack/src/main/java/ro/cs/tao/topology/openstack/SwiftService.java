@@ -141,12 +141,16 @@ public class SwiftService {
         final FileObject fakeObject = emptyFolderItem();
         try {
             final ObjectStorageContainerService containerService = objectStorageService.containers();
+            try {
             final ActionResponse actionResponse = containerService.create(containerName);
             if (actionResponse != null && !actionResponse.isSuccess()) {
                 throw new IOException(String.format("Failed to connect to container %s. Response code: %d; fault: %s",
                                                     containerName, actionResponse.getCode(), actionResponse.getFault()));
             } else {
                 logger.finest(String.format("Connected to container %s", containerName));
+            }
+            } catch (IOException e) {
+                logger.fine("Newer API errors when trying to create an existing container: " + e.getMessage());
             }
             String path = containerService.createPath(containerName, name);
             if (path == null) {
