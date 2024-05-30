@@ -94,7 +94,7 @@ public class CliParser {
                 component.setTemplateType(TemplateType.VELOCITY);
                 component.setOwner(SystemPrincipal.instance().getName());
                 parse(lines, component);
-                final List<ParameterDescriptor> params = component.getParameterDescriptors();
+                final Set<ParameterDescriptor> params = component.getParameterDescriptors();
                 final List<SourceDescriptor> sources = component.getSources();
                 final List<TargetDescriptor> targets = component.getTargets();
                 final StringBuilder builder = new StringBuilder();
