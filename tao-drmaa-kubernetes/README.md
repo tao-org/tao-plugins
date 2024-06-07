@@ -70,4 +70,6 @@ $ kubectl apply -f tao-eodata-pv-pvc.yaml -n argo
 ```bash
 $ kubectl apply -f tao-role.yaml -n argo
 $ kubectl apply -f tao-rolebinding.yaml -n argo
+$ kubectl apply -f tao-cluster-role.yaml -n argo
+$ kubectl apply -f tao-cluster-rolebinding.yaml -n argo
 ```
