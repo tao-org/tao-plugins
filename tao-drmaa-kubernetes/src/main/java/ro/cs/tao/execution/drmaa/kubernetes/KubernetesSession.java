@@ -12,6 +12,7 @@ import org.ggf.drmaa.*;
 import ro.cs.tao.EnumUtils;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.execution.DrmaaJobExtensions;
+import ro.cs.tao.execution.drmaa.JobExitHandler;
 import ro.cs.tao.execution.local.DefaultSessionFactory;
 import ro.cs.tao.serialization.JsonMapper;
 import ro.cs.tao.spi.ServiceRegistry;
@@ -29,10 +30,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class KubernetesSession implements Session {
+public class KubernetesSession implements Session, JobExitHandler {
     static final String configFileName = "kubernetes.config";
     static final String token = "tao.kubernetes.token";
     static final String namespace = "argo";
@@ -141,16 +143,19 @@ public class KubernetesSession implements Session {
         this.jobTemplates.remove(jt.getJobName());
     }
 
+    @Override
     public int getJobExitCode(String jobId) {
         // todo
         return -1;
     }
 
-    public String getJobOutput(String jobId) throws DrmaaException {
+    @Override
+    public String getJobOutput(String jobId) {
         OutputAccumulator consumer = this.jobOutputs.get(jobId);
         return consumer != null ? consumer.getOutput() : "n/a";
     }
 
+    @Override
     public void cleanupJob(String jobId) {
         this.jobOutputs.remove(jobId);
         this.runningJobs.remove(jobId);
@@ -296,30 +301,57 @@ public class KubernetesSession implements Session {
             status = PodStatus.UNKNOWN;
         }
         final int statusId;
+        String log;
         switch (status) {
             case PENDING:
                 statusId = QUEUED_ACTIVE;
                 break;
             case RUNNING:
                 statusId = RUNNING;
+                log = client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog();
+                this.jobOutputs.computeIfAbsent(jobId, new Function<String, OutputAccumulator>() {
+                    @Override
+                    public OutputAccumulator apply(String s) {
+                        OutputAccumulator accumulator = new OutputAccumulator();
+                        accumulator.consume(s);
+                        return accumulator;
+                    }
+                }).consume(log);
                 break;
             case SUCCEEDED:
                 statusId = DONE;
                 if (lw != null) {
                     lw.close();
                 }
-                logger.info("Logger closed for jobId / name: " + jobId + " / " + job.getMetadata().getName());
-                logger.info("Pod LOG: " + client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog());
-
-                cleanupJob(jobId);
+                logger.finest("Logger closed for jobId / name: " + jobId + " / " + job.getMetadata().getName());
+                log = client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog();
+                this.jobOutputs.computeIfAbsent(jobId, new Function<String, OutputAccumulator>() {
+                    @Override
+                    public OutputAccumulator apply(String s) {
+                        OutputAccumulator accumulator = new OutputAccumulator();
+                        accumulator.consume(s);
+                        return accumulator;
+                    }
+                }).consume(log);
+                logger.fine("Pod LOG: " + log);
+                //cleanupJob(jobId);
                 break;
             case FAILED:
                 statusId = FAILED;
                 if (lw != null) {
                     lw.close();
                 }
-                logger.info("Pod LOG: " + client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog());
-                cleanupJob(jobId);
+                log = client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog();
+                this.jobOutputs.computeIfAbsent(jobId, new Function<String, OutputAccumulator>() {
+                    @Override
+                    public OutputAccumulator apply(String s) {
+                        OutputAccumulator accumulator = new OutputAccumulator();
+                        accumulator.consume(s);
+                        return accumulator;
+                    }
+                }).consume(log);
+                logger.fine("Pod LOG: " + log);
+                //cleanupJob(jobId);
                 break;
             case UNKNOWN:
             default:
