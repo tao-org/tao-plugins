@@ -145,8 +145,23 @@ public class KubernetesSession implements Session, JobExitHandler {
 
     @Override
     public int getJobExitCode(String jobId) {
-        // todo
-        return -1;
+        int exitCode = -1;
+
+        // List the pods with the label selector matching the job
+        PodList podList = client.pods().inNamespace(KubernetesSession.namespace)
+                .withLabel("job-name", jobId)
+                .list();
+        for (Pod pod : podList.getItems()) {
+            // Iterate through the container statuses to get the exit code
+            for (ContainerStatus status : pod.getStatus().getContainerStatuses()) {
+                if (status.getState().getTerminated() != null) {
+                    exitCode = status.getState().getTerminated().getExitCode();
+                } else {
+                    // Container is not terminated yet
+                }
+            }
+        }
+        return exitCode;
     }
 
     @Override
@@ -499,9 +514,13 @@ public class KubernetesSession implements Session, JobExitHandler {
                 container.setEnv(envVars);
             }
 
-            //ResourceRequirements resourceRequirements = new ResourceRequirements();
-            //resourceRequirements.setAdditionalProperty("memory", new Quantity(unit.getMinMemory() + "Mi"));
-            //container.setResources(resourceRequirements);
+            ResourceRequirements resourceRequirements = new ResourceRequirements();
+            resourceRequirements.setRequests(Map.of(
+                    "memory", new Quantity(unit.getMinMemory() + "Mi")
+                    // TODO add when available
+                    // "cpu", new Quantity(unit.getMinCpu() + "m")
+            ));
+            container.setResources(resourceRequirements);
 
             final Job job = new JobBuilder()
                     .withApiVersion("batch/v1")
