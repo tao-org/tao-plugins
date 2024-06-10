@@ -264,8 +264,8 @@ public class ArgoExecutor extends Executor<Object>
             }
             WorkflowParameter parameter = new WorkflowParameter();
             parameter.setName(replaceWithConnectorString(param.getName()) + CONNECTOR_STRING + node.getId());
-            parameter.setDefaultValue(param.getDefaultValue());
-            //set the value to default value as well
+            //parameter.setDefaultValue(param.getDefaultValue());
+            //set the value to default value as well, default value might not be required
             parameter.setValue(param.getDefaultValue());
             WorkflowParameter templateParameter = new WorkflowParameter();
             templateParameter.setName(replaceWithConnectorString(param.getName()) + CONNECTOR_STRING + node.getId());
