@@ -4,10 +4,10 @@ import org.apache.http.HttpStatus;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.earthdata.EarthDataSource;
-import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.NetUtils;
+import ro.cs.tao.utils.Zipper;
 
 import java.io.IOException;
 import java.io.InputStream;

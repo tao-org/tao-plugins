@@ -9,10 +9,10 @@ import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.SimpleArchiveDownloadStrategy;
 import ro.cs.tao.datasource.usgs.USGSDataSource;
-import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.NetUtils;
+import ro.cs.tao.utils.Zipper;
 
 import java.io.IOException;
 import java.io.InputStream;
