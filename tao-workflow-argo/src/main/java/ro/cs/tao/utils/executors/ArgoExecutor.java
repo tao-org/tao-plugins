@@ -303,10 +303,10 @@ public class ArgoExecutor extends Executor<Object>
                 continue;
             }
             WorkflowParameter inputDAGParameter = new WorkflowParameter();
-            inputDAGParameter.setName(replaceWithConnectorString(param.getParameterName()));
+            inputDAGParameter.setName(replaceWithConnectorString(param.getParameterName()) + CONNECTOR_STRING + node.getId());
             inputDAGParameter.setValue(param.getParameterValue());
             WorkflowParameter inputTemplateParameter = new WorkflowParameter();
-            inputTemplateParameter.setName(replaceWithConnectorString(param.getParameterName()));
+            inputTemplateParameter.setName(replaceWithConnectorString(param.getParameterName()) + CONNECTOR_STRING + node.getId());
             inputParameters.add(inputTemplateParameter);
             dagTaskInputParameters.add(inputDAGParameter);
         }
