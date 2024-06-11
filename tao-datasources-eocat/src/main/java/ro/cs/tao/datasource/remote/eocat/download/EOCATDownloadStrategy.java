@@ -22,11 +22,11 @@ import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.eocat.EOCATDataSource;
 import ro.cs.tao.datasource.remote.eocat.auth.EOCATAuthentication;
-import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
+import ro.cs.tao.utils.Zipper;
 
 import java.io.IOException;
 import java.io.InputStream;
