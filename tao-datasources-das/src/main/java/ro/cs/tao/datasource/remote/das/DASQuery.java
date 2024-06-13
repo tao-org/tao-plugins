@@ -61,6 +61,9 @@ public class DASQuery extends DataQuery {
             Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
 
     private static final DateTimeFormatter dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
+    private static final Set<Class<?>> unquotableTypes  = new HashSet<>() {{
+        add(short.class); add(int.class); add(long.class); add(float.class); add(double.class);
+    }};
 
     private final String sensorName;
 
@@ -223,7 +226,7 @@ public class DASQuery extends DataQuery {
             for (Map.Entry<String, String> query : queries.entrySet()) {
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("$top", "0"));
-                params.add(new BasicNameValuePair("$filter", query.getValue()));
+                params.add(new BasicNameValuePair("$filter", "(" + query.getValue() + ")"));
                 params.add(new BasicNameValuePair("$count", "True"));
                 String queryUrl = countUrl + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
@@ -328,7 +331,7 @@ public class DASQuery extends DataQuery {
                         continue;
                     }
                     if (idx > 0 && query.length() > 0) {
-                        query.append(" AND ");
+                        query.append(" and ");
                     }
                     String value;
                     switch (parameter.getName()) {
@@ -342,7 +345,7 @@ public class DASQuery extends DataQuery {
                             break;
                         case CommonParameterNames.START_DATE:
                             query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.START_DATE),
-                                                             parameter, Condition.GT));
+                                                             parameter, Condition.GTE));
                             break;
                         case CommonParameterNames.END_DATE:
                             query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.END_DATE),
@@ -361,7 +364,7 @@ public class DASQuery extends DataQuery {
                                     }
                                 } else {
                                     // remove the last " AND " because parameter is skipped
-                                    if (query.length() >= 5 && " AND ".equals(query.substring(query.length() - 5))) {
+                                    if (query.length() >= 5 && " and ".equals(query.substring(query.length() - 5))) {
                                         query.setLength(query.length() - 5);
                                     }
                                     idx--;
@@ -399,14 +402,14 @@ public class DASQuery extends DataQuery {
                                 String[] values = value.substring(1, value.length() - 1).split(",");
                                 query.append("(");
                                 for (int i = 0; i < values.length; i++) {
-                                    query.append(buildTyprFilter(values[i]));
+                                    query.append(buildTypeFilter(values[i]));
                                     if (i < values.length - 1) {
-                                        query.append(" OR ");
+                                        query.append(" or ");
                                     }
                                 }
                                 query.append(")");
                             } else {
-                                query.append(buildTyprFilter(value));
+                                query.append(buildTypeFilter(value));
                             }
                             break;
                         case "productSize":
@@ -423,7 +426,7 @@ public class DASQuery extends DataQuery {
                                                                       Array.get(values, i),
                                                                       Condition.EQ));
                                     if (i < length - 1) {
-                                        query.append(" OR ");
+                                        query.append(" or ");
                                     }
                                 }
                                 if (length > 1) {
@@ -431,14 +434,14 @@ public class DASQuery extends DataQuery {
                                 }
                                 query.append(")");
                             } else {
-                                query.append(buildAttributeFilter(getRemoteName(entry.getKey()), parameter, Condition.EQ));
+                                query.append(buildAttributeFilter(getRemoteName(entry.getKey()), parameter, Condition.LTE));
                             }
                             break;
                     }
                     idx++;
                 }
                 final String strQuery = query.toString();
-                queries.put(UUID.randomUUID().toString(), strQuery.endsWith(" AND ") ? strQuery.substring(0, strQuery.length() - 5) : strQuery);
+                queries.put(UUID.randomUUID().toString(), strQuery.endsWith(" and ") ? strQuery.substring(0, strQuery.length() - 5) : strQuery);
                 query.setLength(0);
             }
         }
@@ -473,7 +476,8 @@ public class DASQuery extends DataQuery {
 
     private String buildPropertyFilter(String name, QueryParameter<?> parameter, Condition condition) throws ConversionException {
         boolean shouldQuote = !Number.class.isAssignableFrom(parameter.getType())
-                && !LocalDateTime.class.isAssignableFrom(parameter.getType());
+                && !LocalDateTime.class.isAssignableFrom(parameter.getType())
+                && !unquotableTypes.contains(parameter.getType());
         String cond = condition.name().length() == 3
                       ? condition.name().toLowerCase().replace("t", "")
                       : condition.name().toLowerCase();
@@ -490,14 +494,14 @@ public class DASQuery extends DataQuery {
 
     private String buildAttributeFilter(String name, QueryParameter<?> parameter, Condition condition) throws ConversionException {
         Class<?> paramType = parameter.getType();
-        boolean shouldQuote = !Number.class.isAssignableFrom(paramType);
+        boolean shouldQuote = !Number.class.isAssignableFrom(paramType) && !unquotableTypes.contains(paramType);
         String cond = condition.name().length() == 3
                       ? condition.name().toLowerCase().replace("t", "")
                       : condition.name().toLowerCase();
         String oDataType = "OData.CSC.";
-        if (paramType.equals(Integer.class)) {
+        if (paramType.equals(Integer.class) || paramType.equals(int.class)) {
             oDataType += "Integer";
-        } else if (paramType.equals(Double.class)) {
+        } else if (paramType.equals(Double.class) || paramType.equals(double.class)) {
             oDataType += "Double";
         } else if (paramType.equals(String.class)) {
             oDataType += "String";
@@ -512,14 +516,14 @@ public class DASQuery extends DataQuery {
 
     private String buildAttributeFilter(String name, Object value, Condition condition) throws ConversionException {
         Class<?> paramType = value.getClass();
-        boolean shouldQuote = !Number.class.isAssignableFrom(paramType);
+        boolean shouldQuote = !Number.class.isAssignableFrom(paramType) && !unquotableTypes.contains(paramType);
         String cond = condition.name().length() == 3
                       ? condition.name().toLowerCase().replace("t", "")
                       : condition.name().toLowerCase();
         String oDataType = "OData.CSC.";
-        if (paramType.equals(Integer.class)) {
+        if (paramType.equals(Integer.class) || paramType.equals(int.class)) {
             oDataType += "Integer";
-        } else if (paramType.equals(Double.class)) {
+        } else if (paramType.equals(Double.class) || paramType.equals(double.class)) {
             oDataType += "Double";
         } else if (paramType.equals(String.class)) {
             oDataType += "String";
@@ -532,7 +536,7 @@ public class DASQuery extends DataQuery {
                 (shouldQuote ? "'" : "") + value + (shouldQuote ? "')" : ")");
     }
 
-    private String buildTyprFilter(Object value) throws ConversionException {
+    private String buildTypeFilter(Object value) throws ConversionException {
         String stringVal = value.toString();
         List<String> tokens = new ArrayList<>();
         if (stringVal.contains("-")) {
@@ -550,7 +554,7 @@ public class DASQuery extends DataQuery {
             }
             builder.append(tokens.get(i)).append("')");
             if (i < size - 1 && i >= 0) {
-                builder.append(" AND ");
+                builder.append(" and ");
             }
         }
         builder.append(")");
