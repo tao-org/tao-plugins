@@ -41,6 +41,11 @@
             <artifactId>tao-topology</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-snap-converter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
