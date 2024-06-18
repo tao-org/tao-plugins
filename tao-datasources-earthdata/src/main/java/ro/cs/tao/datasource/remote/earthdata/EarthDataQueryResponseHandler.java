@@ -96,15 +96,15 @@ public class EarthDataQueryResponseHandler implements JSonResponseHandler<EOProd
             String[] points = coordinates.split("\\s");
             int length = points.length;
             if (length == 4) {
-                double latMin = Double.parseDouble(points[0]);
-                double lonMin = Double.parseDouble(points[1]);
-                double latMax = Double.parseDouble(points[2]);
-                double lonMax = Double.parseDouble(points[3]);
-                footprint.append(latMin, lonMin);
-                footprint.append(latMin, lonMax);
-                footprint.append(latMax, lonMax);
-                footprint.append(latMax, lonMin);
-                footprint.append(latMin, lonMin);
+                double latMin = Double.parseDouble(points[0].trim());
+                double lonMin = Double.parseDouble(points[1].trim());
+                double latMax = Double.parseDouble(points[2].trim());
+                double lonMax = Double.parseDouble(points[3].trim());
+                footprint.append(lonMin, latMin);
+                footprint.append(lonMax, latMin);
+                footprint.append(lonMax, latMax);
+                footprint.append(lonMin, latMax);
+                footprint.append(lonMin, latMin);
             } else {
                 double currentCoordinate;
                 double nextCoordinate;
