@@ -36,6 +36,7 @@ import ro.cs.tao.utils.StringUtilities;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -109,6 +110,7 @@ public class CreoDiasODataSource extends URLDataSource<CreoDiasODataQuery, Token
                     ResponseParser<Token> parser = new JsonResponseParser<>(new LoginResponseHandler());
                     final Token token = parser.parseValue(body);
                     if (token != null) {
+                        token.setCreated(LocalDateTime.now());
                         return token;
                     } else {
                         throw new QueryException(String.format("Cannot retrieve API key [received: %s]", body));

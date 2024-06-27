@@ -1,8 +1,11 @@
 package ro.cs.tao.datasource.remote.das.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -16,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "scope"
 })
 public class Token {
+    private transient LocalDateTime created;
     @JsonProperty("access_token")
     private String accessToken;
     @JsonProperty("expires_in")
@@ -32,6 +36,15 @@ public class Token {
     private String sessionState;
     @JsonProperty("scope")
     private String scope;
+
+    @JsonIgnore
+    public LocalDateTime getCreated() {
+        return created;
+    }
+    @JsonIgnore
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
 
     @JsonProperty("access_token")
     public String getAccessToken() {
