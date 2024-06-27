@@ -69,7 +69,8 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
         if (currentProduct == null) {
             currentProduct = product;
         }
-        if (this.apiKey == null || this.apiKey.getCreated().isBefore(LocalDateTime.now())) {
+        if (this.apiKey == null ||
+            this.apiKey.getCreated().plusSeconds(this.apiKey.getTokenExpiration()).isBefore(LocalDateTime.now())) {
             this.apiKey = this.dataSource.authenticate();
         }
         String productUrl = getProductUrl(product);
