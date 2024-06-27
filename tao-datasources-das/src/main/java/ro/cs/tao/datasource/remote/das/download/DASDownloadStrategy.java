@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -67,7 +68,7 @@ public class DASDownloadStrategy extends DownloadStrategy<Token> {
         if (currentProduct == null) {
             currentProduct = product;
         }
-        if (this.apiKey == null) {
+        if (this.apiKey == null || this.apiKey.getCreated().isBefore(LocalDateTime.now())) {
             this.apiKey = this.dataSource.authenticate();
         }
         String productUrl = getProductUrl(product);
