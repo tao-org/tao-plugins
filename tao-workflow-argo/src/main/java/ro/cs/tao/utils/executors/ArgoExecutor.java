@@ -178,8 +178,8 @@ public class ArgoExecutor extends Executor<Object>
         WorkflowTemplate workflowTemplate = createNewWorkflowTemplate(node);
         templates.add(workflowTemplate);
         computeTemplateDependencies(node, dagTask.getDependencies());
-        computeTemplateInputs(node, dagTask, workflowTemplate);
-        createNodeReferences(node);
+        //computeTemplateInputs(node, dagTask, workflowTemplate);
+        //createNodeReferences(node);
     }
 
 
@@ -193,18 +193,18 @@ public class ArgoExecutor extends Executor<Object>
     }
 
     private void initializeDAGTask(DAGTask dagTask) {
-        WorkflowArguments dagTaskArguments = new WorkflowArguments();
-        dagTaskArguments.setParameters(new ArrayList<>());
-        dagTask.setArguments(dagTaskArguments);
+        //WorkflowArguments dagTaskArguments = new WorkflowArguments();
+        //dagTaskArguments.setParameters(new ArrayList<>());
+        //dagTask.setArguments(dagTaskArguments);
         dagTask.setDependencies(new ArrayList<>());
     }
 
     private WorkflowTemplate createNewWorkflowTemplate(WorkflowNodeDescriptor currentNode) {
         WorkflowTemplate workflowTemplate = new WorkflowTemplate();
-        initializeTemplateInputs(workflowTemplate);
-        initializeTemplateOutputs(workflowTemplate);
+        //initializeTemplateInputs(workflowTemplate);
+        //initializeTemplateOutputs(workflowTemplate);
         workflowTemplate.setName(replaceWithConnectorString(currentNode.getComponentId().toLowerCase()) + CONNECTOR_STRING + currentNode.getId());
-        parseTargetsForOutputs(currentNode, workflowTemplate);
+        //parseTargetsForOutputs(currentNode, workflowTemplate);
         return workflowTemplate;
     }
 
@@ -264,8 +264,6 @@ public class ArgoExecutor extends Executor<Object>
             }
             WorkflowParameter parameter = new WorkflowParameter();
             parameter.setName(replaceWithConnectorString(param.getName()) + CONNECTOR_STRING + node.getId());
-            //parameter.setDefaultValue(param.getDefaultValue());
-            //set the value to default value as well, default value might not be required
             parameter.setValue(param.getDefaultValue());
             WorkflowParameter templateParameter = new WorkflowParameter();
             templateParameter.setName(replaceWithConnectorString(param.getName()) + CONNECTOR_STRING + node.getId());
@@ -483,7 +481,7 @@ public class ArgoExecutor extends Executor<Object>
         Container container = new Container();
         currentTemplate.setContainer(container);
         List<String> bashArguments = getBashArguments();
-        container.setArgs(getArgumentsForContainer(currentTemplate, bashArguments));
+        container.setArgs(getAllArgumentsForContainer(bashArguments));
         container.setEnv(getEnvVarForContainer());
         container.setCommand(getCommandsForContainer(bashArguments));
         container.setImage(getImageForContainer());
@@ -539,8 +537,7 @@ public class ArgoExecutor extends Executor<Object>
 
     private List<String> getBashArguments() {
         List<String> bashArguments;
-        final boolean isBash = this.executionUnit.getArguments().get(0).equals("/bin/bash");
-        if (isBash) {
+        if (isBash()) {
             bashArguments = Arrays.asList(this.executionUnit.getArguments().get(2).split(" "));
         } else {
             bashArguments = this.executionUnit.getArguments();
@@ -548,51 +545,35 @@ public class ArgoExecutor extends Executor<Object>
         return bashArguments;
     }
 
-    private List<String> getArgumentsForContainer(WorkflowTemplate currentTemplate, List<String> bashArguments) {
+    private List<String> getAllArgumentsForContainer(List<String> bashArguments) {
         List<String> mainArguments = new ArrayList<>();
-        StringBuilder extraArguments = new StringBuilder();
-        for(int i=1; i < bashArguments.size(); i++){
-            String bashArgument = bashArguments.get(i);
-            if(bashArgument.startsWith("-")){
-                Optional<WorkflowParameter> workflowParameterOptional = currentTemplate.getInputs().getParameters().stream()
-                        .filter(p -> p.getName().contains(bashArgument.substring(1)))
-                        .findFirst();
-                if(workflowParameterOptional.isPresent()){
-                    mainArguments.add(bashArgument + " " + "{{" + currentTemplate.getName() + ".inputs." + workflowParameterOptional.get().getName() + "}}");
-                } else if(i < bashArguments.size()-1) {
-                    mainArguments.add(bashArgument + " " + bashArguments.get(i+1));
-                }
-                i++;
-            }
-            while(!bashArgument.startsWith("-") && i < bashArguments.size()) {
-                extraArguments.append(" ").append(bashArguments.get(i));
-                i++;
-            }
-            if(mainArguments.isEmpty()){
-                mainArguments.add(extraArguments.toString());
-            }else {
-                mainArguments.set(mainArguments.size() - 1, mainArguments.get(mainArguments.size() - 1).concat(extraArguments.toString()));
-            }
-            extraArguments.setLength(0);
-        }
-        mainArguments.addAll(executionUnit.getContainerArguments());
+        mainArguments.add(bashArguments.stream()
+                .collect(Collectors.joining(" ")));
+        //mainArguments.addAll(executionUnit.getContainerArguments());
         return mainArguments;
     }
 
     private List<String> getCommandsForContainer(List<String> bashArguments) {
         List<String> baseCommandArray = new ArrayList<>();
-        // first bash argument is always added
-        baseCommandArray.add("/bin/bash");
-        baseCommandArray.add(bashArguments.get(0).replaceAll("\"", ""));
-        int bashArgsLastNonParamPosition = ListIterate.detectIndex(bashArguments, b -> b.startsWith("-") && !b.equals("-c"));
-        if (bashArguments.get(1).startsWith(" \\")) {
-            baseCommandArray.add(bashArguments.get(1).replaceAll("\"","").replaceAll("\\\\","/"));
-        } else if (bashArguments.get(1).equals("-c")) {
-            for(int i = 1 ; i < bashArgsLastNonParamPosition ; i++) {
-                baseCommandArray.add(bashArguments.get(i));
+        if(isBash()) {
+            baseCommandArray.add("/bin/bash");
+            baseCommandArray.add("-c");
+        }else {
+            baseCommandArray.add(bashArguments.get(0).replaceAll("\"", ""));
+            int bashArgsLastNonParamPosition = ListIterate.detectIndex(bashArguments, b -> b.startsWith("-") && !b.equals("-c"));
+            if (bashArguments.get(1).startsWith(" \\")) {
+                baseCommandArray.add(bashArguments.get(1).replaceAll("\"","").replaceAll("\\\\","/"));
+            } else if (bashArguments.get(1).equals("-c")) {
+                for(int i = 0 ; i < bashArgsLastNonParamPosition ; i++) {
+                    baseCommandArray.add(bashArguments.get(i));
+                }
             }
         }
         return baseCommandArray;
+    }
+
+    private boolean isBash(){
+        return this.executionUnit.getArguments().getFirst().equals("/bin/bash");
     }
 
     private String getImageForContainer() {
