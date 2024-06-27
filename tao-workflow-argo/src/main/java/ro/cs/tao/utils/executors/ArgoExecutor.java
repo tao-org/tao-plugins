@@ -178,8 +178,8 @@ public class ArgoExecutor extends Executor<Object>
         WorkflowTemplate workflowTemplate = createNewWorkflowTemplate(node);
         templates.add(workflowTemplate);
         computeTemplateDependencies(node, dagTask.getDependencies());
-        computeTemplateInputs(node, dagTask, workflowTemplate);
-        createNodeReferences(node);
+        //computeTemplateInputs(node, dagTask, workflowTemplate);
+        //createNodeReferences(node);
     }
 
 
@@ -193,18 +193,18 @@ public class ArgoExecutor extends Executor<Object>
     }
 
     private void initializeDAGTask(DAGTask dagTask) {
-        WorkflowArguments dagTaskArguments = new WorkflowArguments();
-        dagTaskArguments.setParameters(new ArrayList<>());
-        dagTask.setArguments(dagTaskArguments);
+        //WorkflowArguments dagTaskArguments = new WorkflowArguments();
+        //dagTaskArguments.setParameters(new ArrayList<>());
+        //dagTask.setArguments(dagTaskArguments);
         dagTask.setDependencies(new ArrayList<>());
     }
 
     private WorkflowTemplate createNewWorkflowTemplate(WorkflowNodeDescriptor currentNode) {
         WorkflowTemplate workflowTemplate = new WorkflowTemplate();
-        initializeTemplateInputs(workflowTemplate);
-        initializeTemplateOutputs(workflowTemplate);
+        //initializeTemplateInputs(workflowTemplate);
+        //initializeTemplateOutputs(workflowTemplate);
         workflowTemplate.setName(replaceWithConnectorString(currentNode.getComponentId().toLowerCase()) + CONNECTOR_STRING + currentNode.getId());
-        parseTargetsForOutputs(currentNode, workflowTemplate);
+        //parseTargetsForOutputs(currentNode, workflowTemplate);
         return workflowTemplate;
     }
 
