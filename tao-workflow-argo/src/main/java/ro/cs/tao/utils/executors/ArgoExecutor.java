@@ -2,7 +2,9 @@ package ro.cs.tao.utils.executors;
 
 
 import com.gs.collections.impl.utility.ListIterate;
-import io.fabric8.kubernetes.api.model.*;
+import io.fabric8.kubernetes.api.model.Container;
+import io.fabric8.kubernetes.api.model.EnvVar;
+import io.fabric8.kubernetes.api.model.VolumeMount;
 import ro.cs.tao.argo.workflow.model.*;
 import ro.cs.tao.component.*;
 import ro.cs.tao.datasource.DataSourceComponent;
@@ -233,8 +235,13 @@ public class ArgoExecutor extends Executor<Object>
 
     private void computeTemplateInputs(WorkflowNodeDescriptor node, DAGTask dagTask, WorkflowTemplate workflowTemplate) {
         TaoComponent taoComponent = TaskUtilities.getComponentFor(node);
-        if(!(taoComponent instanceof ProcessingComponent nodeComponent))
+        /* Maintain compatibility with Java 11
+         if(!(taoComponent instanceof ProcessingComponent nodeComponent))
+            throw new RuntimeException("Tao component " + taoComponent + " is not a processing component");*/
+        if (!(taoComponent instanceof ProcessingComponent)) {
             throw new RuntimeException("Tao component " + taoComponent + " is not a processing component");
+        }
+        ProcessingComponent nodeComponent = (ProcessingComponent) taoComponent;
         parseSources(nodeComponent, node, dagTask, workflowTemplate);
         parseProcessingParameters(nodeComponent, node, workflowTemplate, dagTask);
         parseCustomValues(node, dagTask, workflowTemplate);
@@ -375,7 +382,7 @@ public class ArgoExecutor extends Executor<Object>
         List<WorkflowNodeDescriptor> dataSourceRootNodes =
                 roots.stream()
                         .filter(r -> r.getComponentType().equals(ComponentType.DATASOURCE))
-                        .toList();
+                        .collect(Collectors.toList());
         nodesExceptDataSources.removeAll(dataSourceRootNodes);
         return nodesExceptDataSources;
     }
@@ -530,8 +537,13 @@ public class ArgoExecutor extends Executor<Object>
         long taskId = (Long) executionUnit.getMetadata().get("id");
         ExecutionTask task = this.taskProvider.get(taskId);
         TaoComponent component = TaskUtilities.getComponentFor(task);
+        /* Maintain Java 11 compatibility
         if(!(component instanceof ProcessingComponent nodeComponent))
+            throw new RuntimeException("Tao component " + component + " is not a processing component");*/
+        if (!(component instanceof ProcessingComponent)) {
             throw new RuntimeException("Tao component " + component + " is not a processing component");
+        }
+        ProcessingComponent nodeComponent = (ProcessingComponent) component;
         List<EnvVar> envVars = new ArrayList<>();
         for(Variable envVarComponent : nodeComponent.getVariables()){
             EnvVar envVar = new EnvVar();
@@ -594,7 +606,8 @@ public class ArgoExecutor extends Executor<Object>
     }
 
     private boolean isBash(){
-        return this.executionUnit.getArguments().getFirst().equals("/bin/bash");
+        final List<String> args = this.executionUnit.getArguments();
+        return args.size() > 0 && args.get(0).equals("/bin/bash");
     }
 
     private String getImageForContainer() {
