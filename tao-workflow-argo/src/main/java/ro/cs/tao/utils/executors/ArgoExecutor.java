@@ -93,7 +93,7 @@ public class ArgoExecutor extends Executor<Object>
     }
 
     private void initializeWorkflow(Path path) {
-        ArgoWorkflowInitializer initializer = new ArgoWorkflowInitializer(argoWorkflow, path);
+        ArgoWorkflowInitializer initializer = new ArgoWorkflowInitializer(argoWorkflow, path, executionUnit);
         initializer.initializeArgoWorkflow();
     }
 
@@ -485,6 +485,27 @@ public class ArgoExecutor extends Executor<Object>
         container.setEnv(getEnvVarForContainer());
         container.setCommand(getCommandsForContainer(bashArguments));
         container.setImage(getImageForContainer());
+        container.setVolumeMounts(getVolumeMounts());
+    }
+
+    private List<VolumeMount> getVolumeMounts() {
+        List<VolumeMount> volumeMounts = new ArrayList<>();
+        for(Map.Entry<String, String> entry : executionUnit.getVolumeMap().entrySet()){
+            VolumeMount volumeMount = new VolumeMount();
+            volumeMount.setName(getVolumeName(entry.getKey()));
+            volumeMount.setMountPath(entry.getValue());
+            volumeMounts.add(volumeMount);
+        }
+        return volumeMounts;
+    }
+
+    private String getVolumeName(String path) {
+        String[] partsOfPath = path.split("/");
+        for(int i = partsOfPath.length -1 ; i > -1; i--){
+            if(partsOfPath[i].matches(".*[a-zA-Z]+"))
+                return partsOfPath[i];
+        }
+        return path;
     }
 
     private List<EnvVar> getEnvVarForContainer() {
