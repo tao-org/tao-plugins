@@ -23,6 +23,7 @@ import ro.cs.tao.utils.executors.OutputAccumulator;
 import ro.cs.tao.utils.executors.ProcessExecutor;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -193,7 +194,9 @@ public class CliParser {
                     Class<?> clazz;
                     if (strType.endsWith("list")) {
                         clazz = JavaType.fromFriendlyName(types.get(strType.substring(1, strType.indexOf(" ")))).value();
-                        param.setDataType(clazz.arrayType());
+                        // For Java <= 11
+                        param.setDataType(Array.newInstance(clazz, 0).getClass());
+                        // For Java 12+ param.setDataType(clazz.arrayType());
                     } else {
                         clazz = JavaType.fromFriendlyName(types.get(strType.substring(1, strType.length() - 1))).value();
                         param.setDataType(clazz);
