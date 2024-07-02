@@ -583,7 +583,10 @@ public class ArgoExecutor extends Executor<Object>
         mainArguments.add(bashArguments.stream()
                 .collect(Collectors.joining(" ")));
         //mainArguments.addAll(executionUnit.getContainerArguments());
-        return mainArguments;
+        List<String> returnArguments =  mainArguments.stream()
+                .map(s -> s.replaceAll("\"", ""))
+                .toList();
+        return returnArguments;
     }
 
     private List<String> getCommandsForContainer(List<String> bashArguments) {
