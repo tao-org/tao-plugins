@@ -9,6 +9,7 @@ import ro.cs.tao.stac.core.model.*;
 import ro.cs.tao.stac.core.model.extensions.eo.Band;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
@@ -133,6 +134,13 @@ public class STACParser {
      */
     public Object parse(String content) throws JsonProcessingException {
         return mapper.reader().readValue(content);
+    }
+    /**
+     * Resolves the JSON content to a typed object
+     * @param content   The JSON content
+     */
+    public <T> T parse(String content, Class<T> clazz) throws IOException {
+        return (T) mapper.reader().readValue(content, clazz);
     }
 
 }
