@@ -1,10 +1,10 @@
 [
 	{
 		"id": "Normalized_diff_v_idx_0",
-		"label": "Normalized Difference Vegetation Index: global 10-daily (raster 333m) - version 2, Dec 2020",
+		"label": "Normalised Difference Vegetation Index 2020-present (raster 300 m), global, 10-daily - version 2",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "The Normalized Difference Vegetation Index (NDVI) is a widely used, dimensionless index that is indicative for vegetation density and is defined as NDVI=(NIR-Red)/(NIR+Red) where NIR corresponds to the reflectance in the near infrared bands, and Red to the reflectance in the red bands.",
@@ -82,6 +82,16 @@
 				"notNull": true
 			},
 			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box LonMin, LatMin, LonMax, LatMax",
+				"label": "bbox",
+				"notNull": true
+			},
+			{
 				"id": "query",
 				"name": "query",
 				"type": "TEMPLATE",
@@ -103,17 +113,17 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_NDVI_300M_V2_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"dtrange\", \"start\": \"$start_date\", \"end\": \"$end_date\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
 	},
 	{
 		"id": "Normalized_diff_v_idx_1",
-		"label": "Normalized Difference Vegetation Index: global 10-daily (raster 1km) - version 3, Feb 2021",
+		"label": "Normalised Difference Vegetation Index 1999-2020 (raster 1 km), global, 10-daily - version 3",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "The Normalized Difference Vegetation Index (NDVI) is a widely used, dimensionless index that is indicative for vegetation density and is defined as NDVI=(NIR-Red)/(NIR+Red) where NIR corresponds to the reflectance in the near infrared bands, and Red to the reflectance in the red bands. The time series of 10-daily NDVI 1km version 3 observations is used to calculate Long Term Statistics (LTS), over the 20-year period 1999-2019, and Short Term Statistics (STS), over the 5-year period (2015-2019), for each of the 36 10-daily periods (dekads) of the year. The calculated statistics include the minimum, median, maximum, mean, standard deviation and the number of observations in the covered time series period. These statistics can be used as a reference for actual NDVI observations, which allows monitoring of anomalous vegetation conditions.",
@@ -191,6 +201,16 @@
 				"notNull": true
 			},
 			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box LonMin, LatMin, LonMax, LatMax",
+				"label": "bbox",
+				"notNull": true
+			},
+			{
 				"id": "query",
 				"name": "query",
 				"type": "TEMPLATE",
@@ -212,7 +232,7 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_NDVI_1KM_V3_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"dtrange\", \"start\": \"$start_date\", \"end\": \"$end_date\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -221,8 +241,8 @@
 		"id": "Normalized_diff_v_idx_2",
 		"label": "Normalised Difference Vegetation Index 1998-2020 (raster 1 km), global, 10-daily - version 2",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "The Normalized Difference Vegetation Index (NDVI) is a proxy to quantify the vegetation amount. It is defined as NDVI=(NIR-Red)/(NIR+Red) where NIR corresponds to the reflectance in the near infrared band, and Red to the reflectance in the red band. It is closely related to FAPAR and is little scale dependant.",
@@ -300,6 +320,16 @@
 				"notNull": true
 			},
 			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box LonMin, LatMin, LonMax, LatMax",
+				"label": "bbox",
+				"notNull": true
+			},
+			{
 				"id": "query",
 				"name": "query",
 				"type": "TEMPLATE",
@@ -314,14 +344,14 @@
 						"name": "dataset",
 						"type": "REGULAR",
 						"dataType": "string",
-						"defaultValue": "\nEO:CLMS:DAT:CLMS_GLOBAL_NDVI_1KM_V2_10DAILY_NETCDF",
+						"defaultValue": "EO:CLMS:DAT:CLMS_GLOBAL_NDVI_1KM_V2_10DAILY_NETCDF",
 						"description": "Dataset ID",
 						"label": "dataset",
 						"notNull": true,
-						"valueSet": [ "\nEO:CLMS:DAT:CLMS_GLOBAL_NDVI_1KM_V2_10DAILY_NETCDF" ]
+						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_NDVI_1KM_V2_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"dtrange\", \"start\": \"$start_date\", \"end\": \"$end_date\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -330,8 +360,8 @@
 		"id": "Normalized_diff_v_idx_3",
 		"label": "Normalised Difference Vegetation Index 2014-2020 (raster 300 m), global, 10-daily - version 1",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "The Normalized Difference Vegetation Index (NDVI) is a proxy to quantify the vegetation amount. It is defined as NDVI=(NIR-Red)/(NIR+Red) where NIR corresponds to the reflectance in the near infrared band, and Red to the reflectance in the red band. The time series of dekadal (10-daily) NDVI 1km version 2 observations over the period 1999-2017 is used to calculate Long Term Statistics (LTS) for each of the 36 10-daily periods (dekads) of the year. The calculated LTS include the minimum, median, maximum, average, standard deviation and the number of observations in the covered time series period. These LTS can be used as a reference for actual NDVI observations, which allows evaluating whether vegetation conditions deviate from a ‘normal’ situation.",
@@ -409,6 +439,16 @@
 				"notNull": true
 			},
 			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box LonMin, LatMin, LonMax, LatMax",
+				"label": "bbox",
+				"notNull": true
+			},
+			{
 				"id": "query",
 				"name": "query",
 				"type": "TEMPLATE",
@@ -430,7 +470,7 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_NDVI_300M_V1_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"dtrange\", \"start\": \"$start_date\", \"end\": \"$end_date\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -439,8 +479,8 @@
 		"id": "Leaf_area_index_0",
 		"label": "Leaf Area Index 2014-present (raster 300 m), global, 10-daily - version 1",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "LAI was defined by CEOS as half the developed area of the convex hull wrapping the green canopy elements per unit horizontal ground. This definition allows accounting for elements which are not flat such as needles or stems. LAI is strongly non linearly related to reflectance. Therefore, its estimation from remote sensing observations will be scale dependant over heterogeneous landscapes. When observing a canopy made of different layers of vegetation, it is therefore mandatory to consider all the green layers. This is particularly important for forest canopies where the understory may represent a very significant contribution to the total canopy LAI. The derived LAI corresponds therefore to the total green LAI, including the contribution of the green elements of the understory. The product at 333m resolution is provided in Near Real Time and consolidated in the next six periods.",
@@ -518,6 +558,16 @@
 				"notNull": true
 			},
 			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box LonMin, LatMin, LonMax, LatMax",
+				"label": "bbox",
+				"notNull": true
+			},
+			{
 				"id": "query",
 				"name": "query",
 				"type": "TEMPLATE",
@@ -532,24 +582,24 @@
 						"name": "dataset",
 						"type": "REGULAR",
 						"dataType": "string",
-						"defaultValue": "\nEO:CLMS:DAT:CLMS_GLOBAL_LAI_300M_V1_10DAILY_NETCDF",
+						"defaultValue": "EO:CLMS:DAT:CLMS_GLOBAL_LAI_300M_V1_10DAILY_NETCDF",
 						"description": "Dataset ID",
 						"label": "dataset",
 						"notNull": true,
-						"valueSet": [ "\nEO:CLMS:DAT:CLMS_GLOBAL_LAI_300M_V1_10DAILY_NETCDF" ]
+						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_LAI_300M_V1_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"dtrange\", \"start\": \"$start_date\", \"end\": \"$end_date\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
 	},
 	{
 		"id": "Leaf_area_index_1",
-		"label": "Global 10-daily Leaf Area Index 1km",
+		"label": "Leaf Area Index 1999-2020 (raster 1 km), global, 10-daily - version 1",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "LAI was defined by CEOS as half the developed area of the convex hull wrapping the green canopy elements per unit horizontal ground. This definition allows accounting for elements which are not flat such as needles or stems. LAI is strongly non linearly related to reflectance. Therefore, its estimation from remote sensing observations will be scale dependant over heterogeneous landscapes. When observing a canopy made of different layers of vegetation, it is mandatory to consider all the green layers. This is particularly important for forest canopies where the understory may represent a very significant contribution to the total canopy LAI. The derived LAI corresponds to the total green LAI, including the contribution of the green elements of the understory.",
@@ -627,6 +677,16 @@
 				"notNull": true
 			},
 			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box LonMin, LatMin, LonMax, LatMax",
+				"label": "bbox",
+				"notNull": true
+			},
+			{
 				"id": "query",
 				"name": "query",
 				"type": "TEMPLATE",
@@ -648,7 +708,7 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_LAI_1KM_V1_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"dtrange\", \"start\": \"$start_date\", \"end\": \"$end_date\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -657,8 +717,8 @@
 		"id": "Leaf_area_index_2",
 		"label": "Leaf Area Index 1999-2020 (raster 1 km), global, 10-daily - version 2",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "LAI was defined by CEOS as half the developed area of the convex hull wrapping the green canopy elements per unit horizontal ground. This definition allows accounting for elements which are not flat such as needles or stems. LAI is strongly non linearly related to reflectance. Therefore, its estimation from remote sensing observations will be scale dependant over heterogeneous landscapes. When observing a canopy made of different layers of vegetation, it is therefore mandatory to consider all the green layers. This is particularly important for forest canopies where the understory may represent a very significant contribution to the total canopy LAI. The derived LAI corresponds therefore to the total green LAI, including the contribution of the green elements of the understory. The resulting GEOV1 LAI products are relatively consistent with the actual LAI for low LAI values and ‘non-forest’ surfaces; while for forests, particularly for needle leaf types, significant departures with the true LAI are expected.",
@@ -736,6 +796,16 @@
 				"notNull": true
 			},
 			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box LonMin, LatMin, LonMax, LatMax",
+				"label": "bbox",
+				"notNull": true
+			},
+			{
 				"id": "query",
 				"name": "query",
 				"type": "TEMPLATE",
@@ -750,24 +820,24 @@
 						"name": "dataset",
 						"type": "REGULAR",
 						"dataType": "string",
-						"defaultValue": "\nEO:CLMS:DAT:CLMS_GLOBAL_LAI_1KM_V2_10DAILY_NETCDF",
+						"defaultValue": "EO:CLMS:DAT:CLMS_GLOBAL_LAI_1KM_V2_10DAILY_NETCDF",
 						"description": "Dataset ID",
 						"label": "dataset",
 						"notNull": true,
-						"valueSet": [ "\nEO:CLMS:DAT:CLMS_GLOBAL_LAI_1KM_V2_10DAILY_NETCDF" ]
+						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_LAI_1KM_V2_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"dtrange\", \"start\": \"$start_date\", \"end\": \"$end_date\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
 	},
 	{
 		"id": "Land_surface_temp_0",
-		"label": "Land Surface Temperature: global 10-daily Daily Cycle (raster 5km) - version 1, Dec 2015",
+		"label": "Land Surface Temperature Daily Cycle 2017-2021 (raster 5 km), global, 10-daily - version 1",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "10-day Daily Cycle Land Surface Temperature (LST10-DC) provides a statistical overview of the LST daily cycle over each 10-day compositing for every image pixel. LST10-DC is useful for the scientific community, namely for those dealing with meteorological and climate models. Accurate values of LST are also of special interest in a wide range of areas related to land surface processes, including meteorology, hydrology, agrometeorology, climatology and environmental studies.",
@@ -842,6 +912,16 @@
 				"description": "The end date of the product as yyyy-MM-ddTHH:mm:sssZ",
 				"label": "end date",
 				"format": "yyyy-MM-dd'T'HH:mm:sss'Z'",
+				"notNull": true
+			},
+			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box LonMin, LatMin, LonMax, LatMax",
+				"label": "bbox",
 				"notNull": true
 			},
 			{
@@ -866,17 +946,17 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_LST_5KM_V1_10DAILY-DAILY-CYCLE_NETCDF" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"dtrange\", \"start\": \"$start_date\", \"end\": \"$end_date\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
 	},
 	{
 		"id": "Land_surface_temp_1",
-		"label": "Land Surface Temperature: global 10-daily Daily Cycle (raster 5km) - version 2, Jan 2021",
+		"label": "Land Surface Temperature Daily Cycle 2021-present (raster 5 km), global, 10-daily - version 2",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "10-day Daily Cycle Land Surface Temperature (LST10-DC) provides a statistical overview of the LST daily cycle over each 10-day compositing for every image pixel. LST10-DC is useful for the scientific community, namely for those dealing with meteorological and climate models. Accurate values of LST are also of special interest in a wide range of areas related to land surface processes, including meteorology, hydrology, agrometeorology, climatology and environmental studies.",
@@ -954,6 +1034,16 @@
 				"notNull": true
 			},
 			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box LonMin, LatMin, LonMax, LatMax",
+				"label": "bbox",
+				"notNull": true
+			},
+			{
 				"id": "query",
 				"name": "query",
 				"type": "TEMPLATE",
@@ -975,7 +1065,7 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_LST_5KM_V2_10DAILY-DAILY-CYCLE_NETCDF" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"dtrange\", \"start\": \"$start_date\", \"end\": \"$end_date\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -984,8 +1074,8 @@
 		"id": "Dry_matter_productivity_0",
 		"label": "Dry Matter Productivity 2014-present (raster 300 m), global, 10-daily - version 1",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "Dry matter Productivity (DMP) is an indication of the overall growth rate or dry biomass increase of the vegetation and is directly related to ecosystem Net Primary Productivity (NPP), however its units (kilograms of gross dry matter per hectare per day) are customized for agro-statistical purposes. Compared to the Gross DMP (GDMP), or its equivalent Gross Primary Productivity, the main difference lies in the inclusion of the autotrophic respiration. Like the FAPAR products that are used as input for the GDMP estimation, these GDMP products are provided in Near Real Time, with consolidations in the next periods, or as offline product.",
@@ -1060,6 +1150,16 @@
 				"description": "The end date of the product as yyyy-MM-ddTHH:mm:sssZ",
 				"label": "end date",
 				"format": "yyyy-MM-dd'T'HH:mm:sss'Z'",
+				"notNull": true
+			},
+			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box LonMin, LatMin, LonMax, LatMax",
+				"label": "bbox",
 				"notNull": true
 			},
 			{
@@ -1084,7 +1184,7 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_DMP_300M_V1_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"dtrange\", \"start\": \"$start_date\", \"end\": \"$end_date\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -1093,8 +1193,8 @@
 		"id": "Dry_matter_productivity_1",
 		"label": "Dry Matter Productivity 1999-2020 (raster 1 km), global, 10-daily - version 2",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "Dry matter Productivity (DMP) is an indication of the overall growth rate or dry biomass increase of the vegetation and is directly related to ecosystem Net Primary Productivity (NPP), however its units (kilograms of gross dry matter per hectare per day) are customized for agro-statistical purposes. Compared to the Gross DMP (GDMP), or its equivalent Gross Primary Productivity, the main difference lies in the inclusion of the autotrophic respiration. Like the FAPAR products that are used as input for the GDMP estimation, these GDMP products are provided in Near Real Time, with consolidations in the next periods, or as offline product.",
@@ -1172,6 +1272,16 @@
 				"notNull": true
 			},
 			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box LonMin, LatMin, LonMax, LatMax",
+				"label": "bbox",
+				"notNull": true
+			},
+			{
 				"id": "query",
 				"name": "query",
 				"type": "TEMPLATE",
@@ -1193,17 +1303,17 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_DMP_1KM_V2_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"dtrange\", \"start\": \"$start_date\", \"end\": \"$end_date\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
 	},
 	{
 		"id": "Fraction_of_absorbed_PAR_0",
-		"label": "Global 10-daily Fraction of Absorbed PAR 333m",
+		"label": "Fraction of Absorbed Photosynthetically Active Radiation 2014-present (raster 300 m), global, 10-daily - version 1",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "The FAPAR quantifies the fraction of the solar radiation absorbed by plants for photosynthesis. It refers only to the green and living elements of the canopy. The FAPAR depends on the canopy structure, vegetation element optical properties, atmospheric conditions and angular configuration. To overcome this latter dependency, a daily integrated FAPAR value is assessed. FAPAR is very useful as input to a number of primary productivity models and is recognized as an Essential Climate Variable (ECV) by the Global Climate Observing System (GCOS). The product at 333m resolution is provided in Near Real Time and consolidated in the next six periods.",
@@ -1278,6 +1388,16 @@
 				"description": "The end date of the product as yyyy-MM-ddTHH:mm:sssZ",
 				"label": "end date",
 				"format": "yyyy-MM-dd'T'HH:mm:sss'Z'",
+				"notNull": true
+			},
+			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box LonMin, LatMin, LonMax, LatMax",
+				"label": "bbox",
 				"notNull": true
 			},
 			{
@@ -1302,17 +1422,17 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_FAPAR_300M_V1_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"dtrange\", \"start\": \"$start_date\", \"end\": \"$end_date\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
 	},
 	{
 		"id": "Fraction_of_absorbed_PAR_1",
-		"label": "Global 10-daily Fraction of Absorbed PAR 1km",
+		"label": "Fraction of Absorbed Photosynthetically Active Radiation 1999-2020 (raster 1 km), global, 10-daily - version 2",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "The FAPAR quantifies the fraction of the solar radiation absorbed by plants for photosynthesis. It refers only to the green and living elements of the canopy. The FAPAR depends on the canopy structure, vegetation element optical properties, atmospheric conditions and angular configuration. To overcome this latter dependency, a daily integrated FAPAR value is assessed. FAPAR is very useful as input to a number of primary productivity models and is recognized as an Essential Climate Variable (ECV) by the Global Climate Observing System (GCOS). The product at 333m resolution is provided in Near Real Time and consolidated in the next six periods.",
@@ -1390,6 +1510,16 @@
 				"notNull": true
 			},
 			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box LonMin, LatMin, LonMax, LatMax",
+				"label": "bbox",
+				"notNull": true
+			},
+			{
 				"id": "query",
 				"name": "query",
 				"type": "TEMPLATE",
@@ -1411,7 +1541,7 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_FAPAR_1KM_V2_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"dtrange\", \"start\": \"$start_date\", \"end\": \"$end_date\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -1420,8 +1550,8 @@
 		"id": "CAMS_global_inversion",
 		"label": "CAMS global inversion-optimised greenhouse gas fluxes and concentrations",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "This data set contains net fluxes at the surface, atmospheric mixing ratios at model levels, and column-mean atmospheric mixing ratios for carbon dioxide (CO2), methane (CH4) and nitrous oxide (N20). Natural and anthropogenic surface fluxes of greenhouse gases are key drivers of the evolution of Earth's climate, so their monitoring is essential. Such information has been used in particular as part of the Assessment Reports of the Intergovernmental Panel on Climate Change (IPCC). Ground-based and satellite remote-sensing observations provide a means to quantifying the net fluxes between the land and ocean on the one hand and the atmosphere on the other hand. This is done through a process called atmospheric inversion, which uses transport models of the atmosphere to link the observed concentrations of CO2, CH4 and N2O to the net fluxes at the Earth's surface. By correctly modelling the winds, vertical diffusion, and convection in the global atmosphere, the observed concentrations of the greenhouse gases are used to infer the surface fluxes for the last few decades. For CH4 and N2O, the flux inversions account also for the chemical loss of these greenhouse gases. The net fluxes include contributions from the natural biosphere (e.g., vegetation, wetlands) as well anthropogenic contributions (e.g., fossil fuel emissions, rice fields). The data sets for the three species are updated once or twice per year adding the most recent year to the data record, while re-processing the original data record for consistency. This is reflected by the different version numbers. In addition, fluxes for methane are available based on surface air samples only or based on a combination of surface air samples and satellite observations (reflected by an 's' in the version number). Variables in the dataset/application are: Carbon dioxide dry mole fraction, Carbon dioxide total column dry mole fraction, Fossile emissions of carbon for the whole grid box, Fossile emissions of carbon for the whole grid box and the whole month, Methane dry mole fraction, Methane total column dry mole fraction, Nitrous oxide dry mole fraction, Posterior land surface upward mass flux of carbon for the whole grid box and the whole month without fossile, Posterior ocean surface upward mass flux of carbon for the whole grid box and the whole month without fossile, Posterior surface upward mass flux of carbon (including fossile), Prior land surface upward mass flux of carbon for the whole grid box and the whole month without fossile, Prior ocean surface upward mass flux of carbon for the whole grid box and the whole month without fossile, Prior surface upward mass flux of carbon (including fossile), Surface upward mass flux of methane, Surface upward mass flux of methane from biomass-burning sources, Surface upward mass flux of methane from other sources, Surface upward mass flux of methane from rice sources, Surface upward mass flux of methane from wetlands sources, Surface upward mass flux of nitrogen for the whole grid box and the whole month.",
@@ -1501,12 +1631,45 @@
 						"id": "variable",
 						"name": "variable",
 						"type": "REGULAR",
-						"dataType": "string[]",
+						"dataType": "string",
 						"defaultValue": null,
 						"description": "Variable",
 						"label": "variable",
 						"notNull": true,
-						"valueSet": [ "ammonia", "carbon_monoxide", "dust", "nitrogen_dioxide", "nitrogen_monoxide", "non_methane_vocs", "ozone", "particulate_matter_10um", "particulate_matter_2.5um", "peroxyacyl_nitrates", "pm10_wildfires", "residential_elementary_carbon", "secondary_inorganic_aerosol", "sulphur_dioxide", "total_elementary_carbon" ]
+						"valueSet": [ "carbon_dioxide", "nitrous_oxide",  "methane"]
+					},
+					{
+						"id": "quantity",
+						"name": "quantity",
+						"type": "REGULAR",
+						"dataType": "string",
+						"defaultValue": null,
+						"description": "Quantity",
+						"label": "quantity",
+						"notNull": true,
+						"valueSet": [ "mean_column", "surface_flux", "concentration", "loss_rate" ]
+					},
+					{
+						"id": "input_observations",
+						"name": "input_observations",
+						"type": "REGULAR",
+						"dataType": "string",
+						"defaultValue": null,
+						"description": "Input observations",
+						"label": "input_observations",
+						"notNull": true,
+						"valueSet": [ "first_guess", "surface", "satellite", "surface_satellite" ]
+					},
+					{
+						"id": "time_aggregation",
+						"name": "time_aggregation",
+						"type": "REGULAR",
+						"dataType": "string",
+						"defaultValue": null,
+						"description": "Time aggregation",
+						"label": "time_aggregation",
+						"notNull": true,
+						"valueSet": [ "instantaneous", "daily_mean", "monthly_mean" ]
 					},
 					{
 						"id": "model",
@@ -1520,26 +1683,15 @@
 						"valueSet": [ "chimere", "euradim", "lotos", "silam", "minni", "emep", "dehm", "ensemble", "gemaq", "match", "mocage" ]
 					},
 					{
-						"id": "level",
-						"name": "level",
+						"id": "version",
+						"name": "version",
 						"type": "REGULAR",
-						"dataType": "string[]",
+						"dataType": "string",
 						"defaultValue": null,
-						"description": "Level",
-						"label": "level",
+						"description": "Version",
+						"label": "version",
 						"notNull": true,
-						"valueSet": [ "0", "50", "100", "250", "500", "750", "1000", "2000", "3000", "5000" ]
-					},
-					{
-						"id": "type",
-						"name": "type",
-						"type": "REGULAR",
-						"dataType": "string[]",
-						"defaultValue": null,
-						"description": "Type",
-						"label": "type",
-						"notNull": true,
-						"valueSet": [ "interim_reanalysis", "validated_reanalysis" ]
+						"valueSet": [ "v16r1", "v17r1", "v18r1", "v18r2", "v18r3", "v19r1", "v20r1", "v20r2", "v20r3", "v21r1", "v21r2", "v22r1", "v22r2", "v23r1", "v23r2", "v23r3", "latest"]
 					},
 					{
 						"id": "year",
@@ -1550,7 +1702,7 @@
 						"description": "Year",
 						"label": "year",
 						"notNull": true,
-						"valueSet": [ "2018", "2019", "2020", "2021", "2022", "2023", "2024" ]
+						"valueSet": [ "1979", "1980", "1981", "1982", "1983", "1984", "1985", "1986", "1987", "1988", "1989", "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023" ]
 					},
 					{
 						"id": "month",
@@ -1561,7 +1713,7 @@
 						"description": "Month",
 						"label": "month",
 						"notNull": true,
-						"valueSet": [ "10", "11", "12", "01", "04", "07", "02", "05", "08", "09", "06", "03" ]
+						"valueSet": [ "10", "11", "12", "01", "02", "03", "04", "05", "06", "07", "08", "09" ]
 					},
 					{
 						"id": "format",
@@ -1575,7 +1727,7 @@
 						"valueSet": [ "zip", "tgz" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"multiStringSelectValues\": [ { \"name\": \"variable\", \"value\": \"$variable\" }, { \"name\": \"model\", \"value\": \"$model\" }, { \"name\": \"level\", \"value\": \"$level\" }, { \"name\": \"type\", \"value\": \"$type\" }, { \"name\": \"year\", \"value\": \"$year\" }, { \"name\": \"month\", \"value\": \"$month\" } ], \"stringChoiceValues\": [ { \"name\": \"format\", \"value\": \"$format\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"variable\": \"$variable\", \"quantity\": \"$quantity\", \"input_observations\": \"$input_observations\", \"time_aggregation\": \"$time_aggregation\", \"version\": \"$version\", \"year\": \"$year\", \"month\": \"$month\", \"format\": \"$format\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -1584,8 +1736,8 @@
 		"id": "Essential_climate_variables",
 		"label": "Essential climate variables for water sector applications derived from climate projections",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "This dataset contains 4 Essential Climate Variables (ECV) for the 18 bias adjusted Global Climate Models (GCM) from CMIP5: daily precipitation rate, and daily mean, maximum and minimum temperatures. The data are bias adjusted using the Distribution Based Scaling (DBS) method versus the global reference dataset HydroGFD2.0, both bias adjustment method and global reference dataset developed by the Swedish Meteorological and Hydrological Institute (SMHI). The DBS method is a parametric quantile-mapping variant. This type of methods fit a statistical distribution to the cumulative distribution function and use those fitted distributions to conduct the quantile-mapping. Here, we used a double-gamma distribution (i.e. separate gamma distributions for the bulk and the high tail) for precipitation and the normal distribution for all temperature variables. Temperature corrections were done conditional on the wet/dry state of the corresponding precipitation time series. The seasonal variations in the biases were represented by monthly parameter windows for precipitation and a smoothed seasonal cycle for the temperature distribution parameters. The smoothing was done using twelve harmonic components. There is some post-processing in place for the data set to be suitable for hydrological impact modeling. Bias-adjustment of daily mean, maximum and minimum temperature using quantile mapping can in some cases lead to inconsistencies. For instance, maximum (minimum) temperature could be lower (higher) than mean temperature. If such inconsistencies occur, daily minimum and maximum temperatures are adjusted in such a way that the anomalies with respect to the daily mean temperature are in line with the climatological anomalies for the particular day in the seasonal cycle. This means, for example, that an inconsistency occurring on June 25 will be adjusted using the climatological anomalies for June 25, estimated by a moving window. Also, the adjustment is done conditional on the wet/dry state of the corresponding precipitation series. The climatology of the anomalies was derived from the HydroGFD2.0 dataset. In addition, DBS’s limitations lead to some data not being bias-adjusted or values beyond physically plausible ranges. In those cases, DBS gives missing values as output. Grid cells where the DBS method resulted in such missing values have been interpolated in time or space. If interpolation was not possible, full time series from nearest grid cell was copied to relating grid point. Variables in the dataset/application are: Maximum 2m temperature, Mean 2m temperature, Minimum 2m temperature, Precipitation flux.",
@@ -1662,17 +1814,6 @@
 						"valueSet": [ "EO:ECMWF:DAT:SIS_ECV_CMIP5_BIAS_CORRECTED" ]
 					},
 					{
-						"id": "period",
-						"name": "period",
-						"type": "REGULAR",
-						"dataType": "string[]",
-						"defaultValue": null,
-						"description": "Period",
-						"label": "period",
-						"notNull": true,
-						"valueSet": [ "20500101-20591231", "20501201-20551130", "20510101-20551231", "20510101-20951231", "20551201-20601130", "20551201-20651130", "20560101-20601231", "20560101-20801231", "20560101-21001231", "20600101-20691231", "20601201-20651130", "20610101-20651231", "20651201-20701130", "20651201-20751130", "20660101-20701231", "20700101-20791231", "20701201-20751130", "20710101-20751231", "20751201-20801130", "20751201-20851130", "20760101-20801231", "20800101-20891231", "20801201-20851130", "20810101-20851231", "20810101-20991231", "20810101-21001231", "20851201-20901130", "20851201-20951130", "20860101-20901231", "20900101-21001231", "20901201-20951130", "20910101-20951231", "20951201-20991130", "20951201-20991231", "20960101-20991231", "20960101-21001231", "20991201-20991231", "21000101-21001231" ]
-					},
-					{
 						"id": "variable",
 						"name": "variable",
 						"type": "REGULAR",
@@ -1706,6 +1847,17 @@
 						"valueSet": [ "rcp_4_5", "rcp_8_5" ]
 					},
 					{
+						"id": "period",
+						"name": "period",
+						"type": "REGULAR",
+						"dataType": "string[]",
+						"defaultValue": null,
+						"description": "Period",
+						"label": "period",
+						"notNull": true,
+						"valueSet": ["19500101-19741231", "19500101-19801231", "19500101-19991231", "19510101-19551231", "19560101-19601231", "19591201-19691130", "19600101-19641231", "19600101-19691231", "19610101-19651231", "19641201-19691130", "19650101-19691231", "19660101-19701231", "19691201-19741130", "19691201-19791130", "19700101-19741231", "19700101-19791231", "19710101-19751231", "19741201-19791130", "19750101-19791231", "19750101-19991231", "19750101-20051231", "19760101-19801231", "19791201-19841130", "19791201-19891130", "19800101-19841231", "19800101-19891231", "19810101-19851231", "19810101-20051231", "19841201-19891130", "19850101-19891231", "19860101-19901231", "19891201-19941130", "19891201-19991130", "19900101-19941231", "19900101-19991231", "19910101-19951231", "19941201-19991130", "19950101-19991231", "19960101-20001231", "19991201-20041130", "19991201-20051130", "20000101-20041231", "20000101-20051231", "20010101-20051231", "20041201-20051130", "20050101-20051231", "20051201-20101130", "20051201-20151130", "20060101-20091231", "20060101-20101231", "20060101-20301231", "20060101-20501231", "20060101-20551231", "20100101-20191231", "20101201-20151130", "20110101-20151231", "20151201-20201130", "20151201-20251130", "20160101-20201231", "20200101-20291231", "20201201-20251130", "20210101-20251231", "20251201-20301130", "20251201-20351130", "20260101-20301231", "20300101-20391231", "20301201-20351130", "20310101-20351231", "20310101-20551231", "20351201-20401130", "20351201-20451130", "20360101-20401231", "20400101-20491231", "20401201-20451130", "20410101-20451231", "20451201-20501130", "20451201-20551130", "20460101-20501231", "20500101-20591231", "20501201-20551130", "20510101-20551231", "20510101-20951231", "20551201-20601130", "20551201-20651130", "20560101-20601231", "20560101-20801231", "20560101-21001231", "20600101-20691231", "20601201-20651130", "20610101-20651231", "20651201-20701130", "20651201-20751130", "20660101-20701231", "20700101-20791231", "20701201-20751130", "20710101-20751231", "20751201-20801130", "20751201-20851130", "20760101-20801231", "20800101-20891231", "20801201-20851130", "20810101-20851231", "20810101-20991231", "20810101-21001231", "20851201-20901130", "20851201-20951130", "20860101-20901231", "20900101-21001231", "20901201-20951130", "20910101-20951231", "20951201-20991130", "20951201-20991231", "20960101-20991231", "20960101-21001231", "20991201-20991231", "21000101-21001231"]
+						},
+					{
 						"id": "format",
 						"name": "format",
 						"type": "REGULAR",
@@ -1717,7 +1869,7 @@
 						"valueSet": [ "tgz", "zip" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"multiStringSelectValues\": [ { \"name\": \"period\", \"value\": \"$period\" } ], \"stringChoiceValues\": [ { \"name\": \"variable\", \"value\": \"$variable\" }, { \"name\": \"model\", \"value\": \"$model\" }, { \"name\": \"experiment\", \"value\": \"$experiment\"}, {\"name\": \"format\", \"value\": \"$format\"} ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"variable\": \"$variable\", \"model\": \"$model\", \"experiment\": \"$experiment\", \"period\": \"$period\", \"format\": \"$format\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -1726,8 +1878,8 @@
 		"id": "Agrometeorological_indicators",
 		"label": "Agrometeorological indicators from 1979 to present derived from reanalysis",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "This dataset provides daily surface meteorological data for the period from 1979 to present as input for agriculture and agro-ecological studies. This dataset is based on the hourly ECMWF ERA5 data at surface level and is referred to as AgERA5. Acquisition and pre-processing of the original ERA5 data is a complex and specialized job. By providing the AgERA5 dataset, users are freed from this work and can directly start with meaningful input for their analyses and modelling. To this end, the variables provided in this dataset match the input needs of most agriculture and agro-ecological models. Data were aggregated to daily time steps at the local time zone and corrected towards a finer topography at a 0.1° spatial resolution. The correction to the 0.1° grid was realized by applying grid and variable-specific regression equations to the ERA5 dataset interpolated at 0.1° grid. The equations were trained on ECMWF's operational high-resolution atmospheric model (HRES) at a 0.1° resolution. This way the data is tuned to the finer topography, finer land use pattern and finer land-sea delineation of the ECMWF HRES model. The data was produced on behalf of the Copernicus Climate Change Service. Variables in the dataset/application are: 10m wind speed, 2m dewpoint temperature, 2m relative humidity, 2m temperature, Cloud cover, Liquid precipitation duration fraction, Precipitation flux, Snow thickness, Snow thickness LWE, Solar radiation flux, Solid precipitation duration fraction, Vapour pressure.",
@@ -1814,6 +1966,17 @@
 						"valueSet": [ "EO:ECMWF:DAT:SIS_AGROMETEOROLOGICAL_INDICATORS" ]
 					},
 					{
+						"id": "variable",
+						"name": "variable",
+						"type": "REGULAR",
+						"dataType": "string",
+						"defaultValue": "10m_wind_speed",
+						"description": "Variable",
+						"label": "variable",
+						"notNull": true,
+						"valueSet": [ "10m_wind_speed",  "2m_dewpoint_temperature", "2m_temperature", "cloud_cover", "liquid_precipitation_duration_fraction", "precipitation_flux", "snow_thickness", "snow_thickness_lwe", "solar_radiation_flux", "solid_precipitation_duration_fraction", "vapour_pressure", "snow_thickness", "snow_thickness_lwe" ]
+					},
+					{
 						"id": "statistic",
 						"name": "statistic",
 						"type": "REGULAR",
@@ -1866,18 +2029,18 @@
 						"description": "Time",
 						"label": "time",
 						"notNull": false,
-						"valueSet": [ "09_00", "06_00", "12_00", "15_00", "18_00" ]
+						"valueSet": [ "06_00", "09_00", "12_00", "15_00", "18_00" ]
 					},
 					{
-						"id": "variable",
-						"name": "variable",
+						"id": "version",
+						"name": "version",
 						"type": "REGULAR",
 						"dataType": "string",
-						"defaultValue": "10m_wind_speed",
-						"description": "Variable",
-						"label": "variable",
+						"defaultValue": null,
+						"description": "Version",
+						"label": "version",
 						"notNull": true,
-						"valueSet": [ "10m_wind_speed",  "2m_dewpoint_temperature", "2m_temperature", "cloud_cover", "liquid_precipitation_duration_fraction", "precipitation_flux", "snow_thickness", "snow_thickness_lwe", "solar_radiation_flux", "solid_precipitation_duration_fraction", "vapour_pressure" ]
+						"valueSet": [ "1_0", "1_1" ]
 					},
 					{
 						"id": "format",
@@ -1891,7 +2054,7 @@
 						"valueSet": [ "tgz", "zip" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"boundingBoxValues\": [ { \"name\": \"area\", \"bbox\": \"$bbox\" } ], \"multiStringSelectValues\": [ {\"name\": \"year\", \"value\": \"$year\"}, { \"name\": \"month\", \"value\": \"$month\"}, {\"name\": \"day\", \"value\": \"$day\"}, {\"name\": \"statistic\", \"value\": \"$statistic\" } ], \"stringChoiceValues\": [ { \"name\": \"format\", \"value\": \"$format\"}, {\"name\": \"variable\", \"value\": \"$variable\"} ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"variable\": \"$variable\", \"statistic\": \"$statistic\", \"year\": \"$year\", \"month\": \"$month\", \"day\": \"$day\", \"time\": \"$time\", \"version\": \"$version\", \"bbox\": \"$bbox\", \"format\": \"$format\",  \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -1900,8 +2063,8 @@
 		"id": "Soil_moisture",
 		"label": "Soil moisture gridded data from 1978 to present",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "This dataset provides estimates of soil moisture over the globe from a large set of satellite sensors. It is based on the ESA Climate Change Initiative soil moisture version 03.3 and represents the current state-of-the-art for satellite-based soil moisture climate data record production, in line with the “Systematic observation requirements for satellite-based products for climate” as defined by GCOS (Global Climate Observing System). Data are on a regular latitude/longitude grid expectedly with gaps in space and time. When dealing with satellite data it is common to encounter references to Climate Data Records (CDR) and interim-CDR (ICDR). For this dataset, both the ICDR and CDR parts of each product were generated using the same software and algorithms. The CDR is intended to have sufficient length, consistency, and continuity to detect climate variability and change. The ICDR provides a short-delay access to current data where consistency with the CDR baseline is expected but was not extensively checked. The dataset contains the following products: \"active\", \"passive\" and \"combined\". The \"active\" and \"passive\" products were created by using scatterometer and radiometer soil moisture products, respectively. The \"combined\" product results from a blend based on the two previous products. This dataset is produced on behalf of the Copernicus Climate Change Service (C3S). Variables in the dataset/application are: Surface soil moisture, Volumetric soil moisture.",
@@ -2063,7 +2226,7 @@
 						"description": "Version",
 						"label": "version",
 						"notNull": true,
-						"valueSet": [ "v201706", "v201812", "v201912", "v202012" ]
+						"valueSet": [ "v202212","v201706", "v201812", "deprecated_v201912", "v201912_1", "v202012" ]
 					},
 					{
 						"id": "format",
@@ -2077,7 +2240,7 @@
 						"valueSet": [ "tgz", "zip" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"multiStringSelectValues\": [ {\"name\": \"year\", \"value\": \"$year\"}, { \"name\": \"month\", \"value\": \"$month\"}, {\"name\": \"day\", \"value\": \"$day\"}, {\"name\": \"type_of_record\", \"value\": \"$type_of_record\" }, { \"name\": \"time_aggregation\", \"value\": \"$time_aggregation\" }, {\"name\": \"version\", \"value\": \"$version\" }, { \"name\": \"type_of_sensor\", \"value\": \"$type_of_sensor\" }, { \"name\": \"variable\", \"value\": \"$variable\" } ], \"stringChoiceValues\": [ { \"name\": \"format\", \"value\": \"$format\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"variable\": \"$variable\", \"type_of_sensor\": \"$type_of_sensor\", \"time_aggregation\": \"$time_aggregation\", \"year\": \"$year\", \"month\": \"$month\", \"day\": \"$day\", \"type_of_record\": \"$type_of_record\", \"format\": \"$format\",  \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -2086,8 +2249,8 @@
 		"id": "River_discharge",
 		"label": "River discharge and related forecasted data by the Global Flood Awareness System",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "This dataset contains global modelled daily data of river discharge forced with meteorological forecasts. The data was produced by the Global Flood Awareness System (GloFAS), which is part of the Copernicus Emergency Management Service (CEMS). River discharge, or river flow as it is also known, is defined as the amount of water that flows through a river section at a given time. This dataset is simulated by forcing a hydrological modelling chain with input from ECMWF ensemble forecast combined with the ECMWF extended-range ensemble forecast up to 30 days. Data availability for the GloFAS forecast is from 2019-11-05 up to near real time. Variables in the dataset/application are: River discharge in the last 24 hours Variables in the dataset/application are: Upstream area.",
@@ -2174,17 +2337,6 @@
 						"valueSet": [ "EO:ECMWF:DAT:CEMS_GLOFAS_FORECAST" ]
 					},
 					{
-						"id": "variable",
-						"name": "variable",
-						"type": "REGULAR",
-						"dataType": "string[]",
-						"defaultValue": "[river_discharge_in_the_last_24_hours]",
-						"description": "Variable",
-						"label": "variable",
-						"notNull": true,
-						"valueSet": [ "river_discharge_in_the_last_24_hours" ]
-					},
-					{
 						"id": "system_version",
 						"name": "system_version",
 						"type": "REGULAR",
@@ -2216,6 +2368,17 @@
 						"label": "product type",
 						"notNull": true,
 						"valueSet": [ "control_forecast", "ensemble_perturbed_forecasts" ]
+					},
+					{
+						"id": "variable",
+						"name": "variable",
+						"type": "REGULAR",
+						"dataType": "string",
+						"defaultValue": null,
+						"description": "Variable",
+						"label": "variable",
+						"notNull": true,
+						"valueSet": [ "river_discharge_in_the_last_24_hours", "runoff_water_equivalent", "snow_depth_water_equivalent", "soil_wetness_index" ]
 					},
 					{
 						"id": "year",
@@ -2270,10 +2433,10 @@
 						"description": "Output format",
 						"label": "format",
 						"notNull": true,
-						"valueSet": [ "grib" ]
+						"valueSet": [ "grib", "netcdf4.zip" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"boundingBoxValues\": [ { \"name\": \"area\", \"bbox\": \"$bbox\" } ], \"multiStringSelectValues\": [ { \"name\": \"variable\", \"value\": \"$variable\" },{ \"name\": \"system_version\", \"value\": \"$system_version\" }, { \"name\": \"hydrological_model\", \"value\": \"$hydrological_model\" }, { \"name\": \"product_type\", \"value\": \"$product_type\" }, { \"name\": \"year\", \"value\": \"$year\" }, { \"name\": \"month\", \"value\": \"$month\" }, { \"name\": \"day\", \"value\": \"$day\" },{ \"name\": \"leadtime_hour\", \"value\": \"$leadtime_hour\" } ], \"stringChoiceValues\": [ { \"name\": \"format\", \"value\": \"$format\" } ]}"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"system_version\": \"$system_version\", \"hydrological_model\": \"$hydrological_model\", \"product_type\": \"$product_type\", \"variable\", \"$variable\", \"year\": \"$year\", \"month\": \"$month\", \"day\": \"$day\", \"leadtime_hour\": \"$leadtime_hour\", \"format\": \"$format\", \"bbox\", \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -2282,8 +2445,8 @@
 		"id": "Fire_danger_indices",
 		"label": "Fire danger indices historical data from the Copernicus Emergency Management Service",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "This data set provides complete historical reconstruction of meteorological conditions favourable to the start, spread and sustainability of fires. The fire danger metrics provided are part of a vast dataset produced by the Copernicus Emergency Management Service for the European Forest Fire Information System (EFFIS). The European Forest Fire Information System incorporates the fire danger indices for three different models developed in Canada, United States and Australia. In this dataset the fire danger indices are calculated using weather forecast from historical simulations provided by ECMWF ERA5 reanalysis. ERA5 by combining model data and a vast set of quality controlled observations provides a globally complete and consistent data-set and is regarded as a good proxy for observed atmospheric conditions. The selected data records in this data set are regularly extended with time as ERA5 forcing data become available. This dataset is produced by ECMWF in its role of the computational centre for fire danger forecast of the CEMS, on behalf of the Joint Research Centre which is the managing entity of the service. Variables in the dataset/application are: Build-up index, Burning index, Danger rating, Drought code, Duff moisture code, Energy release component, Fine fuel moisture code, Fire daily severity index, Fire danger index, Fire weather index, Ignition component, Initial spread index, Keetch-Byram drought index, Spread component.",
@@ -2339,6 +2502,16 @@
 				"notNull": true
 			},
 			{
+				"id": "bbox",
+				"name": "bbox",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Bounding box",
+				"label": "bbox",
+				"notNull": true
+			},
+			{
 				"id": "query",
 				"name": "query",
 				"type": "TEMPLATE",
@@ -2363,12 +2536,12 @@
 						"id": "product_type",
 						"name": "product_type",
 						"type": "REGULAR",
-						"dataType": "string[]",
+						"dataType": "string",
 						"defaultValue": null,
 						"description": "Product type",
 						"label": "product type",
 						"notNull": true,
-						"valueSet": [ "ensemble_mean", "ensemble_spread", "ensemble_members", "reanalysis" ]
+						"valueSet": [ "ensemble_members", "reanalysis" ]
 					},
 					{
 						"id": "variable",
@@ -2379,29 +2552,29 @@
 						"description": "Variable",
 						"label": "variable",
 						"notNull": true,
-						"valueSet": [ "duff_moisture_code", "build_up_index", "danger_risk", "drought_code", "fine_fuel_moisture_code", "fire_daily_severity_rating", "fire_weather_index", "initial_fire_spread_index", "keetch_byram_drought_index", "fire_danger_index", "burning_index", "energy_release_component", "spread_component", "ignition_component" ]
+						"valueSet": [ "duff_moisture_code", "build_up_index", "drought_code", "fine_fuel_moisture_code", "fire_daily_severity_rating", "fire_weather_index", "initial_fire_spread_index", "drought_factor", "fire_danger_index", "keetch_byram_drought_index", "burning_index", "energy_release_component", "spread_component", "ignition_component" ]
 					},
 					{
-						"id": "version",
-						"name": "version",
+						"id": "dataset_type",
+						"name": "dataset_type",
+						"type": "REGULAR",
+						"dataType": "string",
+						"defaultValue": null,
+						"description": "Dataset Type",
+						"label": "dataset_type",
+						"notNull": true,
+						"valueSet": [ "consolidated_dataset", "intermediate_dataset" ]
+					},
+					{
+						"id": "system_version",
+						"name": "system_version",
 						"type": "REGULAR",
 						"dataType": "string[]",
 						"defaultValue": null,
-						"description": "Version",
-						"label": "version",
+						"description": "System version",
+						"label": "system_version",
 						"notNull": true,
-						"valueSet": [ "3.0", "4.0", "3.1" ]
-					},
-					{
-						"id": "dataset",
-						"name": "dataset",
-						"type": "REGULAR",
-						"dataType": "string[]",
-						"defaultValue": null,
-						"description": "Dataset",
-						"label": "dataset",
-						"notNull": true,
-						"valueSet": [ "Consolidated dataset", "Intermediate dataset" ]
+						"valueSet": [ "4.1" ]
 					},
 					{
 						"id": "year",
@@ -2412,7 +2585,7 @@
 						"description": "Year",
 						"label": "year",
 						"notNull": true,
-						"valueSet": [ "1979", "1980", "1981", "1982", "1983", "1984", "1985", "1986", "1987", "1988", "1989", "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024" ]
+						"valueSet": [ "1940", "1941", "1942", "1943", "1944", "1945", "1946", "1947", "1948", "1949", "1950", "1951", "1952", "1953", "1954", "1955", "1956", "1957", "1958", "1959", "1960", "1961", "1962", "1963", "1964", "1965", "1966", "1967", "1968", "1969", "1970", "1971", "1972", "1973", "1974", "1975", "1976", "1977", "1978", "1979", "1980", "1981", "1982", "1983", "1984", "1985", "1986", "1987", "1988", "1989", "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024" ]
 					},
 					{
 						"id": "month",
@@ -2445,11 +2618,11 @@
 						"description": "Output format",
 						"label": "format",
 						"notNull": true,
-						"valueSet": [ "zip", "tgz" ]
+						"valueSet": [ "grib", "netcdf" ]
 					}
 
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"multiStringSelectValues\": [ {\"name\": \"product_type\", \"value\": \"$product_type\" }, { \"name\": \"variable\", \"value\": \"$variable\" }, { \"name\": \"version\", \"value\": \"$version\" }, {\"name\": \"dataset\", \"value\": \"$dataset\" }, { \"name\": \"year\", \"value\": \"$year\" }, { \"name\": \"month\", \"value\": \"$month\" }, { \"name\": \"day\", \"value\": \"$day\" } ], \"stringChoiceValues\": [ { \"name\": \"format\", \"value\": \"$format\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"product_type\": \"$product_type\", \"variable\": \"$variable\", \"dataset_type\": \"$dataset_type\", \"system_version\", \"$system_version\", \"year\": \"$year\", \"month\": \"$month\", \"day\": \"$day\", \"grid\": \"$grid\", \"format\": \"$format\", \"bbox\", \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -2458,8 +2631,8 @@
 		"id": "CAMS_European_air_q",
 		"label": "CAMS European air quality reanalyses",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "This dataset provides annual air quality reanalyses for Europe based on both unvalidated (interim) and validated observations. CAMS produces annual air quality (interim) reanalyses for the European domain at significantly higher spatial resolution (0.1 degrees, approx. 10km) than is available from the global reanalyses. The production is currently based on an ensemble of nine air quality data assimilation systems across Europe. A median ensemble is calculated from individual outputs, since ensemble products yield on average better performance than the individual model products. The spread between the nine models can be used to provide an estimate of the analysis uncertainty. The reanalysis combines model data with observations provided by the European Environment Agency (EEA) into a complete and consistent dataset using various data assimilation techniques depending upon the air-quality forecasting system used. Additional sources of observations can complement the in-situ data assimilation, like satellite data. An interim reanalysis is provided each year for the year before based on the unvalidated near-real-time observation data stream that has not undergone full quality control by the data providers yet. Once the fully quality-controlled observations are available from the data provider, typically with an additional delay of about 1 year, a final validated annual reanalysis is provided. Both reanalyses are available at hourly time steps at height levels.",
@@ -2544,7 +2717,7 @@
 						"description": "Variable",
 						"label": "variable",
 						"notNull": true,
-						"valueSet": [ "ammonia", "carbon_monoxide", "dust", "nitrogen_dioxide", "nitrogen_monoxide", "non_methane_vocs", "ozone", "particulate_matter_10um", "particulate_matter_2.5um", "peroxyacyl_nitrates", "pm10_wildfires", "residential_elementary_carbon", "secondary_inorganic_aerosol", "sulphur_dioxide", "total_elementary_carbon" ]
+						"valueSet": [ "ammonia", "carbon_monoxide", "dust", "formaldehyde", "glyoxal", "nitrogen_dioxide", "nitrogen_monoxide", "non_methane_vocs", "ozone", "particulate_matter_10um", "particulate_matter_2.5um", "peroxyacyl_nitrates", "pm10_wildfires", "residential_elementary_carbon", "secondary_inorganic_aerosol", "sulphur_dioxide", "total_elementary_carbon" ]
 					},
 					{
 						"id": "model",
@@ -2555,7 +2728,7 @@
 						"description": "Model",
 						"label": "model",
 						"notNull": true,
-						"valueSet": [ "chimere", "dehm", "emep", "ensemble", "euradim", "gemaq", "lotos", "match", "minni", "mocage", "silam" ]
+						"valueSet": [ "chimere", "dehm", "emep", "ensemble", "euradim", "gemaq", "lotos", "match", "minni", "mocage", "silam", "monarch" ]
 					},
 					{
 						"id": "level",
@@ -2588,7 +2761,7 @@
 						"description": "Year",
 						"label": "year",
 						"notNull": true,
-						"valueSet": [ "2018", "2019", "2020", "2021", "2022", "2023", "2024" ]
+						"valueSet": [ "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023" ]
 					},
 					{
 						"id": "month",
@@ -2613,7 +2786,7 @@
 						"valueSet": [ "zip", "tgz" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"multiStringSelectValues\": [ {\"name\": \"variable\", \"value\": \"$variable\" }, { \"name\": \"model\", \"value\": \"$model\" }, { \"name\": \"level\", \"value\": \"$level\" }, { \"name\": \"type\", \"value\": \"$type\" }, { \"name\": \"year\", \"value\": \"$year\" }, { \"name\": \"month\", \"value\": \"$month\" } ], \"stringChoiceValues\": [ { \"name\": \"format\", \"value\": \"$format\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"variable\": \"$variable\", \"model\": \"$model\", \"level\": \"$level\", \"type\", \"$type\", \"year\": \"$year\", \"month\": \"$month\", \"format\": \"$format\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"
@@ -2622,8 +2795,8 @@
 		"id": "CAMS_Global_biomass",
 		"label": "CAMS global biomass burning emissions based on fire radiative power (GFAS)",
 		"version": "1.0.0",
-		"authors": "Efrem-Hagiu Ion-Stefan",
-		"copyright": "(C) 2024 CS GROUP ROMANIA",
+		"authors": "Wekeo Team",
+		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
 		"nodeAffinity": "Any",
 		"description": "Emissions of atmospheric pollutants from biomass burning and vegetation fires are key drivers of the evolution of atmospheric composition, with a high degree of spatial and temporal variability, and an accurate representation of them in models is essential. The CAMS Global Fire Assimilation System (GFAS) utilises satellite observations of fire radiative power (FRP) to provide near-real-time information on the location, relative intensity and estimated emissions from biomass burning and vegetation fires. Emissions are estimated by (i) conversion of FRP observations to the dry matter (DM) consumed by the fire, and (ii) application of emission factors to DM for different biomes, based on field and laboratory studies in the scientific literature, to estimate the emissions. Emissions estimates for 40 pyrogenic species are available from GFAS, including aerosols, reactive gases and greenhouse gases, on a regular grid with a spatial resolution of 0.1 degrees longitude by 0.1 degrees latitude. This version of GFAS (v1.2) provides daily averaged data based on a combination of FRP observations from two Moderate Resolution Imaging Spectroradiometer (MODIS) instruments, one on the NASA EOS-Terra satellite and the other on the NASA EOS-Aqua satellite from 1 January 2003 to present. GFAS also provides daily estimates of smoke plume injection heights derived from FRP observations and meteorological information from the operational weather forecasts from ECMWF. GFAS data have been used to provide surface boundary conditions for the CAMS global atmospheric composition and European regional air quality forecasts, and the wider atmospheric chemistry modelling community. Variables in the dataset/application are: Altitude of plume bottom, Altitude of plume top, Injection height (from IS4FIRES), Mean altitude of maximum injection, Wildfire combustion rate, Wildfire flux of acetaldehyde (C2H4O), Wildfire flux of acetone (C3H6O), Wildfire flux of ammonia (NH3), Wildfire flux of benzene (C6H6), Wildfire flux of black carbon, Wildfire flux of butanes (C4H10), Wildfire flux of butenes (C4H8), Wildfire flux of carbon dioxide (CO2), Wildfire flux of carbon monoxide (CO), Wildfire flux of dimethyl sulfide (DMS) (C2H6S), Wildfire flux of ethane (C2H6), Wildfire flux of ethanol (C2H5OH), Wildfire flux of ethene (C2H4), Wildfire flux of formaldehyde (CH2O), Wildfire flux of heptane (C7H16), Wildfire flux of hexanes (C6H14), Wildfire flux of hexene (C6H12), Wildfire flux of higher alkanes (CnH2n+2, c>=4), Wildfire flux of higher alkenes (CnH2n, c>=4), Wildfire flux of hydrogen (H), Wildfire flux of isoprene (C5H8), Wildfire flux of methane (CH4), Wildfire flux of methanol (CH3OH), Wildfire flux of nitrogen oxides (NOx), Wildfire flux of nitrous oxide (N20), Wildfire flux of non-methane hydrocarbons, Wildfire flux of octene (C8H16), Wildfire flux of organic carbon, Wildfire flux of particulate matter d < 2.5 µm (PM2.5), Wildfire flux of pentanes (C5H12), Wildfire flux of pentenes (C5H10), Wildfire flux of propane (C3H8), Wildfire flux of propene (C3H6), Wildfire flux of sulphur dioxide (SO2), Wildfire flux of terpenes ((C5H8)n), Wildfire flux of toluene (C7H8), Wildfire flux of toluene_lump (C7H8+ C6H6 + C8H10), Wildfire flux of total carbon in aerosols, Wildfire flux of total particulate matter, Wildfire flux of xylene (C8H10), Wildfire fraction of area observed, Wildfire overall flux of burnt carbon, Wildfire radiative power.",
@@ -2680,23 +2853,23 @@
 			},
 			{
 				"id": "start",
-				"name": "start_date",
+				"name": "dtstart",
 				"type": "REGULAR",
 				"dataType": "date",
 				"defaultValue": "2003-01-01T00:00:00.000Z",
 				"description": "The start date of the product as yyyy-MM-ddTHH:mm:sssZ",
-				"label": "start date",
+				"label": "dtstart",
 				"format": "yyyy-MM-dd'T'HH:mm:sss'Z'",
 				"notNull": true
 			},
 			{
 				"id": "end",
-				"name": "end_date",
+				"name": "dtend",
 				"type": "REGULAR",
 				"dataType": "date",
 				"defaultValue": "2023-08-21T23:59:59.999Z",
 				"description": "The end date of the product as yyyy-MM-ddTHH:mm:sssZ",
-				"label": "end date",
+				"label": "dtend",
 				"format": "yyyy-MM-dd'T'HH:mm:sss'Z'",
 				"notNull": true
 			},
@@ -2744,7 +2917,7 @@
 						"valueSet": [ "grib", "netcdf" ]
 					}
 				],
-				"defaultValue": " { \"dataset_id\": \"$dataset\", \"dateRangeSelectValues\": [ { \"name\": \"date\", \"start\": \"$start\", \"end\": \"$end\" } ], \"multiStringSelectValues\": [ { \"name\": \"variable\", \"value\": \"$variable\" } ], \"stringChoiceValues\": [ { \"name\": \"format\", \"value\": \"$format\" } ] } "
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"dtstart\": \"$dtstart\", \"dtend\": \"$dtend\", \"variable\": \"$variable\", \"format\": \"$format\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
 		"templatecontents": "--username\n$username\n--password\n$password\n--query\n$query\n--out\n$out"

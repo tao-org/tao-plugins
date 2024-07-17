@@ -17,7 +17,7 @@ public class WekeoImageInstaller extends BaseImageInstaller{
 
 	@Override
     protected String getPathInContainer() {
-        return "/app";
+        return "/usr/bin";
     }
 
 	@Override
