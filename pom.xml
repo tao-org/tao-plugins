@@ -71,6 +71,7 @@
         <module>tao-executor-wms</module>
         <module>tao-functions</module>
         <module>tao-plugins-kit</module>
+        <module>tao-github</module>
         <!--<module>tao-executor-wmts</module>-->
     </modules>
 
