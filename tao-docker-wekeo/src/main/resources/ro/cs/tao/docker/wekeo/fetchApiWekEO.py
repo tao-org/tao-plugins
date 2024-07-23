@@ -15,7 +15,7 @@ class ClientWekeo:
         self.hda_client = Client(config=conf)
         self.username = username  # credentials
         self.password = password
-        self.query = query  # metadata / dict
+        self.query = eval(query)  # metadata / dict
         self.destfolder = out  # the destination folder to download
         self.query_result = None # object representing the query result
 
