@@ -12,16 +12,16 @@ class ClientWekeo:
 
     def __init__(self, username=None, password=None, query=None, out=None):
         conf = Configuration(user = username, password = password)
-        self.hda_client = Client(config=conf)
-        self.username = username  # credentials
-        self.password = password
-        self.query = eval(query)  # metadata / dict
+        self.hda_client = Client(config=conf) # hda client for fetching data
+        self.username = username  # username
+        self.password = password # password
+        self.query = eval(query)  # query dict
         self.destfolder = out  # the destination folder to download
         self.query_result = None # object representing the query result
 
-        self.download_time_start = None
-        self.download_timeout = 60*60*5  # the timeout for ordering data
-        self.list_times = []
+        self.download_time_start = None # start time of download
+        self.download_timeout = 60*60*5  # the timeout for downloading data
+        self.list_times = [] # list of times for every download
         self.max_tries = 7  # the max tries we can do
 
     def search_download_items(self):
@@ -45,7 +45,6 @@ class ClientWekeo:
     
     def download_items(self):
         for index, item in enumerate(self.query_result.results):
-            #self.verify_timer(index)
             tries = 0
             while tries < self.max_tries:
                 try:
@@ -60,19 +59,6 @@ class ClientWekeo:
                         print(Fore.RED + "An error occurred:", type(error).__name__, '->', error)
                 time.sleep(5)
                 tries += 1
-
-    # verify the starting download time for all files and wait if the quota has been reached
-    # def verify_timer(self, index):
-    #     if(index < 100):
-    #         self.list_times.append(time.time())
-    #         return
-    #     index_to_modify = index % 100
-    #     time_of_last_100th_item = self.list_times.get(index_to_modify)
-    #     self.list_times[index_to_modify] = time.time()
-    #     time_between_items = self.list_times[index_to_modify] - time_of_last_100th_item
-    #     if(time_between_items > self.download_timeout):
-    #         print(Fore.RED + "The hourly Wekeo download quota has been reached. Waiting before continuing the download:", (time_between_items - self.download_timeout)/60, " minutes")
-    #         time.sleep(time_between_items - self.download_timeout) 
 
     def fetch_data(self):
         if not self.search_download_items():
