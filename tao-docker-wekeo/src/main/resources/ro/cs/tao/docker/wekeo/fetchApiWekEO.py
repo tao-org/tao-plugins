@@ -80,8 +80,7 @@ def main():
     password: str = args.password
     query_string : str = convert_to_valid_json(args.query)
     query: dict = json.loads(query_string)
-    out: str = os.path.join(os.getcwd() + os.sep, str(args.out))
-    print(out)
+    out: str = args.out
     if not os.path.exists(out):
         os.makedirs(out)
     client = ClientWekeo(username, password, query, out)

@@ -25,7 +25,7 @@
 				"parentId": "Normalized_diff_v_idx_0",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Normalized_diff_v_idx_0_output"
 				}
@@ -144,7 +144,7 @@
 				"parentId": "Normalized_diff_v_idx_1",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Normalized_diff_v_idx_1_output"
 				}
@@ -263,7 +263,7 @@
 				"parentId": "Normalized_diff_v_idx_2",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Normalized_diff_v_idx_2_output"
 				}
@@ -382,7 +382,7 @@
 				"parentId": "Normalized_diff_v_idx_3",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Normalized_diff_v_idx_3_output"
 				}
@@ -501,7 +501,7 @@
 				"parentId": "Leaf_area_index_0",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Leaf_area_index_0_output"
 				}
@@ -620,7 +620,7 @@
 				"parentId": "Leaf_area_index_1",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Leaf_area_index_1_output"
 				}
@@ -739,7 +739,7 @@
 				"parentId": "Leaf_area_index_2",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Leaf_area_index_2_output"
 				}
@@ -858,7 +858,7 @@
 				"parentId": "Land_surface_temp_0",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Land_surface_temp_output"
 				}
@@ -977,7 +977,7 @@
 				"parentId": "Land_surface_temp_1",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Land_surface_temp_output"
 				}
@@ -1096,7 +1096,7 @@
 				"parentId": "Dry_matter_productivity_0",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Dry_matter_productivity_output"
 				}
@@ -1215,7 +1215,7 @@
 				"parentId": "Dry_matter_productivity_1",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Dry_matter_productivity_output"
 				}
@@ -1334,7 +1334,7 @@
 				"parentId": "Fraction_of_absorbed_PAR_0",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Fraction_of_absorbed_PAR_output"
 				}
@@ -1453,7 +1453,7 @@
 				"parentId": "Fraction_of_absorbed_PAR_1",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Fraction_of_absorbed_PAR_output"
 				}
@@ -1572,7 +1572,7 @@
 				"parentId": "CAMS_global_inversion",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "CAMS_European_air_quality_output"
 				}
@@ -1758,7 +1758,7 @@
 				"parentId": "Essential_climate_variables",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Essential_climate_variables_output"
 				}
@@ -1900,7 +1900,7 @@
 				"parentId": "Agrometeorological_indicators",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Agrometeorological_indicators_output"
 				}
@@ -2085,7 +2085,7 @@
 				"parentId": "Soil_moisture",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Soil_moisture_output"
 				}
@@ -2271,7 +2271,7 @@
 				"parentId": "River_discharge",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "River_discharge_output"
 				}
@@ -2467,7 +2467,7 @@
 				"parentId": "Fire_danger_indices",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "Fire_danger_indices_output"
 				}
@@ -2653,7 +2653,7 @@
 				"parentId": "CAMS_European_air_q",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "CAMS_European_air_q_output"
 				}
@@ -2817,7 +2817,7 @@
 				"parentId": "CAMS_Global_biomass",
 				"name": "out",
 				"dataDescriptor": {
-					"formatType": "RASTER",
+					"formatType": "FOLDER",
 					"formatName": null,
 					"location": "CAMS_Global_biomass_output"
 				}
