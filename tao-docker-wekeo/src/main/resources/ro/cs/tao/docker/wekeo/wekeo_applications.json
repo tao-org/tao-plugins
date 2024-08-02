@@ -113,10 +113,10 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_NDVI_300M_V2_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"startdate\": \"$start_date\", \"enddate\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Normalized_diff_v_idx_1",
@@ -232,10 +232,10 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_NDVI_1KM_V3_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"startdate\": \"$start_date\", \"enddate\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Normalized_diff_v_idx_2",
@@ -351,10 +351,10 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_NDVI_1KM_V2_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"startdate\": \"$start_date\", \"enddate\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Normalized_diff_v_idx_3",
@@ -470,10 +470,10 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_NDVI_300M_V1_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"startdate\": \"$start_date\", \"enddate\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Leaf_area_index_0",
@@ -589,10 +589,10 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_LAI_300M_V1_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"startdate\": \"$start_date\", \"enddate\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Leaf_area_index_1",
@@ -708,10 +708,10 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_LAI_1KM_V1_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"startdate\": \"$start_date\", \"enddate\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Leaf_area_index_2",
@@ -827,10 +827,10 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_LAI_1KM_V2_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"startdate\": \"$start_date\", \"enddate\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Land_surface_temp_0",
@@ -946,10 +946,10 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_LST_5KM_V1_10DAILY-DAILY-CYCLE_NETCDF" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"startdate\": \"$start_date\", \"enddate\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Land_surface_temp_1",
@@ -1065,10 +1065,10 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_LST_5KM_V2_10DAILY-DAILY-CYCLE_NETCDF" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"startdate\": \"$start_date\", \"enddate\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Dry_matter_productivity_0",
@@ -1184,10 +1184,10 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_DMP_300M_V1_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"startdate\": \"$start_date\", \"enddate\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Dry_matter_productivity_1",
@@ -1303,10 +1303,10 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_DMP_1KM_V2_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"startdate\": \"$start_date\", \"enddate\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Fraction_of_absorbed_PAR_0",
@@ -1422,10 +1422,10 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_FAPAR_300M_V1_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"startdate\": \"$start_date\", \"enddate\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Fraction_of_absorbed_PAR_1",
@@ -1541,10 +1541,10 @@
 						"valueSet": [ "EO:CLMS:DAT:CLMS_GLOBAL_FAPAR_1KM_V2_10DAILY_NETCDF" ]
 					}
 				],
-				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"start\": \"$start_date\", \"end\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
+				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"startdate\": \"$start_date\", \"enddate\": \"$end_date\", \"bbox\": \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "CAMS_global_inversion",
@@ -1730,7 +1730,7 @@
 				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"variable\": \"$variable\", \"quantity\": \"$quantity\", \"input_observations\": \"$input_observations\", \"time_aggregation\": \"$time_aggregation\", \"version\": \"$version\", \"year\": \"$year\", \"month\": \"$month\", \"format\": \"$format\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Essential_climate_variables",
@@ -1872,7 +1872,7 @@
 				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"variable\": \"$variable\", \"model\": \"$model\", \"experiment\": \"$experiment\", \"period\": \"$period\", \"format\": \"$format\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Agrometeorological_indicators",
@@ -2057,7 +2057,7 @@
 				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"variable\": \"$variable\", \"statistic\": \"$statistic\", \"year\": \"$year\", \"month\": \"$month\", \"day\": \"$day\", \"time\": \"$time\", \"version\": \"$version\", \"bbox\": \"$bbox\", \"format\": \"$format\",  \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "Soil_moisture",
@@ -2243,7 +2243,7 @@
 				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"variable\": \"$variable\", \"type_of_sensor\": \"$type_of_sensor\", \"time_aggregation\": \"$time_aggregation\", \"year\": \"$year\", \"month\": \"$month\", \"day\": \"$day\", \"type_of_record\": \"$type_of_record\", \"format\": \"$format\",  \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "River_discharge",
@@ -2439,7 +2439,7 @@
 				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"system_version\": \"$system_version\", \"hydrological_model\": \"$hydrological_model\", \"product_type\": \"$product_type\", \"variable\", \"$variable\", \"year\": \"$year\", \"month\": \"$month\", \"day\": \"$day\", \"leadtime_hour\": \"$leadtime_hour\", \"format\": \"$format\", \"bbox\", \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query'--out $out"
 	},
 	{
 		"id": "Fire_danger_indices",
@@ -2625,7 +2625,7 @@
 				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"product_type\": \"$product_type\", \"variable\": \"$variable\", \"dataset_type\": \"$dataset_type\", \"system_version\", \"$system_version\", \"year\": \"$year\", \"month\": \"$month\", \"day\": \"$day\", \"grid\": \"$grid\", \"format\": \"$format\", \"bbox\", \"$bbox\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	},
 	{
 		"id": "CAMS_European_air_q",
@@ -2789,7 +2789,7 @@
 				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"variable\": \"$variable\", \"model\": \"$model\", \"level\": \"$level\", \"type\", \"$type\", \"year\": \"$year\", \"month\": \"$month\", \"format\": \"$format\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query'--out $out"
 	},
 	{
 		"id": "CAMS_Global_biomass",
@@ -2920,6 +2920,6 @@
 				"defaultValue": "{ \"dataset_id\": \"$dataset\", \"dtstart\": \"$dtstart\", \"dtend\": \"$dtend\", \"variable\": \"$variable\", \"format\": \"$format\", \"itemsPerPage\": 100, \"startIndex\": 0 }"
 			}
 		],
-		"templatecontents": "--username '$username' --password '$password' --query '$query' --out '$out'"
+		"templatecontents": "--username $username --password $password --query '$query' --out $out"
 	}
 ]
