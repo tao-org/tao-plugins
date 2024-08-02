@@ -61,7 +61,7 @@ class ClientWekeo:
                     print(Fore.RED + "An error occurred:", type(error).__name__, '->', error)
                 time.sleep(5)
                 tries += 1
-            if tries > self.max_tries:
+            if tries >= self.max_tries:
                 return False
         return True
 
