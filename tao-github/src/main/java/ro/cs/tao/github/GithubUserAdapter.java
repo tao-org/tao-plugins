@@ -29,6 +29,7 @@ public class GithubUserAdapter implements UserModelAdapter<GHMyself> {
             if (date != null) {
                 user.setModified(Timestamp.from(date.toInstant()).toLocalDateTime());
             }
+            user.setOrganization("Github");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
