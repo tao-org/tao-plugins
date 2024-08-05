@@ -128,7 +128,7 @@
       "remoteName": "productType",
       "label": "Product Type",
       "type": "string",
-      "defaultValue": "S2MSI1C",
+      "defaultValue": "L1C",
       "required": false,
       "valueSet": ["L1C", "L2A"],
       "order": 0
