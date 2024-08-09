@@ -71,7 +71,7 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery, String> {
         URL url = new URL(urlString);
         String region = S3AuthenticationV4.fetchRegionName(url);
         List<NameValuePair> customParameters = new ArrayList<>();
-        String requestPayer = AWSDataSource.getRequestPayer(url);
+        String requestPayer = AWSDataSource.getRequestPayer(remoteUrl.toURL());
         if (requestPayer != null && !requestPayer.isEmpty()) {
             customParameters.add(new BasicNameValuePair(S3AuthenticationV4.REQUEST_PAYER_HEADER_NAME, requestPayer));
         }

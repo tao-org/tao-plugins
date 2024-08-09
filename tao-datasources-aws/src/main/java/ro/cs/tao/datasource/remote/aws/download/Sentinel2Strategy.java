@@ -20,6 +20,7 @@ import ro.cs.tao.datasource.remote.aws.AWSDataSource;
 import ro.cs.tao.datasource.util.Constants;
 import ro.cs.tao.datasource.util.Utilities;
 import ro.cs.tao.eodata.EOProduct;
+import ro.cs.tao.products.sentinels.L1CProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.HttpMethod;
@@ -48,14 +49,17 @@ import java.util.stream.Collectors;
 public class Sentinel2Strategy extends AWSStrategy {
     private static final Properties properties;
     private static final Set<String> l1cBandFiles;
+    private static final Set<String> l2aBandFiles;
     private static final String FOLDER_GRANULE = "GRANULE";
     private static final String FOLDER_AUXDATA = "AUX_DATA";
     private static final String FOLDER_DATASTRIP = "DATASTRIP";
     private static final String FOLDER_IMG_DATA = "IMG_DATA";
     private static final String FOLDER_QI_DATA = "QI_DATA";
+    private static final String FOLDER_R10m = "R10m";
+    private static final String FOLDER_R20m = "R20m";
+    private static final String FOLDER_R60m = "R60m";
 
     private final String productsUrl;
-    private String baseUrl;
 
     private boolean shouldFilterTiles;
 
@@ -80,20 +84,35 @@ public class Sentinel2Strategy extends AWSStrategy {
             add("B11.jp2");
             add("B12.jp2");
         }};
+        l2aBandFiles = new LinkedHashSet<String>() {{
+            add("B01.jp2");
+            add("B02.jp2");
+            add("B03.jp2");
+            add("B04.jp2");
+            add("B05.jp2");
+            add("B06.jp2");
+            add("B07.jp2");
+            add("B08.jp2");
+            add("B8A.jp2");
+            add("B09.jp2");
+            add("B10.jp2");
+            add("B11.jp2");
+            add("B12.jp2");
+            add("AOT.jp2");
+            add("SCL.jp2");
+            add("TCI.jp2");
+            add("WVP.jp2");
+        }};
     }
 
     public Sentinel2Strategy(AWSDataSource dataSource, String targetFolder) {
         super(dataSource, targetFolder, properties);
-        baseUrl = props.getProperty("s2.aws.tiles.url", "http://sentinel-s2-l1c.s3-website.eu-central-1.amazonaws.com");
-        if (!baseUrl.endsWith("/"))
-            baseUrl += "/";
-        productsUrl = baseUrl + "products/";
+        productsUrl = "http://sentinel-s2-l1c.s3-website.eu-central-1.amazonaws.com/products/";
     }
 
     private Sentinel2Strategy(Sentinel2Strategy other) {
         super(other);
         this.productsUrl = other.productsUrl;
-        this.baseUrl = other.baseUrl;
         this.shouldFilterTiles = other.shouldFilterTiles;
     }
 
@@ -114,7 +133,7 @@ public class Sentinel2Strategy extends AWSStrategy {
     @Override
     public String getProductUrl(EOProduct descriptor) {
         String url = super.getProductUrl(descriptor);
-        if (url == null || !url.startsWith(baseUrl)) {
+        if (url == null) {
             url = productsUrl + Sentinel2ProductHelper.createHelper(descriptor.getName()).getProductRelativePath();
         }
         if (!url.endsWith("/")) {
@@ -136,6 +155,7 @@ public class Sentinel2Strategy extends AWSStrategy {
         // let's try to assemble the product
         rootPath = FileUtilities.ensureExists(Paths.get(destination, productName + ".SAFE"));
         String baseProductUrl = getProductUrl(product);
+        String baseUrl = baseProductUrl.replaceAll("(\\..*?/).*","$1");
         url = getMetadataUrl(product);
         String version = helper.getVersion();
         String metadataFileName = helper.getMetadataFileName();
@@ -202,14 +222,29 @@ public class Sentinel2Strategy extends AWSStrategy {
                         Path tileMetadataPath = tileFolder.resolve(metadataName);
                         logger.fine(String.format("Downloading tile metadata %s", tileMetadataPath));
                         downloadFile(tileUrl + "/metadata.xml", tileMetadataPath);
-                        for (String bandFileName : l1cBandFiles) {
-                            try {
-                                String bandFileUrl = tileUrl + Constants.URL_SEPARATOR + bandFileName;
-                                Path path = imgData.resolve(helper.getBandFileName(tileName, bandFileName));
-                                logger.fine(String.format("Downloading band raster %s from %s", path, bandFileName));
-                                downloadFile(bandFileUrl, path);
-                            } catch (IOException ex) {
-                                logger.warning(String.format("Download for %s failed [%s]", bandFileName, ex.getMessage()));
+                        if (helper instanceof L1CProductHelper) {
+                            for (String bandFileName : l1cBandFiles) {
+                                try {
+                                    String bandFileUrl = tileUrl + Constants.URL_SEPARATOR + bandFileName;
+                                    Path path = imgData.resolve(helper.getBandFileName(tileName, bandFileName));
+                                    logger.fine(String.format("Downloading band raster %s from %s", path, bandFileName));
+                                    downloadFile(bandFileUrl, path);
+                                } catch (IOException ex) {
+                                    logger.warning(String.format("Download for %s failed [%s]", bandFileName, ex.getMessage()));
+                                }
+                            }
+                        } else {
+                            for (String res : new String[]{FOLDER_R10m, FOLDER_R20m, FOLDER_R60m}) {
+                                for (String bandFileName : l2aBandFiles) {
+                                    String bandFileUrl = tileUrl + Constants.URL_SEPARATOR + res + Constants.URL_SEPARATOR + bandFileName;
+                                    Path imgDataRxm = FileUtilities.ensureExists(imgData.resolve(res));
+                                    Path path = imgDataRxm.resolve(helper.getBandFileName(tileName, bandFileName.replace(".jp2", res.replace("R", "_") + ".jp2")));
+                                    logger.fine(String.format("Downloading band raster %s from %s", path, bandFileName));
+                                    try {
+                                        downloadFile(bandFileUrl, path);
+                                    } catch (IOException ignored) {
+                                    }
+                                }
                             }
                         }
                         List<String> tileMetadataLines = Files.readAllLines(tileMetadataPath);
@@ -236,6 +271,15 @@ public class Sentinel2Strategy extends AWSStrategy {
                                 downloadFile(fileUrl, path);
                             } catch (IOException ex) {
                                 logger.warning(String.format("Download for %s failed [%s]", path, ex.getMessage()));
+                            }
+                            if (!Files.exists(path)) {
+                                try {
+                                    String fileUrl = tileUrl + "/qi/" + remoteName.replace("MSK_", "");
+                                    logger.fine(String.format("Downloading file %s from %s", path, fileUrl));
+                                    downloadFile(fileUrl, path);
+                                } catch (IOException ex) {
+                                    logger.warning(String.format("Download for %s failed [%s]", path, ex.getMessage()));
+                                }
                             }
                         }
                         downloadedTiles.add(tileName);
