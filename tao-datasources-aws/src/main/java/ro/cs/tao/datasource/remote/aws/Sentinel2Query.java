@@ -61,6 +61,7 @@ import java.util.stream.Collectors;
  */
 class Sentinel2Query extends DataQuery {
     private static final String S2_SEARCH_URL_SUFFIX = "?delimiter=/&prefix=";
+    private static final String COLLECTION_PARAMETER_NAME = "collection";
     private static final String dateFormatString = new SimpleDateFormat("yyyy-MM-dd").toPattern();
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter timestampDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -102,7 +103,7 @@ class Sentinel2Query extends DataQuery {
                 tiles.addAll(Sentinel2TileExtent.getInstance().intersectingTiles(pValue));
             } else {
                 throw new QueryException(String.format("Either [%s] or [%s] have to be given.",
-                                                       CommonParameterNames.TILE, CommonParameterNames.FOOTPRINT));
+                        CommonParameterNames.TILE, CommonParameterNames.FOOTPRINT));
             }
 
             Calendar startDate = Calendar.getInstance();
@@ -164,7 +165,7 @@ class Sentinel2Query extends DataQuery {
                 String utmCode = tile.substring(0, 2);
                 String latBand = tile.substring(2, 3);
                 String square = tile.substring(3, 5);
-                String tileUrl = this.source.getConnectionString() + utmCode +
+                String tileUrl = getConnectionString() + utmCode +
                         Constants.URL_SEPARATOR + latBand + Constants.URL_SEPARATOR +
                         square + Constants.URL_SEPARATOR;
                 for (int year = yearStart; year <= yearEnd; year++) {
@@ -222,9 +223,9 @@ class Sentinel2Query extends DataQuery {
                                                     double clouds = getTileCloudPercentage(jsonTile, product);
                                                     if (clouds > cloudFilter) {
                                                         logger.fine(String.format("Tile %s from %s has %.2f %% clouds",
-                                                                                  tile,
-                                                                                  LocalDate.of(year, month - 1, day).format(dateFormat),
-                                                                                  clouds));
+                                                                tile,
+                                                                LocalDate.of(year, month - 1, day).format(dateFormat),
+                                                                clouds));
                                                     } else {
                                                         String jsonProduct = dayUrl + sequence + Constants.URL_SEPARATOR + "productInfo.json";
                                                         jsonProduct = jsonProduct.replace("?delimiter=/&prefix=", "");
@@ -234,9 +235,6 @@ class Sentinel2Query extends DataQuery {
                                                         parseManifest(manifest, product);
                                                         if (relativeOrbit == 0 ||
                                                                 product.getName().contains("_R" + String.format("%03d", relativeOrbit))) {
-                                                            if (this.limit > 0 && this.limit <= results.size()) {
-                                                                break;
-                                                            }
                                                             String processingDate = SentinelProductHelper.create(product.getName()).getProcessingDate();
                                                             if (processingDate != null) {
                                                                 product.setProcessingDate(LocalDateTime.parse(processingDate, nameDateFormat));
@@ -288,7 +286,7 @@ class Sentinel2Query extends DataQuery {
                 tiles.addAll(Sentinel2TileExtent.getInstance().intersectingTiles(aoi.getBounds2D()));
             } else {
                 throw new QueryException(String.format("Either [%s] or [%s] have to be given.",
-                                         CommonParameterNames.TILE, CommonParameterNames.FOOTPRINT));
+                        CommonParameterNames.TILE, CommonParameterNames.FOOTPRINT));
             }
 
             Calendar startDate = Calendar.getInstance();
@@ -298,7 +296,7 @@ class Sentinel2Query extends DataQuery {
             currentParameter = this.parameters.get(CommonParameterNames.START_DATE);
             if (currentParameter != null) {
                 if (currentParameter.getValue() != null) {
-                        sensingStart = currentParameter.getValueAsFormattedDate(dateFormatString);
+                    sensingStart = currentParameter.getValueAsFormattedDate(dateFormatString);
                 } else {
                     if (currentParameter.getMinValue() != null) {
                         sensingStart = currentParameter.getMinValueAsFormattedDate(dateFormatString);
@@ -350,7 +348,7 @@ class Sentinel2Query extends DataQuery {
                 String utmCode = tile.substring(0, 2);
                 String latBand = tile.substring(2, 3);
                 String square = tile.substring(3, 5);
-                String tileUrl = this.source.getConnectionString() + utmCode +
+                String tileUrl = getConnectionString() + utmCode +
                         Constants.URL_SEPARATOR + latBand + Constants.URL_SEPARATOR +
                         square + Constants.URL_SEPARATOR;
                 for (int year = yearStart; year <= yearEnd; year++) {
@@ -468,7 +466,7 @@ class Sentinel2Query extends DataQuery {
                 for (int i = 0; i < 5; i++) {
                     final JsonArray array = coords.getJsonArray(i);
                     Coordinate fromPoint = new Coordinate(array.getJsonNumber(lonIdx).doubleValue(),
-                                                      array.getJsonNumber(latIdx).doubleValue());
+                            array.getJsonNumber(latIdx).doubleValue());
                     Coordinate toPoint = new Coordinate();
                     JTS.transform(fromPoint, toPoint, mathTransform);
                     polygon2D.append(toPoint.y, toPoint.x);
@@ -485,6 +483,12 @@ class Sentinel2Query extends DataQuery {
     }
 
     @Override
-    public String defaultId() { return "Sentinel2AWSQuery"; }
+    public String defaultId() { return "Sentinel2AWSQuery";}
+
+    private String getConnectionString() {
+        final String collection = this.parameters.get(COLLECTION_PARAMETER_NAME).getValueAsString();
+        final String connectionString = this.source.getConnectionString();
+        return connectionString.replace(COLLECTION_PARAMETER_NAME, collection);
+    }
 
 }
