@@ -199,6 +199,9 @@ class Sentinel2Query extends DataQuery {
                                     calendar.add(Calendar.DAY_OF_MONTH, -1);
                                     int dayE = month == monthE ? dayEnd : calendar.get(Calendar.DAY_OF_MONTH);
                                     for (int day = dayS; day <= dayE; day++) {
+                                        if (this.limit > 0 && this.limit <= results.size()) {
+                                            break;
+                                        }
                                         if (days.contains(day)) {
                                             String dayUrl = monthUrl + day + Constants.URL_SEPARATOR;
                                             AwsResult dayResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, dayUrl));
@@ -209,6 +212,9 @@ class Sentinel2Query extends DataQuery {
                                                             return Integer.parseInt(tmp.substring(0, tmp.indexOf(dayResult.getDelimiter())));
                                                         }).collect(Collectors.toSet());
                                                 for (int sequence : sequences) {
+                                                    if (this.limit > 0 && this.limit <= results.size()) {
+                                                        break;
+                                                    }
                                                     String jsonTile = dayUrl + sequence + Constants.URL_SEPARATOR + "tileInfo.json";
                                                     jsonTile = jsonTile.replace(S2_SEARCH_URL_SUFFIX, "");
                                                     EOProduct product = new EOProduct();
@@ -411,9 +417,8 @@ class Sentinel2Query extends DataQuery {
             product.setPixelType(PixelType.UINT16);
             product.setName(obj.getString("name"));
             product.setId(obj.getString("id"));
-            product.setLocation(this.source.getConnectionString()
-                                        .replace(S2_SEARCH_URL_SUFFIX + "tiles/", "") + obj.getString("path"));
-            product.setAcquisitionDate(LocalDateTime.parse(obj.getString("timestamp"), dateFormat));
+            product.setLocation(getConnectionString()
+                    .replace(S2_SEARCH_URL_SUFFIX + "tiles/", "") + obj.getString("path"));
             product.setAcquisitionDate(LocalDateTime.parse(obj.getString("timestamp"), timestampDateFormat));
             JsonObject tile = obj.getJsonArray("tiles").getJsonObject(0);
             String utmCode = String.format("%02d", tile.getInt("utmZone")) +
