@@ -63,6 +63,7 @@ class Sentinel2Query extends DataQuery {
     private static final String S2_SEARCH_URL_SUFFIX = "?delimiter=/&prefix=";
     private static final String dateFormatString = new SimpleDateFormat("yyyy-MM-dd").toPattern();
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter timestampDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
     private static final DateTimeFormatter nameDateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
 
     Sentinel2Query(DataSource source) {
@@ -413,6 +414,7 @@ class Sentinel2Query extends DataQuery {
             product.setLocation(this.source.getConnectionString()
                                         .replace(S2_SEARCH_URL_SUFFIX + "tiles/", "") + obj.getString("path"));
             product.setAcquisitionDate(LocalDateTime.parse(obj.getString("timestamp"), dateFormat));
+            product.setAcquisitionDate(LocalDateTime.parse(obj.getString("timestamp"), timestampDateFormat));
             JsonObject tile = obj.getJsonArray("tiles").getJsonObject(0);
             String utmCode = String.format("%02d", tile.getInt("utmZone")) +
                     tile.getString("latitudeBand") + tile.getString("gridSquare");
