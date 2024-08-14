@@ -21,7 +21,6 @@ import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.container.ContainerUnit;
 import ro.cs.tao.utils.initializers.ArgoWorkflowInitializer;
 import ro.cs.tao.utils.yaml.ArgoYAMLWriter;
-import ro.cs.tao.workflow.ParameterValue;
 import ro.cs.tao.workflow.WorkflowDescriptor;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 import ro.cs.tao.workflow.enums.ComponentType;
@@ -326,7 +325,7 @@ public class ArgoExecutor extends Executor<Object>
                 .collect(Collectors.joining(" ")));
         List<String> returnArguments =  mainArguments.stream()
                 .map(s -> s.replaceAll("\"", ""))
-                .toList();
+                .collect(Collectors.toList());
         return returnArguments;
     }
 
