@@ -112,6 +112,19 @@
 	  "valueSet": null,
 	  "order": 0
 	},
+    "collection": {
+      "name": "collection",
+      "remoteName": "collection",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "sentinel-s2-l1c",
+      "required": true,
+      "valueSet": [
+        "sentinel-s2-l1c",
+        "sentinel-s2-l2a"
+      ],
+      "order": 0
+    },
 	"startDate": {
 	  "name": "startDate",
 	  "remoteName": "beginPosition",
