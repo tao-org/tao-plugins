@@ -128,9 +128,9 @@ public class DASQuery extends DataQuery {
                 final boolean hasProcessingDate = "Sentinel2".equals(this.sensorName) || "Sentinel3".equals(this.sensorName);
                 logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
+                    String rawResponse = EntityUtils.toString(response.getEntity());
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
-                            String rawResponse = EntityUtils.toString(response.getEntity());
                             ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source,
                                                                                                                    this.coverageFilter));
                             tmpResults = parser.parse(rawResponse);
@@ -183,8 +183,9 @@ public class DASQuery extends DataQuery {
                         case 401:
                             throw new QueryException("The supplied credentials are invalid!");
                         default:
-                            throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                                                   response.getStatusLine().getReasonPhrase()));
+                            throw new QueryException(String.format("The request was not successful. Reason: %s ('%s')",
+                                                                   response.getStatusLine().getReasonPhrase(),
+                                                                   rawResponse));
                     }
                 } catch (IOException ex) {
                     throw new QueryException(ex);
@@ -434,7 +435,11 @@ public class DASQuery extends DataQuery {
                                 }
                                 query.append(")");
                             } else {
-                                query.append(buildAttributeFilter(getRemoteName(entry.getKey()), parameter, Condition.LTE));
+                                query.append(buildAttributeFilter(getRemoteName(entry.getKey()),
+                                                                  parameter,
+                                                                  String.class.equals(parameter.getType())
+                                                                  ? Condition.EQ
+                                                                  : Condition.LTE));
                             }
                             break;
                     }
