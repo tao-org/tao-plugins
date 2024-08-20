@@ -81,25 +81,25 @@ public class DASQuery extends DataQuery {
 
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
-        Map<String, EOProduct> results = new LinkedHashMap<>();
+        final Map<String, EOProduct> results = new LinkedHashMap<>();
         Map<String, String> queries = null;
         try {
             queries = buildQueriesParams();
         } catch (ConversionException e) {
             throw new RuntimeException(e);
         }
-        String platform = this.parameters.get(CommonParameterNames.PLATFORM).getValue().toString();
+        final String platform = this.parameters.get(CommonParameterNames.PLATFORM).getValue().toString();
         final boolean isS2 = "Sentinel-2".equalsIgnoreCase(platform);
         final boolean isS1Aux = "Sentinel1-orbit-files".equals(this.sensorName);
         final boolean isS1 = "Sentinel-1".equalsIgnoreCase(platform) && !isS1Aux;
         final boolean isS3 = "Sentinel-3".equalsIgnoreCase(platform);
-        StringBuilder msgBuilder = new StringBuilder();
+        final StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
         for (String queryId : queries.keySet()) {
             msgBuilder.append(queryId).append(",");
         }
         msgBuilder.setLength(msgBuilder.length() - 1);
-        logger.fine(msgBuilder.toString());
+        this.logger.fine(msgBuilder.toString());
         final int actualLimit = this.limit > 0 ? this.limit : DEFAULT_LIMIT;
         msgBuilder.setLength(0);
         if (this.pageSize <= 0) {
@@ -110,29 +110,29 @@ public class DASQuery extends DataQuery {
         if (this.pageNumber == 1) {
             this.pageNumber = -1;
         }
-        int page = Math.max(this.pageNumber, 1);
+        final int page = Math.max(this.pageNumber, 1);
         List<EOProduct> tmpResults;
         for (Map.Entry<String, String> query : queries.entrySet()) {
             long i = page;
             long count;
             do {
                 count = 0;
-                List<NameValuePair> params = new ArrayList<>();
+                final List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("$filter", query.getValue()));
                 params.add(new BasicNameValuePair("$expand", "Attributes"));
                 params.add(new BasicNameValuePair("$expand", "Assets"));
-                params.add(new BasicNameValuePair("$top", String.valueOf(pageSize)));
-                params.add(new BasicNameValuePair("$skip", String.valueOf((i - 1) * pageSize)));
+                params.add(new BasicNameValuePair("$top", String.valueOf(this.pageSize)));
+                params.add(new BasicNameValuePair("$skip", String.valueOf((i - 1) * this.pageSize)));
                 params.add(new BasicNameValuePair("$orderby", "ContentDate/Start asc"));
-                String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+                final String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 final boolean hasProcessingDate = "Sentinel2".equals(this.sensorName) || "Sentinel3".equals(this.sensorName);
-                logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
+                this.logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
-                    String rawResponse = EntityUtils.toString(response.getEntity());
+                    final String rawResponse = EntityUtils.toString(response.getEntity());
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
-                            ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source,
-                                                                                                                   this.coverageFilter));
+                            final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source,
+                                                                                                                         this.coverageFilter));
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null) {
                                 if (isS3) {
@@ -152,7 +152,7 @@ public class DASQuery extends DataQuery {
                                             try {
                                                 productHelper = SentinelProductHelper.create(result.getName());
                                             } catch (Exception ex) {
-                                                logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
+                                                this.logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
                                                 continue;
                                             }
                                             if (isS2) {
@@ -165,7 +165,7 @@ public class DASQuery extends DataQuery {
                                                 result.addAttribute("relativeOrbit", getRelativeOrbit(result.getName()));
                                             }
                                             if (hasProcessingDate) {
-                                                String dateString = productHelper.getProcessingDate();
+                                                final String dateString = productHelper.getProcessingDate();
                                                 if (dateString != null) {
                                                     try {
                                                         result.setProcessingDate(LocalDateTime.parse(dateString, dateFormat));
@@ -177,7 +177,7 @@ public class DASQuery extends DataQuery {
                                         }
                                     }
                                 }
-                                logger.info(String.format("Query %s page %d returned %s products", query.getKey(), i, tmpResults.size()));
+                                this.logger.info(String.format("Query %s page %d returned %s products", query.getKey(), i, tmpResults.size()));
                             }
                             break;
                         case 401:
@@ -193,7 +193,7 @@ public class DASQuery extends DataQuery {
                 i++;
             } while (this.pageNumber == -1 && count > 0 && results.size() < actualLimit);
         }
-        logger.info(String.format("Query {%s-%s} returned %s products", this.source.getId(), this.sensorName, results.size()));
+        this.logger.info(String.format("Query {%s-%s} returned %s products", this.source.getId(), this.sensorName, results.size()));
         return new ArrayList<>(results.values());
     }
 
@@ -230,15 +230,15 @@ public class DASQuery extends DataQuery {
                 params.add(new BasicNameValuePair("$filter", "(" + query.getValue() + ")"));
                 params.add(new BasicNameValuePair("$count", "True"));
                 String queryUrl = countUrl + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
-                logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
+                this.logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
                             String rawResponse = EntityUtils.toString(response.getEntity());
                             Results results = new ObjectMapper().readerFor(Results.class).readValue(rawResponse);
                             count = results.getCount();
-                            logger.fine(String.format(QUERY_RESULT_MESSAGE, query.getKey(),
-                                                      this.source.getId(), this.sensorName, 1, count));
+                            this.logger.fine(String.format(QUERY_RESULT_MESSAGE, query.getKey(),
+                                                           this.source.getId(), this.sensorName, 1, count));
                             break;
                         case 401:
                             throw new QueryException("The supplied credentials are invalid!");
@@ -259,7 +259,7 @@ public class DASQuery extends DataQuery {
 
     private Map<String, String> buildQueriesParams() throws ConversionException {
         Map<String, String> queries = new HashMap<>();
-        final boolean isS1Aux = this.sensorName.equals("Sentinel1-orbit-files");
+        final boolean isS1Aux = "Sentinel1-orbit-files".equals(this.sensorName);
         if (!this.parameters.containsKey(CommonParameterNames.PLATFORM)) {
             addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }
@@ -290,8 +290,8 @@ public class DASQuery extends DataQuery {
                         if (polygon != null) {
                             footprints = new String[]{polygon.toWKT()};
                         } else {
-                            logger.warning(String.format("No extent found for tile '%s'. Maybe it is not a Sentinel-2 product",
-                                                         strVal));
+                            this.logger.warning(String.format("No extent found for tile '%s'. Maybe it is not a Sentinel-2 product",
+                                                              strVal));
                         }
                     }
                 }
@@ -459,9 +459,9 @@ public class DASQuery extends DataQuery {
         if (matcher.matches()) {
             int absOrbit = Integer.parseInt(matcher.group(10));
             value = String.format("%03d",
-                    matcher.group(1).endsWith("A") ?
-                            ((absOrbit - 73) % 175) + 1 :
-                            ((absOrbit - 27) % 175) + 1);
+                                  matcher.group(1).endsWith("A")
+                                  ? ((absOrbit - 73) % 175) + 1
+                                  : ((absOrbit - 27) % 175) + 1);
         } else {
             value = null;
         }
