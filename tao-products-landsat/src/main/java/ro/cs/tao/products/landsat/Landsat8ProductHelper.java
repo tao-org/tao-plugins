@@ -62,6 +62,11 @@ public class Landsat8ProductHelper extends BaseProductHelper {
     }
 
     @Override
+    public int order() {
+        return 0;
+    }
+
+    @Override
     public Landsat8ProductHelper duplicate() {
         return new Landsat8ProductHelper(getName());
     }

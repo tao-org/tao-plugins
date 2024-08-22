@@ -14,6 +14,11 @@ public class Sentinel5PProductHelper extends BaseProductHelper {
     Sentinel5PProductHelper(String productName) { super(productName); }
 
     @Override
+    public int order() {
+        return 0;
+    }
+
+    @Override
     public Sentinel5PProductHelper duplicate() {
         return new Sentinel5PProductHelper(getName());
     }
