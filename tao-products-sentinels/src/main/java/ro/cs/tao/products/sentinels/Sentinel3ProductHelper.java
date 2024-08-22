@@ -32,6 +32,11 @@ public class Sentinel3ProductHelper extends BaseProductHelper {
     Sentinel3ProductHelper(String productName) { super(productName); }
 
     @Override
+    public int order() {
+        return 0;
+    }
+
+    @Override
     public Sentinel3ProductHelper duplicate() {
         return new Sentinel3ProductHelper(getName());
     }

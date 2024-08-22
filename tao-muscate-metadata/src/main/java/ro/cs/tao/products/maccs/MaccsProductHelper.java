@@ -26,6 +26,11 @@ public abstract class MaccsProductHelper extends BaseProductHelper {
         super(productPath);
     }
 
+    @Override
+    public int order() {
+        return 2;
+    }
+
     public abstract String getGranuleFolder(String granuleIdentifier);
 
     protected abstract Pattern getNamePattern();

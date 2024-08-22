@@ -20,7 +20,7 @@ public class MajaLandsat8ProductHelper extends MajaProductHelper {
 
     @Override
     public MajaLandsat8ProductHelper duplicate() {
-        return new MajaLandsat8ProductHelper(this.path);
+        return new MajaLandsat8ProductHelper(this.path != null ? this.path : Path.of(this.name));
     }
 
     @Override
