@@ -18,7 +18,8 @@
       "defaultValue": "SLC",
       "required": false,
       "valueSet": ["GRD", "GRD-COG","OCN", "RAW", "SLC",
-        "S1_ETA__AX", "S2_ETA__AX", "S3_ETA__AX", "S4_ETA__AX", "S5_ETA__AX", "S6_ETA__AX", "EW_ETA__AX", "IW_ETA__AX"],
+        "S1_ETA__AX", "S2_ETA__AX", "S3_ETA__AX", "S4_ETA__AX", "S5_ETA__AX", "S6_ETA__AX", "EW_ETA__AX", "IW_ETA__AX",
+        "AUX_RESORB", "AUX_POEORB", "AUX_PREORB", "AUX_GNSSRD", "AUX_PROQUA"],
       "order": 0
     },
     "sensorMode": {
