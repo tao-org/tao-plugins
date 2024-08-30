@@ -3,9 +3,6 @@ package ro.cs.tao.tests;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import ro.cs.tao.configuration.ConfigurationManager;
-import ro.cs.tao.configuration.ConfigurationProvider;
-import ro.cs.tao.configuration.EmptyConfigurationProvider;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.param.CommonParameterNames;
@@ -100,12 +97,6 @@ public class ASFDataSourceTest extends BaseTest {
     public void setUp() throws IOException, URISyntaxException {
         super.setUp();
         destination = Files.createTempDirectory("tmp");
-        ConfigurationProvider configurationProvider = new EmptyConfigurationProvider();
-        configurationProvider.setValue("products.location", destination.toString());
-        configurationProvider.setScriptsFolder(destination);
-        configurationProvider.setConfigurationFolder(destination);
-        ConfigurationManager.setConfigurationProvider(configurationProvider);
-
         begin = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.START_DATE);
         begin.setValue(DateUtils.parseDateTime(getValue(CommonParameterNames.START_DATE)));
         end = new QueryParameter<>(LocalDateTime.class, CommonParameterNames.END_DATE);
