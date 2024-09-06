@@ -6,6 +6,13 @@
     "temporalCoverage": "from 2006 to 2011",
     "spatialCoverage": "World"
   },
+  "Aeolus": {
+    "mission": "Aeolus",
+    "sensorType": "RADAR",
+    "description": "ESA's Earth Explorer, Aeolus, was launched into space on 22 August 2018 and was retired on 30 April 2023. Surpassing scientific expectations and exceeding its planned life in orbit, the mission has been hailed as one of ESA’s most successful.",
+    "temporalCoverage": "from 2018 to 2023",
+    "spatialCoverage": "World"
+  },
   "Beijing-1": {
     "mission": "Beijing-1",
     "sensorType": "OPTICAL",
@@ -41,11 +48,32 @@
     "temporalCoverage": "from 1995 to 2011",
     "spatialCoverage": "World"
   },
+  "EarthCARE": {
+    "mission": "EarthCARE",
+    "sensorType": "RADAR",
+    "description": "ESA's EarthCARE (Cloud, Aerosol and Radiation Explorer) mission launched on 28 May 2024 is the largest and most complex Earth Explorer to date, and will advance our understanding of the role that clouds and aerosols play in reflecting incident solar radiation back into space and trapping infrared radiation emitted from Earth's surface.",
+    "temporalCoverage": "from 2024 to present",
+    "spatialCoverage": "World"
+  },
   "Envisat": {
     "mission": "Envisat",
     "sensorType": "RADAR",
     "description": "Envisat was ESA's successor to ERS. Launched on 1 March 2002 on an Ariane-5 rocket from Europe’s spaceport in French Guiana, Envisat was the largest Earth observation spacecraft ever built with 10 instruments aboard and at eight tonnes was the largest civilian Earth observation mission ever launched. More advanced imaging radar, radar altimeter and temperature-measuring radiometer instruments extended ERS data sets. This was supplemented by new instruments including a medium-resolution spectrometer sensitive to both land features and ocean colour. Envisat also carried two atmospheric sensors monitoring trace gases",
     "temporalCoverage": "from 2002 to 2012",
+    "spatialCoverage": "World"
+  },
+  "GEOSAT-1": {
+    "mission": "GEOSAT-1",
+    "sensorType": "RADAR",
+    "description": "GEOSAT-1 (formerly known as Deimos-1) is an Earth-imaging microsatellite, built for Elecnor Deimos of Spain, which launched on 29 July 2009 and remains operational. It is now owned and operated by GEOSAT.",
+    "temporalCoverage": "from 2009 to present",
+    "spatialCoverage": "World"
+  },
+  "GEOSAT-2": {
+    "mission": "GEOSAT-2",
+    "sensorType": "RADAR",
+    "description": "GEOSAT-2 (formerly known as Deimos-2) is an Earth-imaging satellite, built for GEOSAT of Spain, which launched 19 June 2014 and remains operational. It is the second satellite of the GEOSAT Earth Observation system, following GEOSAT-1. The expected mission lifetime is at least seven years. A high resolution satellite, it became the first European fully-private satellite capable of providing sub-metric multispectral imagery.",
+    "temporalCoverage": "from 2014 to present",
     "spatialCoverage": "World"
   },
   "GOCE": {
@@ -90,6 +118,13 @@
     "temporalCoverage": "from 1996 to 2004",
     "spatialCoverage": "Europe, Africa"
   },
+  "IRS-P5": {
+    "mission": "IRS-P5",
+    "sensorType": "OPTICAL",
+    "description": "IRS-P5 (also known as Cartosat-1) was an Indian Earth-imaging satellite that launched on 5 May 2005 and ended operations on 5 May 2019. The mission was owned and operated by the Indian Space Research Organisation (ISRO) and its applications focused on mapping India.",
+    "temporalCoverage": "from 2005 to 2019",
+    "spatialCoverage": "Europe, Africa"
+  },
   "IRS-P6": {
     "mission": "IRS-P6",
     "sensorType": "OPTICAL",
@@ -102,6 +137,13 @@
     "sensorType": "OPTICAL",
     "description": "The JERS-1 Optical System (OPS) is composed of a Very Near Infrared Radiometer (VNIR) and a Short Wave Infrared Radiometer (SWIR). The instrument has 8 observable spectral bands from visible to short wave infrared. Data acquired by ESA ground stations  The JERS-1 OPS products are available in GeoTIFF format. These products are available only for the VNIR sensor. All four bands are corrected. The correction consists in a vertical and horizontal destriping, the radiometry values are expanded from the range [0,63] to the range [0,255]. No geometrical correction is applied on level 1. The pixel size of approximately 18 x 24.2 metres for raw data is newly dimensioned to 18 x 18 metres for System Corrected data using a cubic convolution algorithm.  Disclaimer: Cloud coverage for JERS OPS products has not been computed using an algorithm. The cloud cover assignment was performed manually by operators at the acquisition stations. Due to missing attitude information, the Nadir looking band (band 3) and the corresponding forward looking band (band 4) are not well coregistered, resulting in some accuracy limitations. The quality control was not performed systematically for each frame. A subset of the entire JERS Optical dataset was selected and manually checked. As a result of this, users may occasionally encounter issues with some of the individual products.",
     "temporalCoverage": "from 1992 to 1998",
+    "spatialCoverage": "World"
+  },
+  "KOMPSAT-1": {
+    "mission": "KOMPSAT-1",
+    "sensorType": "OPTICAL",
+    "description": "KOMPSAT-1 (Korean Multi-Purpose Satellite), also known as Arirang-1, was a South Korean Earth observation satellite which was launched on 21 December 1999. KOMPSAT-1 operated for eight years until satellite operations ceased on 30 December 2007 due to a loss of contact.",
+    "temporalCoverage": "from 1999 to 2008",
     "spatialCoverage": "World"
   },
   "KOMPSAT-2": {
@@ -159,6 +201,20 @@
     "description": "The Landsat program offers the longest continuous global record of the Earth’s surface; it continues to deliver visually stunning and scientifically valuable images of our planet.",
     "temporalCoverage": "from 2013 to present",
     "spatialCoverage": "Europe, North Africa, Middle East"
+  },
+  "MOS-1": {
+    "mission": "MOS-1",
+    "sensorType": "RADAR",
+    "description": "The MOS (Marine Observation Satellite) Constellation, made up of MOS-1 and 1B, were Japan’s first marine observation satellites, owned and operated by the National Space Development Agency of Japan (NASDA), now JAXA (Japan Aerospace Exploration Agency). MOS-1 and 1B were launched in February 1987 and February 1990, and completed operations in November 1995 and April 1996, respectively.",
+    "temporalCoverage": "from 1987 to 1995",
+    "spatialCoverage": "Korean Peninsula"
+  },
+  "MOS-1B": {
+    "mission": "MOS-1B",
+    "sensorType": "RADAR",
+    "description": "The MOS (Marine Observation Satellite) Constellation, made up of MOS-1 and 1B, were Japan’s first marine observation satellites, owned and operated by the National Space Development Agency of Japan (NASDA), now JAXA (Japan Aerospace Exploration Agency). MOS-1 and 1B were launched in February 1987 and February 1990, and completed operations in November 1995 and April 1996, respectively.",
+    "temporalCoverage": "from 1990 to 1996",
+    "spatialCoverage": "Korean Peninsula"
   },
   "Metop": {
     "mission": "Metop",
