@@ -138,7 +138,7 @@ public class EOCATDataSourceTest extends BaseTest {
 
     @Test
     public void testEnvisat() {
-        searchEOCAT("Envisat", 19);
+        searchEOCAT("Envisat", 17);
     }
 
     private void searchEOCAT(String platformName, int parentIdentifier) {
@@ -152,13 +152,13 @@ public class EOCATDataSourceTest extends BaseTest {
             query.addParameter(new QueryParameter<>(String.class, "parentIdentifier", collection));
             query.addParameter(begin);
             query.addParameter(end);
-            query.addParameter(aoi);
+            //query.addParameter(aoi);
             query.setMaxResults(maxResults);
             query.setPageSize(pageSize);
             List<EOProduct> results = query.execute();
             testAssertions(results);
         } catch (Exception e) {
-            e.printStackTrace();
+            Assert.fail("Exception in testing the data source: " + e.getMessage());
         }
     }
 

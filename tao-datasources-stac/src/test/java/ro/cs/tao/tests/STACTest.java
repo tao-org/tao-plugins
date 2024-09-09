@@ -151,7 +151,7 @@ public class STACTest extends BaseTest {
                 System.out.println("QUICKLOOK=" + r.getQuicklookLocation());
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            Assert.fail("Exception in testing the data source: " + e.getMessage());
         }
     }
 
