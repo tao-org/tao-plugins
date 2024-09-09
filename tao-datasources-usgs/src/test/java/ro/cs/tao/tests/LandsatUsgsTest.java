@@ -160,7 +160,7 @@ public class LandsatUsgsTest extends BaseTest {
             List<EOProduct> results = query.execute();
             testAssertions(results);
         } catch (Exception e) {
-            e.printStackTrace();
+            Assert.fail("Exception in testing the data source: " + e.getMessage());
         }
     }
 
@@ -178,7 +178,7 @@ public class LandsatUsgsTest extends BaseTest {
             List<EOProduct> results = query.execute();
             testAssertions(results);
         } catch (Exception e) {
-            e.printStackTrace();
+            Assert.fail("Exception in testing the data source: " + e.getMessage());
         }
     }
 
@@ -197,7 +197,7 @@ public class LandsatUsgsTest extends BaseTest {
             List<EOProduct> results = query.execute();
             testAssertions(results);
         } catch (Exception e) {
-            e.printStackTrace();
+            Assert.fail("Exception in testing the data source: " + e.getMessage());
         }
     }
 
