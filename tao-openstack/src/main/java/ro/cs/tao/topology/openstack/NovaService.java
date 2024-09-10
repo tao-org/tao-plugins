@@ -223,6 +223,12 @@ public class NovaService implements NodeProvider {
                         logger.warning("Volume " + hddVolumeName + " was not mounted");
                     }
                 }
+                if (disableSELinux(server.getName(), node.getUserName(),
+                                   useKey ? node.getSshKey() : node.getUserPass(), useKey)) {
+                    logger.fine("SELinux disabled");
+                } else {
+                    logger.warning("SELinux was not disabled");
+                }
             }
             final NodeDescription newNode = convert(node, server, node.getVolatile());
             newNode.setUserPass(node.getUserPass());
@@ -599,6 +605,24 @@ public class NovaService implements NodeProvider {
         args.add("DEVICE=\"" + deviceName + "\" && umount $DEVICE 2> /dev/null && echo -e \"o\\nn\\np\\n1\\n\\n\\nw\" | fdisk $DEFICE && " +
                          "partprobe $DEVICE && mkfs.ext4 ${DEVICE}1 && mkdir -p /mnt/wrk && mount ${DEVICE}1 /mnt/" + name + " && " +
                          "echo \"${DEVICE}1 /mnt/" + name + " ext4 defaults 0 0\" >> /etc/fstab");
+        final SSHExecutor executor = new SSHExecutor(hostName, args, true, SSHMode.EXEC);
+        executor.setUser(user);
+        if (useKey) {
+            executor.setCertificate(credential);
+        } else {
+            executor.setPassword(credential);
+        }
+        try {
+            return executor.execute(true) == 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean disableSELinux(String hostName, String user, String credential, boolean useKey) {
+        final List<String> args = new ArrayList<>();
+        args.add("setenforce");
+        args.add("0");
         final SSHExecutor executor = new SSHExecutor(hostName, args, true, SSHMode.EXEC);
         executor.setUser(user);
         if (useKey) {
