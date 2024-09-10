@@ -1,21 +1,4 @@
-package ro.cs.tao.tests;/*
- *
- *  * Copyright (C) 2018 CS ROMANIA
- *  *
- *  * This program is free software; you can redistribute it and/or modify it
- *  * under the terms of the GNU General Public License as published by the Free
- *  * Software Foundation; either version 3 of the License, or (at your option)
- *  * any later version.
- *  * This program is distributed in the hope that it will be useful, but WITHOUT
- *  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- *  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- *  * more details.
- *  *
- *  * You should have received a copy of the GNU General Public License along
- *  * with this program; if not, see http://www.gnu.org/licenses/
- *  *
- *
- */
+package ro.cs.tao.tests;
 
 /*
  *
@@ -156,7 +139,7 @@ public class DASTest extends BaseTest {
 
     @Test
     public void testSentinel1OrbitFiles() {
-        testSentinel1("AUX_POEORB");
+        testSentinel1Orbit("AUX_POEORB");
     }
 
     @Test
@@ -211,6 +194,22 @@ public class DASTest extends BaseTest {
                     System.out.println("Product not downloaded");
                 }
             }*/
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void testSentinel1Orbit(String productType) {
+        try {
+            DataSource<?, ?> dataSource = new DASDataSource();
+            dataSource.setCredentials(user, password);
+            DataQuery query = dataSource.createQuery("Sentinel1-orbit-files");
+            query.addParameter(begin);
+            query.addParameter(end);
+            query.addParameter(CommonParameterNames.PRODUCT_TYPE, productType);
+            query.setMaxResults(maxResults);
+            List<EOProduct> results = query.execute();
+            testAssertions(results);
         } catch (Exception e) {
             e.printStackTrace();
         }

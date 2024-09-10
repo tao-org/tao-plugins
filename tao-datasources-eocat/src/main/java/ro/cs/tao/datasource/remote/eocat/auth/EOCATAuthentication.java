@@ -47,8 +47,8 @@ public class EOCATAuthentication {
 
     private static String[] getSAMLData(String samlLoginResponse) {
         if (samlLoginResponse.contains("name='SAMLResponse'")) {
-            final String samlLoginAddress = samlLoginResponse.replaceAll("[\\s\\S]*?method='post' action='(.*?)'[\\s\\S]*", "$1");
-            final String samlResponse = samlLoginResponse.replaceAll("[\\s\\S]*?name='SAMLResponse' value='(.*?)'[\\s\\S]*", "$1");
+            final String samlLoginAddress = samlLoginResponse.replaceAll("[\\s\\S]*?method=.post. action=\"(.*?)\"[\\s\\S]*", "$1");
+            final String samlResponse = samlLoginResponse.replaceAll("[\\s\\S]*?name=.SAMLResponse. value='(.*?)'[\\s\\S]*", "$1");
             if (!samlLoginAddress.isEmpty() && !samlResponse.isEmpty()) {
                 return new String[]{samlLoginAddress, samlResponse};
             }
@@ -85,7 +85,7 @@ public class EOCATAuthentication {
             throw new QueryException("The request was not successful. Reason: response code: 502: response message: BAD GATEWAY");
         }
         if (loginRequestResponseBody.contains("name=\"sessionDataKey\"")) {
-            return loginRequestResponseBody.replaceAll("[\\s\\S]*?name=\"sessionDataKey\" value='(.*?)'[\\s\\S]*", "$1");
+            return loginRequestResponseBody.replaceAll("[\\s\\S]*?name=.sessionDataKey[\\s\\S]*?value=.(.*?)\\W\\W[\\s\\S]*", "$1");
         } else {
             return "";
         }
@@ -112,6 +112,9 @@ public class EOCATAuthentication {
             return this.cookieToken;
         }
         int responseStatus;
+        if (protectedURL == null) {
+            return "";
+        }
         try (CloseableHttpResponse downloadRequestResponse = NetUtils.openConnection(HttpMethod.GET, protectedURL, this.credentials)) {
             responseStatus = downloadRequestResponse.getStatusLine().getStatusCode();
             if (responseStatus == HttpStatus.SC_FORBIDDEN) {
