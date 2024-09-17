@@ -97,6 +97,7 @@ public class FedEODataQuery extends DataQuery {
         queryParams.add(new BasicNameValuePair("maximumRecords", String.valueOf("" + nrRecordsOnPage)));
         int startRecord = Math.max(1, (this.pageNumber - 1) * nrRecordsOnPage + 1);
         queryParams.add(new BasicNameValuePair("recordSchema", "om"));
+        queryParams.add(new BasicNameValuePair("httpAccept", "application/atom+xml"));
         queryParams.add(new BasicNameValuePair("startRecord", String.valueOf("" + startRecord)));
         do {
             queryParams.remove(queryParams.size() - 1);
@@ -159,6 +160,7 @@ public class FedEODataQuery extends DataQuery {
         List<NameValuePair> queryParams = new ArrayList<>(params);
         queryParams.add(new BasicNameValuePair("maximumRecords", "1"));
         queryParams.add(new BasicNameValuePair("recordSchema", "om"));
+        queryParams.add(new BasicNameValuePair("httpAccept", "application/atom+xml"));
         queryParams.add(new BasicNameValuePair("startRecord", "1"));
         String queryUrl = this.source.getConnectionString() + "request?" + URLEncodedUtils.format(queryParams, "UTF-8").replace("+", "%20");
         try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, null)) {
