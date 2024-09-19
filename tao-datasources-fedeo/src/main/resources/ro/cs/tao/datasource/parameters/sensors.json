@@ -64,14 +64,14 @@
   },
   "CBERS-4": {
     "mission": "CBERS-4",
-    "sensorType": "Optical",
+    "sensorType": "OPTICAL",
     "description": "Earth Observation Data Cube generated from CBERS-4/WFI and CBERS-4A/WFI Level-4 SR products over Brazil extension. This dataset is provided in Cloud Optimized GeoTIFF (COG) file format. The dataset is processed with 64 meters of spatial resolution, reprojected and cropped to BDC_LG grid Version 2 (BDC_LG V2), considering a temporal compositing function of 8 days using the Least Cloud Cover First (LCF) best pixel approach.",
     "temporalCoverage": "from 2015 to present",
     "spatialCoverage": "Global"
   },
   "CBERS-4A": {
     "mission": "CBERS-4A",
-    "sensorType": "Optical",
+    "sensorType": "OPTICAL",
     "description": "CBERS-4A/WFI image mosaic of Brazil Paraíba State with 55m of spatial resolution. The mosaic was prepared in order to demonstrate the technological capabilities of the Brazil Data Cube project tools. The false color composition is based on the WFI bands 16, 15 and 14 assigned to RGB channels. The temporal composition encompasses 03-months of images, starting in July 2020 and ending in September 2020, with a best pixel selection approach called Least Cloud Cover First (LCF). More information on LCF can be found at Brazil Data Cube web site (https://brazil-data-cube.github.io/specifications/processing-flow.html#temporal-compositing). This Image Mosaic used more than 50 CBERS-4A scenes and was generated based on an existing CBERS-4A/WFI image collection.",
     "temporalCoverage": "from 2020 to present",
     "spatialCoverage": "Global"
