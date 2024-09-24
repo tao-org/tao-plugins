@@ -359,7 +359,9 @@ public class KeycloakClient implements TokenProvider {
             if (list != null && list.size() == 1) {
                 final UserRepresentation profile = list.get(0);
                 final Map<String, List<String>> attributes = profile.getAttributes();
-                List<String> plans = attributes.getOrDefault(KeycloakClient.USER_PLAN_ATTRIBUTE, new ArrayList<>());
+                List<String> plans = attributes != null
+                                     ? attributes.getOrDefault(KeycloakClient.USER_PLAN_ATTRIBUTE, new ArrayList<>())
+                                     : new ArrayList<>();
                 return plans.isEmpty() ? null : plans.get(0);
             } else {
                 return null;
