@@ -187,6 +187,8 @@ public class KeycloakClient implements TokenProvider {
                 logger.severe(t.getMessage());
                 throw t;
             }
+        } else {
+            user.setPassword(password);
         }
         return user;
     }
