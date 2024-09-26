@@ -45,7 +45,7 @@ public class STACFetchStrategy extends DownloadStrategy<STACClient> {
         final Set<String> files = product.getFiles();
         if (files != null && !files.isEmpty()) {
             target = Paths.get(this.destination).resolve(product.getName());
-            Files.createDirectories(target);
+            FileUtilities.createDirectories(target);
             STACClient client = this.dataSource.authenticate();;
             client.setProgressListener(this.progressListener);
             long size = 0;
