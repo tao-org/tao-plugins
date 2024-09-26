@@ -158,7 +158,7 @@ public class STACClient {
         final Map<String, Asset> assets = item.getAssets();
         if (assets != null && !assets.isEmpty()) {
             final Path target = folder.resolve(item.getId());
-            Files.createDirectories(target);
+            FileUtilities.createDirectories(target);
             try {
                 if (this.progressListener != null) {
                     this.progressListener.started(folder.getFileName().toString());

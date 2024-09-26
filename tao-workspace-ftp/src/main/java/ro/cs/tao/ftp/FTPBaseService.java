@@ -81,7 +81,7 @@ public abstract class FTPBaseService extends BaseStorageService<byte[], InputStr
     public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
         initializeFileSystem();
         // create the parent directories.
-        Files.createDirectories(getPath(repository().resolve(relativeFolder)).getParent());
+        FileUtilities.createDirectories(getPath(repository().resolve(relativeFolder)).getParent());
         Files.copy(stream, getPath(repository().resolve(relativeFolder)));
     }
 
