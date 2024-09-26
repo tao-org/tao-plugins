@@ -6951,12 +6951,23 @@
       {
         "id": "indices",
         "type": "REGULAR",
-        "dataType": "string",
-        "defaultValue": "NDVI",
+        "dataType": "string[]",
+        "defaultValue": null,
         "description": "The list of indices to be created. Usage examples: Create (predefined) NDVI: <code>NDVI</code> Create stack of NDVI and EVI: <code>NDVI, EVI</code> Create custom index: <code>MyNDVI = (N - R) / (N + R)</code> See the full list of predefined Awesome Spectral Indices.",
         "label": "indices",
         "notNull": true,
-        "valueSet": []
+        "valueSet": [
+          "AFRI1600","AFRI2100","ARI","ARI2","ARVI","ATSAVI","AVI","BCC","BNDVI","BWDRVI","CCI","CIG","CIRE","CVI","DSI","DSWI1","DSWI2","DSWI3","DSWI4","DSWI5","DVI","DVIplus","EBI","EVI","EVI2","ExG","ExGR","ExR","FCVI","GARI","GBNDVI","GCC","GDVI","GEMI","GLI","GM1","GM2","GNDVI","GOSAVI","GRNDVI","GRVI","GSAVI","GVMI","IAVI","IKAW","IPVI","IRECI","MCARI","MCARI1","MCARI2","MCARI705","MCARIOSAVI","MCARIOSAVI705","MGRVI","MNDVI","MNLI","MRBVI","MSAVI","MSI","MSR","MSR705","MTCI","MTVI1","MTVI2","ND705","NDDI","NDGI","NDII","NDMI","NDPI","NDREI","NDVI","NDVI705","NDYI","NGRDI","NIRv","NIRvH2","NIRvP","NLI","NMDI","NRFIg","NRFIr","NormG","NormNIR","NormR","OCVI","OSAVI","PSRI","RCC","RDVI","REDSI","RENDVI","RGBVI","RGRI","RI","RVI","S2REP","SARVI","SAVI","SAVI2","SEVI","SI","SIPI","SLAVI","SR","SR2","SR3","SR555","SR705","SeLI","TCARI","TCARIOSAVI","TCARIOSAVI705","TCI","TDVI","TGI","TRRVI","TSAVI","TTVI","TVI","TriVI","VARI","VARI700","VI700","VIG","WDRVI","WDVI","mND705","mSR705",
+          "BAI","BAIM","BAIS2","CSI","CSIT","MIRBI","NBR","NBR2","NBRSWIR","NBRT1","NBRT2","NBRT3","NBRplus","NDSWIR","NDVIT","NSTv1","NSTv2","SAVIT","VI6T",
+          "ANDWI","AWEInsh","AWEIsh","LSWI","MBWI","MLSWI26","MLSWI27","MNDWI","MuWIR","NDCI","NDPonI","NDTI","NDVIMNDWI","NDWI","NDWIns","NWI","S2WI","SWM","TWI","WI1","WI2","WI2015","WRI",
+          "BI","BITM","BIXS","BaI","DBSI","EMBI","MBI","NBLI","NBLIOLI","NDBaI","NDSIWV","NDSoiI","NSDS","NSDSI1","NSDSI2","NSDSI3","RI4XS",
+          "BLFEI","BRBA","DBI","EBBI","IBI","NBAI","NBUI","NDBI","NDISIb","NDISIg","NDISImndwi","NDISIndwi","NDISIr","NHFD","PISI","UI","VIBI","VgNIRBI","VrNIRBI"
+        ],
+        "expansionRule": {
+          "id": "indices",
+          "joinValues": true,
+          "separator": ", "
+        }
       },
       {
         "id": "scale",
