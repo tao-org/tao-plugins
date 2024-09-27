@@ -3,9 +3,9 @@ package ro.cs.tao.datasource.usgs.json.requests;
 /**
  * Login request bean for USGS API 1.5
  */
-public class LoginRequest extends BaseRequest{
+public class LoginTokenRequest extends BaseRequest{
     private String username;
-    private String password;
+    private String token;
 
     public String getUsername() {
         return username;
@@ -15,12 +15,12 @@ public class LoginRequest extends BaseRequest{
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getToken() {
+        return token;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }
