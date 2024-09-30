@@ -28,15 +28,18 @@ public class EOExtension<E extends Extensible> extends Extension<E> {
 
     @Override
     public void extractField(TreeNode node, String name) throws JsonProcessingException {
-        if (EoFields.BANDS.equals(name)) {
-            TreeNode arrNode = node.get(name);
-            if (arrNode != null) {
-                for (int i = 0; i < arrNode.size(); i++) {
-                    addBand(new STACParser().parseBand(arrNode.get(i).toString()));
+        switch (name) {
+            case EoFields.BANDS:
+                TreeNode arrNode = node.get(name);
+                if (arrNode != null) {
+                    for (int i = 0; i < arrNode.size(); i++) {
+                        addBand(new STACParser().parseBand(arrNode.get(i).toString()));
+                    }
                 }
-            }
-        } else if (EoFields.CLOUD_COVER.equals(name)) {
-            setCloud_cover(Double.parseDouble(node.get(name).toString()));
+                break;
+            case EoFields.CLOUD_COVER:
+                setCloud_cover(Double.parseDouble(node.get(name).toString()));
+                break;
         }
     }
 

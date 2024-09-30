@@ -22,12 +22,16 @@ public class ProductExtension<E extends Extensible> extends Extension<E> {
     @Override
     public void extractField(TreeNode node, String name) throws JsonProcessingException {
         try {
-            if (ProductFields.TYPE.equals(name)) {
-                setType(JsonValueHelper.getString(node, name));
-            } else if (ProductFields.TIMELINESS.equals(name)) {
-                setTimeliness(JsonValueHelper.getString(node, name));
-            } else if (ProductFields.TIMELINESS_CATEGORY.equals(name)) {
-                setTimelinessCategory(JsonValueHelper.getString(node, name));
+            switch (name) {
+                case ProductFields.TYPE:
+                    setType(JsonValueHelper.getString(node, name));
+                    break;
+                case ProductFields.TIMELINESS:
+                    setTimeliness(JsonValueHelper.getString(node, name));
+                    break;
+                case ProductFields.TIMELINESS_CATEGORY:
+                    setTimelinessCategory(JsonValueHelper.getString(node, name));
+                    break;
             }
         } catch (Exception e) {
             Logger.getLogger(ProductExtension.class.getName()).warning("Cannot extract field " + name + ": " + e.getMessage());
