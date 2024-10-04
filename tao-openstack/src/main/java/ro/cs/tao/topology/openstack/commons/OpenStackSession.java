@@ -48,8 +48,13 @@ public class OpenStackSession {
     private static Boolean usesImagesV2;
     //private static final OpenStackSession session = new OpenStackSession();
     private Token instanceToken;
+    private String tenantId;
 
     private OpenStackSession() {
+    }
+
+    public String getTenantId() {
+        return tenantId;
     }
 
     public ComputeService computeService() {
@@ -128,7 +133,7 @@ public class OpenStackSession {
             if (authUrl == null || authUrl.isEmpty()) {
                 throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_AUTH_URL));
             }
-            final String tenantId = cfgProvider.getValue(Constants.OPENSTACK_TENANT_ID, null);
+            this.tenantId = cfgProvider.getValue(Constants.OPENSTACK_TENANT_ID, null);
             if (tenantId == null || tenantId.isEmpty()) {
                 throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_TENANT_ID));
             }
