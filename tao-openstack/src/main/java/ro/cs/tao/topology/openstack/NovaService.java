@@ -4,6 +4,7 @@ import org.openstack4j.api.Builders;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.api.compute.ComputeFloatingIPService;
 import org.openstack4j.api.compute.ComputeService;
+import org.openstack4j.api.compute.QuotaSetService;
 import org.openstack4j.api.compute.ServerService;
 import org.openstack4j.api.storage.BlockVolumeService;
 import org.openstack4j.model.common.ActionResponse;
@@ -19,6 +20,7 @@ import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.topology.*;
 import ro.cs.tao.topology.openstack.commons.Constants;
 import ro.cs.tao.topology.openstack.commons.OpenStackSession;
+import ro.cs.tao.topology.openstack.commons.PlatformUsage;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.utils.executors.MemoryUnit;
 import ro.cs.tao.utils.executors.SSHExecutor;
@@ -102,6 +104,17 @@ public class NovaService implements NodeProvider {
         return remoteNodes;
     }
 
+    public PlatformUsage getPlatformQuota() {
+        checkAuthenticate();
+        final QuotaSetService quotaSets = session.computeService().quotaSets();
+        final ComputeQuotaDetail detail = quotaSets.getDetail(session.getTenantId());
+        return new PlatformUsage(detail.getCores().getLimit(),
+                                 detail.getCores().getInUse(),
+                                 detail.getRam().getLimit(),
+                                 detail.getRam().getInUse(),
+                                 -1, -1);
+    }
+
     @Override
     public NodeDescription getNode(String nodeName) throws TopologyException {
         authenticate();
@@ -146,6 +159,16 @@ public class NovaService implements NodeProvider {
                 if (flavour == null) {
                     flavour = defaultFlavour;
                 }
+                // check to see if there are enough resources available
+                final PlatformUsage platformQuota = getPlatformQuota();
+                final int availableCPUs = platformQuota.getMaxCpus() - platformQuota.getUsedCpus();
+                final int availableMemory = platformQuota.getMaxMemory() - platformQuota.getUsedMemory();
+                final int requestedCPUs = flavour.getVcpus();
+                final int requestedMemory = flavour.getRam();
+                if (requestedCPUs > availableCPUs || requestedMemory > availableMemory) {
+                    throw new TopologyException(String.format("Not enough platform resources to create the requested machine [requested: %d CPUs, %d MB memory; available: %d CPUs, %d MB memory]",
+                                                              requestedCPUs, requestedMemory, availableCPUs, availableMemory));
+                }
                 if (imageId == null) {
                     image = session.imageService().list().stream().filter(i -> i.getName().equals("CentOS 7")).findFirst().orElse(null);
                     if (image != null) {
@@ -157,7 +180,7 @@ public class NovaService implements NodeProvider {
                     if (image == null) {
                         throw new TopologyException("Base image not found");
                     }
-                    if (flavour != null && image.getMinRam() != null && flavour.getRam() < image.getMinRam()) {
+                    if (flavour != null && image.getMinRam() != null && requestedMemory < image.getMinRam()) {
                         throw new TopologyException("Flavor has less RAM than required by the OS image");
                     }
                 }
