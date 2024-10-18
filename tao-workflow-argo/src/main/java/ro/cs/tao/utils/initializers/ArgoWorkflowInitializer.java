@@ -1,9 +1,7 @@
 package ro.cs.tao.utils.initializers;
 
-import io.fabric8.kubernetes.api.model.EmptyDirVolumeSource;
 import io.fabric8.kubernetes.api.model.HostPathVolumeSource;
 import io.fabric8.kubernetes.api.model.Volume;
-import io.fabric8.kubernetes.api.model.VolumeMount;
 import ro.cs.tao.argo.workflow.model.*;
 import ro.cs.tao.utils.executors.ExecutionUnit;
 
@@ -13,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import static ro.cs.tao.utils.constants.ArgoConstants.*;
-import static ro.cs.tao.utils.constants.ArgoConstants.ENTRYPOINT;
 
 public class ArgoWorkflowInitializer {
 

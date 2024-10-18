@@ -115,7 +115,7 @@ public class ArgoExecutor extends Executor<Object>
         TaoComponent nodeComponent = TaskUtilities.getComponentFor(node);
         for (SourceDescriptor source : nodeComponent.getSources()) {
             if (DataSourceComponent.QUERY_PARAMETER.equals(source.getName())) {
-                String inputId = nodeComponent.getTargets().get(0).getName() + CONNECTOR_STRING + node.getId();
+                String inputId = nodeComponent.getTargets().getFirst().getName() + CONNECTOR_STRING + node.getId();
                 String artifactName = MAIN_WF_INPUT_PREFIX + inputId;
                 computeSpecArtifacts(source, artifactName);
             }
@@ -173,7 +173,7 @@ public class ArgoExecutor extends Executor<Object>
         if(node.getComponentType().equals(ComponentType.DATASOURCE))
             return;
         List<WorkflowTemplate> templates = argoWorkflow.getSpec().getTemplates();
-        List<DAGTask> dagTasks = templates.get(0).getDAG().getTasks();
+        List<DAGTask> dagTasks = templates.getFirst().getDAG().getTasks();
         DAGTask dagTask = createNewDAGTask(node);
         dagTasks.add(dagTask);
         WorkflowTemplate workflowTemplate = createNewWorkflowTemplate(node);
@@ -221,7 +221,7 @@ public class ArgoExecutor extends Executor<Object>
         List<WorkflowNodeDescriptor> dataSourceRootNodes =
                 roots.stream()
                         .filter(r -> r.getComponentType().equals(ComponentType.DATASOURCE))
-                        .collect(Collectors.toList());
+                        .toList();
         nodesExceptDataSources.removeAll(dataSourceRootNodes);
         return nodesExceptDataSources;
     }
@@ -281,10 +281,9 @@ public class ArgoExecutor extends Executor<Object>
         long taskId = (Long) executionUnit.getMetadata().get("id");
         ExecutionTask task = this.taskProvider.get(taskId);
         TaoComponent component = TaskUtilities.getComponentFor(task);
-        if (!(component instanceof ProcessingComponent)) {
+        if (!(component instanceof ProcessingComponent nodeComponent)) {
             throw new RuntimeException("Tao component " + component + " is not a processing component");
         }
-        ProcessingComponent nodeComponent = (ProcessingComponent) component;
         List<EnvVar> envVars = new ArrayList<>();
         for(Variable envVarComponent : nodeComponent.getVariables()){
             EnvVar envVar = new EnvVar();
@@ -321,12 +320,10 @@ public class ArgoExecutor extends Executor<Object>
 
     private List<String> getAllArgumentsForContainer(List<String> bashArguments) {
         List<String> mainArguments = new ArrayList<>();
-        mainArguments.add(bashArguments.stream()
-                .collect(Collectors.joining(" ")));
-        List<String> returnArguments =  mainArguments.stream()
+        mainArguments.add(String.join(" ", bashArguments));
+        return mainArguments.stream()
                 .map(s -> s.replaceAll("\"", ""))
                 .collect(Collectors.toList());
-        return returnArguments;
     }
 
     private List<String> getCommandsForContainer(List<String> bashArguments) {
@@ -350,7 +347,7 @@ public class ArgoExecutor extends Executor<Object>
 
     private boolean isBash(){
         final List<String> args = this.executionUnit.getArguments();
-        return args.size() > 0 && args.get(0).equals("/bin/bash");
+        return !args.isEmpty() && args.getFirst().equals("/bin/bash");
     }
 
     private String getImageForContainer() {
