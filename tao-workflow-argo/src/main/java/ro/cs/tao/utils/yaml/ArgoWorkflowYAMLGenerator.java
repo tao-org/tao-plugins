@@ -28,7 +28,6 @@ public class ArgoWorkflowYAMLGenerator extends YAMLGenerator {
         }
         _verifyValueWrite("write String value");
 
-        // [dataformats-text#50]: Empty String always quoted
         if (text.isEmpty()) {
             _writeScalar(text, "string", DumperOptions.ScalarStyle.DOUBLE_QUOTED);
             return;
