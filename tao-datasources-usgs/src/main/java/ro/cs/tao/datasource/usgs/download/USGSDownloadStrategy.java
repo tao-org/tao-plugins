@@ -8,11 +8,16 @@ import ro.cs.tao.datasource.usgs.USGSDataSource;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.NetUtils;
-import ro.cs.tao.utils.Zipper;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
+import java.io.InterruptedIOException;
+import java.net.ConnectException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
@@ -24,22 +29,22 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Landsat8Strategy extends SimpleArchiveDownloadStrategy {
+public class USGSDownloadStrategy extends SimpleArchiveDownloadStrategy {
     private static final String ZIP_EXTENSION = ".zip";
     private static final String TAR_GZ_EXTENSION = ".tar.gz";
     private static final String KMZ_EXTENSION = ".kmz";
 
-    public Landsat8Strategy(USGSDataSource dataSource, String targetFolder, Properties properties) {
+    public USGSDownloadStrategy(USGSDataSource dataSource, String targetFolder, Properties properties) {
         super(dataSource, targetFolder, properties);
     }
 
-    protected Landsat8Strategy(Landsat8Strategy other) {
+    protected USGSDownloadStrategy(SimpleArchiveDownloadStrategy other) {
         super(other);
     }
 
     @Override
-    public Landsat8Strategy clone() {
-        return new Landsat8Strategy(this);
+    public USGSDownloadStrategy clone() {
+        return new USGSDownloadStrategy(super.clone());
     }
 
     @Override
@@ -61,39 +66,28 @@ public class Landsat8Strategy extends SimpleArchiveDownloadStrategy {
     }
 
     protected HttpURLConnection getConnectionForProduct(EOProduct product) {
-        int numberOfTries = 0;
         int responseStatus;
 
         // First set the default cookie manager.
         CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
         String productDownloadUrl = getProductUrl(product);
-
         HttpURLConnection connection = null;
         try {
-            final String token = ((USGSDataSource) this.dataSource).authenticate();
-            connection = NetUtils.openConnection(productDownloadUrl, token);
+            connection = NetUtils.openConnection(productDownloadUrl, "");
             connection.setInstanceFollowRedirects(true);
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(10000);
             connection.connect();
-            do {
-                responseStatus = connection.getResponseCode();
-                switch (responseStatus) {
-                    case HttpStatus.SC_OK:
-                        connection = NetUtils.openConnection(connection.getURL().toString(), token);
-                        connection.setInstanceFollowRedirects(true);
-                        connection.connect();
-                        return connection;
-                    case HttpStatus.SC_UNAUTHORIZED:
-                        connection = NetUtils.openConnection(connection.getURL().toString(), token);
-                        connection.setInstanceFollowRedirects(true);
-                        connection.connect();
-                        numberOfTries++;
-                        break;
-                    default:
-                        throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
-                                connection.getResponseCode(), connection.getResponseMessage()));
-                }
-
-            } while (numberOfTries < 3);
+            responseStatus = connection.getResponseCode();
+            if (responseStatus == HttpStatus.SC_OK) {
+                connection = NetUtils.openConnection(connection.getURL().toString(), "");
+                connection.setInstanceFollowRedirects(true);
+                connection.connect();
+                return connection;
+            }
+            throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s", connection.getResponseCode(), connection.getResponseMessage()));
+        } catch (InterruptedIOException | ConnectException te){
+            throw new QueryException(String.format("The request was timed out. The download will be ready soon. Try again later. Code:  %d", HttpStatus.SC_ACCEPTED));
         } catch (IOException e) {
             throw new QueryException(String.format("The request was not successful. Reason: %s", e.getMessage()));
         } finally {
@@ -101,16 +95,15 @@ public class Landsat8Strategy extends SimpleArchiveDownloadStrategy {
                 connection.disconnect();
             }
         }
-        throw new QueryException("The request was not successful. Reason: Too many redirects!");
     }
 
     protected Path downloadProduct(EOProduct product, HttpURLConnection connection) throws IOException {
         Path productFile;
         try {
             String productUrl = getProductUrl(product);
-            String extension = getExtensionFromUrl(productUrl).isEmpty() ? TAR_GZ_EXTENSION : getExtensionFromUrl(productUrl);
-            boolean isArchive = !extension.isEmpty() &&
-                    (extension.equalsIgnoreCase(ZIP_EXTENSION) ||
+            String extension = getExtensionFromUrl(productUrl);
+            extension = extension.isEmpty() ? ZIP_EXTENSION : extension;
+            boolean isArchive = (extension.equalsIgnoreCase(ZIP_EXTENSION) ||
                             extension.equalsIgnoreCase(TAR_GZ_EXTENSION) ||
                             extension.equalsIgnoreCase(KMZ_EXTENSION));
             subActivityStart(product.getName());
@@ -165,7 +158,7 @@ public class Landsat8Strategy extends SimpleArchiveDownloadStrategy {
                         public void run() {
                             logger.warning(String.format("Remote host did not send anything for %d seconds, cancelling download",
                                     connTimeout / 1000));
-                            Landsat8Strategy.this.cancel();
+                            USGSDownloadStrategy.this.cancel();
                         }
                     };
                     this.timeoutTimer.schedule(task, connTimeout);
@@ -227,18 +220,5 @@ public class Landsat8Strategy extends SimpleArchiveDownloadStrategy {
         return "";
     }
 
-    protected Path computeTarget(Path archivePath) {
-        return archivePath.getFileName().toString().endsWith(".tar.gz") ?
-                Paths.get(archivePath.toString().replace(".tar.gz", "")) :
-                Paths.get(archivePath.toString().replace(".zip", ""));
-    }
-
-    protected Path extract(Path archivePath, Path targetPath) throws IOException {
-        logger.fine(String.format("Begin decompressing %s into %s", archivePath.getFileName(), targetPath));
-        Path result = archivePath.toString().endsWith(".tar.gz") ?
-                Zipper.decompressTarGz(archivePath, targetPath, true) :
-                Zipper.decompressZip(archivePath, targetPath, true);
-        logger.fine(String.format("Decompression of %s completed", archivePath.getFileName()));
-        return result;
-    }
 }
+

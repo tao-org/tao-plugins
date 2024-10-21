@@ -157,6 +157,7 @@ public class USGSQuery extends DataQuery {
                     // It may happen to have two entries for the same entityId, one available and one not.
                     // Then, in order to properly populate the 'notAvailable' set, we need to sort the list by
                     // entityId and then by 'available' (if y/n, n comes before y, if true/false, false comes before true)
+                    downloadInfos.sort(Comparator.comparing(DownloadInfo::getEntityId).thenComparing(i -> i.getDownloadSystem().toLowerCase().contains("dds")));
                     downloadInfos.sort(Comparator.comparing(DownloadInfo::getEntityId).thenComparing(DownloadInfo::getAvailable));
                     for (DownloadInfo info : downloadInfos) {
                         if (!("y".equalsIgnoreCase(info.getAvailable()) || "true".equalsIgnoreCase(info.getAvailable()))) {
@@ -189,44 +190,27 @@ public class USGSQuery extends DataQuery {
                     }})
                     .collect(Collectors.toList()));
             String url = buildPostRequestURL("download-request");
-            int preparingDownloads = downloadInfos.size();
             List<AvailableDownload> downloads = null;
-            // Loop until all download requests moved to download queue from staging
-            while (preparingDownloads > 0) {
-                try (CloseableHttpResponse lastOne =
-                             NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, downloadRequest.toString())) {
-                    switch (lastOne.getStatusLine().getStatusCode()) {
-                        case 200:
-                            String body = EntityUtils.toString(lastOne.getEntity());
-                            JsonResponseParser<DownloadResponse> parser = new JsonResponseParser<>(new DownloadResponseHandler());
-                            DownloadResponse resp = parser.parseValue(body);
-                            if (resp != null) {
-                                if (resp.getData().getPreparingDownloads() != null) {
-                                    preparingDownloads = resp.getData().getPreparingDownloads().size();
-                                } else {
-                                    preparingDownloads = 0;
-                                }
-                                downloads = resp.getData().getAvailableDownloads();
-                            } else {
-                                preparingDownloads = 0;
-                            }
-                            break;
-                        case 401:
-                            throw new QueryException("The supplied credentials are invalid!");
-                        default:
-                            throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                                                   lastOne.getStatusLine().getReasonPhrase()));
-                    }
-                } catch (Exception ex) {
-                    throw new QueryException(ex);
+            try (CloseableHttpResponse lastOne =
+                         NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, downloadRequest.toString())) {
+                switch (lastOne.getStatusLine().getStatusCode()) {
+                    case 200:
+                        String body = EntityUtils.toString(lastOne.getEntity());
+                        JsonResponseParser<DownloadResponse> parser = new JsonResponseParser<>(new DownloadResponseHandler());
+                        DownloadResponse resp = parser.parseValue(body);
+                        if (resp != null) {
+                            downloads = resp.getData().getAvailableDownloads();
+                            downloads.addAll(resp.getData().getPreparingDownloads());
+                        }
+                        break;
+                    case 401:
+                        throw new QueryException("The supplied credentials are invalid!");
+                    default:
+                        throw new QueryException(String.format("The request was not successful. Reason: %s",
+                                lastOne.getStatusLine().getReasonPhrase()));
                 }
-                if (preparingDownloads > 0) {
-                    logger.fine("Some downloads are staging. Retrying after 10 seconds.");
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException ignored) {
-                    }
-                }
+            } catch (Exception ex) {
+                throw new QueryException(ex);
             }
             if (downloads != null) {
                 if (products.size() != downloads.size()) {
@@ -280,42 +264,6 @@ public class USGSQuery extends DataQuery {
                         request.withLowerLeft(bounds.getMinX(), bounds.getMinY())
                                .withUpperRight(bounds.getMaxX(), bounds.getMaxY());
                         break;
-                    case CommonParameterNames.PRODUCT_TYPE:
-                    case CommonParameterNames.PRODUCT:
-                    case "productIdentifierL1":
-                    case "productIdentifierL2":
-                    case "tileIdentifierBA":
-                    case "tileIdentifierDSWE":
-                    case "tileIdentifierFSCA":
-                    case "tileIdentifierARD":
-                    case "sceneIdentifier":
-                    case "sceneIdentifierLegacy":
-                    case "sensorIdentifier":
-                    case "dayNightIndicator":
-                    case "nadirMode":
-                    case "sunElevationL0ra":
-                    case "sunElevationL1":
-                    case "collectionCategory":
-                    case "imageQuality":
-                    case "snowIce":
-                    case "fillMode":
-                    case "slcMode":
-                    case "dataAnomalyMode":
-                    case "row":
-                    case "path":
-                    case "wrsType":
-                    case "spacecraftSource":
-                    case "processLevel":
-                    case "horizontalTile":
-                    case "verticalTile":
-                        if (fieldIds.containsKey(remoteName)) {
-                            filter = new SearchFilterValue();
-                            filter.setFilterId(fieldIds.get(remoteName));
-                            filter.setOperand("=");
-                            filter.setValue(parameter.getValueAsString());
-                            request.withFilter(filter);
-                        }
-                        break;
                     case "minClouds":
                         request.withMinClouds(parameter.getValueAsInt());
                         break;
@@ -339,6 +287,14 @@ public class USGSQuery extends DataQuery {
                             request.withFilter(filter);
                         }
                         break;
+                    default:
+                        if (fieldIds.containsKey(remoteName)) {
+                            filter = new SearchFilterValue();
+                            filter.setFilterId(fieldIds.get(remoteName));
+                            filter.setOperand("=");
+                            filter.setValue(parameter.getValueAsString());
+                            request.withFilter(filter);
+                        }
                 }
             } catch (ConversionException e) {
                 logger.severe("Build query ERROR: " + e.getMessage());
@@ -388,7 +344,7 @@ public class USGSQuery extends DataQuery {
                     if (body.contains("SERVER_ERROR")) {
                         throw new QueryException("The request was not successful. Reason: API Server Error");
                     }
-                    final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(this.coverageFilter),
+                    final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(this.sensorName ,this.source.getSensorTypes().get(this.sensorName).getSensorType(), this.coverageFilter),
                             "totalHits");
                     final List<EOProduct> parsedProducts = parser.parse(body);
                     if (parsedProducts != null) {
@@ -409,7 +365,8 @@ public class USGSQuery extends DataQuery {
         if (currentSize > 0 && this.limit > 0 && currentSize > this.limit) {
             products.subList(this.limit, currentSize).clear();
         }
-        if (!products.isEmpty()) {
+        boolean counting = pageSize < 2;
+        if (!products.isEmpty() && !counting) {
             final List<DownloadInfo> downloadInfos = getDownloadInfos(products);
             if (downloadInfos != null && !downloadInfos.isEmpty()) {
                 fillDownloadUrls(products, downloadInfos);
