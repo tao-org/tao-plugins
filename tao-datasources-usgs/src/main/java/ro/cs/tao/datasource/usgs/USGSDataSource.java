@@ -24,7 +24,7 @@ import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.datasource.usgs.json.handlers.LoginResponseHandler;
 import ro.cs.tao.datasource.usgs.json.requests.LoginTokenRequest;
 import ro.cs.tao.datasource.usgs.json.responses.LoginResponse;
-import ro.cs.tao.datasource.usgs.parameters.LandsatParameterProvider;
+import ro.cs.tao.datasource.usgs.parameters.USGSParameterProvider;
 import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
@@ -53,7 +53,7 @@ public class USGSDataSource extends URLDataSource<USGSQuery, String> {
 
     public USGSDataSource() throws URISyntaxException {
         super(URL);
-        setParameterProvider(new LandsatParameterProvider(this));
+        setParameterProvider(new USGSParameterProvider(this));
         this.properties = USGSDataSource.props;
     }
 
