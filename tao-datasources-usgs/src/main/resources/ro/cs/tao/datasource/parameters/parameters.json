@@ -802,7 +802,7 @@
       "dependencies": null
     }
   },
-  "CCDC V1.0": {
+  "CCDC V1_0": {
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -895,7 +895,7 @@
       "dependencies": null
     }
   },
-  "CCDC V1.1-3": {
+  "CCDC V1_1-3": {
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -1076,7 +1076,7 @@
       "dependencies": null
     }
   },
-  "Declass (1996)": {
+  "Declass_1996": {
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -1245,7 +1245,7 @@
       "dependencies": null
     }
   },
-  "Declass (2002) (2013)": {
+  "Declass_2002_2013": {
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -1422,7 +1422,7 @@
       "dependencies": null
     }
   },
-  "DLG 1:100k": {
+  "DLG 1-100k": {
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -2276,7 +2276,7 @@
       "dependencies": null
     }
   },
-  "ETM+ (1999-2003)": {
+  "ETMPlus_1999-2003": {
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -2811,7 +2811,7 @@
       "dependencies": null
     }
   },
-  "GLS LIMA (Antarctica)": {
+  "GLS LIMA Antarctica": {
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
@@ -8614,7 +8614,7 @@
       "dependencies": null
     }
   },
-  "U.S. Forest Maps": {
+  "US Forest Maps": {
     "platformName": {
       "name": "platformName",
       "remoteName": "datasetName",
