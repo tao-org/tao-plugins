@@ -39,16 +39,16 @@
     "spatialCoverage": "Global",
     "tokenNeeded": false
   },
-  "CCDC V1.0": {
-    "mission": "CCDC V1.0",
+  "CCDC V1_0": {
+    "mission": "CCDC V1_0",
     "sensorType": "OPTICAL",
     "description": "CCDC products are annual products, regenerated annually. CCDC data sets include a “Version” label, where the next Version exists alongside the previous version, then the previous version is may be retired at a future date, much like MODIS Versions and Landsat Collections. (Each year is a new Version; LCMAP processes every tile for every year using the new Version software.) CCDC products are not modified once they are produced. Since the products cover a date range, there is no satellite or sensor provided; each product might include data from one or two sensors, such as L8 and L7, or L7 and L5, L5 and L4.\nThe product bundle tar file is not compressed because the TIF content does not compress well. The Product Bundle and Bundle Metadata are distributable products. The FRB is not distributed but WMS on-demand is an option.\nThe checksum and the COG-formatted FRB make the data compatible with A&A’s overall Cloud migration strategy, though the CCDC products are not in the Cloud yet. The COG format also supports the WMS.\n",
     "temporalCoverage": "from 2000 to 2020",
     "spatialCoverage": "Global",
     "tokenNeeded": false
   },
-  "CCDC V1.1-3": {
-    "mission": "CCDC V1.1-3",
+  "CCDC V1_1-3": {
+    "mission": "CCDC V1_1-3",
     "sensorType": "OPTICAL",
     "description": "CCDC products are annual products, regenerated annually. CCDC data sets include a “Version” label, where the next Version exists alongside the previous version, then the previous version is may be retired at a future date, much like MODIS Versions and Landsat Collections. (Each year is a new Version; LCMAP processes every tile for every year using the new Version software.) CCDC products are not modified once they are produced. Since the products cover a date range, there is no satellite or sensor provided; each product might include data from one or two sensors, such as L8 and L7, or L7 and L5, L5 and L4.\nThe product bundle tar file is not compressed because the TIF content does not compress well. The Product Bundle and Bundle Metadata are distributable products. The FRB is not distributed but WMS on-demand is an option.\nThe checksum and the COG-formatted FRB make the data compatible with A&A’s overall Cloud migration strategy, though the CCDC products are not in the Cloud yet. The COG format also supports the WMS.\n",
     "temporalCoverage": "from 1985 to 2019",
@@ -63,24 +63,24 @@
     "spatialCoverage": "Global",
     "tokenNeeded": false
   },
-  "Declass (1996)": {
-    "mission": "Declass 1 (1996)",
+  "Declass_1996": {
+    "mission": "Declass_1996",
     "sensorType": "OPTICAL",
     "description": "On February 24, 1995, President Clinton signed an Executive Order, directing the declassification of intelligence imagery acquired by the first generation of United States photo-reconnaissance satellites, including the systems code-named CORONA, ARGON, and LANYARD. More than 860,000 images of Earth's surface, collected between 1960 and 1972, were declassified with the issuance of this Executive Order. The National Archives and Records Administration (NARA) was given the responsibility for the original film and provide access to a duplicate copy for public viewing of the film. The USGS was also provided a dupe copy to support science products. Both NARA and the USGS provide access and product support for Declass-1 collection.\r\n\r\nOnline requests for these data can be placed via the EarthExplorer interactive query system. EarthExplorer contains metadata and online samples of Earth science data. With EarthExplorer, you may review metadata, determine product availability, and place online requests for products.\r\n\r\nMore than 40 percent of the imagery contains significant cloud cover. The use of browse imagery gives the user the opportunity to review a reduced spatial resolution image to determine whether or not the area of interest is covered and is or is not obscured by clouds.\r\n",
     "temporalCoverage": "from 1960 to 1972",
     "spatialCoverage": "Global",
     "tokenNeeded": false
   },
-  "Declass (2002) (2013)": {
-    "mission": "Declass (2002) (2013)",
+  "Declass_2002_2013": {
+    "mission": "Declass_2002_2013",
     "sensorType": "OPTICAL",
     "description": "Keyhole (KH) satellite systems KH-7 and KH-9 acquired photographs of the Earth's surface with a telescopic camera system and transported the exposed film through the use of recovery capsules. The capsules or buckets were de-orbited and retrieved by aircraft while the capsules parachuted to earth. The exposed film was developed and the images were analyzed for a range of military applications.\r\n\r\nThe KH-7 surveillance system was a high resolution imaging system that was operational from July 1963 to June 1967. Approximately 18,000 black-and-white images and 230 color images are available from the 38 missions flown during this program. Key features for this program were larger area of coverage and improved ground resolution. The cameras acquired imagery in continuous lengthwise sweeps of the terrain. KH-7 images are 9 inches wide, vary in length from 4 inches to 500 feet long, and have a resolution of 2 to 4 feet.\r\n\r\nThe KH-9 mapping program was operational from March 1973 to October 1980 and was designed to support mapping requirements and exact positioning of geographical points for the military. This was accomplished by using image overlap for stereo coverage and by using a camera system with a reseau grid to correct image distortion. The KH-9 framing cameras produced 9 x 18 inch imagery at a resolution of 20-30 feet. Approximately 29,000 mapping images were acquired from 12 missions.\r\n\r\nThe images have variable scales and quality.  Cloud cover is common.  The digital products are produced from a duplicate negative film source.  More than 40 percent of the imagery contains significant cloud cover.  The use of browse imagery gives the user the opportunity to review a reduced resolution image to determine if the area of interest is covered and to check for cloud cover.  The original film sources are maintained by the (http://www.nara.gov) National Archives and Records Administration (NARA).  \nKeyhole (KH) satellite systems- KH-9 acquired photographs of the Earth's surface with a telescopic camera system and transported the exposed film through the use of recovery capsules.  The capsules or buckets were de-orbited and retrieved by aircraft while the capsules parachuted to earth.  The exposed film was developed and the images were analyzed for a range military applications.\r\n\r\nThe Keyhole (KH) satellite system KH-9 (Hexagon) operated between 1971 and 1984.  The imagery generated are of historical interest and expected to support current scientific research on climate change and related fields of inquiry.  Almost all of the imagery from this camera was declassified in 2012 as a continuation of Executive Order 12951, the same order that declassified CORONA.  A subset of this declassified data was transferred to the U.S. Geological Survey's Earth Resources Observation and Science (EROS) Center.  Please check the coverage map in EarthExplorer to verify the extent of coverage for the subset of images available from EROS.  The Available images are primarily over the United States, Antarctica, and the Arctic Circle.\r\n\r\nThe KH-9 program was designed to support mapping requirement and exact positioning of geographical points for the military.  The KH-9 panoramic cameras captured high resolution (2-4 feet) images and the terrain camera captured high resolution (2-4 feet) images and the terrain camera captured moderate resolution (20-30 feet) images.  High resolution images were acquired on 6.5 inch wide variable length film.  The moderate resolution terrain camera acquired images that were printed to 9 inch wide variable length film.\r\n\r\nThe digital products are produced from a duplicate positive film source.  The use of browse imagery provides an opportunity to determine if the area of interest is covered and to check for cloud cover.  The original film sources are maintained by the (http://www.archives.gov) National Archives and Records Administration (NARA).\r\n",
     "temporalCoverage": "from 1963 to 1980",
     "spatialCoverage": "Global",
     "tokenNeeded": false
   },
-  "DLG 1:100k": {
-    "mission": "DLG 1:100k",
+  "DLG 1-100k": {
+    "mission": "DLG 1-100k",
     "sensorType": "OPTICAL",
     "description": "Digital line graph (DLG) data are digital representations of cartographic information. DLGs of map features are converted to digital form from maps and related sources. Intermediate-scale DLG data are derived from USGS 1:100,000-scale 30- by 60-minute quadrangle maps. If these maps are not available, Bureau of Land Management planimetric maps at a scale of 1:100,000 are used.  Intermediate-scale DLGs are sold in five categories: (1) Public Land Survey System; (2) boundaries; (3) transportation; (4) hydrography; and (5) hypsography. All DLG data distributed by the USGS are DLG-Level 3 (DLG-3), which means the data contain a full range of attribute codes, have full topological structuring, and have passed certain quality-control checks.",
     "temporalCoverage": "from 1972 to 1994",
@@ -127,8 +127,8 @@
     "spatialCoverage": "Global",
     "tokenNeeded": false
   },
-  "ETM+ (1999-2003)": {
-    "mission": "ETM+ (1999-2003)",
+  "ETMPlus_1999-2003": {
+    "mission": "ETMPlus_1999-2003",
     "sensorType": "OPTICAL",
     "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972. All Landsat data held in the USGS EROS archive are available for download at no charge. \r\n\nThe USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972. \r\n",
     "temporalCoverage": "from 1999 to 2003",
@@ -175,8 +175,8 @@
     "spatialCoverage": "Global",
     "tokenNeeded": false
   },
-  "GLS LIMA (Antarctica)": {
-    "mission": "GLS LIMA (Antarctica)",
+  "GLS LIMA Antarctica": {
+    "mission": "GLS LIMA Antarctica",
     "sensorType": "OPTICAL",
     "description": "The U.S. Geological Survey (USGS), the British Antarctic Survey (BAS), and the National Aeronautics and Space Administration (NASA), with funding from the National Science Foundation (NSF), created a Landsat mosaic of Antarctica (LIMA) from more than 1,000 Landsat ETM+ scenes. This collection contains the individual Landsat scenes that were used in the LIMA mosaic.\r\n\r\nIn support of the International Polar Year (IPY 2007-2008), LIMA is a virtually cloudless, seamless, and high resolution satellite view of Antarctica. The mosaic can be accessed through the LIMA.USGS.GOV site.\r\n\nThe USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  All Landsat data held in the USGS EROS archive are available for download at no charge. \r\n",
     "temporalCoverage": "from 1999 to 2006",
@@ -311,8 +311,8 @@
     "spatialCoverage": "Global",
     "tokenNeeded": false
   },
-  "Landsat 4-9 C2 U.S. ARD": {
-    "mission": "Landsat 4-9 C2 U.S. ARD",
+  "Landsat 4-9 C2 US ARD": {
+    "mission": "Landsat 4-9 C2 US ARD",
     "sensorType": "OPTICAL",
     "description": "ARD Tiles from Collection 2 Level-2 Albers scenes are generated in the cloud, and their data and metadata are stored in the cloud. IMS Inventory creates a “copy of convenience” of the Cloud Tile inventory, for use by EarthExplorer.  EE displays the metadata as with other Landsat data sets, and all data access links are provided by Cloud A&A.",
     "temporalCoverage": "from 1982 to present",
@@ -535,8 +535,8 @@
     "spatialCoverage": "Global",
     "tokenNeeded": false
   },
-  "U.S. Forest Maps": {
-    "mission": "U.S. Forest Maps",
+  "US Forest Maps": {
+    "mission": "US Forest Maps",
     "sensorType": "OPTICAL",
     "description": "The U.S. Geological Survey (USGS) Emergency Operations, in support of the Department of Homeland Security, provides imagery and resources for use in disaster preparations, rescue and relief operations, damage assessments, and reconstruction efforts.  A variety of products, however, not limited to, include: multiple types of satellite and aerial imagery, maps, products, presentations and data source documents.",
     "temporalCoverage": "from 2010 to 2015",
