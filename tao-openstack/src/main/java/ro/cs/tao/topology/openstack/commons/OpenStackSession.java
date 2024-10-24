@@ -111,12 +111,19 @@ public class OpenStackSession {
 
     public OSClient.OSClientV3 getService() {
         OSClient.OSClientV3 client;
+
+        final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
+        this.tenantId = cfgProvider.getValue(Constants.OPENSTACK_TENANT_ID, null);
+        if (tenantId == null || tenantId.isEmpty()) {
+            throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_TENANT_ID));
+        }
+        region = cfgProvider.getValue(Constants.OPENSTACK_REGION, null);
+
         if (authToken != null && authToken.getExpires() != null && authToken.getExpires().before(new Date())) {
             logger.fine("OpenStack system token expired, re-authenticating");
             authToken = null;
         }
         if (authToken == null) {
-            final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
             final String domain = cfgProvider.getValue(Constants.OPENSTACK_DOMAIN, null);
             if (domain == null || domain.isEmpty()) {
                 throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_DOMAIN));
@@ -133,11 +140,6 @@ public class OpenStackSession {
             if (authUrl == null || authUrl.isEmpty()) {
                 throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_AUTH_URL));
             }
-            this.tenantId = cfgProvider.getValue(Constants.OPENSTACK_TENANT_ID, null);
-            if (tenantId == null || tenantId.isEmpty()) {
-                throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_TENANT_ID));
-            }
-            region = cfgProvider.getValue(Constants.OPENSTACK_REGION, null);
             final String appClient = cfgProvider.getValue(Constants.OPENSTACK_CLIENT, null);
             final String appClientSecret = cfgProvider.getValue(Constants.OPENSTACK_CLIENT_SECRET, null);
             final String userSecret = cfgProvider.getValue(Constants.OPENSTACK_USER_SECRET, null);
