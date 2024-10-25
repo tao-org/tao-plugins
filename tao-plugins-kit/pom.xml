@@ -100,11 +100,11 @@
             <artifactId>tao-docker-burnarea</artifactId>
             <version>${project.version}</version>
         </dependency>-->
-        <dependency>
+        <!--<dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-docker-console</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-docker-enmap</artifactId>
@@ -255,11 +255,11 @@
             <artifactId>tao-workflow-json</artifactId>
             <version>${project.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>ro.c-s.tao</groupId>-->
-<!--            <artifactId>tao-workflow-cwl</artifactId>-->
-<!--            <version>${project.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-workflow-cwl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-workflow-argo</artifactId>
