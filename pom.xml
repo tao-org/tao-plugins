@@ -32,7 +32,7 @@
         <module>tao-datasources-creodias2</module>
         <module>tao-datasources-das</module>
         <!--<module>tao-docker-burnarea</module>-->
-        <module>tao-docker-console</module>
+        <!--<module>tao-docker-console</module>-->
         <module>tao-docker-enmap</module>
         <module>tao-docker-gdal</module>
         <module>tao-docker-otb</module>
