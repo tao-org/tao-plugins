@@ -25,7 +25,7 @@ public class DescriptorBuilder {
         for (String token : tokens) {
             descriptorPath = descriptorPath.resolve(token);
         }
-        descriptorPath = descriptorPath.resolve("snap10_container.json");
+        descriptorPath = descriptorPath.resolve("snap11_container.json");
         Container container = new Container();
         container.setId(UUID.randomUUID().toString());
         container.setName("snap-10-0-0");
@@ -37,11 +37,13 @@ public class DescriptorBuilder {
         container.addFormat("BEAM-DIMAP");
         container.addFormat("ENVI");
         container.addFormat("GeoTIFF");
+        container.addFormat("GeoTIFF-BigTIFF");
         container.addFormat("GDAL-GTiff-WRITER");
         container.addFormat("JPEG2000");
         container.addFormat("HDF5");
         container.addFormat("NetCDF-BEAM");
         container.addFormat("NetCDF-CF");
+        container.addFormat("ZNAP");
         final Map<String, String> map = listOperators();
         List<ProcessingComponent> components = new ArrayList<>();
         int i = 1;
@@ -61,9 +63,10 @@ public class DescriptorBuilder {
             }
         }
         final BaseSerializer<Container> containerSerializer = SerializerFactory.create(Container.class, MediaType.JSON);
+        containerSerializer.setIgnoreNullFields();
         Files.writeString(descriptorPath, containerSerializer.serialize(container));
         final BaseSerializer<ProcessingComponent> componentSerializer = SerializerFactory.create(ProcessingComponent.class, MediaType.JSON);
-        Files.writeString(descriptorPath.getParent().resolve("snap10_operators.json"), componentSerializer.serialize(components, "components"));
+        Files.writeString(descriptorPath.getParent().resolve("snap11_operators.json"), componentSerializer.serialize(components, "components"));
         System.exit(0);
     }
 
