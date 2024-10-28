@@ -123,6 +123,41 @@ public class DASDataSource extends URLDataSource<DASQuery, Token> {
     }
 
     @Override
+    public Token authenticate(String refreshToken) {
+        if (refreshToken == null) {
+            throw new QueryException(String.format("Refresh token not set for %s", getId()));
+        }
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("client_id", "cdse-public"));
+        params.add(new BasicNameValuePair("grant_type", "refresh_token"));
+        params.add(new BasicNameValuePair("refresh_token", refreshToken));
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, LOGIN_URL, (Credentials) null, params)) {
+            switch (response.getStatusLine().getStatusCode()) {
+                case 200:
+                    String body = EntityUtils.toString(response.getEntity());
+                    if (body == null) {
+                        throw new QueryException("Cannot retrieve API key [empty response body]");
+                    }
+                    ResponseParser<Token> parser = new JsonResponseParser<>(new LoginResponseHandler());
+                    final Token token = parser.parseValue(body);
+                    if (token != null) {
+                        token.setCreated(LocalDateTime.now());
+                        return token;
+                    } else {
+                        throw new QueryException(String.format("Cannot retrieve API key [received: %s]", body));
+                    }
+                case 401:
+                    throw new QueryException("Cannot retrieve API key [401:not authorized]");
+                default:
+                    throw new QueryException(String.format("The request was not successful. Reason: %s",
+                                                           response.getStatusLine().getReasonPhrase()));
+            }
+        } catch (Exception ex) {
+            throw new QueryException(ex);
+        }
+    }
+
+    @Override
     protected DASQuery createQueryImpl(String sensorName) {
         return new DASQuery(this, sensorName);
     }
