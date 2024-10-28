@@ -123,7 +123,7 @@ public class DASDataSource extends URLDataSource<DASQuery, Token> {
     }
 
     @Override
-    public Token authenticate(String refreshToken) {
+    public Token reauthenticate(String refreshToken) {
         if (refreshToken == null) {
             throw new QueryException(String.format("Refresh token not set for %s", getId()));
         }
