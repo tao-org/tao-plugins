@@ -70,9 +70,10 @@ public class DASDownloadStrategy extends DownloadStrategy<Token> {
         }
         int retryCount = 1;
         while (retryCount > 0) {
-            if (this.apiKey == null ||
-                this.apiKey.getCreated().plusSeconds(this.apiKey.getTokenExpiration()).isBefore(LocalDateTime.now())) {
+            if (this.apiKey == null) {
                 this.apiKey = this.dataSource.authenticate();
+            } else if (this.apiKey.getCreated().plusSeconds(this.apiKey.getTokenExpiration()).isBefore(LocalDateTime.now())) {
+                this.apiKey = this.dataSource.authenticate(this.apiKey.getRefreshToken());
             }
             String productUrl = getProductUrl(product);
             final List<Header> headers = new ArrayList<>();
