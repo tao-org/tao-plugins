@@ -251,9 +251,12 @@ public class SwiftService {
         final Map<String, String> metadata = new HashMap<>();
         metadata.put("description", description);
         metadata.put("copied_by", SessionStore.currentContext().getPrincipal().getName());
-        objectStorageService.objects().put(container, filePath,
-                                                Payloads.create(new ByteArrayInputStream(contents)),
-                                                ObjectPutOptions.create().metadata(metadata));
+        String response = objectStorageService.objects().put(container, filePath,
+                                                             Payloads.create(new ByteArrayInputStream(contents)),
+                                                             ObjectPutOptions.create().metadata(metadata));
+        if (response == null) {
+            throw new RuntimeException("Upload failed");
+        }
     }
 
     public void upload(String filePath, InputStream stream, String container, String description) {
@@ -267,9 +270,12 @@ public class SwiftService {
         final Map<String, String> metadata = new HashMap<>();
         metadata.put("description", description);
         metadata.put("copied_by", SessionStore.currentContext().getPrincipal().getName());
-        objectStorageService.objects().put(container, filePath,
-                                                Payloads.create(stream),
-                                                ObjectPutOptions.create().metadata(metadata));
+        String response = objectStorageService.objects().put(container, filePath,
+                                                             Payloads.create(stream),
+                                                             ObjectPutOptions.create().metadata(metadata));
+        if (response == null) {
+            throw new RuntimeException("Upload failed");
+        }
     }
 
     public InputStream download(String file, String container) {
