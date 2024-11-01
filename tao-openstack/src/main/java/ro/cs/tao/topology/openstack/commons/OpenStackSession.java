@@ -145,32 +145,8 @@ public class OpenStackSession {
             final String userSecret = cfgProvider.getValue(Constants.OPENSTACK_USER_SECRET, null);
             final String tokenUrl = cfgProvider.getValue(Constants.OPENSTACK_TOKEN_URL, null);
             final String identityProvider = cfgProvider.getValue(Constants.OPENSTACK_IDENTITY_PROVIDER, null);
-            String token = null;
-            if (appClient != null && appClientSecret != null && tokenUrl != null && identityProvider != null) {
-                // We need first to get a token from Keycloak
-                try {
-                    Header header = new BasicHeader("Content-Type", "application/x-www-form-urlencoded");
-                    List<NameValuePair> params = new ArrayList<>();
-                    params.add(new BasicNameValuePair("password", password));
-                    params.add(new BasicNameValuePair("grant_type", "password"));
-                    params.add(new BasicNameValuePair("username", user));
-                    params.add(new BasicNameValuePair("client_id", appClient));
-                    params.add(new BasicNameValuePair("client_secret", appClientSecret));
-                    if (userSecret != null) {
-                        params.add(new BasicNameValuePair("totp", generateOTP(userSecret)));
-                    }
-                    try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, tokenUrl, header, params)) {
-                        token = EntityUtils.toString(response.getEntity());
-                        Map<String, String> map = new LinkedHashMap<>();
-                        map.putAll(new ObjectMapper().readValue(token, map.getClass()));
-                        token = map.get("access_token");
-                        token = getOSToken(authUrl, user, region, tenantId, domain, appClient, appClientSecret, identityProvider, token);
-                    }
-                } catch (Exception e) {
-                    logger.severe("Cannot obtain token for OpenStack pre-authentication");
-                }
-            }
-            //OSFactory.enableHttpLoggingFilter(true);
+            String token = getToken(appClient, appClientSecret, userSecret, tokenUrl, identityProvider,
+                                    authUrl, domain, user, password, tenantId, region);
             client = token == null
                              ? OSFactory.builderV3()
                                         .endpoint(authUrl)
@@ -234,11 +210,28 @@ public class OpenStackSession {
             this.instanceToken = null;
         }
         if (this.instanceToken == null) {
-            service = OSFactory.builderV3()
-                               .endpoint(authUrl)
-                               .credentials(user, password, Identifier.byName(domain))
-                               .scopeToProject(Identifier.byId(tenantId))
-                               .authenticate();
+            final String appClient = parameters.getOrDefault(Constants.OPENSTACK_CLIENT, null);
+            final String appClientSecret = parameters.getOrDefault(Constants.OPENSTACK_CLIENT_SECRET, null);
+            final String userSecret = parameters.getOrDefault(Constants.OPENSTACK_USER_SECRET, null);
+            final String tokenUrl = parameters.getOrDefault(Constants.OPENSTACK_TOKEN_URL, null);
+            final String identityProvider = parameters.getOrDefault(Constants.OPENSTACK_IDENTITY_PROVIDER, null);
+            final String region = parameters.getOrDefault(Constants.OPENSTACK_REGION, null);
+            String token = getToken(appClient, appClientSecret, userSecret, tokenUrl, identityProvider,
+                                    authUrl, domain, user, password, tenantId, region);
+            service = token == null
+                     ? OSFactory.builderV3()
+                                .endpoint(authUrl)
+                                .credentials(user, password, Identifier.byId(domain))
+                                .scopeToProject(Identifier.byId(tenantId))
+                                .authenticate()
+                     : OSFactory.builderV3()
+                                .token(token)
+                                .endpoint(authUrl)
+                                .scopeToProject(Identifier.byId(tenantId))
+                                .authenticate();
+            if (region != null) {
+                service = service.useRegion(region);
+            }
             this.instanceToken = service.getToken();
         } else {
             service = OSFactory.clientFromToken(this.instanceToken);
@@ -246,6 +239,36 @@ public class OpenStackSession {
         // hack to force the retrieval of newest version of a service
         service.getToken().getCatalog().sort((Comparator<Service>) (o1, o2) -> o2.getType().compareTo(o1.getType()));
         return service;
+    }
+
+    private String getToken(String appClient, String appClientSecret, String userSecret, String tokenUrl, String identityProvider,
+                            String authUrl, String domain, String user, String password, String tenantId, String region) {
+        String token = null;
+        if (appClient != null && appClientSecret != null && tokenUrl != null && identityProvider != null) {
+            // We need first to get a token from Keycloak
+            try {
+                Header header = new BasicHeader("Content-Type", "application/x-www-form-urlencoded");
+                List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair("password", password));
+                params.add(new BasicNameValuePair("grant_type", "password"));
+                params.add(new BasicNameValuePair("username", user));
+                params.add(new BasicNameValuePair("client_id", appClient));
+                params.add(new BasicNameValuePair("client_secret", appClientSecret));
+                if (userSecret != null) {
+                    params.add(new BasicNameValuePair("totp", generateOTP(userSecret)));
+                }
+                try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, tokenUrl, header, params)) {
+                    token = EntityUtils.toString(response.getEntity());
+                    Map<String, String> map = new LinkedHashMap<>();
+                    map.putAll(new ObjectMapper().readValue(token, map.getClass()));
+                    token = map.get("access_token");
+                    token = getOSToken(authUrl, user, region, tenantId, domain, appClient, appClientSecret, identityProvider, token);
+                }
+            } catch (Exception e) {
+                logger.severe("Cannot obtain token for OpenStack pre-authentication");
+            }
+        }
+        return token;
     }
 
     private String generateOTP(String secret) throws CodeGenerationException {

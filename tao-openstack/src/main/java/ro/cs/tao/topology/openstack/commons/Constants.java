@@ -26,4 +26,16 @@ public class Constants {
     public static final String OPENSTACK_OS_IMAGE = "openstack.default.image";
     public static final String OPENSTACK_DEFAULT_FLAVOUR = "openstack.default.flavour";
     public static final String OPENSTACK_PAGE_LIMIT = "page.limit";
+    public static final String OPENSTACK_SWIFT_FILTER = "openstack.swift.";
+    public static final String OPENSTACK_SWIFT_USER = OPENSTACK_SWIFT_FILTER + "user";
+    public static final String OPENSTACK_SWIFT_PASSWORD = OPENSTACK_SWIFT_FILTER + "password";
+    public static final String OPENSTACK_SWIFT_AUTH_URL = OPENSTACK_SWIFT_FILTER + "auth.url";
+    public static final String OPENSTACK_SWIFT_REGION = OPENSTACK_SWIFT_FILTER + "region";
+    public static final String OPENSTACK_SWIFT_DOMAIN = OPENSTACK_SWIFT_FILTER + "domain";
+    public static final String OPENSTACK_SWIFT_TENANT_ID = OPENSTACK_SWIFT_FILTER + "tenantId";
+    public static final String OPENSTACK_SWIFT_TOKEN_URL = OPENSTACK_SWIFT_FILTER + "token.url";
+    public static final String OPENSTACK_SWIFT_IDENTITY_PROVIDER = OPENSTACK_SWIFT_FILTER + "identity.provider";
+    public static final String OPENSTACK_SWIFT_CLIENT = OPENSTACK_SWIFT_FILTER + "client";
+    public static final String OPENSTACK_SWIFT_CLIENT_SECRET = OPENSTACK_SWIFT_FILTER + "client.secret";
+    public static final String OPENSTACK_SWIFT_USER_SECRET = OPENSTACK_SWIFT_FILTER + "user.secret";
 }
