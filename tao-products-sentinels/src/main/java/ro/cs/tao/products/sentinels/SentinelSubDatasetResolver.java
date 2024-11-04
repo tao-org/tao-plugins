@@ -17,8 +17,9 @@ import java.util.regex.Pattern;
  */
 public class SentinelSubDatasetResolver implements TokenResolver {
     private static final Pattern sentinelPattern = Pattern.compile("S2[ABCD]_MSI(L1C|L2A)_\\d{8}T\\d{6}_N\\d{4}_R\\d{3}_T(\\d{2}\\w{3})_\\d{8}T\\d{6}(?:.SAFE)?");
-    private static final Pattern subdatasetPattern = Pattern.compile("(S2SUBDATASET\\(([a-zA-Z0-9_./:\\\\]+),(10|20|60)\\))");
-    private static final String resolvedPattern = "SENTINEL2_%s:%s/MTD_MSI%s.xml:%dm:EPSG_%d";
+    private static final Pattern subdatasetPattern = Pattern.compile("(S2SUBDATASET\\(([a-zA-Z0-9_\\-./:\\\\]+),(10|20|60)\\))");
+    private static final String resolvedPattern = "SENTINEL2_%s:%s:%sm:EPSG_%d";
+    private static final String resolvedPatternEx = "SENTINEL2_%s:%s/MTD_MSI%s.xml:%sm:EPSG_%d";
 
     public static final BiFunction<String, String, String> SUBDATASET = (name, resolution) -> {
         final Matcher matcher = sentinelPattern.matcher(name);
@@ -26,8 +27,11 @@ public class SentinelSubDatasetResolver implements TokenResolver {
             String str = matcher.group(2);
             final int code = Integer.parseInt(str.substring(0, 2));
             final String level = matcher.group(1);
-            return String.format(resolvedPattern,
-                                 level, FileUtilities.asUnixPath(name, true), level, resolution, (str.charAt(0) < 70 ? 32600 + code : 32700 + code));
+            return name.endsWith(".xml")
+                   ? String.format(resolvedPattern,
+                                   level, FileUtilities.asUnixPath(name, true), resolution, (str.charAt(0) < 70 ? 32600 + code : 32700 + code))
+                   : String.format(resolvedPatternEx,
+                                   level, FileUtilities.asUnixPath(name, true), level, resolution, (str.charAt(0) < 70 ? 32600 + code : 32700 + code));
         }
         return name;
     };
