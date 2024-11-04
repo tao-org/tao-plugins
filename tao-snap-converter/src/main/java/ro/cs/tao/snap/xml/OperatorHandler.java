@@ -71,7 +71,7 @@ public class OperatorHandler extends DefaultHandler {
         this.result = new ProcessingComponent();
         this.result.setAuthors("SNAP Team");
         this.result.setContainerId("(C) SNAP Team");
-        this.result.setNodeAffinity("Any");
+        this.result.setNodeAffinity(NodeAffinity.Any);
         this.result.setFileLocation("gpt");
         this.result.setWorkingDirectory(".");
         this.result.setVisibility(ProcessingComponentVisibility.SYSTEM);
