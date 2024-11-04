@@ -56,7 +56,7 @@
 				"dataType": "int[]",
 				"defaultValue": null,
 				"description": "Select an input band band for output. Bands are numbered from 1",
-				"label": "Band",
+				"label": "b",
 				"notNull": false,
 				"expansionRule": {
 					"joinValues": false,
@@ -88,7 +88,7 @@
 				"dataType": "int[]",
 				"defaultValue": null,
 				"description": "Set the size of the output file. Outsize is in pixels",
-				"label": "Outsize (x y)",
+				"label": "outsize",
 				"notNull": false,
 				"expansionRule": {
 					"joinValues": true,
@@ -101,7 +101,7 @@
 				"dataType": "int[]",
 				"defaultValue": null,
 				"description": "Set target resolution. The values must be expressed in georeferenced units. Both must be positive values",
-				"label": "Target resolution (x y)",
+				"label": "tr",
 				"notNull": false,
 				"expansionRule": {
 					"joinValues": true,
@@ -124,7 +124,7 @@
 				"dataType": "int[]",
 				"defaultValue": null,
 				"description": "Rescale the input pixels values from the range src_min to src_max to the range dst_min to dst_max",
-				"label": "Rescale (src_min src_max dst_min dst_max)",
+				"label": "scale",
 				"notNull": false,
 				"expansionRule": {
 					"joinValues": true,
@@ -218,11 +218,18 @@
 			{
 				"id": "co",
 				"type": "REGULAR",
-				"dataType": "string",
-				"defaultValue": null,
+				"dataType": "string[]",
+				"defaultValue": ["TILED=YES", "COMPRESS=DEFLATE", "INTERLEAVE=BAND", "BLOCKXSIZE=1024", "BLOCKYSIZE=1024"],
 				"description": "One or more optional creation options that can be used to control particulars about the file created",
-				"label": "Creation options (name=value)",
-				"notNull": false
+				"label": "CO",
+				"notNull": false,
+				"valueSet": [
+					"TILED=YES", "COMPRESS=DEFLATE", "INTERLEAVE=BAND", "BLOCKXSIZE=1024", "BLOCKYSIZE=1024"
+				],
+				"expansionRule": {
+					"joinValues": false,
+					"separator": ""
+				}
 			},
 			{
 				"id": "gcp",
