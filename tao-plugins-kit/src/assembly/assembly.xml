@@ -38,7 +38,7 @@
             </excludes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>../../../../tao-core-kit/target/tao-core-${project.version}/tao-core/plugins</outputDirectory>
+            <outputDirectory>plugins</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>
             <includes>
                 <include>ro.c-s.tao:*</include>
