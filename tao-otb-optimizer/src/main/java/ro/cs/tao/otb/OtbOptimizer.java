@@ -55,7 +55,7 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
         component.setTemplate(template);
         component.setTemplateType(TemplateType.VELOCITY);
         component.setVisibility(ProcessingComponentVisibility.USER);
-        component.setNodeAffinity("Any");
+        component.setNodeAffinity(NodeAffinity.Any);
         component.setMultiThread(true);
         component.setActive(true);
         component.setContainerId(first.getContainerId());

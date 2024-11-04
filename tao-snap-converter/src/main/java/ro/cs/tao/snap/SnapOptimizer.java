@@ -68,7 +68,7 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
         aggregator.setTemplateType(TemplateType.XSLT);
         aggregator.setTemplate(template);
         aggregator.setVisibility(ProcessingComponentVisibility.USER);
-        aggregator.setNodeAffinity("Any");
+        aggregator.setNodeAffinity(NodeAffinity.Any);
         aggregator.setMultiThread(true);
         aggregator.setParallelism(sources.stream().mapToInt(ProcessingComponent::getParallelism).min().orElse(1));
         aggregator.setActive(true);

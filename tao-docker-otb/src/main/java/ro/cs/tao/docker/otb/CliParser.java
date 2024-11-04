@@ -91,7 +91,7 @@ public class CliParser {
                 component.setFileLocation(app.getFileName().toString().replace(".bat", ""));
                 component.setMultiThread(true);
                 component.setParallelism(4);
-                component.setNodeAffinity("Any");
+                component.setNodeAffinity(NodeAffinity.Any);
                 component.setTemplateType(TemplateType.VELOCITY);
                 component.setOwner(SystemPrincipal.instance().getName());
                 parse(lines, component);
