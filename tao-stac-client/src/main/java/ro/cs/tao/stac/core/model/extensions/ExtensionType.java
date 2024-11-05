@@ -5,8 +5,12 @@ import ro.cs.tao.stac.core.model.extensions.eo.EOExtension;
 import ro.cs.tao.stac.core.model.extensions.eo.EoFields;
 import ro.cs.tao.stac.core.model.extensions.fileinfo.FileInfoExtension;
 import ro.cs.tao.stac.core.model.extensions.fileinfo.FileInfoFields;
+import ro.cs.tao.stac.core.model.extensions.product.ProductExtension;
+import ro.cs.tao.stac.core.model.extensions.product.ProductFields;
 import ro.cs.tao.stac.core.model.extensions.projection.ProjExtension;
 import ro.cs.tao.stac.core.model.extensions.projection.ProjFields;
+import ro.cs.tao.stac.core.model.extensions.raster.RasterExtension;
+import ro.cs.tao.stac.core.model.extensions.raster.RasterFields;
 import ro.cs.tao.stac.core.model.extensions.sentinel2.S2Fields;
 import ro.cs.tao.stac.core.model.extensions.sentinel2.Sentinel2Extension;
 import ro.cs.tao.stac.core.model.extensions.view.ViewExtension;
@@ -31,7 +35,13 @@ public enum ExtensionType implements TaoEnum<String> {
          "https://stac-extensions.github.io/file/v1.0.0/schema.json"),
     S2(Sentinel2Extension.class,
        S2Fields.PREFIX,
-       "https://stac-extensions.github.io/sentinel-2/v1.0.0/schema.json");
+       "https://stac-extensions.github.io/sentinel-2/v1.0.0/schema.json"),
+    PRODUCT(ProductExtension.class,
+            ProductFields.PREFIX,
+            "https://stac-extensions.github.io/product/v0.1.0/schema.json"),
+    RASTER(RasterExtension.class,
+           RasterFields.PREFIX,
+           "https://stac-extensions.github.io/raster/v1.1.0/schema.json");
 
     private final String value;
     private final String description;

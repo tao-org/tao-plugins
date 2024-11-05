@@ -22,11 +22,11 @@ import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.fedeo.FedEODataSource;
 import ro.cs.tao.datasource.remote.fedeo.auth.FedEOAuthentication;
-import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
+import ro.cs.tao.utils.Zipper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,24 +100,41 @@ public class FedEODownloadStrategy extends DownloadStrategy<Header> {
             if (authHeader == null) {
                 throw new IOException("Invalid credentials");
             }
-            List<NameValuePair> requestProperties = new ArrayList<>();
-            HttpURLConnection connection = NetUtils.openURLConnection(HttpMethod.GET, productDownloadUrl, authHeader, requestProperties);
-            connection.setInstanceFollowRedirects(true);
-            connection.connect();
-            responseStatus = connection.getResponseCode();
-            switch (responseStatus){
-                case HttpStatus.SC_OK:
+            int retries = 3;
+            while (retries > 0) {
+                List<NameValuePair> requestProperties = new ArrayList<>();
+                HttpURLConnection connection = NetUtils.openURLConnection(HttpMethod.GET, productDownloadUrl, authHeader, requestProperties);
+                connection.setInstanceFollowRedirects(true);
+                connection.connect();
+                responseStatus = connection.getResponseCode();
+                switch (responseStatus) {
+                    case HttpStatus.SC_OK:
+                        break;
+                    case HttpStatus.SC_ACCEPTED:
+                        throw new QueryException(String.format("The request was successful. response code: %d: The download will be ready soon. Try again later.",
+                                connection.getResponseCode()));
+                    default:
+                        throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
+                                connection.getResponseCode(), connection.getResponseMessage()));
+                }
+                final String contentType = connection.getHeaderField("Content-Type");
+                if (contentType != null && (contentType.contains("html") || contentType.contains("xml") || contentType.contains("json"))) {
+                    try {
+                        synchronized (Thread.currentThread()){
+                            Thread.currentThread().wait(1000);
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    retries--;
+                } else {
                     return connection;
-                case HttpStatus.SC_ACCEPTED:
-                    throw new QueryException(String.format("The request was successful. response code: %d: The download will be ready soon. Try again later.",
-                            connection.getResponseCode()));
-                default:
-                    throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
-                            connection.getResponseCode(), connection.getResponseMessage()));
+                }
             }
         } catch (IOException e) {
             throw new QueryException(String.format("The request was not successful. Reason: %s", e.getMessage()));
         }
+        throw new IllegalStateException("403: Download forbidden.");
     }
 
     protected Path downloadProduct(EOProduct product, HttpURLConnection connection) throws IOException {

@@ -1,6 +1,7 @@
 package ro.cs.tao.docker.jupyter;
 
 import org.apache.commons.lang3.SystemUtils;
+import ro.cs.tao.component.SystemVariable;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.docker.ContainerType;
@@ -10,10 +11,11 @@ import ro.cs.tao.topology.docker.BaseImageInstaller;
 import ro.cs.tao.topology.docker.DockerManager;
 import ro.cs.tao.topology.docker.SingletonContainer;
 import ro.cs.tao.utils.DockerHelper;
+import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.utils.Tuple;
 import ro.cs.tao.utils.executors.*;
-import ro.cs.tao.component.SystemVariable;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.nio.file.Files;
@@ -81,7 +83,7 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
                         (container = DockerManager.getDockerImage(getContainerName())) == null) {
                     // first try the container.properties file, maybe it is a container from Docker Hub
                     Path dockerfilePath = dockerImagesPath.resolve(getContainerName()).resolve("container.properties");
-                    Files.createDirectories(dockerImagesPath.resolve(getContainerName()));
+                    FileUtilities.createDirectories(dockerImagesPath.resolve(getContainerName()));
                     //dockerfilePath = dockerfilePath.resolve("container.properties");
                     final byte[] buffer = new byte[1024];
                     try (InputStream is = getClass().getResourceAsStream("container.properties");

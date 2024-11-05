@@ -9,13 +9,9 @@ import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.odata.CreoDiasODataSource;
 import ro.cs.tao.datasource.remote.odata.common.Token;
-import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.util.ProductHelper;
-import ro.cs.tao.utils.CloseableHttpResponse;
-import ro.cs.tao.utils.FileUtilities;
-import ro.cs.tao.utils.HttpMethod;
-import ro.cs.tao.utils.NetUtils;
+import ro.cs.tao.utils.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -74,6 +71,8 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
         }
         if (this.apiKey == null) {
             this.apiKey = this.dataSource.authenticate();
+        } else if (this.apiKey.getCreated().plusSeconds(this.apiKey.getTokenExpiration()).isBefore(LocalDateTime.now())) {
+            this.apiKey = this.dataSource.reauthenticate(this.apiKey.getRefreshToken());
         }
         String productUrl = getProductUrl(product);
         final List<Header> headers = new ArrayList<>();

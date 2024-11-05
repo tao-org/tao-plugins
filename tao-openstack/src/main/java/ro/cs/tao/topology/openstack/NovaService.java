@@ -4,12 +4,13 @@ import org.openstack4j.api.Builders;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.api.compute.ComputeFloatingIPService;
 import org.openstack4j.api.compute.ComputeService;
+import org.openstack4j.api.compute.QuotaSetService;
 import org.openstack4j.api.compute.ServerService;
 import org.openstack4j.api.storage.BlockVolumeService;
 import org.openstack4j.model.common.ActionResponse;
 import org.openstack4j.model.compute.*;
 import org.openstack4j.model.compute.builder.ServerCreateBuilder;
-import org.openstack4j.model.image.Image;
+import org.openstack4j.model.image.v2.Image;
 import org.openstack4j.model.network.Network;
 import org.openstack4j.model.storage.block.Volume;
 import org.openstack4j.model.storage.block.VolumeAttachment;
@@ -19,8 +20,11 @@ import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.topology.*;
 import ro.cs.tao.topology.openstack.commons.Constants;
 import ro.cs.tao.topology.openstack.commons.OpenStackSession;
+import ro.cs.tao.topology.openstack.commons.PlatformUsage;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.utils.executors.MemoryUnit;
+import ro.cs.tao.utils.executors.SSHExecutor;
+import ro.cs.tao.utils.executors.SSHMode;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -100,6 +104,17 @@ public class NovaService implements NodeProvider {
         return remoteNodes;
     }
 
+    public PlatformUsage getPlatformQuota() {
+        checkAuthenticate();
+        final QuotaSetService quotaSets = session.computeService().quotaSets();
+        final ComputeQuotaDetail detail = quotaSets.getDetail(session.getTenantId());
+        return new PlatformUsage(detail.getCores().getLimit(),
+                                 detail.getCores().getInUse(),
+                                 detail.getRam().getLimit(),
+                                 detail.getRam().getInUse(),
+                                 -1, -1);
+    }
+
     @Override
     public NodeDescription getNode(String nodeName) throws TopologyException {
         authenticate();
@@ -138,33 +153,45 @@ public class NovaService implements NodeProvider {
                 if (!StringUtilities.isNullOrEmpty(defaultFlavourName)) {
                     defaultFlavour = service.flavors().list().stream().filter(f -> f.getName().equals(defaultFlavourName)).findFirst().get();
                 }
+                String imageId = cfgProvider.getValue(Constants.OPENSTACK_OS_IMAGE);
+                Image image;
                 Flavor flavour = service.flavors().list().stream().filter(f -> f.getName().equals(node.getFlavor().getId())).findFirst().orElse(null);
-                if (defaultFlavour != null &&
-                        (flavour != null && (flavour.getVcpus() < defaultFlavour.getVcpus() || flavour.getRam() < defaultFlavour.getRam()))) {
+                if (flavour == null) {
                     flavour = defaultFlavour;
                 }
-                final List<String> networkIds = getNetworks();
-                final String ssdVolumeName = node.getId() + "-ssd";
-                final String hddVolumeName = node.getId() + "-hdd";
-                final int ssdSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_SIZE, "100"));
-                final int hddSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_SIZE, "0"));
-                //int idx = 1;
-                if (ssdSize > 0) {
-                    ssdVolume = createVolume(ssdVolumeName, ssdType, ssdSize);
+                // check to see if there are enough resources available
+                final PlatformUsage platformQuota = getPlatformQuota();
+                final int availableCPUs = platformQuota.getMaxCpus() - platformQuota.getUsedCpus();
+                final int availableMemory = platformQuota.getMaxMemory() - platformQuota.getUsedMemory();
+                final int requestedCPUs = flavour.getVcpus();
+                final int requestedMemory = flavour.getRam();
+                if (requestedCPUs > availableCPUs || requestedMemory > availableMemory) {
+                    throw new TopologyException(String.format("Not enough platform resources to create the requested machine [requested: %d CPUs, %d MB memory; available: %d CPUs, %d MB memory]",
+                                                              requestedCPUs, requestedMemory, availableCPUs, availableMemory));
                 }
-                if (hddSize > 0) {
-                    hddVolume = createVolume(hddVolumeName, hddType, hddSize);
-                }
-                String imageId = cfgProvider.getValue(Constants.OPENSTACK_OS_IMAGE);
                 if (imageId == null) {
-                    final Image image = session.imageService().listAll().stream().filter(i -> i.getName().equals("CentOS 7")).findFirst().orElse(null);
+                    image = session.imageService().list().stream().filter(i -> i.getName().equals("CentOS 7")).findFirst().orElse(null);
                     if (image != null) {
                         imageId = image.getId();
+                    }
+                } else {
+                    final String iid = imageId;
+                    image = session.imageService().get(iid);//list().stream().filter(i -> i.getId().equals(iid)).findFirst().orElse(null);
+                    if (image == null) {
+                        throw new TopologyException("Base image not found");
+                    }
+                    if (flavour != null && image.getMinRam() != null && requestedMemory < image.getMinRam()) {
+                        throw new TopologyException("Flavor has less RAM than required by the OS image");
                     }
                 }
                 if (imageId == null) {
                     throw new TopologyException("No base image defined");
                 }
+                /*if (defaultFlavour != null &&
+                        (flavour != null && (flavour.getVcpus() < defaultFlavour.getVcpus() || flavour.getRam() < defaultFlavour.getRam()))) {
+                    flavour = defaultFlavour;
+                }*/
+                final List<String> networkIds = getNetworks();
                 builder.name(node.getId())
                        .flavor(flavour)
                        .image(imageId);
@@ -188,13 +215,42 @@ public class NovaService implements NodeProvider {
                     } catch (InterruptedException ignored) { }
                     consoleLog = serverService.getConsoleOutput(server.getId(), 5);
                 }
+                final String ssdVolumeName = node.getId() + "-ssd";
+                final String hddVolumeName = node.getId() + "-hdd";
+                final int ssdSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_SIZE, "100"));
+                final int hddSize = Integer.parseInt(cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_SIZE, "0"));
+                if (ssdSize > 0) {
+                    ssdVolume = createVolume(ssdVolumeName, ssdType, ssdSize);
+                }
+                if (hddSize > 0) {
+                    hddVolume = createVolume(hddVolumeName, hddType, hddSize);
+                }
+                final boolean useKey = node.getSshKey() != null;
                 if (ssdVolume != null) {
-                    serverService.attachVolume(server.getId(), ssdVolume.getId(),
-                                               cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_DEVICE, "/dev/sds"));
+                    final String ssdDevice = cfgProvider.getValue(Constants.OPENSTACK_VOLUME_SSD_DEVICE, "/dev/sds");
+                    serverService.attachVolume(server.getId(), ssdVolume.getId(), ssdDevice);
+                    if (mountDevice(server.getName(), node.getUserName(),
+                                    useKey ? node.getSshKey() : node.getUserPass(), useKey, ssdDevice)) {
+                        logger.fine("Volume " + ssdVolumeName + " was mounted on " + ssdDevice);
+                    } else {
+                        logger.warning("Volume " + ssdVolumeName + " was not mounted");
+                    }
                 }
                 if (hddVolume != null) {
-                    serverService.attachVolume(server.getId(), hddVolume.getId(),
-                                               cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_DEVICE, "/dev/sdh"));
+                    final String hddDevice = cfgProvider.getValue(Constants.OPENSTACK_VOLUME_HDD_DEVICE, "/dev/sdh");
+                    serverService.attachVolume(server.getId(), hddVolume.getId(), hddDevice);
+                    if (mountDevice(server.getName(), node.getUserName(),
+                                    useKey ? node.getSshKey() : node.getUserPass(), useKey, hddDevice)) {
+                        logger.fine("Volume " + hddVolumeName + " was mounted on " + hddDevice);
+                    } else {
+                        logger.warning("Volume " + hddVolumeName + " was not mounted");
+                    }
+                }
+                if (disableSELinux(server.getName(), node.getUserName(),
+                                   useKey ? node.getSshKey() : node.getUserPass(), useKey)) {
+                    logger.fine("SELinux disabled");
+                } else {
+                    logger.warning("SELinux was not disabled");
                 }
             }
             final NodeDescription newNode = convert(node, server, node.getVolatile());
@@ -566,6 +622,43 @@ public class NovaService implements NodeProvider {
         return null;
     }
 
+    private boolean mountDevice(String hostName, String user, String credential, boolean useKey, String deviceName) {
+        final List<String> args = new ArrayList<>();
+        final String name = deviceName.substring(deviceName.lastIndexOf('/') + 1);
+        args.add("DEVICE=\"" + deviceName + "\" && umount $DEVICE 2> /dev/null && echo -e \"o\\nn\\np\\n1\\n\\n\\nw\" | fdisk $DEFICE && " +
+                         "partprobe $DEVICE && mkfs.ext4 ${DEVICE}1 && mkdir -p /mnt/wrk && mount ${DEVICE}1 /mnt/" + name + " && " +
+                         "echo \"${DEVICE}1 /mnt/" + name + " ext4 defaults 0 0\" >> /etc/fstab");
+        final SSHExecutor executor = new SSHExecutor(hostName, args, true, SSHMode.EXEC);
+        executor.setUser(user);
+        if (useKey) {
+            executor.setCertificate(credential);
+        } else {
+            executor.setPassword(credential);
+        }
+        try {
+            return executor.execute(true) == 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean disableSELinux(String hostName, String user, String credential, boolean useKey) {
+        final List<String> args = new ArrayList<>();
+        args.add("setenforce");
+        args.add("0");
+        final SSHExecutor executor = new SSHExecutor(hostName, args, true, SSHMode.EXEC);
+        executor.setUser(user);
+        if (useKey) {
+            executor.setCertificate(credential);
+        } else {
+            executor.setPassword(credential);
+        }
+        try {
+            return executor.execute(true) == 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     private static String buildAddGroupCommand(String groupName, Integer groupId) {
         String command = "groupadd";

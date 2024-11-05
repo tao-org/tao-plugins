@@ -13,7 +13,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.api.compute.ComputeService;
-import org.openstack4j.api.image.ImageService;
+import org.openstack4j.api.image.v2.ImageService;
 import org.openstack4j.api.networking.NetworkingService;
 import org.openstack4j.api.storage.BlockStorageService;
 import org.openstack4j.api.storage.ObjectStorageService;
@@ -45,10 +45,16 @@ public class OpenStackSession {
     private static final Map<Integer, OpenStackSession> sessions = Collections.synchronizedMap(new HashMap<>());
     private static Token authToken;
     private static String region;
+    private static Boolean usesImagesV2;
     //private static final OpenStackSession session = new OpenStackSession();
     private Token instanceToken;
+    private String tenantId;
 
     private OpenStackSession() {
+    }
+
+    public String getTenantId() {
+        return tenantId;
     }
 
     public ComputeService computeService() {
@@ -96,7 +102,7 @@ public class OpenStackSession {
         if (!service.supportsImage()) {
             throw new TopologyException("The remote provider doesn't support Image API");
         }
-        return service.images();
+        return service.imagesV2();
     }
 
     public static OpenStackSession getInstance() {
@@ -105,12 +111,19 @@ public class OpenStackSession {
 
     public OSClient.OSClientV3 getService() {
         OSClient.OSClientV3 client;
+
+        final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
+        this.tenantId = cfgProvider.getValue(Constants.OPENSTACK_TENANT_ID, null);
+        if (tenantId == null || tenantId.isEmpty()) {
+            throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_TENANT_ID));
+        }
+        region = cfgProvider.getValue(Constants.OPENSTACK_REGION, null);
+
         if (authToken != null && authToken.getExpires() != null && authToken.getExpires().before(new Date())) {
             logger.fine("OpenStack system token expired, re-authenticating");
             authToken = null;
         }
         if (authToken == null) {
-            final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
             final String domain = cfgProvider.getValue(Constants.OPENSTACK_DOMAIN, null);
             if (domain == null || domain.isEmpty()) {
                 throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_DOMAIN));
@@ -127,42 +140,13 @@ public class OpenStackSession {
             if (authUrl == null || authUrl.isEmpty()) {
                 throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_AUTH_URL));
             }
-            final String tenantId = cfgProvider.getValue(Constants.OPENSTACK_TENANT_ID, null);
-            if (tenantId == null || tenantId.isEmpty()) {
-                throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_TENANT_ID));
-            }
-            region = cfgProvider.getValue(Constants.OPENSTACK_REGION, null);
             final String appClient = cfgProvider.getValue(Constants.OPENSTACK_CLIENT, null);
             final String appClientSecret = cfgProvider.getValue(Constants.OPENSTACK_CLIENT_SECRET, null);
             final String userSecret = cfgProvider.getValue(Constants.OPENSTACK_USER_SECRET, null);
             final String tokenUrl = cfgProvider.getValue(Constants.OPENSTACK_TOKEN_URL, null);
             final String identityProvider = cfgProvider.getValue(Constants.OPENSTACK_IDENTITY_PROVIDER, null);
-            String token = null;
-            if (appClient != null && appClientSecret != null && tokenUrl != null && identityProvider != null) {
-                // We need first to get a token from Keycloak
-                try {
-                    Header header = new BasicHeader("Content-Type", "application/x-www-form-urlencoded");
-                    List<NameValuePair> params = new ArrayList<>();
-                    params.add(new BasicNameValuePair("password", password));
-                    params.add(new BasicNameValuePair("grant_type", "password"));
-                    params.add(new BasicNameValuePair("username", user));
-                    params.add(new BasicNameValuePair("client_id", appClient));
-                    params.add(new BasicNameValuePair("client_secret", appClientSecret));
-                    if (userSecret != null) {
-                        params.add(new BasicNameValuePair("totp", generateOTP(userSecret)));
-                    }
-                    try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, tokenUrl, header, params)) {
-                        token = EntityUtils.toString(response.getEntity());
-                        Map<String, String> map = new LinkedHashMap<>();
-                        map.putAll(new ObjectMapper().readValue(token, map.getClass()));
-                        token = map.get("access_token");
-                        token = getOSToken(authUrl, user, region, tenantId, domain, appClient, appClientSecret, identityProvider, token);
-                    }
-                } catch (Exception e) {
-                    logger.severe("Cannot obtain token for OpenStack pre-authentication");
-                }
-            }
-            //OSFactory.enableHttpLoggingFilter(true);
+            String token = getToken(appClient, appClientSecret, userSecret, tokenUrl, identityProvider,
+                                    authUrl, domain, user, password, tenantId, region);
             client = token == null
                              ? OSFactory.builderV3()
                                         .endpoint(authUrl)
@@ -226,11 +210,28 @@ public class OpenStackSession {
             this.instanceToken = null;
         }
         if (this.instanceToken == null) {
-            service = OSFactory.builderV3()
-                               .endpoint(authUrl)
-                               .credentials(user, password, Identifier.byName(domain))
-                               .scopeToProject(Identifier.byId(tenantId))
-                               .authenticate();
+            final String appClient = parameters.getOrDefault(Constants.OPENSTACK_CLIENT, null);
+            final String appClientSecret = parameters.getOrDefault(Constants.OPENSTACK_CLIENT_SECRET, null);
+            final String userSecret = parameters.getOrDefault(Constants.OPENSTACK_USER_SECRET, null);
+            final String tokenUrl = parameters.getOrDefault(Constants.OPENSTACK_TOKEN_URL, null);
+            final String identityProvider = parameters.getOrDefault(Constants.OPENSTACK_IDENTITY_PROVIDER, null);
+            final String region = parameters.getOrDefault(Constants.OPENSTACK_REGION, null);
+            String token = getToken(appClient, appClientSecret, userSecret, tokenUrl, identityProvider,
+                                    authUrl, domain, user, password, tenantId, region);
+            service = token == null
+                     ? OSFactory.builderV3()
+                                .endpoint(authUrl)
+                                .credentials(user, password, Identifier.byId(domain))
+                                .scopeToProject(Identifier.byId(tenantId))
+                                .authenticate()
+                     : OSFactory.builderV3()
+                                .token(token)
+                                .endpoint(authUrl)
+                                .scopeToProject(Identifier.byId(tenantId))
+                                .authenticate();
+            if (region != null) {
+                service = service.useRegion(region);
+            }
             this.instanceToken = service.getToken();
         } else {
             service = OSFactory.clientFromToken(this.instanceToken);
@@ -238,6 +239,36 @@ public class OpenStackSession {
         // hack to force the retrieval of newest version of a service
         service.getToken().getCatalog().sort((Comparator<Service>) (o1, o2) -> o2.getType().compareTo(o1.getType()));
         return service;
+    }
+
+    private String getToken(String appClient, String appClientSecret, String userSecret, String tokenUrl, String identityProvider,
+                            String authUrl, String domain, String user, String password, String tenantId, String region) {
+        String token = null;
+        if (appClient != null && appClientSecret != null && tokenUrl != null && identityProvider != null) {
+            // We need first to get a token from Keycloak
+            try {
+                Header header = new BasicHeader("Content-Type", "application/x-www-form-urlencoded");
+                List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair("password", password));
+                params.add(new BasicNameValuePair("grant_type", "password"));
+                params.add(new BasicNameValuePair("username", user));
+                params.add(new BasicNameValuePair("client_id", appClient));
+                params.add(new BasicNameValuePair("client_secret", appClientSecret));
+                if (userSecret != null) {
+                    params.add(new BasicNameValuePair("totp", generateOTP(userSecret)));
+                }
+                try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, tokenUrl, header, params)) {
+                    token = EntityUtils.toString(response.getEntity());
+                    Map<String, String> map = new LinkedHashMap<>();
+                    map.putAll(new ObjectMapper().readValue(token, map.getClass()));
+                    token = map.get("access_token");
+                    token = getOSToken(authUrl, user, region, tenantId, domain, appClient, appClientSecret, identityProvider, token);
+                }
+            } catch (Exception e) {
+                logger.severe("Cannot obtain token for OpenStack pre-authentication");
+            }
+        }
+        return token;
     }
 
     private String generateOTP(String secret) throws CodeGenerationException {

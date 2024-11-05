@@ -25,16 +25,22 @@ public class ViewExtension<E extends Extensible> extends Extension<E> {
 
     @Override
     public void extractField(TreeNode node, String name) throws JsonProcessingException {
-        if (ViewFields.AZIMUTH.equals(name)) {
-            setAzimuth(JsonValueHelper.getDouble(node, name));
-        } else if (ViewFields.INCIDENCE_ANGLE.equals(name)) {
-            setIncidence_angle(JsonValueHelper.getDouble(node, name));
-        } else if (ViewFields.OFF_NADIR.equals(name)) {
-            setOff_nadir(JsonValueHelper.getDouble(node, name));
-        } else if (ViewFields.SUN_AZIMUTH.equals(name)) {
-            setSun_azimuth(JsonValueHelper.getDouble(node, name));
-        } else if (ViewFields.SUN_ELEVATION.equals(name)) {
-            setSun_elevation(JsonValueHelper.getDouble(node, name));
+        switch (name) {
+            case ViewFields.AZIMUTH:
+                setAzimuth(JsonValueHelper.getDouble(node, name));
+                break;
+            case ViewFields.INCIDENCE_ANGLE:
+                setIncidence_angle(JsonValueHelper.getDouble(node, name));
+                break;
+            case ViewFields.OFF_NADIR:
+                setOff_nadir(JsonValueHelper.getDouble(node, name));
+                break;
+            case ViewFields.SUN_AZIMUTH:
+                setSun_azimuth(JsonValueHelper.getDouble(node, name));
+                break;
+            case ViewFields.SUN_ELEVATION:
+                setSun_elevation(JsonValueHelper.getDouble(node, name));
+                break;
         }
     }
 

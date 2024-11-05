@@ -36,11 +36,9 @@ import ro.cs.tao.datasource.usgs.json.types.Download;
 import ro.cs.tao.datasource.usgs.parameters.USGSDateParameterConverter;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
-import ro.cs.tao.products.landsat.Landsat8TileExtent;
 import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
-import ro.cs.tao.utils.StringUtilities;
 
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
@@ -58,9 +56,13 @@ public class USGSQuery extends DataQuery {
 
     private static final Map<String, String> fieldIds;
     private static final String C2_LEVEL1_COLLECTION = "landsat_ot_c2_l1";
-    private static final String C1_LEVEL1_COLLECTION = "landsat_8_c1";
-    private static final String C2_LEVEL2_COLLECTION = "landsat_ot_c2_l2";
-    private static final Set<String> formats = new HashSet<String>() {{ add("geotiff"); add("hdf"); add("netcdf"); }};
+    private static final String SATELLITE_PARAM_REMOTE_NAME = "Satellite";
+    private static final String SATELLITE_PARAM_ALT_REMOTE_NAME = "Spacecraft Identifier";
+    private static final Set<String> formats = new HashSet<>() {{
+        add("geotiff");
+        add("hdf");
+        add("netcdf");
+    }};
     private String apiKey;
 
     static {
@@ -82,7 +84,7 @@ public class USGSQuery extends DataQuery {
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
         try {
-            return (List<EOProduct>) executeQuery(this.pageNumber, this.pageSize, null, false);
+            return executeQuery(this.pageNumber, this.pageSize).getProducts();
         } catch (Exception e) {
             throw new QueryException(e);
         }
@@ -90,67 +92,38 @@ public class USGSQuery extends DataQuery {
 
     @Override
     protected long getCountImpl() {
-        long retVal = 0;
         try {
-            retVal = (long) executeQuery(1, 1, null, true);
+            return executeQuery(1, 1).getCount();
         } catch (Exception e) {
             throw new QueryException(e);
         }
-        return retVal;
     }
 
-    private Set<String> getPathRows() {
-        Set<String> pathRows = null;
-        for (QueryParameter<?> parameter : this.parameters.values()) {
-            final Class<?> parameterType = parameter.getType();
-            final Object parameterValue = parameter.getValue();
-            if (parameterType.isArray() && String[].class.isAssignableFrom(parameterType)) {
-                // we have an array of rows and paths
-                if (parameterValue != null) {
-                    pathRows = new HashSet<>();
-                    if (parameterValue instanceof String[]) {
-                        Collections.addAll(pathRows, (String[]) parameterValue);
-                    } else {
-                        Collections.addAll(pathRows, StringUtilities.fromJsonArray(parameterValue.toString()));
+    private void setupRemoteFields() {
+        fieldIds.clear();
+        DatasetFieldsRequest request = new DatasetFieldsRequest();
+        request.setDatasetName(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
+                this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
+                C2_LEVEL1_COLLECTION);
+        String url = buildPostRequestURL("dataset-filters");
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, request.toString())) {
+            switch (response.getStatusLine().getStatusCode()) {
+                case 200:
+                    String body = EntityUtils.toString(response.getEntity());
+                    JsonResponseParser<FieldDescriptor> parser = new JsonResponseParser<>(new DatasetFieldsResponseHandler());
+                    List<FieldDescriptor> params = parser.parse(body);
+                    for (FieldDescriptor param : params) {
+                        fieldIds.put(param.getFieldLabel(), param.getId());
                     }
-                }
-            } else  if (Polygon2D.class.equals(parameterType) &&
-                    (pathRows == null || pathRows.size() == 0)) {
-                Polygon2D footprint = (Polygon2D ) parameterValue;
-                if (footprint != null) {
-                    pathRows = Landsat8TileExtent.getInstance().intersectingTiles(footprint);
-                }
+                    break;
+                case 401:
+                    throw new QueryException("The supplied credentials are invalid!");
+                default:
+                    throw new QueryException(String.format("The request was not successful. Reason: %s",
+                            response.getStatusLine().getReasonPhrase()));
             }
-        }
-        return pathRows;
-    }
-
-    private void setupRemoteFields() throws Exception {
-        if (fieldIds.size() == 0) {
-            DatasetFieldsRequest request = new DatasetFieldsRequest();
-            request.setDatasetName(this.parameters.containsKey(CommonParameterNames.PLATFORM) ?
-                                           this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString() :
-                                           C2_LEVEL1_COLLECTION);
-            String url = buildPostRequestURL("dataset-filters");
-            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, request.toString())) {
-                switch (response.getStatusLine().getStatusCode()) {
-                    case 200:
-                        String body = EntityUtils.toString(response.getEntity());
-                        JsonResponseParser<FieldDescriptor> parser = new JsonResponseParser<>(new DatasetFieldsResponseHandler());
-                        List<FieldDescriptor> params = parser.parse(body);
-                        for (FieldDescriptor param : params) {
-                            fieldIds.put(param.getFieldLabel(), param.getId());
-                        }
-                        break;
-                    case 401:
-                        throw new QueryException("The supplied credentials are invalid!");
-                    default:
-                        throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                                               response.getStatusLine().getReasonPhrase()));
-                }
-            } catch (Exception ex) {
-                throw new QueryException(ex);
-            }
+        } catch (Exception ex) {
+            throw new QueryException(ex);
         }
     }
 
@@ -166,7 +139,7 @@ public class USGSQuery extends DataQuery {
         }
         optionsRequest.setEntityIds(String.join(",", ids));
         String url = buildPostRequestURL("download-options");
-        List<DownloadInfo> downloadInfos = null;
+        final List<DownloadInfo> downloadInfos;
         try (CloseableHttpResponse response =
                      NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, optionsRequest.toString())) {
             switch (response.getStatusLine().getStatusCode()) {
@@ -177,35 +150,21 @@ public class USGSQuery extends DataQuery {
                     if (downloadInfos == null) {
                         return null;
                     }
-                    downloadInfos.removeIf(i ->
-                            (optionsRequest.getDatasetName().equals(C1_LEVEL1_COLLECTION) && !i.getProductName().endsWith("Data Product"))
-                        || (optionsRequest.getDatasetName().equals(C2_LEVEL1_COLLECTION) && !i.getProductName().endsWith("Product Bundle"))
-                        || (optionsRequest.getDatasetName().equals(C2_LEVEL2_COLLECTION) && !i.getProductName().endsWith("Product Bundle"))
-                        || (i.getProductName().toLowerCase().contains("metadata")));
+                    downloadInfos.removeIf(i -> (!i.getDownloadSystem().toLowerCase().contains("zip") && !i.getDownloadSystem().toLowerCase().contains("dds")) || i.getProductName().toLowerCase().contains("metadata"));
                     if (this.sensorName.equalsIgnoreCase("Hyperion")) {
                         downloadInfos.removeIf(i -> formats.stream().noneMatch(f -> i.getProductName().toLowerCase().contains(f)));
                     }
                     // It may happen to have two entries for the same entityId, one available and one not.
                     // Then, in order to properly populate the 'notAvailable' set, we need to sort the list by
                     // entityId and then by 'available' (if y/n, n comes before y, if true/false, false comes before true)
+                    downloadInfos.sort(Comparator.comparing(DownloadInfo::getEntityId).thenComparing(i -> i.getDownloadSystem().toLowerCase().contains("dds")));
                     downloadInfos.sort(Comparator.comparing(DownloadInfo::getEntityId).thenComparing(DownloadInfo::getAvailable));
-                    final Iterator<DownloadInfo> iterator = downloadInfos.iterator();
-                    final Set<String> notAvailable = new HashSet<>();
-                    while (iterator.hasNext()) {
-                        DownloadInfo info = iterator.next();
+                    for (DownloadInfo info : downloadInfos) {
                         if (!("y".equalsIgnoreCase(info.getAvailable()) || "true".equalsIgnoreCase(info.getAvailable()))) {
-                            notAvailable.add(info.getEntityId());
-                            logger.warning(String.format("Product %s is not available for download system %s",
-                                                         info.getDisplayId(), info.getDownloadSystem()));
-                            iterator.remove();
-                        } else {
-                            // it may happen to find duplicates
-                            notAvailable.remove(info.getEntityId());
+                            logger.warning(String.format("Product %s is not available for download system %s", info.getDisplayId(), info.getDownloadSystem()));
                         }
-                        products.stream().filter(p -> p.getName().equals(info.getDisplayId())).findFirst().get().setApproximateSize(info.getFilesize());
+                        products.stream().filter(p -> p.getName().equals(info.getDisplayId())).findFirst().ifPresent(product -> product.setApproximateSize(info.getFilesize()));
                     }
-                    products.removeIf(p -> notAvailable.contains(p.getId()));
-                    downloadInfos.removeIf(d -> notAvailable.contains(d.getEntityId()));
                     break;
                 case 401:
                     throw new QueryException("The supplied credentials are invalid!");
@@ -231,44 +190,27 @@ public class USGSQuery extends DataQuery {
                     }})
                     .collect(Collectors.toList()));
             String url = buildPostRequestURL("download-request");
-            int preparingDownloads = downloadInfos.size();
             List<AvailableDownload> downloads = null;
-            // Loop until all download requests moved to download queue from staging
-            while (preparingDownloads > 0) {
-                try (CloseableHttpResponse lastOne =
-                             NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, downloadRequest.toString())) {
-                    switch (lastOne.getStatusLine().getStatusCode()) {
-                        case 200:
-                            String body = EntityUtils.toString(lastOne.getEntity());
-                            JsonResponseParser<DownloadResponse> parser = new JsonResponseParser<>(new DownloadResponseHandler());
-                            DownloadResponse resp = parser.parseValue(body);
-                            if (resp != null) {
-                                if (resp.getData().getPreparingDownloads() != null) {
-                                    preparingDownloads = resp.getData().getPreparingDownloads().size();
-                                } else {
-                                    preparingDownloads = 0;
-                                }
-                                downloads = resp.getData().getAvailableDownloads();
-                            } else {
-                                preparingDownloads = 0;
-                            }
-                            break;
-                        case 401:
-                            throw new QueryException("The supplied credentials are invalid!");
-                        default:
-                            throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                                                   lastOne.getStatusLine().getReasonPhrase()));
-                    }
-                } catch (Exception ex) {
-                    throw new QueryException(ex);
+            try (CloseableHttpResponse lastOne =
+                         NetUtils.openConnection(HttpMethod.POST, url, "X-Auth-Token", this.apiKey, downloadRequest.toString())) {
+                switch (lastOne.getStatusLine().getStatusCode()) {
+                    case 200:
+                        String body = EntityUtils.toString(lastOne.getEntity());
+                        JsonResponseParser<DownloadResponse> parser = new JsonResponseParser<>(new DownloadResponseHandler());
+                        DownloadResponse resp = parser.parseValue(body);
+                        if (resp != null) {
+                            downloads = resp.getData().getAvailableDownloads();
+                            downloads.addAll(resp.getData().getPreparingDownloads());
+                        }
+                        break;
+                    case 401:
+                        throw new QueryException("The supplied credentials are invalid!");
+                    default:
+                        throw new QueryException(String.format("The request was not successful. Reason: %s",
+                                lastOne.getStatusLine().getReasonPhrase()));
                 }
-                if (preparingDownloads > 0) {
-                    logger.fine("Some downloads are staging. Retrying after 10 seconds.");
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException ignored) {
-                    }
-                }
+            } catch (Exception ex) {
+                throw new QueryException(ex);
             }
             if (downloads != null) {
                 if (products.size() != downloads.size()) {
@@ -293,7 +235,7 @@ public class USGSQuery extends DataQuery {
         return this.source.getConnectionString() + operation;
     }
 
-    private SearchRequest buildQuery(int pgNumber, int pgSize, Set<String> pathRowFilter) throws Exception {
+    private SearchRequest buildQuery(int pgNumber, int pgSize) {
         if (!this.parameters.containsKey(CommonParameterNames.PLATFORM)) {
             addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }
@@ -302,14 +244,10 @@ public class USGSQuery extends DataQuery {
                              ? this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString()
                              : C2_LEVEL1_COLLECTION);
         SearchFilterValue filter;
-        Map<String, QueryParameter> parameters = new HashMap<>(this.parameters);
-        if (parameters.containsKey("earthDataUsername") && parameters.containsKey("earthDataPassword")) {
-            String username = parameters.get("earthDataUsername").getValueAsString();
-            String password = parameters.get("earthDataPassword").getValueAsString();
-            ((USGSDataSource) this.source).setEarthDataCredentials(username, password);
-        }
+        Map<String, QueryParameter<?>> parameters = new HashMap<>(this.parameters);
         for (QueryParameter<?> parameter : parameters.values()) {
             try {
+                final String remoteName = getRemoteName(parameter.getName());
                 switch (parameter.getName()) {
                     case CommonParameterNames.PLATFORM:
                         request.withDataSet(parameter.getValueAsString());
@@ -326,84 +264,59 @@ public class USGSQuery extends DataQuery {
                         request.withLowerLeft(bounds.getMinX(), bounds.getMinY())
                                .withUpperRight(bounds.getMaxX(), bounds.getMaxY());
                         break;
-                    case CommonParameterNames.PRODUCT:
-                        filter = new SearchFilterValue();
-                        filter.setFilterId(fieldIds.get(getRemoteName(CommonParameterNames.PRODUCT)));
-                        filter.setOperand("=");
-                        filter.setValue(parameter.getValueAsString());
-                        request.withFilter(filter);
-                        break;
-                    case CommonParameterNames.PRODUCT_TYPE:
-                        if (!C2_LEVEL2_COLLECTION.equals(request.getDatasetName())) {
-                            filter = new SearchFilterValue();
-                            filter.setFilterId(fieldIds.get("Data Type L1"));
-                            filter.setOperand("=");
-                            filter.setValue(parameter.getValueAsString());
-                            request.withFilter(filter);
-                        }
-                        break;
                     case "minClouds":
                         request.withMinClouds(parameter.getValueAsInt());
                         break;
                     case "maxClouds":
                         request.withMaxClouds(parameter.getValueAsInt());
                         break;
-                    case "row":
-                        filter = new SearchFilterValue();
-                        filter.setFilterId(fieldIds.get("WRS Row"));
-                        filter.setOperand("=");
-                        filter.setValue(parameter.getValueAsString());
-                        request.withFilter(filter);
-                        break;
-                    case "path":
-                        filter = new SearchFilterValue();
-                        filter.setFilterId(fieldIds.get("WRS Path"));
-                        filter.setOperand("=");
-                        filter.setValue(parameter.getValueAsString());
-                        request.withFilter(filter);
-                        break;
                     case CommonParameterNames.TILE:
-                        String pathRow = parameters.get(CommonParameterNames.TILE).getValueAsString();
-                        filter = new SearchFilterValue();
-                        filter.setFilterId(fieldIds.get("WRS Path"));
-                        filter.setOperand("=");
-                        filter.setValue(pathRow.substring(0, 3));
-                        request.withFilter(filter);
-                        filter = new SearchFilterValue();
-                        filter.setFilterId(fieldIds.get("WRS Row"));
-                        filter.setOperand("=");
-                        filter.setValue(pathRow.substring(3, 6));
-                        request.withFilter(filter);
+                        final String rowParameterRemoteName = getRemoteName("row");
+                        final String pathParameterRemoteName = getRemoteName("path");
+                        if (fieldIds.containsKey(rowParameterRemoteName) && fieldIds.containsKey(pathParameterRemoteName)) {
+                            String pathRow = parameters.get(CommonParameterNames.TILE).getValueAsString();
+                            filter = new SearchFilterValue();
+                            filter.setFilterId(fieldIds.get(rowParameterRemoteName));
+                            filter.setOperand("=");
+                            filter.setValue(pathRow.substring(0, 3));
+                            request.withFilter(filter);
+                            filter = new SearchFilterValue();
+                            filter.setFilterId(fieldIds.get(pathParameterRemoteName));
+                            filter.setOperand("=");
+                            filter.setValue(pathRow.substring(3, 6));
+                            request.withFilter(filter);
+                        }
                         break;
+                    default:
+                        if (fieldIds.containsKey(remoteName)) {
+                            filter = new SearchFilterValue();
+                            filter.setFilterId(fieldIds.get(remoteName));
+                            filter.setOperand("=");
+                            filter.setValue(parameter.getValueAsString());
+                            request.withFilter(filter);
+                        }
                 }
             } catch (ConversionException e) {
-                e.printStackTrace();
+                logger.severe("Build query ERROR: " + e.getMessage());
             }
         }
         if (this.sensorName.toLowerCase().startsWith("landsat")) {
-            filter = new SearchFilterValue();
-            filter.setFilterId(fieldIds.get("Satellite"));
-            filter.setOperand("=");
-            filter.setValue(this.sensorName.substring(this.sensorName.length() - 1));
-            request.withFilter(filter);
-        }
-        if (pathRowFilter != null && !pathRowFilter.isEmpty()) {
-            SearchFilterOr orFilter = new SearchFilterOr();
-            for (String pathRow : pathRowFilter) {
-                SearchFilterAnd andFilter = new SearchFilterAnd();
-                filter = new SearchFilterValue();
-                filter.setFilterId(fieldIds.get("WRS Path"));
-                filter.setOperand("=");
-                filter.setValue(pathRow.substring(0, 3));
-                andFilter.addChildFilter(filter);
-                filter = new SearchFilterValue();
-                filter.setFilterId(fieldIds.get("WRS Row"));
-                filter.setOperand("=");
-                filter.setValue(pathRow.substring(3, 6));
-                andFilter.addChildFilter(filter);
-                orFilter.addChildFilter(andFilter);
+            final String remoteName;
+            final String value;
+            if (fieldIds.containsKey(SATELLITE_PARAM_REMOTE_NAME)) {
+                remoteName = SATELLITE_PARAM_REMOTE_NAME;
+                value = this.sensorName.substring(this.sensorName.length() - 1);
+            } else {
+                remoteName = SATELLITE_PARAM_ALT_REMOTE_NAME;
+                value = this.sensorName.substring(0, this.sensorName.length() - 1).toUpperCase() + "_" + this.sensorName.substring(this.sensorName.length() - 1);
             }
-            request.withFilter(orFilter);
+            if (fieldIds.containsKey(remoteName)) {
+                filter = new SearchFilterValue();
+                filter.setFilterId(fieldIds.get(remoteName));
+                filter.setOperand("=");
+                filter.setValue(value);
+                request.withFilter(filter);
+            }
         }
         if (pgNumber > 0 && pgSize > 0) {
             request.startingAtIndex((pgNumber - 1) * pgSize + 1);
@@ -414,97 +327,70 @@ public class USGSQuery extends DataQuery {
         return request;
     }
 
-    private Object executeQuery(int start, int pageSize, Set<String> pathRows, boolean count) throws Exception {
+    private QueryResult executeQuery(int start, int pageSize) {
         if (this.apiKey == null) {
             this.apiKey = ((USGSDataSource) this.source).authenticate();
-            setupRemoteFields();
         }
-        final Object results;
-        if (!count) {
-            results = new ArrayList<EOProduct>();
-        } else {
-            results = new AtomicLong(0);
-        }
-        if (pathRows != null && !pathRows.isEmpty()) {
-            final Set<String> single = new HashSet<>();
-            pathRows.forEach(pr -> {
-                try {
-                    single.clear();
-                    single.add(pr);
-                    final SearchRequest request = buildQuery(start, pageSize, single);
-                    String queryUrl = buildPostRequestURL("scene-search");
-                    logger.finest(String.format("Executing query for product : %s", request.toString()));
-                    try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, queryUrl, "X-Auth-Token", apiKey, request.toString())) {
-                        switch (response.getStatusLine().getStatusCode()) {
-                            case 200:
-                                String body = EntityUtils.toString(response.getEntity());
-                                ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(this.coverageFilter),
-                                                                                            "totalHits");
-                                if (!count) {
-                                    ((List<EOProduct>) results).addAll(parser.parse(body));
-                                    if (this.coverageFilter == null) {
-                                        ((List<EOProduct>) results).removeIf(this.coverageFilter);
-                                    }
-                                } else {
-                                    ((AtomicLong) results).addAndGet(parser.parseCount(body));
-                                }
-                                break;
-                            case 401:
-                                throw new QueryException("The supplied credentials are invalid!");
-                            default:
-                                throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                                                       response.getStatusLine().getReasonPhrase()));
-                        }
-                    } catch (IOException ex) {
-                        throw new QueryException(ex);
+        setupRemoteFields();
+        final List<EOProduct> products = new ArrayList<>();
+        final AtomicLong count = new AtomicLong(0);
+        final SearchRequest request = buildQuery(start, pageSize);
+        final String queryUrl = buildPostRequestURL("scene-search");
+        logger.finest("Executing query " + queryUrl + " with payload " + request);
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, queryUrl, "X-Auth-Token", apiKey, request.toString())) {
+            switch (response.getStatusLine().getStatusCode()) {
+                case 200:
+                    final String body = EntityUtils.toString(response.getEntity());
+                    if (body.contains("SERVER_ERROR")) {
+                        throw new QueryException("The request was not successful. Reason: API Server Error");
                     }
-                } catch (Exception e) {
-                    throw new QueryException(e);
-                }
-            });
-        } else {
-            SearchRequest request = buildQuery(start, pageSize, pathRows);
-            String queryUrl = buildPostRequestURL("scene-search");
-            logger.finest("Executing query " + queryUrl + " with payload " + request.toString());
-            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, queryUrl, "X-Auth-Token", apiKey, request.toString())) {
-                switch (response.getStatusLine().getStatusCode()) {
-                    case 200:
-                        String body = EntityUtils.toString(response.getEntity());
-                        if (body.contains("SERVER_ERROR")) {
-                            throw new QueryException("The request was not successful. Reason: API Server Error");
-                        }
-                        ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(this.coverageFilter),
-                                                                                    "totalHits");
-                        if (!count) {
-                            ((List<EOProduct>) results).addAll(parser.parse(body));
-                        } else {
-                            ((AtomicLong) results).addAndGet(parser.parseCount(body));
-                        }
-                        break;
-                    case 401:
-                        throw new QueryException("The supplied credentials are invalid!");
-                    default:
-                        throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                response.getStatusLine().getReasonPhrase()));
-                }
-            } catch (IOException ex) {
-                throw new QueryException(ex);
+                    final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(this.sensorName ,this.source.getSensorTypes().get(this.sensorName).getSensorType(), this.coverageFilter),
+                            "totalHits");
+                    final List<EOProduct> parsedProducts = parser.parse(body);
+                    if (parsedProducts != null) {
+                        products.addAll(parsedProducts);
+                    }
+                    count.addAndGet(parser.parseCount(body));
+                    break;
+                case 401:
+                    throw new QueryException("The supplied credentials are invalid!");
+                default:
+                    throw new QueryException(String.format("The request was not successful. Reason: %s",
+                            response.getStatusLine().getReasonPhrase()));
+            }
+        } catch (IOException ex) {
+            throw new QueryException(ex);
+        }
+        final int currentSize = products.size();
+        if (currentSize > 0 && this.limit > 0 && currentSize > this.limit) {
+            products.subList(this.limit, currentSize).clear();
+        }
+        boolean counting = pageSize < 2;
+        if (!products.isEmpty() && !counting) {
+            final List<DownloadInfo> downloadInfos = getDownloadInfos(products);
+            if (downloadInfos != null && !downloadInfos.isEmpty()) {
+                fillDownloadUrls(products, downloadInfos);
             }
         }
-        if (!count) {
-            List<EOProduct> trimmed = (List<EOProduct>) results;
-            int currentSize = trimmed.size();
-            if (currentSize > 0 && this.limit > 0 && currentSize > this.limit) {
-                trimmed.subList(this.limit, currentSize).clear();
-            }
-            if (!trimmed.isEmpty()) {
-                fillDownloadUrls(trimmed, getDownloadInfos(trimmed));
-                trimmed.removeIf(p -> p.getLocation() == null);
-            }
-        }
-        logger.info(String.format("Query returned %s products",
-                                  count ? ((AtomicLong) results).get() : ((List<EOProduct>) results).size()));
-        return count ? ((AtomicLong) results).get() : results;
+        logger.info(String.format("Query returned %s products", products.size()));
+        return new QueryResult(products, count.get());
+    }
 
+    private static class QueryResult {
+        private final List<EOProduct> products;
+        private final long count;
+
+        public QueryResult(List<EOProduct> products, long count) {
+            this.products = products;
+            this.count = count;
+        }
+
+        public List<EOProduct> getProducts() {
+            return products;
+        }
+
+        public long getCount() {
+            return count;
+        }
     }
 }

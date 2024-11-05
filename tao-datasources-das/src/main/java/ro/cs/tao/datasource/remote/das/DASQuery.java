@@ -61,6 +61,9 @@ public class DASQuery extends DataQuery {
             Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
 
     private static final DateTimeFormatter dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
+    private static final Set<Class<?>> unquotableTypes  = new HashSet<>() {{
+        add(short.class); add(int.class); add(long.class); add(float.class); add(double.class);
+    }};
 
     private final String sensorName;
 
@@ -78,25 +81,25 @@ public class DASQuery extends DataQuery {
 
     @Override
     protected List<EOProduct> executeImpl() throws QueryException {
-        Map<String, EOProduct> results = new LinkedHashMap<>();
+        final Map<String, EOProduct> results = new LinkedHashMap<>();
         Map<String, String> queries = null;
         try {
             queries = buildQueriesParams();
         } catch (ConversionException e) {
             throw new RuntimeException(e);
         }
-        String platform = this.parameters.get(CommonParameterNames.PLATFORM).getValue().toString();
+        final String platform = this.parameters.get(CommonParameterNames.PLATFORM).getValue().toString();
         final boolean isS2 = "Sentinel-2".equalsIgnoreCase(platform);
         final boolean isS1Aux = "Sentinel1-orbit-files".equals(this.sensorName);
         final boolean isS1 = "Sentinel-1".equalsIgnoreCase(platform) && !isS1Aux;
         final boolean isS3 = "Sentinel-3".equalsIgnoreCase(platform);
-        StringBuilder msgBuilder = new StringBuilder();
+        final StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
         for (String queryId : queries.keySet()) {
             msgBuilder.append(queryId).append(",");
         }
         msgBuilder.setLength(msgBuilder.length() - 1);
-        logger.fine(msgBuilder.toString());
+        this.logger.fine(msgBuilder.toString());
         final int actualLimit = this.limit > 0 ? this.limit : DEFAULT_LIMIT;
         msgBuilder.setLength(0);
         if (this.pageSize <= 0) {
@@ -107,29 +110,29 @@ public class DASQuery extends DataQuery {
         if (this.pageNumber == 1) {
             this.pageNumber = -1;
         }
-        int page = Math.max(this.pageNumber, 1);
+        final int page = Math.max(this.pageNumber, 1);
         List<EOProduct> tmpResults;
         for (Map.Entry<String, String> query : queries.entrySet()) {
             long i = page;
             long count;
             do {
                 count = 0;
-                List<NameValuePair> params = new ArrayList<>();
+                final List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("$filter", query.getValue()));
                 params.add(new BasicNameValuePair("$expand", "Attributes"));
                 params.add(new BasicNameValuePair("$expand", "Assets"));
-                params.add(new BasicNameValuePair("$top", String.valueOf(pageSize)));
-                params.add(new BasicNameValuePair("$skip", String.valueOf((i - 1) * pageSize)));
+                params.add(new BasicNameValuePair("$top", String.valueOf(this.pageSize)));
+                params.add(new BasicNameValuePair("$skip", String.valueOf((i - 1) * this.pageSize)));
                 params.add(new BasicNameValuePair("$orderby", "ContentDate/Start asc"));
-                String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
+                final String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
                 final boolean hasProcessingDate = "Sentinel2".equals(this.sensorName) || "Sentinel3".equals(this.sensorName);
-                logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
+                this.logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
+                    final String rawResponse = EntityUtils.toString(response.getEntity());
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
-                            String rawResponse = EntityUtils.toString(response.getEntity());
-                            ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source,
-                                                                                                                   this.coverageFilter));
+                            final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source,
+                                                                                                                         this.coverageFilter));
                             tmpResults = parser.parse(rawResponse);
                             if (tmpResults != null) {
                                 if (isS3) {
@@ -149,7 +152,7 @@ public class DASQuery extends DataQuery {
                                             try {
                                                 productHelper = SentinelProductHelper.create(result.getName());
                                             } catch (Exception ex) {
-                                                logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
+                                                this.logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
                                                 continue;
                                             }
                                             if (isS2) {
@@ -162,7 +165,7 @@ public class DASQuery extends DataQuery {
                                                 result.addAttribute("relativeOrbit", getRelativeOrbit(result.getName()));
                                             }
                                             if (hasProcessingDate) {
-                                                String dateString = productHelper.getProcessingDate();
+                                                final String dateString = productHelper.getProcessingDate();
                                                 if (dateString != null) {
                                                     try {
                                                         result.setProcessingDate(LocalDateTime.parse(dateString, dateFormat));
@@ -174,14 +177,15 @@ public class DASQuery extends DataQuery {
                                         }
                                     }
                                 }
-                                logger.info(String.format("Query %s page %d returned %s products", query.getKey(), i, tmpResults.size()));
+                                this.logger.info(String.format("Query %s page %d returned %s products", query.getKey(), i, tmpResults.size()));
                             }
                             break;
                         case 401:
                             throw new QueryException("The supplied credentials are invalid!");
                         default:
-                            throw new QueryException(String.format("The request was not successful. Reason: %s",
-                                                                   response.getStatusLine().getReasonPhrase()));
+                            throw new QueryException(String.format("The request was not successful. Reason: %s ('%s')",
+                                                                   response.getStatusLine().getReasonPhrase(),
+                                                                   rawResponse));
                     }
                 } catch (IOException ex) {
                     throw new QueryException(ex);
@@ -189,7 +193,7 @@ public class DASQuery extends DataQuery {
                 i++;
             } while (this.pageNumber == -1 && count > 0 && results.size() < actualLimit);
         }
-        logger.info(String.format("Query {%s-%s} returned %s products", this.source.getId(), this.sensorName, results.size()));
+        this.logger.info(String.format("Query {%s-%s} returned %s products", this.source.getId(), this.sensorName, results.size()));
         return new ArrayList<>(results.values());
     }
 
@@ -223,18 +227,18 @@ public class DASQuery extends DataQuery {
             for (Map.Entry<String, String> query : queries.entrySet()) {
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("$top", "0"));
-                params.add(new BasicNameValuePair("$filter", query.getValue()));
+                params.add(new BasicNameValuePair("$filter", "(" + query.getValue() + ")"));
                 params.add(new BasicNameValuePair("$count", "True"));
                 String queryUrl = countUrl + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
-                logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
+                this.logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
                     switch (response.getStatusLine().getStatusCode()) {
                         case 200:
                             String rawResponse = EntityUtils.toString(response.getEntity());
                             Results results = new ObjectMapper().readerFor(Results.class).readValue(rawResponse);
                             count = results.getCount();
-                            logger.fine(String.format(QUERY_RESULT_MESSAGE, query.getKey(),
-                                                      this.source.getId(), this.sensorName, 1, count));
+                            this.logger.fine(String.format(QUERY_RESULT_MESSAGE, query.getKey(),
+                                                           this.source.getId(), this.sensorName, 1, count));
                             break;
                         case 401:
                             throw new QueryException("The supplied credentials are invalid!");
@@ -255,7 +259,7 @@ public class DASQuery extends DataQuery {
 
     private Map<String, String> buildQueriesParams() throws ConversionException {
         Map<String, String> queries = new HashMap<>();
-        final boolean isS1Aux = this.sensorName.equals("Sentinel1-orbit-files");
+        final boolean isS1Aux = "Sentinel1-orbit-files".equals(this.sensorName);
         if (!this.parameters.containsKey(CommonParameterNames.PLATFORM)) {
             addParameter(CommonParameterNames.PLATFORM, this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
         }
@@ -286,8 +290,8 @@ public class DASQuery extends DataQuery {
                         if (polygon != null) {
                             footprints = new String[]{polygon.toWKT()};
                         } else {
-                            logger.warning(String.format("No extent found for tile '%s'. Maybe it is not a Sentinel-2 product",
-                                                         strVal));
+                            this.logger.warning(String.format("No extent found for tile '%s'. Maybe it is not a Sentinel-2 product",
+                                                              strVal));
                         }
                     }
                 }
@@ -328,7 +332,7 @@ public class DASQuery extends DataQuery {
                         continue;
                     }
                     if (idx > 0 && query.length() > 0) {
-                        query.append(" AND ");
+                        query.append(" and ");
                     }
                     String value;
                     switch (parameter.getName()) {
@@ -342,7 +346,7 @@ public class DASQuery extends DataQuery {
                             break;
                         case CommonParameterNames.START_DATE:
                             query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.START_DATE),
-                                                             parameter, Condition.GT));
+                                                             parameter, Condition.GTE));
                             break;
                         case CommonParameterNames.END_DATE:
                             query.append(buildPropertyFilter(getRemoteName(CommonParameterNames.END_DATE),
@@ -361,7 +365,7 @@ public class DASQuery extends DataQuery {
                                     }
                                 } else {
                                     // remove the last " AND " because parameter is skipped
-                                    if (query.length() >= 5 && " AND ".equals(query.substring(query.length() - 5))) {
+                                    if (query.length() >= 5 && " and ".equals(query.substring(query.length() - 5))) {
                                         query.setLength(query.length() - 5);
                                     }
                                     idx--;
@@ -399,14 +403,14 @@ public class DASQuery extends DataQuery {
                                 String[] values = value.substring(1, value.length() - 1).split(",");
                                 query.append("(");
                                 for (int i = 0; i < values.length; i++) {
-                                    query.append(buildTyprFilter(values[i]));
+                                    query.append(buildTypeFilter(values[i]));
                                     if (i < values.length - 1) {
-                                        query.append(" OR ");
+                                        query.append(" or ");
                                     }
                                 }
                                 query.append(")");
                             } else {
-                                query.append(buildTyprFilter(value));
+                                query.append(buildTypeFilter(value));
                             }
                             break;
                         case "productSize":
@@ -423,7 +427,7 @@ public class DASQuery extends DataQuery {
                                                                       Array.get(values, i),
                                                                       Condition.EQ));
                                     if (i < length - 1) {
-                                        query.append(" OR ");
+                                        query.append(" or ");
                                     }
                                 }
                                 if (length > 1) {
@@ -431,14 +435,18 @@ public class DASQuery extends DataQuery {
                                 }
                                 query.append(")");
                             } else {
-                                query.append(buildAttributeFilter(getRemoteName(entry.getKey()), parameter, Condition.EQ));
+                                query.append(buildAttributeFilter(getRemoteName(entry.getKey()),
+                                                                  parameter,
+                                                                  String.class.equals(parameter.getType())
+                                                                  ? Condition.EQ
+                                                                  : Condition.LTE));
                             }
                             break;
                     }
                     idx++;
                 }
                 final String strQuery = query.toString();
-                queries.put(UUID.randomUUID().toString(), strQuery.endsWith(" AND ") ? strQuery.substring(0, strQuery.length() - 5) : strQuery);
+                queries.put(UUID.randomUUID().toString(), strQuery.endsWith(" and ") ? strQuery.substring(0, strQuery.length() - 5) : strQuery);
                 query.setLength(0);
             }
         }
@@ -451,9 +459,9 @@ public class DASQuery extends DataQuery {
         if (matcher.matches()) {
             int absOrbit = Integer.parseInt(matcher.group(10));
             value = String.format("%03d",
-                    matcher.group(1).endsWith("A") ?
-                            ((absOrbit - 73) % 175) + 1 :
-                            ((absOrbit - 27) % 175) + 1);
+                                  matcher.group(1).endsWith("A")
+                                  ? ((absOrbit - 73) % 175) + 1
+                                  : ((absOrbit - 27) % 175) + 1);
         } else {
             value = null;
         }
@@ -473,7 +481,8 @@ public class DASQuery extends DataQuery {
 
     private String buildPropertyFilter(String name, QueryParameter<?> parameter, Condition condition) throws ConversionException {
         boolean shouldQuote = !Number.class.isAssignableFrom(parameter.getType())
-                && !LocalDateTime.class.isAssignableFrom(parameter.getType());
+                && !LocalDateTime.class.isAssignableFrom(parameter.getType())
+                && !unquotableTypes.contains(parameter.getType());
         String cond = condition.name().length() == 3
                       ? condition.name().toLowerCase().replace("t", "")
                       : condition.name().toLowerCase();
@@ -490,14 +499,14 @@ public class DASQuery extends DataQuery {
 
     private String buildAttributeFilter(String name, QueryParameter<?> parameter, Condition condition) throws ConversionException {
         Class<?> paramType = parameter.getType();
-        boolean shouldQuote = !Number.class.isAssignableFrom(paramType);
+        boolean shouldQuote = !Number.class.isAssignableFrom(paramType) && !unquotableTypes.contains(paramType);
         String cond = condition.name().length() == 3
                       ? condition.name().toLowerCase().replace("t", "")
                       : condition.name().toLowerCase();
         String oDataType = "OData.CSC.";
-        if (paramType.equals(Integer.class)) {
+        if (paramType.equals(Integer.class) || paramType.equals(int.class)) {
             oDataType += "Integer";
-        } else if (paramType.equals(Double.class)) {
+        } else if (paramType.equals(Double.class) || paramType.equals(double.class)) {
             oDataType += "Double";
         } else if (paramType.equals(String.class)) {
             oDataType += "String";
@@ -512,14 +521,14 @@ public class DASQuery extends DataQuery {
 
     private String buildAttributeFilter(String name, Object value, Condition condition) throws ConversionException {
         Class<?> paramType = value.getClass();
-        boolean shouldQuote = !Number.class.isAssignableFrom(paramType);
+        boolean shouldQuote = !Number.class.isAssignableFrom(paramType) && !unquotableTypes.contains(paramType);
         String cond = condition.name().length() == 3
                       ? condition.name().toLowerCase().replace("t", "")
                       : condition.name().toLowerCase();
         String oDataType = "OData.CSC.";
-        if (paramType.equals(Integer.class)) {
+        if (paramType.equals(Integer.class) || paramType.equals(int.class)) {
             oDataType += "Integer";
-        } else if (paramType.equals(Double.class)) {
+        } else if (paramType.equals(Double.class) || paramType.equals(double.class)) {
             oDataType += "Double";
         } else if (paramType.equals(String.class)) {
             oDataType += "String";
@@ -532,7 +541,7 @@ public class DASQuery extends DataQuery {
                 (shouldQuote ? "'" : "") + value + (shouldQuote ? "')" : ")");
     }
 
-    private String buildTyprFilter(Object value) throws ConversionException {
+    private String buildTypeFilter(Object value) throws ConversionException {
         String stringVal = value.toString();
         List<String> tokens = new ArrayList<>();
         if (stringVal.contains("-")) {
@@ -550,7 +559,7 @@ public class DASQuery extends DataQuery {
             }
             builder.append(tokens.get(i)).append("')");
             if (i < size - 1 && i >= 0) {
-                builder.append(" AND ");
+                builder.append(" and ");
             }
         }
         builder.append(")");

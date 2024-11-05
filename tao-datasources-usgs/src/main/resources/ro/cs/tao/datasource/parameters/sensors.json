@@ -1,219 +1,570 @@
 {
+  "Aerial Photo Mosaics": {
+    "mission": "Aerial Photo Mosaics",
+    "sensorType": "OPTICAL",
+    "description": "USGS and Non USGS Agencies Aerial Photo Reference Mosaics inventory contains indexes to aerial photographs. The inventory contains imagery from various government agencies that are now archived at the USGS Earth Resources Observation and Science (EROS) Center. The film types, scales, and acquisition schedules differed according to project requirements. Low-, middle-, and high-altitude photographs were collected.\r\n \nThe Antarctic Fight Line Maps collection is comprised of 1:250,000 scale topographic maps over Antarctica with original hand-drawn flight lines for aerial photographic missions that were flown by the U.S. Navy.  \nAerial photographs of Antarctica from the United States Antarctic Resource Center (USARC) and the British Antarctic Survey (BAS) are maintained in this collection. USARC data are used by scientists and others to determine geologic features, analyze ice stream flow, and monitor penguin and seal populations. Several types of mapping cameras and film formats have been used to acquire over 300,000 frames of photography since 1946, with annual acquisitions since 1980.\r\n\r\nThe majority of the USARC photography is panchromatic black and white taken with three Fairchild cameras, each with a metrogon lens resulting in trimetrogon photographs (left oblique, vertical, and right oblique photographs). More recent acquisitions include natural color and color-infrared, archived mainly on 9-inch film. Fewer than 30,000 frames (less than 10 percent) of the photography are archived on 70-mm film. Spatial resolutions vary as a function of photographic scale, which ranges from 1:1,000 to 1:64,000.\r\n\r\nThe original aerial film negatives were store at the USGS Earth Resources Observation and Science (EROS) Center. The USGS archives most of the film taken over Antarctica what was held in the United States. Original film rolls acquired more than forty years ago became the responsibility of the National Archives, once scanned the rolls were sent to College Park, MD for storage.\r\n\r\nThe USGS is responsible for maintaining the USARC, which is a repository and distribution site for all cartographic materials covering Antarctica that are produced by the United States and other participating USARC nations.\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+    "temporalCoverage": "from 1937 to 1989",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "Aerial Photo Single Frames": {
+    "mission": "Aerial Photo Single Frames",
+    "sensorType": "OPTICAL",
+    "description": "The Aerial Photography Single Frame Records collection is a large and diverse group of imagery acquired by Federal organizations from 1937 to the present. Over 6.4 million frames of photographic images are available for download as medium and high resolution digital products. The high resolution data provide access to photogrammetric quality scans of aerial photographs with sufficient resolution to reveal landscape detail and to facilitate the interpretability of landscape features. Coverage is predominantly over the United States and includes portions of Central America and Puerto Rico. Individual photographs vary in scale, size, film type, quality, and coverage.\r\n",
+    "temporalCoverage": "from 1937 to 2014",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "Aircraft Scanners": {
+    "mission": "Aircraft Scanners",
+    "sensorType": "OPTICAL",
+    "description": "The Aircraft Scanners data set contains digital imagery acquired from several multispectral scanners including NS-001 Mutispectral scanner, Daedalus thematic mapper simulator (TMS), scanners and the thermal infrared multispectral scanner (TIMS). Data are collected from selected areas over the conterminous United States, Alaska, and Hawaii by NASA ER-2 and NASA C-130B aircraft operating from the NASA Ames Research Center (ARC) in Moffett Field, California, and by NASA Learjet aircraft operating from Stennis Space Center in Bay St. Louis, Mississippi. Limited international acquisitions also are available.\r\n\r\n",
+    "temporalCoverage": "from 1982 to 1995",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "ASAS": {
+    "mission": "ASAS",
+    "sensorType": "OPTICAL",
+    "description": "The Advanced Solid-State Array Spectroradiometer (ASAS) data collection contains data collected by the ASAS sensor flown aboard NASA aircraft. A fundamental use of ASAS data is to characterize and understand the directional variability in solar energy scattered by various land surface cover types (e.g., crops, forests, prairie grass, snow, or bare soil). The sensor's Bidirectional Reflectance Distribution Function determines the variation in the reflectance of a surface as a function of both the view zenith angle and solar illumination angle.\r\n\r\nThe ASAS sensor is a hyperspectral, multiangle, airborne remote sensing instrument maintained and operated by the Laboratory for Terrestrial Physics at NASA's Goddard Space Flight Center in Greenbelt, Maryland. The ASAS instrument is mounted on the underside of either NASA C-130 or NASA P-3 aircraft and is capable of off-nadir pointing from approximately 70 degrees forward to 55 degrees aft along the direction of flight. The aircraft is flown at an altitude of 5000 - 6000 meters (approximately 16,000 - 20,000 ft.).\r\n\r\nData in the ASAS collection primarily cover areas over the continental United States, but some ASAS data are also available over areas in Canada and western Africa. The ASAS data were collected between 1988 and 1994.\r\n",
+    "temporalCoverage": "from 1988 to 1994",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "AVHRR": {
+    "mission": "AVHRR",
+    "sensorType": "OPTICAL",
+    "description": "Normalized Difference Vegetation Index (NDVI) Composites are produced from multiple Advanced Very High Resolution Radiometer (AVHRR) daily observations that have been composited together to create a nearly cloud-free image showing maximum greenness. An NDVI ratio is produced from bands one and two of the AVHRR composite to produce a derived NDVI band composite.\r\nNormalized Difference Vegetation Index (NDVI) Composites are produced from multiple Advanced Very High Resolution Radiometer (AVHRR) daily observations that have been composited together to create a nearly cloud-free image showing maximum greenness. An NDVI ratio is produced from bands one and two of the AVHRR composite to produce a derived NDVI band composite.\r\nThe following NDVI products are available:\r\nConterminous U.S. and Alaska Weekly and biweekly NDVI composites date from January 1989 to present. U.S. composites are cast to the Lambert Azimuthal Equal-Area projection. Alaska composites are cast to the Albers Equal-Area Conic projection. Distribution of the NDVI composites depends on the age of the image: \r\n\t7- and 14-day (current) NDVI composites are weekly and biweekly updates produced within the last four weeks. The data includes a composite for each of the acquired AVHRR bands, as well as a derived NDVI band.\r\n\t7- and 14-day (recent) NDVI composites are weekly and biweekly updates produced from the end of the previous year until four weeks prior to present. The data includes a composite for each of the acquired AVHRR bands, as well as a derived NDVI band.\r\n                14-day (historical) NDVI composites consist of biweekly composites produced from January 1989 to the end of the previous year. The data includes a composite for each of the acquired AVHRR bands, as well as a derived NDVI band. Satellite zenith, solar zenith, relative azimuth, and acquisition dates are also provided.\r\n\nThe global land 1-km data set project represents an international effort to acquire, archive, process, and distribute 1-km AVHRR data of the entire global land surface in order to meet the needs of the international science community.  A network of 29 high resolution picture transmission (HRPT) stations, along with data recorded by the National Oceanic and Atmospheric Administration (NOAA), acquired daily global land coverage from 1 April, 1992 through  September 30, 1993, with the project subsequently extended through 1996.  The six major participants (NOAA, ESA, USGS, NASA, CSIRO, and SMC) coordinate HRPT receiving stations to acquire and compile the data set.  NOAA coordinates two HRPT receiving stations, Gilmore Creek, Alaska and Wallops Island, Virginia, and schedules the satellite's recorders to obtain local area coverage (LAC) AVHRR 1-km data over areas not covered by the other HRPT receiving stations. \r\n\r\nThis collection of over 40,000 AVHRR images has been archived and made available for distribution by the United States Geological Survey, EROS Center and the European Space Agency. \r\n \nThe Advanced Very High Resolution Radiometer (AVHRR) data set is comprised of data collected by the AVHRR sensor and held in the archives of the USGS Earth Resources Observation and Science [EROS) Center. Carried aboard the National Oceanic and Atmospheric Administration's Polar Orbiting Environmental Satellite series, the AVHRR sensor is a broad-band, 4- or 5- channel scanning radiometer sensing in the visible, near-infared, and thermal infrared portions of the electromagnetic spectrum.\r\n\r\nEROS houses AVHRR High Resolution Picture Transmission (HRPT) data and Local Area Coverage (LAC) data. The HRPT data are full resolution image data transmitted to a ground station as they are collected, while LAC data (also full resolution data) are recorded with an onboard tape recorder for subsequent transmission during a station overpass.\nThe Remote Sensing Phenology (RSP) collection is a set of nine annual phenological metrics for the conterminous United States.  Researchers at the USGS EROS Center utilize data gathered by satellite sensors to track seasonal changes in vegetation.  The satellite sensors that provide the raw data are the Advanced Very High Resolution Radiometer (AVHRR) from National Oceanic and Atmospheric Administration (NOAA) polar-orbiting satellites.  The satellite data are initially transformed into Normalized Difference Vegetation Index (NDVI) values.  AVHRR NDVI provide the foundation for the phenology metrics.  Time-series NDVI can be summarized and analyzed to produce nine key phenological indicators that represent a complete growing season.  These data represent a powerful tool for documenting plant life-cycle trends over time and detecting the impacts of climate change on ecosystems.\n\nThe complete set of phenological metrics are as follows: 1. Start of Season Time (SOST): starting time of the onset of the growing season (in day of the year). 2. Start of Season NDVI (SOSN): NDVI value at the starting time of the onset of the growing season (unitless- based on NDVI units). 3. End of Season Time (EOST): ending time of the growing season (in day of the year). 4. End of Season NDVI (EOSN): NDVI value at the ending time of the growing season (unitless-based on NDVI units). 5. Maximum Time (MAXT): the day of the year when the NDVI reaches its maximum during the growing season (in day of the year). 6. Maximum NDVI (MAXN): the highest (or peak) value in NDVI observed in a growing season (unitless-based on NDVI units). 7. Duration (DUR): the length of the growing season-the time between the start of season and end of season (in number of days). 8. Amplitude (AMP): the difference between the Maximum NDVI and NDVI at the day of start of season (unitless-based on NDVI units). 9. Time Integrated NDVI (TIN): the cumulative value of NDVI from the start to the end of the growing season.",
+    "temporalCoverage": "from 1989 to 2019",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "CCDC V1_0": {
+    "mission": "CCDC V1_0",
+    "sensorType": "OPTICAL",
+    "description": "CCDC products are annual products, regenerated annually. CCDC data sets include a “Version” label, where the next Version exists alongside the previous version, then the previous version is may be retired at a future date, much like MODIS Versions and Landsat Collections. (Each year is a new Version; LCMAP processes every tile for every year using the new Version software.) CCDC products are not modified once they are produced. Since the products cover a date range, there is no satellite or sensor provided; each product might include data from one or two sensors, such as L8 and L7, or L7 and L5, L5 and L4.\nThe product bundle tar file is not compressed because the TIF content does not compress well. The Product Bundle and Bundle Metadata are distributable products. The FRB is not distributed but WMS on-demand is an option.\nThe checksum and the COG-formatted FRB make the data compatible with A&A’s overall Cloud migration strategy, though the CCDC products are not in the Cloud yet. The COG format also supports the WMS.\n",
+    "temporalCoverage": "from 2000 to 2020",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "CCDC V1_1-3": {
+    "mission": "CCDC V1_1-3",
+    "sensorType": "OPTICAL",
+    "description": "CCDC products are annual products, regenerated annually. CCDC data sets include a “Version” label, where the next Version exists alongside the previous version, then the previous version is may be retired at a future date, much like MODIS Versions and Landsat Collections. (Each year is a new Version; LCMAP processes every tile for every year using the new Version software.) CCDC products are not modified once they are produced. Since the products cover a date range, there is no satellite or sensor provided; each product might include data from one or two sensors, such as L8 and L7, or L7 and L5, L5 and L4.\nThe product bundle tar file is not compressed because the TIF content does not compress well. The Product Bundle and Bundle Metadata are distributable products. The FRB is not distributed but WMS on-demand is an option.\nThe checksum and the COG-formatted FRB make the data compatible with A&A’s overall Cloud migration strategy, though the CCDC products are not in the Cloud yet. The COG format also supports the WMS.\n",
+    "temporalCoverage": "from 1985 to 2019",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "CoNED TBDEM": {
+    "mission": "CoNED TBDEM",
+    "sensorType": "OPTICAL",
+    "description": "Accurate, high-resolution elevation information is vital to understanding highly dynamic U.S. coastal regions.  The new dataset consists of a detailed and highly accurate elevation model incorporating the best available multi-source topographic and bathymetric elevation data.  The Coastal National Elevation Database (CoNED) Project - topobathymetric digital elevation models (TBDEMs) integrate hundreds of different data sources including topographic and bathymetric LiDAR point clouds, hydrographic surveys, side-scan sonar surveys, and multibeam surveys obtained from multiple agencies.  The LiDAR and bathymetry surveys were sorted and prioritized based on survey date, accuracy, spatial distribution, and point density to develop a model based on the best available elevation data.  Because bathymetric data is typically referenced to tidal datums (such as Mean High Water or Mean Sea Level), all tidally-referenced heights were transformed into orthometric heights that are normally used for mapping elevation on land (based on the North American Vertical Datum of 1988).",
+    "temporalCoverage": "from 1859 to 1930",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "Declass_1996": {
+    "mission": "Declass_1996",
+    "sensorType": "OPTICAL",
+    "description": "On February 24, 1995, President Clinton signed an Executive Order, directing the declassification of intelligence imagery acquired by the first generation of United States photo-reconnaissance satellites, including the systems code-named CORONA, ARGON, and LANYARD. More than 860,000 images of Earth's surface, collected between 1960 and 1972, were declassified with the issuance of this Executive Order. The National Archives and Records Administration (NARA) was given the responsibility for the original film and provide access to a duplicate copy for public viewing of the film. The USGS was also provided a dupe copy to support science products. Both NARA and the USGS provide access and product support for Declass-1 collection.\r\n\r\nOnline requests for these data can be placed via the EarthExplorer interactive query system. EarthExplorer contains metadata and online samples of Earth science data. With EarthExplorer, you may review metadata, determine product availability, and place online requests for products.\r\n\r\nMore than 40 percent of the imagery contains significant cloud cover. The use of browse imagery gives the user the opportunity to review a reduced spatial resolution image to determine whether or not the area of interest is covered and is or is not obscured by clouds.\r\n",
+    "temporalCoverage": "from 1960 to 1972",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "Declass_2002_2013": {
+    "mission": "Declass_2002_2013",
+    "sensorType": "OPTICAL",
+    "description": "Keyhole (KH) satellite systems KH-7 and KH-9 acquired photographs of the Earth's surface with a telescopic camera system and transported the exposed film through the use of recovery capsules. The capsules or buckets were de-orbited and retrieved by aircraft while the capsules parachuted to earth. The exposed film was developed and the images were analyzed for a range of military applications.\r\n\r\nThe KH-7 surveillance system was a high resolution imaging system that was operational from July 1963 to June 1967. Approximately 18,000 black-and-white images and 230 color images are available from the 38 missions flown during this program. Key features for this program were larger area of coverage and improved ground resolution. The cameras acquired imagery in continuous lengthwise sweeps of the terrain. KH-7 images are 9 inches wide, vary in length from 4 inches to 500 feet long, and have a resolution of 2 to 4 feet.\r\n\r\nThe KH-9 mapping program was operational from March 1973 to October 1980 and was designed to support mapping requirements and exact positioning of geographical points for the military. This was accomplished by using image overlap for stereo coverage and by using a camera system with a reseau grid to correct image distortion. The KH-9 framing cameras produced 9 x 18 inch imagery at a resolution of 20-30 feet. Approximately 29,000 mapping images were acquired from 12 missions.\r\n\r\nThe images have variable scales and quality.  Cloud cover is common.  The digital products are produced from a duplicate negative film source.  More than 40 percent of the imagery contains significant cloud cover.  The use of browse imagery gives the user the opportunity to review a reduced resolution image to determine if the area of interest is covered and to check for cloud cover.  The original film sources are maintained by the (http://www.nara.gov) National Archives and Records Administration (NARA).  \nKeyhole (KH) satellite systems- KH-9 acquired photographs of the Earth's surface with a telescopic camera system and transported the exposed film through the use of recovery capsules.  The capsules or buckets were de-orbited and retrieved by aircraft while the capsules parachuted to earth.  The exposed film was developed and the images were analyzed for a range military applications.\r\n\r\nThe Keyhole (KH) satellite system KH-9 (Hexagon) operated between 1971 and 1984.  The imagery generated are of historical interest and expected to support current scientific research on climate change and related fields of inquiry.  Almost all of the imagery from this camera was declassified in 2012 as a continuation of Executive Order 12951, the same order that declassified CORONA.  A subset of this declassified data was transferred to the U.S. Geological Survey's Earth Resources Observation and Science (EROS) Center.  Please check the coverage map in EarthExplorer to verify the extent of coverage for the subset of images available from EROS.  The Available images are primarily over the United States, Antarctica, and the Arctic Circle.\r\n\r\nThe KH-9 program was designed to support mapping requirement and exact positioning of geographical points for the military.  The KH-9 panoramic cameras captured high resolution (2-4 feet) images and the terrain camera captured high resolution (2-4 feet) images and the terrain camera captured moderate resolution (20-30 feet) images.  High resolution images were acquired on 6.5 inch wide variable length film.  The moderate resolution terrain camera acquired images that were printed to 9 inch wide variable length film.\r\n\r\nThe digital products are produced from a duplicate positive film source.  The use of browse imagery provides an opportunity to determine if the area of interest is covered and to check for cloud cover.  The original film sources are maintained by the (http://www.archives.gov) National Archives and Records Administration (NARA).\r\n",
+    "temporalCoverage": "from 1963 to 1980",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "DLG 1-100k": {
+    "mission": "DLG 1-100k",
+    "sensorType": "OPTICAL",
+    "description": "Digital line graph (DLG) data are digital representations of cartographic information. DLGs of map features are converted to digital form from maps and related sources. Intermediate-scale DLG data are derived from USGS 1:100,000-scale 30- by 60-minute quadrangle maps. If these maps are not available, Bureau of Land Management planimetric maps at a scale of 1:100,000 are used.  Intermediate-scale DLGs are sold in five categories: (1) Public Land Survey System; (2) boundaries; (3) transportation; (4) hydrography; and (5) hypsography. All DLG data distributed by the USGS are DLG-Level 3 (DLG-3), which means the data contain a full range of attribute codes, have full topological structuring, and have passed certain quality-control checks.",
+    "temporalCoverage": "from 1972 to 1994",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "DLG Large Scale": {
+    "mission": "DLG Large Scale",
+    "sensorType": "OPTICAL",
+    "description": "Digital line graph (DLG) data are digital representations of cartographic information. DLGs of map features are converted to digital form from maps and related sources. Large-scale DLG data are derived from USGS 1: 20,000-, 1: 24,000-, and 1: 25,000-scale 7.5-minute topographic quadrangle maps and are available in nine categories:\n(1) hypsography, (2) hydrography, (3) vegetative surface cover, (4) non-vegetative features, (5) boundaries, (6) survey control and markers, (7) transportation, (8) manmade features, and (9) Public Land Survey System. All DLG data distributed by the USGS are DLG - Level 3 \n(DLG-3), which means the data contain a full range of attribute codes, have full topological structuring, and have passed certain quality-control checks.",
+    "temporalCoverage": "from 1900 to 2003",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "DOQ": {
+    "mission": "DOQ",
+    "sensorType": "OPTICAL",
+    "description": "Orthophotos combine the image characteristics of a photograph with the geometric qualities of a map.  The primary digital orthophotoquadrangle (DOQ) is a 1-meter ground resolution, quarter-quadrangle (3.75 minutes of latitude by 3.75 minutes of longitude) image cast on the Universal Transverse Mercator projection (UTM) on the North American Datum of 1983 NAD83).  The geographic extent of the DOQ is equivalent to a quarter-quadrangle plus the overage ranges from a minimum of 50 meters to a maximum of 300 meters beyond the extremes of the primary and secondary corner points.  The overage is included to facilitate tonal matching for mosaicking and for the placement of the NAD83 and secondary datum corner ticks.  The normal orientation of data is by lines (rows) and samples (columns).  Each line contains a series of pixels ordered from west to east with the order of the lines from north to south.  The radiometric image brightness values are stored as 256 gray levels, ranging from 0 to 255.  The standard, uncompressed gray scale DOQ format contains an ASCII header followed by a series of 8-bit image data lines.  The keyword-based, ASCII header may vary in the number of data entries.  The header is affixed to the beginning of the image and is composed of strings of 80 characters with an asterisk (*) as character 79 and an invisible newline character as character 80.  Each keyword string contains information for either identification, display, or registration of the image.  Additional strings of blanks are added to the header so that the length of a header line equals the number of bytes in a line of image data.  The header line will be equal in length to the length of an image line.  If the sum of the byte count of the header is less than the sample count of one DOQ image line, then the remainder of the header is padded with the requisite number of 80 character blank entries, each terminated with an asterisk and newline character.",
+    "temporalCoverage": "from 1944 to 2006",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "EDNA": {
+    "mission": "EDNA",
+    "sensorType": "OPTICAL",
+    "description": "Elevation Derivatives for National Applications (EDNA) is a seamless, nationwide, multi-layered three-dimensional (3D) hydrologic database derived from a version of the National Elevation Dataset.  EDNA's 3D hydrologic layers are vertically consistent by their very nature, meaning that hydrologic drainage always flows from a higher elevation to a lower elevation and that reach catchment boundaries always follow the elevation drainage divide.  This consistency allows for transfer of valuable information from digital elevation models onto EDNA-derived drainage lines and watersheds, including stream gradient, minimum and maximum elevation within a watershed, average watershed slope, and elevation. ",
+    "temporalCoverage": "from 2000 to 2000",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "eMODIS": {
+    "mission": "eMODIS",
+    "sensorType": "OPTICAL",
+    "description": "The EROS Moderate Resolution Imaging Spectroradiometer (eMODIS) Aqua Land Surface Temperature (LST) product is similar to the Land Processes Distributed Active Archive Center (LP DAAC) 8-day product.  It contains land surface temperature and emissivities retrieved from daily Aqua MODIS Collection 6 data at a spatial resolution of 1 km  over global land surfaces under clear-sky conditions during a 10-day period.  The eMODIS LST product is comprised of LST, emissivities estimated in bands 31 and 32, view angles, number of observations and quality assurance information.\neMODIS processes calibrated radiance data (level-1B) acquired by the MODIS sensors on the EOS Terra and Aqua satellites by combining MODIS Land Science Collection 5 Atmospherically Corrected Surface Reflectance production code and USGS EROS MODIS Direct Broadcast System (DBS) software to create surface reflectance and Normalized Difference Vegetation Index (NDVI) products.\neMODIS processes calibrated radiance data (level-1B) acquired by the MODIS sensors on the EOS Aqua satellite by combining MODIS Land Science Collection 6 Atmospherically Corrected Surface Reflectance production code and USGS EROS MODIS Direct Broadcast System (DBS) software to create surface reflectance and Normalized Difference Vegetation Index (NDVI) products.\nThe Remote Sensing Phenology (RSP) collection is a set of nine annual phenological metrics for the conterminous United States.  Researchers at the USGS EROS Center utilize data gathered by satellite sensors to track seasonal changes in vegetation.  The satellite sensors that provide the raw data are the Moderate Resolution Imaging Spectroradiometer (MODIS) carried aboard National Aeronautics and Space Administration (NASA) Terra and Aqua satellites.  The satellite data are initially transformed into Normalized Difference Vegetation Index (NDVI) values.  eMODIS NDVI provide the foundation for the phenology metrics.  Time-series NDVI can be summarized and analyzed to produce nine key phenological indicators.  These data represent a powerful tool for documenting plant life-cycle trends and detecting the impacts of climate change on ecosystems.\nThe complete set of phenological metrics are as follows: 1. Start of Season Time (SOST): starting time of the onset of the growing season (in day of the year). 2. Start of Season NDVI (SOSN): NDVI value at the starting time of the onset of the growing season (unitless- based on NDVI units). 3. End of Season Time (EOST): ending time of the growing season (in day of the year). 4. End of Season NDVI (EOSN): NDVI value at the ending time of the growing season (unitless based on NDVI units). 5. Maximum Time (MAXT): the day of the year when the NDVI reaches its maximum during the growing season (in day of the year). 6. Maximum NDVI (MAXN): the highest (or peak) value in NDVI observed in a growing season (unitless-based on NDVI units). 7. Duration (DUR): the length of the growing season-the time between the start of season and end of season (in number of days). 8. Amplitude (AMP): the difference between the Maximum NDVI and NDVI at the day of start of season (unitless-based on NDVI units). 9. Time Integrated NDVI (TIN): the cumulative value of NDVI from the start to the end of the growing season (unitless based on accumulated NDVI unit",
+    "temporalCoverage": "from 2002 to 2022",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "EO-1": {
+    "mission": "EO-1",
+    "sensorType": "OPTICAL",
+    "description": "The Earth Observing-1(EO-1) satellite was launched on November 21, 2000 by the U.S. Geological Survey (USGS) and the National Aeronautics and Space Administration (NASA) as a one-year technology demonstration mission to evaluate the performance of advanced capabilities for future space missions. The EO-1 mission validated highly integrated multispectral data from the Advanced Land Imager (ALI) sensor and hyperspectral imaging data from the Hyperion sensor. After the initial technology mission was accomplished, NASA and the USGS agreed to continue the EO-1 program due to high interest in the specialized data from scientific communities. EO-1 Data products consist of imagery collected during the original one-year mission, as well as more recent Data Acquisition Requests (DARs) from the EO-1 Extended Mission. EO-1 scenes are processed to Level 1Gst (L1Gst) and images with adequate ground control points are processed to Level 1T (L1T). L1Gst and L1T products are provided in GeoTIFF format. Scenes that have been processed to L1T are also available as Full Resolution Browse and GIS Ready Bundle products in JPEG format. Level 1R (L1R) products in HDF format are only available for Hyperion data.\nThe Earth Observing-1(EO-1) satellite was launched on November 21, 2000 by the U.S. Geological Survey (USGS) and the National Aeronautics and Space Administration (NASA) as a one-year technology demonstration mission to evaluate the performance of advanced capabilities for future space missions. The EO-1 mission validated highly integrated multispectral data from the Advanced Land Imager (ALI) sensor and hyperspectral imaging data from the Hyperion sensor. After the initial technology mission was accomplished, NASA and the USGS agreed to continue the EO-1 program due to high interest in the specialized data from scientific communities. \r\n\r\nEO-1 Data products consist of imagery collected during the original one-year mission, as well as more recent Data Acquisition Requests (DARs) from the EO-1 Extended Mission. EO-1 scenes are processed to Level 1Gst (L1Gst) and images with adequate ground control points are processed to Level 1T (L1T). L1Gst and L1T products are provided in GeoTIFF format. Scenes that have been processed to L1T are also available as Full Resolution Browse and GIS Ready Bundle products in JPEG format. Level 1R (L1R) products in HDF format are only available for Hyperion data.\r\n",
+    "temporalCoverage": "from 2001 to 2017",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "ETMPlus_1999-2003": {
+    "mission": "ETMPlus_1999-2003",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972. All Landsat data held in the USGS EROS archive are available for download at no charge. \r\n\nThe USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972. \r\n",
+    "temporalCoverage": "from 1999 to 2003",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "eVIIRS Global LST": {
+    "mission": "eVIIRS Global LST",
+    "sensorType": "OPTICAL",
+    "description": "The EROS Moderate Resolution Imaging Spectroradiometer (eMODIS) Aqua Land Surface Temperature (LST) product is similar to the Land Processes Distributed Active Archive Center (LP DAAC) 8-day product.  It contains land surface temperature and emissivities retrieved from daily Aqua MODIS Collection 6 data at a spatial resolution of 1 km  over global land surfaces under clear-sky conditions during a 10-day period.  The eMODIS LST product is comprised of LST, emissivities estimated in bands 31 and 32, view angles, number of observations and quality assurance information.\nThe Remote Sensing Phenology (RSP) collection is a set of nine annual phenological metrics for the conterminous United States.  Researchers at the USGS EROS Center utilize data gathered by satellite sensors to track seasonal changes in vegetation.  The satellite sensors that provide the raw data are the Moderate Resolution Imaging Spectroradiometer (MODIS) carried aboard National Aeronautics and Space Administration (NASA) Terra and Aqua satellites.  The satellite data are initially transformed into Normalized Difference Vegetation Index (NDVI) values.  eMODIS NDVI provide the foundation for the phenology metrics.  Time-series NDVI can be summarized and analyzed to produce nine key phenological indicators.  These data represent a powerful tool for documenting plant life-cycle trends and detecting the impacts of climate change on ecosystems.\r\nThe complete set of phenological metrics are as follows: 1. Start of Season Time (SOST): starting time of the onset of the growing season (in day of the year). 2. Start of Season NDVI (SOSN): NDVI value at the starting time of the onset of the growing season (unitless- based on NDVI units). 3. End of Season Time (EOST): ending time of the growing season (in day of the year). 4. End of Season NDVI (EOSN): NDVI value at the ending time of the growing season (unitless-based on NDVI units). 5. Maximum Time (MAXT): the day of the year when the NDVI reaches its maximum during the growing season (in day of the year). 6. Maximum NDVI (MAXN): the highest (or peak) value in NDVI observed in a growing season (unitless-based on NDVI units). 7. Duration (DUR): the length of the growing season-the time between the start of season and end of season (in number of days). 8. Amplitude (AMP): the difference between the Maximum NDVI and NDVI at the day of start of season (unitless-based on NDVI units). 9. Time Integrated NDVI (TIN): the cumulative value of NDVI from the start to the end of the growing season (unitless-based on accumulated NDVI unit",
+    "temporalCoverage": "from 2012 to present",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "GEOS-5 FP-IT C2 Subset": {
+    "mission": "GEOS-5 FP-IT C2 Subset",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
+    "temporalCoverage": "from 2000 to present",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "GEOS-5 IT C2 Subset": {
+    "mission": "GEOS-5 IT C2 Subset",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
+    "temporalCoverage": "from 2023 to present",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "GLCC": {
+    "mission": "GLCC",
+    "sensorType": "OPTICAL",
+    "description": "The U.S. Geological Survey (USGS) has a long history of involvement in multi-scale, and multi-temporal land cover characterization and mapping of the world.  During the 1970's, the Anderson System for land use and land cover classification system was developed and the conterminous United States (US) was mapped using aerial photographs.  During 1980's, 75% of state of Alaska was mapped using Landsat satellite data.  During the 1990's, (i) land cover characteristics database concept was demonstrated, (ii) Multi-Resolution Land Characteristics (MRLC) consortium was formed with Environmental Protection Agency (EPA), National Oceanic and Atmospheric Administration (NOAA), and US Forest Service (USFS), (iii) Global Land Cover Characteristics database was completed, and (iv) land cover and vegetation databases of the U.S. using Landsat TM data were completed.  During 2000-2002, a forest canopy density map was produced as a part of Forest Resources Assessment 2000 for the Food and Agriculture Organization of the United Nations (FAO), and MRLC-2001 dataset was released.  In 2003, land cover mapping of North America was carried out as a contribution to the Global Land Cover 2000 project being implemented by the Joint Research Center (JRC) of European Commission (EC).\r\n\r\n",
+    "temporalCoverage": "from 1992 to 1992",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "Global Land Survey": {
+    "mission": "Global Land Survey",
+    "sensorType": "OPTICAL",
+    "description": "The Global Land Survey (GLS) datasets are a collection of orthorectified, cloud-minimized Landsat-type satellite images, providing near complete coverage of the global land area decadally since the early 1970s.  The global mosaics are centered on 1975, 1990, 2000, 2005, and 2010, and consist of data acquired from five sensors: Operational Land Imager, Enhanced Thematic Mapper Plus, Thematic Mapper, Multispectral Scanner, and Advanced Land Imager.  This newest version combines all of the GLS data into one collection which has all of the combined collections.  The GLS datasets have been widely used in land-cover and land-use change studies at local, regional, and global scales.  This study evaluates the GLS datasets with respect to their spatial coverage, temporal consistency, geodetic accuracy, radiometric calibration consistency, image completeness, extent of cloud contamination, and residual gaps.  The datasets have been improved in order to give spatial continuity across all decadal collections.  Most of the imagery (85%) having cloud cover of less than 10%, the acquisition years clustered much more tightly around their target years, better co-registration relative to GLS-2000, and better radiometric absolute calibration.  Probably, the most significant impediment to scientific use of the datasets is the variability of image phenology (i.e., acquisition day of year).  This collection provides end-users with an assessment of the quality of the GLS datasets for specific applications, and where possible, suggestions for mitigating their deficiencies.",
+    "temporalCoverage": "from 1972 to 2012",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "GLS LIMA Antarctica": {
+    "mission": "GLS LIMA Antarctica",
+    "sensorType": "OPTICAL",
+    "description": "The U.S. Geological Survey (USGS), the British Antarctic Survey (BAS), and the National Aeronautics and Space Administration (NASA), with funding from the National Science Foundation (NSF), created a Landsat mosaic of Antarctica (LIMA) from more than 1,000 Landsat ETM+ scenes. This collection contains the individual Landsat scenes that were used in the LIMA mosaic.\r\n\r\nIn support of the International Polar Year (IPY 2007-2008), LIMA is a virtually cloudless, seamless, and high resolution satellite view of Antarctica. The mosaic can be accessed through the LIMA.USGS.GOV site.\r\n\nThe USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  All Landsat data held in the USGS EROS archive are available for download at no charge. \r\n",
+    "temporalCoverage": "from 1999 to 2006",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "GMTED2010": {
+    "mission": "GMTED2010",
+    "sensorType": "OPTICAL",
+    "description": "The USGS and the NGA have collaborated on the development of a notably enhanced global elevation model named the GMTED2010 that replaces GTOPO30 as the elevation dataset of choice for global and continental scale applications.  The new model has been generated at three separate resolutions (horizontal post spacing) of 30 arc-seconds (about 1 kilometer), 15 arc-seconds (about 500 meters), and 7.5 arc-seconds (about 250 meters).  This new product suite provides global coverage of all land areas from latitude 84 degrees N to 56 degrees S for most products, and coverage from 84 degrees N to 90 degrees S for several products.  Some areas, namely Greenland and Antarctica, do not have data available at the 15- and 7.5-arc-second resolutions because the input source data do not support that level of detail.  An additional advantage of the new multi-resolution global model over GTOPO30 is that seven new raster elevation products are available at each resolution.  The new elevation products have been produced using the following aggregation methods: minimum elevation, maximum elevation, mean elevation, median elevation, standard deviation of elevation, systematic subsample, and breakline emphasis.  The systematic subsample product is defined using a nearest neighbor resampling function, whereby an actual elevation value is extracted from the input source at the center of a processing window.  Most vertical heights in GMTED2010 are referenced to the Earth Gravitational Model 1996 (EGM 96) geoid (NGA, 2010).  In addition to the elevation products, detailed spatially referenced metadata containing attribute fields such as coordinates, projection information, and raw source elevation statistics have been generated on a tile-by-tile basis for all the input datasets that constitute the global elevation model. GMTED2010 is based on data derived from 11 raster-based elevation sources.",
+    "temporalCoverage": "from 2010 to 2010",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "GTOPO30": {
+    "mission": "GTOPO30",
+    "sensorType": "OPTICAL",
+    "description": "GTOPO30 is a global digital elevation model (DEM) with a horizontal grid spacing of 30 arc seconds (approximately 1 kilometer). GTOPO30 was derived from several raster and vector sources of topographic information. For easier distribution, GTOPO30 has been divided into tiles which can be selected from the map shown above. Detailed information on the characteristics of GTOPO30 including the data distribution format, the data sources, production methods, accuracy, and hints for users, is found in the GTOPO30 README file.\r\n\r\n\r\n\nThe HYDRO1k data sets are the result of the cooperative project at the U.S. Geological Survey's (U.S.G.S.) EROS Center. The goal of the project is the development of a globally consistent hydrologic derivative data set. The effort has been led by U.S.G.S. scientists in collaboration with the United Nations Environment Programme/Global Resource Information Database (UNEP/GRID) located in Sioux Falls, South Dakota.\r\n\r\nDevelopment of the HYDRO1k database was made possible by the completion of the 30 arc-second digital elevation model at EROS in 1996, entitled GTOPO30. This data set, with its nominal cell size of 1 km, has been and will continue to be applied by many scientists and researchers to hydrologic and land form studies. Inevitably, these studies require development, at a minimum, of a standard suite of derivative products.\r\nThe HYDRO1k package provides, for each continent, a suite of six raster and two vector data sets. These data sets cover many of the common derivative products used in hydrologic analysis. The raster data sets are the hydrologically correct DEM, derived flow directions, flow accumulations, slope, aspect, and a compound topographic (wetness) index. The derived streamlines and basins are distributed as vector data sets.\r\n",
+    "temporalCoverage": "from 1996 to 1996",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "HCMM": {
+    "mission": "HCMM",
+    "sensorType": "OPTICAL",
+    "description": "NASA's Heat Capacity Mapping Mission (HCMM) project collected Earth data in the visible and thermal bands between April 1978 and September 1980. This was an experimental satellite program which observed day and night thermal conditions of Earth's surface. The black and white scenes cover large areas (approximately 500,000 square km at a resolution of 500 meters for the visible channel and 600 meters for the thermal channel. The scale of the imagery is 1:400,000. Areas covered include parts of the United States, western Canada, Western Europe, northern Africa, and eastern Australia\r\nThe HCMR transmitted analog data in real time to selected receiving stations. The radiometer was similar to the surface composition mapping radiometer (SCMR) of Nimbus 5 (72-097A). The HCMR had a small instantaneous geometric field of view of 0.83 mrad, high radiometric accuracy, and a wide 716-km swath coverage on the ground so that selected areas were covered within the 12-h period corresponding to the maximum and minimum of temperature observed. The spacecraft was spin stabilized at a rate of 14 rpm. The HCMM circular sun-synchronous orbit allowed the spacecraft to sense surface temperatures near the maximum and minimum of the diurnal cycle.\r\n \nNASA's Heat Capacity Mapping Mission (HCMM) project collected Earth data in the visible and thermal bands between April 1978 and September 1980.  This was an experimental satellite program which observed day and night thermal conditions of Earth's surface.  The black and white scenes cover large areas (approximately 500,000 square km at a resolution of 500 meters for the visible channel and 600 meters for the thermal channel.  The scale of the imagery is 1:400,000.   Areas covered include parts of the United States, western Canada, western Europe, northern Africa, and eastern Australia. \r\n\r\nThe HCMM Digital Source dataset includes approximately 2400 scenes of recovered digital data with a resolution of 100 dpi. The original scenes are 715 km wide and vary in length from 715 to 3,000 km. The file size is 3-13 MB depending on the length of the scene and is stored in a TIFF format.\r\n\r\nThe HCMR transmitted analog data in real time to selected receiving stations. The radiometer was similar to the surface composition mapping radiometer (SCMR) of Nimbus 5 (72-097A). The HCMR had a small instantaneous geometric field of view of 0.83 mrad, high radiometric accuracy, and a wide 716-km swath coverage on the ground so that selected areas were covered within the 12-h period corresponding to the maximum and minimum of temperature observed.  The spacecraft was spin stabilized at a rate of 14 rpm.  The HCMM circular sun-synchronous orbit allowed the spacecraft to sense surface temperatures near the maximum and minimum of the diurnal cycle. \n",
+    "temporalCoverage": "from 1970 to 1980",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "High Resolution Orthoimagery": {
+    "mission": "High Resolution Orthoimagery",
+    "sensorType": "OPTICAL",
+    "description": "High resolution orthorectified images combine the image characteristics of an aerial photograph with the geometric qualities of a map. An orthoimage is a uniform-scale image where corrections have been made for feature displacement such as building tilt and for scale variations caused by terrain relief, sensor geometry, and camera tilt. A mathematical equation based on ground control points, sensor calibration information, and a digital elevation model is applied to each pixel to rectify the image to obtain the geometric qualities of a map.\r\n\r\nA digital orthoimage may be created from several photographs mosaicked to form the final image. The source imagery may be black-and-white, natural color, color infrared, or color near infrared (4-band) with a pixel resolution of 1-meter or finer. With orthoimagery, the resolution refers to the distance on the ground represented by each pixel.\r\n",
+    "temporalCoverage": "from 2000 to 2023",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "IFSAR Alaska": {
+    "mission": "IFSAR Alaska",
+    "sensorType": "OPTICAL",
+    "description": "The U.S. Geological Survey (USGS) National Geospatial Program (NGP) developed the Alaska Mapping Initiative (AMI) to collaborate with the State and other Federal partners to acquire 3-dimensional elevation data to improve statewide topographic maps for Alaska.  AMI coordinates Federal activities through the Alaska Mapping Executive Committee (AMEC) and State efforts through Alaska's Statewide Digital Mapping Initiative (SDMI) to ensure a unified approach for consistent data acquisition and enhancement of elevation data products.  AMI attained interferometric synthetic aperture radar (IFSAR) to generate digital elevation model (DEM) data.  This radar mapping technology is an effective tool for collecting data in challenging circumstances such as cloud cover, extreme weather conditions, rugged terrain, and remote locations.  Airborne IFSAR data were flown over South Central Alaska in the summer of 2010 and over Northwest Alaska in 2012.",
+    "temporalCoverage": "from 2010 to 2012",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "IFSAR ORI Alaska": {
+    "mission": "IFSAR ORI Alaska",
+    "sensorType": "OPTICAL",
+    "description": "The U.S. Geological Survey (USGS) National Geospatial Program (NGP) developed the Alaska Mapping Initiative (AMI) to collaborate with the State and other Federal partners to acquire 3-dimensional elevation data to improve statewide topographic maps for Alaska.  AMI coordinates Federal activities through the Alaska Mapping Executive Committee (AMEC) and State efforts through Alaska's Statewide Digital Mapping Initiative (SDMI) to ensure a unified approach for consistent data acquisition and enhancement of elevation data products.  AMI attained interferometric synthetic aperture radar (IFSAR) to generate digital elevation model (DEM) data.  This radar mapping technology is an effective tool for collecting data in challenging circumstances such as cloud cover, extreme weather conditions, rugged terrain, and remote locations.  Airborne IFSAR data were flown over South Central Alaska in the summer of 2010 and over Northwest Alaska in 2012.",
+    "temporalCoverage": "from 2010 to 2012",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "IKONOS-2": {
+    "mission": "IKONOS-2",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Commercial Data Purchases (UCDP) imagery collection is an archive of commercial remote sensing imagery from several different commercial vendors. The UCDP imagery is located at the Earth Resources Observation & Science (EROS) Center. This collection of imagery supports the Commercial Remote Sensing Space Policy (CRSSP).\r\n\r\nThe overall goal of the UCDP imagery collection is to provide data to qualified users, primarily federal agencies at no cost or at a nominal cost. Limitations on which users have access to use/purchase copies of the imagery are based on vendor licensing for individual images. Users are allowed to search all UCDP imagery in the archive, but are restricted to only ordering properly licensed images. Users have the option to purchase imagery license upgrades for imagery not currently licensed appropriately for their federal agency. The Commercial Remote Sensing Data Contracts (CRSDC), available through the USGS, handles the imagery license upgrades. The imagery license upgrades enable federal users to purchase and use a copy of the imagery at a nominal fee.\r\n\r\nCopies of the current imagery can be downloaded/purchased from EarthExplorer. Users can not specify processing parameters for the imagery. (e.g. if an IKONOS image was originally purchased from Space Imaging as a \"Standard Ortho\" product, UTM projection, WGS84 Datum, and GeoTiff format, those are the only parameters available for that image.)\r\n\r\nCurrent USGS Commercial Data Purchases (UCDP) imagery includes IKONOS imagery from Space Imaging, QuickBird Imagery from DigitalGlobe and OrbView imagery from ORBIMAGE.",
+    "temporalCoverage": "from 2004 to 2006",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "IRS AWiFS": {
+    "mission": "IRS AWiFS",
+    "sensorType": "OPTICAL",
+    "description": "The Indian Remote Sensing (IRS), Resourcesat 1 and Resourcesat 2 are operated by the Indian Space Research Organisation (ISRO).  The USGS in partnership with the ISRO, maintains an imagery collection of United States coverage that is processed by the ISRO processing system located in the Long Term Archive (LTA) at the USGS Earth Resources Observation & Science (EROS) Center.  There are two sensors on board the IRS satellites that are processed at the EROS center.  The Advanced Wide Field Sensor (AWiFS) and the Linear Imaging Self Scanner-3 (LISS-3) are processed to a Level-1 systematic corrected dataset and a Level-1 Precision Terrain corrected product when sufficient control exists.  The imagery is archived at the EROS Center.  A collection of historical Resourcesat 1 also known as IRS-P6 is part of the collection.  Resourcesat 2 data includes some historical data as well as forward processing over the United States.",
+    "temporalCoverage": "from 2009 to present",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "ISERV": {
+    "mission": "ISERV",
+    "sensorType": "OPTICAL",
+    "description": "The ISS SERVIR Environmental Research and Visualization System (ISERV) acquired images of the Earth's surface from the International Space Station (ISS).  The goal was to improve automatic image capturing and data transfer.\r\n\r\nISERV's main component was the optical assembly which consisted of a 9.25 inch Schmidt-Cassegrain telescope, a focal reducer (field of view enlarger), a digital single lens reflex camera, and a high precision focusing mechanism.  A motorized 2-axis pointing mount allowed pointing at targets approximately 23 degrees from nadir in both along- and across-track directions.\r\n",
+    "temporalCoverage": "from 2013 to 2014",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "Land Cover Trends Photos": {
+    "mission": "Land Cover Trends Photos",
+    "sensorType": "OPTICAL",
+    "description": "The United States Geological Survey (USGS) Land Cover Trends field photography collection is a national-scale, ground-reference dataset which initially served as a research tool to aid in Landsat-derived land-use/land-cover (LULC) change analyses and assessments.  Between 1999 and 2007, Land Cover Trends scientists collected over 33,000 geographically referenced field photos with associated keywords capturing existing LULC and regional change process taking place.  The field photography collection represents the most comprehensive national database of geo-referenced USGS field photography in the United States. In a project funded by the USGS Climate and Land Use Change and Core Science Systems Mission Areas, 13,000 photos distributed across 44 Level III Environmental Protection Agency (EPA) ecoregions are currently being disseminated to the public.  As the remaining field photographs are geotagged, the online collection will grow to include photos within 40 additional ecoregions.\nThe USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  All Landsat data held in the USGS EROS archive are available for download at no charge. \nThis data set identifies both the presence of non-ocean surface water, and specific surface water conditions of the Earth¿s surface at the time of a Landsat acquisition.",
+    "temporalCoverage": "from 1999 to 2007",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "Landsat 1-5 MSS C2 L1": {
+    "mission": "Landsat 1-5 MSS C2 L1",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  All Landsat data held in the USGS EROS archive are available for download at no charge.",
+    "temporalCoverage": "from 1972 to 2013",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "Landsat 4-5 TM C2 L1": {
+    "mission": "Landsat 4-5 TM C2 L1",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by Landsat 4 and 5.  All Landsat data held in the USGS EROS archive are available for download at no charge.\nARD Tiles from Collection 2 Level-2 Albers scenes are generated in the cloud, and their data and metadata are stored in the cloud. IMS Inventory creates a “copy of convenience” of the Cloud Tile inventory, for use by EarthExplorer.  EE displays the metadata as with other Landsat data sets, and all data access links are provided by Cloud A&A.\nThe USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972 .  All Landsat data held in the USGS EROS archive are available for download at no charge. \nThe USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
+    "temporalCoverage": "from 1982 to 2012",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "Landsat 4-5 TM C2 L2": {
+    "mission": "Landsat 4-5 TM C2 L2",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by Landsat 4 and 5.  All Landsat data held in the USGS EROS archive are available for download at no charge.\nThe USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  All Landsat data held in the USGS EROS archive are available for download at no charge. \nThe USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
+    "temporalCoverage": "from 1982 to 2012",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "Landsat 4-9 C2 Burned Area": {
+    "mission": "Landsat 4-9 C2 Burned Area",
+    "sensorType": "OPTICAL",
+    "description": "ARD Tiles from Collection 2 Level-2 Albers scenes are generated in the cloud, and their data and metadata are stored in the cloud. IMS Inventory creates a “copy of convenience” of the Cloud Tile inventory, for use by EarthExplorer.  EE displays the metadata as with other Landsat data sets, and all data access links are provided by Cloud A&A.",
+    "temporalCoverage": "from 1984 to present",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "Landsat 4-9 C2 Dynamic Surface Water Extent": {
+    "mission": "Landsat 4-9 C2 Dynamic Surface Water Extent",
+    "sensorType": "OPTICAL",
+    "description": "This data set identifies both the presence of non-ocean surface water, and specific surface water conditions of the Earth¿s surface at the time of a Landsat acquisition.",
+    "temporalCoverage": "from 1982 to present",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "Landsat 4-9 C2 Fractional Snow Covered Area": {
+    "mission": "Landsat 4-9 C2 Fractional Snow Covered Area",
+    "sensorType": "OPTICAL",
+    "description": "ARD Tiles from Collection 2 Level-2 Albers scenes are generated in the cloud, and their data and metadata are stored in the cloud. IMS Inventory creates a “copy of convenience” of the Cloud Tile inventory, for use by EarthExplorer.  EE displays the metadata as with other Landsat data sets, and all data access links are provided by Cloud A&A.",
+    "temporalCoverage": "from 1982 to present",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "Landsat 4-9 C2 US ARD": {
+    "mission": "Landsat 4-9 C2 US ARD",
+    "sensorType": "OPTICAL",
+    "description": "ARD Tiles from Collection 2 Level-2 Albers scenes are generated in the cloud, and their data and metadata are stored in the cloud. IMS Inventory creates a “copy of convenience” of the Cloud Tile inventory, for use by EarthExplorer.  EE displays the metadata as with other Landsat data sets, and all data access links are provided by Cloud A&A.",
+    "temporalCoverage": "from 1982 to present",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
   "Landsat9": {
     "mission": "Landsat9",
     "sensorType": "OPTICAL",
-    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
     "temporalCoverage": "from 2021 to present",
     "spatialCoverage": "Global"
   },
   "Landsat8": {
     "mission": "Landsat8",
     "sensorType": "OPTICAL",
-    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
     "temporalCoverage": "from 2013 to present",
     "spatialCoverage": "Global"
   },
   "Landsat7": {
     "mission": "Landsat7",
     "sensorType": "OPTICAL",
-    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
-    "temporalCoverage": "from 1999-05-28 to present",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972 .  All Landsat data held in the USGS EROS archive are available for download at no charge.",
+    "temporalCoverage": "from 1999 to present",
     "spatialCoverage": "Global"
   },
   "Landsat5": {
-    "mission": "Landsat 4-5",
+    "mission": "Landsat 5",
     "sensorType": "OPTICAL",
-    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
-    "temporalCoverage": "from 1982-08-22 to 2012-05-05",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by Landsat 4 and 5.  All Landsat data held in the USGS EROS archive are available for download at no charge.\nARD Tiles from Collection 2 Level-2 Albers scenes are generated in the cloud, and their data and metadata are stored in the cloud. IMS Inventory creates a “copy of convenience” of the Cloud Tile inventory, for use by EarthExplorer.  EE displays the metadata as with other Landsat data sets, and all data access links are provided by Cloud A&A.\nThe USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972 .  All Landsat data held in the USGS EROS archive are available for download at no charge. \nThe USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
+    "temporalCoverage": "from 1982 to 2012",
     "spatialCoverage": "Global"
   },
   "Landsat4": {
-    "mission": "Landsat 1-5",
+    "mission": "Landsat 4",
     "sensorType": "OPTICAL",
-    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 9, launched September 27, 2021, is the latest Landsat sensor.",
-    "temporalCoverage": "from 1972-07-25 to 2013-01-07",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by Landsat 4 and 5.  All Landsat data held in the USGS EROS archive are available for download at no charge.\nARD Tiles from Collection 2 Level-2 Albers scenes are generated in the cloud, and their data and metadata are stored in the cloud. IMS Inventory creates a “copy of convenience” of the Cloud Tile inventory, for use by EarthExplorer.  EE displays the metadata as with other Landsat data sets, and all data access links are provided by Cloud A&A.\nThe USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972 .  All Landsat data held in the USGS EROS archive are available for download at no charge. \nThe USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
+    "temporalCoverage": "from 1982 to 2012",
     "spatialCoverage": "Global"
   },
-  "ECOSTRESS-BGEO": {
-    "mission": "ECOSTRESS",
+  "Landsat3": {
+    "mission": "Landsat 3",
     "sensorType": "OPTICAL",
-    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO2LSTE Version 1 data product provides atmospherically corrected land surface temperature and emissivity (LST&E) values derived from five thermal infrared (TIR) bands. The ECO2LSTE data product was derived using a physics-based Temperature/Emissivity Separation (TES) algorithm. The ECO2LSTE is provided as swath data and has a spatial resolution of 70 meters (m). The corresponding ECO1BGEO data product is required to georeference the ECO2LSTE data product.\r\n\r\nThe ECO2LSTE Version 1 data product contains layers of LST, emissivity for bands 1 through 5, quality control for LST&E, LST error, emissivity error for bands 1 through 5, wideband emissivity, and Precipitable Water Vapor (PWV). For acquisitions after May 15, 2019, data products contain data values for TIR bands 2, 4 and 5 only. TIR bands 1 and 3 contain fill values to accommodate direct streaming of data from the ISS.",
-    "temporalCoverage": "from 2018 to present",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  All Landsat data held in the USGS EROS archive are available for download at no charge.",
+    "temporalCoverage": "from 1972 to 2013",
     "spatialCoverage": "Global"
   },
-  "ECOSTRESS-LTSE": {
-    "mission": "ECOSTRESS",
+  "Landsat2": {
+    "mission": "Landsat 2",
     "sensorType": "OPTICAL",
-    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO2LSTE Version 1 data product provides atmospherically corrected land surface temperature and emissivity (LST&E) values derived from five thermal infrared (TIR) bands. The ECO2LSTE data product was derived using a physics-based Temperature/Emissivity Separation (TES) algorithm. The ECO2LSTE is provided as swath data and has a spatial resolution of 70 meters (m). The corresponding ECO1BGEO data product is required to georeference the ECO2LSTE data product.\r\n\r\nThe ECO2LSTE Version 1 data product contains layers of LST, emissivity for bands 1 through 5, quality control for LST&E, LST error, emissivity error for bands 1 through 5, wideband emissivity, and Precipitable Water Vapor (PWV). For acquisitions after May 15, 2019, data products contain data values for TIR bands 2, 4 and 5 only. TIR bands 1 and 3 contain fill values to accommodate direct streaming of data from the ISS.",
-    "temporalCoverage": "from 2018 to present",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  All Landsat data held in the USGS EROS archive are available for download at no charge.",
+    "temporalCoverage": "from 1972 to 2013",
     "spatialCoverage": "Global"
   },
-  "ECOSTRESS-L1BRAD": {
-    "mission": "ECOSTRESS",
+  "Landsat1": {
+    "mission": "Landsat 1",
     "sensorType": "OPTICAL",
-    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission aims to measure the temperature of plants and use that information to better understand how much water plants need and how they respond to stress. ECOSTRESS is hosted on the International Space Station (ISS) and collects data over the Conterminous United States (CONUS), key biomes and agricultural zones around the world, and selected FLUXNET validation sites. Data are acquired by a thermal infrared (TIR) multispectral scanner with five spectral bands operating between 8 aand 12.5 microns. These data products are offered at a spatial resolution of 70 meters (m) and include: resampled radiance data, at-sensor calibrated radiance data, geolocation data and spacecraft attitude information.",
-    "temporalCoverage": "from 2018 to present",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  All Landsat data held in the USGS EROS archive are available for download at no charge.",
+    "temporalCoverage": "from 1972 to 2013",
     "spatialCoverage": "Global"
   },
-  "ECOSTRESS-L1BMAPRAD": {
-    "mission": "ECOSTRESS",
+  "MODIS Fused C2": {
+    "mission": "MODIS Fused C2",
     "sensorType": "OPTICAL",
-    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission aims to measure the temperature of plants and use that information to better understand how much water plants need and how they respond to stress. ECOSTRESS is hosted on the International Space Station (ISS) and collects data over the Conterminous United States (CONUS), key biomes and agricultural zones around the world, and selected FLUXNET validation sites. Data are acquired by a thermal infrared (TIR) multispectral scanner with five spectral bands operating between 8 aand 12.5 microns. These data products are offered at a spatial resolution of 70 meters (m) and include: resampled radiance data, at-sensor calibrated radiance data, geolocation data and spacecraft attitude information.",
-    "temporalCoverage": "from 2018 to present",
-    "spatialCoverage": "Global"
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
+    "temporalCoverage": "from 2013 to 2023",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "ECOSTRESS-CLOUD": {
-    "mission": "ECOSTRESS",
+  "MSS Film Only": {
+    "mission": "MSS Film Only",
     "sensorType": "OPTICAL",
-    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\nThe ECO2CLD Version 1 data product provides a cloud mask that can be used to determine cloud cover for the ECO1BRAD, ECO2LSTE, ECO3ETPTJPL, ECO4ESIPTJPL, and ECO4WUE data products. The ECOSTRESS Level 2 cloud product is derived using the five calibrated thermal bands in a multispectral cloud-conservative thresholding approach. The corresponding ECO1BGEO data product is required to georeference the ECO2CLD data product.\r\nThe ECO2CLD Version 1 data product contains a single cloud mask layer.",
-    "temporalCoverage": "from 2018 to present",
-    "spatialCoverage": "Global"
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972. All Landsat data held in the USGS EROS archive are available for download at no charge. ",
+    "temporalCoverage": "from 1972 to 1992",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "ECOSTRESS-ESIPTJPL": {
-    "mission": "ECOSTRESS",
+  "NAIP": {
+    "mission": "NAIP",
     "sensorType": "OPTICAL",
-    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
-    "temporalCoverage": "from 2018 to present",
-    "spatialCoverage": "Global"
+    "description": "The National Agriculture Imagery Program (NAIP) acquires aerial imagery during the agricultural growing seasons in the continental U.S.  A primary goal of the NAIP program is to make digital ortho photography available to governmental agencies and the public within a year of acquisition.",
+    "temporalCoverage": "from 2003 to 2023",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "ECOSTRESS-L3ETALEXIU": {
-    "mission": "ECOSTRESS",
+  "NAPP": {
+    "mission": "NAPP",
     "sensorType": "OPTICAL",
-    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
-    "temporalCoverage": "from 2018 to present",
-    "spatialCoverage": "Global"
+    "description": "The National Aerial Photography Program (NAPP) was coordinated by the USGS as an interagency project to acquire cloud-free aerial photographs at an altitude of 20,000 feet above mean terrain elevation. The photographs were taken with a 6-inch focal length lens and are at a scale of 1:40,000. Coverage over the conterminous United States includes both black-and-white (BW) and color infrared (CIR) aerial photographs. Film type and extent of coverage were determined by available funds and operational requirements. The NAPP program, which was operational from 1987 to 2007, consists of more than 1.3 million images. Photographs were acquired on 9-inch film and were centered over quarters of USGS 7.5-minute quadrangles.\r\n\r\nPhotographs are available as medium resolution digital images in Tagged Image File Format (TIFF). Medium resolution digital products were created with a digital single-lens reflex camera at a resolution of 63 microns, or 400 dots per inch (dpi).\r\n\r\n",
+    "temporalCoverage": "from 1987 to 2007",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "ECOSTRESS-ETPTJPL": {
-    "mission": "ECOSTRESS",
+  "National Atlas": {
+    "mission": "National Atlas",
     "sensorType": "OPTICAL",
-    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
-    "temporalCoverage": "from 2018 to present",
-    "spatialCoverage": "Global"
+    "description": "The National Atlas contributes to our knowledge of the environmental, resource, demographic, economic, social, political, and historical dimensions of American life. It includes products and services designed to stimulate children and adults to visualize and understand complex relationships between environments, places, and people. Unlike the previous Atlas, this version is largely in digital format. With a web browser and Internet connection, users are able to make their own personal maps. Multimedia and printed maps, as well as metadata and scientific articles are also available. ",
+    "temporalCoverage": "from 1998 to 2015",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "ECOSTRESS-ANCQA": {
-    "mission": "ECOSTRESS",
+  "NHAP": {
+    "mission": "NHAP",
     "sensorType": "OPTICAL",
-    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
-    "temporalCoverage": "from 2018 to present",
-    "spatialCoverage": "Global"
+    "description": "The National High Altitude Photography (NHAP) program, which was operated from 1980-1989, was coordinated by the U.S. Geological Survey as an interagency project to eliminate duplicate photography in various Government programs. The aim of the program was to cover the 48 conterminous states over a 5-year span. In the NHAP program, black-and-white and color-infrared aerial photographs were obtained on 9-inch film from an altitude of 40,000 feet above mean terrain elevation and are centered over USGS 7.5-minute quadrangles. The color-infrared photographs are at a scale of 1:58,000 (1 inch equals about .9 miles), and the black-and-white photographs are at a scale of 1:80,000 (1 inch equals about 1.26 miles). All NHAP flights were flown in a North to South direction. These photographs are offered as digital images.\r\n",
+    "temporalCoverage": "from 1980 to 1993",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "ECOSTRESS-L4ESIALEXIU": {
-    "mission": "ECOSTRESS",
+  "NOAA CDR NDVI": {
+    "mission": "NOAA CDR NDVI",
     "sensorType": "OPTICAL",
-    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
-    "temporalCoverage": "from 2018 to present",
-    "spatialCoverage": "Global"
+    "description": "National Oceanic and Atmospheric Administration (NOAA) Climate Data Records (CDR) provide historical climate information using data from weather satellites.  This dataset contains daily Normalized Difference Vegetation Index (NDVI) derived from surface reflectance data acquired by the Advanced Very High Resolution Radiometer (AVHRR) sensor.  This long-term record spans from 1981 to 2013 and utilizes AVHRR data from seven NOAA polar orbiting satellites: NOAA 7, 9, 11, 14, 16, and 18.  This NDVI collection provides the global change and resource management communities with vegetation data for historical trend analysis and vegetation monitoring studies for land surfaces around the globe.",
+    "temporalCoverage": "from 1981 to 2013",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "ECOSTRESS-ESI": {
-    "mission": "ECOSTRESS",
+  "OrbView-3": {
+    "mission": "OrbView-3",
     "sensorType": "OPTICAL",
-    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4ESIPTJPL Version 1 data product provides Evaporative Stress Index (ESI) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. The ESI product is derived from the ratio of the Level 3 actual evapotranspiration (ET) to potential ET (PET) calculated as part of the algorithm. The ESI is an indicator of potential drought and plant water stress emphasizing areas of sub-optimal plant productivity.\r\n\r\nThe ECO4ESIPTJPL Version 1 data product contains layers of ESI and PET.",
-    "temporalCoverage": "from 2018 to present",
-    "spatialCoverage": "Global"
+    "description": "GeoEye's OrbView-3 satellite was among the world's first commercial satellites to provide high-resolution imagery from space.  OrbView-3 collected one meter panchromatic (black and white) and four meter multispectral (color) imagery at a swath width of 8 km for both sensors.  One meter imagery enables more accurate viewing and mapping of houses, automobiles and aircraft, and makes it possible to create precise digital products.  Four meter multispectral imagery provides color and near infrared (NIR) information to further characterize cities, rural areas and undeveloped land from space.  Imagery from the OrbView-3 satellite complements existing geographic information system (GIS) data for commercial, environmental and national security customers.  OrbView-3 orbits 470 km above the Earth in a sun-synchronous polar orbit while collecting imagery of the Earth's surface at one meter resolution in the Panchromatic (black and white) mode, or at four meter resolution in the Multispectral (color) mode with a three day repeat cycle.\r\n\r\nThe U.S. Geological Survey (USGS) Earth Resources Observation and Science (EROS) Center received 179,981 OrbView-3 image segments from GeoEye with no restrictions.  The data were delivered in Basic Enhanced (Level 1B) radiometrically corrected format.  The product files include satellite telemetry data, rational functions, post-processed Ground Sample Distance (GPS) at nadir data, and sufficient metadata for rigorous triangulation.\r\n\r\nThe data in this collection were acquired between September 2003 and March 2007, both multispectral (MS) and panchromatic (Pan) sensor. ",
+    "temporalCoverage": "from 2003 to 2007",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "ECOSTRESS-WUE": {
-    "mission": "ECOSTRESS",
+  "PAO Image Gallery": {
+    "mission": "PAO Image Gallery",
     "sensorType": "OPTICAL",
-    "description": "The ECOsystem Spaceborne Thermal Radiometer Experiment on Space Station (ECOSTRESS) mission measures the temperature of plants to better understand how much water plants need and how they respond to stress. ECOSTRESS is attached to the International Space Station (ISS) and collects data over the conterminous United States (CONUS) as well as key biomes and agricultural zones around the world and selected FLUXNET validation sites. A map of the acquisition coverage can be found on the ECOSTRESS website (https://ecostress.jpl.nasa.gov/).\r\n\r\nThe ECO4WUE Version 1 data product provides Water Use Efficiency (WUE) data generated according to the Priestley-Taylor Jet Propulsion Laboratory (PT-JPL) algorithm. WUE is the ratio of carbon stored by plants to water evaporated by plants. This ratio is given as grams of carbon stored per kilogram of water evaporated over the course of the day from sunrise to sunset on the day when the ECOSTRESS granule was acquired.\r\n\r\nThe ECO4WUE Version 1 data product contains a single layer of water use efficiency.",
-    "temporalCoverage": "from 2018 to present",
-    "spatialCoverage": "Global"
+    "description": "The EROS Image Gallery collection is composed of a wide variety of images ranging from low altitude aircraft to satellite and NASA imagery; oblique photographs and ground imagery are also included in this primarily USGS collection.  These images were used in publications, posters, and special projects.  They have been scanned, indexed and are searchable for no-cost downloads to the science community, educators and general public.\r\n\r\nIncluded in this gallery are the Earth As Art 1, 2, and 3 collections and Landsat mosaics.  Also included are special images of elevation data, natural disasters, images that capture natural beauty of the Earth phenomena, and unique perspectives of rivers, lakes, seas, mountains, icebergs, as well as national parks around the world.  These collections were developed more for their aesthetic beauty rather than scientific interpretation.\r\n\r\nOver time, the EROS Imagery Gallery will continue to grow as data sets from the \"Image of the Week\" postings are retired to the gallery.  The \"Image of the Week\" posters are scientific observations that highlight current conditions or changes in water resources and land cover over time.\r\n",
+    "temporalCoverage": "from 1966 to 2021",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "Hyperion": {
-    "mission": "EO-1",
+  "QuickDRI": {
+    "mission": "QuickDRI",
     "sensorType": "OPTICAL",
-    "description": "The Earth Observing-1(EO-1) satellite was launched on November 21, 2000 by the U.S. Geological Survey (USGS) and the National Aeronautics and Space Administration (NASA) as a one-year technology demonstration mission to evaluate the performance of advanced capabilities for future space missions. The EO-1 mission validated highly integrated multispectral data from the Advanced Land Imager (ALI) sensor and hyperspectral imaging data from the Hyperion sensor. After the initial technology mission was accomplished, NASA and the USGS agreed to continue the EO-1 program due to high interest in the specialized data from scientific communities. \r\n\r\nEO-1 Data products consist of imagery collected during the original one-year mission, as well as more recent Data Acquisition Requests (DARs) from the EO-1 Extended Mission. EO-1 scenes are processed to Level 1Gst (L1Gst) and images with adequate ground control points are processed to Level 1T (L1T). L1Gst and L1T products are provided in GeoTIFF format. Scenes that have been processed to L1T are also available as Full Resolution Browse and GIS Ready Bundle products in JPEG format. Level 1R (L1R) products in HDF format are only available for Hyperion data.",
-    "temporalCoverage": "from 2001 to 2017",
-    "spatialCoverage": "Global"
+    "description": "QuickDRI, short for Quick Drought Response Index, is a drought-monitoring tool developed by scientists at EROS in collaboration with the National Drought Mitigation Center and the High Plains Regional Climate Center, with sponsorship from the U.S. Department of Agriculture's Risk Management Agency.  QuickDRI characterizes the intensification of short-term drought condition patterns on a weekly basis across the continental United States (CONUS) at a 1-km spatial resolution.\r\n",
+    "temporalCoverage": "from 2016 to present",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "MODIS-VI1": {
-    "mission": "MODIS",
+  "RBV Film Only": {
+    "mission": "RBV Film Only",
     "sensorType": "OPTICAL",
-    "description": "The MODIS Vegetation Indices Version 6 product provides a Vegetation Index (VI) value at a per pixel basis. There are 2 primary vegetation layers. The algorithm for this product chooses the best available pixel value from all the acquisitions from the 16 day period. The criteria used is low clouds, low view angle and the highest NDVI/EVI value. The first is the Normalized Difference Vegetation Index (NDVI), which is referred to as the continuity index to the existing National Oceanic and Atmospheric Administration-Advanced Very High Resolution Radiometer (NOAA-AVHRR) derived NDVI. The second vegetation layer is the Enhanced Vegetation Index (EVI), which has improved sensitivity over high biomass regions. Information on each individual MODIS Vegetation Indices Product along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/modis_products_table.",
-    "temporalCoverage": "from 2000 to present",
-    "spatialCoverage": "Global"
+    "description": "The three-camera Return Beam Vidicon (RBV) that operated on Landsat satellites 1 and 2 acquired approximately 1600 sub-scenes at 80 meter resolution.  The initial RBV sensor configuration used three independent cameras, each sensing a different spectral wavelength (0.48 to 0.83).  Landsat 1 &amp; 2 RBV data were recorded to 70 mm black &amp; white film rolls at NASA Goddard Space Flight Center and delivered to the U.S. Geological Survey (USGS) Earth Resources Observation and Science (EROS) Center for archiving and user distribution.  The RBV sensor utilized vidicon tube instruments containing an electron gun that read images from a photoconductive faceplate similar to television cameras.  The data stream received from the satellite was analog-to-digital preprocessed to correct for radiometric and geometric errors.  The RBV system was redesigned for Landsat 3 to use a two camera configuration mounted side by side that acquired four sub-scenes within the field of view of a Multispectral Scanner (MSS) scene.  The Landsat 3 RBV spatial resolution is 40 meters.  Landsat 3 data were also recorded to 70 mm film until the EROS Digital Imagery Processing System (EDIPS) became operational in 1979.  EROS Laser Beam Recorders (LBR's) recorded MSS and RBV data at 28 micron to 9-inch film rolls and the imagery was chipped up for archival storage and remains a viable archive backup to the digital MSS archive.  However, all of the RBV digital archive data were purged for lack of computer compatible reasons.  Today, the RBV 70 mm and 9-inch film sources are maintained in the USGS EROS archive and are accessible through EarthExplorer as an on-demand film scanning product.  RBV images that are scanned are used to generate browse and archive TIFF products that remain as no-cost options for all users.  The RBV raw TIFF products are not georeferenced.  They are black &amp; white images that faithfully represent the Landsat RBV film archive as it exists today.\r\n",
+    "temporalCoverage": "from 1978 to 1983",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "MODIS-VI2": {
-    "mission": "MODIS",
+  "SD NRCS Section Photos": {
+    "mission": "SD NRCS Section Photos",
     "sensorType": "OPTICAL",
-    "description": "The MODIS Vegetation Indices Version 6 product provides a Vegetation Index (VI) value at a per pixel basis. There are 2 primary vegetation layers. The algorithm for this product chooses the best available pixel value from all the acquisitions from the 16 day period. The criteria used is low clouds, low view angle and the highest NDVI/EVI value. The first is the Normalized Difference Vegetation Index (NDVI), which is referred to as the continuity index to the existing National Oceanic and Atmospheric Administration-Advanced Very High Resolution Radiometer (NOAA-AVHRR) derived NDVI. The second vegetation layer is the Enhanced Vegetation Index (EVI), which has improved sensitivity over high biomass regions. Information on each individual MODIS Vegetation Indices Product along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/modis_products_table.",
-    "temporalCoverage": "from 2000 to present",
-    "spatialCoverage": "Global"
+    "description": "The NRCS FSA slide scan collection focuses on cropland, although other land use types are often captured.  The project covers over 33 counties in eastern South Dakota.  Slide capture dates generally fall between the years 1980 to 2002.",
+    "temporalCoverage": "from 1979 to 2003",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "MODIS-VI3": {
-    "mission": "MODIS",
+  "SIR-C": {
+    "mission": "SIR-C",
     "sensorType": "OPTICAL",
-    "description": "The MODIS Vegetation Indices Version 6 product provides a Vegetation Index (VI) value at a per pixel basis. There are 2 primary vegetation layers. The algorithm for this product chooses the best available pixel value from all the acquisitions from the 16 day period. The criteria used is low clouds, low view angle and the highest NDVI/EVI value. The first is the Normalized Difference Vegetation Index (NDVI), which is referred to as the continuity index to the existing National Oceanic and Atmospheric Administration-Advanced Very High Resolution Radiometer (NOAA-AVHRR) derived NDVI. The second vegetation layer is the Enhanced Vegetation Index (EVI), which has improved sensitivity over high biomass regions. Information on each individual MODIS Vegetation Indices Product along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/modis_products_table.",
-    "temporalCoverage": "from 2000 to present",
-    "spatialCoverage": "Global"
+    "description": "Spaceborne Imaging Radar-C (SIR-C) is part of an imaging radar system that was flown on board two Space Shuttle flights (9 - 20 April, 1994 and 30 September - 11 October, 1994). The U.S. Geological Survey (USGS) Earth Resources Observation and Science (EROS) Center distributes the C-band (5.8 cm) and L-band (23.5 cm) Precision (Standard) Data. All X-band (3 cm) data is distributed by DLR (http://www.op.dlr.de/ne-hf/SRL.html)\r\n\r\nPrecision (Standard) Data consists of a frame image of a data segment, which represents a processed subset of the data swath. It contains high-resolution multifrequency and multipolarization data.\r\n\r\nA total of about 50 hours of data, corresponding to roughly 50 million square kilometers of ground coverage, was collected during each mission. The ground swath width varies from 15 to 90 kilometers depending on the imaging mode and incidence angles of the radar beams. Additional information on SIR-C is available at: http://southport.jpl.nasa.gov.\r\n\nSpaceborne Imaging Radar-C (SIR-C) was part of an imaging radar system that was flown on board two Space Shuttle flights (9 - 20 April, 1994 and 30 September - 11 October, 1994). The U.S. Geological Survey (USGS) Earth Resources Observation and Science (EROS) Center distributes the C-band (5.8 cm) and L-band (23.5 cm) Survey Data. \r\n\r\nA total of about 50 hours of data, corresponding to roughly 50 million square kilometers of ground coverage, were collected during each mission. The ground swath width varies from 15 to 90 kilometers depending on the imaging mode and incidence angles of the radar beams. \r\n\r\nAll science data were processed into Survey products. The Survey product is intended as a \"quick look\" browsing tool for viewing the areas imaged by SIR-C. This product is not designed to be used for quantitative scientific analysis. Survey Data consists of a frame image of a data segment, which represents a subset of the data swath. Resolution is approximately 100 meters, processed to a 50-meter pixel spacing. Additional information on SIR-C is available at: http://southport.jpl.nasa.gov.",
+    "temporalCoverage": "from 1994 to 1994",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "VIIRS": {
-    "mission": "SNPP",
+  "SLAR": {
+    "mission": "SLAR",
     "sensorType": "OPTICAL",
-    "description": "The Suomi National Polar-Orbiting Partnership (S-NPP) NASA Visible Infrared Imaging Radiometer Suite (VIIRS) Vegetation Indices (VI) Version 1 data products characterize land surface vegetation and related parameters. The VNP13 data products are designed after the Moderate Resolution Imaging Spectroradiometer (MODIS) Terra and Aqua Vegetation Indices product suite to promote the continuity of the Earth Observation System (EOS) mission. These products are designed to enhance the vegetation reflected signal from measured spectral responses by making use of the distinctive soil-vegetation characteristic in the red-edge area of the spectrum. Vegetation indices combine two or more spectral bands in the red (0.6 - 0.7 micrometer), NIR wavelengths (0.7-1.1 micrometer), and Blue (0.44-0.5 micrometer) regions. The VNP13 algorithm process produces three vegetation indices: Normalized Difference Vegetation Index (NDVI), the Enhanced Vegetation Index (EVI), and Enhanced Vegetation Index-2 (EVI2). These products inform us about the status of vegetation health during the growing season and as it changes in response to environmental, climate, and anthropogenic drivers.\r\n\r\nValidation at stage 1 has been achieved for the VIIRS Vegetation Index (VI) product suite.",
-    "temporalCoverage": "from 2012 to present",
-    "spatialCoverage": "Global"
+    "description": "The Side-Looking Airborne Radar (SLAR) is an image-producing system that derives its name from the fact that the radar beam is transmitted from the side of the aircraft during data acquisition SLAR is an active sensor; the system provides its own source of illumination in the form of microwave energy. Consequently, imagery can be obtained either day or night. Since microwave energy penetrates most clouds, SLAR can be used to prepare image maps of cloud-covered areas. Data are X-band synthetic aperture radar (horizontally transmitted, horizontally received) with the exception of some test sites. Since the radar signal is transmitted at a depressional angle below the horizontal plane in which the aircraft is flying, the signal strikes the terrain at an oblique angle, and the surficial expression of the geologic structure may thus be enhanced. The topographic expression of some surface features, such as subtle faults and folds, may be more clearly seen on radar imagery than on conventional aerial photographs or satellite images.",
+    "temporalCoverage": "from 1979 to 1993",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "MODIS-LAI-8": {
-    "mission": "MODIS",
+  "Space Acquired Photography": {
+    "mission": "Space Acquired Photography",
     "sensorType": "OPTICAL",
-    "description": "he level-4 MODIS global Leaf Area Index (LAI) and Fraction of Photosynthetically Active Radiation (FPAR) product is composited every 8 days at 500-meter resolution.  LAI is defined as the one-sided green leaf area per unit ground area in broadleaf canopies and as one-half the total needle surface area per unit ground area in coniferous canopies.  FPAR is defined as the fraction of incident photosynthetically active radiation (400-700nm) absorbed by the green elements of a vegetation canopy.  Information on individual MODIS Land Surface Reflectance Products along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/?f[0]=im_field_dataset_version%3A32&f[1]=im_field_product%3A7.",
-    "temporalCoverage": "from 2002 to present",
-    "spatialCoverage": "Global"
+    "description": "The Space Acquired Photography includes imagery from the Shuttle Large Format Camera, Skylab, and Gemini missions. The Space Acquired archive contains black-and-white, color, and color-infrared films.\r\n",
+    "temporalCoverage": "from 1965 to 1984",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "MODIS-LAI-4": {
-    "mission": "MODIS",
+  "SPOT CIB-10": {
+    "mission": "SPOT CIB-10",
     "sensorType": "OPTICAL",
-    "description": "The level-4 MODIS global Leaf Area Index (LAI) and Fraction of Photosynthetically Active Radiation (FPAR) product is composited every 8 days at 500-meter resolution.  LAI is defined as the one-sided green leaf area per unit ground area in broadleaf canopies and as one-half the total needle surface area per unit ground area in coniferous canopies.  FPAR is defined as the fraction of incident photosynthetically active radiation (400-700nm) absorbed by the green elements of a vegetation canopy.  Information on individual MODIS Land Surface Reflectance Products along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/?f[0]=im_field_dataset_version%3A32&f[1]=im_field_product%3A7.",
-    "temporalCoverage": "from 2002 to present",
-    "spatialCoverage": "Global"
+    "description": "SPOT Controlled Image Base 10 meter (CIB-10) is a collection of orthorectified panchromatic (grayscale) images.  The data were acquired between 1986 and 1993 by the French space agency, Centre National d'Etudes Spatiales (CNES), which owns and operates the SPOT satellite system.  The panchromatic images were orthorectified using NGA Digital Terrain Elevation Data Level 1 to remove image distortion and obtain the geometric qualities of a map. \r\n\r\nThe satellite image mosaic products cover large areas of the United States, Europe, Middle East, Southeast Asia, North and South Korea, Central America, western Russia, and other smaller areas around the globe. The coverage map in EarthExplorer shows the extent of available data.\r\n",
+    "temporalCoverage": "from 1986 to 1993",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "MODIS-LTSE-1": {
-    "mission": "MODIS",
+  "SRTM": {
+    "mission": "SRTM",
     "sensorType": "OPTICAL",
-    "description": "The MODIS/Aqua Land Surface Temperature and Emissivity (LST/E) products provide per-pixel temperature and emissivity values in a sequence of swath-based global products. The MODIS/Aqua LST/E 5-Minute L2 Swath 1 kilometer data set is produced daily at 5-minute increments, and covers both daytime and nighttime acquisitions, including the Polar Regions.\r\nInformation on individual MODIS Land Surface Temperature and Emissivity Products along with improvements/changes for Version 6 is available at: https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table",
-    "temporalCoverage": "from 2000 to present",
-    "spatialCoverage": "Global"
+    "description": "The Shuttle Radar Topography Mission (SRTM) is a partnership between NASA and the National Geospatial-Intelligence Agency (NGA).  Flown aboard the NASA Space Shuttle Endeavour (11-22 February 2000), SRTM fulfilled its mission to map the world in three dimensions.  The USGS is under agreement with NGA and NASA's Jet Propulsion Laboratory to distribute the C-band data.  SRTM utilized dual Spaceborne Imaging Radar (SIR-C) and dual X-band Synthetic Aperture Radar (X-SAR) configured as a baseline interferometer to successfully collect data over 80 per cent of the Earth's land surface, everything between 60 degrees North and 56 degrees South latitude.\r\nGroups of scientists have worked on algorithms to fill the voids of the original SRTM data.  Two datasets offer global coverage void-filled SRTM data at full resolution quality assessment.  The void-filled SRTM data from are high quality at full SRTM resolution, but coverage is limited to areas of high mountain void incidence, and some areas north of 60 degrees of latitude.\r\n",
+    "temporalCoverage": "from 1972 to 2023",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "MODIS-LTSE-8": {
-    "mission": "MODIS",
+  "SRTM 1 Arc-Second Global": {
+    "mission": "SRTM 1 Arc-Second Global",
     "sensorType": "OPTICAL",
-    "description": "The MODIS/Aqua Land Surface Temperature and Emissivity (LST/E) products provide per-pixel temperature and emissivity values in a sequence of swath-based global products. The MODIS/Aqua LST/E 5-Minute L2 Swath 1 kilometer data set is produced daily at 5-minute increments, and covers both daytime and nighttime acquisitions, including the Polar Regions.\r\nInformation on individual MODIS Land Surface Temperature and Emissivity Products along with improvements/changes for Version 6 is available at: https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table",
-    "temporalCoverage": "from 2000 to present",
-    "spatialCoverage": "Global"
+    "description": "The Shuttle Radar Topography Mission (SRTM) was a partnership between NASA and the National Geospatial-Intelligence Agency (NGA). Flown aboard the NASA Space Shuttle Endeavour (11-22 February 2000), SRTM fulfilled its mission to map the world in three dimensions.  The USGS is under agreement with NGA and NASA's Jet Propulsion Laboratory to distribute SRTM elevation products derived from the C-band radar data.  SRTM utilized interferometric C-band Spaceborne Imaging Radar to generate elevation data over 80 percent of the Earth's land surface. \r\n \r\nGlobal SRTM data at a resolution of 1 arc-second  have been edited to delineate and flatten water bodies, better define coastlines, remove spikes and wells, and fill small voids.  Larger areas of missing data or voids were filled by the NGA  using interpolation algorithms in conjunction with other sources of elevation data.  The SRTM 1 Arc-Second Global data offer worldwide coverage of void filled data at a resolution of 1 arc-second (30 meters) and provide open distribution of this high-resolution global data set.  \r\n\r\n\r\n\r\n\nThe Shuttle Radar Topography Mission (SRTM) was a partnership between NASA and the National Geospatial-Intelligence Agency (NGA). Flown aboard the NASA Space Shuttle Endeavour (11-22 February 2000), SRTM fulfilled its mission to map the world in three dimensions. The USGS is under agreement with NGA and NASA's Jet Propulsion Laboratory to distribute SRTM elevation products derived from the C-band radar data. SRTM utilized interferomic C-band Spaceborne Imaging Radar to generate elevation data over 80 percent of the Earth's land surface.\r\n\r\nThe SRTM collection has been edited to delineate and flatten water bodies, better define coastlines, remove spikes and wells, and fill small voids.\nThe Shuttle Radar Topography Mission (SRTM) was a partnership between NASA and the National Geospatial-Intelligence Agency (NGA). Flown aboard the NASA Space Shuttle Endeavour (11-22 February 2000), SRTM fulfilled its mission to map the world in three dimensions. The USGS is under agreement with NGA and NASA's Jet Propulsion Laboratory to distribute SRTM elevation products derived from the C-band radar data.  SRTM utilized interferomic C-band Spaceborne Imaging Radar to generate elevation data over 80 percent of the Earth's land surface. \r\n\r\nThe SRTM collection was edited to delineate and flatten water bodies, better define coastlines, remove spikes and wells, and fill small voids.  Since some areas of missing data or voids were still present in the SRTM collection, the NGA  filled the voids using interpolation algorithms in conjunction with other sources of elevation data. The SRTM Void Filled data set are the result of this additional processing. \nThe SRTM Water Body Data files are a by-product of the data editing performed by the National Geospatial-Intelligence Agency (NGA) to produce the finished SRTM Digital Terrain Elevation Data Level 2 (DTED&#174 2). In accordance with the DTED&#174 2 specification, the terrain elevation data have been edited to portray water bodies that meet minimum capture criteria. Ocean, lake and river shorelines were identified and delineated. Lake elevations were set to a constant value. Ocean elevations were set to zero. Rivers were stepped down monotonically to maintain proper flow. After this processing was done, the shorelines from the one arc second (approx. 30-meter) DTED&#174 2 were saved as vectors in ESRI 3-D Shapefile format.\r\n\r\n",
+    "temporalCoverage": "from 2000 to 2000",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "MODIS-VI-16-500": {
-    "mission": "MODIS",
+  "TM Film Only": {
+    "mission": "TM Film Only",
     "sensorType": "OPTICAL",
-    "description": "The MODIS Vegetation Indices Version 6 product provides a Vegetation Index (VI) value at a per pixel basis. There are 2 primary vegetation layers. The algorithm for this product chooses the best available pixel value from all the acquisitions from the 16 day period. The criteria used is low clouds, low view angle and the highest NDVI/EVI value. The first is the Normalized Difference Vegetation Index (NDVI), which is referred to as the continuity index to the existing National Oceanic and Atmospheric Administration-Advanced Very High Resolution Radiometer (NOAA-AVHRR) derived NDVI. The second vegetation layer is the Enhanced Vegetation Index (EVI), which has improved sensitivity over high biomass regions. Information on each individual MODIS Vegetation Indices Product along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/modis_products_table.",
-    "temporalCoverage": "from 2000 to present",
-    "spatialCoverage": "Global"
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites.  The Landsat Thematic Mapper (TM), a sensor carried on Landsats 4 and 5, acquired seven spectral bands of radiant energy from the earth's surface.  The wavelength range for the TM sensor is from the visible through the mid-infrared and into the thermal-infrared portion of the electromagnetic spectrum.  The scenes are approximately 170 km by 185 km at a resolution of 30 meters for the six reflective bands and 120 meters for the thermal band.  Bands 1 through 5 and 7 are reflective wavelengths; band 6 is thermal data.  The TM Film Only collection includes scenes that are no longer available on magnetic media and the only remaining source is on black-and-white film.",
+    "temporalCoverage": "from 1982 to 1989",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "MODIS-VI-16-250": {
-    "mission": "MODIS",
+  "UAS": {
+    "mission": "UAS - DEM",
     "sensorType": "OPTICAL",
-    "description": "The MODIS Vegetation Indices Version 6 product provides a Vegetation Index (VI) value at a per pixel basis. There are 2 primary vegetation layers. The algorithm for this product chooses the best available pixel value from all the acquisitions from the 16 day period. The criteria used is low clouds, low view angle and the highest NDVI/EVI value. The first is the Normalized Difference Vegetation Index (NDVI), which is referred to as the continuity index to the existing National Oceanic and Atmospheric Administration-Advanced Very High Resolution Radiometer (NOAA-AVHRR) derived NDVI. The second vegetation layer is the Enhanced Vegetation Index (EVI), which has improved sensitivity over high biomass regions. Information on each individual MODIS Vegetation Indices Product along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/modis_products_table.",
-    "temporalCoverage": "from 2000 to present",
-    "spatialCoverage": "Global"
+    "description": "The USGS National Unmanned Aircraft Systems (UAS) Project Office utilizes UAS technology for collecting remote sensing data on a local scale.  Typical UAS projects encompass areas that are too large to cover on foot and too small for traditional aircraft missions.  The flexibility of operations and relative low cost of UAS allow scientists to support a range of activities including monitoring environmental conditions, analyzing the impacts of climate changes, responding to natural hazards, understanding landscape change rates and consequences, conducting fire assessments, tracking wildlife inventories, aiding search and rescue, and supporting related land management and emergency response missions.  The USGS EROS Center manages and distributes data for the UAS Project Office. ",
+    "temporalCoverage": "from 1970 to 2023",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "MODIS-BURN-M": {
-    "mission": "MODIS",
+  "US Forest Maps": {
+    "mission": "US Forest Maps",
     "sensorType": "OPTICAL",
-    "description": "The Terra and Aqua combined MCD64A1 Burned Area data product is a monthly, Level 3 gridded 500 meter product containing per-pixel burning and quality information.  The MCD64A1 mapping approach employs 500 meter MODIS Surface Reflectance imagery coupled with 1 kilometer MODIS active fire observations.  The algorithm uses a burn sensitive vegetation index (VI) to create dynamic thresholds that are applied to the composite imagery.  The VI is derived from MODIS short-wave infrared atmospherically corrected surface reflectance bands 5 and 7 with a measure of temporal texture.  The algorithm ultimately identifies the date of burn for the 500 meter grid cells within each individual MODIS tile.",
-    "temporalCoverage": "from 2000 to present",
-    "spatialCoverage": "Global"
+    "description": "The U.S. Geological Survey (USGS) Emergency Operations, in support of the Department of Homeland Security, provides imagery and resources for use in disaster preparations, rescue and relief operations, damage assessments, and reconstruction efforts.  A variety of products, however, not limited to, include: multiple types of satellite and aerial imagery, maps, products, presentations and data source documents.",
+    "temporalCoverage": "from 2010 to 2015",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "MODIS-FIRE-8": {
-    "mission": "MODIS",
+  "USGS Global Fiducials": {
+    "mission": "USGS Global Fiducials",
     "sensorType": "OPTICAL",
-    "description": "MODIS Thermal Anomalies/Fire products are primarily derived from MODIS 4- and 11-micrometer radiances. The fire detection strategy is based on absolute detection of a fire (when the fire strength is sufficient to detect), and on detection relative to its background (to account for variability of the surface temperature and reflection by sunlight). Numerous tests are employed to reject typical false alarm sources like sun glint or an unmasked coastline. Information on individual MODIS Thermal Anomalies and Fire Products along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/?f[0]=im_field_dataset_version%3A32&f[1]=im_field_product%3A12.",
-    "temporalCoverage": "from 2000 to present",
-    "spatialCoverage": "Global"
+    "description": "A Fiducial site is a geographic location that is used as a benchmark for the long-term monitoring of processes, both natural and anthropogenic, associated with the causes and effects of global environmental change. The word fiducial carries multiple meanings with regard to the GFL. Fiducials are marks or points of reference applied to images to present a fixed standard of reference, so in the GFL they refer to the identification of a place on the Earth. The term fiducial may also be interpreted to refer to a long-term trust, where one may be holding something in trust for another. Both references aptly apply, as the GFL maintains a long-term record of data over specific places on the Earth to be available for scientific investigations. Fiducial sites are associated with Earth processes and environmentally sensitive areas that are being monitored so that scientists can better understand and model the dynamic systems and changes that are occurring. The sites are located around the globe and are distributed among environmental topics and processes within five major disciplines: Ocean Processes; Ice and Snow Dynamics; Atmospheric Processes; Land Use/Land Cover; and Geologic Processes. ",
+    "temporalCoverage": "from 1992 to 2020",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   },
-  "MODIS-FIRE-1": {
-    "mission": "MODIS",
+  "VegDRI": {
+    "mission": "VegDRI",
     "sensorType": "OPTICAL",
-    "description": "MODIS Thermal Anomalies/Fire products are primarily derived from MODIS 4- and 11-micrometer radiances. The fire detection strategy is based on absolute detection of a fire (when the fire strength is sufficient to detect), and on detection relative to its background (to account for variability of the surface temperature and reflection by sunlight). Numerous tests are employed to reject typical false alarm sources like sun glint or an unmasked coastline. Information on individual MODIS Thermal Anomalies and Fire Products along with improvements/changes for Version 6 are available at: https://lpdaac.usgs.gov/dataset_discovery/?f[0]=im_field_dataset_version%3A32&f[1]=im_field_product%3A12.",
-    "temporalCoverage": "from 2002 to present",
-    "spatialCoverage": "Global"
+    "description": "VegDRI, short for Vegetation Drought Response Index, is a drought-monitoring tool developed by scientists at EROS in collaboration with the National Drought Mitigation Center and the High Plains Regional Climate Center, with sponsorship from the U.S. Department of Agriculture's Risk Management Agency. VegDRI maps, produced every two weeks, combine satellite-based observations of vegetation conditions with climate and environmental data to provide drought information for the conterminous United States.\r\n\r\n",
+    "temporalCoverage": "from 2009 to present",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
+  },
+  "VIIRS C2 Subset": {
+    "mission": "VIIRS C2 Subset",
+    "sensorType": "OPTICAL",
+    "description": "The USGS Earth Resources Observation and Science (EROS) Center archive holds data collected by the Landsat suite of satellites, beginning with Landsat 1 in 1972.  Landsat 8, launched February 11, 2013, is the latest Landsat sensor.",
+    "temporalCoverage": "from 2023 to present",
+    "spatialCoverage": "Global",
+    "tokenNeeded": false
   }
 }

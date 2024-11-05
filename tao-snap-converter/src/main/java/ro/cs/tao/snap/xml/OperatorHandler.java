@@ -22,12 +22,11 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 import ro.cs.tao.component.*;
 import ro.cs.tao.component.enums.ParameterType;
+import ro.cs.tao.component.enums.ProcessingComponentVisibility;
+import ro.cs.tao.component.template.TemplateType;
 import ro.cs.tao.eodata.enums.DataFormat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -42,6 +41,27 @@ public class OperatorHandler extends DefaultHandler {
     }
 
     public ProcessingComponent getResult() {
+        this.result.setTemplateType(TemplateType.VELOCITY);
+        final StringBuilder builder = new StringBuilder();
+        final List<SourceDescriptor> sources = this.result.getSources();
+        if (sources != null) {
+            for (SourceDescriptor descriptor : sources) {
+                builder.append("-").append(descriptor.getName()).append("=$").append(descriptor.getName()).append("\n");
+            }
+        }
+        if (this.parameters != null) {
+            this.result.setParameterDescriptors(parameters.stream().collect(Collectors.toSet()));
+            for (ParameterDescriptor descriptor : this.parameters) {
+                builder.append("-").append(descriptor.getLabel()).append("=$").append(descriptor.getName()).append("\n");
+            }
+        }
+        final List<TargetDescriptor> targets = this.result.getTargets();
+        if (targets != null) {
+            for (TargetDescriptor descriptor : targets) {
+                builder.append("-").append(descriptor.getName()).append(" $").append(descriptor.getName()).append("\n");
+            }
+        }
+        this.result.setTemplateContents(builder.toString());
         return this.result;
     }
 
@@ -49,11 +69,30 @@ public class OperatorHandler extends DefaultHandler {
     public void startDocument() throws SAXException {
         this.logger = Logger.getLogger(OperatorHandler.class.getName());
         this.result = new ProcessingComponent();
+        this.result.setAuthors("SNAP Team");
+        this.result.setContainerId("(C) SNAP Team");
+        this.result.setNodeAffinity(NodeAffinity.Any);
+        this.result.setFileLocation("gpt");
+        this.result.setWorkingDirectory(".");
+        this.result.setVisibility(ProcessingComponentVisibility.SYSTEM);
+        this.result.setMultiThread(true);
+        this.result.setParallelism(8);
+        this.result.setActive(true);
     }
 
     @Override
     public void endDocument() throws SAXException {
         super.endDocument();
+        if (this.result.getTargets().isEmpty()) {
+            TargetDescriptor targetDescriptor = new TargetDescriptor();
+            targetDescriptor.setId(UUID.randomUUID().toString());
+            targetDescriptor.setName("t");
+            DataDescriptor targetData = new DataDescriptor();
+            targetData.setFormatType(DataFormat.RASTER);
+            targetData.setLocation("output_" + this.result.getId() + ".tif");
+            targetDescriptor.setDataDescriptor(targetData);
+            this.result.addTarget(targetDescriptor);
+        }
     }
 
     @Override
@@ -87,7 +126,7 @@ public class OperatorHandler extends DefaultHandler {
                     this.result.addTarget(targetDescriptor);
                     break;
                 case "parameters":
-                    this.result.setParameterDescriptors(this.parameters);
+                    this.result.setParameterDescriptors(new LinkedHashSet<>(this.parameters));
                     break;
                 case "version":
                     this.result.setVersion(value);
@@ -117,6 +156,8 @@ public class OperatorHandler extends DefaultHandler {
                     multiSources.setCardinality(0);
                     multiSources.setDataDescriptor(sourceData);
                     this.result.addSource(multiSources);
+                    break;
+                case "sources":
                     break;
                 default:
                     ParameterDescriptor parameter = null;
@@ -177,6 +218,7 @@ public class OperatorHandler extends DefaultHandler {
     @SafeVarargs
     private final <T> ParameterDescriptor newParameter(String name, String label, Class<T> clazz, String description, T... values) {
         ParameterDescriptor ret = new ParameterDescriptor(name);
+        ret.setName(name);
         ret.setType(ParameterType.REGULAR);
         ret.setDataType(clazz);
         ret.setDescription(description);

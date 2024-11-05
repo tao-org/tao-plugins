@@ -25,58 +25,85 @@ public class Sentinel2Extension<E extends Extensible> extends Extension<E> {
     @Override
     public void extractField(TreeNode node, String name) throws JsonProcessingException {
         try {
-            if (S2Fields.TILE_ID.equals(name)) {
-                setTileId(JsonValueHelper.getString(node, name));
-            } else if (S2Fields.GRANULE_ID.equals(name)) {
-                setGranuleId(JsonValueHelper.getString(node, name));
-            } else if (S2Fields.DATATAKE_ID.equals(name)) {
-                setDatatakeId(JsonValueHelper.getString(node, name));
-            } else if (S2Fields.PRODUCT_URI.equals(name)) {
-                setProductUri(JsonValueHelper.getString(node, name));
-            } else if (S2Fields.DATASTRIP_ID.equals(name)) {
-                setDatastripId(JsonValueHelper.getString(node, name));
-            } else if (S2Fields.PRODUCT_TYPE.equals(name)) {
-                setProductType(JsonValueHelper.getString(node, name));
-            } else if (S2Fields.DATATAKE_TYPE.equals(name)) {
-                setDatatakeType(JsonValueHelper.getString(node, name));
-            } else if (S2Fields.GENERATION_TIME.equals(name)) {
-                setGenerationTime(JsonValueHelper.getDateTime(node, name));
-            } else if (S2Fields.PROCESSING_BASELINE.equals(name)) {
-                setProcessingBaseline(JsonValueHelper.getString(node, name));
-            } else if (S2Fields.WATER_PERCENTAGE.equals(name)) {
-                setWaterPercentage(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.MEAN_SOLAR_ZENITH.equals(name)) {
-                setMeanSolarZenith(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.MEAN_SOLAR_AZIMUTH.equals(name)) {
-                setMeanSolarAzimuth(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.SNOW_ICE_PERCENTAGE.equals(name)) {
-                setSnowIcePercentage(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.VEGETATION_PERCENTAGE.equals(name)) {
-                setVegetationPercentage(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.THIN_CIRRUS_PERCENTAGE.equals(name)) {
-                setThinCirrusPercentage(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.CLOUD_SHADOW_PERCENTAGE.equals(name)) {
-                setCloudShadowPercentage(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.NODATA_PIXEL_PERCENTAGE.equals(name)) {
-                setNodataPixelPercentage(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.UNCLASSIFIED_PERCENTAGE.equals(name)) {
-                setUnclassifiedPercentage(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.DARK_FEATURES_PERCENTAGE.equals(name)) {
-                setDarkFeaturesPercentage(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.NOT_VEGETATED_PERCENTAGE.equals(name)) {
-                setNotVegetatedPercentage(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.DEGRADED_MSI_DATA_PERCENTAGE.equals(name)) {
-                setDegradedMsiDataPercentage(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.HIGH_PROBA_CLOUDS_PERCENTAGE.equals(name)) {
-                setHighProbaCloudsPercentage(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.MEDIUM_PROBA_CLOUDS_PERCENTAGE.equals(name)) {
-                setMediumProbaCloudsPercentage(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.SATURATED_DEFECTIVE_PIXEL_PERCENTAGE.equals(name)) {
-                setSaturatedDefectivePixelPercentage(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.REFLECTANCE_CONVERSION_FACTOR.equals(name)) {
-                setReflectanceConversionFactor(JsonValueHelper.getDouble(node, name));
-            } else if (S2Fields.MGRS_TILE.equals(name)) {
-                setMgrsTile(JsonValueHelper.getString(node, name));
+            switch (name) {
+                case S2Fields.TILE_ID:
+                    setTileId(JsonValueHelper.getString(node, name));
+                    break;
+                case S2Fields.GRANULE_ID:
+                    setGranuleId(JsonValueHelper.getString(node, name));
+                    break;
+                case S2Fields.DATATAKE_ID:
+                    setDatatakeId(JsonValueHelper.getString(node, name));
+                    break;
+                case S2Fields.PRODUCT_URI:
+                    setProductUri(JsonValueHelper.getString(node, name));
+                    break;
+                case S2Fields.DATASTRIP_ID:
+                    setDatastripId(JsonValueHelper.getString(node, name));
+                    break;
+                case S2Fields.PRODUCT_TYPE:
+                    setProductType(JsonValueHelper.getString(node, name));
+                    break;
+                case S2Fields.DATATAKE_TYPE:
+                    setDatatakeType(JsonValueHelper.getString(node, name));
+                    break;
+                case S2Fields.GENERATION_TIME:
+                    setGenerationTime(JsonValueHelper.getDateTime(node, name));
+                    break;
+                case S2Fields.PROCESSING_BASELINE:
+                    setProcessingBaseline(JsonValueHelper.getString(node, name));
+                    break;
+                case S2Fields.WATER_PERCENTAGE:
+                    setWaterPercentage(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.MEAN_SOLAR_ZENITH:
+                    setMeanSolarZenith(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.MEAN_SOLAR_AZIMUTH:
+                    setMeanSolarAzimuth(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.SNOW_ICE_PERCENTAGE:
+                    setSnowIcePercentage(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.VEGETATION_PERCENTAGE:
+                    setVegetationPercentage(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.THIN_CIRRUS_PERCENTAGE:
+                    setThinCirrusPercentage(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.CLOUD_SHADOW_PERCENTAGE:
+                    setCloudShadowPercentage(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.NODATA_PIXEL_PERCENTAGE:
+                    setNodataPixelPercentage(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.UNCLASSIFIED_PERCENTAGE:
+                    setUnclassifiedPercentage(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.DARK_FEATURES_PERCENTAGE:
+                    setDarkFeaturesPercentage(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.NOT_VEGETATED_PERCENTAGE:
+                    setNotVegetatedPercentage(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.DEGRADED_MSI_DATA_PERCENTAGE:
+                    setDegradedMsiDataPercentage(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.HIGH_PROBA_CLOUDS_PERCENTAGE:
+                    setHighProbaCloudsPercentage(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.MEDIUM_PROBA_CLOUDS_PERCENTAGE:
+                    setMediumProbaCloudsPercentage(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.SATURATED_DEFECTIVE_PIXEL_PERCENTAGE:
+                    setSaturatedDefectivePixelPercentage(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.REFLECTANCE_CONVERSION_FACTOR:
+                    setReflectanceConversionFactor(JsonValueHelper.getDouble(node, name));
+                    break;
+                case S2Fields.MGRS_TILE:
+                    setMgrsTile(JsonValueHelper.getString(node, name));
+                    break;
             }
         } catch (Exception e) {
             Logger.getLogger(FileInfoExtension.class.getName()).warning("Cannot extract field " + name + ": " + e.getMessage());

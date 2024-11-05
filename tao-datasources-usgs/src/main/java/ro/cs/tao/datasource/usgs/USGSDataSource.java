@@ -22,9 +22,9 @@ import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.URLDataSource;
 import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.datasource.usgs.json.handlers.LoginResponseHandler;
-import ro.cs.tao.datasource.usgs.json.requests.LoginRequest;
+import ro.cs.tao.datasource.usgs.json.requests.LoginTokenRequest;
 import ro.cs.tao.datasource.usgs.json.responses.LoginResponse;
-import ro.cs.tao.datasource.usgs.parameters.LandsatParameterProvider;
+import ro.cs.tao.datasource.usgs.parameters.USGSParameterProvider;
 import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
@@ -53,7 +53,7 @@ public class USGSDataSource extends URLDataSource<USGSQuery, String> {
 
     public USGSDataSource() throws URISyntaxException {
         super(URL);
-        setParameterProvider(new LandsatParameterProvider(this));
+        setParameterProvider(new USGSParameterProvider(this));
         this.properties = USGSDataSource.props;
     }
 
@@ -68,13 +68,13 @@ public class USGSDataSource extends URLDataSource<USGSQuery, String> {
 
     @Override
     public String authenticate() {
-        LoginRequest request = new LoginRequest();
+        LoginTokenRequest request = new LoginTokenRequest();
         if (credentials == null) {
             throw new QueryException(String.format("Credentials not set for %s", getId()));
         }
         request.setUsername(credentials.getUserName());
-        request.setPassword(credentials.getPassword());
-        String url = getConnectionString() + "login";
+        request.setToken(credentials.getPassword());
+        String url = getConnectionString() + "login-token";
         //List<org.apache.http.NameValuePair> params = new ArrayList<>();
         //params.add(new BasicNameValuePair("jsonRequest", request.toString()));
         try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, (Credentials) null, request.toString())) {
@@ -92,6 +92,8 @@ public class USGSDataSource extends URLDataSource<USGSQuery, String> {
                     String key = null;
                     if (login.getErrorCode() == null) {
                         key = login.getData();
+                    } else {
+                        throw new QueryException("Cannot retrieve API key [403:AUTH_INVALID]");
                     }
                     if (key == null) {
                         throw new QueryException(String.format("The API key could not be obtained [requestId:%s,apiVersion:%s,errorCode:%s,error:%s,data:%s",

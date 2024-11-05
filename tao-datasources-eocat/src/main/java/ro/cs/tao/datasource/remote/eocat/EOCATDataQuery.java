@@ -24,6 +24,7 @@ import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.converters.ConversionException;
 import ro.cs.tao.datasource.converters.ConverterFactory;
+import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.eocat.parameters.EOCATDateParameterConverter;
 import ro.cs.tao.datasource.remote.eocat.xml.EOCATXmlResponseHandler;
@@ -68,6 +69,17 @@ public class EOCATDataQuery extends DataQuery {
     protected List<EOProduct> executeImpl() {
         List<EOProduct> results = new ArrayList<>();
         List<NameValuePair> params = new ArrayList<>();
+        String datetimeValue = "";
+        try {
+            if (this.parameters.get(CommonParameterNames.START_DATE) != null) {
+                datetimeValue += getParameterValue(this.parameters.get(CommonParameterNames.START_DATE));
+            }
+            if (this.parameters.get(CommonParameterNames.END_DATE) != null) {
+                datetimeValue += "/" + getParameterValue(this.parameters.get(CommonParameterNames.END_DATE));
+            }
+        } catch (ConversionException e) {
+            throw new QueryException(e.getMessage());
+        }
         for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
             QueryParameter<?> parameter = entry.getValue();
             if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
@@ -75,7 +87,7 @@ public class EOCATDataQuery extends DataQuery {
             }
             if (parameter.isOptional() &&
                     ((!parameter.isInterval() && parameter.getValue() == null) ||
-                            (parameter.isInterval() && parameter.getMinValue() == null && parameter.getMaxValue() == null))) {
+                            (parameter.isInterval() && parameter.getMinValue() == null && parameter.getMaxValue() == null) || parameter.getType().getName().contains("Date"))) {
                 continue;
             }
             try {
@@ -94,11 +106,15 @@ public class EOCATDataQuery extends DataQuery {
         queryParams.add(new BasicNameValuePair("maximumRecords", String.valueOf("" + nrRecordsOnPage)));
         int startRecord = Math.max(1, (this.pageNumber - 1) * nrRecordsOnPage + 1);
         queryParams.add(new BasicNameValuePair("recordSchema", "om"));
+        queryParams.add(new BasicNameValuePair("httpAccept", "application/atom+xml"));
+        if (!datetimeValue.isEmpty()) {
+            queryParams.add(new BasicNameValuePair("datetime", datetimeValue));
+        }
         queryParams.add(new BasicNameValuePair("startRecord", String.valueOf("" + startRecord)));
         do {
             queryParams.remove(queryParams.size() - 1);
             queryParams.add(new BasicNameValuePair("startRecord", String.valueOf("" + startRecord)));
-            String queryUrl = this.source.getConnectionString() + "request?" + URLEncodedUtils.format(queryParams, "UTF-8").replace("+", "%20");
+            String queryUrl = this.source.getConnectionString() + "collections/datasets/items?" + URLEncodedUtils.format(queryParams, "UTF-8").replace("+", "%20");
             logger.fine(String.format("Executing query %s", queryUrl));
             try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, null)) {
                 switch (response.getStatusLine().getStatusCode()) {
@@ -137,6 +153,17 @@ public class EOCATDataQuery extends DataQuery {
     public long getCountImpl() {
         long count = -1;
         List<NameValuePair> params = new ArrayList<>();
+        String datetimeValue = "";
+        try {
+            if (this.parameters.get(CommonParameterNames.START_DATE) != null) {
+                datetimeValue += getParameterValue(this.parameters.get(CommonParameterNames.START_DATE));
+            }
+            if (this.parameters.get(CommonParameterNames.END_DATE) != null) {
+                datetimeValue += "/" + getParameterValue(this.parameters.get(CommonParameterNames.END_DATE));
+            }
+        } catch (ConversionException e) {
+            throw new QueryException(e.getMessage());
+        }
         for (Map.Entry<String, QueryParameter<?>> entry : this.parameters.entrySet()) {
             QueryParameter<?> parameter = entry.getValue();
             if (!parameter.isOptional() && !parameter.isInterval() && parameter.getValue() == null) {
@@ -144,7 +171,7 @@ public class EOCATDataQuery extends DataQuery {
             }
             if (parameter.isOptional() &&
                     ((!parameter.isInterval() && parameter.getValue() == null) ||
-                            (parameter.isInterval() && parameter.getMinValue() == null && parameter.getMaxValue() == null))) {
+                            (parameter.isInterval() && parameter.getMinValue() == null && parameter.getMaxValue() == null) || parameter.getType().getName().contains("Date"))) {
                 continue;
             }
             try {
@@ -156,8 +183,12 @@ public class EOCATDataQuery extends DataQuery {
         List<NameValuePair> queryParams = new ArrayList<>(params);
         queryParams.add(new BasicNameValuePair("maximumRecords", "1"));
         queryParams.add(new BasicNameValuePair("recordSchema", "om"));
+        queryParams.add(new BasicNameValuePair("httpAccept", "application/atom+xml"));
+        if (!datetimeValue.isEmpty()) {
+            queryParams.add(new BasicNameValuePair("datetime", datetimeValue));
+        }
         queryParams.add(new BasicNameValuePair("startRecord", "1"));
-        String queryUrl = this.source.getConnectionString() + "request?" + URLEncodedUtils.format(queryParams, "UTF-8").replace("+", "%20");
+        String queryUrl = this.source.getConnectionString() + "collections/datasets/items?" + URLEncodedUtils.format(queryParams, "UTF-8").replace("+", "%20");
         try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, null)) {
             switch (response.getStatusLine().getStatusCode()) {
                 case 200:
@@ -172,8 +203,10 @@ public class EOCATDataQuery extends DataQuery {
                 case 403:
                     throw new QueryException("The request was not successful. Reason: 403: The required credentials are missing!");
                 default:
+                    String errorResponse = EntityUtils.toString(response.getEntity());
+                    String errorReason = errorResponse.replaceAll("[\\s\\S]*?ExceptionText>(.*?)<[\\s\\S]*", "$1");
                     throw new QueryException(String.format("The request was not successful. Reason: %s",
-                            response.getStatusLine().getStatusCode() + ": " + response.getStatusLine().getReasonPhrase()));
+                            response.getStatusLine().getStatusCode() + ": " + errorReason));
             }
         } catch (IOException ex) {
             throw new QueryException(ex);

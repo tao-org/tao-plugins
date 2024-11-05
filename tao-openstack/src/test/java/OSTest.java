@@ -30,11 +30,11 @@ import java.util.*;
 public class OSTest {
 
     public static void main(String[] args) throws IOException, CodeGenerationException {
-        String domain = "***REMOVED***";//"***REMOVED***";
-        String userName = "***REMOVED***";//"***REMOVED***";
+        String domain = "***REMOVED***";
+        String userName = "***REMOVED***";
         String userId = "***REMOVED***";
         String password = "***REMOVED***";
-        String authenticationURL = "https://cf2.cloudferro.com:5000/v3"; //"https://keystone.cloudferro.com:5000/v3";
+        String authenticationURL = "https://keystone.cloudferro.com:5000/v3";
         String projectId = "***REMOVED***";
         Path folder = Paths.get("E:\\");
 
@@ -49,8 +49,8 @@ public class OSTest {
         params.add(new BasicNameValuePair("client_id", appClient));
         params.add(new BasicNameValuePair("client_secret", kSecret));
         //params.add(new BasicNameValuePair("totp", generateOTP("***REMOVED***")));
-        String token = "***REMOVED***";
-        /*try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, header, params)) {
+        String token;
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, header, params)) {
              token = EntityUtils.toString(response.getEntity());
             Map<String, String> map = new LinkedHashMap<>();
             map.putAll(new ObjectMapper().readValue(token, map.getClass()));
@@ -59,13 +59,13 @@ public class OSTest {
 
 
 
-        }*/
+        }
         OSFactory.enableHttpLoggingFilter(true);
         OSClient.OSClientV3 client = OSFactory.builderV3()
-                .token(token)
+                .token("***REMOVED***")
                 .endpoint("https://keystone.cloudferro.com:5000/v3")
                 //.credentials(userName, password, Identifier.byName(domain))
-                .scopeToProject(Identifier.byId("***REMOVED***"))
+                .scopeToProject(Identifier.byId("***REMOVED***"), Identifier.byId("***REMOVED***"))
                 .authenticate();
         client = client.useRegion("WAW3-2");
         List<? extends Service> catalog = client.getToken().getCatalog();

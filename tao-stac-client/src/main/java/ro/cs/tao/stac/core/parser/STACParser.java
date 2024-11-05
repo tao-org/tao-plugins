@@ -9,6 +9,7 @@ import ro.cs.tao.stac.core.model.*;
 import ro.cs.tao.stac.core.model.extensions.eo.Band;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
@@ -37,14 +38,14 @@ public class STACParser {
      * Resolves the JSON content to a Catalog object
      * @param content   The JSON content
      */
-    public Catalog parseCatalogResponse(String content) throws JsonProcessingException {
+    public static Catalog parseCatalogResponse(String content) throws JsonProcessingException {
         return mapper.readValue(content, Catalog.class);
     }
     /**
      * Resolves the JSON content to a Catalog object
      * @param stream   The input stream
      */
-    public Catalog parseCatalogResponse(InputStream stream) throws JsonProcessingException {
+    public static Catalog parseCatalogResponse(InputStream stream) throws JsonProcessingException {
         return mapper.readValue(new BufferedReader(new InputStreamReader(stream))
                                         .lines().collect(Collectors.joining("\n")),
                                 Catalog.class);
@@ -53,14 +54,14 @@ public class STACParser {
      * Resolves the JSON content to a CollectionList object
      * @param content   The JSON content
      */
-    public CollectionList parseCollectionsResponse(String content) throws JsonProcessingException {
+    public static CollectionList parseCollectionsResponse(String content) throws JsonProcessingException {
         return mapper.readValue(content, CollectionList.class);
     }
     /**
      * Resolves the JSON content to a CollectionList object
      * @param stream   The input stream
      */
-    public CollectionList parseCollectionsResponse(InputStream stream) throws JsonProcessingException {
+    public static CollectionList parseCollectionsResponse(InputStream stream) throws JsonProcessingException {
         return mapper.readValue(new BufferedReader(new InputStreamReader(stream))
                                         .lines().collect(Collectors.joining("\n")),
                                 CollectionList.class);
@@ -69,14 +70,14 @@ public class STACParser {
      * Resolves the JSON content to a Collection object
      * @param content   The JSON content
      */
-    public Collection parseCollectionResponse(String content) throws JsonProcessingException {
+    public static Collection parseCollectionResponse(String content) throws JsonProcessingException {
         return mapper.readValue(content, Collection.class);
     }
     /**
      * Resolves the JSON content to a Collection object
      * @param stream   The input stream
      */
-    public Collection parseCollectionResponse(InputStream stream) throws JsonProcessingException {
+    public static Collection parseCollectionResponse(InputStream stream) throws JsonProcessingException {
         return mapper.readValue(new BufferedReader(new InputStreamReader(stream))
                                         .lines().collect(Collectors.joining("\n")),
                                 Collection.class);
@@ -85,14 +86,14 @@ public class STACParser {
      * Resolves the JSON content to an ItemCollection object
      * @param content   The JSON content
      */
-    public ItemCollection parseItemCollectionResponse(String content) throws JsonProcessingException {
+    public static ItemCollection parseItemCollectionResponse(String content) throws JsonProcessingException {
         return mapper.readValue(content, ItemCollection.class);
     }
     /**
      * Resolves the JSON content to an ItemCollection object
      * @param stream   The input stream
      */
-    public ItemCollection parseItemCollectionResponse(InputStream stream) throws JsonProcessingException {
+    public static ItemCollection parseItemCollectionResponse(InputStream stream) throws JsonProcessingException {
         return mapper.readValue(new BufferedReader(new InputStreamReader(stream))
                                         .lines().collect(Collectors.joining("\n")),
                                 ItemCollection.class);
@@ -101,14 +102,14 @@ public class STACParser {
      * Resolves the JSON content to an Item object
      * @param content   The JSON content
      */
-    public Item parseItemResponse(String content) throws JsonProcessingException {
+    public static Item parseItemResponse(String content) throws JsonProcessingException {
         return mapper.readValue(content, Item.class);
     }
     /**
      * Resolves the JSON content to an Item object
      * @param stream   The input stream
      */
-    public Item parseItemResponse(InputStream stream) throws JsonProcessingException {
+    public static Item parseItemResponse(InputStream stream) throws JsonProcessingException {
         return mapper.readValue(new BufferedReader(new InputStreamReader(stream))
                                         .lines().collect(Collectors.joining("\n")),
                                 Item.class);
@@ -117,22 +118,29 @@ public class STACParser {
      * Resolves the JSON content to a Link object
      * @param content   The JSON content
      */
-    public Link parseLink(String content) throws JsonProcessingException {
+    public static Link parseLink(String content) throws JsonProcessingException {
         return mapper.readValue(content, Link.class);
     }
     /**
      * Resolves the JSON content to an eo:Band object
      * @param content   The JSON content
      */
-    public Band parseBand(String content) throws JsonProcessingException {
+    public static Band parseBand(String content) throws JsonProcessingException {
         return mapper.readValue(content, Band.class);
     }
     /**
      * Resolves the JSON content to a generic object
      * @param content   The JSON content
      */
-    public Object parse(String content) throws JsonProcessingException {
+    public static Object parse(String content) throws JsonProcessingException {
         return mapper.reader().readValue(content);
+    }
+    /**
+     * Resolves the JSON content to a typed object
+     * @param content   The JSON content
+     */
+    public static <T> T parse(String content, Class<T> clazz) throws IOException {
+        return (T) mapper.reader().readValue(content, clazz);
     }
 
 }

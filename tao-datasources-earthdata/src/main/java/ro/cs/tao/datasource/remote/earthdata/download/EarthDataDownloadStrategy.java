@@ -4,14 +4,15 @@ import org.apache.http.HttpStatus;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.earthdata.EarthDataSource;
-import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.NetUtils;
+import ro.cs.tao.utils.Zipper;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
@@ -69,40 +70,36 @@ public class EarthDataDownloadStrategy extends DownloadStrategy<String> {
         int numberOfTries = 0;
         int responseStatus;
 
-        // First set the default cookie manager.
-        CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
         String productDownloadUrl = getProductUrl(product);
 
         HttpURLConnection connection = null;
         try {
-            final String token = this.dataSource.authenticate();
-            connection = NetUtils.openConnection(productDownloadUrl, token);
-            connection.setInstanceFollowRedirects(true);
+            connection = getConnection(productDownloadUrl);
             connection.connect();
             do {
                 responseStatus = connection.getResponseCode();
                 switch (responseStatus) {
                     case HttpStatus.SC_OK:
-                        connection = NetUtils.openConnection(connection.getURL().toString(), token);
-                        connection.setInstanceFollowRedirects(true);
-                        connection.connect();
+                        if (!productDownloadUrl.equals(connection.getURL().toString())) {
+                            connection = getConnection(connection.getURL().toString());
+                            connection.connect();
+                        }
                         return connection;
                     case HttpStatus.SC_UNAUTHORIZED:
-                        connection = NetUtils.openConnection(connection.getURL().toString(), token);
-                        connection.setInstanceFollowRedirects(true);
+                        connection = getConnection(connection.getURL().toString());
                         connection.connect();
                         numberOfTries++;
                         break;
                     default:
                         throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
-                                connection.getResponseCode(), connection.getResponseMessage()));
+                                                               connection.getResponseCode(), connection.getResponseMessage()));
                 }
 
             } while (numberOfTries < 3);
         } catch (IOException e) {
             throw new QueryException(String.format("The request was not successful. Reason: %s", e.getMessage()));
         } finally {
-            if (connection != null) {
+            if (numberOfTries == 3 && connection != null) {
                 connection.disconnect();
             }
         }
@@ -136,7 +133,7 @@ public class EarthDataDownloadStrategy extends DownloadStrategy<String> {
                 if (Files.exists(existingProduct)) {
                     long existingSize = FileUtilities.folderSize(existingProduct);
                     logger.fine(String.format("Product %s found: %s; size: %d, expected: %s",
-                            product.getName(), existingProduct, existingSize, size));
+                                              product.getName(), existingProduct, existingSize, size));
                     if (existingSize >= size) {
                         logger.fine("Download will be skipped");
                         try {
@@ -154,8 +151,8 @@ public class EarthDataDownloadStrategy extends DownloadStrategy<String> {
             currentProductProgress = new ProductProgress(currentProduct.getApproximateSize(), isArchive);
             try (InputStream inputStream = connection.getInputStream()) {
                 outputStream = Files.newByteChannel(archivePath, EnumSet.of(StandardOpenOption.CREATE,
-                        StandardOpenOption.APPEND,
-                        StandardOpenOption.WRITE));
+                                                                            StandardOpenOption.APPEND,
+                                                                            StandardOpenOption.WRITE));
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int read;
                 logger.finest("Begin reading from input stream");
@@ -169,7 +166,7 @@ public class EarthDataDownloadStrategy extends DownloadStrategy<String> {
                         @Override
                         public void run() {
                             logger.warning(String.format("Remote host did not send anything for %d seconds, cancelling download",
-                                    connTimeout / 1000));
+                                                         connTimeout / 1000));
                             EarthDataDownloadStrategy.this.cancel();
                         }
                     };
@@ -234,17 +231,30 @@ public class EarthDataDownloadStrategy extends DownloadStrategy<String> {
 
     protected Path computeTarget(Path archivePath) {
         return archivePath.getFileName().toString().endsWith(".tar.gz") ?
-                Paths.get(archivePath.toString().replace(".tar.gz", "")) :
-                Paths.get(archivePath.toString().replace(".zip", ""));
+               Paths.get(archivePath.toString().replace(".tar.gz", "")) :
+               Paths.get(archivePath.toString().replace(".zip", ""));
     }
 
     protected Path extract(Path archivePath, Path targetPath) throws IOException {
         logger.fine(String.format("Begin decompressing %s into %s", archivePath.getFileName(), targetPath));
         Path result = archivePath.toString().endsWith(".tar.gz") ?
-                Zipper.decompressTarGz(archivePath, targetPath, true) :
-                Zipper.decompressZip(archivePath, targetPath, true);
+                      Zipper.decompressTarGz(archivePath, targetPath, true) :
+                      Zipper.decompressZip(archivePath, targetPath, true);
         logger.fine(String.format("Decompression of %s completed", archivePath.getFileName()));
         return result;
+    }
+
+    protected HttpURLConnection getConnection(String url) throws IOException {
+        HttpURLConnection connection = null;
+        if (this.dataSource.isBearerTokenSupported() && this.dataSource.getBearerToken() != null) {
+            connection = NetUtils.openConnection(url);
+            connection.setRequestProperty("Authorization", "Bearer " + this.dataSource.getBearerToken());
+        } else {
+            connection = NetUtils.openConnection(url, this.dataSource.authenticate());
+        }
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 Edg/112.0.1722.58");
+        connection.setInstanceFollowRedirects(true);
+        return connection;
     }
 
 }

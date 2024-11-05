@@ -3,7 +3,6 @@
     <formats>
         <format>dir</format>
     </formats>
-
     <fileSets>
         <fileSet>
             <directory>src/assembly/bin</directory>
@@ -18,19 +17,6 @@
             <excludes>
                 <exclude>ro.c-s.tao:tao-*</exclude>
                 <!-- Unwanted dependencies -->
-                <exclude>commons-lang:commons-lang:jar:2.4</exclude>
-                <exclude>org.apache.httpcomponents:httpclient:jar:4.5.13</exclude>
-                <exclude>org.apache.httpcomponents:httpcore:jar:4.4.13</exclude>
-                <exclude>com.fasterxml.jackson.core:jackson-core:jar:2.13.2</exclude>
-                <exclude>com.fasterxml.jackson.core:jackson-databind:jar:2.14.1</exclude>
-                <exclude>com.fasterxml.jackson.core:jackson-databind:jar:2.14.1</exclude>
-                <exclude>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.14.0</exclude>
-                <exclude>com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:jar:2.12.3</exclude>
-                <exclude>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:2.12.3</exclude>
-                <exclude>com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:jar:2.12.3</exclude>
-                <exclude>com.fasterxml.jackson.module:jackson-module-jaxb-annotations:jar:2.12.3</exclude>
-                <exclude>jakarta.activation:jakarta.activation-api:jar:1.2.1</exclude>
-                <exclude>jakarta.annotation:jakarta.annotation-api:jar:1.3.4</exclude>
                 <exclude>jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.2</exclude>
                 <exclude>javax.activation:javax.activation-api:jar:1.2.0</exclude>
                 <exclude>com.vividsolutions:jts-core:jar:1.14.0</exclude>

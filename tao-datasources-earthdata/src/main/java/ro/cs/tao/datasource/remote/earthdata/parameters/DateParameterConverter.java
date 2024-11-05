@@ -24,13 +24,13 @@ public class DateParameterConverter extends DefaultParameterConverter<LocalDateT
     public String stringValue() throws ConversionException {
         StringBuilder builder = new StringBuilder();
         if (parameter.getMinValue() != null) {
-            builder.append(parameter.getMinValue().format(dateFormat)).append("Z,");
-        }
-        if (parameter.getMaxValue() != null) {
-            builder.append(",");
-        }
-        if (parameter.getMaxValue() != null){
-            builder.append(parameter.getMaxValue().format(dateFormat)).append("Z");
+            builder.append(parameter.getMinValue().format(dateFormat)).append("Z");
+            if (parameter.getMaxValue() != null) {
+                builder.append(",");
+                builder.append(parameter.getMaxValue().format(dateFormat)).append("Z");
+            }
+        } else {
+            builder.append(parameter.getValue().format(dateFormat)).append("Z");
         }
         return builder.toString();
     }
