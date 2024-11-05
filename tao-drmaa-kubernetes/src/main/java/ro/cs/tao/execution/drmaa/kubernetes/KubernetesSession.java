@@ -12,7 +12,7 @@ import org.ggf.drmaa.*;
 import ro.cs.tao.EnumUtils;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.execution.DrmaaJobExtensions;
-import ro.cs.tao.execution.local.DefaultSession;
+import ro.cs.tao.execution.drmaa.JobExitHandler;
 import ro.cs.tao.execution.local.DefaultSessionFactory;
 import ro.cs.tao.serialization.JsonMapper;
 import ro.cs.tao.spi.ServiceRegistry;
@@ -27,102 +27,36 @@ import ro.cs.tao.utils.executors.container.ContainerType;
 import ro.cs.tao.utils.executors.container.ContainerUnit;
 
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class KubernetesSession implements Session {
-    private static final String configFileName = "kubernetes.config";
-    private static final String token = "tao.kubernetes.token";
-    private static final String namespace = "argo";
-    private static final String masterURL = "tao.kubernetes.master.url";
-    private static final String caCertFile = "tao.kubernetes.ca.cert.file";
-    private static final String pvcMappingsKey = "tao.kubernetes.pvc.mappings";
-    private final io.fabric8.kubernetes.client.Config builder;
+public class KubernetesSession implements Session, JobExitHandler {
+    static final String configFileName = "kubernetes.config";
+    static final String token = "tao.kubernetes.token";
+    static final String namespace = "argo";
+    static final String masterURL = "tao.kubernetes.master.url";
+    static final String caCertFile = "tao.kubernetes.ca.cert.file";
+    static final String pvcMappingsKey = "tao.kubernetes.pvc.mappings";
+    private final static Logger logger = Logger.getLogger(KubernetesSession.class.getName());
+    private Map<String, String> configuration;
     private KubernetesClient client;
     private Map<String, JobTemplate> jobTemplates;
     private Map<String, Job> runningJobs;
     private Map<String, LogWatch> logWatchers;
     private Map<String, OutputAccumulator> jobOutputs;
     private AtomicInteger nodeCounter;
-    private final Logger logger = Logger.getLogger(DefaultSession.class.getName());
     private List <LogWatch> jobsLog;
     private Map<String, String> pvcMappings;
 
     public KubernetesSession() {
-        /*
-        final Path configPath = ConfigurationManager.getInstance().getConfigurationFolder().resolve(configFileName);
-        if (!Files.exists(configPath)) {
-            throw new RuntimeException("No Kubernetes configuration file found");
-        }
-        */
-        try {
-            final String url =  ConfigurationManager.getInstance().getValue(KubernetesSession.masterURL);
-            if (url == null) {
-                throw new RuntimeException("Kubernetes master url not found in config file");
-            }
-            final String serviceAccountToken = ConfigurationManager.getInstance().getValue(KubernetesSession.token);
-
-            if (serviceAccountToken == null) {
-                throw new RuntimeException("Kubernetes service account token not found in config file");
-            }
-
-            //String namespace = ConfigurationManager.getInstance().getValue(this.namespace);
-            final Path fileToTest = Paths.get(ConfigurationManager.getInstance().getValue(KubernetesSession.caCertFile));
-            if (!Files.exists(fileToTest)) {
-                throw new RuntimeException("No Kubernetes ca certification file found");
-            }
-
-            this.builder = new io.fabric8.kubernetes.client.ConfigBuilder()
-                    .withMasterUrl(url)
-                    .withNamespace(namespace)
-                    .withCaCertFile(fileToTest.toString())
-                    .withOauthToken(serviceAccountToken)
-                    .build();
-
-
-            this.client = new KubernetesClientBuilder()
-                    .withConfig(this.builder)
-                    .build();
-
-            final String pvcMappingsValue = ConfigurationManager.getInstance().getValue(KubernetesSession.pvcMappingsKey);
-            if (pvcMappingsValue == null) {
-                throw new RuntimeException("No PVC mappings found for Kubernetes!");
-            }
-            pvcMappings = new HashMap<>();
-            try {
-                pvcMappings = JsonMapper.instance().readerFor(pvcMappings.getClass()).readValue(pvcMappingsValue);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-
-            /* //TODO: this creates a pod by using an yaml file
-            logger.info("Test");
-            String fileName = "/home/alex/prj/tao/aws/test_pod.yaml";
-            File file = new File("/home/alex/prj/tao/aws/test_pod.yaml");
-            List<HasMetadata> resources = client.load(new FileInputStream(fileName)).items();
-            if (resources.isEmpty()) {
-                logger.info("No resources loaded from file: " + fileName);
-            }
-            else {
-                HasMetadata resource = resources.get(0);
-                if (resource instanceof Pod) {
-                    Pod pod = (Pod) resource;
-                    logger.info("Creating pod in namespace " + client.getNamespace());
-                    NonNamespaceOperation<Pod, PodList, PodResource> pods = client.pods().inNamespace(client.getNamespace());
-                    Pod result = pods.resource(pod).create();
-                    logger.info("Created pod " + result.getMetadata().getName());
-                } else {
-                    logger.info("Loaded resource is not a Pod! " + resource);
-                }
-            }
-            */
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        this.configuration = KubernetesSession.getConfiguration();
+        this.client = KubernetesSession.getClient(this.configuration);
+        if (this.client != null) {
+            this.pvcMappings = this.parsePvcMappings();
         }
     }
 
@@ -137,9 +71,15 @@ public class KubernetesSession implements Session {
             this.logWatchers = Collections.synchronizedMap(new HashMap<>());
             this.jobOutputs = Collections.synchronizedMap(new HashMap<>());
             this.nodeCounter = new AtomicInteger(0);
-            this.client = new KubernetesClientBuilder()
-                    .withConfig(this.builder)
-                    .build();
+
+            Map<String, String> newConfiguration = KubernetesSession.getConfiguration();
+            if(KubernetesSession.configurationHasChanged(this.configuration, newConfiguration)) {
+                this.configuration = newConfiguration;
+                this.client = KubernetesSession.getClient(newConfiguration);
+                if (this.client != null) {
+                    this.pvcMappings = this.parsePvcMappings();
+                }
+            }
         }
     }
 
@@ -191,6 +131,7 @@ public class KubernetesSession implements Session {
             }
         };
         jobTemplate.setJobName(UUID.randomUUID().toString());
+        //client.nodes().withLabel("node-role.kubernetes.io/master", "true").resources().collect(Collectors.toList()).get(0).get().getMetadata().getName()
         this.jobTemplates.put(jobTemplate.getJobName(), jobTemplate);
         return jobTemplate;
     }
@@ -202,16 +143,34 @@ public class KubernetesSession implements Session {
         this.jobTemplates.remove(jt.getJobName());
     }
 
+    @Override
     public int getJobExitCode(String jobId) {
-        // todo
-        return -1;
+        int exitCode = -1;
+
+        // List the pods with the label selector matching the job
+        PodList podList = client.pods().inNamespace(KubernetesSession.namespace)
+                .withLabel("job-name", jobId)
+                .list();
+        for (Pod pod : podList.getItems()) {
+            // Iterate through the container statuses to get the exit code
+            for (ContainerStatus status : pod.getStatus().getContainerStatuses()) {
+                if (status.getState().getTerminated() != null) {
+                    exitCode = status.getState().getTerminated().getExitCode();
+                } else {
+                    // Container is not terminated yet
+                }
+            }
+        }
+        return exitCode;
     }
 
-    public String getJobOutput(String jobId) throws DrmaaException {
+    @Override
+    public String getJobOutput(String jobId) {
         OutputAccumulator consumer = this.jobOutputs.get(jobId);
         return consumer != null ? consumer.getOutput() : "n/a";
     }
 
+    @Override
     public void cleanupJob(String jobId) {
         this.jobOutputs.remove(jobId);
         this.runningJobs.remove(jobId);
@@ -357,30 +316,57 @@ public class KubernetesSession implements Session {
             status = PodStatus.UNKNOWN;
         }
         final int statusId;
+        String log;
         switch (status) {
             case PENDING:
                 statusId = QUEUED_ACTIVE;
                 break;
             case RUNNING:
                 statusId = RUNNING;
+                log = client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog();
+                this.jobOutputs.computeIfAbsent(jobId, new Function<String, OutputAccumulator>() {
+                    @Override
+                    public OutputAccumulator apply(String s) {
+                        OutputAccumulator accumulator = new OutputAccumulator();
+                        accumulator.consume(s);
+                        return accumulator;
+                    }
+                }).consume(log);
                 break;
             case SUCCEEDED:
                 statusId = DONE;
                 if (lw != null) {
                     lw.close();
                 }
-                logger.info("Logger closed for jobId / name: " + jobId + " / " + job.getMetadata().getName());
-                logger.info("Pod LOG: " + client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog());
-
-                cleanupJob(jobId);
+                logger.finest("Logger closed for jobId / name: " + jobId + " / " + job.getMetadata().getName());
+                log = client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog();
+                this.jobOutputs.computeIfAbsent(jobId, new Function<String, OutputAccumulator>() {
+                    @Override
+                    public OutputAccumulator apply(String s) {
+                        OutputAccumulator accumulator = new OutputAccumulator();
+                        accumulator.consume(s);
+                        return accumulator;
+                    }
+                }).consume(log);
+                logger.fine("Pod LOG: " + log);
+                //cleanupJob(jobId);
                 break;
             case FAILED:
                 statusId = FAILED;
                 if (lw != null) {
                     lw.close();
                 }
-                logger.info("Pod LOG: " + client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog());
-                cleanupJob(jobId);
+                log = client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog();
+                this.jobOutputs.computeIfAbsent(jobId, new Function<String, OutputAccumulator>() {
+                    @Override
+                    public OutputAccumulator apply(String s) {
+                        OutputAccumulator accumulator = new OutputAccumulator();
+                        accumulator.consume(s);
+                        return accumulator;
+                    }
+                }).consume(log);
+                logger.fine("Pod LOG: " + log);
+                //cleanupJob(jobId);
                 break;
             case UNKNOWN:
             default:
@@ -471,22 +457,16 @@ public class KubernetesSession implements Session {
             container.setImage(containerUnit.getContainerRegistry()+"/"+containerUnit.getContainerName());
             container.setCommand(unit.getArguments());
 
-            //TODO tests
-//            ArrayList<String> args = new ArrayList<>();
-//            for(String s : unit.getArguments()) {
-//                args.add(StringUtils.strip(s.replace("-channels.blue 0", "")
-//                        .replace("-channels.green 0", "")
-//                        .replace("-channels.mir 0", "-list Vegetation:NDVI"), "\""));
-//            }
-//            container.setCommand(args);
+            logger.info("Pod original cmd: " + container.getCommand().toString());
 
-//            logger.info("Pod cmd: " + container.getCommand().toString());
-//            logger.info("Pod args: " + container.getArgs().toString());
+            ArrayList<String> args = new ArrayList<>();
+            for(String s : unit.getArguments()) {
+                args.add(StringUtils.strip(s, "\""));
+            }
+            container.setCommand(args);
 
-            // TODO tests
-//            container.setImage("alpine:latest");
-//            container.setCommand(Arrays.asList("/bin/bash"));
-//            container.setArgs(List.of("-c", "while true; do sleep 30; done;"));
+            logger.info("Pod cmd: " + container.getCommand().toString());
+            logger.info("Pod args: " + container.getArgs().toString());
 
             Map<String, Volume> pvcVolumeMap = new HashMap<>();
 
@@ -506,8 +486,8 @@ public class KubernetesSession implements Session {
                             VolumeMount mount = new VolumeMount();
                             String volName = volToAdd != null ? volToAdd.getName() : "volume-" + volIdx++;
                             mount.setName(volName);
-                            mount.setMountPath(StringUtils.stripEnd(entry.getValue(), "/"));
-                            mount.setSubPath(StringUtils.strip(entry.getKey().substring(pvcEntry.getKey().length()), "/"));
+                            mount.setMountPath(StringUtils.stripEnd(entry.getValue(), "/\\"));
+                            mount.setSubPath(StringUtils.strip(entry.getKey().substring(pvcEntry.getKey().length()), "/\\"));
                             mounts.add(mount);
 
                             if(volToAdd == null) {
@@ -534,9 +514,13 @@ public class KubernetesSession implements Session {
                 container.setEnv(envVars);
             }
 
-            //ResourceRequirements resourceRequirements = new ResourceRequirements();
-            //resourceRequirements.setAdditionalProperty("memory", new Quantity(unit.getMinMemory() + "Mi"));
-            //container.setResources(resourceRequirements);
+            ResourceRequirements resourceRequirements = new ResourceRequirements();
+            resourceRequirements.setRequests(Map.of(
+                    "memory", new Quantity(unit.getMinMemory() + "Mi")
+                    // TODO add when available
+                    // "cpu", new Quantity(unit.getMinCpu() + "m")
+            ));
+            container.setResources(resourceRequirements);
 
             final Job job = new JobBuilder()
                     .withApiVersion("batch/v1")
@@ -576,5 +560,90 @@ public class KubernetesSession implements Session {
 
     private void stopPods(Job job) {
         client.resource(job).inNamespace(namespace).delete();
+    }
+
+    static Map<String, String> getConfiguration() {
+        Map<String, String> configuration = new HashMap<>();
+
+        String url =  ConfigurationManager.getInstance().getValue(KubernetesSession.masterURL);
+        configuration.put(KubernetesSession.masterURL, url);
+
+        String serviceAccountToken = ConfigurationManager.getInstance().getValue(KubernetesSession.token);
+        configuration.put(KubernetesSession.token, serviceAccountToken);
+
+        String serviceAccountCertFilepath = ConfigurationManager.getInstance().getValue(KubernetesSession.caCertFile);
+        configuration.put(KubernetesSession.caCertFile, serviceAccountCertFilepath);
+
+        String pvcMappingsValue = ConfigurationManager.getInstance().getValue(KubernetesSession.pvcMappingsKey);
+        configuration.put(KubernetesSession.pvcMappingsKey, pvcMappingsValue);
+
+        return configuration;
+    }
+
+    static boolean configurationHasChanged(Map<String, String> configuration, Map<String, String> newConfiguration) {
+        if(configuration != null && newConfiguration != null) {
+            return !configuration.equals(newConfiguration);
+        } else {
+            return configuration != null || newConfiguration != null;
+        }
+    }
+
+    static boolean configurationHasErrors(Map<String, String> configuration) {
+        if (configuration == null) return true;
+
+        boolean hasErrors = false;
+        if (configuration.get(KubernetesSession.masterURL) == null) {
+            logger.warning("Kubernetes Cluster URL not found in configuration");
+            hasErrors = true;
+        }
+        if (configuration.get(KubernetesSession.token) == null) {
+            logger.warning("Kubernetes service account token not found in configuration");
+            hasErrors = true;
+        }
+        if (configuration.get(KubernetesSession.caCertFile) == null || !Files.exists(Paths.get(configuration.get(KubernetesSession.caCertFile)))) {
+            logger.warning("Kubernetes service account certificate file not found");
+            hasErrors = true;
+        }
+        if (configuration.get(KubernetesSession.pvcMappingsKey) == null) {
+            logger.warning("No PVC mappings found for Kubernetes");
+            hasErrors = true;
+        }
+        return hasErrors;
+    }
+
+    static KubernetesClient getClient(Map<String, String> configuration) {
+        if(!KubernetesSession.configurationHasErrors(configuration)) {
+            try {
+                io.fabric8.kubernetes.client.Config builder = new io.fabric8.kubernetes.client.ConfigBuilder()
+                        .withMasterUrl(configuration.get(KubernetesSession.masterURL))
+                        .withNamespace(configuration.get(KubernetesSession.namespace))
+                        .withCaCertFile(configuration.get(KubernetesSession.caCertFile))
+                        .withOauthToken(configuration.get(KubernetesSession.token))
+                        .build();
+
+                return new KubernetesClientBuilder()
+                        .withConfig(builder)
+                        .build();
+            } catch (Exception e) {
+                logger.severe(e.getMessage());
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private Map<String, String> parsePvcMappings() {
+        if (this.configuration != null) {
+            pvcMappings = new HashMap<>();
+            try {
+                return JsonMapper.instance().readerFor(pvcMappings.getClass()).readValue(this.configuration.get(KubernetesSession.pvcMappingsKey));
+            } catch (JsonProcessingException e) {
+                logger.warning("Invalid PVC mappings for Kubernetes");
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 }

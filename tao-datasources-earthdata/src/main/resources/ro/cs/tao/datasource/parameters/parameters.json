@@ -2,10 +2,10 @@
   "SMAP-SPL3SMP": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1931665364-NSIDC_ECS",
+      "defaultValue": "C2776463943-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -64,10 +64,10 @@
   "SMAP-SPL3SMP_E": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1931665183-NSIDC_ECS",
+      "defaultValue": "C2776463943-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -126,10 +126,10 @@
   "SMAP-SPL4SMGP": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1920755538-NSIDC_ECS",
+      "defaultValue": "C2531308461-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -188,10 +188,10 @@
   "SMAP-NSIDC-0738": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1620917964-NSIDC_ECS",
+      "defaultValue": "C2103333573-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -250,10 +250,10 @@
   "SMAP-SPL1BTB": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1931655418-NSIDC_ECS",
+      "defaultValue": "C2776463679-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -312,10 +312,10 @@
   "SMAP-SPL1CTB": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1931656617-NSIDC_ECS",
+      "defaultValue": "C2776463699-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -374,10 +374,10 @@
   "SMAP-SPL1CTB_E": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1931657626-NSIDC_ECS",
+      "defaultValue": "C2776463717-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -436,7 +436,7 @@
   "SMAP-SPL2SMA": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
       "defaultValue": "C1236303826-NSIDC_ECS",
@@ -498,7 +498,7 @@
   "SMAP-SPL2SMAP": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
       "defaultValue": "C1236303829-NSIDC_ECS",
@@ -560,7 +560,7 @@
   "SMAP-SPL2SMAP_S": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
       "defaultValue": "C1931663473-NSIDC_ECS",
@@ -622,10 +622,10 @@
   "SMAP-SPL2SMP": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1931658459-NSIDC_ECS",
+      "defaultValue": "C2776463773-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -684,10 +684,10 @@
   "SMAP-SPL2SMP_E": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1931660485-NSIDC_ECS",
+      "defaultValue": "C2776463773-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -746,7 +746,7 @@
   "SMAP-SPL3SMA": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
       "defaultValue": "C1236303828-NSIDC_ECS",
@@ -808,7 +808,7 @@
   "SMAP-SPL3SMAP": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
       "defaultValue": "C1236303847-NSIDC_ECS",
@@ -870,10 +870,10 @@
   "SMAP-SPL4CMDL": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1920755742-NSIDC_ECS",
+      "defaultValue": "C2534576405-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -932,10 +932,10 @@
   "SMAP-SPL4SMAU": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1939048058-NSIDC_ECS",
+      "defaultValue": "C2537927247-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -994,10 +994,10 @@
   "SMAP-SPL4SMLM": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1920755724-NSIDC_ECS",
+      "defaultValue": "C2537926833-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -1056,122 +1056,10 @@
   "IceSAT-2-ATL08V3": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1706334301-NSIDC_ECS",
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "startDate": {
-      "name": "startDate",
-      "remoteName" : "temporal",
-      "label" : "Start Date",
-      "type": "date",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "endDate": {
-      "name": "endDate",
-      "remoteName" : "temporal",
-      "label" : "End Date",
-      "type": "date",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "tileId": {
-      "name": "tileId",
-      "remoteName" : "readable_granule_name[]",
-      "label" : "Granule ID(s)",
-      "type": "string[]",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "patternTileId" : {
-      "name": "patternTileId",
-      "remoteName": "options[readable_granule_name][pattern]",
-      "label": "Filter by granule id",
-      "type": "bool",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "footprint": {
-      "name": "footprint",
-      "remoteName": "polygon",
-      "label": "Area of Interest",
-      "type": "polygon",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "equatorCrossingDate": {
-      "name": "equatorCrossingDate",
-      "remoteName" : "equator_crossing_date",
-      "label" : "Equator crossing date",
-      "type": "string",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "equatorCrossingLongMin": {
-      "name": "equatorCrossingLongMin",
-      "remoteName" : "equator_crossing_longitude[min]",
-      "label" : "Equator crossing longitude[min]",
-      "type": "string",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "equatorCrossingLongMax": {
-      "name": "equatorCrossingLongMax",
-      "remoteName" : "equator_crossing_longitude[max]",
-      "label" : "Equator crossing longitude[max]",
-      "type": "string",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "orbitNumberMin": {
-      "name": "orbitNumberMin",
-      "remoteName" : "orbit_number[min]",
-      "label" : "Orbit number[min]",
-      "type": "string",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    },
-    "orbitNumberMax": {
-      "name": "orbitNumberMax",
-      "remoteName" : "orbit_number[max]",
-      "label" : "Orbit number[max]",
-      "type": "string",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": null,
-      "order": 0
-    }
-  },
-  "IceSAT-2-ATL08V2": {
-    "platformName": {
-      "name": "platformName",
-      "remoteName": "echo_collection_id",
-      "label": "Collection",
-      "type": "string",
-      "defaultValue": "C1631076784-NSIDC_ECS",
+      "defaultValue": "C2565090645-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -1280,10 +1168,10 @@
   "IceSAT-2-ATL13V3": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1706334669-NSIDC_ECS",
+      "defaultValue": "C2684928243-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -1389,13 +1277,13 @@
       "order": 0
     }
   },
-  "IceSAT-2-ATL13V2": {
+  "IceSAT-2-ATL22V3": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1631080284-NSIDC_ECS",
+      "defaultValue": "C2761722214-NSIDC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -1501,13 +1389,13 @@
       "order": 0
     }
   },
-  "GEDI": {
+  "GEDI-L2AV2": {
     "platformName": {
       "name": "platformName",
-      "remoteName": "echo_collection_id",
+      "remoteName": "concept_id",
       "label": "Collection",
       "type": "string",
-      "defaultValue": "C1656767133-LPDAAC_ECS",
+      "defaultValue": "C2142771958-LPDAAC_ECS",
       "required": false,
       "valueSet": null,
       "order": 0
@@ -1607,6 +1495,958 @@
       "remoteName" : "orbit_number[max]",
       "label" : "Orbit number[max]",
       "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "GEDI-L2BV2": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C1908350066-LPDAAC_ECS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName" : "readable_granule_name[]",
+      "label" : "Granule ID(s)",
+      "type": "string[]",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "patternTileId" : {
+      "name": "patternTileId",
+      "remoteName": "options[readable_granule_name][pattern]",
+      "label": "Filter by granule id",
+      "type": "bool",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "equatorCrossingDate": {
+      "name": "equatorCrossingDate",
+      "remoteName" : "equator_crossing_date",
+      "label" : "Equator crossing date",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "equatorCrossingLongMin": {
+      "name": "equatorCrossingLongMin",
+      "remoteName" : "equator_crossing_longitude[min]",
+      "label" : "Equator crossing longitude[min]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "equatorCrossingLongMax": {
+      "name": "equatorCrossingLongMax",
+      "remoteName" : "equator_crossing_longitude[max]",
+      "label" : "Equator crossing longitude[max]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "orbitNumberMin": {
+      "name": "orbitNumberMin",
+      "remoteName" : "orbit_number[min]",
+      "label" : "Orbit number[min]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "orbitNumberMax": {
+      "name": "orbitNumberMax",
+      "remoteName" : "orbit_number[max]",
+      "label" : "Orbit number[max]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "GEDI-L3V2": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2153683336-ORNL_CLOUD",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName" : "readable_granule_name[]",
+      "label" : "Granule ID(s)",
+      "type": "string[]",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "patternTileId" : {
+      "name": "patternTileId",
+      "remoteName": "options[readable_granule_name][pattern]",
+      "label": "Filter by granule id",
+      "type": "bool",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "equatorCrossingDate": {
+      "name": "equatorCrossingDate",
+      "remoteName" : "equator_crossing_date",
+      "label" : "Equator crossing date",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "equatorCrossingLongMin": {
+      "name": "equatorCrossingLongMin",
+      "remoteName" : "equator_crossing_longitude[min]",
+      "label" : "Equator crossing longitude[min]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "equatorCrossingLongMax": {
+      "name": "equatorCrossingLongMax",
+      "remoteName" : "equator_crossing_longitude[max]",
+      "label" : "Equator crossing longitude[max]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "orbitNumberMin": {
+      "name": "orbitNumberMin",
+      "remoteName" : "orbit_number[min]",
+      "label" : "Orbit number[min]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "orbitNumberMax": {
+      "name": "orbitNumberMax",
+      "remoteName" : "orbit_number[max]",
+      "label" : "Orbit number[max]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "GEDI-L4AV2": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2237824918-ORNL_CLOUD",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName" : "readable_granule_name[]",
+      "label" : "Granule ID(s)",
+      "type": "string[]",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "patternTileId" : {
+      "name": "patternTileId",
+      "remoteName": "options[readable_granule_name][pattern]",
+      "label": "Filter by granule id",
+      "type": "bool",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "equatorCrossingDate": {
+      "name": "equatorCrossingDate",
+      "remoteName" : "equator_crossing_date",
+      "label" : "Equator crossing date",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "equatorCrossingLongMin": {
+      "name": "equatorCrossingLongMin",
+      "remoteName" : "equator_crossing_longitude[min]",
+      "label" : "Equator crossing longitude[min]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "equatorCrossingLongMax": {
+      "name": "equatorCrossingLongMax",
+      "remoteName" : "equator_crossing_longitude[max]",
+      "label" : "Equator crossing longitude[max]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "orbitNumberMin": {
+      "name": "orbitNumberMin",
+      "remoteName" : "orbit_number[min]",
+      "label" : "Orbit number[min]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "orbitNumberMax": {
+      "name": "orbitNumberMax",
+      "remoteName" : "orbit_number[max]",
+      "label" : "Orbit number[max]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "GEDI-L4BV2": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2813390180-ORNL_CLOUD",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "tileId": {
+      "name": "tileId",
+      "remoteName" : "readable_granule_name[]",
+      "label" : "Granule ID(s)",
+      "type": "string[]",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "patternTileId" : {
+      "name": "patternTileId",
+      "remoteName": "options[readable_granule_name][pattern]",
+      "label": "Filter by granule id",
+      "type": "bool",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "equatorCrossingDate": {
+      "name": "equatorCrossingDate",
+      "remoteName" : "equator_crossing_date",
+      "label" : "Equator crossing date",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "equatorCrossingLongMin": {
+      "name": "equatorCrossingLongMin",
+      "remoteName" : "equator_crossing_longitude[min]",
+      "label" : "Equator crossing longitude[min]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "equatorCrossingLongMax": {
+      "name": "equatorCrossingLongMax",
+      "remoteName" : "equator_crossing_longitude[max]",
+      "label" : "Equator crossing longitude[max]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "orbitNumberMin": {
+      "name": "orbitNumberMin",
+      "remoteName" : "orbit_number[min]",
+      "label" : "Orbit number[min]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "orbitNumberMax": {
+      "name": "orbitNumberMax",
+      "remoteName" : "orbit_number[max]",
+      "label" : "Orbit number[max]",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCDWD_L3_F1_NRT": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2018623526-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCDWD_L3_F2_NRT": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2018695846-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCDWD_L3_F3_NRT": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2019424090-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCDWD_L3_NRT": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2018599131-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCD19A1N": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2018599131-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCD19A2N": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2407807500-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCD43A1N": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2128952410-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCD43A2N": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2129016354-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCD43A3N": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2130636890-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-MCD43A4N": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2130665247-LANCEMODIS",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-CHLB": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2330511478-OB_DAAC",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    }
+  },
+  "MODIS-CHLM": {
+    "platformName": {
+      "name": "platformName",
+      "remoteName": "concept_id",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "C2330512018-OB_DAAC",
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "startDate": {
+      "name": "startDate",
+      "remoteName" : "temporal",
+      "label" : "Start Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "endDate": {
+      "name": "endDate",
+      "remoteName" : "temporal",
+      "label" : "End Date",
+      "type": "date",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": null,
+      "order": 0
+    },
+    "footprint": {
+      "name": "footprint",
+      "remoteName": "polygon",
+      "label": "Area of Interest",
+      "type": "polygon",
       "defaultValue": null,
       "required": false,
       "valueSet": null,

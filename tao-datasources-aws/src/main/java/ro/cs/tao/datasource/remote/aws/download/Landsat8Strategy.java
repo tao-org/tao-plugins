@@ -36,7 +36,7 @@ import java.util.regex.Matcher;
  */
 public class Landsat8Strategy extends AWSStrategy {
     private static final Properties properties;
-    private static final Set<String> bandFiles = new LinkedHashSet<String>() {{
+    private static final Set<String> bandFilesL1 = new LinkedHashSet<String>() {{
         add("_B1.TIF");
         add("_B2.TIF");
         add("_B3.TIF");
@@ -48,7 +48,38 @@ public class Landsat8Strategy extends AWSStrategy {
         add("_B9.TIF");
         add("_B10.TIF");
         add("_B11.TIF");
-        add("_BQA.TIF");
+        add("_QA_PIXEL.TIF");
+        add("_QA_RADSAT.TIF");
+        add("_GCP.TIF");
+        add("_ANG.TIF");
+        add("_VAA.TIF");
+        add("_VZA.TIF");
+        add("_SAA.TIF");
+        add("_SZA.TIF");
+    }};
+    private static final Set<String> bandFilesL2 = new LinkedHashSet<String>() {{
+        add("_SR_B1.TIF");
+        add("_SR_B2.TIF");
+        add("_SR_B3.TIF");
+        add("_SR_B4.TIF");
+        add("_SR_B5.TIF");
+        add("_SR_B6.TIF");
+        add("_SR_B7.TIF");
+        add("_ST_B10.TIF");
+        add("_QA_PIXEL.TIF");
+        add("_QA_RADSAT.TIF");
+        add("_ST_TRAD.TIF");
+        add("_ST_URAD.TIF");
+        add("_ST_DRAD.TIF");
+        add("_ST_ATRAN.TIF");
+        add("_ST_EMIS.TIF");
+        add("_ST_EMSD.TIF");
+        add("_ST_CDIST.TIF");
+        add("_SR_QA_AEROSOL.TIF");
+        add("_ST_QA.TIF");
+        add("_QA_PIXEL.TIF");
+        add("_QA_RADSAT.TIF");
+
     }};
 
     private String baseUrl;
@@ -63,7 +94,7 @@ public class Landsat8Strategy extends AWSStrategy {
 
     public Landsat8Strategy(AWSDataSource dataSource, String targetFolder) {
         super(dataSource, targetFolder, properties);
-        baseUrl = props.getProperty("l8.aws.products.url", "http://landsat-pds.s3.amazonaws.com/");
+        baseUrl = props.getProperty("l8.aws.products.url", "http://usgs-landsat.s3.amazonaws.com/");
         if (!baseUrl.endsWith("/"))
             baseUrl += "/";
     }
@@ -102,6 +133,12 @@ public class Landsat8Strategy extends AWSStrategy {
         logger.fine(String.format("Downloading metadata file %s", metadataFile));
         metadataFile = downloadFile(url, metadataFile);
         if (metadataFile != null && Files.exists(metadataFile)) {
+            final Set<String> bandFiles;
+            if (product.getName().contains("L1TP")) {
+                bandFiles = bandFilesL1;
+            } else {
+                bandFiles = bandFilesL2;
+            }
             for (String suffix : bandFiles) {
                 String bandFileName = productName + suffix;
                 currentStep = "Band " + bandFileName;
@@ -112,17 +149,6 @@ public class Landsat8Strategy extends AWSStrategy {
                     downloadFile(bandFileUrl, path);
                 } catch (IOException ex) {
                     logger.warning(String.format("Download for %s failed [%s]", bandFileName, ex.getMessage()));
-                }
-            }
-            if ("coll".equals(helper.getVersion())) {
-                String fileName = productName + "_ANG.txt";
-                try {
-                    String fileUrl = getProductUrl(currentProduct) + Constants.URL_SEPARATOR + fileName;
-                    Path path = rootPath.resolve(fileName);
-                    logger.fine(String.format("Downloading band raster %s from %s", path, fileUrl));
-                    downloadFile(fileUrl, path);
-                } catch (IOException ex) {
-                    logger.warning(String.format("Download for %s failed [%s]", fileName, ex.getMessage()));
                 }
             }
             product.addAttribute("tiles",tileId);

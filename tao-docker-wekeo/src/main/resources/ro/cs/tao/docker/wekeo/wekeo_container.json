@@ -7,11 +7,6 @@
     "formatNameParameter": null,
     "format": null,
     "applications": [
-        {
-            "path": "fetchApiWekEO.py",
-            "name": "10_daily_WB_Africa",
-            "memoryRequirements": 4096
-        },
 		{
 			"path": "fetchApiWekEO.py",
             "name": "Normalized_diff_v_idx_0",
@@ -34,16 +29,6 @@
 		},
 		{
 			"path": "fetchApiWekEO.py",
-            "name": "Normalized_diff_v_idx_4",
-            "memoryRequirements": 4096
-		},
-		{
-			"path": "fetchApiWekEO.py",
-            "name": "Normalized_diff_v_idx_5",
-            "memoryRequirements": 4096
-		},
-		{
-			"path": "fetchApiWekEO.py",
             "name": "Leaf_area_index_0",
             "memoryRequirements": 4096
 		},
@@ -59,18 +44,33 @@
 		},
 		{
 			"path": "fetchApiWekEO.py",
-            "name": "Land_surface_temp",
+            "name": "Land_surface_temp_1",
             "memoryRequirements": 4096
 		},
 		{
 			"path": "fetchApiWekEO.py",
-            "name": "Dry_matter_productivity",
+			"name": "Land_surface_temp_2",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Dry_matter_productivity_0",
             "memoryRequirements": 4096
 		},
 		{
 			"path": "fetchApiWekEO.py",
-            "name": "Fraction_of_absorbed_PAR",
+			"name": "Dry_matter_productivity_1",
+			"memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+            "name": "Fraction_of_absorbed_PAR_0",
             "memoryRequirements": 4096
+		},
+		{
+			"path": "fetchApiWekEO.py",
+			"name": "Fraction_of_absorbed_PAR_1",
+			"memoryRequirements": 4096
 		},
 		{
 			"path": "fetchApiWekEO.py",

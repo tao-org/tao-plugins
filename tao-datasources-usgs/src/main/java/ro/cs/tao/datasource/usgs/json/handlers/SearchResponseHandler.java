@@ -31,36 +31,35 @@ import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
  */
 public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
-    private static final DateTimeFormatter firstFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private static final DateTimeFormatter secondFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX");
-    private static final Set<String> quickLookElements = new HashSet<String>() {{
+    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final Set<String> quickLookElements = new HashSet<>() {{
         add("LandsatLook Natural Color Preview Image");
         add("Thermal Browse");
+        add("Reflective Browse");
+        add("Quality Browse");
     }};
-
-    private final Pattern LANDSAT8 = Pattern.compile("L[CTO]08_.*");
-    private final Pattern LANDSAT9 = Pattern.compile("L[CTO]09_.*");
-    private final Pattern ECOSTRESS = Pattern.compile(".*(BGEO|L1BRAD|L1BMAPRAD|ESIPTJPL|L3ETALEXIU|ETPTJPL|ANCQA|L4ESIALEXIU|LSTE|ECOSTRESS|CLOUD|WUE|ESI).*");
-    private final Pattern MODIS = Pattern.compile("(MOD|MCD|MYD).*");
-    private final Pattern HYPERION = Pattern.compile("EO.H.*");
-    private final Pattern VIIRS = Pattern.compile("VN.*");
-
+    private final String sensorName;
+    private final SensorType sensorType;
     private final Predicate<EOProduct> filter;
 
-    public SearchResponseHandler(Predicate<EOProduct> filter) {
+    public SearchResponseHandler(String sensorName, SensorType type, Predicate<EOProduct> filter) {
+        this.sensorName = sensorName;
+        this.sensorType = type;
         this.filter = filter;
     }
 
@@ -73,24 +72,10 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         }
         List<SearchResult> results = responseData.getResults();
         return results != null ? results.stream().map(r -> {
-            EOProduct product = null;
-            String displayId = r.getDisplayId();
-            if (LANDSAT8.matcher(displayId).matches()) {
-                product = fillLandsat8Product(r);
-            } else if (LANDSAT9.matcher(displayId).matches()) {
-                product = fillLandsat9Product(r);
-            } else if (ECOSTRESS.matcher(displayId).matches()) {
-                product = fillEcostressProduct(r);
-            } else if (MODIS.matcher(displayId).matches()) {
-                product = fillModisProduct(r);
-            } else if (HYPERION.matcher(displayId).matches()) {
-                product = fillHyperionProduct(r);
-            } else if (VIIRS.matcher(displayId).matches()) {
-                product = fillViirsProduct(r);
+            final EOProduct product = fillProduct(r);
+            if (product == null) {
+                Logger.getLogger(SearchResponseHandler.class.getName()).finest(r.getDisplayId() + " is not a supported product");
             }
-            /*if (product == null) {
-                Logger.getLogger(SearchResponseHandler.class.getName()).finest(displayId + " is not a supported product");
-            }*/
             return product;
         }).filter(Objects::nonNull).collect(Collectors.toList()) : new ArrayList<>();
     }
@@ -105,42 +90,43 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         return responseData.getTotalHits();
     }
 
-    private EOProduct fillLandsat8Product(SearchResult result) {
-        EOProduct product = new EOProduct();
+    private EOProduct fillProduct(SearchResult result) {
+        final EOProduct product = new EOProduct();
         if (result.getSpatialCoverage() != null) {
-            Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
-            for (double[] point : coordinates[0]) {
-                polygon2D.append(point[0], point[1]);
+            final Polygon2D polygon2D = new Polygon2D();
+            final Number[][][] coordinates = result.getSpatialCoverage().getCoordinates();
+            if (coordinates != null && coordinates.length > 0) {
+                for (Number[] point : coordinates[0]) {
+                    polygon2D.append(point[0].doubleValue(), point[1].doubleValue());
+                }
+                product.setGeometry(polygon2D.toWKT());
             }
-            product.setGeometry(polygon2D.toWKT());
             if (this.filter != null && this.filter.test(product)) {
                 return null;
             }
         }
         product.setFormatType(DataFormat.RASTER);
-        product.setSensorType(SensorType.OPTICAL);
+        product.setSensorType(this.sensorType);
         product.setPixelType(PixelType.UINT16);
-        product.setProductType("Landsat8");
-        product.setSatelliteName("Landsat8");
+        product.setProductType(this.sensorName);
+        product.setSatelliteName(this.sensorName);
         product.setId(result.getEntityId());
         product.setName(result.getDisplayId());
+        final String temporalCoverage = result.getTemporalCoverage().getStartDate().replaceAll("(.+?)\\s+.+", "$1");
+        product.setAcquisitionDate(LocalDate.parse(temporalCoverage, format).atStartOfDay());
         try {
-            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
-        } catch (DateTimeParseException e) {
-            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
-        }
-        try {
-            Browse browse = result.getBrowse().stream().filter(b -> quickLookElements.contains(b.getBrowseName())).findFirst().orElse(null);
+            final Browse browse = result.getBrowse().stream().filter(b -> quickLookElements.contains(b.getBrowseName())).findFirst().orElse(null);
             if (browse != null) {
                 product.setQuicklookLocation(browse.getBrowsePath());
             }
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            Logger.getLogger(SearchResponseHandler.class.getName()).severe(e.getMessage());
         }
         try {
-            Landsat8ProductHelper helper = new Landsat8ProductHelper(product.getName());
-            product.addAttribute("tiles", helper.getPath() + helper.getRow());
+            if (this.sensorName.toLowerCase().startsWith("landsat")) {
+                final Landsat8ProductHelper helper = new Landsat8ProductHelper(product.getName());
+                product.addAttribute("tiles", helper.getPath() + helper.getRow());
+            }
         } catch (IllegalArgumentException e) {
             Logger.getLogger(SearchResponseHandler.class.getName()).finest(product.getName() + " is not a Landsat product");
         }
@@ -148,190 +134,4 @@ public class SearchResponseHandler implements JSonResponseHandler<EOProduct> {
         return product;
     }
 
-    private EOProduct fillLandsat9Product(SearchResult result) {
-        EOProduct product = new EOProduct();
-        if (result.getSpatialCoverage() != null) {
-            Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
-            for (double[] point : coordinates[0]) {
-                polygon2D.append(point[0], point[1]);
-            }
-            product.setGeometry(polygon2D.toWKT());
-            if (this.filter != null && this.filter.test(product)) {
-                return null;
-            }
-        }
-        product.setFormatType(DataFormat.RASTER);
-        product.setSensorType(SensorType.OPTICAL);
-        product.setPixelType(PixelType.UINT16);
-        product.setProductType("Landsat9");
-        product.setSatelliteName("Landsat9");
-        product.setId(result.getEntityId());
-        product.setName(result.getDisplayId());
-        try {
-            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
-        } catch (DateTimeParseException e) {
-            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
-        }
-        try {
-            Browse browse = result.getBrowse().stream().filter(b -> quickLookElements.contains(b.getBrowseName())).findFirst().orElse(null);
-            if (browse != null) {
-                product.setQuicklookLocation(browse.getBrowsePath());
-            }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        try {
-            Landsat8ProductHelper helper = new Landsat8ProductHelper(product.getName());
-            product.addAttribute("tiles", helper.getPath() + helper.getRow());
-        } catch (IllegalArgumentException e) {
-            Logger.getLogger(SearchResponseHandler.class.getName()).finest(product.getName() + " is not a Landsat product");
-        }
-        product.addAttribute("downloadable", result.getOptions() != null ? String.valueOf(result.getOptions().isDownload()) : "true");
-        return product;
-    }
-
-    private EOProduct fillEcostressProduct(SearchResult result) {
-        EOProduct product = new EOProduct();
-        if (result.getSpatialCoverage() != null) {
-            Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
-            for (double[] point : coordinates[0]) {
-                polygon2D.append(point[0], point[1]);
-            }
-            product.setGeometry(polygon2D.toWKT());
-            if (this.filter != null && this.filter.test(product)) {
-                return null;
-            }
-        }
-        product.setFormatType(DataFormat.RASTER);
-        product.setSensorType(SensorType.OPTICAL);
-        product.setPixelType(PixelType.UINT16);
-        product.setProductType("ECOSTRESS");
-        product.setSatelliteName("ECOSTRESS");
-        product.setId(result.getEntityId());
-        product.setName(result.getDisplayId());
-        try {
-            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
-        } catch (DateTimeParseException e) {
-            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
-        }
-        try {
-            List<Browse> browseList = result.getBrowse();
-            if (browseList.size() >= 1) {
-                product.setQuicklookLocation(browseList.get(0).getBrowsePath());
-            }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return product;
-    }
-
-    private EOProduct fillModisProduct(SearchResult result) {
-        EOProduct product = new EOProduct();
-        if (result.getSpatialCoverage() != null) {
-            Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
-            for (double[] point : coordinates[0]) {
-                polygon2D.append(point[0], point[1]);
-            }
-            product.setGeometry(polygon2D.toWKT());
-            if (this.filter != null && this.filter.test(product)) {
-                return null;
-            }
-        }
-        product.setFormatType(DataFormat.RASTER);
-        product.setSensorType(SensorType.OPTICAL);
-        product.setPixelType(PixelType.UINT16);
-        product.setProductType("MODIS");
-        product.setSatelliteName("MODIS");
-        product.setId(result.getEntityId());
-        product.setName(result.getDisplayId());
-        try {
-            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
-        } catch (DateTimeParseException e) {
-            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
-        }
-        try {
-            List<Browse> browseList = result.getBrowse();
-            if (browseList.size() >= 1) {
-                product.setQuicklookLocation(browseList.get(0).getBrowsePath());
-            }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return product;
-    }
-
-    private EOProduct fillViirsProduct(SearchResult result) {
-        EOProduct product = new EOProduct();
-        if (result.getSpatialCoverage() != null) {
-            Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
-            for (double[] point : coordinates[0]) {
-                polygon2D.append(point[0], point[1]);
-            }
-            product.setGeometry(polygon2D.toWKT());
-            if (this.filter != null && this.filter.test(product)) {
-                return null;
-            }
-        }
-        product.setFormatType(DataFormat.RASTER);
-        product.setSensorType(SensorType.OPTICAL);
-        product.setPixelType(PixelType.UINT16);
-        product.setProductType("VIIRS");
-        product.setSatelliteName("VIIRS");
-        product.setId(result.getEntityId());
-        product.setName(result.getDisplayId());
-        try {
-            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
-        } catch (DateTimeParseException e) {
-            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
-        }
-        try {
-            List<Browse> browseList = result.getBrowse();
-            if (browseList.size() >= 1) {
-                product.setQuicklookLocation(browseList.get(0).getBrowsePath());
-            }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return product;
-    }
-
-    private EOProduct fillHyperionProduct(SearchResult result) {
-        EOProduct product = new EOProduct();
-        if (result.getSpatialCoverage() != null) {
-            Polygon2D polygon2D = new Polygon2D();
-            double[][][] coordinates = result.getSpatialCoverage().getCoordinates();
-            for (double[] point : coordinates[0]) {
-                polygon2D.append(point[0], point[1]);
-            }
-            product.setGeometry(polygon2D.toWKT());
-            if (this.filter != null && this.filter.test(product)) {
-                return null;
-            }
-        }
-        product.setFormatType(DataFormat.RASTER);
-        product.setSensorType(SensorType.OPTICAL);
-        product.setPixelType(PixelType.UINT16);
-        product.setProductType("HYPERION");
-        product.setSatelliteName("HYPERION");
-        product.setId(result.getEntityId());
-        product.setName(result.getDisplayId());
-        try {
-            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), firstFormat));
-        } catch (DateTimeParseException e) {
-            product.setAcquisitionDate(LocalDateTime.parse(result.getTemporalCoverage().getStartDate(), secondFormat));
-        }
-        try {
-            List<Browse> browseList = result.getBrowse();
-            if (browseList.size() >= 1) {
-                product.setQuicklookLocation(browseList.get(0).getBrowsePath());
-            }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return product;
-    }
 }

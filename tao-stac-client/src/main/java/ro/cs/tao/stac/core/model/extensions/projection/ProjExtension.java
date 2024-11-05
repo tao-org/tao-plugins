@@ -28,23 +28,30 @@ public class ProjExtension<E extends Extensible> extends Extension<E> {
     @Override
     public void extractField(TreeNode node, String name) throws JsonProcessingException {
         try {
-            if (ProjFields.CENTROID.equals(name)) {
-                TreeNode child = node.get(name);
-                Centroid centroid = new Centroid();
-                centroid.setLat(JsonValueHelper.getDouble(child, "lat"));
-                centroid.setLon(JsonValueHelper.getDouble(child, "lon"));
-                setCentroid(centroid);
-            } else if (ProjFields.EPSG.equals(name)) {
-                setEpsg(JsonValueHelper.getInt(node, name));
-            } else if (ProjFields.PROJJSON.equals(name)) {
-                setProjjson(JsonValueHelper.getString(node, name));
-            } else if (ProjFields.SHAPE.equals(name)) {
-                setShape(JsonValueHelper.getDoubleArray1(node, name));
-            } else if (ProjFields.TRANSFORM.equals(name)) {
-                setTransform(JsonValueHelper.getDoubleArray1(node, name));
-            } else if (ProjFields.WKT_2.equals(name)) {
-                setWkt2(JsonValueHelper.getString(node, name));
-            }
+            switch (name) {
+                case ProjFields.CENTROID:
+                    TreeNode child = node.get(name);
+                    Centroid centroid = new Centroid();
+                    centroid.setLat(JsonValueHelper.getDouble(child, "lat"));
+                    centroid.setLon(JsonValueHelper.getDouble(child, "lon"));
+                    setCentroid(centroid);
+                    break;
+                case ProjFields.EPSG:
+                    setEpsg(JsonValueHelper.getInt(node, name));
+                    break;
+                case ProjFields.PROJJSON:
+                    setProjjson(JsonValueHelper.getString(node, name));
+                    break;
+                case ProjFields.SHAPE:
+                    setShape(JsonValueHelper.getDoubleArray1(node, name));
+                    break;
+                case ProjFields.TRANSFORM:
+                    setTransform(JsonValueHelper.getDoubleArray1(node, name));
+                    break;
+                case ProjFields.WKT_2:
+                    setWkt2(JsonValueHelper.getString(node, name));
+                    break;
+                }
         } catch (Exception e) {
             Logger.getLogger(ProjExtension.class.getName()).warning("Cannot extract field " + name + ": " + e.getMessage());
         }

@@ -13,13 +13,6 @@
     "temporalCoverage": "from 1976 to present",
     "spatialCoverage": "Global"
   },
-  "ALOS": {
-    "mission": "ALOS",
-    "sensorType": "OPTICAL",
-    "description": "The PALSAR-2 aboard the ALOS-2 is a Synthetic Aperture Radar (SAR), which emits microwave and receives the reflection from the ground to acquire information. Since it does not need other sources of light such as the sun, SAR has the advantage of providing satellite images regardless day or night. The frequency of transmitting and receiving microwave is L-band, which is less affected by clouds and rains. This all-weather observing capability is suitable for monitoring disasters rapidly. In addition, L-band microwave can reach to the ground partially penetrating through vegetation to obtain information of vegetation and ground surface. ALOS-2/PALSAR-2 will have a spotlight mode (1m*3m resolution in azimuth*range direction), whilst ALOS/PALSAR has a 10 m resolution. It will allow comprehensive monitoring of disasters by providing users with more detailed data than ALOS/PALSAR. The observation repetition frequency of ALOS-2 was improved by expanding the observable range of the satellite up to about 3 times (from 870km to 2,320km), as well as giving ALOS-2 a right-and-left looking function, which was not available on ALOS.",
-    "temporalCoverage": "from 2014 to present",
-    "spatialCoverage": "Global"
-  },
   "ALOS-1": {
     "mission": "ALOS-1",
     "sensorType": "OPTICAL",
@@ -34,12 +27,19 @@
     "temporalCoverage": "from 2014 to present",
     "spatialCoverage": "Global"
   },
-  "AQUA": {
-    "mission": "AQUA",
+  "Aeolus": {
+    "mission": "Aeolus",
     "sensorType": "ATMOSPHERIC",
-    "description": "The dataset provides a Climate Data Record of Sea Ice Concentration (SIC) for the polar regions, derived from medium resolution passive microwave satellite data from the Advanced Microwave Scanning Radiometer series (AMSR-E and AMSR-2). It is processed with an algorithm using coarse resolution (6 GHz and 37 GHz) imaging channels, and has been gridded at 50km grid spacing. This version of the product is v2.1, which is an extension of the version 2.0 Sea_Ice_cci dataset and has identical data until 2015-12-25.This product was generated in the context of the ESA Climate Change Initiative Programme (ESA CCI) by the Sea_Ice_CCI project. The EUMETSAT OSI SAF contributed with access and re-use of part of its processing software and facilities.A SIC CDR at 25km grid spacing is also available.",
-    "temporalCoverage": "from 2002 to 2017",
+    "description": "The Level 2A aerosol/cloud optical products of the Aeolus mission include geo-located consolidated backscatter and extinction profiles, backscatter-to-extinction coefficient, LIDAR ratio, scene classification, heterogeneity index and attenuated backscatter signals. Resolution - Horizontal resolution of L2A optical properties at observation scale (~87 km); Exceptions are group properties (horizontal accumulation of measurements from ~3 km to ~87 km) and attenuated backscatters (~3 km); Note: the resolution of \"groups\" in the L2A can only go down to 5 measurements at the moment, i.e. ~15 km horizontal resolution. This could be configured to go to 1 measurement - Vertical resolution 250-2000 m (Defined by Range Bin Settings https://earth.esa.int/eogateway/instruments/aladin/overview-of-the-main-wind-rbs-changes).",
+    "temporalCoverage": "from 2020 to present",
     "spatialCoverage": "Global"
+  },
+  "Amazonia-1": {
+    "mission": "Amazonia-1",
+    "sensorType": "OPTICAL",
+    "description": "This collection contains images from the WFI sensor onboard the satellites CBERS-4, CBERS-4A and AMAZONIA-1 over Brazil. The data is processed by the Disasters Charter and provided as Cloud Optimized GeoTIFF (COG). This products has four spectral bands: Blue, Green, Red and NIR. AMAZONIA-1/WFI Surface Reflectance product over Brazil. L4 SR product provides orthorectified surface reflectance images. This dataset is provided as Cloud Optimized GeoTIFF (COG)",
+    "temporalCoverage": "from 2024 to present",
+    "spatialCoverage": "Brazil"
   },
   "Aura": {
     "mission": "Aura",
@@ -62,11 +62,18 @@
     "temporalCoverage": "from 2023 to present",
     "spatialCoverage": "Global"
   },
-  "CORIOLIS": {
-    "mission": "CORIOLIS",
-    "sensorType": "RADAR",
-    "description": "This dataset is derived under the Cross-Calibrated Multi-Platform (CCMP) project and contains a value-added monthly mean ocean surface wind and pseudostress to approximate a satellite-only climatological data record. The CCMP datasets combine cross-calibrated satellite winds obtained from Remote Sensing Systems (REMSS) using a Variational Analysis Method (VAM) to produce a high-resolution (0.25 degree) gridded analysis. The CCMP data set includes cross-calibrated satellite winds derived from SSM/I, SSMIS, AMSR-E, TRMM TMI, QuikSCAT, SeaWinds, WindSat and other satellite instruments as they become available from REMSS. REMSS uses a cross-calibrated sea-surface emissivity model function which improves the consistency between wind speed retrievals from microwave radiometers (i.e., SSM/I, SSMIS, AMSR, TMI, WindSat) and those from scatterometers (i.e., QuikSCAT and SeaWinds). The VAM combines these data with in situ measurements and a starting estimate (first guess) of the wind field. The European Center for Medium-Range Weather Forecasts (ECMWF) ERA-40 Reanalysis is used as the first-guess from 1987 to 1998. The ECMWF Operational analysis is used from January 1999 onward. All wind observations and analysis fields are referenced to a height of 10 meters. The ERA-40 can be obtained from the Computation and Information Systems Laboratory (CISL) at the National Center for Atmospheric Research (NCAR): http://rda.ucar.edu/datasets/ds117.0/. The ECMWF Operational analysis can also be obtained from CISL at NCAR: http://rda.ucar.edu/datasets/ds111.1/. Three products are distributed to complete the CCMP dataset series. L3.0 product contains high-resolution analyses every 6-hours. These data are then time averaged over monthly and 5-day periods to derive the L3.5 product. Directions from the L3.0 product are then assigned to the time and location of the passive microwave satellite wind speed observations to derive the L2.5 product.  All datasets are distributed on a 0.25 degree cylindrical coordinate grid. This dataset is one in a series of First-Look (FLK) CCMP datasets and is a continuation and expansion of the SSM/I surface wind velocity project that began under the NASA Pathfinder Program. Refinements and upgrades to the FLK version will be incorporated under a new release (date to be determined) known as Late-look (LLK) and may include additional satellite datasets. All satellite surface wind data are obtained from REMSS under the DISCOVER project: Distributed Information Services: Climate/Ocean Products and Visualizations for Earth Research (http://www.discover-earth.org/index.html). The CCMP project is the result of an investigation funded by the NASA Making Earth Science data records for Use in Research Environments (MEaSUREs) program (http://community.eosdis.nasa.gov/measures/). In accordance with the MEaSUREs program, the CCMP datasets are also known as Earth System Data Records (ESDRs). In collaboration with private and government institutions, a team led by Dr. Robert Atlas (PI; proposal originally solicited by REASoN, and currently funded by MEaSURES) has created the CCMP project to provide multi-instrument ocean surface wind velocity ESDRs, with wide ranging research applications in meteorology and oceanography.",
-    "temporalCoverage": "from 1987 to 2011",
+  "CBERS-4": {
+    "mission": "CBERS-4",
+    "sensorType": "OPTICAL",
+    "description": "Earth Observation Data Cube generated from CBERS-4/WFI and CBERS-4A/WFI Level-4 SR products over Brazil extension. This dataset is provided in Cloud Optimized GeoTIFF (COG) file format. The dataset is processed with 64 meters of spatial resolution, reprojected and cropped to BDC_LG grid Version 2 (BDC_LG V2), considering a temporal compositing function of 8 days using the Least Cloud Cover First (LCF) best pixel approach.",
+    "temporalCoverage": "from 2015 to present",
+    "spatialCoverage": "Global"
+  },
+  "CBERS-4A": {
+    "mission": "CBERS-4A",
+    "sensorType": "OPTICAL",
+    "description": "CBERS-4A/WFI image mosaic of Brazil Paraíba State with 55m of spatial resolution. The mosaic was prepared in order to demonstrate the technological capabilities of the Brazil Data Cube project tools. The false color composition is based on the WFI bands 16, 15 and 14 assigned to RGB channels. The temporal composition encompasses 03-months of images, starting in July 2020 and ending in September 2020, with a best pixel selection approach called Least Cloud Cover First (LCF). More information on LCF can be found at Brazil Data Cube web site (https://brazil-data-cube.github.io/specifications/processing-flow.html#temporal-compositing). This Image Mosaic used more than 50 CBERS-4A scenes and was generated based on an existing CBERS-4A/WFI image collection.",
+    "temporalCoverage": "from 2020 to present",
     "spatialCoverage": "Global"
   },
   "COSMO-SkyMed": {
@@ -104,13 +111,6 @@
     "temporalCoverage": "from 1978 to 2020",
     "spatialCoverage": "Global"
   },
-  "DMSP 5D-3/F17": {
-    "mission": "DMSP 5D-3/F17",
-    "sensorType": "ATMOSPHERIC",
-    "description": "Calibrated brightness temperatures product for passive-microwave instrument. The Special Sensor Microwave Imager/Sounder (SSMIS) continues the legacy of passive microwave instruments carried aboard Defense Meteorological Satellite Program (DMSP) satellites. A constellation of several satellites developed by each international partner (space agency) will carry passive microwave radiometers and/or microwave sounders and be in operation around 2013. The DPR and GMI instruments on board the core satellite will serve as a calibrator for data obtained by constellation satellites.",
-    "temporalCoverage": "from 2014 to present",
-    "spatialCoverage": "Global"
-  },
   "Envisat": {
     "mission": "Envisat",
     "sensorType": "RADAR",
@@ -130,6 +130,13 @@
     "sensorType": "ATMOSPHERIC",
     "description": "As part of the European Space Agency's (ESA) Sea Level Climate Change Initiative (CCI) project, a number of oceanic indicators of mean sea level changes have been produced from merging satellite altimetry measurements of sea level anomalies. The oceanic indicators dataset consists of static files covering the whole altimeter period, describing the evolution of the project's monthly sea level anomaly gridded product (see separate dataset record).The oceanic indicators that are provided are: 1) the temporal evolution of the global Mean Sea Level (MSL) DOI: 10.5270/esa-sea_level_cci-IND_MSL_MERGED-1993_2015-v_2.0-201612 ;2) the geographic distribution of Mean Sea Level changes (MSLTR) DOI: 10.5270/esa-sea_level_cci-IND_MSLTR_MERGED-1993_2015-v_2.0-201612 ;3) Maps of the amplitude and phase of the annual cycle (MSLAMPH) DOI: 10.5270/esa-sea_level_cci-IND_MSLAMPH_MERGED-1993_2015-v_2.0-201612.The complete collection of v2.0 products from the Sea Level CCI project can be referenced using the following DOI: 10.5270/esa-sea_level_cci-1993_2015-v_2.0-201612.When using or referring to the SL_cci products, please mention the associated DOIs and also use the following citation where a detailed description of the SL_cci project and products can be found:Ablain, M., Cazenave, A., Larnicol, G., Balmaseda, M., Cipollini, P., FaugÃ¨re, Y., Fernandes, M. J., Henry, O., Johannessen, J. A., Knudsen, P., Andersen, O., Legeais, J., Meyssignac, B., Picot, N., Roca, M., Rudenko, S., Scharffenberg, M. G., Stammer, D., Timms, G., and Benveniste, J.: Improved sea level record over the satellite altimetry era (1993â&#128;&#147;2010) from the Climate Change Initiative project, Ocean Sci., 11, 67-82, doi:10.5194/os-11-67-2015, 2015.For further information on the Sea Level CCI products, and to register for these products please email: info-sealevel@esa-sealevel-cci.org",
     "temporalCoverage": "from 1993 to 2015",
+    "spatialCoverage": "Global"
+  },
+  "EarthCARE": {
+    "mission": "EarthCARE",
+    "sensorType": "ATMOSPHERIC",
+    "description": "Level 2a: Single-Instrument Geophysical Products\nThese products are derived from individual instrument data onboard EarthCARE. They provide detailed geophysical parameters and properties specific to each instrument's capabilities for example cloud and aerosol properties derived solely from radar or lidar measurements, offering high-resolution insights into atmospheric phenomena. Level 2b: Synergistic Geophysical Products\nLevel 2b products leverage data from multiple EarthCARE instruments to generate comprehensive, synergistic geophysical datasets. By combining measurements from instruments like radar, lidar, and radiometers, these products offer a more integrated view of cloud-aerosol interactions and atmospheric dynamics. Synergistic products provide enhanced accuracy and depth compared to single-instrument outputs, enabling detailed studies of complex atmospheric processes.",
+    "temporalCoverage": "from 2024 to present",
     "spatialCoverage": "Global"
   },
   "FY-3B": {
@@ -153,11 +160,39 @@
     "temporalCoverage": "from 2002 to 2017",
     "spatialCoverage": "Global"
   },
+  "GEOSAT-1": {
+    "mission": "GEOSAT-1",
+    "sensorType": "RADAR",
+    "description": "GEOSAT-1 full archive and new tasking products are available at 22 m resolution in two processing levels.\nL1R (Basic Geopositioned): All 3 spectral channels combined into a band-registered image. Geopositioned product based on sensor model. Coefficients derived from satellite orientation parameters coming from telemetry and appended to metadata.\nL1T (L1R orthorectified): Orthorectified to sub-pixel accuracy (10 metres RMS error approximately) with respect to Landsat ETM+ reference data and hole-filled seamless SRTM DEM data V3, 2006 (90 m). GEOSAT-1 products are provided in DIMAP format. The image products are delivered in the TIFF and GeoTIFF image formats by default. All products can be provided in False Colours (R,G,NIR) or Natural Colours (R, G, Synthetic Blue).",
+    "temporalCoverage": "from 2009 to present",
+    "spatialCoverage": "Global"
+  },
+  "GEOSAT-2": {
+    "mission": "GEOSAT-2",
+    "sensorType": "RADAR",
+    "description": "The GEOSAT-2 Spain Coverage collection consists of two separate coverages of Spain, including the Balearic and Canary islands, acquired by GEOSAT-2 between March and November of 2021 and 2022, respectively. The available imagery have a geolocation accuracy of < 4 m RMSE, a cloud cover percentage of < 10 %, and were acquired at an off-nadir angle from -30° to 30°. Spatial coverage of the 2021 collection. The following product types are available: • Pan-sharpened: A four-band image, resulting from adding the information of each multispectral band to the panchromatic band. The fusion does not preserves all spectral features of the multispectral bands, so it should not be used for radiometric purposes. Resolution 1 m; Bands: All. • Bundle: Panchromatic (1 m resolution) + Multispectral bands (4 m resolution): five-band image containing the panchromatic and multispectral products packaged together, with band co-registration. The available processing level is L1C orthorectified: a calibrated and radiometrically corrected product, manually orthorectified and resampled to a map grid. Product Type Spatial Resolution Pan-sharpened 1.0 m Bundle (PAN + MS) 1.0 m (PAN), 4.0 m (MS)",
+    "temporalCoverage": "from 2014 to present",
+    "spatialCoverage": "Global"
+  },
   "GOCE": {
     "mission": "GOCE",
     "sensorType": "ALTIMETRIC",
     "description": "In Satellite Laser Ranging (SLR), a short pulse of coherent light generated by a laser (Light Amplification by Stimulated Emission of Radiation) is transmitted in a narrow beam to illuminate corner cube retroreflectors on the satellite. The return signal, typically a few photons, is collected by a telescope and the time-of-flight is measured. Using information about the satellite's orbit, the time-of-flight, and the speed of light, the location of the ranging station can be determined. Similar data acquired by another station, many kilometers distant from the first, or on a different continent, can be used to determine the distance between stations to precisions of centimeters or better. Repetitive measurements over months and years yield the change in distance, or the motion of the Earth's crust.",
     "temporalCoverage": "from 1976 to present",
+    "spatialCoverage": "Global"
+  },
+  "GOES-13": {
+    "mission": "GOES-13",
+    "sensorType": "OPTICAL",
+    "description": "GOES-13 is a satellite of the Geostationary Operational Environmental Satellite (GOES) series operated by the National Oceanic and Atmospheric Administration (NOAA). Launched on May 24, 2006, it is designed to monitor weather conditions in North America, South America, and the Atlantic Ocean region. It operates in a geostationary orbit, meaning it remains fixed relative to Earth, continuously monitoring a specific region of the planet. In 2017, it was replaced by GOES-16 (GOES-East) as the primary operational weather satellite for the United States. Since then, it has been placed in a backup position. GOES-13/Imager instrument captures 1 visible and 4 infrared channels at resolutions of 1km (VIS) and 4km (IR). The collection captures product files into individual STAC Items for each observation from the GOES-13 satellite. It contains binary files in a grid format for each of the 5 spectral bands. The files are encoded using int16 and represent a matrix of values (reflectance for VIS and brightness temperature for IR) with 1714 lines and 1870 columns. Note: The values must be read as a one-dimensional array and then converted in memory to a two-dimensional m x n matrix. These versions are generated by INPE using the process of mapping data from the original geostationary projection to a uniform space-time geographic grid (EPSG:4326) with 0.04 degrees spatial resolution. The geographical area used in the remapping process was chosen because it covers and highlights Brazil, South and Central America. The image reprojection operation is performed using the gdalwarp utility (https://gdal.org/programs/gdalwarp.html) with the nearest neighbor resampling strategy defined.",
+    "temporalCoverage": "from 2011 to 2018",
+    "spatialCoverage": "Global"
+  },
+  "GOES-16": {
+    "mission": "GOES-16",
+    "sensorType": "RADAR",
+    "description": "The GOES-16 Advanced Baseline Imager (ABI) L2 Cloud and Moisture Imagery provides 16 spectral bands with high temporal resolution over the American continent. The significance of the GOES-16 satellite for Brazil and South America lies in its location at longitude -75°, allowing it to offer comprehensive coverage of the continent and the oceanic regions of the Pacific and Atlantic. The ABI captures 2 visible, 4 near-infrared, and 10 infrared channels at resolutions ranging from 500m to 2km. This collection encompasses images acquired by the GOES-16 satellite (GOES-East) in full-disk mode, depicting nearly full coverage of the Western Hemisphere in a circular image. Important: note that other modes, such as CONUS and MESOSCALE, are not included in this collection. Cloud and Moisture Imagery product (CMIP) files are generated for each of the 16 ABI reflective and emissive bands. The collection captures CMIP product files into individual STAC Items for each observation from the GOES-16 satellite. It includes the original and full-resolution CMIP NetCDF files generated by INPE's GOES-R receive station. There is also a version for band 02, which originally has a resolution of 500m, degraded to 1km.",
+    "temporalCoverage": "from 2020 to present",
     "spatialCoverage": "Global"
   },
   "GOSAT-1": {
@@ -195,25 +230,11 @@
     "temporalCoverage": "from 2018 to present",
     "spatialCoverage": "Global"
   },
-  "IKONOS": {
-    "mission": "IKONOS",
-    "sensorType": "OPTICAL",
-    "description": "This collection provides access to images archived at ROSCOSMOS for IKONOS mission.",
-    "temporalCoverage": "from 1999 to present",
-    "spatialCoverage": "Global"
-  },
   "IKONOS-2": {
     "mission": "IKONOS-2",
     "sensorType": "OPTICAL",
     "description": "ESA maintains an archive of IKONOS Geo Ortho Kit data previously requested through the TPM scheme and acquired between 2000 and 2008, over Europe, North Africa and the Middle East. The imagery products gathered from IKONOS are categorised according to positional accuracy, which is determined by the reliability of an object in the image to be within the specified accuracy of the actual location of the object on the ground. Within each IKONOS-derived product, location error is defined by a circular error at 90% confidence (CE90), which means that locations of objects are represented on the image within the stated accuracy 90% of the time. There are six levels of IKONOS imagery products, determined by the level of positional accuracy: Geo, Standard Ortho, Reference, Pro, Precision and PrecisionPlus. The product provided by ESA to Category-1 users is the Geo Ortho Kit, consisting of IKONOS Black-and-White images with radiometric and geometric corrections (1-metre pixels, CE90=15 metres) bundled with IKONOS multispectral images with absolute radiometry (4-metre pixels, CE90=50 metres). IKONOS collects 1m and 4m Geo Ortho Kit imagery (nominally at nadir 0.82m for panchromatic image, 3.28m for multispectral mode) at an elevation angle between 60 and 90 degrees. To increase the positional accuracy of the final orthorectified imagery, customers should select imagery with IKONOS elevation angle between 72 and 90 degrees. The Geo Ortho Kit is tailored for sophisticated users such as photogrammetrists who want to control the orthorectification process. Geo Ortho Kit images include the camera geometry obtained at the time of image collection. Applying Geo Ortho Kit imagery, customers can produce their own highly accurate orthorectified products by using commercial off the shelf software, digital elevation models (DEMs) and optional ground control.",
     "temporalCoverage": "from 2000 to 2008",
-    "spatialCoverage": "Global"
-  },
-  "IRS": {
-    "mission": "IRS",
-    "sensorType": "OPTICAL",
-    "description": "Indian Remote Sensing satellites (IRS) are a series of Earth Observation satellites, built, launched and maintained by Indian Space Research Organisation. The IRS series provides many remote sensing services to India and international ground stations. With 5 m resolution and products covering areas up to 70 km x 70 km IRS LISS-IV mono data provide a cost effective solution for mapping tasks up to 1:25'000 scale.",
-    "temporalCoverage": "from 2004 to present",
     "spatialCoverage": "Global"
   },
   "IRS-1C": {
@@ -230,6 +251,13 @@
     "temporalCoverage": "from 1999 to 2005",
     "spatialCoverage": "Global"
   },
+  "IRS-P5": {
+    "mission": "IRS-P5",
+    "sensorType": "OPTICAL",
+    "description": "Indian Remote Sensing satellites (IRS) are a series of Earth Observation satellites, built, launched and maintained by Indian Space Research Organisation. The IRS series provides many remote sensing services to India and international ground stations. The revisit capability of only 5 days and the products coverage size of 370 km x 370 km make AWiFS products a valuable source for application fields such forestry and environmental monitoring",
+    "temporalCoverage": "from 2005 to 2019",
+    "spatialCoverage": "Global"
+  },
   "IRS-P6": {
     "mission": "IRS-P6",
     "sensorType": "RADAR",
@@ -237,11 +265,11 @@
     "temporalCoverage": "from 2010 to 2013",
     "spatialCoverage": "Global"
   },
-  "Jason-3": {
-    "mission": "Jason-3",
+  "Jason-1": {
+    "mission": "Jason-1",
     "sensorType": "RADAR",
-    "description": "As part of the European Space Agency's (ESA) Sea Level Climate Change Initiative (CCI) project, a number of oceanic indicators of mean sea level changes have been produced from merging satellite altimetry measurements of sea level anomalies. The oceanic indicators dataset consists of static files covering the whole altimeter period, describing the evolution of the project's monthly sea level anomaly gridded product (see separate dataset record).The oceanic indicators that are provided are: 1) the temporal evolution of the global Mean Sea Level (MSL) DOI: 10.5270/esa-sea_level_cci-IND_MSL_MERGED-1993_2015-v_2.0-201612 ;2) the geographic distribution of Mean Sea Level changes (MSLTR) DOI: 10.5270/esa-sea_level_cci-IND_MSLTR_MERGED-1993_2015-v_2.0-201612 ;3) Maps of the amplitude and phase of the annual cycle (MSLAMPH) DOI: 10.5270/esa-sea_level_cci-IND_MSLAMPH_MERGED-1993_2015-v_2.0-201612.The complete collection of v2.0 products from the Sea Level CCI project can be referenced using the following DOI: 10.5270/esa-sea_level_cci-1993_2015-v_2.0-201612.When using or referring to the SL_cci products, please mention the associated DOIs and also use the following citation where a detailed description of the SL_cci project and products can be found:Ablain, M., Cazenave, A., Larnicol, G., Balmaseda, M., Cipollini, P., FaugÃ¨re, Y., Fernandes, M. J., Henry, O., Johannessen, J. A., Knudsen, P., Andersen, O., Legeais, J., Meyssignac, B., Picot, N., Roca, M., Rudenko, S., Scharffenberg, M. G., Stammer, D., Timms, G., and Benveniste, J.: Improved sea level record over the satellite altimetry era (1993â&#128;&#147;2010) from the Climate Change Initiative project, Ocean Sci., 11, 67-82, doi:10.5194/os-11-67-2015, 2015.For further information on the Sea Level CCI products, and to register for these products please email: info-sealevel@esa-sealevel-cci.org",
-    "temporalCoverage": "from 1993 to 2015",
+    "description": "This dataset contains along-track sea level anomalies derived from satellite altimetry. Altimeter along-track sea level measurements from the Jason-1, Jason -2 and Jason-3 satellite missions have been processed to produce high resolution (20 Hz, corresponding to an along-track distance of ~300m) sea level anomalies, in order to provide long-term homogeneous sea level time series as close to the coast as possible in six different coastal regions (North-East Atlantic, Mediterranean Sea, Western Africa, North Indian Ocean, South-East Asia and Australia).",
+    "temporalCoverage": "from 2001 to 2013",
     "spatialCoverage": "Africa"
   },
   "JERS-1": {
@@ -250,6 +278,13 @@
     "description": "The JERS-1 Optical System (OPS) is composed of a Very Near Infrared Radiometer (VNIR) and a Short Wave Infrared Radiometer (SWIR). The instrument has 8 observable spectral bands from visible to short wave infrared. Data acquired by ESA ground stations The JERS-1 OPS products are available in GeoTIFF format. These products are available only for the VNIR sensor. All four bands are corrected. The correction consists in a vertical and horizontal destriping, the radiometry values are expanded from the range [0,63] to the range [0,255]. No geometrical correction is applied on level 1. The pixel size of approximately 18 x 24.2 metres for raw data is newly dimensioned to 18 x 18 metres for System Corrected data using a cubic convolution algorithm. Disclaimer: Cloud coverage for JERS OPS products has not been computed using an algorithm. The cloud cover assignment was performed manually by operators at the acquisition stations. Due to missing attitude information, the Nadir looking band (band 3) and the corresponding forward looking band (band 4) are not well coregistered, resulting in some accuracy limitations. The quality control was not performed systematically for each frame. A subset of the entire JERS Optical dataset was selected and manually checked. As a result of this, users may occasionally encounter issues with some of the individual products.",
     "temporalCoverage": "from 1992 to 1998",
     "spatialCoverage": "Global"
+  },
+  "KOMPSAT-1": {
+    "mission": "KOMPSAT-1",
+    "sensorType": "OPTICAL",
+    "description": "Available as a single coverage collection of data over 50 European Cities acquired by KOMPSAT-1’s Electro-Optical Camera (EOC) geolocated and orthorectified. The dataset is composed by PAN imagery at 6.6 m GSD, in GeoTIFF orthorectified format.",
+    "temporalCoverage": "from 2000 to 2004",
+    "spatialCoverage": "Europe"
   },
   "KOMPSAT-2": {
     "mission": "KOMPSAT-2",
@@ -307,6 +342,13 @@
     "temporalCoverage": "from 1978 to present",
     "spatialCoverage": "Global"
   },
+  "Landsat-9": {
+    "mission": "Landsat-9",
+    "sensorType": "ATMOSPHERIC",
+    "description": "Launched in September 2021 as a collaboration between the National Aeronautics and Space Administration (NASA) and United States Geological Survey (USGS), Landsat-9 continues the Landsat program to monitor, understand and manage land resources crucial for sustaining human life. Landsat-9 mission objectives include the collection and archival of moderate-resolution multispectral data, to be made freely available to worldwide users.",
+    "temporalCoverage": "from 2021 to present",
+    "spatialCoverage": "Global"
+  },
   "MOS-1": {
     "mission": "MOS-1",
     "sensorType": "RADAR",
@@ -319,13 +361,6 @@
     "sensorType": "RADAR",
     "description": "he satellite data is recorded on high density tapes (HDDT). Data on HDDT is raw as recorded from satellite. The HDDT archive is kept 'forever'. The data received is corrected to eliminate errors originating in the satellite platforms, instrument imperfections and radiometric effects in the atmosphere. Imagery data output is on CCTs or films. The archive consists of around 15000 HDDTs with Landsat MSS, TM and MOS data.",
     "temporalCoverage": "from 1990 to 1996",
-    "spatialCoverage": "Global"
-  },
-  "Metop-A": {
-    "mission": "Metop-A",
-    "sensorType": "ATMOSPHERIC",
-    "description": "The 'ENDVI10' or EUMETSAT Polar System NDVI are near-global, 10-daily composite images which are synthesised from the 'best available' observations registered in the course of every 'dekad' by the orbiting earth observation system METOP-AVHRR. The product provides the Normalized Difference Vegetation Index (NDVI), togetehr with some ancillary data as the radiation reflectance bands. The European METOP satellites were conceived by ESA/EUMETSAT to complement the geostationary METEOSATs. In this way they are analogue to the North-American NOAA-platforms which accompagny the geostationaries GOES-East and -West. Since mid-2007, METOP thus occupies the 'morning orbit' while NOAA assumes the 'noon orbit': the local solar time of the overpasses is around 9h30' for METOP and 14h for NOAA. Both platforms carry the same AVHRR instrument which scans the full earth surface at 1km resolution in five spectral bands: RED, NIR, SWIR, TIR1, TIR2. (During the night the SWIR-band is switched to MIR, but the ENDVI10 only deal with daytime registrations). Compared to NOAA, the METOP-AVHRR has been enhanced in three ways: the platform is perfectly stabilised which guarantees an optimal geo-correction of the imagery, all registered 1km data are stored on board and chanelled via the antenna of Svalbard (Sweden) to the central processing centre of EUMETSAT (Germany), and the latter performs the most crucial enhancement steps (rectification, calibration, cloud/snow detection) and broadcasts the results in real-time via its EUMETcast system.",
-    "temporalCoverage": "from 2007 to 2020",
     "spatialCoverage": "Global"
   },
   "Metop-B": {
@@ -342,46 +377,11 @@
     "temporalCoverage": "from 2003 to 2021",
     "spatialCoverage": "Global"
   },
-  "NOAA": {
-    "mission": "NOAA",
-    "sensorType": "RADAR",
-    "description": "The ESA Sea Surface Temperature Climate Change Initiative (ESA SST CCI) dataset accurately maps the surface temperature of the global oceans over the period 1991 to 2010, using observations from many satellites. The data provides an independently quantified SST to a quality suitable for climate research.The ESA SST CCI Analysis Long Term Product consists of daily, spatially complete fields of sea surface temperature (SST), obtained by combining the orbit data from the AVHRR and ATSR ESA SST CCI Long Term Products, using optimal interpolation to provide SSTs where there were no measurements. These data cover the period between 09/1991 and 12/2010.The Version 1.1 data is an update of the Version 1.0 dataset.Version 1.0 of this dataset is cited in: Merchant, C. J., Embury, O., Roberts-Jones, J., Fiedler, E., Bulgin, C. E., Corlett, G. K., Good, S., McLaren, A., Rayner, N., Morak-Bozzo, S. and Donlon, C. (2014), Sea surface temperature datasets for climate applications from Phase 1 of the European Space Agency Climate Change Initiative (SST CCI). Geoscience Data Journal. doi: 10.1002/gdj3.20",
-    "temporalCoverage": "from 1991 to 2010",
-    "spatialCoverage": "Global"
-  },
   "NOAA POES": {
     "mission": "NOAA POES",
     "sensorType": "RADAR",
     "description": "This dataset provides a summary of potential climate drivers of Arctic tundra vegetation productivity that have been compiled for growing seasons from 1982 to 2015. The scale of interest is the entire pan-arctic non-alpine tundra and the continental subdivisions of the North American and the Eurasian Arctic North of 70 degrees. These climate drivers include (1) maximum normalized difference vegetation index (MaxNDVI) and time-integrated NDVI (TI-NDVI), (2) summer sea ice concentrations, (3) oceanic heat content, (4) land surface temperature, and (5) summer warmth index (SWI). Data are provided variously as timeseries and weekly and bi-weekly averages over selected time ranges and study regions with calculated trends and trend significance. Data collected over 33 years were compiled to observe seasonal trends of vegetation productivity and to detect dynamics between arctic vegetation and climate drivers.",
     "temporalCoverage": "from 1982 to 2015",
-    "spatialCoverage": "Global"
-  },
-  "NOAA-7": {
-    "mission": "NOAA-7",
-    "sensorType": "RADAR",
-    "description": "The AMSU/MSU Lowstratosphere Day/Month Temperature Anomalies and Annual Cycle V6 dataset consists of temperature anomalies and annual cycle temperatures derived from the Microwave Sounding Unit (MSU) and the Advanced Microwave Sounding Unit-A (AMSU-A) radiance data since January 1978. All products are derived for the lower stratosphere. The dataset begins on January 1, 1978 and is still currently ongoing. The data are available in netCDF-4 and ASCII formats.",
-    "temporalCoverage": "from 1978 to present",
-    "spatialCoverage": "Global"
-  },
-  "NOAA-9": {
-    "mission": "NOAA-9",
-    "sensorType": "RADAR",
-    "description": "The AMSU/MSU Lowstratosphere Day/Month Temperature Anomalies and Annual Cycle V6 dataset consists of temperature anomalies and annual cycle temperatures derived from the Microwave Sounding Unit (MSU) and the Advanced Microwave Sounding Unit-A (AMSU-A) radiance data since January 1978. All products are derived for the lower stratosphere. The dataset begins on January 1, 1978 and is still currently ongoing. The data are available in netCDF-4 and ASCII formats.",
-    "temporalCoverage": "from 1978 to present",
-    "spatialCoverage": "Global"
-  },
-  "NOAA-11": {
-    "mission": "NOAA-11",
-    "sensorType": "RADAR",
-    "description": "The AVHRR Mulitchannel Sea Surface Temperature Map (MCSST) was the first result of DLR's AVHRR pathfinder activities. The goal of the product is to provide the user with actual Sea Surface Temperature (SST) maps in a defined format easy to access with the highest possible reliability on the thematic quality. After a phase of definition, the operational production chain was launched in March 1993 covering the entire Mediterranean Sea and the Black Sea. Since then, daily, weekly, and monthly data sets have been available until September 13, 1994, when the AVHRR on board the NOAA-11 spacecraft failed. The production of daily, weekly and monthly SST maps was resumed in February, 1995, based on NOAA-14 AVHRR data. The NOAA-14 AVHRR sensor became some technical difficulties, so the generation was stopped on October 3, 2001. Since March 2002, NOAA-16 AVHRR SST maps are available again. With the beginning of January 2004, the data of AVHRR on board of NOAA-16 exhibited some anormal features showing strips in the scenes. Facing the “bar coded” images of NOAA16-AVHRR which occurred first in September 2003, continued in January 2004 for the second time and appeared in April 2004 again, DFD has decided to stop the reception of NOAA16 data on April 6th, 2004, and to start the reception of NOAA-17 data on this day. On April 7th, 2004, the production of all former NOAA16-AVHRR products as e.g. the SST composites was successully established. NOAA-17 is an AM sensor which passes central Europe about 2 hours earlier than NOAA-16 (about 10:00 UTC instead of 12:00 UTC for NOAA-16). In spring 2007, the communication system of NOAA-17 has degraded or is operating with limitations. Therefore, DFD has decided to shift the production of higher level products (NDVI, LST and SST) from NOAA-17 to NOAA-18 in April 2007. In order to test the performance of our processing chains, we processed simultaneously all NOAA-17 and NOAA-18 data from January 1st, 2007 till March 29th, 2007. All products are be available via EOWEB. Please remember that NOAA-18 is a PM sensor which passes central Europe about 1.5 hours later than NOAA-17 (about 11:30 UTC instead of 10:00 UTC for NOAA17). The SST product is intended for climate modelers, oceanographers, and all geo science-related disciplines dealing with ocean surface parameters. In addition, SST maps covering the North Atlantic, the Baltic Sea, the North Sea and the Western Atlantic equivalent to the Mediterranean MCSST maps are available since August 1994. The most important aspects of the MCSST maps are a) correct image registration and b) reasonable cloud screening to ensure that only cloud free pixels are taken for the later processing and compositing c) for deriving MCSST, only channel 4 and 5 are used.. The SST product consists of one 8 bit channel. For additional information, please see: https://wdc.dlr.de/sensors/avhrr/",
-    "temporalCoverage": "from 1994 to present",
-    "spatialCoverage": "Global"
-  },
-  "NOAA-12": {
-    "mission": "NOAA-12",
-    "sensorType": "RADAR",
-    "description": "The ESA Sea Surface Temperature Climate Change Initiative (ESA SST CCI) dataset accurately maps the surface temperature of the global oceans over the period 1991 to 2010, using observations from many satellites. The data provides an independently quantified SST to a quality suitable for climate research.The ESA SST CCI Analysis Long Term Product consists of daily, spatially complete fields of sea surface temperature (SST), obtained by combining the orbit data from the AVHRR and ATSR ESA SST CCI Long Term Products, using optimal interpolation to provide SSTs where there were no measurements. These data cover the period between 09/1991 and 12/2010.The Version 1.1 data is an update of the Version 1.0 dataset.Version 1.0 of this dataset is cited in: Merchant, C. J., Embury, O., Roberts-Jones, J., Fiedler, E., Bulgin, C. E., Corlett, G. K., Good, S., McLaren, A., Rayner, N., Morak-Bozzo, S. and Donlon, C. (2014), Sea surface temperature datasets for climate applications from Phase 1 of the European Space Agency Climate Change Initiative (SST CCI). Geoscience Data Journal. doi: 10.1002/gdj3.20",
-    "temporalCoverage": "from 1991 to 2010",
     "spatialCoverage": "Global"
   },
   "NOAA-14": {
@@ -398,32 +398,11 @@
     "temporalCoverage": "from 1991 to 2010",
     "spatialCoverage": "Global"
   },
-  "NOAA-16": {
-    "mission": "NOAA-16",
-    "sensorType": "RADAR",
-    "description": "The ESA Sea Surface Temperature Climate Change Initiative (ESA SST CCI) dataset accurately maps the surface temperature of the global oceans over the period 1991 to 2010, using observations from many satellites. The data provides an independently quantified SST to a quality suitable for climate research.The ESA SST CCI Analysis Long Term Product consists of daily, spatially complete fields of sea surface temperature (SST), obtained by combining the orbit data from the AVHRR and ATSR ESA SST CCI Long Term Products, using optimal interpolation to provide SSTs where there were no measurements. These data cover the period between 09/1991 and 12/2010.The Version 1.1 data is an update of the Version 1.0 dataset.Version 1.0 of this dataset is cited in: Merchant, C. J., Embury, O., Roberts-Jones, J., Fiedler, E., Bulgin, C. E., Corlett, G. K., Good, S., McLaren, A., Rayner, N., Morak-Bozzo, S. and Donlon, C. (2014), Sea surface temperature datasets for climate applications from Phase 1 of the European Space Agency Climate Change Initiative (SST CCI). Geoscience Data Journal. doi: 10.1002/gdj3.20",
-    "temporalCoverage": "from 1991 to 2010",
-    "spatialCoverage": "Global"
-  },
   "NOAA-17": {
     "mission": "NOAA-17",
     "sensorType": "RADAR",
     "description": "The ESA Sea Surface Temperature Climate Change Initiative (ESA SST CCI) dataset accurately maps the surface temperature of the global oceans over the period 1991 to 2010, using observations from many satellites. The data provides an independently quantified SST to a quality suitable for climate research.The ESA SST CCI Analysis Long Term Product consists of daily, spatially complete fields of sea surface temperature (SST), obtained by combining the orbit data from the AVHRR and ATSR ESA SST CCI Long Term Products, using optimal interpolation to provide SSTs where there were no measurements. These data cover the period between 09/1991 and 12/2010.The Version 1.1 data is an update of the Version 1.0 dataset.Version 1.0 of this dataset is cited in: Merchant, C. J., Embury, O., Roberts-Jones, J., Fiedler, E., Bulgin, C. E., Corlett, G. K., Good, S., McLaren, A., Rayner, N., Morak-Bozzo, S. and Donlon, C. (2014), Sea surface temperature datasets for climate applications from Phase 1 of the European Space Agency Climate Change Initiative (SST CCI). Geoscience Data Journal. doi: 10.1002/gdj3.20",
     "temporalCoverage": "from 1991 to 2010",
-    "spatialCoverage": "Global"
-  },
-  "NOAA-18": {
-    "mission": "NOAA-18",
-    "sensorType": "RADAR",
-    "description": "The ESA Sea Surface Temperature Climate Change Initiative (ESA SST CCI) dataset accurately maps the surface temperature of the global oceans over the period 1991 to 2010, using observations from many satellites. The data provides an independently quantified SST to a quality suitable for climate research.The ESA SST CCI Analysis Long Term Product consists of daily, spatially complete fields of sea surface temperature (SST), obtained by combining the orbit data from the AVHRR and ATSR ESA SST CCI Long Term Products, using optimal interpolation to provide SSTs where there were no measurements. These data cover the period between 09/1991 and 12/2010.The Version 1.1 data is an update of the Version 1.0 dataset.Version 1.0 of this dataset is cited in: Merchant, C. J., Embury, O., Roberts-Jones, J., Fiedler, E., Bulgin, C. E., Corlett, G. K., Good, S., McLaren, A., Rayner, N., Morak-Bozzo, S. and Donlon, C. (2014), Sea surface temperature datasets for climate applications from Phase 1 of the European Space Agency Climate Change Initiative (SST CCI). Geoscience Data Journal. doi: 10.1002/gdj3.20",
-    "temporalCoverage": "from 1991 to 2010",
-    "spatialCoverage": "Global"
-  },
-  "NOAA-19": {
-    "mission": "NOAA-19",
-    "sensorType": "RADAR",
-    "description": "The AVHRR Mulitchannel Sea Surface Temperature Map (MCSST) was the first result of DLR's AVHRR pathfinder activities. The goal of the product is to provide the user with actual Sea Surface Temperature (SST) maps in a defined format easy to access with the highest possible reliability on the thematic quality. After a phase of definition, the operational production chain was launched in March 1993 covering the entire Mediterranean Sea and the Black Sea. Since then, daily, weekly, and monthly data sets have been available until September 13, 1994, when the AVHRR on board the NOAA-11 spacecraft failed. The production of daily, weekly and monthly SST maps was resumed in February, 1995, based on NOAA-14 AVHRR data. The NOAA-14 AVHRR sensor became some technical difficulties, so the generation was stopped on October 3, 2001. Since March 2002, NOAA-16 AVHRR SST maps are available again. With the beginning of January 2004, the data of AVHRR on board of NOAA-16 exhibited some anormal features showing strips in the scenes. Facing the “bar coded” images of NOAA16-AVHRR which occurred first in September 2003, continued in January 2004 for the second time and appeared in April 2004 again, DFD has decided to stop the reception of NOAA16 data on April 6th, 2004, and to start the reception of NOAA-17 data on this day. On April 7th, 2004, the production of all former NOAA16-AVHRR products as e.g. the SST composites was successully established. NOAA-17 is an AM sensor which passes central Europe about 2 hours earlier than NOAA-16 (about 10:00 UTC instead of 12:00 UTC for NOAA-16). In spring 2007, the communication system of NOAA-17 has degraded or is operating with limitations. Therefore, DFD has decided to shift the production of higher level products (NDVI, LST and SST) from NOAA-17 to NOAA-18 in April 2007. In order to test the performance of our processing chains, we processed simultaneously all NOAA-17 and NOAA-18 data from January 1st, 2007 till March 29th, 2007. All products are be available via EOWEB. Please remember that NOAA-18 is a PM sensor which passes central Europe about 1.5 hours later than NOAA-17 (about 11:30 UTC instead of 10:00 UTC for NOAA17). The SST product is intended for climate modelers, oceanographers, and all geo science-related disciplines dealing with ocean surface parameters. In addition, SST maps covering the North Atlantic, the Baltic Sea, the North Sea and the Western Atlantic equivalent to the Mediterranean MCSST maps are available since August 1994. The most important aspects of the MCSST maps are a) correct image registration and b) reasonable cloud screening to ensure that only cloud free pixels are taken for the later processing and compositing c) for deriving MCSST, only channel 4 and 5 are used.. The SST product consists of one 8 bit channel. For additional information, please see: https://wdc.dlr.de/sensors/avhrr/",
-    "temporalCoverage": "from 1994 to present",
     "spatialCoverage": "Global"
   },
   "Nimbus-7": {
@@ -482,11 +461,11 @@
     "temporalCoverage": "from 2002 to present",
     "spatialCoverage": "Global"
   },
-  "QUICKBIRD": {
-    "mission": "QUICKBIRD",
-    "sensorType": "OPTICAL",
-    "description": "This collection provides access to images archived at ROSCOSMOS for Quickbird mission",
-    "temporalCoverage": "from 2001 to present",
+  "PROBA-V": {
+    "mission": "PROBA-V",
+    "sensorType": "RADAR",
+    "description": "The PROBA-V mission’s main multispectral imager extends the 15-year dataset of Spot-4 & Spot-5’s Vegetation instrument, delivering global coverage every two days for uses including climate impact assessments, surface water resource management, agricultural monitoring, and food security estimates. From July 2020, owing to its orbital drift, Proba-V is no longer considered as a mission fulfilling an operational role, and will instead be dedicated to experimental activities with a reduced data acquisition scheme.",
+    "temporalCoverage": "from 2013 to 2021",
     "spatialCoverage": "Global"
   },
   "QuickBird-2": {
@@ -629,13 +608,6 @@
     "temporalCoverage": "from 2010 to present",
     "spatialCoverage": "Global"
   },
-  "SPOT": {
-    "mission": "SPOT",
-    "sensorType": "OPTICAL",
-    "description": " SPOT (Satellite Probatoire d'Observation de la Terre) is the government sponsored civil Earth observation program, support from Belgium and Sweden. A single SPOT satellite complete coverage of the Earth every 26 days. Image from SPOT are handled by a commercial entity,Image Corp. Spacecraft payload includes two HRVIR (High Resolution Visible - Infrared) pushbrrom imaging instruments.HRVIR is derived from the HRV instruments on SPOT 1-3. This system will provide 10 m resolution in the panchromatic band and 20 m resolution in the multispectral bands. HRVIR includes a new medium IR channel to support vegetation analysis and harvest forecasting. The HRVIRs are steerable to within 27 deg off-nadir. Each HRVIR has a swath width of 60 km. The Vegetation Monitoring instrument has 1 km resolution in the same bands as the HRVIR. Additional information available at 'http://samadhi.jpl.nasa.gov/msl/QuickLooks/spot4QL.html'. ",
-    "temporalCoverage": "from 1998 to 2013",
-    "spatialCoverage": "Global"
-  },
   "SPOT 1": {
     "mission": "SPOT 1",
     "sensorType": "OPTICAL",
@@ -699,13 +671,6 @@
     "temporalCoverage": "from 2007 to present",
     "spatialCoverage": "Global"
   },
-  "TOPEX POSEIDON": {
-    "mission": "TOPEX POSEIDON",
-    "sensorType": "ALTIMETRIC",
-    "description": "As part of the European Space Agency's (ESA) Sea Level Climate Change Initiative (CCI) project, a number of oceanic indicators of mean sea level changes have been produced from merging satellite altimetry measurements of sea level anomalies. The oceanic indicators dataset consists of static files covering the whole altimeter period, describing the evolution of the project's monthly sea level anomaly gridded product (see separate dataset record).The oceanic indicators that are provided are: 1) the temporal evolution of the global Mean Sea Level (MSL) DOI: 10.5270/esa-sea_level_cci-IND_MSL_MERGED-1993_2015-v_2.0-201612 ;2) the geographic distribution of Mean Sea Level changes (MSLTR) DOI: 10.5270/esa-sea_level_cci-IND_MSLTR_MERGED-1993_2015-v_2.0-201612 ;3) Maps of the amplitude and phase of the annual cycle (MSLAMPH) DOI: 10.5270/esa-sea_level_cci-IND_MSLAMPH_MERGED-1993_2015-v_2.0-201612.The complete collection of v2.0 products from the Sea Level CCI project can be referenced using the following DOI: 10.5270/esa-sea_level_cci-1993_2015-v_2.0-201612.When using or referring to the SL_cci products, please mention the associated DOIs and also use the following citation where a detailed description of the SL_cci project and products can be found:Ablain, M., Cazenave, A., Larnicol, G., Balmaseda, M., Cipollini, P., FaugÃ¨re, Y., Fernandes, M. J., Henry, O., Johannessen, J. A., Knudsen, P., Andersen, O., Legeais, J., Meyssignac, B., Picot, N., Roca, M., Rudenko, S., Scharffenberg, M. G., Stammer, D., Timms, G., and Benveniste, J.: Improved sea level record over the satellite altimetry era (1993â&#128;&#147;2010) from the Climate Change Initiative project, Ocean Sci., 11, 67-82, doi:10.5194/os-11-67-2015, 2015.For further information on the Sea Level CCI products, and to register for these products please email: info-sealevel@esa-sealevel-cci.org",
-    "temporalCoverage": "from 1993 to 2015",
-    "spatialCoverage": "Global"
-  },
   "TOPEX/POSEIDON": {
     "mission": "TOPEX/POSEIDON",
     "sensorType": "ALTIMETRIC",
@@ -725,6 +690,13 @@
     "sensorType": "RADAR",
     "description": "Coverage captured by the DMC constellation (UK-DMC, Beijing-1 and NigeriaSat-1). Images are derived from 32 m resolution optical images from the SLIM-6 instrument. The products avaliable are L1R: Band registered product derived from the L0R product, and L1T: Orthorectified product derived from the L1R product using manually collected GCPs from IMAGE2000 and SRTM DEM V3.1 data. Access is provided through the ESA TPM scheme",
     "temporalCoverage": "from 2003 to 2011",
+    "spatialCoverage": "Global"
+  },
+  "WindSat": {
+    "mission": "WindSat",
+    "sensorType": "RADAR",
+    "description": "Coriolis is a US DoD satellite technology demonstration mission within the US Air Force STP (Space Test Program), sponsored by SPAWAR (Space and Naval Warfare Systems Command) of the US Navy and by NPOESS/IPO, managed by NRL, and implemented by AFRL (Air Force Research Laboratory) and NRL (Naval Research Laboratory). Coriolis is also referred to as STP mission P98-2.",
+    "temporalCoverage": "from 2003 to 2020",
     "spatialCoverage": "Global"
   },
   "WorldView-1": {

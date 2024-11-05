@@ -45,6 +45,11 @@ public abstract class Sentinel2ProductHelper extends BaseProductHelper {
         super(name);
     }
 
+    @Override
+    public int order() {
+        return 0;
+    }
+
     public double getCloudsPercentage() { return cloudsPercentage; }
 
     public void setCloudsPercentage(double cloudsPercentage) {

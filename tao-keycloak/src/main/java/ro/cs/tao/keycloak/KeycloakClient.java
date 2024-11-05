@@ -52,6 +52,7 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class KeycloakClient implements TokenProvider {
+    public static final String USER_PLAN_ATTRIBUTE = "user_plan";
     private static final Logger logger = Logger.getLogger(KeycloakClient.class.getName());
     private static Map<String, PublicKey> realmKeys;
     private static final Object lock = new Object();
@@ -186,6 +187,8 @@ public class KeycloakClient implements TokenProvider {
                 logger.severe(t.getMessage());
                 throw t;
             }
+        } else {
+            user.setPassword(password);
         }
         return user;
     }
@@ -350,6 +353,25 @@ public class KeycloakClient implements TokenProvider {
                                         e.getMessage()));
         }
         return false;
+    }
+
+    public String getUserPlanName(String username) {
+        try (Keycloak adminClient = getAdminClient()) {
+            final List<UserRepresentation> list = adminClient.realm(this.realm).users().search(username, true);
+            if (list != null && list.size() == 1) {
+                final UserRepresentation profile = list.get(0);
+                final Map<String, List<String>> attributes = profile.getAttributes();
+                List<String> plans = attributes != null
+                                     ? attributes.getOrDefault(KeycloakClient.USER_PLAN_ATTRIBUTE, new ArrayList<>())
+                                     : new ArrayList<>();
+                return plans.isEmpty() ? null : plans.get(0);
+            } else {
+                return null;
+            }
+        } catch (Throwable t) {
+            logger.severe(t.getMessage());
+            throw t;
+        }
     }
 
     private PublicKey toPublicKey(Map<String, Object> keyInfo) {

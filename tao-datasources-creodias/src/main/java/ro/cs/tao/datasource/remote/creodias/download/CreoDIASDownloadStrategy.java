@@ -11,13 +11,9 @@ import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.creodias.CreoDiasDataSource;
 import ro.cs.tao.datasource.remote.creodias.model.common.Token;
-import ro.cs.tao.datasource.util.Zipper;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.util.ProductHelper;
-import ro.cs.tao.utils.CloseableHttpResponse;
-import ro.cs.tao.utils.FileUtilities;
-import ro.cs.tao.utils.HttpMethod;
-import ro.cs.tao.utils.NetUtils;
+import ro.cs.tao.utils.*;
 
 import java.io.IOException;
 import java.io.InputStream;

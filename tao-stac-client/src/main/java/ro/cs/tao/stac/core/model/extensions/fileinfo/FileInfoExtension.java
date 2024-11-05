@@ -22,16 +22,22 @@ public class FileInfoExtension<E extends Extensible> extends Extension<E> {
     @Override
     public void extractField(TreeNode node, String name) throws JsonProcessingException {
         try {
-            if (FileInfoFields.BYTE_ORDER.equals(name)) {
-                setByteOrder(JsonValueHelper.getString(node, name));
-            } else if (FileInfoFields.CHECKSUM.equals(name)) {
-                setCheckSum(JsonValueHelper.getString(node, name));
-            } else if (FileInfoFields.HEADER_SIZE.equals(name)) {
-                setHeaderSize(JsonValueHelper.getInt(node, name));
-            } else if (FileInfoFields.SIZE.equals(name)) {
-                setSize(JsonValueHelper.getLong(node, name));
-            } else if (FileInfoFields.LOCAL_PATH.equals(name)) {
-                setLocalPath(JsonValueHelper.getString(node, name));
+            switch (name) {
+                case FileInfoFields.BYTE_ORDER:
+                    setByteOrder(JsonValueHelper.getString(node, name));
+                    break;
+                case FileInfoFields.CHECKSUM:
+                    setCheckSum(JsonValueHelper.getString(node, name));
+                    break;
+                case FileInfoFields.HEADER_SIZE:
+                    setHeaderSize(JsonValueHelper.getInt(node, name));
+                    break;
+                case FileInfoFields.SIZE:
+                    setSize(JsonValueHelper.getLong(node, name));
+                    break;
+                case FileInfoFields.LOCAL_PATH:
+                    setLocalPath(JsonValueHelper.getString(node, name));
+                    break;
             }
         } catch (Exception e) {
             Logger.getLogger(FileInfoExtension.class.getName()).warning("Cannot extract field " + name + ": " + e.getMessage());

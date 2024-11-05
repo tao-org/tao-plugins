@@ -1,8 +1,11 @@
 package ro.cs.tao.topology.openstack;
 
 import org.openstack4j.model.storage.object.SwiftObject;
+import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.services.model.FileObject;
 import ro.cs.tao.services.storage.BaseStorageService;
+import ro.cs.tao.topology.openstack.commons.Constants;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workspaces.Repository;
@@ -13,9 +16,7 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -40,7 +41,16 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
     @Override
     public void associate(Repository repository) {
         super.associate(repository);
-        swiftService.setParameters(repository().getParameters());
+        final LinkedHashMap<String, String> parameters = repository().getParameters();
+        final ConfigurationProvider configurationProvider = ConfigurationManager.getInstance();
+        // If swift buckets are in another tenant, the configuration should override the main openstack one
+        final Map<String, String> values = configurationProvider.getValues(Constants.OPENSTACK_SWIFT_FILTER);
+        if (values != null) {
+            for (Map.Entry<String, String> entry : values.entrySet()) {
+                parameters.put(entry.getKey().replace(".swift", ""), entry.getValue());
+            }
+        }
+        swiftService.setParameters(parameters);
     }
 
     @Override

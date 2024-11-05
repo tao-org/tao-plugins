@@ -10,6 +10,36 @@
 	  "valueSet": null,
 	  "order": 0
 	},
+	"collection": {
+		  "name": "collection",
+		  "remoteName": "collection",
+		  "label": "Landsat Collection",
+		  "type": "string",
+		  "defaultValue": "collection02",
+		  "required": false,
+		  "valueSet": ["collection02"],
+		  "order": 0
+	  },
+  	"processingLevel": {
+		  "name": "processingLevel",
+		  "remoteName": "processingLevel",
+		  "label": "Processing Level",
+		  "type": "string",
+		  "defaultValue": "level-1",
+		  "required": false,
+		  "valueSet": ["level-1", "level-2"],
+		  "order": 0
+	  },
+  	"productType": {
+		  "name": "productType",
+		  "remoteName": "productType",
+		  "label": "Product Type",
+		  "type": "string",
+		  "defaultValue": "T1",
+		  "required": false,
+		  "valueSet": ["T1","T2"],
+		  "order": 0
+	  },
 	"startDate": {
 	  "name": "startDate",
 	  "remoteName": "sensingStart",
@@ -60,42 +90,22 @@
 	  "valueSet": null,
 	  "order": 0
 	},
+	"cloudCover": {
+		  "name": "cloudCover",
+		  "remoteName": "cloudcoverpercentage",
+		  "label": "Cloud Cover",
+		  "type": "double",
+		  "defaultValue": 100.0,
+		  "required": false,
+		  "valueSet": null,
+		  "order": 0
+	  },
 	"footprint": {
 	  "name": "footprint",
 	  "remoteName": "footprint",
 	  "label": "Area of Interest",
 	  "type": "polygon",
 	  "defaultValue": null,
-	  "required": false,
-	  "valueSet": null,
-	  "order": 0
-	},
-	"cloudCover": {
-	  "name": "cloudCover",
-	  "remoteName": "cloudcoverpercentage",
-	  "label": "Cloud Cover",
-	  "type": "double",
-	  "defaultValue": 100.0,
-	  "required": false,
-	  "valueSet": null,
-	  "order": 0
-	},
-	"productType": {
-	  "name": "productType",
-	  "remoteName": "productType",
-	  "label": "Product Type",
-	  "type": "string",
-	  "defaultValue": null,
-	  "required": false,
-	  "valueSet": null,
-	  "order": 0
-	},
-	"collection": {
-	  "name": "collection",
-	  "remoteName": "collection",
-	  "label": "Landsat Collection",
-	  "type": "string",
-	  "defaultValue": "COLLECTION_1",
 	  "required": false,
 	  "valueSet": null,
 	  "order": 0
@@ -112,6 +122,19 @@
 	  "valueSet": null,
 	  "order": 0
 	},
+    "collection": {
+      "name": "collection",
+      "remoteName": "collection",
+      "label": "Collection",
+      "type": "string",
+      "defaultValue": "sentinel-s2-l1c",
+      "required": true,
+      "valueSet": [
+        "sentinel-s2-l1c",
+        "sentinel-s2-l2a"
+      ],
+      "order": 0
+    },
 	"startDate": {
 	  "name": "startDate",
 	  "remoteName": "beginPosition",

@@ -44,6 +44,6 @@ public class EnmapImageInstaller extends BaseImageInstaller {
 
     @Override
     protected String[] additionalResources() {
-        return new String[] { "enmap-box.zip" };
+        return new String[] { "enmapboxplugin.zip" };
     }
 }

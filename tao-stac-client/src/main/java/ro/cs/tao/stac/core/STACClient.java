@@ -47,7 +47,7 @@ public class STACClient {
     public Catalog getCatalog() throws IOException {
         final HTTPResponse response = this.client.get(this.stacURL);
         try (InputStream inStream = response.getResponseStream()) {
-            return new STACParser().parseCatalogResponse(inStream);
+            return STACParser.parseCatalogResponse(inStream);
         }
     }
     /**
@@ -56,7 +56,7 @@ public class STACClient {
     public CollectionList listCollections() throws IOException {
         final HTTPResponse response = this.client.get(new URL(this.stacURL + "/collections"));
         try (InputStream inStream = response.getResponseStream()) {
-            return new STACParser().parseCollectionsResponse(inStream);
+            return STACParser.parseCollectionsResponse(inStream);
         }
     }
     /**
@@ -66,7 +66,7 @@ public class STACClient {
     public Collection getCollection(String collectionName) throws IOException {
         final HTTPResponse response = this.client.get(new URL(this.stacURL + "/collections/" + collectionName));
         try (InputStream inStream = response.getResponseStream()) {
-            return new STACParser().parseCollectionResponse(inStream);
+            return STACParser.parseCollectionResponse(inStream);
         }
     }
     /**
@@ -89,7 +89,7 @@ public class STACClient {
         }
         final HTTPResponse response = this.client.get(new URL(href));
         try (InputStream inStream = response.getResponseStream()) {
-            return new STACParser().parseItemCollectionResponse(inStream);
+            return STACParser.parseItemCollectionResponse(inStream);
         }
     }
     /**
@@ -101,7 +101,7 @@ public class STACClient {
         String href = this.stacURL + "/collections/" + collectionName + "/items/" + itemId;
         final HTTPResponse response = this.client.get(new URL(href));
         try (InputStream inStream = response.getResponseStream()) {
-            return new STACParser().parseItemResponse(inStream);
+            return STACParser.parseItemResponse(inStream);
         }
     }
 
@@ -145,7 +145,7 @@ public class STACClient {
         }
         final HTTPResponse response = this.client.get(new URL(href.toString()));
         try (InputStream inStream = response.getResponseStream()) {
-            return new STACParser().parseItemCollectionResponse(inStream);
+            return STACParser.parseItemCollectionResponse(inStream);
         }
     }
 
@@ -158,7 +158,7 @@ public class STACClient {
         final Map<String, Asset> assets = item.getAssets();
         if (assets != null && !assets.isEmpty()) {
             final Path target = folder.resolve(item.getId());
-            Files.createDirectories(target);
+            FileUtilities.createDirectories(target);
             try {
                 if (this.progressListener != null) {
                     this.progressListener.started(folder.getFileName().toString());

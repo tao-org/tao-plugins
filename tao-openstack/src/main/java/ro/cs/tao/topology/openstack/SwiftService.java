@@ -41,7 +41,7 @@ public class SwiftService {
 
     public SwiftService() {
         this.logger = Logger.getLogger(SwiftService.class.getName());
-        this.folderPlaceholder = ".folder";
+        this.folderPlaceholder = ".s3keep";
     }
 
     public void setFolderPlaceholder(String folderPlaceholder) {
@@ -110,6 +110,14 @@ public class SwiftService {
             } else {
                 logger.finest(String.format("Container %s created", containerName));
             }
+            final FileObject fakeObject = emptyFolderItem();
+            try (ByteArrayInputStream is = new ByteArrayInputStream(fakeObject.getAttributes().get(CONTENTS).getBytes())) {
+                final Map<String, String> metadata = new HashMap<>();
+                metadata.put("description", "placeholder");
+                objectStorageService.objects().put(containerName, fakeObject.getRelativePath(),
+                                                   Payloads.create(is),
+                                                   ObjectPutOptions.create().metadata(metadata));
+            }
         } catch (Exception ex) {
             throw new IOException(String.format("Cannot create container %s. Reason: %s", containerName, ex.getMessage()));
         }
@@ -133,12 +141,16 @@ public class SwiftService {
         final FileObject fakeObject = emptyFolderItem();
         try {
             final ObjectStorageContainerService containerService = objectStorageService.containers();
+            try {
             final ActionResponse actionResponse = containerService.create(containerName);
             if (actionResponse != null && !actionResponse.isSuccess()) {
                 throw new IOException(String.format("Failed to connect to container %s. Response code: %d; fault: %s",
                                                     containerName, actionResponse.getCode(), actionResponse.getFault()));
             } else {
                 logger.finest(String.format("Connected to container %s", containerName));
+            }
+            } catch (IOException e) {
+                logger.fine("Newer API errors when trying to create an existing container: " + e.getMessage());
             }
             String path = containerService.createPath(containerName, name);
             if (path == null) {
@@ -239,9 +251,12 @@ public class SwiftService {
         final Map<String, String> metadata = new HashMap<>();
         metadata.put("description", description);
         metadata.put("copied_by", SessionStore.currentContext().getPrincipal().getName());
-        objectStorageService.objects().put(container, filePath,
-                                                Payloads.create(new ByteArrayInputStream(contents)),
-                                                ObjectPutOptions.create().metadata(metadata));
+        String response = objectStorageService.objects().put(container, filePath,
+                                                             Payloads.create(new ByteArrayInputStream(contents)),
+                                                             ObjectPutOptions.create().metadata(metadata));
+        if (response == null) {
+            throw new RuntimeException("Upload failed");
+        }
     }
 
     public void upload(String filePath, InputStream stream, String container, String description) {
@@ -255,9 +270,12 @@ public class SwiftService {
         final Map<String, String> metadata = new HashMap<>();
         metadata.put("description", description);
         metadata.put("copied_by", SessionStore.currentContext().getPrincipal().getName());
-        objectStorageService.objects().put(container, filePath,
-                                                Payloads.create(stream),
-                                                ObjectPutOptions.create().metadata(metadata));
+        String response = objectStorageService.objects().put(container, filePath,
+                                                             Payloads.create(stream),
+                                                             ObjectPutOptions.create().metadata(metadata));
+        if (response == null) {
+            throw new RuntimeException("Upload failed");
+        }
     }
 
     public InputStream download(String file, String container) {

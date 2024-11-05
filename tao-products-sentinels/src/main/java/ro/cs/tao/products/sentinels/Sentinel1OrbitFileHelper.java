@@ -31,6 +31,11 @@ public class Sentinel1OrbitFileHelper extends BaseProductHelper {
     }
 
     @Override
+    public int order() {
+        return 0;
+    }
+
+    @Override
     public Sentinel1OrbitFileHelper duplicate() {
         return new Sentinel1OrbitFileHelper(getName());
     }

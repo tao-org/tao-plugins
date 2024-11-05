@@ -26,6 +26,11 @@ public abstract class MajaProductHelper extends BaseProductHelper {
         super(productPath);
     }
 
+    @Override
+    public int order() {
+        return 1;
+    }
+
     public abstract String getGranuleFolder(String granuleIdentifier);
 
     protected abstract Pattern getNamePattern();

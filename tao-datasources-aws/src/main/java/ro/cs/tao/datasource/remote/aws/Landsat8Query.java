@@ -36,10 +36,10 @@ import ro.cs.tao.utils.HttpMethod;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonString;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -52,6 +52,7 @@ class Landsat8Query extends DataQuery {
     private static final String L8_SEARCH_URL_SUFFIX = "?delimiter=/&prefix=";
     private static final String datePattern = "yyyy-MM-dd";
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(datePattern);
+    private static final String PROCESSING_LEVEL_1 = "level-1";
 
     Landsat8Query(DataSource source) {
         super(source, "Landsat8");
@@ -69,19 +70,10 @@ class Landsat8Query extends DataQuery {
             }
         }
         String baseUrl = this.source.getConnectionString();
-        String alternateUrl = this.source.getAlternateConnectionString();
-        currentParameter = this.parameters.get("collection");
-        boolean preCollection = false;
-        if (currentParameter != null) {
-            if (LandsatCollection.PRE_COLLECTION.equals(
-                    Enum.valueOf(LandsatCollection.class, currentParameter.getValueAsString()))) {
-                baseUrl = baseUrl.replace("c1/", "");
-                preCollection = true;
-            }
-        }
         Map<String, EOProduct> results = new LinkedHashMap<>();
         try {
             String sensingStart, sensingEnd;
+            String processingLevel;
             LandsatProduct productType;
             double cloudFilter = 100.;
 
@@ -112,6 +104,12 @@ class Landsat8Query extends DataQuery {
             startDate.setTime(Date.from(LocalDate.parse(sensingStart, dateFormat).atStartOfDay(ZoneId.of("UTC")).toInstant()));
             Calendar endDate = Calendar.getInstance();
             endDate.setTime(Date.from(LocalDate.parse(sensingEnd, dateFormat).plusDays(1).atStartOfDay(ZoneId.of("UTC")).toInstant()));
+            currentParameter = this.parameters.get("processingLevel");
+            if (currentParameter != null) {
+                processingLevel = currentParameter.getValueAsString();
+            } else {
+                processingLevel = PROCESSING_LEVEL_1;
+            }
             currentParameter = this.parameters.get(CommonParameterNames.PRODUCT_TYPE);
             if (currentParameter != null) {
                 productType = Enum.valueOf(LandsatProduct.class, currentParameter.getValueAsString());
@@ -155,84 +153,48 @@ class Landsat8Query extends DataQuery {
                     tiles.addAll(Landsat8TileExtent.getInstance().intersectingTiles(aoi));
                 }
             }
-            for (String tile : tiles) {
-                if (tile == null || tile.length() != 6) {
-                    throw new QueryException(String.format("Invalid tile: %s. Landsat-8 tiles have the format PPPRRR.",
-                                                           tile));
-                }
-                String path = tile.substring(0, 3);
-                String row = tile.substring(3, 6);
-                String tileUrl = (preCollection ? alternateUrl : baseUrl) + path + Constants.URL_SEPARATOR + row + Constants.URL_SEPARATOR;
-                final AwsResult preCollectionResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, tileUrl));
-                if (preCollectionResult.getCommonPrefixes() != null) {
-                    Set<String> names = preCollectionResult.getCommonPrefixes().stream()
-                            .map(p -> p.replace(preCollectionResult.getPrefix(), "").replace(preCollectionResult.getDelimiter(), ""))
-                            .collect(Collectors.toSet());
-                    for (String name : names) {
-                        try {
-                            if (preCollection || name.endsWith(productType.toString())) {
-                                Landsat8ProductHelper temporaryDescriptor = new Landsat8ProductHelper(name);
-                                Calendar productDate = temporaryDescriptor.getAcquisitionDate();
-                                if (startDate.before(productDate) && endDate.after(productDate)) {
-                                    String jsonTile = tileUrl + name + Constants.URL_SEPARATOR + name + "_MTL.json";
-                                    jsonTile = jsonTile.replace(L8_SEARCH_URL_SUFFIX, "");
-                                    double clouds = getTileCloudPercentage(jsonTile);
-                                    if (clouds > cloudFilter) {
-                                        productDate.add(Calendar.MONTH, -1);
-                                        logger.fine(String.format("Tile %s from %s has %.2f %% clouds",
-                                                                  tile,
-                                                                  dateFormat.format(productDate.getTime().toInstant()),
-                                                                  clouds));
-                                    } else {
-                                        EOProduct product = parseProductJson(jsonTile);
-                                        if (this.limit > 0 && this.limit < results.size()) {
-                                            break;
-                                        }
-                                        if (this.coverageFilter == null || !this.coverageFilter.test(product)) {
-                                            results.put(product.getName(), product);
-                                        }
-                                    }
-                                }
-                            }
-                        } catch (Exception ex) {
-                            logger.warning(String.format("Could not parse product %s: %s", name, ex.getMessage()));
-                        }
+            for (int year = startDate.get(Calendar.YEAR); year <= endDate.get(Calendar.YEAR); year++) {
+                for (String tile : tiles) {
+                    if (tile == null || tile.length() != 6) {
+                        throw new QueryException(String.format("Invalid tile: %s. Landsat-8 tiles have the format PPPRRR.", tile));
                     }
-                }
-                tileUrl = baseUrl + path + Constants.URL_SEPARATOR + row + Constants.URL_SEPARATOR;
-                final AwsResult productResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, tileUrl));
-                if (productResult.getCommonPrefixes() != null) {
-                    Set<String> names = productResult.getCommonPrefixes().stream()
-                            .map(p -> p.replace(productResult.getPrefix(), "").replace(productResult.getDelimiter(), ""))
-                            .collect(Collectors.toSet());
-                    for (String name : names) {
-                        try {
-                            if (preCollection || name.endsWith(productType.toString())) {
-                                Landsat8ProductHelper temporaryDescriptor = new Landsat8ProductHelper(name);
-                                Calendar productDate = temporaryDescriptor.getAcquisitionDate();
-                                if (startDate.before(productDate) && endDate.after(productDate)) {
-                                    String jsonTile = tileUrl + name + Constants.URL_SEPARATOR + name + "_MTL.json";
-                                    jsonTile = jsonTile.replace(L8_SEARCH_URL_SUFFIX, "");
-                                    double clouds = getTileCloudPercentage(jsonTile);
-                                    if (clouds > cloudFilter) {
-                                        productDate.add(Calendar.MONTH, -1);
-                                        logger.fine(String.format("Tile %s from %s has %.2f %% clouds",
-                                                                  tile,
-                                                                  dateFormat.format(productDate.getTime().toInstant()),
-                                                                  clouds));
-                                    } else {
-                                        EOProduct product = parseProductJson(jsonTile);
-                                        if (this.limit > 0 && this.limit < results.size()) {
-                                            break;
-                                        }
-                                        if (this.coverageFilter == null || !this.coverageFilter.test(product)) {
-                                            results.put(product.getName(), product);
+                    String path = tile.substring(0, 3);
+                    String row = tile.substring(3, 6);
+                    String tileUrl = baseUrl + processingLevel + "/standard/oli-tirs/" + year + Constants.URL_SEPARATOR + path + Constants.URL_SEPARATOR + row + Constants.URL_SEPARATOR;
+                    final AwsResult productResult = IntermediateParser.parse(((AWSDataSource) this.source).getS3ResponseAsString(HttpMethod.GET, tileUrl));
+                    if (productResult.getCommonPrefixes() != null) {
+                        Set<String> names = productResult.getCommonPrefixes().stream()
+                                .map(p -> p.replace(productResult.getPrefix(), "").replace(productResult.getDelimiter(), ""))
+                                .collect(Collectors.toSet());
+                        for (String name : names) {
+                            try {
+                                if (name.endsWith(productType.toString())) {
+                                    Landsat8ProductHelper temporaryDescriptor = new Landsat8ProductHelper(name);
+                                    Calendar productDate = temporaryDescriptor.getAcquisitionDate();
+                                    if (startDate.before(productDate) && endDate.after(productDate)) {
+                                        String jsonTile = tileUrl + name + Constants.URL_SEPARATOR + name + "_MTL.json";
+                                        jsonTile = jsonTile.replace(L8_SEARCH_URL_SUFFIX, "");
+                                        double clouds = getTileCloudPercentage(jsonTile);
+                                        if (clouds > cloudFilter) {
+                                            productDate.add(Calendar.MONTH, -1);
+                                            logger.fine(String.format("Tile %s from %s has %.2f %% clouds",
+                                                    tile,
+                                                    dateFormat.format(productDate.getTime().toInstant()),
+                                                    clouds));
+                                        } else {
+                                            EOProduct product = parseProductJson(jsonTile);
+                                            if (this.limit > 0 && this.limit < results.size()) {
+                                                break;
+                                            }
+                                            if (this.coverageFilter == null || !this.coverageFilter.test(product)) {
+                                                results.put(product.getName(), product);
+                                            }
                                         }
                                     }
                                 }
+                            } catch (Exception ex) {
+                                logger.warning(String.format("Could not parse product %s: %s", name, ex.getMessage()));
                             }
-                        } catch (Exception ex) {
-                            logger.warning(String.format("Could not parse product %s: %s", name, ex.getMessage()));
                         }
                     }
                 }
@@ -249,39 +211,41 @@ class Landsat8Query extends DataQuery {
         EOProduct product;
         try (InputStream inputStream = ((AWSDataSource) this.source).buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream();
              JsonReader reader = Json.createReader(inputStream)) {
-            JsonObject rootObject = reader.readObject().getJsonObject("L1_METADATA_FILE");
-            JsonObject obj = rootObject.getJsonObject("METADATA_FILE_INFO");
+            JsonObject rootObject = reader.readObject().getJsonObject("LANDSAT_METADATA_FILE");
+            JsonObject obj = rootObject.getJsonObject("LEVEL1_PROCESSING_RECORD");
             product = new EOProduct();
             product.setProductType("Landsat8");
             product.setId(obj.getString("LANDSAT_SCENE_ID"));
+            obj = rootObject.getJsonObject("PRODUCT_CONTENTS");
             if (obj.containsKey("LANDSAT_PRODUCT_ID")) {
                 product.setName(obj.getString("LANDSAT_PRODUCT_ID"));
             } else {
-                product.setName(obj.getString("LANDSAT_SCENE_ID"));
+                product.setName(product.getId());
             }
             product.setFormatType(DataFormat.RASTER);
             product.setSensorType(SensorType.OPTICAL);
-            obj = rootObject.getJsonObject("PRODUCT_METADATA");
-            product.setAcquisitionDate(LocalDateTime.parse(obj.getString("DATE_ACQUIRED"), dateFormat));
-            product.setWidth(obj.getInt("REFLECTIVE_SAMPLES"));
-            product.setHeight(obj.getInt("REFLECTIVE_LINES"));
+            obj = rootObject.getJsonObject("IMAGE_ATTRIBUTES");
+            product.setAcquisitionDate(LocalDate.parse(obj.getString("DATE_ACQUIRED"), dateFormat).atStartOfDay());
+            obj = rootObject.getJsonObject("PROJECTION_ATTRIBUTES");
+            product.setWidth(Integer.parseInt(obj.getString("REFLECTIVE_SAMPLES")));
+            product.setHeight(Integer.parseInt(obj.getString("REFLECTIVE_LINES")));
             Polygon2D footprint = new Polygon2D();
-            footprint.append(obj.getJsonNumber("CORNER_UL_LON_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_UL_LAT_PRODUCT").doubleValue());
-            footprint.append(obj.getJsonNumber("CORNER_UR_LON_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_UR_LAT_PRODUCT").doubleValue());
-            footprint.append(obj.getJsonNumber("CORNER_LR_LON_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_LR_LAT_PRODUCT").doubleValue());
-            footprint.append(obj.getJsonNumber("CORNER_LL_LON_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_LL_LAT_PRODUCT").doubleValue());
-            footprint.append(obj.getJsonNumber("CORNER_UL_LON_PRODUCT").doubleValue(),
-                             obj.getJsonNumber("CORNER_UL_LAT_PRODUCT").doubleValue());
+            footprint.append(Double.parseDouble(obj.getString("CORNER_UL_LON_PRODUCT")),
+                    Double.parseDouble(obj.getString("CORNER_UL_LAT_PRODUCT")));
+            footprint.append(Double.parseDouble(obj.getString("CORNER_UR_LON_PRODUCT")),
+                    Double.parseDouble(obj.getString("CORNER_UR_LAT_PRODUCT")));
+            footprint.append(Double.parseDouble(obj.getString("CORNER_LR_LON_PRODUCT")),
+                    Double.parseDouble(obj.getString("CORNER_LR_LAT_PRODUCT")));
+            footprint.append(Double.parseDouble(obj.getString("CORNER_LL_LON_PRODUCT")),
+                    Double.parseDouble(obj.getString("CORNER_LL_LAT_PRODUCT")));
+            footprint.append(Double.parseDouble(obj.getString("CORNER_UL_LON_PRODUCT")),
+                    Double.parseDouble(obj.getString("CORNER_UL_LAT_PRODUCT")));
             product.setGeometry(footprint.toWKT());
             product.setCrs("EPSG:4326");
 
-            obj = rootObject.getJsonObject("MIN_MAX_PIXEL_VALUE");
-            product.setPixelType(Conversions.pixelTypeFromRange(obj.getInt("QUANTIZE_CAL_MIN_BAND_1"),
-                                                                obj.getInt("QUANTIZE_CAL_MAX_BAND_1")));
+            obj = rootObject.getJsonObject("LEVEL1_MIN_MAX_PIXEL_VALUE");
+            product.setPixelType(Conversions.pixelTypeFromRange(Integer.parseInt(obj.getString("QUANTIZE_CAL_MIN_BAND_1")),
+                    Integer.parseInt(obj.getString("QUANTIZE_CAL_MAX_BAND_1"))));
             product.setLocation(jsonUrl.substring(0, jsonUrl.lastIndexOf("/")));
 
             rootObject.keySet()
@@ -295,9 +259,10 @@ class Landsat8Query extends DataQuery {
         try (InputStream inputStream = ((AWSDataSource) this.source).buildS3Connection(HttpMethod.GET, jsonUrl).getInputStream();
              JsonReader reader = Json.createReader(inputStream)) {
             JsonObject obj = reader.readObject();
-            return obj.getJsonObject("L1_METADATA_FILE")
+            JsonString val = obj.getJsonObject("LANDSAT_METADATA_FILE")
                     .getJsonObject("IMAGE_ATTRIBUTES")
-                    .getJsonNumber("CLOUD_COVER").doubleValue();
+                    .getJsonString("CLOUD_COVER");
+            return Double.parseDouble(val.getString());
         }
     }
 

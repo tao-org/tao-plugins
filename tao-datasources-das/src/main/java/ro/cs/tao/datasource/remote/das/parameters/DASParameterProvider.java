@@ -16,9 +16,11 @@
 package ro.cs.tao.datasource.remote.das.parameters;
 
 import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.datasource.ProductPathBuilder;
 import ro.cs.tao.datasource.param.AbstractParameterProvider;
 import ro.cs.tao.datasource.remote.das.DASDataSource;
 import ro.cs.tao.datasource.remote.das.download.DASDownloadStrategy;
+import ro.cs.tao.datasource.remote.das.download.DASPathBuilder;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,6 +34,7 @@ public final class DASParameterProvider extends AbstractParameterProvider {
     public DASParameterProvider(DASDataSource dataSource) {
         final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
         Properties properties = new Properties();
+        properties.put(ProductPathBuilder.PATH_BUILDER_CLASS, DASPathBuilder.class.getName());
         DASDownloadStrategy strategy = new DASDownloadStrategy(dataSource, targetFolder, properties);
         productFetchers = Collections.unmodifiableMap(
                 new HashMap<>() {{

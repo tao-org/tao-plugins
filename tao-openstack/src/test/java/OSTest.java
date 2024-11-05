@@ -30,11 +30,11 @@ import java.util.*;
 public class OSTest {
 
     public static void main(String[] args) throws IOException, CodeGenerationException {
-        String domain = "cloud_13685";//"cloud_00407";
-        String userName = "cosmin.cara@c-s.ro";//"kraftek@c-s.ro";
+        String domain = "cloud_00407";
+        String userName = "kraftek@c-s.ro";
         String userId = "f4cb2d2e875444c0bf3dbedddcdc1bf5";
         String password = "cei7pitici.";
-        String authenticationURL = "https://cf2.cloudferro.com:5000/v3"; //"https://keystone.cloudferro.com:5000/v3";
+        String authenticationURL = "https://keystone.cloudferro.com:5000/v3";
         String projectId = "7ac770fe523b436e91a00d6d64629969";
         Path folder = Paths.get("E:\\");
 
@@ -49,8 +49,8 @@ public class OSTest {
         params.add(new BasicNameValuePair("client_id", appClient));
         params.add(new BasicNameValuePair("client_secret", kSecret));
         //params.add(new BasicNameValuePair("totp", generateOTP("N5IGCVBZOE4EC4ZVGVQXMOLQHFRHCULO")));
-        String token = "gAAAAABlISFFDHFcLUPxJ6dVcdhAZgs8F8X_2COt0KQxeWXJm77xtqfHgbAKOz9ER-bg5CQLFHejL18oiQs_2XxGlNduUskjUBEhzEwbtRkpVlNIyR03UgYjHkEyjzKJ9LwzHVXiuooBpZOVldbIms02lXmKpMZPYGPIBcJLiPnrsRTqFfs6zh2Kpat6Wiy0jCNs0gh2Xtff";
-        /*try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, header, params)) {
+        String token;
+        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, url, header, params)) {
              token = EntityUtils.toString(response.getEntity());
             Map<String, String> map = new LinkedHashMap<>();
             map.putAll(new ObjectMapper().readValue(token, map.getClass()));
@@ -59,13 +59,13 @@ public class OSTest {
 
 
 
-        }*/
+        }
         OSFactory.enableHttpLoggingFilter(true);
         OSClient.OSClientV3 client = OSFactory.builderV3()
-                .token(token)
+                .token("gAAAAABlEuAwxiY4Q9JLZkbPOvtFPOOzl0pqQtO2CS7ZCRcbdNzlNBOFXdTYditNH8Ew3bUrAesA-CVizHgjrOgtTJ0-yqIRLVsWbSOOFlroQnKlEwadi0AZINfmzCspw3JplLuUhJNGE1TLs-xjU36O4htizHAJ3RyvEx6zY02fLHkxoNRVzXY8keeLNDLczcA5DPVR2avt")
                 .endpoint("https://keystone.cloudferro.com:5000/v3")
                 //.credentials(userName, password, Identifier.byName(domain))
-                .scopeToProject(Identifier.byId("7ac770fe523b436e91a00d6d64629969"))
+                .scopeToProject(Identifier.byId("7ac770fe523b436e91a00d6d64629969"), Identifier.byId("b78b4f25e74d40c888feeddb88232f91"))
                 .authenticate();
         client = client.useRegion("WAW3-2");
         List<? extends Service> catalog = client.getToken().getCatalog();

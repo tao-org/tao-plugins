@@ -23,6 +23,7 @@ import ro.cs.tao.utils.executors.OutputAccumulator;
 import ro.cs.tao.utils.executors.ProcessExecutor;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -90,11 +91,11 @@ public class CliParser {
                 component.setFileLocation(app.getFileName().toString().replace(".bat", ""));
                 component.setMultiThread(true);
                 component.setParallelism(4);
-                component.setNodeAffinity("Any");
+                component.setNodeAffinity(NodeAffinity.Any);
                 component.setTemplateType(TemplateType.VELOCITY);
                 component.setOwner(SystemPrincipal.instance().getName());
                 parse(lines, component);
-                final List<ParameterDescriptor> params = component.getParameterDescriptors();
+                final Set<ParameterDescriptor> params = component.getParameterDescriptors();
                 final List<SourceDescriptor> sources = component.getSources();
                 final List<TargetDescriptor> targets = component.getTargets();
                 final StringBuilder builder = new StringBuilder();
@@ -193,7 +194,9 @@ public class CliParser {
                     Class<?> clazz;
                     if (strType.endsWith("list")) {
                         clazz = JavaType.fromFriendlyName(types.get(strType.substring(1, strType.indexOf(" ")))).value();
-                        param.setDataType(clazz.arrayType());
+                        // For Java <= 11
+                        param.setDataType(Array.newInstance(clazz, 0).getClass());
+                        // For Java 12+ param.setDataType(clazz.arrayType());
                     } else {
                         clazz = JavaType.fromFriendlyName(types.get(strType.substring(1, strType.length() - 1))).value();
                         param.setDataType(clazz);

@@ -62,10 +62,17 @@ public class WMSClient {
     public LayerInfo describeLayer(String layerName) throws ServiceException, IOException {
         final WebMapServer service = getService();
         final WMSCapabilities capabilities = service.getCapabilities();
-        final Layer layer = capabilities.getLayerList().stream()
-                                        .filter(l -> l.getName().equals(layerName) ||
-                                                     (l.getMetadataURL() != null && l.getMetadataURL().stream().anyMatch(u -> u.getUrl().toString().equals(layerName))))
-                                        .findFirst().orElse(null);
+        final List<Layer> layerList = capabilities.getLayerList();
+        Layer layer = null;
+        for (Layer l : layerList) {
+            if (layerName.equals(l.getName())) {
+                layer = l;
+                break;
+            } else if (l.getMetadataURL() != null && l.getMetadataURL().stream().anyMatch(u -> u.getUrl() != null && u.getUrl().toString().equals(layerName))) {
+                layer = l;
+                break;
+            }
+        }
         if (layer == null) {
             throw new IOException("Layer " + layerName  + " does not exist");
         }

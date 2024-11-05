@@ -38,6 +38,9 @@ public class FedEOAuthentication {
     }
 
     public String getAuthenticationTokenValue(String protectedURL) throws IOException {
+        if (protectedURL == null) {
+            return "";
+        }
         String protectedDomain = Utilities.getHostURL(protectedURL);
         FedEOAuthenticationServiceProvider serviceProvider = serviceProvidersMap.get(protectedDomain);
         if (serviceProvider == null) {

@@ -38,7 +38,6 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery, String> {
     private static String S2_URL;
     private static String S2_TILES_URL;
     private static String L8_URL;
-    private static String L8_PRE_URL;
     private static String S2_REQUEST_PAYER;
     private static String L8_REQUEST_PAYER;
 
@@ -52,7 +51,6 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery, String> {
             S2_URL = props.getProperty("s2.aws.search.url");
             S2_TILES_URL = props.getProperty("s2.aws.tiles.url");
             L8_URL = props.getProperty("l8.aws.search.url");
-            L8_PRE_URL = props.getProperty("l8.aws.pre.search.url");
             S2_REQUEST_PAYER = props.getProperty("s2.aws." + S3AuthenticationV4.REQUEST_PAYER_HEADER_NAME);
             L8_REQUEST_PAYER = props.getProperty("l8.aws." + S3AuthenticationV4.REQUEST_PAYER_HEADER_NAME);
         } catch (IOException ignored) {
@@ -71,7 +69,7 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery, String> {
         URL url = new URL(urlString);
         String region = S3AuthenticationV4.fetchRegionName(url);
         List<NameValuePair> customParameters = new ArrayList<>();
-        String requestPayer = AWSDataSource.getRequestPayer(url);
+        String requestPayer = AWSDataSource.getRequestPayer(remoteUrl.toURL());
         if (requestPayer != null && !requestPayer.isEmpty()) {
             customParameters.add(new BasicNameValuePair(S3AuthenticationV4.REQUEST_PAYER_HEADER_NAME, requestPayer));
         }
@@ -108,7 +106,7 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery, String> {
         if (S2_URL.contains(url.getHost()) || S2_TILES_URL.contains(url.getHost())) {
             return S2_REQUEST_PAYER;
         }
-        if (L8_PRE_URL.contains(url.getHost())) {
+        if (L8_URL.contains(url.getHost())) {
             return L8_REQUEST_PAYER;
         }
         return null;
@@ -152,7 +150,6 @@ public class AWSDataSource extends URLDataSource<AWSDataQuery, String> {
                     break;
                 case "Landsat8":
                     this.connectionString = L8_URL;
-                    this.alternateConnectionString = L8_PRE_URL;
                     this.remoteUrl = new URI(this.connectionString);
                     break;
                 default:

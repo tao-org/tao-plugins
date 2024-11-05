@@ -56,7 +56,7 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                         logger.warning(e.getMessage());
                     }
                 }
-                if (this.identifiedElement.equals("product")) {
+                if (this.identifiedElement.equals("product") && this.current.getLocation() == null) {
                     try {
                         this.current.setLocation(attributes.getValue(0));
                     } catch (URISyntaxException e) {
@@ -68,7 +68,7 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 this.identifiedElement = qName;
                 break;
             case "link":
-                if(this.current != null && attributes.getValue("title") != null && attributes.getValue("title").equals("Download") ) {
+                if(this.current != null && attributes.getValue("rel") != null && attributes.getValue("rel").equals("enclosure")) {
                     try {
                         this.current.setLocation(attributes.getValue("href"));
                     } catch (URISyntaxException e) {
@@ -85,7 +85,7 @@ public class FedEOXmlResponseHandler extends XmlResponseHandler<EOProduct> {
 
     @Override
     protected void handleEndElement(String qName) {
-        final String elementValue = buffer.toString();
+        final String elementValue = buffer.toString().replaceAll(".*?:","");
         switch (qName) {
             case "identifier":
                 if (this.current != null) {

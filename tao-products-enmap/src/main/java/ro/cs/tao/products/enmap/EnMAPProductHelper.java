@@ -31,6 +31,11 @@ public class EnMAPProductHelper extends BaseProductHelper {
     }
 
     @Override
+    public int order() {
+        return 0;
+    }
+
+    @Override
     public String getVersion() {
         if (this.version == null) {
             this.version = this.demoFormat ? LX_2 : LX_6;
@@ -45,7 +50,7 @@ public class EnMAPProductHelper extends BaseProductHelper {
 
     @Override
     public ProductHelper duplicate() {
-        return new EnMAPProductHelper(this.path);
+        return new EnMAPProductHelper(this.path != null ? this.path : Path.of(this.name));
     }
 
     @Override
