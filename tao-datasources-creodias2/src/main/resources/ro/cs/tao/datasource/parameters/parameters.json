@@ -562,7 +562,7 @@
       "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
-      "defaultValue": "LANDSAT-8",
+      "defaultValue": "LANDSAT-8-ESA",
       "required": false,
       "valueSet": null,
       "order": 0
