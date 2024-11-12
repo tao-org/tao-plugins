@@ -433,10 +433,8 @@ public class NovaService implements NodeProvider {
     protected static NodeFlavor convert(Flavor flavor) {
         return flavor != null ?
                 new NodeFlavor(flavor.getName(), flavor.getVcpus(), flavor.getRam(),
-                               flavor.getDisk(), flavor.getSwap() == 0
-                                                 ? flavor.getRam() / MemoryUnit.KB.value().intValue() * 2
-                                                 : flavor.getSwap(),
-                               flavor.getRxtxFactor()) : null;
+                               flavor.getDisk(), flavor.getSwap(), flavor.getRxtxFactor(),
+                               MemoryUnit.MB) : null;
     }
 
     protected NodeDescription convert(NodeDescription initial, Server server, boolean isVolatile) {
