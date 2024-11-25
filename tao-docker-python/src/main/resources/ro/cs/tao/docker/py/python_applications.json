@@ -6,7 +6,9 @@
     "description": "Template for Python scripting components",
     "authors": "TAO Team",
     "copyright": "(C) CS ROMANIA",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [],
     "targets": [      {
         "id": "72451fde-455a-4d37-a154-7d3be5079c09",
@@ -37,7 +39,9 @@
     "description": "Python script for square rooting raster pixels",
     "authors": "TAO Team",
     "copyright": "(C) CS ROMANIA",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": null,
