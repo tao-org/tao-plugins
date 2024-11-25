@@ -6,7 +6,9 @@
 		"description": "Converts raster data between different formats",
 		"authors": "Frank Warmerdam, Even Rouault, and others",
 		"copyright": "(C) 1998-2019",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"category": "OPTICAL",
 		"sources": [
 			{

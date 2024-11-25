@@ -6,7 +6,9 @@
 		"description": "Computes burned area masks from S2 L2A",
 		"authors": "Alex Becheru, Lidia Baciu",
 		"copyright": "(C) 2021",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"category": "OPTICAL",
 		"sources": [
 			{

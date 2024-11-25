@@ -1,0 +1,90 @@
+<graph id="Graph">
+    <version>1.0</version>
+    <node id="Apply-Orbit-File">
+        <operator>Apply-Orbit-File</operator>
+        <sources>
+            <sourceProduct refid="${source}"/>
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <orbitType>Sentinel Precise (Auto Download)</orbitType>
+            <polyDegree>3</polyDegree>
+            <continueOnFail>false</continueOnFail>
+        </parameters>
+    </node>
+    <node id="ThermalNoiseRemoval">
+        <operator>ThermalNoiseRemoval</operator>
+        <sources>
+            <sourceProduct refid="Apply-Orbit-File"/>
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <selectedPolarisations/>
+            <removeThermalNoise>true</removeThermalNoise>
+            <outputNoise>false</outputNoise>
+            <reIntroduceThermalNoise>false</reIntroduceThermalNoise>
+        </parameters>
+    </node>
+    <node id="Calibration">
+        <operator>Calibration</operator>
+        <sources>
+            <sourceProduct refid="ThermalNoiseRemoval"/>
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands/>
+            <auxFile>Latest Auxiliary File</auxFile>
+            <externalAuxFile/>
+            <outputImageInComplex>false</outputImageInComplex>
+            <outputImageScaleInDb>false</outputImageScaleInDb>
+            <createGammaBand>false</createGammaBand>
+            <createBetaBand>false</createBetaBand>
+            <selectedPolarisations/>
+            <outputSigmaBand>true</outputSigmaBand>
+            <outputGammaBand>false</outputGammaBand>
+            <outputBetaBand>false</outputBetaBand>
+        </parameters>
+    </node>
+    <node id="Terrain-Correction">
+        <operator>Terrain-Correction</operator>
+        <sources>
+            <sourceProduct refid="Calibration"/>
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands/>
+            <demName>SRTM 1Sec HGT</demName>
+            <externalDEMFile/>
+            <externalDEMNoDataValue>0.0</externalDEMNoDataValue>
+            <externalDEMApplyEGM>true</externalDEMApplyEGM>
+            <demResamplingMethod>BILINEAR_INTERPOLATION</demResamplingMethod>
+            <imgResamplingMethod>BILINEAR_INTERPOLATION</imgResamplingMethod>
+            <pixelSpacingInMeter>0.0</pixelSpacingInMeter>
+            <pixelSpacingInDegree>0.0</pixelSpacingInDegree>
+            <mapProjection>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
+                DATUM[&quot;WGS84&quot;, &#xd;
+                SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
+                PRIMEM[&quot;Greenwich&quot;, 0.0], &#xd;
+                UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
+                AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
+                AXIS[&quot;Geodetic latitude&quot;, NORTH], &#xd;
+                AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]]</mapProjection>
+            <alignToStandardGrid>false</alignToStandardGrid>
+            <standardGridOriginX>0.0</standardGridOriginX>
+            <standardGridOriginY>0.0</standardGridOriginY>
+            <nodataValueAtSea>true</nodataValueAtSea>
+            <saveDEM>false</saveDEM>
+            <saveLatLon>false</saveLatLon>
+            <saveIncidenceAngleFromEllipsoid>false</saveIncidenceAngleFromEllipsoid>
+            <saveLocalIncidenceAngle>false</saveLocalIncidenceAngle>
+            <saveProjectedLocalIncidenceAngle>false</saveProjectedLocalIncidenceAngle>
+            <saveSelectedSourceBand>true</saveSelectedSourceBand>
+            <saveLayoverShadowMask>false</saveLayoverShadowMask>
+            <outputComplex>false</outputComplex>
+            <applyRadiometricNormalization>false</applyRadiometricNormalization>
+            <saveSigmaNought>false</saveSigmaNought>
+            <saveGammaNought>false</saveGammaNought>
+            <saveBetaNought>false</saveBetaNought>
+            <incidenceAngleForSigma0>Use projected local incidence angle from DEM</incidenceAngleForSigma0>
+            <incidenceAngleForGamma0>Use projected local incidence angle from DEM</incidenceAngleForGamma0>
+            <auxFile>Latest Auxiliary File</auxFile>
+            <externalAuxFile/>
+        </parameters>
+    </node>
+</graph>

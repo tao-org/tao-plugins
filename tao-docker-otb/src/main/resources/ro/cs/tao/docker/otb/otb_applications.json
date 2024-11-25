@@ -7,7 +7,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "56867ddb-9cb3-4498-9bd4-5a0ec42a9f9c",
@@ -70,7 +72,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "f944dd33-d96e-4a47-a59d-b92be8edfdb9",
@@ -124,7 +128,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "07b20306-e091-4b8b-9a81-03fad7a8f3e8",
@@ -197,7 +203,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "6b14af5f-a700-40a6-ab69-b78404deec2d",
@@ -316,7 +324,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "86a0e643-f570-49e8-9fa1-59a1061af137",
@@ -639,7 +649,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "de0bdf6b-82fc-4f56-9982-191f78d74c26",
@@ -824,7 +836,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "8730611b-c815-4a7d-ba3f-4b7f9c224184",
@@ -923,7 +937,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "OPTICAL",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "351084ac-43e3-4d7a-a6a6-27bd32a1971e",
@@ -1103,7 +1119,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "82d069e6-c0fe-4bf7-a25a-2577374e3515",
@@ -1236,7 +1254,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "7baaa393-069d-4af2-9b29-ec46ca77e34f",
@@ -1361,7 +1381,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "ed71698f-a3f8-4106-acf2-29c30da00f15",
@@ -1415,7 +1437,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "77656dab-5efc-4222-8732-316480397c89",
@@ -1469,7 +1493,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "90d33867-cb5e-4db7-bb1c-4238b6947598",
@@ -1523,7 +1549,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "5959d96e-f0d8-41b9-a997-447427c51d2e",
@@ -1567,7 +1595,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "db85963c-a95a-4409-8882-e53c1d5f039f",
@@ -1611,7 +1641,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "9dfb8788-3ffa-4b66-a6be-09ce5b1ff995",
@@ -1719,7 +1751,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "b492429a-bfb8-4091-956d-e39df90c6a0b",
@@ -1929,7 +1963,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [],
     "targets": [],
     "containerId": "OTB-7.3.0",
@@ -2032,7 +2068,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "6766ea09-7ee9-4bda-9b82-3e829638e2cb",
@@ -2120,7 +2158,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "da7680e5-c979-40e9-ae59-e8f144761eff",
@@ -2252,7 +2292,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "685174e6-0b45-489e-816f-36aa83a01896",
@@ -2459,7 +2501,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "OPTICAL",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "74684498-066b-4bb4-9e8a-837d4e052ab0",
@@ -2603,7 +2647,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "f72fa287-6515-4d94-a745-7b97130145c6",
@@ -2712,7 +2758,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "36b3b685-f991-4db6-a9d7-dc322f596a8e",
@@ -2786,7 +2834,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "15299fc8-5580-4b68-9fbc-89454ee3a0a4",
@@ -2948,7 +2998,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "1b71da92-d9d2-471c-a104-9e8e74aafa5f",
@@ -3034,7 +3086,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "OPTICAL",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "eecd120b-cc91-44ed-ad5d-1be9a2a007fc",
@@ -3099,7 +3153,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "c19eedbf-a17e-476c-aa03-9c7cd5a2985b",
@@ -3353,7 +3409,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "980ed099-1900-454b-92d5-7190446a4ead",
@@ -3434,7 +3492,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "MISC",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "d38a7141-3930-4411-9260-acb7a65d8edb",
@@ -3660,7 +3720,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "a6d04438-8461-4353-95ae-d37439f95283",
@@ -3760,7 +3822,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "42ae0cf4-b04e-43dc-9493-9ccca3d14bd3",
@@ -3870,7 +3934,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "MISC",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "c80fe39f-e335-44a6-8da6-acf11e3c808f",
@@ -4005,7 +4071,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "b6bea63d-6bfa-4017-ae1e-15b447041386",
@@ -4109,7 +4177,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "fc2f72fa-8029-4dee-b56e-6f4405416979",
@@ -4210,7 +4280,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "51cb1a62-64c0-4b66-9cf6-c68c6744a0e8",
@@ -4363,7 +4435,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "2e0bb160-bcb0-4fa1-a296-54ebdfa365fe",
@@ -4503,7 +4577,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "54f28959-6d0e-41e8-91a9-77282827bcd1",
@@ -4728,7 +4804,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "80e9c264-2c5b-4f3e-ab7f-3817b20d5098",
@@ -4846,7 +4924,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "MISC",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "d0290b7e-4413-42c8-91e3-c602316593dc",
@@ -4914,7 +4994,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "8180c3b4-ec16-4c66-8f93-fb0d45a139fa",
@@ -5024,7 +5106,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "01937fec-8c08-462c-8ccc-b88c6ecf62d7",
@@ -5095,7 +5179,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "71c2f3d1-4720-405f-a960-256e7f0291e2",
@@ -5185,7 +5271,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "721d541b-4353-4a32-9f1a-f4219786ea62",
@@ -5256,7 +5344,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "3990c6be-7eec-4281-8dda-80a1247eef8e",
@@ -5346,7 +5436,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "f6405acf-8fd2-41ef-aaa0-6195bcfb89fd",
@@ -5495,7 +5587,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "c5d860de-77a8-41d9-8189-8dbf623cd460",
@@ -5612,7 +5706,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "1aad1d5b-82a0-41d9-aea6-7d57b02891b4",
@@ -5693,7 +5789,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "5c99f8f6-e62f-4082-bcd0-4711fdb6ac00",
@@ -5765,7 +5863,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "3bf62a12-9339-44db-8498-53034f3f2bb7",
@@ -5896,7 +5996,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "9c75e6e3-8257-4c52-a850-ef9bf8b9c49d",
@@ -5977,7 +6079,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "OPTICAL",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "68589bf1-a558-4654-b29d-9a00f83076c6",
@@ -6040,7 +6144,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "36eed84c-c539-4fee-b4b7-53ae0bee5717",
@@ -6103,7 +6209,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "6cb06076-1251-4ecd-95f7-9039354cfb4e",
@@ -6216,7 +6324,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "9cf0fc22-b37b-4722-b554-cb6cad924d47",
@@ -6325,7 +6435,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "5fc2022a-0289-46a9-ab3e-7ac42bcb1ab9",
@@ -6410,7 +6522,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "ba57dd51-1788-49dd-9457-d308b3458b06",
@@ -6524,7 +6638,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "21faf1eb-0496-4650-bc82-cc46870cac11",
@@ -6645,7 +6761,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "484da361-897a-4ce4-a873-090ee4b2dfde",
@@ -6836,7 +6954,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "6fab9cde-18cf-4c06-b93c-9993270c2c08",
@@ -6948,7 +7068,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "b06615c9-bd01-4cac-afd7-c6c324a1b59e",
@@ -7029,7 +7151,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "5621ceb2-d023-4924-92a8-19e65805dfce",
@@ -7101,7 +7225,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "fc8e3c44-9c03-4fd5-a366-1d4056aa08aa",
@@ -7155,7 +7281,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "67a19f32-9c04-4698-af1a-0ffb0457679a",
@@ -7208,7 +7336,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "b927abbd-034f-43fb-94b3-db48d64c5225",
@@ -7280,7 +7410,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "d34257f2-5059-4b10-8f19-3fd34af7e552",
@@ -7379,7 +7511,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "44058ea3-9320-4154-8ccb-46424ce96a14",
@@ -7440,7 +7574,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [],
     "targets": [],
     "containerId": "OTB-7.3.0",
@@ -7491,7 +7627,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "OPTICAL",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "a7097f72-598e-47b9-9e54-d7a2239ed7da",
@@ -7773,7 +7911,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "OPTICAL",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "80ef558f-42ea-4e67-b808-024e5ff9e6b3",
@@ -8044,7 +8184,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "OPTICAL",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "4a03b875-d5fb-4a4d-aae3-eb61a8bf7980",
@@ -8148,7 +8290,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "34073499-bf9e-4305-b606-0fbe31950870",
@@ -8247,7 +8391,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "a13a0958-cade-4ffd-9ac3-f8063b315f2f",
@@ -8340,7 +8486,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "43093e58-9174-4e0d-afb0-8886ad50244d",
@@ -8448,7 +8596,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "1e7bda27-89ac-4f92-8b9e-0b79e687f41a",
@@ -8565,7 +8715,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "OPTICAL",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "05dcce7c-c106-4959-be96-29b222a28846",
@@ -8675,7 +8827,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "8d4a8213-2f5e-4dfb-9374-9f7134014b92",
@@ -8832,7 +8986,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "MISC",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "a803b52c-081c-4d49-bc06-fd7ab2f3a5ed",
@@ -9210,7 +9366,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "MISC",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "ff01041b-8d53-44f1-8646-ee1f50f92d31",
@@ -9354,7 +9512,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "6fb90f1d-817b-4774-adf5-cb9d0b249068",
@@ -9417,7 +9577,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "b7ff68b3-d9d8-438d-a7e4-bbefb79980e4",
@@ -9584,7 +9746,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "7c7748f6-4f9e-4687-930e-3864cb071be3",
@@ -9747,7 +9911,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "80d5e1be-dc80-493f-bcb7-a242ac50ca9e",
@@ -9837,7 +10003,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "02cf6de4-e860-402a-919b-bb8c2f74b19a",
@@ -9918,7 +10086,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "d2f723d1-45be-4181-9b7e-32e6deec668b",
@@ -10017,7 +10187,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "05cf765b-2928-46d7-aee3-a3f821b49db6",
@@ -10080,7 +10252,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "fd9d7e56-508e-421f-886b-5fa003d182d1",
@@ -10149,7 +10323,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "29dd32cb-7561-4cdd-a208-27f3dab27294",
@@ -10248,7 +10424,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "4bb6ed5a-1ec0-4fbd-b731-d39004100eeb",
@@ -10374,7 +10552,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "96e7dd21-9983-4591-be34-1ae1e2e8728c",
@@ -10436,7 +10616,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "9a24feb8-226f-4649-b8c8-74064ad78c98",
@@ -10499,7 +10681,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "2903630a-cc52-43b4-8aee-a3ad3e72ee82",
@@ -10580,7 +10764,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "ed4e9af0-f83c-4f82-819b-a84b49b3c399",
@@ -10679,7 +10865,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "5df2f82a-be16-4922-ae3a-e3af85ce7cd7",
@@ -10776,7 +10964,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "9bcb496b-8969-47f8-b537-792db69e6857",
@@ -10893,7 +11083,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "6c76427d-4d3c-4385-8c52-335cc0ce3d3b",
@@ -11019,7 +11211,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "e3a04de2-5632-4248-8e3c-0155f9180ee4",
@@ -11109,7 +11303,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "02cd6cea-e6e5-4be7-8fad-d7e59d5ce53a",
@@ -11163,7 +11359,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "632a8645-3b75-41fd-a63b-88b67ae8bac0",
@@ -11259,7 +11457,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "0fc8315c-d09b-42ef-a1c3-dc84aa8ebac3",
@@ -11358,7 +11558,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "5ab89d1f-d7d2-43e3-80b6-a65ec3dd4e3b",
@@ -11412,7 +11614,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "98e5e4e3-4911-4799-8bf2-782dee3fad7e",
@@ -11511,7 +11715,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "b3c9f2a5-55e8-44f3-861f-5cbf4fe39637",
@@ -11673,7 +11879,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "58732743-885c-4401-ba86-29abb8cde8d6",
@@ -11773,7 +11981,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "d9a676ae-653a-4311-aef9-ee5ab15350c9",
@@ -11836,7 +12046,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "ca82ce35-989b-44c5-90e3-eb056c3d65b4",
@@ -11933,7 +12145,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "9bb766e0-7ca4-407c-9e98-0b7eabc4d121",
@@ -12041,7 +12255,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "17031e22-8ddd-438d-ad8b-bb67b6617958",
@@ -12118,7 +12334,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "ade87919-c8b9-4f5d-86cd-2386f19b8620",
@@ -12199,7 +12417,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "cb22633b-7462-4cc2-b331-744913a6abdc",
@@ -12307,7 +12527,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "1e681841-b60a-478f-87db-f301013a7dd9",
@@ -12415,7 +12637,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "aade47bb-357e-41b6-962a-359fc2cff3a6",
@@ -12539,7 +12763,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "d3626ca3-60d4-48dc-a395-36b9d5a6bb31",
@@ -12652,7 +12878,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "d4e0cd27-8ccb-4216-b09a-c5bee954d8ed",
@@ -12796,7 +13024,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RADAR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "f48170f5-2c59-4b77-8190-154ccd052470",
@@ -12904,7 +13134,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "c2c92866-5a26-48e6-8296-37801df43fb9",
@@ -13003,7 +13235,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "079e6905-aa83-4ec1-b156-2ee69b101a90",
@@ -13166,7 +13400,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "7e32469d-434b-47b8-ae76-a1e9cd034ccf",
@@ -13297,7 +13533,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "d1cabb75-502d-4ca3-bf63-b35447188219",
@@ -13400,7 +13638,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "f55684ac-2813-49fd-a82b-75b6fde2d77b",
@@ -13611,7 +13851,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "2ca852bb-a3e2-4573-9727-30386ff8da28",
@@ -13907,7 +14149,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "476a5be1-0040-4441-b40a-7a3f53f82749",
@@ -13970,7 +14214,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "458a561f-ed69-4183-be39-5ad80261d177",
@@ -14092,7 +14338,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "OPTICAL",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "6e3c8b77-c00d-4d78-90dd-78359a169243",
@@ -14187,7 +14435,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "a9027f8f-afec-49fd-b4b8-8f550a1c7b5e",
@@ -14231,7 +14481,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "MISC",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "5b77845c-0069-4e25-a179-988c080c625b",
@@ -14587,7 +14839,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "MISC",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "bc6542d1-29e6-405d-a040-1a3327a98e75",
@@ -14788,7 +15042,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "3ddaf4ce-378f-425e-aa11-7cc0ae86ee45",
@@ -14923,7 +15179,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [],
     "targets": [
       {
@@ -14967,7 +15225,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "MISC",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "6c4b2736-d211-4eaf-8031-a285acadde1b",
@@ -15162,7 +15422,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "d37d67c1-9f9e-4b6a-8dff-c392973bb9c9",
@@ -15225,7 +15487,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "da74ea8d-62ec-4031-8211-4bc1ff93ca7e",
@@ -15456,7 +15720,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "b897f3b7-8dad-4157-a952-ca80ef2fd83f",
@@ -16085,7 +16351,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "6652fe09-54ee-4026-9d9c-bf646637b58a",
@@ -16656,7 +16924,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "7b9c832a-1d72-4049-ad3a-d7bd21dc4e96",
@@ -17151,7 +17421,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "7e466445-ba63-4b8c-9b3e-777fe28a1b59",
@@ -17735,7 +18007,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "4aad0073-689d-4d4b-8180-627cf5bbe0af",
@@ -18248,7 +18522,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "3482ede9-0920-4898-b161-090b0463a4db",
@@ -18338,7 +18614,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "6b04e629-b194-4230-8ffa-4f3d2b980603",
@@ -18419,7 +18697,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "301fd084-4a06-4428-b4ef-f2b09f5e1454",
@@ -18565,7 +18845,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "7b306787-d83a-4b4a-b044-9ef4189a39ff",
@@ -18628,7 +18910,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "23847fa1-f3ed-4b8d-a554-5b582ac8bc4b",
@@ -18736,7 +19020,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "df718c03-b9b1-422b-930f-f096a46e3f2c",
@@ -18861,7 +19147,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "VECTOR",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "0b93f5ac-3f38-4efb-a3a8-4b771209c8e1",
@@ -18942,7 +19230,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "OPTICAL",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "773854cb-cc9b-4b8a-94f9-7b844df12e87",
@@ -19005,7 +19295,9 @@
     "authors": "OTB Team",
     "copyright": "(C) CNES Apache License",
     "category": "RASTER",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "sources": [
       {
         "id": "924b14db-f9b1-4334-80ac-d1850862cbd0",

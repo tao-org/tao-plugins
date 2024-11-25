@@ -22,6 +22,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 import ro.cs.tao.component.*;
 import ro.cs.tao.component.enums.ParameterType;
+import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.component.template.TemplateType;
 import ro.cs.tao.eodata.enums.DataFormat;
@@ -35,9 +36,15 @@ public class OperatorHandler extends DefaultHandler {
     private List<ParameterDescriptor> parameters;
     private ProcessingComponent result;
     private Logger logger;
+    private String containerId;
 
     public OperatorHandler() {
         super();
+    }
+
+    public OperatorHandler(String containerId) {
+        super();
+        this.containerId = containerId;
     }
 
     public ProcessingComponent getResult() {
@@ -70,7 +77,8 @@ public class OperatorHandler extends DefaultHandler {
         this.logger = Logger.getLogger(OperatorHandler.class.getName());
         this.result = new ProcessingComponent();
         this.result.setAuthors("SNAP Team");
-        this.result.setContainerId("(C) SNAP Team");
+        this.result.setId(UUID.randomUUID().toString());
+        this.result.setContainerId(containerId);
         this.result.setNodeAffinity(NodeAffinity.Any);
         this.result.setFileLocation("gpt");
         this.result.setWorkingDirectory(".");
@@ -78,6 +86,7 @@ public class OperatorHandler extends DefaultHandler {
         this.result.setMultiThread(true);
         this.result.setParallelism(8);
         this.result.setActive(true);
+        this.result.setComponentType(ProcessingComponentType.EXECUTABLE);
     }
 
     @Override
@@ -87,6 +96,7 @@ public class OperatorHandler extends DefaultHandler {
             TargetDescriptor targetDescriptor = new TargetDescriptor();
             targetDescriptor.setId(UUID.randomUUID().toString());
             targetDescriptor.setName("t");
+            targetDescriptor.setParentId(this.result.getId());
             DataDescriptor targetData = new DataDescriptor();
             targetData.setFormatType(DataFormat.RASTER);
             targetData.setLocation("output_" + this.result.getId() + ".tif");
@@ -119,9 +129,10 @@ public class OperatorHandler extends DefaultHandler {
                     TargetDescriptor targetDescriptor = new TargetDescriptor();
                     targetDescriptor.setId(UUID.randomUUID().toString());
                     targetDescriptor.setName("t");
+                    targetDescriptor.setParentId(this.result.getId());
                     DataDescriptor targetData = new DataDescriptor();
                     targetData.setFormatType(DataFormat.RASTER);
-                    targetData.setLocation("output_" + this.result.getId() + ".tif");
+                    targetData.setLocation("output_" + this.result.getId() + ".dim");
                     targetDescriptor.setDataDescriptor(targetData);
                     this.result.addTarget(targetDescriptor);
                     break;
@@ -141,6 +152,7 @@ public class OperatorHandler extends DefaultHandler {
                     SourceDescriptor singleSource = new SourceDescriptor();
                     singleSource.setId(UUID.randomUUID().toString());
                     singleSource.setName("S" + qName);
+                    singleSource.setParentId(this.result.getId());
                     DataDescriptor sourceData = new DataDescriptor();
                     sourceData.setFormatType(DataFormat.RASTER);
                     singleSource.setDataDescriptor(sourceData);
@@ -151,6 +163,7 @@ public class OperatorHandler extends DefaultHandler {
                     SourceDescriptor multiSources = new SourceDescriptor();
                     multiSources.setId(UUID.randomUUID().toString());
                     multiSources.setName("S" + qName);
+                    multiSources.setParentId(this.result.getId());
                     sourceData = new DataDescriptor();
                     sourceData.setFormatType(DataFormat.RASTER);
                     multiSources.setCardinality(0);
@@ -164,13 +177,16 @@ public class OperatorHandler extends DefaultHandler {
                     switch (value) {
                         case "int":
                         case "integer":
-                            parameter = newParameter(qName, "P" + qName, Integer.class, qName);
+                            parameter = newParameter(qName, "P" + qName, int.class, qName);
                             break;
                         case "boolean":
-                            parameter = newParameter(qName, "P" + qName, Boolean.class, qName);
+                            parameter = newParameter(qName, "P" + qName, boolean.class, qName);
                             break;
                         case "float":
-                            parameter = newParameter(qName, "P" + qName, Float.class, qName);
+                            parameter = newParameter(qName, "P" + qName, float.class, qName);
+                            break;
+                        case "double":
+                            parameter = newParameter(qName, "P" + qName, double.class, qName);
                             break;
                         case "string":
                         default:
@@ -178,13 +194,16 @@ public class OperatorHandler extends DefaultHandler {
                                 switch (value.split(",")[0]) {
                                     case "int":
                                     case "integer":
-                                        parameter = newParameter(qName, "P" + qName, Integer[].class, qName);
+                                        parameter = newParameter(qName, "P" + qName, int[].class, qName);
                                         break;
                                     case "boolean":
-                                        parameter = newParameter(qName, "P" + qName, Boolean[].class, qName);
+                                        parameter = newParameter(qName, "P" + qName, boolean[].class, qName);
                                         break;
                                     case "float":
-                                        parameter = newParameter(qName, "P" + qName, Float[].class, qName);
+                                        parameter = newParameter(qName, "P" + qName, float[].class, qName);
+                                        break;
+                                    case "double":
+                                        parameter = newParameter(qName, "P" + qName, double[].class, qName);
                                         break;
                                     case "string":
                                     default:

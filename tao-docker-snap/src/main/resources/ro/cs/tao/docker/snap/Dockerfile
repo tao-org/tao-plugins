@@ -22,13 +22,13 @@ RUN apt-get update && \
 RUN     mkdir ~/.vnc
 RUN     x11vnc -storepasswd 1234 ~/.vnc/passwd
 
-RUN wget https://download.esa.int/step/snap/9.0/installers/esa-snap_sentinel_unix_9_0_0.sh
+RUN wget https://download.esa.int/step/snap/11.0/installers/esa-snap_sentinel_linux-11.0.0.sh
 
-# Install SNAP 8.0
-#COPY esa-snap_sentinel_unix_8_0.sh .
-RUN chmod +x esa-snap_sentinel_unix_9_0_0.sh && \
-    ./esa-snap_sentinel_unix_9_0_0.sh -q && \
-    rm -f esa-snap_sentinel_unix_9_0_0.sh
+# Install SNAP 11.0
+#COPY esa-snap_sentinel_unix_11_0.sh .
+RUN chmod +x esa-snap_sentinel_linux-11.0.0.sh && \
+    ./esa-snap_sentinel_linux-11.0.0.sh -q && \
+    rm -f esa-snap_sentinel_linux-11.0.0.sh
 #RUN snap --nosplash --nogui --modules --disable org.esa.snap.snap.product.library.v2
 
 # Install additional tools
@@ -49,6 +49,9 @@ RUN sed -i '/^-Xmx/s/^/#/' /opt/snap/bin/gpt.vmoptions && \
 # install extra cluster
 # RUN unzip extra-cluster.zip -d /opt/snap
 # RUN sed -i '$a-Dsnap.extraClusters=/opt/snap/extra' /opt/snap/bin/gpt.vmoptions
+RUN mkdir /opt/graphs
+COPY graphs/*.* /opt/graphs
+RUN chmod -R 777 /opt/graphs
 
 ENV DISPLAY :99
 COPY update_snap.sh .

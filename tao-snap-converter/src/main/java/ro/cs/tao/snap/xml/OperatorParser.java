@@ -27,12 +27,33 @@ import java.io.IOException;
 import java.io.StringReader;
 
 public class OperatorParser {
+    private final String containerId;
+
+    public OperatorParser() {
+        this.containerId = null;
+    }
+
+    public OperatorParser(String containerId) {
+        this.containerId = containerId;
+    }
+
     public static ProcessingComponent parse(String xmlString) throws ParserConfigurationException,
+                                                                     SAXException,
+                                                                     IOException {
+        return new OperatorParser().parseXml(xmlString);
+    }
+
+    public static ProcessingComponent parse(String containerId, String xmlString) throws ParserConfigurationException,
+                                                                                         SAXException, IOException {
+        return new OperatorParser(containerId).parseXml(xmlString);
+    }
+
+    public ProcessingComponent parseXml(String xmlString) throws ParserConfigurationException,
                                                                      SAXException,
                                                                      IOException {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser parser = factory.newSAXParser();
-        OperatorHandler handler = new OperatorHandler();
+        OperatorHandler handler = this.containerId == null ? new OperatorHandler() : new OperatorHandler(containerId);
         parser.parse(new InputSource(new StringReader(xmlString)), handler);
         return handler.getResult();
     }
