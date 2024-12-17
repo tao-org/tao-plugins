@@ -55,6 +55,7 @@ public class KeycloakClient implements TokenProvider {
     public static final String USER_PLAN_ATTRIBUTE = "user_plan";
     private static final Logger logger = Logger.getLogger(KeycloakClient.class.getName());
     private static Map<String, PublicKey> realmKeys;
+    private static Keycloak adminClient;
     private static final Object lock = new Object();
 
     private final String realm;
@@ -152,6 +153,17 @@ public class KeycloakClient implements TokenProvider {
         return refreshToken(refreshToken);
     }
 
+    @Override
+    public boolean logout(String userId) {
+        try {
+            final Keycloak adminClient = getAdminClient();
+            adminClient.realm(this.realm).users().get(userId).logout();
+        } catch (Throwable t) {
+            logger.warning("Error when logging out of Keycloak: " + t.getMessage());
+        }
+        return true;
+    }
+
     public User checkLoginCredentials(final String username, final String password) {
         final AuthzClient authClient = getAuthClient();
         final AuthorizationRequest request = new AuthorizationRequest();
@@ -173,7 +185,8 @@ public class KeycloakClient implements TokenProvider {
             user = this.userProvider.get().getByName(username);
         }
         if (user == null) {
-            try (Keycloak adminClient = getAdminClient()) {
+            try {//(Keycloak adminClient = getAdminClient()) {
+                final Keycloak adminClient = getAdminClient();
                 final List<UserRepresentation> list = adminClient.realm(this.realm).users().search(username, true);
                 if (list != null && list.size() == 1) {
                     final UserRepresentation profile = list.get(0);
@@ -236,15 +249,16 @@ public class KeycloakClient implements TokenProvider {
                 user = this.userProvider.get().getByName(username);
             }
             if (user == null) {
-                try (Keycloak adminClient = getAdminClient()) {
-                    final List<UserRepresentation> list = adminClient.realm(this.realm).users().search(username, true);
-                    if (list != null && list.size() == 1) {
-                        final UserRepresentation profile = list.get(0);
-                        user = new KeycloakUserAdapter().toTaoUser(profile);
-                        //user.setPassword(password);
-                        //user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
-                    }
+                //try (Keycloak adminClient = getAdminClient()) {
+                final Keycloak adminClient = getAdminClient();
+                final List<UserRepresentation> list = adminClient.realm(this.realm).users().search(username, true);
+                if (list != null && list.size() == 1) {
+                    final UserRepresentation profile = list.get(0);
+                    user = new KeycloakUserAdapter().toTaoUser(profile);
+                    //user.setPassword(password);
+                    //user.setPreferences(Collections.singletonList(new UserPreference("token", token)));
                 }
+                //}
             }
         } catch (VerificationException e) {
             logger.finest(String.format("Verification of token %s failed [%s]",
@@ -256,32 +270,33 @@ public class KeycloakClient implements TokenProvider {
 
     public User createUser(final String username, final String password,
                            final String email, final String firstName, final String lastName) {
-        try (Keycloak client = getAdminClient()) {
-            final UsersResource usersResource = client.realm(this.realm).users();
-            final List<UserRepresentation> list = usersResource.search(username, true);
-            if (list.size() == 1) {
-                throw new IllegalArgumentException("Account already exists");
-            } else {
-                final UserRepresentation user = new UserRepresentation();
-                user.setEnabled(true);
-                user.setUsername(username);
-                user.setFirstName(firstName);
-                user.setLastName(lastName);
-                user.setEmail(email);
-                user.setAttributes(Collections.singletonMap("origin", Collections.singletonList("tao")));
-                final Response response = usersResource.create(user);
-                logger.fine(String.format("create user response: %s %s", response.getStatus(), response.getStatusInfo()));
-                final String userId = CreatedResponseUtil.getCreatedId(response);
-                logger.fine("new user id: " + userId);
-                final CredentialRepresentation pwdCred = new CredentialRepresentation();
-                pwdCred.setTemporary(false);
-                pwdCred.setType(CredentialRepresentation.PASSWORD);
-                pwdCred.setValue(password);
-                final UserResource userResource = usersResource.get(userId);
-                userResource.resetPassword(pwdCred);
-            }
-            return checkLoginCredentials(username, password);
+        //try (Keycloak client = getAdminClient()) {
+        final Keycloak client = getAdminClient();
+        final UsersResource usersResource = client.realm(this.realm).users();
+        final List<UserRepresentation> list = usersResource.search(username, true);
+        if (list.size() == 1) {
+            throw new IllegalArgumentException("Account already exists");
+        } else {
+            final UserRepresentation user = new UserRepresentation();
+            user.setEnabled(true);
+            user.setUsername(username);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setEmail(email);
+            user.setAttributes(Collections.singletonMap("origin", Collections.singletonList("tao")));
+            final Response response = usersResource.create(user);
+            logger.fine(String.format("create user response: %s %s", response.getStatus(), response.getStatusInfo()));
+            final String userId = CreatedResponseUtil.getCreatedId(response);
+            logger.fine("new user id: " + userId);
+            final CredentialRepresentation pwdCred = new CredentialRepresentation();
+            pwdCred.setTemporary(false);
+            pwdCred.setType(CredentialRepresentation.PASSWORD);
+            pwdCred.setValue(password);
+            final UserResource userResource = usersResource.get(userId);
+            userResource.resetPassword(pwdCred);
         }
+        return checkLoginCredentials(username, password);
+        //}
     }
 
     public void changeUserProfile(final String username, final String password,
@@ -356,7 +371,8 @@ public class KeycloakClient implements TokenProvider {
     }
 
     public String getUserPlanName(String username) {
-        try (Keycloak adminClient = getAdminClient()) {
+        try { //(Keycloak adminClient = getAdminClient()) {
+            Keycloak adminClient = getAdminClient();
             final List<UserRepresentation> list = adminClient.realm(this.realm).users().search(username, true);
             if (list != null && list.size() == 1) {
                 final UserRepresentation profile = list.get(0);
@@ -408,14 +424,20 @@ public class KeycloakClient implements TokenProvider {
     }
 
     private Keycloak getAdminClient() {
-        return KeycloakBuilder.builder()
-                              .serverUrl(this.authUrl)
-                              .realm(this.realm)
-                              .grantType(OAuth2Constants.PASSWORD)
-                              .clientId("admin-cli")
-                              .username(this.adminUser)
-                              .password(this.adminPwd)
-                              .build();
+        if (adminClient == null || adminClient.isClosed()) {
+            adminClient = KeycloakBuilder.builder()
+                                         .serverUrl(this.authUrl)
+                                         .realm(this.realm)
+                                         .grantType(OAuth2Constants.PASSWORD)
+                                         .clientId("admin-cli")
+                                         .username(this.adminUser)
+                                         .password(this.adminPwd)
+                                         .build();
+        } else {
+            // Either returns the current valid token, or refreshes it if expired, or obtains a new one
+            adminClient.tokenManager().getAccessToken();
+        }
+        return adminClient;
     }
 
     private AuthzClient getAuthClient() {
