@@ -32,7 +32,11 @@ public class Sentinel5PProductHelper extends BaseProductHelper {
     public Pattern getTilePattern() { return null; }
 
     @Override
-    public String getMetadataFileName() { return null; }
+    public String getMetadataFileName() {
+        return this.name != null
+               ? this.name.replace(".nc", "") + ".cdl"
+               : null;
+    }
 
     @Override
     public String getOrbit() {
