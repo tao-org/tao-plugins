@@ -19,7 +19,7 @@ public class Sentinel1OrbitFileHelper extends BaseProductHelper {
      * 8: File extension
      */
     static final Pattern S1AuxPattern =
-            Pattern.compile("(S1[A-B])_(OPER|TEST|REP\\d|TD\\d{2})_([A-Z]{3})_([A-Z0-9_]{6})_(OPOD)_(\\d{8}T\\d{6})_([DV])(\\d{8}T\\d{6}_\\d{8}T\\d{6}|[GDNS_]{3})(.EOF|.eof|.HDR|.hdr|.DBL|.dbl|.ZIP|.zip)");
+            Pattern.compile("(S1[A-D])_(OPER|TEST|REP\\d|TD\\d{2})_([A-Z]{3})_([A-Z0-9_]{6})_(OPOD)_(\\d{8}T\\d{6})_([DV])(\\d{8}T\\d{6}_\\d{8}T\\d{6}|[GDNS_]{3})(.EOF|.eof|.HDR|.hdr|.DBL|.dbl|.ZIP|.zip)");
 
     public Sentinel1OrbitFileHelper() {
         super();
