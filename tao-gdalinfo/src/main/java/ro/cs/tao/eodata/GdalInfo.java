@@ -119,7 +119,7 @@ public class GdalInfo implements MetadataInspector {
             double[] max = new double[1];
             double[] mean = new double[1];
             double[] stddev = new double[1];
-            if (extractStatistics && gdalBand.getStatistics(true, true, min, max, mean, stddev).equals(GDALConstConstants.ceNone())) {
+            if (getStatistics(gdalBand, min, max, mean, stddev)) {
                 gdalMetadata.addStatistic("min", min[0]);
                 gdalMetadata.addStatistic("max", max[0]);
                 gdalMetadata.addStatistic("mean", mean[0]);
@@ -158,5 +158,23 @@ public class GdalInfo implements MetadataInspector {
     @Override
     public void setFileProcessFactory(FileProcessFactory factory) {
 
+    }
+
+    private boolean getStatistics(Band gdalBand, double[] min, double[] max, double[] mean, double[] stddev) {
+        boolean ret = false;
+        if (extractStatistics && gdalBand.getStatistics(true, true, min, max, mean, stddev).equals(GDALConstConstants.ceNone())) {
+            if ((Double.compare(min[0], 0.0) == 0) &&
+                    (Double.compare(max[0], 0.0) == 0) &&
+                    (Double.compare(mean[0], 0.0) == 0) &&
+                    (Double.compare(stddev[0], 0.0) == 0)) {
+                // fallback to the method without approximations, we might have false results
+                if (gdalBand.getStatistics(false, true, min, max, mean, stddev).equals(GDALConstConstants.ceNone())) {
+                    ret = true;
+                }
+            } else {
+                ret = true;
+            }
+        }
+        return ret;
     }
 }
