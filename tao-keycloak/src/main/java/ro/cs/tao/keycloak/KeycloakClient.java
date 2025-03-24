@@ -9,7 +9,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.keycloak.OAuth2Constants;
-import org.keycloak.RSATokenVerifier;
+import org.keycloak.TokenVerifier;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -222,7 +222,7 @@ public class KeycloakClient implements TokenProvider {
         if (token == null) {
             throw new RuntimeException("Invalid token");
         }
-        final RSATokenVerifier verifier = RSATokenVerifier.create(token);
+        final TokenVerifier<AccessToken> verifier = TokenVerifier.create(token, AccessToken.class);
         if (realmKeys == null || realmKeys.isEmpty()) {
             synchronized (lock) {
                 realmKeys = new HashMap<>();
@@ -338,7 +338,7 @@ public class KeycloakClient implements TokenProvider {
     @Override
     public boolean validate(String token) {
         if (token == null) return false;
-        final RSATokenVerifier verifier = RSATokenVerifier.create(token);
+        final TokenVerifier<AccessToken> verifier = TokenVerifier.create(token, AccessToken.class);
         if (realmKeys == null || realmKeys.isEmpty()) {
             synchronized (lock) {
                 realmKeys = new HashMap<>();
