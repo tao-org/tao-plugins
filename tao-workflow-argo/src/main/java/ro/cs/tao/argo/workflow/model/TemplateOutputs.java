@@ -1,10 +1,8 @@
 package ro.cs.tao.argo.workflow.model;
 
-import io.fabric8.kubernetes.api.model.KubernetesResource;
-
 import java.util.List;
 
-public class TemplateOutputs implements KubernetesResource {
+public class TemplateOutputs {
     private String exitCode;
     private String result;
     private List<WorkflowArtifact> artifacts;

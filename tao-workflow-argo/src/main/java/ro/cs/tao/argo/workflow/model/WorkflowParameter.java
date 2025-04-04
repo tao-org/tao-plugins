@@ -1,8 +1,6 @@
 package ro.cs.tao.argo.workflow.model;
 
-import io.fabric8.kubernetes.api.model.KubernetesResource;
-
-public class WorkflowParameter implements KubernetesResource {
+public class WorkflowParameter {
     private String defaultValue;
     private String description;
     private String name;

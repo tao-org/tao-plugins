@@ -1,10 +1,8 @@
 package ro.cs.tao.argo.workflow.model;
 
-import io.fabric8.kubernetes.api.model.KubernetesResource;
-
 import java.util.List;
 
-public class WorkflowArguments implements KubernetesResource {
+public class WorkflowArguments {
 
     private List<WorkflowArtifact> artifacts;
     private List<WorkflowParameter> parameters;

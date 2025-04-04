@@ -1,12 +1,9 @@
 package ro.cs.tao.argo.workflow.model;
 
-import io.fabric8.kubernetes.api.model.KubernetesResource;
-
-import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class WorkflowMetadata implements KubernetesResource {
+public class WorkflowMetadata{
     private String generateName;
     private final Map<String, String> labels = new LinkedHashMap<>();
 

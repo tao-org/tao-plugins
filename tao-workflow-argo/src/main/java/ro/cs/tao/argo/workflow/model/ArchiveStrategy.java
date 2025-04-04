@@ -1,8 +1,6 @@
 package ro.cs.tao.argo.workflow.model;
 
-import io.fabric8.kubernetes.api.model.KubernetesResource;
-
-public class ArchiveStrategy implements KubernetesResource {
+public class ArchiveStrategy {
     private NoneStrategy none;
 
     public NoneStrategy getNone() {

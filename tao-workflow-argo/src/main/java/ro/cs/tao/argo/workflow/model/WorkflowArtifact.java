@@ -1,8 +1,6 @@
 package ro.cs.tao.argo.workflow.model;
 
-import io.fabric8.kubernetes.api.model.KubernetesResource;
-
-public class WorkflowArtifact implements KubernetesResource {
+public class WorkflowArtifact {
 
     private String name;
     private String globalName;
