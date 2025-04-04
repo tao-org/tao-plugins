@@ -1,10 +1,8 @@
 package ro.cs.tao.argo.workflow.model;
 
-import io.fabric8.kubernetes.api.model.KubernetesResource;
-
 import java.util.List;
 
-public class DAG implements KubernetesResource {
+public class DAG {
     private String target;
     private List<DAGTask> tasks;
 

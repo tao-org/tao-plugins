@@ -1,8 +1,6 @@
 package ro.cs.tao.argo.workflow.model;
 
-import java.io.Serializable;
-
-public class HTTPArtifact implements Serializable {
+public class HTTPArtifact {
     private String url;
 
     public String getUrl() {
