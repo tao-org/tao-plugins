@@ -382,6 +382,10 @@ public class CreoDiasODataQuery extends DataQuery {
                             // productSize filter will be applied after results are returned
                             query.setLength(query.length() - 5);
                             break;
+                        case "dayTime":
+                            // dayTime filter will be applied after results are returned
+                            query.setLength(query.length() - 5);
+                            break;
                         default:
                             if (parameter.getType().isArray()) {
                                 query.append("(");
@@ -435,6 +439,14 @@ public class CreoDiasODataQuery extends DataQuery {
                 results.removeIf(p -> !p.getName().contains("_____"));
             } else if ("FRAME".equalsIgnoreCase(productSize)) {
                 results.removeIf(p -> p.getName().contains("_____"));
+            }
+        }
+        if (this.parameters.containsKey("dayTime")) {
+            String dayTime = this.parameters.get("dayTime").getValueAsString();
+            if ("DAY".equalsIgnoreCase(dayTime)) {
+                results.removeIf(p -> p.getAcquisitionDate().getHour() <= 16);
+            } else if ("NIGHT".equalsIgnoreCase(dayTime)) {
+                results.removeIf(p -> p.getAcquisitionDate().getHour() > 16);
             }
         }
     }

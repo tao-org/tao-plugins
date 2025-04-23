@@ -369,7 +369,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 9
+      "order": 11
     },
     "productSize": {
       "name": "productSize",
@@ -390,6 +390,16 @@
       "required": false,
       "valueSet": ["S3A", "S3B"],
       "order": 8
+    },
+    "dayTime": {
+      "name": "dayTime",
+      "remoteName": "dayTime",
+      "label": "Time of day",
+      "type": "string",
+      "defaultValue": "DAY",
+      "required": false,
+      "valueSet": ["DAY","NIGHT"],
+      "order": 10
     }
   },
   "Sentinel5P": {
