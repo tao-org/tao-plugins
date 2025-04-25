@@ -1,13 +1,17 @@
 package ro.cs.tao.argo.workflow.model;
 
-public class ArchiveStrategy {
-    private NoneStrategy none;
+import java.util.HashMap;
+import java.util.Map;
 
-    public NoneStrategy getNone() {
+public class ArchiveStrategy {
+
+    private Map<String, String> none = new HashMap<>();
+
+    public Map<String, String> getNone() {
         return none;
     }
 
-    public void setNone(NoneStrategy none) {
-        this.none = none;
+    public void addNone(String key, String value) {
+        this.none.put(key, value);
     }
 }
