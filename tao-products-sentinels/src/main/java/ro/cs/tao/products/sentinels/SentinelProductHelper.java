@@ -18,6 +18,18 @@ package ro.cs.tao.products.sentinels;
 
 import ro.cs.tao.eodata.util.ProductHelper;
 
+/**
+ * Utility class responsible for creating instances of specific product helper classes
+ * based on the given product name. This class provides a factory method to return
+ * the appropriate helper instance for Sentinel products, such as Sentinel-1, Sentinel-3,
+ * and Sentinel-5P, or their corresponding orbit files.
+ *
+ * The class identifies the type of product by matching the product name against
+ * predefined patterns in the respective Sentinel product helper classes. If no specific
+ * match is found, the factory falls back to creating a Sentinel-2 product helper.
+ *
+ * This is a static utility class and does not require instantiation.
+ */
 public class SentinelProductHelper {
 
     public static ProductHelper create(String productName) {

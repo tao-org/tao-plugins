@@ -12,6 +12,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The GenericQuicklookGenerator class provides an implementation of the BaseQuicklookGenerator for
+ * handling the creation of quicklook images for files represented as Path objects. This class supports
+ * a variety of file types and operates using the GDAL library, either directly or via Docker.
+ */
 public class GenericQuicklookGenerator extends BaseQuicklookGenerator<Path> {
 
     public GenericQuicklookGenerator() {

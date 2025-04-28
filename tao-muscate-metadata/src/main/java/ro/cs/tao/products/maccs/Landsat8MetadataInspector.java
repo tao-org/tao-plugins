@@ -14,6 +14,17 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Inspector for processing metadata of Landsat 8 satellite imagery products.
+ * This class extends the {@link XmlMetadataInspector} and provides specific
+ * functionalities for interpreting Landsat 8 metadata.
+ *
+ * This inspector determines whether a given product path corresponds to
+ * a Landsat 8 dataset, retrieves relevant metadata, and parses the sensor
+ * data. It uses Landsat-specific metadata conventions and identifies the
+ * necessary parameters such as acquisition date, image size, pixel type,
+ * and georeferencing information.
+ */
 public class Landsat8MetadataInspector extends XmlMetadataInspector {
 
     @Override

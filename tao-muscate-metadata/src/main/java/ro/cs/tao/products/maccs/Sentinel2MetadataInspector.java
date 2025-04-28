@@ -17,6 +17,12 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * The Sentinel2MetadataInspector class is an implementation of XmlMetadataInspector designed to extract and process
+ * metadata for Sentinel-2 satellite data products. It verifies the compatibility of given files or folders with the
+ * Sentinel-2 data format and extracts metadata such as geographic footprint, acquisition date, image dimensions,
+ * and CRS information, among others.
+ */
 public class Sentinel2MetadataInspector extends XmlMetadataInspector {
 
     @Override
