@@ -14,8 +14,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.FileSystem;
 import java.nio.file.*;
+import java.nio.file.FileSystem;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -26,6 +26,26 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * Abstract base class for FTP storage service implementations. This class provides common FTP-based
+ * file operations and initializes a file storage system for the FTP protocol or its derivatives.
+ * Subclasses must define the specific protocol and environment configuration.
+ *
+ * It extends the {@link BaseStorageService} class, utilizing generic type parameters for its
+ * operations, specifically handling files and input streams.
+ *
+ * Common functionalities provided by this class include:
+ * - File and folder manipulation such as creation, deletion, and movement.
+ * - Storing files either as byte arrays or input streams.
+ * - Downloading and listing files or folder structures.
+ * - Streaming files to a zip output stream.
+ * - Reading input streams as text with line control.
+ *
+ * The class maintains a mapping of file system instances, keyed by user and root path combinations,
+ * ensuring a persistent and reusable file system for the duration of service interaction.
+ *
+ * Subclasses must implement specific methods to define the protocol and create an FTP environment.
+ */
 public abstract class FTPBaseService extends BaseStorageService<byte[], InputStream> {
     protected FileSystem ftpFileSystem;
     protected FTPEnvironment environment;

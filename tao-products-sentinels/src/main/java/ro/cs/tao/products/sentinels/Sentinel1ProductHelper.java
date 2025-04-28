@@ -20,7 +20,8 @@ import ro.cs.tao.eodata.util.BaseProductHelper;
 import java.util.regex.Pattern;
 
 /**
- * @author Cosmin Cara
+ * Helper class for Sentinel-1 products, extending the functionality provided by BaseProductHelper.
+ * This class is specifically designed for parsing and handling Sentinel-1 product naming conventions.
  */
 public class Sentinel1ProductHelper extends BaseProductHelper {
 

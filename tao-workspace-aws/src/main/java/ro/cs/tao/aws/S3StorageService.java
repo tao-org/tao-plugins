@@ -32,6 +32,143 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * S3StorageService provides a storage service implementation that utilizes Amazon S3 as the underlying
+ * storage platform. This class extends the BaseStorageService and implements operations for file storage,
+ * retrieval, and management in an S3-compatible environment.
+ *
+ * The service supports functionalities such as file upload, download, folder creation, file deletion,
+ * workspace listing, and hash computation of files stored in S3. Additionally, it can handle structured
+ * navigation of the S3 bucket's file system.
+ *
+ * Fields:
+ * - PROTOCOL: Static field representing the supported protocol (e.g., "s3").
+ * - AWS_REGION: Static property for the AWS region where the bucket resides.
+ * - AWS_ACCESS_KEY: Static AWS access key used for authentication.
+ * - AWS_SECRET_KEY: Static AWS secret key used for authentication.
+ * - AWS_BUCKET: Static field indicating the S3 bucket name.
+ * - AWS_ENDPOINT: Static custom endpoint URL for S3-compatible services.
+ * - AWS_PAGE_LIMIT: Static field defining the page size limit for paginated queries.
+ * - region: Configured AWS region for bucket operations.
+ * - accessKey: Access key for AWS authentication.
+ * - secretKey: Secret key for AWS authentication.
+ * - endpoint: Endpoint URL for S3 service.
+ * - client: AmazonS3 client instance for interacting with the S3 service.
+ * - pageLimit: Limit for the number of objects retrieved per API call.
+ * - logger: Logger instance for logging activities.
+ *
+ * Methods:
+ *
+ * - S3StorageService():
+ *   Constructor that initializes an instance of S3StorageService.
+ *
+ * - isIntendedFor(String protocol):
+ *   Indicates whether this storage service implementation is intended for the specified protocol.
+ *
+ * - associate(Repository repository):
+ *   Associates this storage service with a given repository.
+ *
+ * - createFolder(String folderRelativePath, boolean userOnly):
+ *   Creates a folder in the S3 bucket at the specified relative path.
+ *   Throws IOException in case of failure.
+ *
+ * - storeUserFile(byte[] object, String relativeFolder, String description):
+ *   Stores a user-defined file in the S3 bucket under the specified folder with a given description.
+ *   Throws Exception in case of failure.
+ *
+ * - storeFile(InputStream stream, long length, String relativeFolder, String description):
+ *   Stores a file that is provided as an InputStream in the specified folder with a description.
+ *   Throws Exception in case of errors.
+ *
+ * - exists(String path):
+ *   Checks if a file or folder exists in the S3 bucket at the given path.
+ *   Throws Exception in case of errors.
+ *
+ * - remove(String name):
+ *   Deletes a file or folder in the S3 bucket at the specified path.
+ *   Throws IOException if the operation fails.
+ *
+ * - move(String source, String destination):
+ *   Moves or renames a file or folder within the S3 bucket.
+ *   Throws IOException in case of errors.
+ *
+ * - listUserWorkspace():
+ *   Lists all files and folders in the user's workspace stored in the S3 bucket.
+ *   Throws IOException in case of errors.
+ *
+ * - listFiles(String fromPath, Set<String> exclusions, String lastItem, int depth):
+ *   Retrieves a list of files from the specified path in the bucket,
+ *   with optional exclusions and pagination capabilities.
+ *   Throws IOException in case of failure.
+ *
+ * - listTree(String fromPath):
+ *   List all files and folders in the S3 bucket starting from the provided path.
+ *   Throws IOException if the operation fails.
+ *
+ * - getWorkflowResults(long workflowId):
+ *   Fetches a list of files associated with a specified workflow ID.
+ *   Throws IOException in case of failure.
+ *
+ * - getJobResults(long jobId):
+ *   Retrieves the files and results associated with a specific job ID.
+ *   Throws IOException if the operation fails.
+ *
+ * - download(String strPath):
+ *   Downloads a file from the S3 bucket located at the specified path and returns an instance of S3ObjectInputStream.
+ *   Throws IOException in case of errors.
+ *
+ * - streamToZip(String rootPath, ZipOutputStream stream):
+ *   Zips files and directories from a root path in the S3 bucket and streams them into the provided ZipOutputStream.
+ *   Throws IOException if the operation fails.
+ *
+ * - readAsText(S3ObjectInputStream resource, int lines, int skipLines):
+ *   Reads the content of the specified S3ObjectInputStream resource as text.
+ *   The read operation can handle specific line limits and skips.
+ *   Throws IOException in case of errors.
+ *
+ * - computeHash(String path):
+ *   Computes a hash for the file located at the given path in the bucket.
+ *   Throws IOException or NoSuchAlgorithmException in case of errors.
+ *
+ * - clone():
+ *   Creates a clone of the S3StorageService instance.
+ *   Throws CloneNotSupportedException in case the operation is not supported.
+ *
+ * - buildClient():
+ *   Constructs and returns an AmazonS3 client instance configured for the service.
+ *   This method is private and used internally.
+ *
+ * - ensureBucketExists(String name):
+ *   Ensures the specified bucket exists in S3 and creates it if necessary.
+ *   This method is private and used internally.
+ *
+ * - list(ListObjectsRequest request):
+ *   Lists objects in the S3 bucket based on a ListObjectsRequest.
+ *   Returns a list of FileObject instances.
+ *   This method is private and used internally.
+ *
+ * - singlePage(ListObjectsRequest request):
+ *   Retrieves a single page of objects from the bucket matching the specified request.
+ *   Returns the list of objects as FileObject instances.
+ *   This method is private and used internally.
+ *
+ * - traverse(String bucketName, String fromPath, List<FileObject> files, boolean includeHidden):
+ *   Recursively traverses the bucket starting at the specified path and collects files.
+ *   Handles optional inclusion of hidden files.
+ *   This method is private and used internally.
+ *
+ * - traverseHash(String bucketName, String fromPath, MessageDigest digest):
+ *   Recursively traverses the bucket to compute a hash for all files under the provided path.
+ *   This method is private and used internally.
+ *
+ * - isNotFolderPlaceholder(S3ObjectSummary summary):
+ *   Determines if an object in the bucket is not a folder placeholder based on its summary.
+ *   This method is private and used internally.
+ *
+ * - isNotFolderPlaceholder(S3Object object):
+ *   Determines if an object in the bucket is not a folder placeholder based on the object metadata.
+ *   This method is private and used internally.
+ */
 public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputStream> {
     private static final String PROTOCOL = "s3";
     public static final String AWS_REGION = "aws.region";

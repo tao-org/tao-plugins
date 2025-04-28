@@ -26,7 +26,22 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
- * @author Cosmin Cara
+ * L1CProductHelper is a specialized helper class for handling Sentinel-2 Level-1C product metadata
+ * and file structure. It extends the base functionality of the Sentinel2ProductHelper class,
+ * providing methods to accurately parse, retrieve, and manipulate relevant attributes and
+ * information specific to Level-1C products.
+ *
+ * This class supports two formats for product naming:
+ * - Version 1.3
+ * - Version 1.4
+ *
+ * The appropriate format is determined dynamically based on the input product name, and different
+ * parsing logic applies depending on the determined format.
+ *
+ * Key functionalities of the class include:
+ * - Parsing product and tile-level metadata
+ * - Generating file names and relative paths for metadata, bands, granules, and datastrips
+ * - Identifying and extracting key information such as version, orbit, sensing date, and processing date
  */
 public class L1CProductHelper extends Sentinel2ProductHelper {
 
