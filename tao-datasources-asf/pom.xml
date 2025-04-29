@@ -24,7 +24,7 @@
     <parent>
         <artifactId>tao-plugins</artifactId>
         <groupId>ro.c-s.tao</groupId>
-        <version>1.5.2</version>
+        <version>1.5.3</version>
     </parent>
 
     <artifactId>tao-datasources-asf</artifactId>
