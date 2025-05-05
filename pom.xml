@@ -68,6 +68,7 @@
         <module>tao-functions</module>
         <module>tao-plugins-kit</module>
         <module>tao-github</module>
+        <module>tao-executor-simpipe</module>
         <!--<module>tao-executor-wmts</module>-->
     </modules>
 
