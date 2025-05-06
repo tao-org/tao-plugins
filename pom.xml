@@ -7,7 +7,7 @@
     <parent>
         <groupId>ro.c-s.tao</groupId>
         <artifactId>tao-core</artifactId>
-        <version>1.5.2</version>
+        <version>1.5.3</version>
     </parent>
 
     <artifactId>tao-plugins</artifactId>
@@ -17,16 +17,12 @@
 
     <modules>
         <module>tao-datasources-asf</module>
-        <module>tao-datasources-aws</module>
-        <module>tao-datasources-creodias</module>
         <module>tao-datasources-earthdata</module>
         <module>tao-datasources-eocat</module>
         <module>tao-datasources-fedeo</module>
         <module>tao-datasources-localdb</module>
         <module>tao-datasources-lsa</module>
-        <module>tao-datasources-peps</module>
         <module>tao-datasources-stac</module>
-        <module>tao-datasources-theia</module>
         <module>tao-datasources-usgs</module>
         <module>tao-docker-wekeo</module>
         <module>tao-datasources-creodias2</module>
@@ -72,6 +68,7 @@
         <module>tao-functions</module>
         <module>tao-plugins-kit</module>
         <module>tao-github</module>
+        <module>tao-executor-simpipe</module>
         <!--<module>tao-executor-wmts</module>-->
     </modules>
 

@@ -28,6 +28,16 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * SMBStorageService is a storage service implementation that provides interaction
+ * with SMB (Server Message Block) protocol-based storage systems. It extends the
+ * functionalities defined in the BaseStorageService class and adds SMB-specific
+ * behavior for file and folder management.
+ *
+ * This service handles storing, retrieving, removing, and listing files and directories
+ * in an SMB-based file system. Additionally, it includes functionality for streaming,
+ * zip creation, and progress monitoring via a progress listener.
+ */
 public class SMBStorageService extends BaseStorageService<byte[], InputStream> {
     private static final String PROTOCOL = "smb";
 

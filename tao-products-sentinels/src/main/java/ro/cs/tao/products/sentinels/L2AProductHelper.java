@@ -18,7 +18,9 @@ package ro.cs.tao.products.sentinels;
 import java.util.regex.Pattern;
 
 /**
- * @author Cosmin Cara
+ * Helper class for handling Sentinel-2 Level 2A products. It provides specific methods
+ * to parse and retrieve information from Level 2A product names and metadata.
+ * Extends the functionality of {@code Sentinel2ProductHelper}.
  */
 public class L2AProductHelper extends Sentinel2ProductHelper {
 

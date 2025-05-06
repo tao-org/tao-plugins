@@ -6,6 +6,13 @@ import java.nio.file.Path;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+/**
+ * Helper class specific to Sentinel-2 products for MAJA processing.
+ * This class extends the {@code MajaProductHelper} and provides implementations
+ * for handling Sentinel-2 Level-2 products. It includes functionalities such as
+ * parsing product names, retrieving granule folders, metadata file names,
+ * identifying tiles and sensing information, and pattern matching.
+ */
 public class MajaSentinel2ProductHelper extends MajaProductHelper {
 
     private static final Pattern S2L2Pattern = Pattern.compile("S2([AB])_MSIL2A_(\\d{8}T\\d{6})_(N\\d{4})_R(\\d{3})_T(\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");

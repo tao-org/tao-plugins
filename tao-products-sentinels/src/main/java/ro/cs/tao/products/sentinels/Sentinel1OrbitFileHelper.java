@@ -4,6 +4,10 @@ import ro.cs.tao.eodata.util.BaseProductHelper;
 
 import java.util.regex.Pattern;
 
+/**
+ * Helper class specifically designed for handling Sentinel-1 orbit files.
+ * Extends the behavior of {@link BaseProductHelper}.
+ */
 public class Sentinel1OrbitFileHelper extends BaseProductHelper {
     /**
      * Tokens:

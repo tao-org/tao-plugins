@@ -20,7 +20,10 @@ import ro.cs.tao.eodata.util.BaseProductHelper;
 import java.util.regex.Pattern;
 
 /**
- * @author Cosmin Cara
+ * Abstract class representing a helper for processing Sentinel-2 products.
+ * Provides common utilities and structure for handling Sentinel-2 Level-1C
+ * (L1C) and Level-2A (L2A) products. Concrete implementations are responsible
+ * for specific product type handling.
  */
 public abstract class Sentinel2ProductHelper extends BaseProductHelper {
 

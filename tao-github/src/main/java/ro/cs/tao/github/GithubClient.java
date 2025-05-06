@@ -1,6 +1,9 @@
 package ro.cs.tao.github;
 
-import org.kohsuke.github.*;
+import org.kohsuke.github.GHMeta;
+import org.kohsuke.github.GHMyself;
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,9 +14,9 @@ import ro.cs.tao.persistence.UserProvider;
 import ro.cs.tao.security.Token;
 import ro.cs.tao.security.TokenKeeper;
 import ro.cs.tao.security.TokenProvider;
+import ro.cs.tao.user.User;
 
 import java.io.IOException;
-import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -24,6 +27,9 @@ public class GithubClient implements TokenProvider {
     private static final Logger logger = Logger.getLogger(GithubClient.class.getName());
     private TokenKeeper tokenKeeper;
     private Supplier<UserProvider> userProvider;
+
+    public GithubClient() {
+    }
 
     public void setTokenKeeper(TokenKeeper tokenKeeper) {
         this.tokenKeeper = tokenKeeper;
@@ -125,13 +131,54 @@ public class GithubClient implements TokenProvider {
         return null;
     }
 
+    public User checkLoginCredentials(final String username, final String password) {
+        Token token = null;
+        if (this.tokenKeeper != null) {
+            token = this.tokenKeeper.getToken(username);
+        }
+        GHMyself ghUser = null;
+        if (token == null) {
+            try {
+                final GitHub client = new GitHubBuilder().withPassword(username, password).build();
+                ghUser = client.getMyself();
+                final GHMeta meta = client.getMeta();
+            } catch (IOException e) {
+                logger.severe(e.getMessage());
+                throw new RuntimeException("Invalid credentials supplied");
+            }
+        }
+        if (this.tokenKeeper != null) {
+            this.tokenKeeper.put(token, username);
+        }
+        User user = null;
+        if (this.userProvider != null) {
+            user = this.userProvider.get().getByName(username);
+        }
+        return user != null ? user : new GithubUserAdapter().toTaoUser(ghUser);
+    }
+
+    public User checkLoginCredentials(final String code) {
+        final Token token = newTokenFromCode(code);
+        if (token == null) {
+            throw new RuntimeException("Invalid access code");
+        }
+        try {
+            final GitHub client = new GitHubBuilder().withOAuthToken(token.getToken()).build();
+            final GHMyself ghUser = client.getMyself();
+            return new GithubUserAdapter().toTaoUser(ghUser);
+        } catch (IOException e) {
+            logger.severe(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public boolean validate(String token) {
         if (token == null) return false;
         try {
             final GitHub client = new GitHubBuilder().withOAuthToken(token).build();
             final GHMyself ghUser = client.getMyself();
-            if(ghUser != null) {
+            if (ghUser != null) {
                 return true;
             } else {
                 return false;

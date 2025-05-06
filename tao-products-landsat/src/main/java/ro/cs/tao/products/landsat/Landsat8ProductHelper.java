@@ -25,7 +25,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author Cosmin Cara
+ * A utility class that provides functions and data specific to handling Landsat 8 products.
+ * This class extends the BaseProductHelper and overrides key methods to achieve functionality
+ * specific to parsing, verifying, and manipulating Landsat 8 product names and metadata.
  */
 public class Landsat8ProductHelper extends BaseProductHelper {
     private static final Pattern preCollectionNamePattern = Pattern.compile("L\\w[1-8](\\d{3})(\\d{3})(\\d{4})(\\d{3})\\w{3}\\d{2}");
