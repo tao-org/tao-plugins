@@ -6,6 +6,15 @@ import java.nio.file.Path;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+/**
+ * A helper class for handling Landsat 8 product files compatible with the MACCS processing chain.
+ * This class provides specific implementations for parsing metadata, extracting information,
+ * and identifying Landsat 8 product-related patterns.
+ *
+ * The class extends {@code MaccsProductHelper}, inheriting generic product helper functionalities,
+ * and overrides specific methods to cater to Landsat 8 processing requirements. It works with
+ * Landsat Level-2A product formats and tile patterns.
+ */
 public class MaccsLandsat8ProductHelper extends MaccsProductHelper {
 
     private static final Pattern L8L2Pattern = Pattern.compile("LC08_L2A_(\\d{6})_(\\d{8})_(\\d{8})_(\\d{2})_(T[12]|RT)");

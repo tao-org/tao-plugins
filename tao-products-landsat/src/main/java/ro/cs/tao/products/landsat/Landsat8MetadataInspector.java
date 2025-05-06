@@ -29,6 +29,13 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * The Landsat8MetadataInspector class implements the MetadataInspector interface,
+ * providing functionality to inspect and extract metadata from Landsat 8 product files.
+ * It validates the product file, decodes its metadata, and processes specific
+ * information such as product dimensions, acquisition date, sensor type,
+ * and geographical footprint.
+ */
 public class Landsat8MetadataInspector implements MetadataInspector {
     private FileProcessFactory factory;
 

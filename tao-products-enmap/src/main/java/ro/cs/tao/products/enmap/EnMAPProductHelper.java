@@ -9,6 +9,11 @@ import java.nio.file.Path;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+/**
+ * A utility class for handling EnMAP products, designed to retrieve common properties and validate product names.
+ * This class extends the BaseProductHelper abstract class and provides specific implementations for managing
+ * EnMAP data products.
+ */
 public class EnMAPProductHelper extends BaseProductHelper {
 
     public static final String LX_2 = "00.02.00";

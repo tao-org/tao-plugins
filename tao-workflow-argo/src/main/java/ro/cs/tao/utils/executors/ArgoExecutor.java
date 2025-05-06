@@ -8,7 +8,6 @@ import io.fabric8.kubernetes.api.model.VolumeMount;
 import ro.cs.tao.argo.workflow.model.*;
 import ro.cs.tao.component.*;
 import ro.cs.tao.datasource.DataSourceComponent;
-import ro.cs.tao.docker.ExecutionConfiguration;
 import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
 import ro.cs.tao.execution.util.TaskUtilities;
@@ -251,13 +250,26 @@ public class ArgoExecutor extends Executor<Object>
     }
 
     private String getVolumeName(String path) {
-        String[] partsOfPath = path.split("/");
+//        String[] partsOfPath = SystemUtils.IS_OS_WINDOWS ? path.split("\\+") : path.split("/");
+        String[] partsOfPath = path.split("[/\\\\]");
         for(int i = partsOfPath.length -1 ; i > -1; i--){
             if(partsOfPath[i].matches(".*[a-zA-Z]+"))
                 return partsOfPath[i];
         }
         return path;
     }
+//
+//    private String getVolumePath(String path) {
+//        String[] partsOfPath = path.split("[/\\\\]");
+//        if(path.contains("workdir")){
+//            for(int i = partsOfPath.length -1 ; i > -1; i--){
+//                if(partsOfPath[i].matches(".*[0-9]+")) {
+//                    return path.replaceAll("[0-9]+", "1");
+//                }
+//            }
+//        }
+//        return path;
+//    }
 
     private List<EnvVar> getEnvVarForContainer() {
         List<EnvVar> envVars = new ArrayList<>();
@@ -323,7 +335,7 @@ public class ArgoExecutor extends Executor<Object>
         mainArguments.add(String.join(" ", bashArguments));
         return mainArguments.stream()
                 .map(s -> s.replaceAll("\"", ""))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<String> getCommandsForContainer(List<String> bashArguments) {
@@ -352,9 +364,8 @@ public class ArgoExecutor extends Executor<Object>
 
     private String getImageForContainer() {
         ContainerUnit containerUnit = this.executionUnit.getContainerUnit();
-        if(ExecutionConfiguration.getDockerRegistry().equals(containerUnit.getContainerRegistry()))
-            return containerUnit.getContainerName();
-        return containerUnit.getContainerRegistry() + "/" + containerUnit.getContainerName();
+        return containerUnit.getContainerRegistry() != null ? containerUnit.getContainerRegistry() + "/" + containerUnit.getContainerName()
+                : containerUnit.getContainerName();
     }
 
     private List<WorkflowNodeDescriptor> orderWorkflowNodes(WorkflowDescriptor workflowDesc) {

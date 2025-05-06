@@ -34,16 +34,6 @@
             <destName>tao-datasources-asf-${artifact.version}.jar</destName>
         </file>
         <file>
-            <source>../tao-datasources-aws/target/tao-datasources-aws-${artifact.version}.jar</source>
-            <outputDirectory>modules</outputDirectory>
-            <destName>tao-datasources-aws-${artifact.version}.jar</destName>
-        </file>
-        <file>
-            <source>../tao-datasources-creodias/target/tao-datasources-creodias-${artifact.version}.jar</source>
-            <outputDirectory>modules</outputDirectory>
-            <destName>tao-datasources-creodias-${artifact.version}.jar</destName>
-        </file>
-        <file>
             <source>../tao-datasources-earthdata/target/tao-datasources-earthdata-${artifact.version}.jar</source>
             <outputDirectory>modules</outputDirectory>
             <destName>tao-datasources-earthdata-${artifact.version}.jar</destName>
@@ -57,16 +47,6 @@
             <source>../tao-datasources-fedeo/target/tao-datasources-fedeo-${artifact.version}.jar</source>
             <outputDirectory>modules</outputDirectory>
             <destName>tao-datasources-fedeo-${artifact.version}.jar</destName>
-        </file>
-        <!--<file>
-            <source>../tao-datasources-scihub/target/tao-datasources-scihub-${artifact.version}.jar</source>
-            <outputDirectory>modules</outputDirectory>
-            <destName>tao-datasources-scihub-${artifact.version}.jar</destName>
-        </file>-->
-        <file>
-            <source>../tao-datasources-theia/target/tao-datasources-theia-${artifact.version}.jar</source>
-            <outputDirectory>modules</outputDirectory>
-            <destName>tao-datasources-theia-${artifact.version}.jar</destName>
         </file>
         <file>
             <source>../tao-datasources-usgs/target/tao-datasources-usgs-${artifact.version}.jar</source>

@@ -15,6 +15,13 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * The abstract class BaseQuicklookGenerator provides a base implementation for generating quicklook images
+ * for various file types using the GDAL library or Docker. It offers default configurations for quicklook generation
+ * and requires concrete implementations to define the supported file extensions and the inner handling logic.
+ *
+ * @param <T> The type of item this generator is intended to operate on.
+ */
 public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> {
     protected static final String gdalDockerImage;
     protected static final boolean useDocker;

@@ -9,6 +9,32 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * StringResolver is an implementation of the {@link TokenResolver} interface designed to process
+ * and transform string expressions containing specific token patterns. The resolution process involves
+ * detecting and replacing tokens within an input string based on predefined transformation functions.
+ *
+ * The supported token patterns and their corresponding transformations are:
+ * - SUBSTRING: Extracts a substring from a given string based on start and length parameters.
+ * - UPPER: Converts the entire string to uppercase.
+ * - LOWER: Converts the entire string to lowercase.
+ * - CHAR: Converts a numeric value into its corresponding ASCII character representation.
+ *
+ * Thread Safety:
+ * This class is thread-safe as it does not maintain mutable internal state.
+ *
+ * Error Handling:
+ * If invalid or malformed input is encountered during token resolution, the method logs a warning
+ * and gracefully returns the input string unchanged.
+ *
+ * Responsibilities:
+ * - Define token patterns using regular expressions.
+ * - Resolve and transform detected tokens from an input string expression.
+ *
+ * Example Scenarios:
+ * - Transforming placeholders in strings into substrings, uppercase, or lowercase formats.
+ * - Resolving numeric values into their ASCII character equivalents.
+ */
 public class StringResolver implements TokenResolver {
     private static final Pattern substringPattern = Pattern.compile("(SUBSTRING\\(([A-Za-z0-9_\\/\\\\.-]+),(\\d+),(\\d+)\\))");
     private static final Pattern upperPattern = Pattern.compile("(UPPER\\(([A-Za-z0-9_\\/\\\\.-]+)\\))");
