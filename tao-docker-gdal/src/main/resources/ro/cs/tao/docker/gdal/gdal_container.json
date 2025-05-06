@@ -1,8 +1,8 @@
 {
 	"id": "0c95867b-3235-419a-8a4a-4a52c1853ee8",
-	"name": "gdal-3-3-2",
-	"description": "GDAL 3.3.2 Container",
-	"tag": "alpine-normal-3.3.2",
+	"name": "gdal-3-10-2",
+	"description": "GDAL 3.10.2 Container",
+	"tag": "alpine-normal-3.10.2",
 	"applicationPath": null,
 	"formatNameParameter": "-f",
 	"format": [
@@ -59,7 +59,7 @@
 		{
 			"path": "gdal_translate",
 			"name": "gdal_translate",
-			"memoryRequirements": 4096
+			"memoryRequirements": 2048
 		},
 		{
 			"path": "gdaladdo",
@@ -69,7 +69,7 @@
 		{
 			"path": "gdalwarp",
 			"name": "gdalwarp",
-			"memoryRequirements": 4096
+			"memoryRequirements": 2048
 		},
 		{
 			"path": "gdal_merge",
@@ -79,7 +79,7 @@
 		{
 			"path": "gdal_rasterize",
 			"name": "gdal_rasterize",
-			"memoryRequirements": 4096
+			"memoryRequirements": 2048
 		}
 	]
 }
