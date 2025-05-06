@@ -8,7 +8,7 @@ import java.nio.file.Path;
 public class GdalImageInstaller extends BaseImageInstaller {
     @Override
     public String getContainerName() {
-        return "gdal-3-3-2";
+        return "gdal-3-10-2"; // this should also be a valid system file path, therefore ":" not allowed ("ghcr.io/osgeo/gdal:alpine-normal-3.10.2")
     }
 
     @Override
@@ -18,7 +18,7 @@ public class GdalImageInstaller extends BaseImageInstaller {
 
     @Override
     protected String getPathInContainer() {
-        return "/usr/local/bin";
+        return "/usr/bin";
     }
 
     @Override

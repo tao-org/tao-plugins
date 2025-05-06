@@ -2,10 +2,10 @@
 	{
 		"id": "gdal_translate",
 		"label": "Transform Image",
-		"version": "2.3.2",
+		"version": "3.10.2",
 		"description": "Converts raster data between different formats",
 		"authors": "Frank Warmerdam, Even Rouault, and others",
-		"copyright": "(C) 1998-2019",
+		"copyright": "(C) 1998-2025",
 		"nodeAffinity" : {
       "value" : "Any"
     },
@@ -47,18 +47,49 @@
 				"type": "REGULAR",
 				"dataType": "string",
 				"defaultValue": null,
-				"description": "Force the output image bands to have a specific type",
+				"description": "Force the output image bands to have a specific data type supported by the driver",
 				"label": "Output type",
 				"notNull": false,
-				"valueSet": [ "Byte", "Int16", "UInt16", "UInt32", "Int32", "Float32", "Float64", "CInt16", "CInt32", "CFloat32", "CFloat64" ]
+				"valueSet": [ "Byte", "Int8", "UInt16", "Int16", "UInt32", "Int32", "UInt64", "Int64", "Float32", "Float64", "CInt16", "CInt32", "CFloat32", "CFloat64" ]
+			},
+			{
+				"id": "strict",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "",
+				"description": "Don't be forgiving of mismatches and lost data when translating to the output format.",
+				"label": "Don't lose data  when translating to output format",
+				"notNull": false
+			},
+			{
+				"id": "if",
+				"type": "REGULAR",
+				"dataType": "string[]",
+				"defaultValue": null,
+				"description": "Format/driver name to be attempted to open the input file(s). It is generally not necessary to specify it, but it can be used to skip automatic driver detection, when it fails to select the appropriate driver. This option can be repeated several times to specify several candidate drivers. Note that it does not force those drivers to open the dataset. In particular, some drivers have requirements on file extensions.",
+				"label": "if",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": false,
+					"separator": ""
+				}
+			},
+			{
+				"id": "of",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Select the output format. Starting with GDAL 2.3, if not specified, the format is guessed from the extension (previously was GTiff). Use the short format name.",
+				"label": "of",
+				"notNull": false
 			},
 			{
 				"id": "b",
 				"type": "REGULAR",
 				"dataType": "int[]",
 				"defaultValue": null,
-				"description": "Select an input band band for output. Bands are numbered from 1",
-				"label": "b",
+				"description": "Select an input band for output. Bands are numbered from 1",
+				"label": "Band(s)",
 				"notNull": false,
 				"expansionRule": {
 					"joinValues": false,
@@ -102,13 +133,22 @@
 				"type": "REGULAR",
 				"dataType": "int[]",
 				"defaultValue": null,
-				"description": "Set target resolution. The values must be expressed in georeferenced units. Both must be positive values",
+				"description": "Set target resolution. The values must be expressed in georeferenced units. Both must be positive values. This is mutually exclusive with -outsize, -a_ullr and -a_gt.",
 				"label": "tr",
 				"notNull": false,
 				"expansionRule": {
 					"joinValues": true,
 					"separator": " "
 				}
+			},
+			{
+				"id": "ovr",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "AUTO",
+				"description": "Specify which overview level of source file must be used. The default choice, AUTO, will select the overview level whose resolution is the closest to the target resolution. Specify an integer value (0-based, i.e. 0=1st overview level) to select a particular level. Specify AUTO-n where n is an integer greater or equal to 1, to select an overview level below the AUTO one. Or specify NONE to force the base resolution to be used (can be useful if overviews have been generated with a low quality resampling method, and a higher quality resampling method is specified with -r).",
+				"label": "ovr",
+				"notNull": false
 			},
 			{
 				"id": "r",
@@ -118,7 +158,7 @@
 				"description": "Select a resampling algorithm",
 				"label": "Resampling",
 				"notNull": false,
-				"valueSet": [ "nearest", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode" ]
+				"valueSet": [ "nearest", "bilinear", "cubic", "cubicspline", "lanczos", "average", "rms","mode" ]
 			},
 			{
 				"id": "scale",
@@ -134,11 +174,29 @@
 				}
 			},
 			{
+				"id": "exponent",
+				"type": "REGULAR",
+				"dataType": "float",
+				"defaultValue": null,
+				"description": "Apply non-linear scaling with a power function. exp_val is the exponent of the power function (must be positive). This option must be used with the -scale option. If specified only once, -exponent applies to all bands of the output image.",
+				"label": "exponent",
+				"notNull": false
+			},
+			{
+				"id": "unscale",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "",
+				"description": "Apply the scale/offset metadata for the bands to convert scaled values to unscaled values. It is also often necessary to reset the output datatype with the -ot switch.",
+				"label": "unscale",
+				"notNull": false
+			},
+			{
 				"id": "srcwin",
 				"type": "REGULAR",
 				"dataType": "int[]",
 				"defaultValue": null,
-				"description": "Selects a subwindow from the source image for copying based on pixel/line location",
+				"description": "Selects a subwindow from the source image for copying based on pixel/line location.",
 				"label": "Subwindow (xoff yoff xsize ysize)",
 				"notNull": false,
 				"expansionRule": {
@@ -169,12 +227,39 @@
 				"notNull": false
 			},
 			{
+				"id": "epo",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "",
+				"description": "If this option is set, -srcwin or -projwin values that falls partially outside the source raster extent will be considered as an error. The default behavior is to accept such requests, when they were considered as an error before.",
+				"label": "Error when Partially Outside",
+				"notNull": false
+			},
+			{
+				"id": "eco",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "",
+				"description": "Same as -epo, except that the criterion for erroring out is when the request falls completely outside the source raster extent.",
+				"label": "Error when Completely Outside",
+				"notNull": false
+			},
+			{
 				"id": "a_srs",
 				"type": "REGULAR",
 				"dataType": "string",
 				"defaultValue": null,
 				"description": "Specifies the SRS in which to interpret the coordinates given with $projwin",
 				"label": "Projected SRS",
+				"notNull": false
+			},
+			{
+				"id": "a_coord_epoch",
+				"type": "REGULAR",
+				"dataType": "float",
+				"defaultValue": null,
+				"description": "Assign a coordinate epoch, linked with the output SRS. Useful when the output SRS is a dynamic CRS.",
+				"label": "Coordinate epoch",
 				"notNull": false
 			},
 			{
@@ -200,8 +285,21 @@
 				"type": "REGULAR",
 				"dataType": "double[]",
 				"defaultValue": null,
-				"description": "Assign/override the georeferenced bounds of the output file. This assigns georeferenced bounds to the output file, ignoring what would have been derived from the source file. So this does not cause reprojection to the specified SRS",
+				"description": "Assign/override the georeferenced bounds of the output file. This assigns georeferenced bounds to the output file, ignoring what would have been derived from the source file. So this does not cause reprojection to the specified SRS. This is mutually exclusive with -a_gt.",
 				"label": "Output bounds (ulx uly lrx lry)",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": true,
+					"separator": " "
+				}
+			},
+			{
+				"id": "a_gt",
+				"type": "REGULAR",
+				"dataType": "double[]",
+				"defaultValue": null,
+				"description": "Assign/override the geotransform of the output file. This assigns the geotransform to the output file, ignoring what would have been derived from the source file. So this does not cause reprojection to the specified SRS. This is mutually exclusive with -a_ullr.\n A geotransform consists in a set of 6 coefficients:\nGT(0) x-coordinate of the upper-left corner of the upper-left pixel.\nGT(1) w-e pixel resolution / pixel width.\nGT(2) row rotation (typically zero).\nGT(3) y-coordinate of the upper-left corner of the upper-left pixel.\nGT(4) column rotation (typically zero).\nGT(5) n-s pixel resolution / pixel height (negative value for a north-up image).",
+				"label": "Assign/override the geotransform <gt(0)> <gt(1)> <gt(2)> <gt(3)> <gt(4)> <gt(5)>",
 				"notNull": false,
 				"expansionRule": {
 					"joinValues": true,
@@ -213,15 +311,42 @@
 				"type": "REGULAR",
 				"dataType": "string",
 				"defaultValue": null,
-				"description": "Assign a specified nodata value to output bands. It can be set to <i>none</i> to avoid setting a nodata value to the output file if one exists for the source file",
+				"description": "Assign a specified nodata value to output bands. It can be set to <i>none</i> to avoid setting a nodata value to the output file if one exists for the source file. Note that, if the input dataset has a nodata value, this does not cause pixel values that are equal to that nodata value to be changed to the value specified with this option.",
 				"label": "NoData value",
+				"notNull": false
+			},
+			{
+				"id": "colorinterp",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Override the color interpretation of all specified bands. For example -colorinterp red,green,blue,alpha for a 4 band output dataset.",
+				"label": "Color interpretation",
+				"notNull": false
+			},
+			{
+				"id": "mo",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Passes a metadata key and value to set on the output dataset if possible. Usage: -mo <META-TAG>=<VALUE>",
+				"label": "Pass metadata key&value to output",
+				"notNull": false
+			},
+			{
+				"id": "dmo",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Passes a metadata key and value in specified domain to set on the output dataset if possible. Usage: -dmo DOMAIN:META-TAG=VALUE",
+				"label": "Pass metadata key&value (in specified domain) to output",
 				"notNull": false
 			},
 			{
 				"id": "co",
 				"type": "REGULAR",
 				"dataType": "string[]",
-				"defaultValue": ["TILED=YES", "COMPRESS=DEFLATE", "INTERLEAVE=BAND", "BLOCKXSIZE=1024", "BLOCKYSIZE=1024"],
+				"defaultValue": "TILED=YES, COMPRESS=DEFLATE, INTERLEAVE=BAND, BLOCKXSIZE=1024, BLOCKYSIZE=1024",
 				"description": "One or more optional creation options that can be used to control particulars about the file created",
 				"label": "CO",
 				"notNull": false,
@@ -232,6 +357,15 @@
 					"joinValues": false,
 					"separator": ""
 				}
+			},
+			{
+				"id": "nogcp",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "",
+				"description": "Do not copy the GCPs in the source dataset to the output dataset",
+				"label": "Don't copy GCPs to output dataset",
+				"notNull": false
 			},
 			{
 				"id": "gcp",
@@ -245,8 +379,573 @@
 					"joinValues": true,
 					"separator": " "
 				}
+			},
+			{
+				"id": "q",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "",
+				"description": "Suppress progress monitor and other non-error output",
+				"label": "Suppress progress monitor and non-error output",
+				"notNull": false
+			},
+			{
+				"id": "sds",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "",
+				"description": "Copy all subdatasets of this file to individual output files. Use with formats like HDF that have subdatasets.",
+				"label": "Copy all subdatasets",
+				"notNull": false
+			},
+			{
+				"id": "stats",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "",
+				"description": "Force (re)computation of statistics.",
+				"label": "Force statistics (re)computation",
+				"notNull": false
+			},
+			{
+				"id": "norat",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "",
+				"description": "Do not copy source RAT into destination dataset.",
+				"label": "Don't copy source RAT into destination dataset",
+				"notNull": false
+			},
+			{
+				"id": "noxmp",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "",
+				"description": "Do not copy the XMP metadata in the source dataset to the output dataset when driver is able to copy it.",
+				"label": "Don't copy XMP metadata to the output dataset",
+				"notNull": false
+			},
+			{
+				"id": "oo",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Dataset open option (format specific). Usage: -oo <NAME>=<VALUE>",
+				"label": "Dataset open option",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": false,
+					"separator": ""
+				}
 			}
 		],
-		"templatecontents": "-ot\n$ot\n-b\n$b\n-mask\n$mask\n-expand\n$expand\n-outsize\n$outsize\n-tr\n$tr\n-r\n$\n-scale\n$scale\n-srcwin\n$srcwin\n-projwin\n$projwin\n-projwin_srs\n$projwin_srs\n-a_srs\n$a_srs\n-a_scale\n$a_scale\n-a_offset\n$a_offset\n-a_ullr\n$a_ullr\n-a_nodata\n$a_nodata\n-gcp\n$gcp\n-co\n$co\n$src_dataset\n$dst_dataset"
+		"templatecontents": "-ot\n$ot\n$strict $strict\n-if\n$if\n-of\n$of\n-b\n$b\n-mask\n$mask\n-expand\n$expand\n-outsize\n$outsize\n-tr\n$tr\n-ovr\n$ovr\n-r\n$r\n$unscale $unscale\n-scale\n$scale\n-exponent\n$exponent\n-srcwin\n$srcwin\n$epo $epo\n$eco $eco\n-projwin\n$projwin\n-projwin_srs\n$projwin_srs\n-a_srs\n$a_srs\n-a_coord_epoch\n$a_coord_epoch\n-a_ullr\n$a_ullr\n-a_nodata\n$a_nodata\n-a_gt\n$a_gt\n-a_scale\n$a_scale\n-a_offset\n$a_offset\n-gcp\n$gcp\n-colorinterp\n$colorinterp\n-mo\n$mo\n-dmo\n$dmo\n$q $q\n$sds $sds\n-co\n$co\n$stats $stats\n$norat $norat\n$noxmp $noxmp\n-oo\n$oo\n$src_dataset\n$dst_dataset"
+	},
+	{
+		"id": "gdal_warp",
+		"label": "Image reprojection and warping",
+		"version": "3.10.2",
+		"description": "Utility for image mosaicing, reprojection and warping",
+		"authors": "Frank Warmerdam, Even Rouault, and others",
+		"copyright": "(C) 1998-2025",
+		"nodeAffinity" : {
+			"value" : "Any"
+		},
+		"category": "OPTICAL",
+		"sources": [
+			{
+				"id": null,
+				"parentId": "gdal_warp",
+				"name": "src_dataset_name",
+				"cardinality": 1,
+				"dataDescriptor": {
+					"formatType": "RASTER"
+				}
+			}
+		],
+		"targets": [
+			{
+				"id": null,
+				"parentId": "gdal_warp",
+				"name": "dst_dataset_name",
+				"dataDescriptor": {
+					"formatType": "RASTER",
+					"formatName": "GTiff",
+					"location": "output.tif"
+				}
+			}
+		],
+		"containerId": "0c95867b-3235-419a-8a4a-4a52c1853ee8",
+		"fileLocation": "gdal_warp",
+		"workingDirectory": ".",
+		"templateType": "VELOCITY",
+		"multiThread": true,
+		"parallelism": 4,
+		"visibility": "SYSTEM",
+		"active": true,
+		"parameterDescriptors": [
+			{
+				"id": "co",
+				"type": "REGULAR",
+				"dataType": "string[]",
+				"defaultValue": null,
+				"description": "One or more optional creation options that can be used to control particulars about the file created",
+				"label": "Creation options",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": false,
+					"separator": ""
+				}
+			},
+			{
+				"id": "s_srs",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Set source spatial reference. If not specified the SRS found in the input dataset will be used.",
+				"label": "Source spatial reference",
+				"notNull": false
+			},
+			{
+				"id": "t_srs",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Set target spatial reference.",
+				"label": "Target spatial reference",
+				"notNull": false
+			},
+			{
+				"id": "srcalpha",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "",
+				"description": "Force the last band of a source image to be considered as a source alpha band.",
+				"label": "Force last band as source alpha band",
+				"notNull": false
+			},
+			{
+				"id": "nosrcalpha",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "",
+				"description": "Prevent the alpha band of a source image to be considered as such (it will be warped as a regular band).",
+				"label": "Prevent source alpha band",
+				"notNull": false
+			},
+			{
+				"id": "dstalpha",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "",
+				"description": "Create an output alpha band to identify nodata (unset/transparent) pixels.",
+				"label": "Create output alpha band",
+				"notNull": false
+			},
+			{
+				"id": "tr",
+				"type": "REGULAR",
+				"dataType": "string[]",
+				"defaultValue": null,
+				"description": "Set output file resolution (in target georeferenced units). Usage: -tr <xres> <yres> | -tr square.",
+				"label": "Output file resolution (in target georeferenced units)",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": false,
+					"separator": ""
+				}
+			},
+			{
+				"id": "ts",
+				"type": "REGULAR",
+				"dataType": "int[]",
+				"defaultValue": null,
+				"description": "Set output file size in pixels and lines. If width or height is set to 0, the other dimension will be guessed from the computed resolution. Note that -ts cannot be used with -tr. Usage: -ts <width> <height>.",
+				"label": "Output file size in pixels and lines",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": true,
+					"separator": " "
+				}
+			},
+			{
+				"id": "te",
+				"type": "REGULAR",
+				"dataType": "int[]",
+				"defaultValue": null,
+				"description": "Set georeferenced extents of output file to be created (in target SRS by default, or in the SRS specified with -te_srs).",
+				"label": "Georeferenced extents",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": true,
+					"separator": " "
+				}
+			},
+			{
+				"id": "te_srs",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Specifies the SRS in which to interpret the coordinates given with -te.",
+				"label": "SRS for georeferenced extents",
+				"notNull": false
+			},
+			{
+				"id": "r",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "nearest",
+				"description": "Select a resampling method",
+				"label": "Resampling method",
+				"notNull": false,
+				"valueSet": [ "near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "rms","mode", "min", "max", "med", "q1", "q3", "sum" ]
+			},
+			{
+				"id": "ot",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Force the output image bands to have a specific data type supported by the driver",
+				"label": "Output type",
+				"notNull": false,
+				"valueSet": [ "Byte", "Int8", "UInt16", "Int16", "UInt32", "Int32", "UInt64", "Int64", "Float32", "Float64", "CInt16", "CInt32", "CFloat32", "CFloat64" ]
+			},
+			{
+				"id": "wo",
+				"type": "REGULAR",
+				"dataType": "string[]",
+				"defaultValue": null,
+				"description": "The GDALWarpOptions::papszWarpOptions docs show all options. Multiple -wo options may be listed.",
+				"label": "Warp options",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": false,
+					"separator": ""
+				}
+			},
+			{
+				"id": "ovr",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "AUTO",
+				"description": "Specify which overview level of source files must be used. The default choice, AUTO, will select the overview level whose resolution is the closest to the target resolution. Specify an integer value (0-based, i.e. 0=1st overview level) to select a particular level. Specify AUTO-n where n is an integer greater or equal to 1, to select an overview level below the AUTO one. Or specify NONE to force the base resolution to be used (can be useful if overviews have been generated with a low quality resampling method, and a higher quality resampling method is specified with -r).",
+				"label": "ovr",
+				"notNull": false
+			}
+		],
+		"templatecontents": "of\n$of\n-co\n$co\n-s_srs\n$s_srs\n-t_srs\n$t_srs\n$srcalpha $srcalpha\n$nosrcalpha $nosrcalpha\n$dstalpha $dstalpha\n-tr\n$tr\n-ts\n$ts\n-te\n$te\n-te_srs\n$te_srs\n-r\n$r\n-ot\n$ot\n-wo\n$wo\n$src_dataset_name\n$dst_dataset_name"
+	},
+	{
+		"id": "gdal_rasterize",
+		"label": "Burns vector geometries into a raster",
+		"version": "3.10.2",
+		"description": "This program burns vector geometries (points, lines, and polygons) into the raster band(s) of a raster image. Vectors are read from OGR supported vector formats. If the output raster already exists, the affected pixels are updated in-place.",
+		"authors": "Frank Warmerdam, Even Rouault, and others",
+		"copyright": "(C) 1998-2025",
+		"nodeAffinity" : {
+			"value" : "Any"
+		},
+		"category": "OPTICAL",
+		"sources": [
+			{
+				"id": null,
+				"parentId": "gdal_rasterize",
+				"name": "src_datasource",
+				"cardinality": 1,
+				"dataDescriptor": {
+					"formatType": "RASTER"
+				}
+			}
+		],
+		"targets": [
+			{
+				"id": null,
+				"parentId": "gdal_rasterize",
+				"name": "dst_filename",
+				"dataDescriptor": {
+					"formatType": "RASTER",
+					"formatName": "GTiff",
+					"location": "output.tif"
+				}
+			}
+		],
+		"containerId": "0c95867b-3235-419a-8a4a-4a52c1853ee8",
+		"fileLocation": "gdal_rasterize",
+		"workingDirectory": ".",
+		"templateType": "VELOCITY",
+		"multiThread": true,
+		"parallelism": 4,
+		"visibility": "SYSTEM",
+		"active": true,
+		"parameterDescriptors": [
+			{
+				"id": "b",
+				"type": "REGULAR",
+				"dataType": "int[]",
+				"defaultValue": null,
+				"description": "The band(s) to burn values into. Multiple -b arguments may be used to burn into a list of bands. The default is to burn into band 1. Not used when creating a new raster.",
+				"label": "Band(s)",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": false,
+					"separator": " "
+				}
+			},
+			{
+				"id": "i",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Invert rasterization. Burn the fixed burn value, or the burn value associated with the first feature into all parts of the image not inside the provided polygon. Note: When the vector features contain a polygon nested within another polygon (like an island in a lake), GDAL must be built against GEOS to get correct results.",
+				"label": "Invert rasterization",
+				"notNull": false
+			},
+			{
+				"id": "at",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Enables the ALL_TOUCHED rasterization option so that all pixels touched by lines or polygons will be updated, not just those on the line render path, or whose center point is within the polygon (behavior is unspecified when the polygon is just touching the pixel center). Defaults to disabled for normal rendering rules.",
+				"label": "Enable ALL_TOUCHED rasterization",
+				"notNull": false
+			},
+			{
+				"id": "oo",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Source dataset open option (format specific). Usage: -oo <NAME>=<VALUE>",
+				"label": "Dataset open option",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": false,
+					"separator": ""
+				}
+			},
+			{
+				"id": "burn",
+				"type": "REGULAR",
+				"dataType": "string[]",
+				"defaultValue": null,
+				"description": "A fixed value to burn into a band for all objects. A list of -burn options can be supplied, one per band being written to.",
+				"label": "Fixed value to burn",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": false,
+					"separator": ""
+				}
+			},
+			{
+				"id": "a",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Identifies an attribute field on the features to be used for a burn-in value. The value will be burned into all output bands.",
+				"label": "Attribute field for burn",
+				"notNull": false
+			},
+			{
+				"id": "3d",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Indicates that a burn value should be extracted from the \"Z\" values of the feature. Works with points and lines (linear interpolation along each segment). For polygons, works properly only if the are flat (same Z value for all vertices).",
+				"label": "3d",
+				"notNull": false
+			},
+			{
+				"id": "add",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Instead of burning a new value, this adds the new value to the existing raster. Suitable for heatmaps for instance.",
+				"label": "Add new value to existing raster",
+				"notNull": false
+			},
+			{
+				"id": "l",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Indicates the layer(s) from the datasource that will be used for input features. May be specified multiple times, but at least one layer name or a -sql option must be specified (not both).",
+				"label": "Layer(s)",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": false,
+					"separator": ""
+				}
+			},
+			{
+				"id": "where",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "An optional SQL WHERE style query expression to be applied to select features to burn in from the input layer(s).",
+				"label": "SQL WHERE",
+				"notNull": false
+			},
+			{
+				"id": "sql",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "An SQL statement to be evaluated against the datasource to produce a virtual layer of features to be burned in. Starting with GDAL 3.7, the @filename syntax can be used to indicate that the content is in the pointed filename.",
+				"label": "SQL select statement",
+				"notNull": false
+			},
+			{
+				"id": "dialect",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "SQL dialect. In some cases can be used to use (unoptimized) OGR SQL instead of the native SQL of an RDBMS by passing OGRSQL. The \"SQLITE\" dialect can also be used with any datasource.",
+				"label": "SQL dialect",
+				"notNull": false
+			},
+			{
+				"id": "of",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Select the output format. Starting with GDAL 2.3, if not specified, the format is guessed from the extension (previously was GTiff). Use the short format name.",
+				"label": "Output format",
+				"notNull": false
+			},
+			{
+				"id": "a_srs",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Override the projection for the output file. If not specified, the projection of the input vector file will be used if available.",
+				"label": "Projected SRS",
+				"notNull": false
+			},
+			{
+				"id": "to",
+				"type": "REGULAR",
+				"dataType": "string[]",
+				"defaultValue": null,
+				"description": "set a transformer option suitable to pass to GDALCreateGenImgProjTransformer2(). This is used when converting geometries coordinates to target raster pixel space. For example this can be used to specify RPC related transformer options.",
+				"label": "Transformer  option",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": false,
+					"separator": ""
+				}
+			},
+			{
+				"id": "co",
+				"type": "REGULAR",
+				"dataType": "string[]",
+				"defaultValue": null,
+				"description": "One or more optional creation options that can be used to control particulars about the file created",
+				"label": "Creation options",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": false,
+					"separator": ""
+				}
+			},
+			{
+				"id": "a_nodata",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Assign a specified nodata value to output bands.",
+				"label": "NoData value",
+				"notNull": false
+			},
+			{
+				"id": "init",
+				"type": "REGULAR",
+				"dataType": "string[]",
+				"defaultValue": null,
+				"description": "Pre-initialize the output image bands with these values. However, it is not marked as the nodata value in the output file. If only one value is given, the same value is used in all the bands.",
+				"label": "Pre-initialize",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": false,
+					"separator": ""
+				}
+			},
+			{
+				"id": "te",
+				"type": "REGULAR",
+				"dataType": "int[]",
+				"defaultValue": null,
+				"description": "Set georeferenced extents of output file to be created (in target SRS by default, or in the SRS specified with -te_srs).",
+				"label": "Georeferenced extents",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": true,
+					"separator": " "
+				}
+			},
+			{
+				"id": "tr",
+				"type": "REGULAR",
+				"dataType": "string[]",
+				"defaultValue": null,
+				"description": "Set output file resolution (in target georeferenced units). Usage: -tr <xres> <yres> | -tr square.",
+				"label": "Output file resolution (in target georeferenced units)",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": false,
+					"separator": ""
+				}
+			},
+			{
+				"id": "tap",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Align the coordinates of the extent of the output file to the values of the -tr, such that the aligned extent includes the minimum extent. Alignment means that xmin / resx, ymin / resy, xmax / resx and ymax / resy are integer values.",
+				"label": "Target aligned pixels",
+				"notNull": false
+			},
+			{
+				"id": "ts",
+				"type": "REGULAR",
+				"dataType": "int[]",
+				"defaultValue": null,
+				"description": "Set output file size in pixels and lines. If width or height is set to 0, the other dimension will be guessed from the computed resolution. Note that -ts cannot be used with -tr. Usage: -ts <width> <height>.",
+				"label": "Output file size in pixels and lines",
+				"notNull": false,
+				"expansionRule": {
+					"joinValues": true,
+					"separator": " "
+				}
+			},
+			{
+				"id": "ot",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Force the output image bands to have a specific data type supported by the driver",
+				"label": "Output type",
+				"notNull": false,
+				"valueSet": [ "Byte", "Int8", "UInt16", "Int16", "UInt32", "Int32", "UInt64", "Int64", "Float32", "Float64", "CInt16", "CInt32", "CFloat32", "CFloat64" ]
+			},
+			{
+				"id": "optim",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": "AUTO",
+				"description": "Force the algorithm used (results are identical). The raster mode is used in most cases and optimise read/write operations. The vector mode is useful with a decent amount of input features and optimise the CPU use. That mode have to be used with tiled images to be efficient. The auto mode (the default) will chose the algorithm based on input and output properties.",
+				"label": "Optimise",
+				"notNull": false,
+				"valueSet": [ "AUTO", "VECTOR", "RASTER" ]
+			},
+			{
+				"id": "q",
+				"type": "REGULAR",
+				"dataType": "string",
+				"defaultValue": null,
+				"description": "Suppress progress monitor and other non-error output.",
+				"label": "Suppress progress monitor",
+				"notNull": false
+			}
+		],
+		"templatecontents": "-b\n$b\n$i $i\n$at $at\n-oo\n$oo\n-burn\n$burn\n-a\n$a\n$3d $3d\n$add $add\n-l\n$l\n-where\n$where\n-sql\n$sql\n-dialect\n$dialect\n-of\n$of\n-a_srs\n$a_srs\n-to\n$to\n-co\n$co\n-a_nodata\n$a_nodata\n-init\n$init\n-te\n$te\n-tr\n$tr\n$tap $tap\n-ts\n$ts\n-ot\n$ot\n-optim\n$optim\n$q $q\n$src_datasource\n$dst_filename"
 	}
 ]

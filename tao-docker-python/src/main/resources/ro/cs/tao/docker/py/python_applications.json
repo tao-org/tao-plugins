@@ -2,7 +2,7 @@
   {
     "id": "PythonScript",
     "label": "Python Script",
-    "version": "2.7.15",
+    "version": "3.12.9",
     "description": "Template for Python scripting components",
     "authors": "TAO Team",
     "copyright": "(C) CS ROMANIA",
@@ -35,7 +35,7 @@
   {
     "id": "python-sqrt",
     "label": "PySquare",
-    "version": "2.7.15",
+    "version": "3.12.9",
     "description": "Python script for square rooting raster pixels",
     "authors": "TAO Team",
     "copyright": "(C) CS ROMANIA",
