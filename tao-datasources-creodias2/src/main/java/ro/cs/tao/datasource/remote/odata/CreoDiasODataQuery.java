@@ -443,10 +443,12 @@ public class CreoDiasODataQuery extends DataQuery {
         }
         if (this.parameters.containsKey("dayTime")) {
             String dayTime = this.parameters.get("dayTime").getValueAsString();
-            if ("DAY".equalsIgnoreCase(dayTime)) {
-                results.removeIf(p -> p.getAcquisitionDate().getHour() > 16);
-            } else if ("NIGHT".equalsIgnoreCase(dayTime)) {
-                results.removeIf(p -> p.getAcquisitionDate().getHour() <= 16);
+            if (!"ANY".equalsIgnoreCase(dayTime)) {
+                if ("DAY".equalsIgnoreCase(dayTime)) {
+                    results.removeIf(p -> p.getAcquisitionDate().getHour() > 16);
+                } else if ("NIGHT".equalsIgnoreCase(dayTime)) {
+                    results.removeIf(p -> p.getAcquisitionDate().getHour() <= 16);
+                }
             }
         }
     }
