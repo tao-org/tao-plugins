@@ -5,8 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import ro.cs.tao.argo.workflow.model.ArgoWorkflow;
+import ro.cs.tao.component.DryRunMetrics;
+import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.execution.ExecutionException;
+import ro.cs.tao.execution.util.TaskUtilities;
+import ro.cs.tao.workflow.WorkflowDescriptor;
+import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -24,7 +29,7 @@ import java.util.logging.Logger;
 
 public class SIMPIPEClient {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(SIMPIPEClient.class.getName());
     private final String projectName;
     private final ArgoWorkflow argoTemplate;
     private final String graphQLURL;
@@ -33,6 +38,8 @@ public class SIMPIPEClient {
     private final int TIEMOUT = 60; // 5 minutes
     private String projectId;
     private String dryRunId;
+    private List<DryRunMetrics> metrics;
+    private WorkflowDescriptor workflowDescriptor;
 
     record SIMPIPEArtifact(String name, String url, String size, String bucketName) {
     }
@@ -40,11 +47,13 @@ public class SIMPIPEClient {
     record SIMPIPEBucket(String name){
     }
 
-    public SIMPIPEClient(String projectName, Path argoYaml) {
+    public SIMPIPEClient(String projectName, Path argoYaml, WorkflowDescriptor workflowDescriptor) {
         this.projectName = constructProjectName(projectName);
         this.graphQLURL = ConfigurationManager.getInstance().getValue("tao.sintef.graphql");
         this.argoTemplate = parseYaml(argoYaml);
         this.artifacts = new ArrayList<>();
+        this.metrics = new ArrayList<>();
+        this.workflowDescriptor = workflowDescriptor;
     }
 
     private String constructProjectName(String projectName) {
@@ -77,6 +86,9 @@ public class SIMPIPEClient {
                 TimeUnit.SECONDS.sleep(5);
                 tries++;
             }
+        } catch(Exception e){
+            logger.fine("A connection exception has been encountered " + e.getMessage());
+            throw new Exception(e.getMessage());
         }
         logger.fine("GraphQL request failed after max retries.");
         throw new ExecutionException("GraphQL request failed after max retries.");
@@ -100,8 +112,9 @@ public class SIMPIPEClient {
                 throw new ExecutionException("Error creating project as no information has been returned!"
                         + projectNode.get("errors"));
             projectId = projectNode.get("id").asText();
+            logger.fine("Project created successfully!");
         } catch (Exception e) {
-            throw new ExecutionException(e.getMessage(), e.getCause());
+            throw new ExecutionException(e.getMessage());
         }
     }
 
@@ -125,8 +138,9 @@ public class SIMPIPEClient {
             if (workflowTemplateNode.isMissingNode() || !workflowTemplateNode.has("name"))
                 throw new ExecutionException("Error adding Argo Workflow Template to project as no information has been returned!"
                         + workflowTemplateNode.get("errors"));
+            logger.fine("Argo workflow added successfully!");
         } catch (Exception e) {
-            throw new ExecutionException(e.getMessage(), e.getCause());
+            throw new ExecutionException(e.getMessage());
         }
 
 
@@ -158,8 +172,9 @@ public class SIMPIPEClient {
             if(dryRunNode.isMissingNode() || !dryRunNode.has("id"))
                 throw new ExecutionException("Error executing Dry Run as no information has been returned!" + dryRunNode.get("errors"));
             this.dryRunId = dryRunNode.get("id").asText();
+            logger.fine("Dry run started successfully!");
         } catch (Exception e) {
-            throw new ExecutionException(e.getMessage(), e.getCause());
+            throw new ExecutionException(e.getMessage());
         }
     }
 
@@ -184,7 +199,7 @@ public class SIMPIPEClient {
                 getArtifacts(bucket.name());
             }
         } catch (Exception e) {
-            throw new ExecutionException(e.getMessage(), e.getCause());
+            throw new ExecutionException(e.getMessage());
         }
     }
 
@@ -214,7 +229,7 @@ public class SIMPIPEClient {
                 this.artifacts.add(artifact);
             }
         } catch (Exception e) {
-            throw new ExecutionException(e.getMessage(), e.getCause());
+            throw new ExecutionException(e.getMessage());
         }
     }
 
@@ -246,15 +261,7 @@ public class SIMPIPEClient {
                             memoryUsageBytes {							
                                 timestamp							
                                 value						
-                            }						
-                            networkReceiveBytesTotal {					
-                                timestamp							
-                                value						
-                            }						
-                            networkTransmitBytesTotal {				
-                                timestamp							
-                                value		             				
-                            }					
+                            }										
                         }				
                     }		
                 }		
@@ -263,24 +270,95 @@ public class SIMPIPEClient {
         """;
         Map<String, Object> variables = Map.of("dryRunId", dryRunId);
 
+        int tries = 0;
         try {
-            TimeUnit.SECONDS.sleep(10);
-            JsonNode response = graphqlRequest(dryRunMetricsQuery, variables, "getDryRunMetrics");
-            JsonNode dryRunMetricsNode = response.path("data");
-            if (dryRunMetricsNode.isMissingNode())
-                throw new ExecutionException("Error getting Dry Run Metrics as no information has been returned!"
-                        + dryRunMetricsNode.get("errors"));
-            //TODO save the metrics
+            while(tries < MAX_RETRIES) {
+                TimeUnit.SECONDS.sleep(10);
+                JsonNode response = graphqlRequest(dryRunMetricsQuery, variables, "getDryRunMetrics");
+                JsonNode dryRunMetricsNode = response.path("data");
+                if (dryRunMetricsNode.isMissingNode())
+                    throw new ExecutionException("Error getting Dry Run Metrics as no information has been returned! "
+                            + (!dryRunMetricsNode.path("errors").isMissingNode() ?
+                            dryRunMetricsNode.path("errors").asText() : ""));
+                JsonNode status = dryRunMetricsNode.path("dryRun").path("status");
+                if(status.isMissingNode()) {
+                    tries++;
+                    continue;
+                }
+                switch(status.path("phase").asText()) {
+                    case "Succeeded" -> {
+                        JsonNode nodes = dryRunMetricsNode.path("dryRun").path("nodes");
+                        if(nodes.isMissingNode() || !nodes.isArray())
+                            throw new ExecutionException("No nodes executed in the dry run");
+                        parseWorkflowNodesMetrics(nodes);
+                        return;
+                    }
+                    case "Pending", "Running" -> {}
+                    default -> tries++;
+                }
+            }
         } catch (Exception e) {
-            throw new ExecutionException(e.getMessage(), e.getCause());
+            throw new ExecutionException(e.getMessage());
         }
     }
 
-    public void runClient(){
+    private void parseWorkflowNodesMetrics(JsonNode nodes) {
+        for (JsonNode node : nodes) {
+            if(!node.path("phase").asText().equals("Succeeded") && !node.path("log").isMissingNode()) {
+                throw new ExecutionException("The execution of this noe has failed "
+                        + node.path("displayName").asText()
+                        + " with log " + node.path("log").asText());
+            }
+            if(node.path("type").asText().equals("DAG"))
+                continue;
+            DryRunMetrics metric = getDryRunMetricFromNode(node);
+            metrics.add(metric);
+        }
+    }
+
+    private DryRunMetrics getDryRunMetricFromNode(JsonNode node) {
+        DryRunMetrics metric = new DryRunMetrics();
+        String componentDisplayName = node.get("displayName").asText();
+        String componentId = componentDisplayName.substring(0, componentDisplayName.lastIndexOf("-")).replace("-", "_");
+        for(WorkflowNodeDescriptor workflowNode : workflowDescriptor.getNodes()){
+            if(workflowNode.getComponentId().toLowerCase().equals(componentId)){
+                //might require change for Condition Components
+                metric.setComponent((ProcessingComponent) TaskUtilities.getComponentFor(workflowNode));
+                break;
+            }
+        }
+        metric.setDuration(node.get("duration").asInt());
+        JsonNode metricsNode = node.path("metrics");
+        // get cpu metric
+        JsonNode cpuMetrics = metricsNode.path("cpuUsageSecondsTotal");
+        if(cpuMetrics.isMissingNode() || !cpuMetrics.isArray())
+            throw new ExecutionException("No cpu metrics for node " + node.path("displayName").asText());
+        for(JsonNode nodeMetric : cpuMetrics){
+            metric.addCpuUsageMetric(nodeMetric.get("value").asText());
+        }
+        // get memory metric
+        JsonNode memoryMetrics = metricsNode.path("memoryUsageBytes");
+        if(memoryMetrics.isMissingNode() || !memoryMetrics.isArray())
+            throw new ExecutionException("No memory metrics for node " + node.path("displayName").asText());
+        for(JsonNode nodeMetric : memoryMetrics){
+            metric.addMemoryUsageMetric(nodeMetric.get("value").asText());
+        }
+        return metric;
+    }
+
+    public List<DryRunMetrics> runClient(){
+        logger.fine("Creating SIM-PIPE project!");
         createProject();
+        logger.fine("Adding Argo Workflow to SIM-PIPE project!");
         addArgoWorkflowToProject();
+        logger.fine("Executing Dry Run!");
         executeDryRun();
+        logger.fine("Fetching Dry Run metrics!");
         getDryRunMetrics();
+        if(metrics.isEmpty())
+            throw new ExecutionException("Error in correctly retrieving Dry Run Metric from SIM-PIPE!");
+        logger.fine("Dry Run metrics retrieved successfully!");
+        return metrics;
     }
 
     private ArgoWorkflow parseYaml(Path file) {
