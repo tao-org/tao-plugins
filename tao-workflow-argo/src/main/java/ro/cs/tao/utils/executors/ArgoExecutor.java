@@ -334,24 +334,24 @@ public class ArgoExecutor extends Executor<Object>
         }
     }
 
-    private void computeTemplateOutputs(TargetDescriptor target, String templateOutputName, List<WorkflowArtifact> outputArtifacts) {
-        if (target.getDataDescriptor().getLocation().contains(",")) {
-            String[] strings = target.getDataDescriptor().getLocation().split(",");
-            for (int i=0; i < strings.length; i++) {
-                WorkflowArtifact workflowArtifact = new WorkflowArtifact();
-                workflowArtifact.setName(templateOutputName + CONNECTOR_STRING + i);
-                workflowArtifact.setPath(templateOutputName + "/" + FileUtilities.toUnixPath(strings[i]));
-                workflowArtifact.setArchive(new ArchiveStrategy());
-                outputArtifacts.add(workflowArtifact);
-            }
-        } else {
-            WorkflowArtifact workflowArtifact = new WorkflowArtifact();
-            workflowArtifact.setName(templateOutputName);
-            workflowArtifact.setPath(FileUtilities.toUnixPath(templateOutputName + "/" + target.getDataDescriptor().getLocation()));
-            workflowArtifact.setArchive(new ArchiveStrategy());
-            outputArtifacts.add(workflowArtifact);
-        }
-    }
+//    private void computeTemplateOutputs(TargetDescriptor target, String templateOutputName, List<WorkflowArtifact> outputArtifacts) {
+//        if (target.getDataDescriptor().getLocation().contains(",")) {
+//            String[] strings = target.getDataDescriptor().getLocation().split(",");
+//            for (int i=0; i < strings.length; i++) {
+//                WorkflowArtifact workflowArtifact = new WorkflowArtifact();
+//                workflowArtifact.setName(templateOutputName + CONNECTOR_STRING + i);
+//                workflowArtifact.setPath(templateOutputName + "/" + FileUtilities.toUnixPath(strings[i]));
+//                workflowArtifact.setArchive(new ArchiveStrategy());
+//                outputArtifacts.add(workflowArtifact);
+//            }
+//        } else {
+//            WorkflowArtifact workflowArtifact = new WorkflowArtifact();
+//            workflowArtifact.setName(templateOutputName);
+//            workflowArtifact.setPath(FileUtilities.toUnixPath(templateOutputName + "/" + target.getDataDescriptor().getLocation()));
+//            workflowArtifact.setArchive(new ArchiveStrategy());
+//            outputArtifacts.add(workflowArtifact);
+//        }
+//    }
 
     private void computeTemplateDependencies(WorkflowNodeDescriptor currentNode, List<String> dependencies){
         List<WorkflowNodeDescriptor> nodesExceptDataSources = getNodesExceptDataSources();
