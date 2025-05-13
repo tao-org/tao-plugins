@@ -101,6 +101,7 @@ public class OtbOptimizer extends BaseRuntimeOptimizer {
 
         component.setTemplateContents(pipeline);
         component.setComponentType(ProcessingComponentType.AGGREGATE);
+        component.setCategory(sources.get(sources.size() - 1).getCategory());
 
         return component;
     }
