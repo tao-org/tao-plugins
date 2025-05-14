@@ -39,6 +39,33 @@ import java.util.regex.Pattern;
 public class ProjectionResolver implements TokenResolver {
     private static final Pattern utmZonePattern = Pattern.compile("(EPSG_CODE\\((\\d{2}[A-Z]{3})\\))");
 
+    /**
+     * A function that transforms a string representation of a UTM zone specification
+     * into its corresponding EPSG code in the format "EPSG:xxxxx".
+     *
+     * The function operates based on the input string's first two characters, which
+     * represent the numeric UTM zone. The hemisphere is determined by the ASCII value
+     * of the first character in the string:
+     * - If the ASCII value of the first character is less than 70 ('F'), the zone
+     *   is assumed to be in the northern hemisphere, and the EPSG code is calculated
+     *   as 32600 plus the numeric zone.
+     * - Otherwise, the zone is assumed to be in the southern hemisphere, and the EPSG
+     *   code is calculated as 32700 plus the numeric zone.
+     *
+     * Input:
+     * - A two-character string representing the UTM zone.
+     *
+     * Output:
+     * - A string prefixed with "EPSG:" followed by the calculated EPSG code.
+     *
+     * Errors:
+     * - If the input string is not in the expected format, or if the first two
+     *   characters cannot be parsed as an integer, a runtime exception may occur.
+     *
+     * Usage Context:
+     * This function is used in resolving and standardizing CRS (Coordinate Reference
+     * System) codes based on UTM zone specifications.
+     */
     public static final Function<String, String> EPSG_CODE = (str) -> {
         final int code = Integer.parseInt(str.substring(0, 2));
         return "EPSG:" + (str.charAt(0) < 70 ? 32600 + code : 32700 + code);

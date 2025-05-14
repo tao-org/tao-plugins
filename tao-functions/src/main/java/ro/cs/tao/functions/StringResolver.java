@@ -41,20 +41,68 @@ public class StringResolver implements TokenResolver {
     private static final Pattern lowerPattern = Pattern.compile("(LOWER\\(([A-Za-z0-9_\\/\\\\.-]+)\\))");
     private static final Pattern charPattern = Pattern.compile("(CHAR\\((\\d{2,3})\\))");
 
+    /**
+     * A {@link TriFunction} that extracts a substring from a given string based on the specified start
+     * index and length. If the provided arguments are invalid, the original string is returned.
+     *
+     * The function operates as follows:
+     * - If the input string is null or empty, or if the start index or length are non-positive,
+     *   or if the calculated end index (start index + length) exceeds the string length,
+     *   then the input string is returned unmodified.
+     * - Otherwise, it uses the {@link String#substring(int, int)} method to extract the substring.
+     *
+     * Note:
+     * - The function uses {@link StringUtilities#isNullOrEmpty(String)} to check for null or empty strings.
+     *
+     * Input Parameters:
+     * - {@code str}: The source string from which a substring is to be extracted.
+     * - {@code i}: The zero-based starting index for extraction. Must be greater than 0.
+     * - {@code j}: The length of the substring to extract. Must be greater than 0.
+     *
+     * Output:
+     * - The extracted substring if the arguments are valid; otherwise, the original string.
+     */
     public static final TriFunction<String, Integer, Integer, String> SUBSTRING = (str, i, j) -> {
         return (!StringUtilities.isNullOrEmpty(str) && i > 0 && j > 0 && i + j < str.length())
                ? str.substring(i, i + j)
                : str;
     };
 
+    /**
+     * A constant function that converts the provided string to uppercase.
+     * If the input string is null or empty, the original string is returned unchanged.
+     * Utilizes {@link StringUtilities#isNullOrEmpty(String)} to determine if the input is null or empty.
+     */
     public static final Function<String, String> UPPER = (str) -> {
         return !StringUtilities.isNullOrEmpty(str) ? str.toUpperCase() : str;
     };
 
+    /**
+     * A function that converts a given string to lowercase.
+     * If the input string is null or empty, it returns the input string unchanged.
+     * This function makes use of the {@link StringUtilities#isNullOrEmpty(String)} method
+     * to check whether the input is null or empty.
+     */
     public static final Function<String, String> LOWER = (str) -> {
         return !StringUtilities.isNullOrEmpty(str) ? str.toLowerCase() : str;
     };
 
+    /**
+     * A function that attempts to convert a string representation of an integer
+     * into its corresponding ASCII character. The integer value must be within
+     * the printable ASCII range (32 to 126). If the input string is null, empty,
+     * non-numeric, or the numeric value falls outside the printable ASCII range,
+     * the function returns null.
+     *
+     * The function uses the following steps:
+     * 1. Validates if the input string is not null or empty using
+     *    {@link StringUtilities#isNullOrEmpty(String)}.
+     * 2. Parses the input string to an integer.
+     * 3. Checks whether the integer is within the printable ASCII range.
+     * 4. Converts the integer to a character and returns the resulting string.
+     *
+     * @see StringUtilities#isNullOrEmpty(String)
+     */
     public static final Function<String, String> CHAR = (str) -> {
         if (!StringUtilities.isNullOrEmpty(str)) {
             return null;

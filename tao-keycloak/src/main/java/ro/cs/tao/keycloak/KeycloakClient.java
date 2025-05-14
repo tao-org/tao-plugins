@@ -51,6 +51,11 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+/**
+ * The KeycloakClient class provides an interface for interacting with a Keycloak server
+ * to manage authentication, user management, and token-related operations.
+ * It implements the TokenProvider interface and extends Object.
+ */
 public class KeycloakClient implements TokenProvider {
     public static final String USER_PLAN_ATTRIBUTE = "user_plan";
     private static final Logger logger = Logger.getLogger(KeycloakClient.class.getName());
@@ -95,14 +100,31 @@ public class KeycloakClient implements TokenProvider {
         this.adminPwd = admPwd;
     }
 
+    /**
+     * Sets the TokenKeeper for managing token-related operations.
+     *
+     * @param tokenKeeper the TokenKeeper instance to be used for token management
+     */
     public void setTokenKeeper(TokenKeeper tokenKeeper) {
         this.tokenKeeper = tokenKeeper;
     }
 
+    /**
+     * Sets the UserProvider to be used by the KeycloakClient.
+     * The UserProvider is supplied using a functional interface, allowing dynamic retrieval.
+     *
+     * @param provider a supplier that provides an instance of UserProvider.
+     *                 This UserProvider will be used for user-related operations by the KeycloakClient.
+     */
     public void setUserProvider(Supplier<UserProvider> provider) {
         this.userProvider = provider;
     }
 
+    /**
+     * Retrieves the username of the administrator user for the Keycloak client.
+     *
+     * @return the username of the admin user as a string
+     */
     public String getAdminUser() {
         return adminUser;
     }
@@ -164,6 +186,16 @@ public class KeycloakClient implements TokenProvider {
         return true;
     }
 
+    /**
+     * Validates the given username and password credentials by interacting with a Keycloak server
+     * and retrieves the corresponding user details if authentication is successful.
+     *
+     * @param username the username of the user attempting to log in
+     * @param password the password associated with the specified username
+     * @return a {@code User} object representing the authenticated user, or {@code null} if the
+     *         authentication fails or the user cannot be retrieved
+     * @throws RuntimeException if the provided credentials are invalid or any other error occurs
+     */
     public User checkLoginCredentials(final String username, final String password) {
         final AuthzClient authClient = getAuthClient();
         final AuthorizationRequest request = new AuthorizationRequest();
@@ -206,6 +238,14 @@ public class KeycloakClient implements TokenProvider {
         return user;
     }
 
+    /**
+     * Verifies the provided authorization code by exchanging it for a token and uses
+     * the retrieved token to validate and fetch the associated user's details.
+     *
+     * @param code the authorization code used to authenticate and retrieve the user's details
+     * @return a {@code User} object representing the authenticated user
+     * @throws RuntimeException if the supplied authorization code is invalid or authentication fails
+     */
     public User checkLoginCredentials(final String code) {
         Token token = newTokenFromCode(code);
         if (token == null) {
@@ -218,6 +258,17 @@ public class KeycloakClient implements TokenProvider {
         return user;
     }
 
+    /**
+     * Validates the given token and retrieves the associated user details.
+     * This method performs token verification and checks if the token
+     * corresponds to a valid user. If successful, it provides the {@code User}
+     * object associated with the token.
+     *
+     * @param token the string representation of the token to be verified; must not be null
+     * @return a {@code User} object representing the user associated with the valid token,
+     *         or {@code null} if the token is invalid or the user cannot be retrieved
+     * @throws RuntimeException if the provided token is null or any error occurs during verification
+     */
     public User checkToken(final String token) {
         if (token == null) {
             throw new RuntimeException("Invalid token");
@@ -268,6 +319,18 @@ public class KeycloakClient implements TokenProvider {
         return user;
     }
 
+    /**
+     * Creates a new user in the Keycloak system with the specified credentials and attributes.
+     * If a user with the provided username already exists, an exception is thrown.
+     *
+     * @param username the username for the new user to be created
+     * @param password the password for the new user to be created
+     * @param email the email address to associate with the new user
+     * @param firstName the first name of the new user
+     * @param lastName the last name of the new user
+     * @return a {@code User} object representing the newly created user, if the operation is successful
+     * @throws IllegalArgumentException if a user with the specified username already exists
+     */
     public User createUser(final String username, final String password,
                            final String email, final String firstName, final String lastName) {
         //try (Keycloak client = getAdminClient()) {
@@ -299,6 +362,18 @@ public class KeycloakClient implements TokenProvider {
         //}
     }
 
+    /**
+     * Updates the profile of an existing user in the Keycloak system.
+     * This includes updating email, first name, last name, and optionally resetting the user's password.
+     * If the password is updated, the user will be required to update their password on the next login.
+     *
+     * @param username     the username of the user whose profile is to be updated
+     * @param password     the current password of the user
+     * @param newPassword  the new password to set for the user, if provided and different from the current password
+     * @param email        the updated email address to associate with the user
+     * @param firstName    the updated first name of the user
+     * @param lastName     the updated last name of the user
+     */
     public void changeUserProfile(final String username, final String password,
                                   final String newPassword, final String email,
                                   final String firstName, final String lastName) {
@@ -326,6 +401,12 @@ public class KeycloakClient implements TokenProvider {
         }
     }
 
+    /**
+     * Removes a user from the Keycloak system using their username.
+     * If there is exactly one user matching the provided username, that user will be removed.
+     *
+     * @param username the username of the user to be removed
+     */
     public void removeUser(final String username) {
         final Keycloak client = getAdminClient();
         final UsersResource usersResource = client.realm(this.realm).users();
@@ -370,6 +451,15 @@ public class KeycloakClient implements TokenProvider {
         return false;
     }
 
+    /**
+     * Retrieves the first associated plan name for a specified user from their attributes in Keycloak.
+     * Searches for the user using their unique username and extracts the plan name
+     * if available in the user's attributes.
+     *
+     * @param username the username of the user whose plan name is to be retrieved
+     * @return the name of the user's plan if it exists; otherwise, {@code null}
+     * @throws Throwable if any exception occurs during the retrieval process
+     */
     public String getUserPlanName(String username) {
         try { //(Keycloak adminClient = getAdminClient()) {
             Keycloak adminClient = getAdminClient();
@@ -390,6 +480,17 @@ public class KeycloakClient implements TokenProvider {
         }
     }
 
+    /**
+     * Converts a map containing key information into an RSA public key.
+     * The method extracts the modulus and exponent from the provided map,
+     * decodes them, and generates a {@code PublicKey} using the RSA algorithm.
+     *
+     * @param keyInfo a map containing the key information. It must include
+     *                the "n" key for the base64-encoded modulus and the "e" key
+     *                for the base64-encoded public exponent.
+     * @return the generated {@code PublicKey} object if the conversion is successful;
+     *         {@code null} if the conversion fails due to invalid input or errors during processing.
+     */
     private PublicKey toPublicKey(Map<String, Object> keyInfo) {
         try {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -407,6 +508,13 @@ public class KeycloakClient implements TokenProvider {
         }
     }
 
+    /**
+     * Retrieves public keys from the certificates endpoint of the configured Keycloak realm
+     * and updates the internal mapping of key IDs to public keys.
+     *
+     * @param jwsHeader the JSON Web Signature (JWS) header containing details such as the key ID (kid)
+     *                  used to match and retrieve the corresponding public key
+     */
     private void retrievePublicKeyFromCertsEndpoint(JWSHeader jwsHeader) {
         try {
             ObjectMapper om = new ObjectMapper();
@@ -423,6 +531,14 @@ public class KeycloakClient implements TokenProvider {
         }
     }
 
+    /**
+     * Retrieves the administrative client for interacting with the Keycloak server. If the admin client
+     * instance is not initialized or is closed, a new instance is constructed using the configured server URL,
+     * realm, and administrator credentials. If the existing client is still valid, its token is refreshed or renewed
+     * to ensure continued access.
+     *
+     * @return an instance of {@code Keycloak} representing the administrative client.
+     */
     private Keycloak getAdminClient() {
         if (adminClient == null || adminClient.isClosed()) {
             adminClient = KeycloakBuilder.builder()
@@ -440,6 +556,12 @@ public class KeycloakClient implements TokenProvider {
         return adminClient;
     }
 
+    /**
+     * Initializes and retrieves an instance of {@code AuthzClient} for interacting with the Keycloak server.
+     * This client is configured using the authentication URL, realm, client ID, and client secret.
+     *
+     * @return an instance of {@code AuthzClient} configured for the Keycloak server.
+     */
     private AuthzClient getAuthClient() {
         Configuration configuration = new Configuration(this.authUrl, this.realm, this.clientId,
                                                         new HashMap<>() {{
@@ -448,6 +570,14 @@ public class KeycloakClient implements TokenProvider {
         return AuthzClient.create(configuration);
     }
 
+    /**
+     * Refreshes a currently expired or soon-to-expire token using the provided refresh token.
+     * This method interacts with the Keycloak server to obtain a new access token and refresh token.
+     *
+     * @param refreshToken the string representation of the refresh token to be used for token renewal
+     * @return a {@code Token} object containing the new access token, refresh token, and expiration time
+     * @throws RuntimeException if the refresh process fails or the provided refresh token is invalid
+     */
     private Token refreshToken(String refreshToken) {
         final Configuration configuration = new Configuration(this.authUrl, this.realm, this.clientId,
                                                               new HashMap<>() {{

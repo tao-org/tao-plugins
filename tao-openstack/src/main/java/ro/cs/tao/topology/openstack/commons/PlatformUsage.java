@@ -1,5 +1,12 @@
 package ro.cs.tao.topology.openstack.commons;
 
+/**
+ * The PlatformUsage class represents the resource usage of a computing platform.
+ * It encapsulates the maximum and used quantities of CPUs, memory, and storage resources.
+ *
+ * This class is immutable, and its fields are initialized via the constructor.
+ * The class provides getter methods to access the values for maximum and used resources.
+ */
 public class PlatformUsage {
     private final int maxCpus;
     private final int usedCpus;
