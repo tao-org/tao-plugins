@@ -49,6 +49,32 @@ import java.util.regex.Pattern;
 public class FolderResolver implements TokenResolver {
     private static final Pattern folderPattern = Pattern.compile("(FOLDER\\((\\d{2}[A-Z]{3})\\))");
 
+    /**
+     * A function that extracts the folder name or the final segment of a given string
+     * based on the position of the last '/' character. If the '/' character is present,
+     * the substring after the last '/' is returned. Otherwise, it returns the original
+     * string unmodified.
+     *
+     * Behavior:
+     * - If the input string contains one or more '/' characters, the segment following
+     *   the last '/' is extracted.
+     * - If no '/' character is present in the input string, the string is returned as is.
+     * - If the input ends with a '/', the function will ignore the trailing '/' and
+     *   process the substring accordingly.
+     *
+     * Example:
+     * Input: "path/to/folder"
+     * Output: "folder"
+     *
+     * Input: "folder"
+     * Output: "folder"
+     *
+     * Input: "path/to/"
+     * Output: ""
+     *
+     * Thread Safety:
+     * This function is thread-safe as it is stateless and operates only on the given input.
+     */
     public static final Function<String, String> FOLDER = (str) -> {
         final int idx = str.lastIndexOf('/');
         return idx > 0 ? str.substring(idx + 1) : str;

@@ -13,6 +13,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The KeycloakUserAdapter class implements the UserModelAdapter interface to provide
+ * an adapter for converting between Keycloak's UserRepresentation objects and the application's
+ * User objects.
+ */
 public class KeycloakUserAdapter implements UserModelAdapter<UserRepresentation> {
     @Override
     public User toTaoUser(UserRepresentation profile) {

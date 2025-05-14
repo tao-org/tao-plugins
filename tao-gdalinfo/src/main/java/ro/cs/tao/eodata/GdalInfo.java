@@ -19,6 +19,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
+/**
+ * Class GdalInfo implements the MetadataInspector interface to provide
+ * functionality for extracting metadata from geospatial raster files
+ * using GDAL (Geospatial Data Abstraction Library).
+ *
+ * This class determines if a given product file can be inspected, retrieves
+ * its metadata, and sets processing parameters for handling the file. It also provides
+ * utilities for inspecting the raster bands and obtaining statistical data and histograms.
+ */
 public class GdalInfo implements MetadataInspector {
     private static final boolean extractStatistics;
     private static final boolean extractHistogram;
