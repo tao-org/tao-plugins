@@ -17,6 +17,7 @@ package ro.cs.tao.ldap;
 
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
+import ro.cs.tao.security.TokenProvider;
 import ro.cs.tao.user.User;
 
 import javax.naming.AuthenticationException;
@@ -32,7 +33,7 @@ import java.util.logging.Logger;
  *
  * @author Oana H.
  */
-public class TaoLdapClient {
+public class TaoLdapClient implements TokenProvider {
     private static final Logger logger = Logger.getLogger(TaoLdapClient.class.getName());
 
     // LDAP configuration properties
