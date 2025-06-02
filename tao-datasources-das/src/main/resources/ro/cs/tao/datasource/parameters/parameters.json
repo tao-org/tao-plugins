@@ -10,6 +10,16 @@
       "valueSet": null,
       "order": 0
     },
+    "platformSerialIdentifier": {
+      "name": "platformSerialIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier S1(A/B/C)",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B", "C"],
+      "order": 0
+    },
     "productType": {
       "name": "productType",
       "remoteName": "productType",
@@ -123,6 +133,16 @@
       "valueSet": null,
       "order": 0
     },
+    "platformSerialIdentifier": {
+      "name": "platformSerialIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier S2(A/B/C)",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B", "C"],
+      "order": 0
+    },
     "productType": {
       "name": "productType",
       "remoteName": "productType",
@@ -213,6 +233,16 @@
       "defaultValue": "SENTINEL-3",
       "required": false,
       "valueSet": null,
+      "order": 0
+    },
+    "platformSerialIdentifier": {
+      "name": "platformSerialIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier S3(A/B)",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B"],
       "order": 0
     },
     "instrument": {
@@ -525,6 +555,16 @@
       "valueSet": null,
       "order": 0
     },
+    "platformIdentifier": {
+      "name": "platformIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier S1(A/B/C)",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B", "C"],
+      "order": 0
+    },
     "startDate": {
       "name": "startDate",
       "remoteName": "ContentDate/Start",
@@ -554,16 +594,6 @@
       "required": false,
       "valueSet": ["AUX_POEORB", "AUX_RESORB", "AUX_PREORB", "AUX_GNSSRD", "AUX_PROQUA"],
       "order": 3
-    },
-    "platformIdentifier": {
-      "name": "platformIdentifier",
-      "remoteName": "platformSerialIdentifier",
-      "label": "Platform Identifier",
-      "type": "string",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": ["A", "B"],
-      "order": 4
     }
   }
 }
