@@ -7,7 +7,7 @@
       "type": "string",
       "defaultValue": "SENTINEL-1",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-1"],
       "order": 0
     },
     "platformSerialIdentifier": {
@@ -130,7 +130,7 @@
       "type": "string",
       "defaultValue": "SENTINEL-2",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-2"],
       "order": 0
     },
     "platformSerialIdentifier": {
@@ -232,7 +232,7 @@
       "type": "string",
       "defaultValue": "SENTINEL-3",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-3"],
       "order": 0
     },
     "platformSerialIdentifier": {
@@ -440,7 +440,7 @@
       "type": "string",
       "defaultValue": "SENTINEL-5P",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-5P"],
       "order": 0
     },
     "instrumentShortName": {
@@ -552,7 +552,7 @@
       "type": "string",
       "defaultValue": "SENTINEL-1",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-1"],
       "order": 0
     },
     "platformIdentifier": {
