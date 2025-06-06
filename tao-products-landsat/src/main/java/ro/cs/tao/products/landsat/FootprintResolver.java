@@ -1,10 +1,14 @@
 package ro.cs.tao.products.landsat;
 
+import ro.cs.tao.datasource.param.JavaType;
 import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.eodata.naming.ResolverFunction;
 import ro.cs.tao.eodata.naming.TokenResolver;
 import ro.cs.tao.utils.StringUtilities;
 
 import java.awt.geom.Path2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -55,6 +59,18 @@ public class FootprintResolver implements TokenResolver {
         final Path2D.Double extent = Landsat8TileExtent.getInstance().getTileExtent(str);
         return extent != null ? Polygon2D.fromPath2D(extent).toWKT(6) : str;
     };
+
+    @Override
+    public List<ResolverFunction> definedFunctions() {
+        final List<ResolverFunction> functions = new ArrayList<>();
+        ResolverFunction function = new ResolverFunction("FOOTPRINT",
+                                                         JavaType.STRING.friendlyName(),
+                                                         "Returns the WKT footprint of a Landsat-8 row/path",
+                                                         "Landsat");
+        function.addArgument("rowpath", JavaType.STRING.friendlyName(), "the 6 digit rowpath number");
+        functions.add(function);
+        return functions;
+    }
 
     @Override
     public String resolve(String expression) {

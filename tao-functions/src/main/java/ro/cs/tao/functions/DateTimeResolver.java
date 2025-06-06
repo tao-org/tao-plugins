@@ -1,8 +1,12 @@
 package ro.cs.tao.functions;
 
+import ro.cs.tao.datasource.param.JavaType;
+import ro.cs.tao.eodata.naming.ResolverFunction;
 import ro.cs.tao.eodata.naming.TokenResolver;
 import ro.cs.tao.utils.StringUtilities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -182,6 +186,48 @@ public class DateTimeResolver implements TokenResolver {
         return StringUtilities.padLeft(idx > 0 ? str.substring(idx + 1, str.indexOf(':', idx + 1)) : str.substring(4, 6),
                                        2, "0");
     };
+
+    @Override
+    public List<ResolverFunction> definedFunctions() {
+        final List<ResolverFunction> functions = new ArrayList<>();
+        ResolverFunction function = new ResolverFunction("YEAR",
+                                                         JavaType.STRING.friendlyName(),
+                                                         "Extracts the year component from the given date",
+                                                         "Date/Time");
+        function.addArgument("date", JavaType.STRING.friendlyName(), "the date/datetime string either as yyyy-mm-dd or yyyymmdd");
+        functions.add(function);
+        function = new ResolverFunction("MONTH",
+                                        JavaType.STRING.friendlyName(),
+                                        "Extracts the month component from the given date",
+                                        "Date/Time");
+        function.addArgument("date", JavaType.STRING.friendlyName(), "the date/datetime string either as yyyy-mm-dd or yyyymmdd");
+        functions.add(function);
+        function = new ResolverFunction("DAY",
+                                        JavaType.STRING.friendlyName(),
+                                        "Extracts the day component from the given date",
+                                        "Date/Time");
+        function.addArgument("date", JavaType.STRING.friendlyName(), "the date/datetime string either as yyyy-mm-dd or yyyymmdd");
+        functions.add(function);
+        function = new ResolverFunction("HOUR",
+                                        JavaType.STRING.friendlyName(),
+                                        "Extracts the hour component from the given time",
+                                        "Date/Time");
+        function.addArgument("time", JavaType.STRING.friendlyName(), "the time string either as HH:MM:SS or HHMMSS");
+        functions.add(function);
+        function = new ResolverFunction("MINUTE",
+                                        JavaType.STRING.friendlyName(),
+                                        "Extracts the minute component from the given time",
+                                        "Date/Time");
+        function.addArgument("time", JavaType.STRING.friendlyName(), "the time string either as HH:MM:SS or HHMMSS");
+        functions.add(function);
+        function = new ResolverFunction("SECOND",
+                                        JavaType.STRING.friendlyName(),
+                                        "Extracts the second component from the given time",
+                                        "Date/Time");
+        function.addArgument("time", JavaType.STRING.friendlyName(), "the time string either as HH:MM:SS or HHMMSS");
+        functions.add(function);
+        return functions;
+    }
 
     @Override
     public String resolve(final String expression) {
