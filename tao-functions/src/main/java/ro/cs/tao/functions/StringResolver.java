@@ -1,9 +1,13 @@
 package ro.cs.tao.functions;
 
+import ro.cs.tao.datasource.param.JavaType;
+import ro.cs.tao.eodata.naming.ResolverFunction;
 import ro.cs.tao.eodata.naming.TokenResolver;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.utils.TriFunction;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -118,6 +122,38 @@ public class StringResolver implements TokenResolver {
             return null;
         }
     };
+
+    @Override
+    public List<ResolverFunction> definedFunctions() {
+        final List<ResolverFunction> functions = new ArrayList<>();
+        ResolverFunction function = new ResolverFunction("CHAR",
+                                                         JavaType.STRING.friendlyName(),
+                                                         "Converts a numeric value into its corresponding ASCII character representation",
+                                                         "String");
+        function.addArgument("c", JavaType.STRING.friendlyName(), "the character");
+        functions.add(function);
+        function = new ResolverFunction("LOWER",
+                                        JavaType.STRING.friendlyName(),
+                                        "Converts the entire string to lowercase",
+                                        "String");
+        function.addArgument("value", JavaType.STRING.friendlyName(), "the string");
+        functions.add(function);
+        function = new ResolverFunction("UPPER",
+                                        JavaType.STRING.friendlyName(),
+                                        "Converts the entire string to uppercase",
+                                        "String");
+        function.addArgument("value", JavaType.STRING.friendlyName(), "the string");
+        functions.add(function);
+        function = new ResolverFunction("SUBSTRING",
+                                        JavaType.STRING.friendlyName(),
+                                        "Extracts a substring from a given string",
+                                        "String");
+        function.addArgument("value", JavaType.STRING.friendlyName(), "the string");
+        function.addArgument("start", JavaType.STRING.friendlyName(), "zero-based starting index");
+        function.addArgument("length", JavaType.STRING.friendlyName(), "length of the substring to extract");
+        functions.add(function);
+        return functions;
+    }
 
     @Override
     public String resolve(String expression) {

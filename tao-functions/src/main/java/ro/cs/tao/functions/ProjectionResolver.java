@@ -1,8 +1,12 @@
 package ro.cs.tao.functions;
 
+import ro.cs.tao.datasource.param.JavaType;
+import ro.cs.tao.eodata.naming.ResolverFunction;
 import ro.cs.tao.eodata.naming.TokenResolver;
 import ro.cs.tao.utils.StringUtilities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -70,6 +74,18 @@ public class ProjectionResolver implements TokenResolver {
         final int code = Integer.parseInt(str.substring(0, 2));
         return "EPSG:" + (str.charAt(0) < 70 ? 32600 + code : 32700 + code);
     };
+
+    @Override
+    public List<ResolverFunction> definedFunctions() {
+        final List<ResolverFunction> functions = new ArrayList<>();
+        ResolverFunction function = new ResolverFunction("EPSG_CODE",
+                                                         JavaType.STRING.friendlyName(),
+                                                         "Transforms a UTM zone specification into its corresponding EPSG code in the format \"EPSG:xxxxx\"",
+                                                         "CRS");
+        function.addArgument("utmZone", JavaType.STRING.friendlyName(), "the UTM zone in the format nnAAA");
+        functions.add(function);
+        return functions;
+    }
 
     @Override
     public String resolve(String expression) {
