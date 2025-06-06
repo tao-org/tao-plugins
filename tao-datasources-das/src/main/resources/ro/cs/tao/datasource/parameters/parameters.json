@@ -7,7 +7,17 @@
       "type": "string",
       "defaultValue": "SENTINEL-1",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-1"],
+      "order": 0
+    },
+    "platformSerialIdentifier": {
+      "name": "platformSerialIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier S1(A/B/C)",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B", "C"],
       "order": 0
     },
     "productType": {
@@ -120,7 +130,17 @@
       "type": "string",
       "defaultValue": "SENTINEL-2",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-2"],
+      "order": 0
+    },
+    "platformSerialIdentifier": {
+      "name": "platformSerialIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier S2(A/B/C)",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B", "C"],
       "order": 0
     },
     "productType": {
@@ -212,7 +232,17 @@
       "type": "string",
       "defaultValue": "SENTINEL-3",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-3"],
+      "order": 0
+    },
+    "platformSerialIdentifier": {
+      "name": "platformSerialIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier S3(A/B)",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B"],
       "order": 0
     },
     "instrument": {
@@ -396,9 +426,9 @@
       "remoteName": "dayTime",
       "label": "Time of day",
       "type": "string",
-      "defaultValue": "DAY",
+      "defaultValue": "ANY",
       "required": false,
-      "valueSet": ["DAY","NIGHT"],
+      "valueSet": ["ANY","DAY","NIGHT"],
       "order": 10
     }
   },
@@ -410,7 +440,7 @@
       "type": "string",
       "defaultValue": "SENTINEL-5P",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-5P"],
       "order": 0
     },
     "instrumentShortName": {
@@ -522,7 +552,17 @@
       "type": "string",
       "defaultValue": "SENTINEL-1",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-1"],
+      "order": 0
+    },
+    "platformIdentifier": {
+      "name": "platformIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier S1(A/B/C)",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B", "C"],
       "order": 0
     },
     "startDate": {
@@ -554,16 +594,6 @@
       "required": false,
       "valueSet": ["AUX_POEORB", "AUX_RESORB", "AUX_PREORB", "AUX_GNSSRD", "AUX_PROQUA"],
       "order": 3
-    },
-    "platformIdentifier": {
-      "name": "platformIdentifier",
-      "remoteName": "platformSerialIdentifier",
-      "label": "Platform Identifier",
-      "type": "string",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": ["A", "B"],
-      "order": 4
     }
   }
 }

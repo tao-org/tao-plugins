@@ -2,6 +2,12 @@ package ro.cs.tao.topology.openstack;
 
 import java.util.List;
 
+/**
+ * A helper class for generating Cloud Config scripts in YAML format.
+ * This class provides methods to add various sections to the cloud config,
+ * including user configuration, group configuration, password changes,
+ * and commands to run during initialization.
+ */
 public class CloudConfigHelper {
 
     private final StringBuilder content;

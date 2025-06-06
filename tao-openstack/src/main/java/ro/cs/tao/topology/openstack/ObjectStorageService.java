@@ -22,6 +22,11 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * Service class for interacting with an object storage system using the OpenStack Swift protocol.
+ * Extends {@code BaseStorageService} to provide specific implementations for managing files and folders
+ * in an OpenStack Swift environment.
+ */
 public class ObjectStorageService extends BaseStorageService<byte[], InputStream> {
     private static final String PROTOCOL = "swift";
 

@@ -167,6 +167,13 @@ public class DescriptorConverter {
         }
     }
 
+    /**
+     * Converts a parameter's information into its XML representation.
+     *
+     * @param componentId the identifier of the component to which the parameter belongs
+     * @param parameter the descriptor of the parameter to be converted to XML
+     * @return the XML representation of the parameter as a string
+     */
     private static String parameterToXml(String componentId, ParameterDescriptor parameter) {
         return "\t\t\t\t\t<" + parameter.getName() + ">" +
                 "<xsl:value-of select=\"$" +
@@ -175,6 +182,14 @@ public class DescriptorConverter {
                 "</" + parameter.getName() + ">\n";
     }
 
+    /**
+     * Converts a parameter's information into its XSL parameter representation.
+     *
+     * @param componentId the identifier of the component to which the parameter belongs
+     * @param parameter the descriptor of the parameter to be converted to an XSL parameter
+     * @param value the specific value of the parameter; if null, the parameter's default value will be used
+     * @return the XSL parameter representation of the specified parameter as a string
+     */
     private static String parameterToXslParam(String componentId, ParameterDescriptor parameter, String value) {
         StringBuilder builder = new StringBuilder();
         builder.append("\t<xsl:param name=\"").append(componentId).append("-").append(parameter.getName()).append("\" ");

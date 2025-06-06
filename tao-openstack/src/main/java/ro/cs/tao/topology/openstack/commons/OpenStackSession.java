@@ -57,6 +57,14 @@ public class OpenStackSession {
         return tenantId;
     }
 
+    /**
+     * Provides access to the Compute (Nova) Operations API for managing and interacting with compute resources.
+     * This method retrieves the compute service instance from the underlying OpenStack client if the compute API
+     * is supported by the remote provider.
+     *
+     * @return an instance of {@link ComputeService} for interacting with compute resources
+     * @throws TopologyException if the remote provider does not support the Compute API
+     */
     public ComputeService computeService() {
         final OSClient.OSClientV3 service = getService();
         if (!service.supportsCompute()) {
@@ -65,6 +73,15 @@ public class OpenStackSession {
         return service.compute();
     }
 
+    /**
+     * Provides access to the Block Storage (Cinder) Service API for managing and
+     * interacting with block storage resources. This method retrieves the block storage
+     * service instance from the underlying OpenStack client if the block storage API
+     * is supported by the remote provider.
+     *
+     * @return an instance of {@link BlockStorageService} for interacting with block storage resources
+     * @throws TopologyException if the remote provider does not support the Block Storage API
+     */
     public BlockStorageService blockStorageService() {
         final OSClient.OSClientV3 service = getService();
         if (!service.supportsBlockStorage()) {
@@ -73,6 +90,15 @@ public class OpenStackSession {
         return service.blockStorage();
     }
 
+    /**
+     * Provides access to the Object Storage (Swift) Service API for managing
+     * and interacting with object storage resources. This method retrieves the
+     * object storage service instance from the underlying OpenStack client if
+     * the object storage API is supported by the remote provider.
+     *
+     * @return an instance of {@link ObjectStorageService} for interacting with object storage resources
+     * @throws TopologyException if the remote provider does not support the Object Storage API
+     */
     public static ObjectStorageService objectStorageService() {
         final OSClient.OSClientV3 service = getInstance().getService();
         if (!service.supportsObjectStorage()) {
@@ -81,6 +107,15 @@ public class OpenStackSession {
         return service.objectStorage();
     }
 
+    /**
+     * Retrieves an instance of {@link ObjectStorageService} for interacting with object storage resources.
+     * This method fetches the object storage service instance from the underlying OpenStack client
+     * if the object storage API is supported by the remote provider.
+     *
+     * @param parameters a map of configuration parameters required to initialize the service connection
+     * @return an instance of {@link ObjectStorageService} for managing object storage operations
+     * @throws TopologyException if the remote provider does not support the Object Storage API
+     */
     public static ObjectStorageService objectStorageService(Map<String, String> parameters) {
         final OSClient.OSClientV3 service = getInstance().getService(parameters);
         if (!service.supportsObjectStorage()) {
@@ -89,6 +124,15 @@ public class OpenStackSession {
         return service.objectStorage();
     }
 
+    /**
+     * Provides access to the Networking (Neutron) Service API for managing and interacting
+     * with networking resources. This method retrieves the networking service instance
+     * from the underlying OpenStack client if the networking API is supported by the
+     * remote provider.
+     *
+     * @return an instance of {@link NetworkingService} for interacting with networking resources
+     * @throws TopologyException if the remote provider does not support the Networking API
+     */
     public NetworkingService networkService() {
         final OSClient.OSClientV3 service = getService();
         if (!service.supportsNetwork()) {
@@ -97,6 +141,15 @@ public class OpenStackSession {
         return service.networking();
     }
 
+    /**
+     * Provides access to the Image (Glance) Service API for managing and
+     * interacting with image resources. This method retrieves the image service
+     * instance from the underlying OpenStack client if the image API is
+     * supported by the remote provider.
+     *
+     * @return an instance of {@link ImageService} for interacting with image resources
+     * @throws TopologyException if the remote provider does not support the Image API
+     */
     public ImageService imageService() {
         final OSClient.OSClientV3 service = getService();
         if (!service.supportsImage()) {
@@ -105,10 +158,30 @@ public class OpenStackSession {
         return service.imagesV2();
     }
 
+    /**
+     * Creates and returns a new instance of the OpenStackSession class.
+     *
+     * @return a new instance of OpenStackSession
+     */
     public static OpenStackSession getInstance() {
         return new OpenStackSession();
     }
 
+    /**
+     * Retrieves an instance of the OpenStack service client for interacting
+     * with the OpenStack APIs. This method handles authentication
+     * and session initialization, re-authenticating if necessary,
+     * using configurations such as tenant ID, region, domain, user,
+     * and password. If a valid token exists, it will use the token
+     * to create the client; otherwise, it will perform authentication
+     * to generate a new token and create the client.
+     *
+     * @return an authenticated instance of {@link OSClient.OSClientV3} for
+     *         interacting with OpenStack APIs
+     * @throws TopologyException if mandatory configuration keys such as
+     *         tenant ID, domain, user, password, or auth URL are missing
+     *         or invalid
+     */
     public OSClient.OSClientV3 getService() {
         OSClient.OSClientV3 client;
 
@@ -178,6 +251,30 @@ public class OpenStackSession {
         return client;
     }
 
+    /**
+     * Retrieves an instance of the OpenStack service client for interacting with the OpenStack APIs.
+     * This method handles authentication and session initialization using configurations passed
+     * through a map of parameters. If a valid token exists in the session, it reuses the token;
+     * otherwise, it authenticates to generate a new token.
+     *
+     * @param parameters a map of configuration parameters required for initializing the service connection.
+     *                    Mandatory keys include:
+     *                    - Constants.OPENSTACK_DOMAIN: the domain ID for authentication
+     *                    - Constants.OPENSTACK_USER: the username for authentication
+     *                    - Constants.OPENSTACK_PASSWORD: the user's password for authentication
+     *                    - Constants.OPENSTACK_AUTH_URL: the authentication URL
+     *                    - Constants.OPENSTACK_TENANT_ID: the tenant/project ID for scoping the session
+     *                    Optional keys include:
+     *                    - Constants.OPENSTACK_CLIENT: the application client ID (optional for additional authentication)
+     *                    - Constants.OPENSTACK_CLIENT_SECRET: the application client secret (optional for additional authentication)
+     *                    - Constants.OPENSTACK_USER_SECRET: the user's secret key (if applicable)
+     *                    - Constants.OPENSTACK_TOKEN_URL: the URL for requesting a token
+     *                    - Constants.OPENSTACK_IDENTITY_PROVIDER: the identity provider to use
+     *                    - Constants.OPENSTACK_REGION: the preferred region for the session
+     * @return an authenticated instance of {@link OSClient.OSClientV3} for interacting with OpenStack APIs
+     * @throws IllegalArgumentException if the `parameters` map is null
+     * @throws TopologyException if any mandatory configuration key is missing or invalid
+     */
     public OSClient.OSClientV3 getService(Map<String, String> parameters) {
         if (parameters == null) {
             throw new IllegalArgumentException("OpenStack client not configured");
@@ -241,6 +338,23 @@ public class OpenStackSession {
         return service;
     }
 
+    /**
+     * Retrieves an authentication token using the provided credentials, client details, and URLs.
+     * This method combines authentication with different services to generate a valid token.
+     *
+     * @param appClient the client ID for the application
+     * @param appClientSecret the secret key associated with the application client
+     * @param userSecret the secret associated with the user (can be used for generating one-time passwords)
+     * @param tokenUrl the URL used to request the token
+     * @param identityProvider the identity provider for federated authentication
+     * @param authUrl the OpenStack authentication URL
+     * @param domain the domain name or domain ID for the user
+     * @param user the username for authentication
+     * @param password the password associated with the user
+     * @param tenantId the tenant/project ID for token scoping
+     * @param region the preferred region for the session
+     * @return the authentication token as a String, or null if the token retrieval fails
+     */
     private String getToken(String appClient, String appClientSecret, String userSecret, String tokenUrl, String identityProvider,
                             String authUrl, String domain, String user, String password, String tenantId, String region) {
         String token = null;
@@ -271,6 +385,14 @@ public class OpenStackSession {
         return token;
     }
 
+    /**
+     * Generates a one-time password (OTP) based on the provided secret key.
+     * The OTP is calculated using a combination of the secret and a time-based counter.
+     *
+     * @param secret the shared secret key used for OTP generation
+     * @return the generated OTP as a String
+     * @throws CodeGenerationException if there is an error during OTP generation
+     */
     private String generateOTP(String secret) throws CodeGenerationException {
         TimeProvider timeProvider = new SystemTimeProvider();
         CodeGenerator codeGenerator = new DefaultCodeGenerator();
@@ -278,6 +400,22 @@ public class OpenStackSession {
         return codeGenerator.generate(secret, counter);
     }
 
+    /**
+     * Retrieves an OpenStack token using the provided authentication details and environment configurations.
+     * The token is fetched by executing an OpenStack command with the specified parameters.
+     *
+     * @param authUrl the OpenStack authentication URL
+     * @param userName the username for authentication
+     * @param region the region name for the token scope
+     * @param projectId the project ID for the token scope
+     * @param domainId the domain ID associated with the project
+     * @param clientId the client ID for OpenID authentication
+     * @param clientSecret the client secret for OpenID authentication
+     * @param identityProvider the identity provider for federated authentication
+     * @param jwtToken the JWT token used for authentication
+     * @return the token ID as retrieved from the OpenStack service
+     * @throws Exception if an error occurs during the token retrieval process or the command execution fails
+     */
     private String getOSToken(String authUrl, String userName, String region,
                               String projectId, String domainId, String clientId,
                               String clientSecret, String identityProvider,
