@@ -222,11 +222,6 @@
         </dependency>
         <dependency>
             <groupId>ro.c-s.tao</groupId>
-            <artifactId>tao-executor-simpipe</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-workspace-aws</artifactId>
             <version>${project.version}</version>
         </dependency>

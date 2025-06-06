@@ -78,10 +78,25 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
         return results;
     }
 
+    /**
+     * Retrieves the configured file extension for quicklook files.
+     * If no specific configuration is found, the default extension ".png" is returned.
+     *
+     * @return The configured quicklook file extension as a String.
+     */
     protected String getExtension() {
         return ConfigurationManager.getInstance().getValue("quicklook.extension", ".png");
     }
 
+    /**
+     * Initializes an {@link Executor} for processing the specified product file path with the provided arguments.
+     * If the file extension is not supported, the method returns null.
+     *
+     * @param productPath the file path of the product to process
+     * @param args an array of strings representing arguments to be passed to the process executor
+     * @return an {@link Executor} configured to process the specified product file, or null if the file extension is not supported
+     * @throws IOException if an I/O exception occurs during initialization
+     */
     protected Executor<?> initialize(Path productPath, String[] args) throws IOException {
         String extension = FileUtilities.getExtension(productPath);
         if (!extensions.contains(extension.toLowerCase())) {
@@ -101,12 +116,37 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
         return this.factory.processManager().createExecutor(arguments);
     }
 
+    /**
+     * Constructs the GDAL command-line arguments for performing operations on files located on the
+     * local file system. This method generates a command-line array that utilizes the GDAL `gdal_translate`
+     * tool to process files with a specified output format and scaling options.
+     *
+     * @return An array of strings representing the GDAL command-line arguments configured to:
+     *         - Use the `gdal_translate` utility
+     *         - Define the output format and type based on the file extension
+     *         - Apply scaling and resizing options
+     *         - Process the first band (`-b 1`)
+     *         - Define the input and generated output file paths
+     */
     protected String[] getGDALCommandLineOnPath() {
         return new String[] {
                 "gdal_translate", "-of", driverMap.get(extension), "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "$FULL_PATH", "$FULL_PATH" + extension
         };
     }
 
+    /**
+     * Constructs the GDAL command-line arguments for performing operations on files using Docker.
+     * This method generates a command-line array that utilizes the GDAL `gdal_translate` tool
+     * to process files with a specified output format, scaling, and resizing options within
+     * a Dockerized environment.
+     *
+     * @return An array of strings representing the GDAL command-line arguments configured to:
+     *         - Use Docker to run the `gdal_translate` utility
+     *         - Define the output format and type based on the file extension
+     *         - Apply scaling and resizing options
+     *         - Process the first band (`-b 1`)
+     *         - Specify input and output file paths within the mounted Docker volume
+     */
     protected String[] getGDALCommandLineOnDocker() {
         return new String[] {
                 "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt/data", gdalDockerImage,
@@ -114,6 +154,20 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
         };
     }
 
+    /**
+     * Retrieves the set of file extensions that are supported for processing.
+     *
+     * @return a Set of Strings representing supported file extensions handled by the implementation.
+     */
     protected abstract Set<String> getSupportedExtensions();
+
+    /**
+     * Handles a list of input items and processes them, returning the resulting list of processed items.
+     * This method is abstract and must be implemented to define the specific handling logic.
+     *
+     * @param list the list of items to be processed
+     * @return a list of processed items, potentially modified or enhanced based on the implementation
+     * @throws DataHandlingException if any error occurs during the processing
+     */
     protected abstract List<T> handleInner(List<T> list) throws DataHandlingException;
 }

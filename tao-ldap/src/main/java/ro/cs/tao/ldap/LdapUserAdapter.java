@@ -10,6 +10,11 @@ import javax.naming.directory.Attributes;
 import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
+/**
+ * The LdapUserAdapter class is responsible for adapting LDAP user attributes
+ * to a User object and vice versa. It implements the UserModelAdapter interface
+ * for handling conversions between the LDAP Attributes type and the User type.
+ */
 public class LdapUserAdapter implements UserModelAdapter<Attributes> {
     private final Pattern guidPattern = Pattern.compile("([0-9a-f\\-]{16,20})");
     @Override
@@ -56,6 +61,15 @@ public class LdapUserAdapter implements UserModelAdapter<Attributes> {
         // Not supported
         return null;
     }
+
+    /**
+     * Converts a byte array representation of an ObjectGUID to its dashed string format.
+     * The format follows the convention of grouping the bytes as hexadecimal values
+     * separated by dashes in the pattern "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".
+     *
+     * @param objectGUID a byte array representing the ObjectGUID; must have a length of 16 bytes
+     * @return a string in dashed hexadecimal format representing the ObjectGUID
+     */
     public String convertToDashedString(byte[] objectGUID) {
         return prefixZeros((int) objectGUID[3] & 0xFF) +
                 prefixZeros((int) objectGUID[2] & 0xFF) +
