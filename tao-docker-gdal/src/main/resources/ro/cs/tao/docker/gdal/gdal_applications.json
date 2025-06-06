@@ -56,7 +56,7 @@
 				"id": "strict",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "",
+				"defaultValue": null,
 				"description": "Don't be forgiving of mismatches and lost data when translating to the output format.",
 				"label": "Don't lose data  when translating to output format",
 				"notNull": false
@@ -186,7 +186,7 @@
 				"id": "unscale",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "",
+				"defaultValue": null,
 				"description": "Apply the scale/offset metadata for the bands to convert scaled values to unscaled values. It is also often necessary to reset the output datatype with the -ot switch.",
 				"label": "unscale",
 				"notNull": false
@@ -230,7 +230,7 @@
 				"id": "epo",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "",
+				"defaultValue": null,
 				"description": "If this option is set, -srcwin or -projwin values that falls partially outside the source raster extent will be considered as an error. The default behavior is to accept such requests, when they were considered as an error before.",
 				"label": "Error when Partially Outside",
 				"notNull": false
@@ -239,7 +239,7 @@
 				"id": "eco",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "",
+				"defaultValue": null,
 				"description": "Same as -epo, except that the criterion for erroring out is when the request falls completely outside the source raster extent.",
 				"label": "Error when Completely Outside",
 				"notNull": false
@@ -249,8 +249,8 @@
 				"type": "REGULAR",
 				"dataType": "string",
 				"defaultValue": null,
-				"description": "Specifies the SRS in which to interpret the coordinates given with $projwin",
-				"label": "Projected SRS",
+				"description": "Override the projection for the output file. Can be used with -a_ullr or -a_gt to specify the extent in this projection.",
+				"label": "Output SRS",
 				"notNull": false
 			},
 			{
@@ -259,7 +259,7 @@
 				"dataType": "float",
 				"defaultValue": null,
 				"description": "Assign a coordinate epoch, linked with the output SRS. Useful when the output SRS is a dynamic CRS.",
-				"label": "Coordinate epoch",
+				"label": "Coordinate epoch (decimal year)",
 				"notNull": false
 			},
 			{
@@ -362,7 +362,7 @@
 				"id": "nogcp",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "",
+				"defaultValue": null,
 				"description": "Do not copy the GCPs in the source dataset to the output dataset",
 				"label": "Don't copy GCPs to output dataset",
 				"notNull": false
@@ -384,7 +384,7 @@
 				"id": "q",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "",
+				"defaultValue": null,
 				"description": "Suppress progress monitor and other non-error output",
 				"label": "Suppress progress monitor and non-error output",
 				"notNull": false
@@ -393,7 +393,7 @@
 				"id": "sds",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "",
+				"defaultValue": null,
 				"description": "Copy all subdatasets of this file to individual output files. Use with formats like HDF that have subdatasets.",
 				"label": "Copy all subdatasets",
 				"notNull": false
@@ -402,7 +402,7 @@
 				"id": "stats",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "",
+				"defaultValue": null,
 				"description": "Force (re)computation of statistics.",
 				"label": "Force statistics (re)computation",
 				"notNull": false
@@ -411,7 +411,7 @@
 				"id": "norat",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "",
+				"defaultValue": null,
 				"description": "Do not copy source RAT into destination dataset.",
 				"label": "Don't copy source RAT into destination dataset",
 				"notNull": false
@@ -420,7 +420,7 @@
 				"id": "noxmp",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "",
+				"defaultValue": null,
 				"description": "Do not copy the XMP metadata in the source dataset to the output dataset when driver is able to copy it.",
 				"label": "Don't copy XMP metadata to the output dataset",
 				"notNull": false
@@ -519,7 +519,7 @@
 				"id": "srcalpha",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "",
+				"defaultValue": null,
 				"description": "Force the last band of a source image to be considered as a source alpha band.",
 				"label": "Force last band as source alpha band",
 				"notNull": false
@@ -528,7 +528,7 @@
 				"id": "nosrcalpha",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "",
+				"defaultValue": null,
 				"description": "Prevent the alpha band of a source image to be considered as such (it will be warped as a regular band).",
 				"label": "Prevent source alpha band",
 				"notNull": false
@@ -537,7 +537,7 @@
 				"id": "dstalpha",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": "",
+				"defaultValue": null,
 				"description": "Create an output alpha band to identify nodata (unset/transparent) pixels.",
 				"label": "Create output alpha band",
 				"notNull": false
