@@ -56,10 +56,11 @@
 				"id": "strict",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Don't be forgiving of mismatches and lost data when translating to the output format.",
 				"label": "Don't lose data  when translating to output format",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-strict"]
 			},
 			{
 				"id": "if",
@@ -186,10 +187,11 @@
 				"id": "unscale",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Apply the scale/offset metadata for the bands to convert scaled values to unscaled values. It is also often necessary to reset the output datatype with the -ot switch.",
 				"label": "unscale",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-unscale"]
 			},
 			{
 				"id": "srcwin",
@@ -230,19 +232,21 @@
 				"id": "epo",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "If this option is set, -srcwin or -projwin values that falls partially outside the source raster extent will be considered as an error. The default behavior is to accept such requests, when they were considered as an error before.",
 				"label": "Error when Partially Outside",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-epo"]
 			},
 			{
 				"id": "eco",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Same as -epo, except that the criterion for erroring out is when the request falls completely outside the source raster extent.",
 				"label": "Error when Completely Outside",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-eco"]
 			},
 			{
 				"id": "a_srs",
@@ -362,10 +366,11 @@
 				"id": "nogcp",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Do not copy the GCPs in the source dataset to the output dataset",
 				"label": "Don't copy GCPs to output dataset",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-nogcp"]
 			},
 			{
 				"id": "gcp",
@@ -384,28 +389,31 @@
 				"id": "q",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Suppress progress monitor and other non-error output",
 				"label": "Suppress progress monitor and non-error output",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-q"]
 			},
 			{
 				"id": "sds",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Copy all subdatasets of this file to individual output files. Use with formats like HDF that have subdatasets.",
 				"label": "Copy all subdatasets",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-sds"]
 			},
 			{
 				"id": "stats",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Force (re)computation of statistics.",
 				"label": "Force statistics (re)computation",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-stats"]
 			},
 			{
 				"id": "norat",
@@ -414,16 +422,18 @@
 				"defaultValue": null,
 				"description": "Do not copy source RAT into destination dataset.",
 				"label": "Don't copy source RAT into destination dataset",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-norat"]
 			},
 			{
 				"id": "noxmp",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Do not copy the XMP metadata in the source dataset to the output dataset when driver is able to copy it.",
 				"label": "Don't copy XMP metadata to the output dataset",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-noxmp"]
 			},
 			{
 				"id": "oo",
@@ -439,7 +449,7 @@
 				}
 			}
 		],
-		"templatecontents": "-ot\n$ot\n$strict $strict\n-if\n$if\n-of\n$of\n-b\n$b\n-mask\n$mask\n-expand\n$expand\n-outsize\n$outsize\n-tr\n$tr\n-ovr\n$ovr\n-r\n$r\n$unscale $unscale\n-scale\n$scale\n-exponent\n$exponent\n-srcwin\n$srcwin\n$epo $epo\n$eco $eco\n-projwin\n$projwin\n-projwin_srs\n$projwin_srs\n-a_srs\n$a_srs\n-a_coord_epoch\n$a_coord_epoch\n-a_ullr\n$a_ullr\n-a_nodata\n$a_nodata\n-a_gt\n$a_gt\n-a_scale\n$a_scale\n-a_offset\n$a_offset\n-gcp\n$gcp\n-colorinterp\n$colorinterp\n-mo\n$mo\n-dmo\n$dmo\n$q $q\n$sds $sds\n-co\n$co\n$stats $stats\n$norat $norat\n$noxmp $noxmp\n-oo\n$oo\n$src_dataset\n$dst_dataset"
+		"templatecontents": "-ot\n$ot\n$strict\n-if\n$if\n-of\n$of\n-b\n$b\n-mask\n$mask\n-expand\n$expand\n-outsize\n$outsize\n-tr\n$tr\n-ovr\n$ovr\n-r\n$r\n$unscale\n-scale\n$scale\n-exponent\n$exponent\n-srcwin\n$srcwin\n$epo\n$eco\n-projwin\n$projwin\n-projwin_srs\n$projwin_srs\n-a_srs\n$a_srs\n-a_coord_epoch\n$a_coord_epoch\n-a_ullr\n$a_ullr\n-a_nodata\n$a_nodata\n-a_gt\n$a_gt\n-a_scale\n$a_scale\n-a_offset\n$a_offset\n-gcp\n$gcp\n-colorinterp\n$colorinterp\n-mo\n$mo\n-dmo\n$dmo\n$q\n$sds\n-co\n$co\n$stats\n$norat\n$noxmp\n-oo\n$oo\n$src_dataset\n$dst_dataset"
 	},
 	{
 		"id": "gdal_warp",
@@ -519,28 +529,31 @@
 				"id": "srcalpha",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Force the last band of a source image to be considered as a source alpha band.",
 				"label": "Force last band as source alpha band",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-srcalpha"]
 			},
 			{
 				"id": "nosrcalpha",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Prevent the alpha band of a source image to be considered as such (it will be warped as a regular band).",
 				"label": "Prevent source alpha band",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-nosrcalpha"]
 			},
 			{
 				"id": "dstalpha",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Create an output alpha band to identify nodata (unset/transparent) pixels.",
 				"label": "Create output alpha band",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-dstalpha"]
 			},
 			{
 				"id": "tr",
@@ -633,7 +646,7 @@
 				"notNull": false
 			}
 		],
-		"templatecontents": "of\n$of\n-co\n$co\n-s_srs\n$s_srs\n-t_srs\n$t_srs\n$srcalpha $srcalpha\n$nosrcalpha $nosrcalpha\n$dstalpha $dstalpha\n-tr\n$tr\n-ts\n$ts\n-te\n$te\n-te_srs\n$te_srs\n-r\n$r\n-ot\n$ot\n-wo\n$wo\n$src_dataset_name\n$dst_dataset_name"
+		"templatecontents": "of\n$of\n-co\n$co\n-s_srs\n$s_srs\n-t_srs\n$t_srs\n$srcalpha\n$nosrcalpha\n$dstalpha\n-tr\n$tr\n-ts\n$ts\n-te\n$te\n-te_srs\n$te_srs\n-r\n$r\n-ot\n$ot\n-wo\n$wo\n$src_dataset_name\n$dst_dataset_name"
 	},
 	{
 		"id": "gdal_rasterize",
@@ -695,19 +708,21 @@
 				"id": "i",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Invert rasterization. Burn the fixed burn value, or the burn value associated with the first feature into all parts of the image not inside the provided polygon. Note: When the vector features contain a polygon nested within another polygon (like an island in a lake), GDAL must be built against GEOS to get correct results.",
 				"label": "Invert rasterization",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-i"]
 			},
 			{
 				"id": "at",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Enables the ALL_TOUCHED rasterization option so that all pixels touched by lines or polygons will be updated, not just those on the line render path, or whose center point is within the polygon (behavior is unspecified when the polygon is just touching the pixel center). Defaults to disabled for normal rendering rules.",
 				"label": "Enable ALL_TOUCHED rasterization",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-at"]
 			},
 			{
 				"id": "oo",
@@ -748,19 +763,21 @@
 				"id": "3d",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Indicates that a burn value should be extracted from the \"Z\" values of the feature. Works with points and lines (linear interpolation along each segment). For polygons, works properly only if the are flat (same Z value for all vertices).",
 				"label": "3d",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-3d"]
 			},
 			{
 				"id": "add",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Instead of burning a new value, this adds the new value to the existing raster. Suitable for heatmaps for instance.",
 				"label": "Add new value to existing raster",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-add"]
 			},
 			{
 				"id": "l",
@@ -898,10 +915,11 @@
 				"id": "tap",
 				"type": "REGULAR",
 				"dataType": "string",
-				"defaultValue": null,
+				"defaultValue": "",
 				"description": "Align the coordinates of the extent of the output file to the values of the -tr, such that the aligned extent includes the minimum extent. Alignment means that xmin / resx, ymin / resy, xmax / resx and ymax / resy are integer values.",
 				"label": "Target aligned pixels",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-tap"]
 			},
 			{
 				"id": "ts",
@@ -943,9 +961,11 @@
 				"defaultValue": null,
 				"description": "Suppress progress monitor and other non-error output.",
 				"label": "Suppress progress monitor",
-				"notNull": false
+				"notNull": false,
+				"valueSet": [ "", "-q"]
 			}
 		],
-		"templatecontents": "-b\n$b\n$i $i\n$at $at\n-oo\n$oo\n-burn\n$burn\n-a\n$a\n$3d $3d\n$add $add\n-l\n$l\n-where\n$where\n-sql\n$sql\n-dialect\n$dialect\n-of\n$of\n-a_srs\n$a_srs\n-to\n$to\n-co\n$co\n-a_nodata\n$a_nodata\n-init\n$init\n-te\n$te\n-tr\n$tr\n$tap $tap\n-ts\n$ts\n-ot\n$ot\n-optim\n$optim\n$q $q\n$src_datasource\n$dst_filename"
+		"templatecontents": "-b\n$b\n$i\n$at\n-oo\n$oo\n-burn\n$burn\n-a\n$a\n$3d\n$add\n-l\n$l\n-where\n$where\n-sql\n$sql\n-dialect\n$dialect\n-of\n$of\n-a_srs\n$a_srs\n-to\n$to\n-co\n$co\n-a_nodata\n$a_nodata\n-init\n$init\n-te\n$te\n-tr\n$tr\n$tap\n-ts\n$ts\n-ot\n$ot\n-optim\n$optim\n$q\n$src_datasource\n$dst_filename"
+		"templatecontents": "-b\n$b\n$i\n$at\n-oo\n$oo\n-burn\n$burn\n-a\n$a\n$3d\n$add\n-l\n$l\n-where\n$where\n-sql\n$sql\n-dialect\n$dialect\n-of\n$of\n-a_srs\n$a_srs\n-to\n$to\n-co\n$co\n-a_nodata\n$a_nodata\n-init\n$init\n-te\n$te\n-tr\n$tr\n$tap\n-ts\n$ts\n-ot\n$ot\n-optim\n$optim\n$q\n$src_datasource\n$dst_filename"
 	}
 ]
