@@ -216,17 +216,17 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
         args.add("JUPYTER_TOKEN=" + token);
         args.add("-v");
         Path absolutePath = Paths.get(SystemVariable.ROOT.value()).toAbsolutePath();
-        String mapVolumePath = (absolutePath.endsWith("/")
+        String mapVolumePath = (absolutePath.endsWith("/") || absolutePath.endsWith("\\")
                 ? absolutePath
-                : (absolutePath + "/"))
-                + userName;
+                : SystemUtils.IS_OS_LINUX ? (absolutePath + "/") + userName
+                : (absolutePath + "\\")) + userName;
         File file = new File(mapVolumePath);
         if(!file.exists())
         {
             file.mkdir();
         }
         args.add(mapVolumePath + ":" + getPathInContainer());
-        String instanceId = DockerManager.runDaemon(containerName, userName, portMap, userName, args);
+        String instanceId = DockerManager.runDaemon(containerName, token, portMap, userName, args);
         return instanceId + ":" + hostPort;
     }
 
