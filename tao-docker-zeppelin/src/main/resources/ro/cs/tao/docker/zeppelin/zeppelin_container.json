@@ -1,0 +1,8 @@
+{
+  "id": "a46bb385-5cd2-4fd8-9339-2482ec01b61c",
+  "name": "apachezeppelin",
+  "description": "Apache Zeppelin",
+  "tag": "latest",
+  "applicationPath": "/zeppelin/notebooks",
+  "applications": null
+}

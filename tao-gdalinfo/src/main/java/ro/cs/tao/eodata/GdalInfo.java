@@ -38,6 +38,18 @@ public class GdalInfo implements MetadataInspector {
         extractHistogram = Boolean.parseBoolean(configurationProvider.getValue("extract.histogram", "false"));
     }
 
+    private final boolean forceExtractStatistics;
+    private final boolean forceExtractHistogram;
+
+    public GdalInfo() {
+        this(extractStatistics, extractHistogram);
+    }
+
+    public GdalInfo(boolean extractStatistics, boolean extractHistogram) {
+        this.forceExtractStatistics = extractStatistics;
+        this.forceExtractHistogram = extractHistogram;
+    }
+
     @Override
     public DecodeStatus decodeQualification(Path productPath) {
         return productPath == null || Files.notExists(productPath) || productPath.toString().endsWith(".dim")
@@ -124,6 +136,9 @@ public class GdalInfo implements MetadataInspector {
             } else if (GDALConstConstants.gdtFloat64() == gdalDataType || GDALConstConstants.gdtCFloat64() == gdalDataType) {
                 gdalMetadata.setPixelType(PixelType.FLOAT64);
             }
+            Double[] noData = new Double[1];
+            gdalBand.getNoDataValue(noData);
+            gdalMetadata.addAttribute("nodata", noData[0] == null ? "0.0" : noData[0].toString());
             double[] min = new double[1];
             double[] max = new double[1];
             double[] mean = new double[1];
@@ -135,7 +150,7 @@ public class GdalInfo implements MetadataInspector {
                 gdalMetadata.addStatistic("stdDev", stddev[0]);
             }
             int[] buckets = new int[256];
-            if (extractHistogram && gdalBand.getHistogram(buckets).equals(GDALConstConstants.ceNone())) {
+            if (this.forceExtractHistogram && gdalBand.getHistogram(buckets).equals(GDALConstConstants.ceNone())) {
                 gdalMetadata.setHistogram(buckets);
             }
             RasterAttributeTable gdalRasterAttributeTable = gdalBand.getDefaultRAT();
@@ -171,7 +186,7 @@ public class GdalInfo implements MetadataInspector {
 
     private boolean getStatistics(Band gdalBand, double[] min, double[] max, double[] mean, double[] stddev) {
         boolean ret = false;
-        if (extractStatistics && gdalBand.getStatistics(true, true, min, max, mean, stddev).equals(GDALConstConstants.ceNone())) {
+        if (this.forceExtractStatistics && gdalBand.getStatistics(true, true, min, max, mean, stddev).equals(GDALConstConstants.ceNone())) {
             if ((Double.compare(min[0], 0.0) == 0) &&
                     (Double.compare(max[0], 0.0) == 0) &&
                     (Double.compare(mean[0], 0.0) == 0) &&
