@@ -4,6 +4,7 @@ import ro.cs.tao.component.ParameterDescriptor;
 import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.enums.ParameterType;
 import ro.cs.tao.component.enums.ProcessingComponentType;
+import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.datasource.param.JavaType;
 import ro.cs.tao.docker.Application;
 import ro.cs.tao.docker.Container;
@@ -37,12 +38,12 @@ public class DescriptorBuilder {
         for (String token : tokens) {
             descriptorPath = descriptorPath.resolve(token);
         }
-        descriptorPath = descriptorPath.resolve("snap11_container.json");
+        descriptorPath = descriptorPath.resolve("snap12_container.json");
         Container container = new Container();
         containerId = UUID.randomUUID().toString();
         container.setId(containerId);
-        container.setName("snap-11-0-0");
-        container.setDescription("SNAP 11.0.0 Container");
+        container.setName("snap-12-0-0");
+        container.setDescription("SNAP 12.0.0 Container");
         container.setTag("latest");
         container.setApplicationPath(null);
         container.setCommonParameters("-c 256");
@@ -83,7 +84,7 @@ public class DescriptorBuilder {
         componentSerializer.setFormatOutput(true);
         String serialized = componentSerializer.serialize(components, "components");
         serialized = serialized.replaceAll("\"formatType\" : 0", "\"formatType\" : \"" + DataFormat.RASTER.name() + "\"");
-        serialized = serialized.replaceAll("\"visibility\" : 0", "\"visibility\" : \"" + Visibility.PUBLIC.name() + "\"");
+        serialized = serialized.replaceAll("\"visibility\" : 0", "\"visibility\" : \"" + ProcessingComponentVisibility.SYSTEM.name() + "\"");
         serialized = serialized.replaceAll("\"componentType\" : 0", "\"componentType\" : \"" + ProcessingComponentType.EXECUTABLE.name() + "\"");
         serialized = serialized.replaceAll("\"type\" : 0", "\"type\" : \"" + ParameterType.REGULAR.name() + "\"");
         serialized = serialized.replaceAll(JavaType.BOOLEAN.value().getName(), JavaType.BOOLEAN.friendlyName());
@@ -92,7 +93,7 @@ public class DescriptorBuilder {
         serialized = serialized.replaceAll(JavaType.INT.value().getName(), JavaType.INT.friendlyName());
         serialized = serialized.replaceAll(JavaType.BOOLEAN.value().getName(), JavaType.BOOLEAN.friendlyName());
         serialized = serialized.replaceAll(JavaType.BOOLEAN.value().getName(), JavaType.BOOLEAN.friendlyName());
-        Files.writeString(descriptorPath.getParent().resolve("snap11_operators.json"), serialized);
+        Files.writeString(descriptorPath.getParent().resolve("snap12_operators.json"), serialized);
         System.exit(0);
     }
 
@@ -137,57 +138,61 @@ public class DescriptorBuilder {
         lines = Arrays.copyOfRange(lines, 1, lines.length);
         OperatorParser parser = new OperatorParser(containerId);
         final ProcessingComponent component = parser.parse(String.join("\n", lines));
+
         final int paramIdx = output.indexOf("Parameter Options:");
-        output = output.substring(paramIdx, graphIdx);
-        lines = output.split("\n");
-        final Map<String, ParameterDescriptor> map = component.getParameterDescriptors().stream().collect(Collectors.toMap(ParameterDescriptor::getLabel, Function.identity()));
-        String description = "";
-        String label;
-        String type;
-        ParameterDescriptor descriptor = null;
-        for (String line : lines) {
-            if (!(line.startsWith("Parameter Options:"))) {
-                int idx = line.indexOf('=');
-                if (idx > 0) {
-                    label = line.substring(line.indexOf('-') + 1, idx);
-                    description = line.substring(line.indexOf('>') + 1).trim();
-                    descriptor = map.get(label);
-                    if (descriptor == null) {
-                        continue;
-                    }
-                    descriptor.setDescription(description);
-                    idx = description.indexOf("must be one of ");
+        // there are some components (e.g. Tool Adapter) without this section for Parameter Options
+        if (paramIdx >= 0 && graphIdx <= output.length() && paramIdx < graphIdx) {
+            output = output.substring(paramIdx, graphIdx);
+            lines = output.split("\n");
+            final Map<String, ParameterDescriptor> map = component.getParameterDescriptors().stream().collect(Collectors.toMap(ParameterDescriptor::getLabel, Function.identity()));
+            String description = "";
+            String label;
+            String type;
+            ParameterDescriptor descriptor = null;
+            for (String line : lines) {
+                if (!(line.startsWith("Parameter Options:"))) {
+                    int idx = line.indexOf('=');
                     if (idx > 0) {
-                        final String[] split = description.substring(idx + 15, description.indexOf('.', idx)).split(",");
-                        descriptor.setValueSet(Arrays.stream(split).map(new Function<String,String>() {
-                            @Override
-                            public String apply(String s) {
-                                return s.replace("'", "");
-                            }
-                        }).toArray(String[]::new));
+                        label = line.substring(line.indexOf('-') + 1, idx);
+                        description = line.substring(line.indexOf('>') + 1).trim();
+                        descriptor = map.get(label);
+                        if (descriptor == null) {
+                            continue;
+                        }
+                        descriptor.setDescription(description);
+                        idx = description.indexOf("must be one of ");
+                        if (idx > 0) {
+                            final String[] split = description.substring(idx + 15, description.indexOf('.', idx)).split(",");
+                            descriptor.setValueSet(Arrays.stream(split).map(new Function<String,String>() {
+                                @Override
+                                public String apply(String s) {
+                                    return s.replace("'", "");
+                                }
+                            }).toArray(String[]::new));
+                        }
+                    } else {
+                        description += line.trim();
+                        descriptor.setDescription(description);
+                        idx = description.indexOf("must be one of ");
+                        if (idx > 0) {
+                            final String[] split = description.substring(idx + 15, description.indexOf('.', idx)).split(",");
+                            descriptor.setValueSet(Arrays.stream(split).map(new Function<String,String>() {
+                                @Override
+                                public String apply(String s) {
+                                    return s.replace("'", "").trim();
+                                }
+                            }).toArray(String[]::new));
+                        }
                     }
-                } else {
-                    description += line.trim();
-                    descriptor.setDescription(description);
-                    idx = description.indexOf("must be one of ");
-                    if (idx > 0) {
-                        final String[] split = description.substring(idx + 15, description.indexOf('.', idx)).split(",");
-                        descriptor.setValueSet(Arrays.stream(split).map(new Function<String,String>() {
-                            @Override
-                            public String apply(String s) {
-                                return s.replace("'", "").trim();
-                            }
-                        }).toArray(String[]::new));
+                    final int first = line.indexOf("Default value is");
+                    if (first > 0) {
+                        descriptor.setDefaultValue(line.substring(first + 18, line.indexOf("'", first + 18)));
                     }
-                }
-                final int first = line.indexOf("Default value is");
-                if (first > 0) {
-                    descriptor.setDefaultValue(line.substring(first + 18, line.indexOf("'", first + 18)));
                 }
             }
+        } else{
+            System.out.println("*** Component " + component.getId() + " has no Parameter Options");
         }
-
         return component;
     }
-
 }

@@ -966,6 +966,5 @@
 			}
 		],
 		"templatecontents": "-b\n$b\n$i\n$at\n-oo\n$oo\n-burn\n$burn\n-a\n$a\n$3d\n$add\n-l\n$l\n-where\n$where\n-sql\n$sql\n-dialect\n$dialect\n-of\n$of\n-a_srs\n$a_srs\n-to\n$to\n-co\n$co\n-a_nodata\n$a_nodata\n-init\n$init\n-te\n$te\n-tr\n$tr\n$tap\n-ts\n$ts\n-ot\n$ot\n-optim\n$optim\n$q\n$src_datasource\n$dst_filename"
-		"templatecontents": "-b\n$b\n$i\n$at\n-oo\n$oo\n-burn\n$burn\n-a\n$a\n$3d\n$add\n-l\n$l\n-where\n$where\n-sql\n$sql\n-dialect\n$dialect\n-of\n$of\n-a_srs\n$a_srs\n-to\n$to\n-co\n$co\n-a_nodata\n$a_nodata\n-init\n$init\n-te\n$te\n-tr\n$tr\n$tap\n-ts\n$ts\n-ot\n$ot\n-optim\n$optim\n$q\n$src_datasource\n$dst_filename"
 	}
 ]
