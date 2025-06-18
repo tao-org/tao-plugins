@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  */
 public class RasterFunctionsResolver implements TokenResolver {
 
-    private static final Pattern allNoDataPattern = Pattern.compile("(ALL_NODATA\\((?:[a-zA-Z]:\\\\|/)(?:[^<>:\"/\\\\|?*\\r\\n]+[\\\\/])*[^<>:\"/\\\\|?*\\r\\n]*\\))");
+    private static final Pattern allNoDataPattern = Pattern.compile("(ALL_NODATA\\(((?:[a-zA-Z]:\\\\|/)(?:[^<>:\"/\\\\|?*\\r\\n]+[\\\\/])*[^<>:\"/\\\\|?*\\r\\n]*)\\))");
     private static final Pattern countPixelsAbovePattern = Pattern.compile("(COUNT_PIXELS_ABOVE\\(((?:[a-zA-Z]:\\\\|/)(?:[^<>:\"/\\\\|?*\\r\\n]+[\\\\/])*[^<>:\"/\\\\|?*\\r\\n]*),([0-9.]+)\\))");
     private static final Pattern countPixelsBelowPattern = Pattern.compile("(COUNT_PIXELS_BELOW\\(((?:[a-zA-Z]:\\\\|/)(?:[^<>:\"/\\\\|?*\\r\\n]+[\\\\/])*[^<>:\"/\\\\|?*\\r\\n]*),([0-9.]+)\\))");
 
