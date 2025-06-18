@@ -124,6 +124,7 @@ public class OperatorHandler extends DefaultHandler {
         this.logger = Logger.getLogger(OperatorHandler.class.getName());
         this.result = new ProcessingComponent();
         this.result.setAuthors("SNAP Team");
+        this.result.setCopyright("(C) SNAP Team");
         this.result.setId(UUID.randomUUID().toString());
         this.result.setContainerId(containerId);
         this.result.setNodeAffinity(NodeAffinity.Any);
