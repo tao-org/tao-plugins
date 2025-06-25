@@ -50,9 +50,9 @@ RUN sed -i '/^-Xmx/s/^/#/' /opt/esa-snap/bin/gpt.vmoptions && \
 # RUN unzip extra-cluster.zip -d /opt/esa-snap
 # RUN sed -i '$a-Dsnap.extraClusters=/opt/esa-snap/extra' /opt/esa-snap/bin/gpt.vmoptions
 
-# RUN mkdir /opt/graphs
-# COPY graphs/*.* /opt/graphs
-# RUN chmod -R 777 /opt/graphs
+RUN mkdir /opt/graphs
+COPY graphs/*.* /opt/graphs
+RUN chmod -R 777 /opt/graphs
 
 ENV DISPLAY :99
 COPY update_snap.sh .
