@@ -5,8 +5,6 @@ import ro.cs.tao.component.SystemVariable;
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.docker.Container;
 import ro.cs.tao.docker.ContainerType;
-import ro.cs.tao.docker.DockerVolumeMap;
-import ro.cs.tao.docker.ExecutionConfiguration;
 import ro.cs.tao.topology.docker.BaseImageInstaller;
 import ro.cs.tao.topology.docker.DockerManager;
 import ro.cs.tao.topology.docker.SingletonContainer;
@@ -37,7 +35,7 @@ public class ZeppelinContainer extends BaseImageInstaller implements SingletonCo
 
     @Override
     protected String getPathInContainer() {
-        return "/zeppelin/notebooks";
+        return "/opt/zeppelin/notebook";
     }
 
     @Override
@@ -135,7 +133,7 @@ public class ZeppelinContainer extends BaseImageInstaller implements SingletonCo
             logger.warning(String.format("Error occurred while registering %s: %s",
                     getContainerName(), e.getMessage()));
         }
-        Container dbContainer = this.containerProvider.get(container != null ? container.getId() : getContainerName());
+        Container dbContainer = this.containerProvider.getByName(getContainerName());
         if (dbContainer == null) {
             logger.info(String.format("Container %s not registered in database, will create one", getContainerName()));
             dbContainer = new Container();
@@ -163,31 +161,18 @@ public class ZeppelinContainer extends BaseImageInstaller implements SingletonCo
         if (id != null) {
             throw new RuntimeException(String.format("[%s] is already running", containerName));
         }
-        final DockerVolumeMap map = ExecutionConfiguration.getMasterContainerVolumeMap();
         final List<String> args = new ArrayList<>();
         // add environment variables and connection
         args.add("--init");
-        //host env
         args.add("-e");
-        final String siteUrl = ConfigurationManager.getInstance().getValue("tao.services.base");
-        int columnIdx = siteUrl.indexOf(":", siteUrl.indexOf("//") + 2);
-        args.add("ZEPPELIN_ADDR=" + (columnIdx > 0
-                ? siteUrl.substring(siteUrl.indexOf("//") + 2, columnIdx)
-                : siteUrl.substring(siteUrl.indexOf("//") + 2)));
-        //args.add("ZEPPELIN_ADDR=0.0.0.0");
-        args.add("-e");
-//        args.add("JUPYTER_HOST_URL=" + siteUrl);
-//        args.add("-e");
-        args.add("ZEPPELIN_HOME=" + getPathInContainer());
+        args.add("ZEPPELIN_ADDR=0.0.0.0");
         // authentication
 
         //port env
         final int hostPort = DockerManager.getNextFreePort();
         args.add("-e");
-        args.add("ZEPPELIN_PORT=" + hostPort);
-        Tuple<Integer, Integer> portMap = new Tuple<>(hostPort, hostPort);
-//        args.add("-e");
-//        args.add("JUPYTER_TOKEN=" + token);
+        args.add("ZEPPELIN_PORT=" + 8080);
+        Tuple<Integer, Integer> portMap = new Tuple<>(hostPort, 8080);
         args.add("-v");
         Path absolutePath = Paths.get(SystemVariable.ROOT.value()).toAbsolutePath();
         String mapVolumePath = (absolutePath.endsWith("/") || absolutePath.endsWith("\\")
@@ -196,11 +181,11 @@ public class ZeppelinContainer extends BaseImageInstaller implements SingletonCo
                 : (absolutePath + "\\")) + user;
         File file = new File(mapVolumePath);
         if(!file.exists())
-        {
             file.mkdir();
-        }
         args.add(mapVolumePath + ":" + getPathInContainer());
-        String instanceId = DockerManager.runDaemon(containerName, token, portMap, user, args);
+        String instanceId = DockerManager.runDaemon(containerName, "apachezeppelin" + token.substring(0,5), portMap, user, args);
+        if(instanceId ==  null)
+            throw new RuntimeException("Error creating Apache Zeppelin Contianer");
         return instanceId + ":" + hostPort;
     }
 

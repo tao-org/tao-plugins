@@ -5,7 +5,7 @@
         <value>0.0.0.0</value>
     </property>
 
-    <!-- Default port -->
+    <!-- Server port -->
     <property>
         <name>zeppelin.server.port</name>
         <value>8080</value>
@@ -14,13 +14,39 @@
     <!-- Notebook directory -->
     <property>
         <name>zeppelin.notebook.dir</name>
-        <value>/zeppelin/notebook</value>
+        <value>/opt/zeppelin/notebook</value>
     </property>
 
-    <!-- Authentication Disabled -->
+    <!-- Enable authentication -->
     <property>
         <name>zeppelin.anonymous.allowed</name>
-        <value>true</value>
+        <value>false</value>
+    </property>
+
+    <!-- Use Shiro authentication -->
+    <property>
+        <name>zeppelin.server.authentication</name>
+        <value>shiro</value>
+    </property>
+
+    <property>
+        <name>zeppelin.server.xframe.options</name>
+        <value>ALLOWALL</value>
+    </property>
+
+    <property>
+        <name>zeppelin.server.cors.allowed.origins</name>
+        <value>*</value>
+    </property>
+
+    <property>
+        <name>zeppelin.server.allowed.methods</name>
+        <value>GET,POST,PUT,DELETE,OPTIONS</value>
+    </property>
+
+    <property>
+        <name>zeppelin.jobmanager.enable</name>
+        <value>false</value>
     </property>
 
     <!-- No Shiro login UI -->
@@ -32,6 +58,31 @@
     <!-- Log directory -->
     <property>
         <name>zeppelin.log.dir</name>
-        <value>/zeppelin/logs</value>
+        <value>/opt/zeppelin/logs</value>
     </property>
+
+    <property>
+        <name>zeppelin.ssl.client.auth</name>
+        <value>false</value>
+        <description>Should client authentication be used for SSL connections?</description>
+    </property>
+
+    <property>
+        <name>zeppelin.ssl</name>
+        <value>false</value>
+        <description>Should SSL be used by the servers?</description>
+    </property>
+
+    <property>
+        <name>zeppelin.server.allowed.origins</name>
+        <value>*</value>
+        <description>Allowed sources for REST and WebSocket requests (i.e. http://onehost:8080,http://otherhost.com). If you leave * you are vulnerable to https://issues.apache.org/jira/browse/ZEPPELIN-173</description>
+    </property>
+
+    <property>
+        <name>zeppelin.notebook.public</name>
+        <value>true</value>
+        <description>Make notebook public by default when created, private otherwise</description>
+    </property>
+
 </configuration>

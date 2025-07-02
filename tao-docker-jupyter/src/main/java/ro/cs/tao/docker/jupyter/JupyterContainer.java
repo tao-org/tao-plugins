@@ -133,7 +133,7 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
                         getContainerName(), e.getMessage()));
             }
         }
-        Container dbContainer = this.containerProvider.get(container != null ? container.getId() : getContainerName());
+        Container dbContainer = this.containerProvider.getByName(getContainerName());
         if (dbContainer == null) {
             logger.info(String.format("Container %s not registered in database, will create one", getContainerName()));
             dbContainer = new Container();

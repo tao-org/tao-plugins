@@ -3,6 +3,6 @@
   "name": "apachezeppelin",
   "description": "Apache Zeppelin",
   "tag": "latest",
-  "applicationPath": "/zeppelin/notebooks",
+  "applicationPath": "/opt/zeppelin/notebook",
   "applications": null
 }
