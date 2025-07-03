@@ -2,8 +2,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: tao-sa-cluster-role
-  namespace: argo
 rules:
-  - apiGroups: [ "" ]
+  - apiGroups: [ "metrics.k8s.io" ]
     resources: [ "nodes" ]
     verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "" ]
+    resources: [ "nodes", "pods", "pods/log" ]
+    verbs: [ "get", "list", "watch" ]
+
