@@ -186,7 +186,6 @@ public class KubernetesRuntimeInspector implements NodeRuntimeInspector {
             AtomicReference<Long> totalMemory = new AtomicReference<>((long) 0);
             AtomicReference<Long> usedMemory = new AtomicReference<>((long) 0);
             AtomicReference<Long> totalDisk = new AtomicReference<>((long) 0);
-            AtomicReference<Long> allocatableDisk = new AtomicReference<>((long) 0);
             final NonNamespaceOperation<Node, NodeList, Resource<Node>> nodes = this.client.nodes();
             if (nodes != null) {
                 runtimeInfo = new RuntimeInfo();
@@ -199,13 +198,19 @@ public class KubernetesRuntimeInspector implements NodeRuntimeInspector {
                         BigDecimal memory = node.getStatus().getCapacity().get("memory").getNumericalAmount();
                         totalMemory.updateAndGet(v -> (v + memory.longValue() / MemoryUnit.MB.value()));
                         usedMemory.updateAndGet(v -> (v + usageMetrics.get(node.getMetadata().getName()).get("memory").longValue() / MemoryUnit.MB.value()));
+
+                        // Disk capacity (if available)
+                        if (node.getStatus().getCapacity().containsKey("ephemeral-storage")) {
+                            BigDecimal disk = node.getStatus().getCapacity().get("ephemeral-storage").getNumericalAmount();
+                            totalDisk.updateAndGet(v -> (v + disk.longValue() / MemoryUnit.GB.value()));
+                        }
                     }
                 });
                 runtimeInfo.setCpuTotal((cpuUsageTotal.get() * 100) / cpuCapacityTotal.get());
                 runtimeInfo.setTotalMemory(totalMemory.get());
                 runtimeInfo.setAvailableMemory(totalMemory.get() - usedMemory.get());
                 runtimeInfo.setDiskTotal(totalDisk.get());
-                runtimeInfo.setDiskUsed(totalDisk.get() - allocatableDisk.get());
+                runtimeInfo.setDiskUsed(0);
                 runtimeInfo.setDiskUnit(MemoryUnit.GB);
                 runtimeInfo.setMemoryUnit(MemoryUnit.MB);
             }
@@ -241,7 +246,6 @@ public class KubernetesRuntimeInspector implements NodeRuntimeInspector {
             AtomicReference<Long> totalMemory = new AtomicReference<>((long) 0);
             AtomicReference<Long> usedMemory = new AtomicReference<>((long) 0);
             AtomicReference<Long> totalDisk = new AtomicReference<>((long) 0);
-            AtomicReference<Long> allocatableDisk = new AtomicReference<>((long) 0);
             final NonNamespaceOperation<Node, NodeList, Resource<Node>> nodes = this.client.nodes();
             if (nodes != null) {
                 Map<String, RuntimeInfo> nodesInfo = new HashMap<>();
@@ -256,10 +260,16 @@ public class KubernetesRuntimeInspector implements NodeRuntimeInspector {
                         totalMemory.updateAndGet(v -> (v + memory.longValue() / MemoryUnit.MB.value()));
                         usedMemory.updateAndGet(v -> (v + usageMetrics.get(node.getMetadata().getName()).get("memory").longValue() / MemoryUnit.MB.value()));
 
+                        // Disk capacity (if available)
+                        if (node.getStatus().getCapacity().containsKey("ephemeral-storage")) {
+                            BigDecimal disk = node.getStatus().getCapacity().get("ephemeral-storage").getNumericalAmount();
+                            totalDisk.updateAndGet(v -> (v + disk.longValue() / MemoryUnit.GB.value()));
+                            nodeInfo.setDiskTotal(disk.longValue() / MemoryUnit.GB.value());
+                        }
+
                         nodeInfo.setCpuTotal((usageMetrics.get(node.getMetadata().getName()).get("cpu").doubleValue() * 100) / cpuCapacity.longValue());
-                        nodeInfo.setTotalMemory(memory.longValue());
-                        nodeInfo.setAvailableMemory(memory.longValue() - usedMemory.get());
-                        nodeInfo.setDiskTotal(0);
+                        nodeInfo.setTotalMemory(memory.longValue() / MemoryUnit.MB.value());
+                        nodeInfo.setAvailableMemory((memory.longValue() - usageMetrics.get(node.getMetadata().getName()).get("memory").longValue()) / MemoryUnit.MB.value());
                         nodeInfo.setDiskUsed(0);
                         nodeInfo.setDiskUnit(MemoryUnit.GB);
                         nodeInfo.setMemoryUnit(MemoryUnit.MB);
@@ -268,9 +278,9 @@ public class KubernetesRuntimeInspector implements NodeRuntimeInspector {
                 });
                 clusterInfo.setCpuTotal((cpuUsageTotal.get() * 100) / cpuCapacityTotal.get());
                 clusterInfo.setTotalMemory(totalMemory.get());
-                clusterInfo.setAvailableMemory(usedMemory.get());
+                clusterInfo.setAvailableMemory(totalMemory.get() - usedMemory.get());
                 clusterInfo.setDiskTotal(totalDisk.get());
-                clusterInfo.setDiskUsed(totalDisk.get() - allocatableDisk.get());
+                clusterInfo.setDiskUsed(0);
                 clusterInfo.setDiskUnit(MemoryUnit.GB);
                 clusterInfo.setMemoryUnit(MemoryUnit.MB);
 
