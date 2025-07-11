@@ -1,6 +1,7 @@
 package ro.cs.tao.eodata.quicklook;
 
 import ro.cs.tao.eodata.DataHandlingException;
+import ro.cs.tao.eodata.metadata.MetadataInspector;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.OutputAccumulator;
@@ -42,7 +43,8 @@ public class GenericQuicklookGenerator extends BaseQuicklookGenerator<Path> {
         final List<Path> results = new ArrayList<>();
         for (Path productFile : list) {
             try {
-                Executor<?> executor = initialize(productFile, useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
+                MetadataInspector.Metadata metadata = getMetadata(productFile);
+                Executor<?> executor = initialize(productFile, metadata, useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
                 if (executor != null) {
                     executor.setOutputConsumer(consumer);
                     int code;
@@ -61,6 +63,6 @@ public class GenericQuicklookGenerator extends BaseQuicklookGenerator<Path> {
             }
             results.add(productFile);
         }
-        return results.size() == 0 ? null : results;
+        return results.isEmpty() ? null : results;
     }
 }
