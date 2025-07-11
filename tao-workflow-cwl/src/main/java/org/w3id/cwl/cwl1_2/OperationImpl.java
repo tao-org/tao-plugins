@@ -20,6 +20,8 @@ import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
 import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
 import org.w3id.cwl.cwl1_2.utils.ValidationException;
 
+import java.util.Optional;
+
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#Operation</I><BR> <BLOCKQUOTE>
  This record describes an abstract operation.  It is a potential
@@ -51,6 +53,8 @@ public class OperationImpl extends SaveableImpl implements Operation {
   public java.util.Optional<String> getId() {
     return this.id;
   }
+
+  public void setId(Optional<String> id) {}
 
   private Operation_class class_;
 
@@ -178,8 +182,9 @@ public class OperationImpl extends SaveableImpl implements Operation {
    * Getter for property <I>https://w3id.org/cwl/cwl#Process/intent</I><BR>
    * <BLOCKQUOTE>
    * An identifier for the type of computational operation, of this Process.
-   * Especially useful for "class: Operation", but can also be used for
-   * CommandLineTool, Workflow, or ExpressionTool.
+   * Especially useful for [`Operation`](Workflow.html#Operation), but can also be used for
+   * [`CommandLineTool`](CommandLineTool.html#CommandLineTool),
+   * [`Workflow`](Workflow.html#Workflow), or [ExpressionTool](Workflow.html#ExpressionTool).
    * 
    * If provided, then this must be an IRI of a concept node that
    * represents the type of operation, preferably defined within an ontology.
@@ -233,7 +238,7 @@ public class OperationImpl extends SaveableImpl implements Operation {
       try {
         id =
             LoaderInstances
-                .uri_optional_StringInstance_True_False_None
+                .uri_optional_StringInstance_True_False_None_None
                 .loadField(__doc.get("id"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         id = null; // won't be used but prevents compiler from complaining.
@@ -262,7 +267,7 @@ public class OperationImpl extends SaveableImpl implements Operation {
     try {
       class_ =
           LoaderInstances
-              .uri_Operation_class_False_True_None
+              .uri_Operation_class_False_True_None_None
               .loadField(__doc.get("class"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       class_ = null; // won't be used but prevents compiler from complaining.
@@ -365,7 +370,7 @@ public class OperationImpl extends SaveableImpl implements Operation {
       try {
         cwlVersion =
             LoaderInstances
-                .uri_optional_CWLVersion_False_True_None
+                .uri_optional_CWLVersion_False_True_None_None
                 .loadField(__doc.get("cwlVersion"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         cwlVersion = null; // won't be used but prevents compiler from complaining.
@@ -382,7 +387,7 @@ public class OperationImpl extends SaveableImpl implements Operation {
       try {
         intent =
             LoaderInstances
-                .uri_optional_array_of_StringInstance_True_False_None
+                .uri_optional_array_of_StringInstance_True_False_None_None
                 .loadField(__doc.get("intent"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         intent = null; // won't be used but prevents compiler from complaining.

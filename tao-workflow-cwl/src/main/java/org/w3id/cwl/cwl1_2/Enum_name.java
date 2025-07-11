@@ -12,26 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.w3id.cwl.cwl1_1;
+package org.w3id.cwl.cwl1_2;
 
-import org.w3id.cwl.cwl1_1.utils.ValidationException;
+import org.w3id.cwl.cwl1_2.utils.ValidationException;
 
-public enum enum_d9cba076fca539106791a4f46d198c7fcfbdb779 {
-  RECORD("record");
+public enum Enum_name {
+  ENUM("enum");
 
-  private static String[] symbols = new String[] {"record"};
+  private static String[] symbols = new String[] {"enum"};
   private String docVal;
 
-  private enum_d9cba076fca539106791a4f46d198c7fcfbdb779(final String docVal) {
+  private Enum_name(final String docVal) {
     this.docVal = docVal;
   }
 
-  public static enum_d9cba076fca539106791a4f46d198c7fcfbdb779 fromDocumentVal(final String docVal) {
-    for(final enum_d9cba076fca539106791a4f46d198c7fcfbdb779 val : enum_d9cba076fca539106791a4f46d198c7fcfbdb779.values()) {
+  public static Enum_name fromDocumentVal(final String docVal) {
+    for(final Enum_name val : Enum_name.values()) {
       if(val.docVal.equals(docVal)) {
         return val;
       }
     }
-    throw new ValidationException(String.format("Expected one of %s", enum_d9cba076fca539106791a4f46d198c7fcfbdb779.symbols, docVal));
+    throw new ValidationException(String.format("Expected one of %s", Enum_name.symbols, docVal));
   }
 }

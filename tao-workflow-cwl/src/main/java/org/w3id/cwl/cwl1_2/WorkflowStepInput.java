@@ -224,9 +224,9 @@ public interface WorkflowStepInput extends Identified, Sink, LoadContents, Label
    *    * </BLOCKQUOTE>
    */
 
-  Object getDefault();
+  java.util.Optional<Object> getDefault();
 
-  void setDefault(Object default_);
+  void setDefault(java.util.Optional<Object> default_);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#WorkflowStepInput/valueFrom</I><BR>
    * <BLOCKQUOTE>
