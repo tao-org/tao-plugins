@@ -58,7 +58,8 @@ public class EOProductQuicklookGenerator extends BaseQuicklookGenerator<EOProduc
                     final String entryPoint = product.getEntryPoint();
                     if (StringUtils.isNotEmpty(entryPoint)) {
                         Path productPath = FileUtilities.toPath(product.getLocation()).resolve(entryPoint);
-                        Executor<?> executor = initialize(productPath, DockerHelper.isDockerFound() ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
+                        Executor<?> executor = initialize(productPath, getMetadata(productPath),
+                                                          DockerHelper.isDockerFound() ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
                         if (executor != null) {
                             executor.setOutputConsumer(consumer);
                             int code;
