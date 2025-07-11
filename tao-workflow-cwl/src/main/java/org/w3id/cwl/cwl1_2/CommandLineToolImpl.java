@@ -212,8 +212,9 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
    * Getter for property <I>https://w3id.org/cwl/cwl#Process/intent</I><BR>
    * <BLOCKQUOTE>
    * An identifier for the type of computational operation, of this Process.
-   * Especially useful for "class: Operation", but can also be used for
-   * CommandLineTool, Workflow, or ExpressionTool.
+   * Especially useful for [`Operation`](Workflow.html#Operation), but can also be used for
+   * [`CommandLineTool`](CommandLineTool.html#CommandLineTool),
+   * [`Workflow`](Workflow.html#Workflow), or [ExpressionTool](Workflow.html#ExpressionTool).
    * 
    * If provided, then this must be an IRI of a concept node that
    * represents the type of operation, preferably defined within an ontology.
@@ -418,8 +419,11 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
   /**
    * Default constructor
    */
-  public CommandLineToolImpl(){
+  public CommandLineToolImpl() {
     super();
+    this.inputs = new LinkedList<>();
+    this.outputs = new LinkedList<>();
+    this.arguments = Optional.of(new LinkedList<>());
   }
   /**
    * Used by {@link org.w3id.cwl.cwl1_2.utils.RootLoader} to construct instances of CommandLineToolImpl.
@@ -457,7 +461,7 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
       try {
         id =
             LoaderInstances
-                .uri_optional_StringInstance_True_False_None
+                .uri_optional_StringInstance_True_False_None_None
                 .loadField(__doc.get("id"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         id = null; // won't be used but prevents compiler from complaining.
@@ -486,7 +490,7 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
     try {
       class_ =
           LoaderInstances
-              .uri_CommandLineTool_class_False_True_None
+              .uri_CommandLineTool_class_False_True_None_None
               .loadField(__doc.get("class"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       class_ = null; // won't be used but prevents compiler from complaining.
@@ -589,7 +593,7 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
       try {
         cwlVersion =
             LoaderInstances
-                .uri_optional_CWLVersion_False_True_None
+                .uri_optional_CWLVersion_False_True_None_None
                 .loadField(__doc.get("cwlVersion"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         cwlVersion = null; // won't be used but prevents compiler from complaining.
@@ -606,7 +610,7 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
       try {
         intent =
             LoaderInstances
-                .uri_optional_array_of_StringInstance_True_False_None
+                .uri_optional_array_of_StringInstance_True_False_None_None
                 .loadField(__doc.get("intent"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         intent = null; // won't be used but prevents compiler from complaining.
@@ -847,10 +851,10 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
       commandLineTool.put("arguments", argumentsList);
     }
     if (this.inputs != null) {
-      commandLineTool.put("inputs", treatInOut(inputs, null));
+      commandLineTool.put("inputs", treatInOut(inputs, this.id.get()));
     }
     if (this.outputs != null) {
-      commandLineTool.put("outputs", treatInOut(outputs, null));
+      commandLineTool.put("outputs", treatInOut(outputs, this.id.get()));
     }
     return commandLineTool;
   }
