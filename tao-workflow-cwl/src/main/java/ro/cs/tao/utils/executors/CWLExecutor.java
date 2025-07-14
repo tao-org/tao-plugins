@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class CWLExecutor extends Executor<Object>
@@ -521,7 +522,7 @@ public class CWLExecutor extends Executor<Object>
                 if (foundPrefix != null) {
                     int chIndex = foundPrefix.indexOf("=");
                     if (chIndex > -1) {
-                        inputBinding.setPrefix(Optional.of(foundPrefix.substring(0,chIndex + 1 )));
+                        inputBinding.setPrefix(Optional.of(foundPrefix.substring(0, chIndex + 1)));
                     } else {
                         inputBinding.setPrefix(Optional.of(foundPrefix));
                     }
@@ -529,45 +530,51 @@ public class CWLExecutor extends Executor<Object>
                     inputBinding.setPrefix(Optional.of("-" + desc.getLabel()));
                 }
                 input.setInputBinding(Optional.of(inputBinding));
-                ((CommandLineTool)this.cwlTemplate.getCwlGraphChild("$graph", stepCWLFileId)).getInputs().add(input);
+                ((CommandLineTool) this.cwlTemplate.getCwlGraphChild("$graph", stepCWLFileId)).getInputs().add(input);
 
                 // create parameter input for workflow and add it to inputs
                 WorkflowInputParameter workflowInputParameter = new WorkflowInputParameterImpl();
-                workflowInputParameter.setId(Optional.of(desc.getName()));
+                workflowInputParameter.setId(Optional.of(desc.getName() + "_" + task.getWorkflowNodeId()));
                 workflowInputParameter.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
                 workflowInputParameter.setLabel(Optional.of(desc.getDescription()));
                 cwlWorkflow.getInputs().add(workflowInputParameter);
 
-                if (mainWorkflow.getInputs().stream().filter( i ->
-                        ((WorkflowInputParameter)i).getId().get().endsWith("/" + MAIN_WF_INPUT_ID_PREFIX + desc.getName())).findAny().isEmpty()) {
+                final String parameterId;
+                String tempParameterId = MAIN_WF_INPUT_ID_PREFIX + desc.getName();
+                long keyOccurrence = mainWorkflow.getInputs().stream().filter(m -> ((WorkflowInputParameter) m).getId().get().matches("^(file:/|file://|file:///).*") ?
+                        ((WorkflowInputParameter) m).getId().get().matches("^(.*/)" + tempParameterId + ".*") :
+                        ((WorkflowInputParameter) m).getId().get().matches("^" + tempParameterId + ".*")).count();
+                if (keyOccurrence > 0) {
+                    parameterId = tempParameterId + "_" + keyOccurrence;
+                } else {
+                    parameterId = tempParameterId;
+                }
+                if (mainWorkflow.getInputs().stream().filter(i ->
+                        ((WorkflowInputParameter) i).getId().get().endsWith("/" + parameterId)).findAny().isEmpty()) {
                     WorkflowInputParameter mainWorkflowInputParameter = new WorkflowInputParameterImpl();
-                    mainWorkflowInputParameter.setId(Optional.of(MAIN_WF_INPUT_ID_PREFIX + desc.getName()));
+                    mainWorkflowInputParameter.setId(Optional.of(parameterId));
                     mainWorkflowInputParameter.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
                     mainWorkflowInputParameter.setLabel(Optional.of(desc.getDescription()));
                     mainWorkflow.getInputs().add(mainWorkflowInputParameter);
                 }
 
                 // create input for step workflow add it to in list
-                if (inList.stream().filter( i ->
-                        ((WorkflowStepInput)i).getId().get().endsWith("/" + desc.getLabel())).findAny().isEmpty()) {
+                if (inList.stream().filter(i ->
+                        ((WorkflowStepInput) i).getId().get().endsWith("/" + desc.getLabel())).findAny().isEmpty()) {
                     WorkflowStepInput stepInput = new WorkflowStepInputImpl();
                     stepInput.setId(Optional.of(desc.getLabel()));
-                    stepInput.setDefault(Optional.of(desc.getName()));
+                    stepInput.setDefault(Optional.of(desc.getName() + "_" + task.getWorkflowNodeId()));
                     inList.add(stepInput);
 
                     WorkflowStepInput mainStepInput = new WorkflowStepInputImpl();
-                    mainStepInput.setId(Optional.of(desc.getName()));
-                    mainStepInput.setDefault(Optional.of(MAIN_WF_INPUT_ID_PREFIX + desc.getName()));
+                    mainStepInput.setId(Optional.of(desc.getName() + "_" + task.getWorkflowNodeId()));
+                    mainStepInput.setDefault(Optional.of(parameterId));
                     mainWfInList.add(mainStepInput);
                 }
 
-                for (Variable t : task.getInputParameterValues()) {
-                    if (t.getKey().equals(desc.getName())) {
-                        // create parameter input for YAML file
-                        createOrUpdateYamlFile(MAIN_WF_INPUT_ID_PREFIX + desc.getName(), JavaType.fromClass(desc.getDataType()).getConverter().apply(t.getValue()));
-                        break;
-                    }
-                }
+                Variable parameterValue = task.getInputParameterValues().stream().filter(i -> i.getKey().equals(desc.getName())).findFirst().get();
+                // create parameter input for YAML file
+                createOrUpdateYamlFile(parameterId, JavaType.fromClass(desc.getDataType()).getConverter().apply(parameterValue.getValue()));
             }
         }
     }
