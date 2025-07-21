@@ -1,3 +1,0 @@
-rasterio
-zarr
-netCDF4
