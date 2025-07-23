@@ -15,7 +15,6 @@ import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
 import ro.cs.tao.execution.util.TaskUtilities;
-import ro.cs.tao.persistence.WorkflowNodeProvider;
 import ro.cs.tao.persistence.WorkflowProvider;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 import ro.cs.tao.utils.ExceptionUtils;
@@ -30,7 +29,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class CWLExecutor extends Executor<Object>
@@ -574,7 +572,7 @@ public class CWLExecutor extends Executor<Object>
 
                 Variable parameterValue = task.getInputParameterValues().stream().filter(i -> i.getKey().equals(desc.getName())).findFirst().get();
                 // create parameter input for YAML file
-                createOrUpdateYamlFile(parameterId, JavaType.fromClass(desc.getDataType()).getConverter().apply(parameterValue.getValue()));
+                createOrUpdateYamlFile(parameterId, JavaType.fromClass(desc.getDataType()).parse(parameterValue.getValue()));
             }
         }
     }
