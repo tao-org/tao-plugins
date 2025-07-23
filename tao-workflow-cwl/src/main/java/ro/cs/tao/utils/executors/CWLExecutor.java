@@ -111,7 +111,7 @@ public class CWLExecutor extends Executor<Object>
         return 0;
     }
 
-    private void createCWL (WorkflowDescriptor workflowDesc, ExecutionTask task, ExecutionUnit executionUnit) {
+    private void createCWL(WorkflowDescriptor workflowDesc, ExecutionTask task, ExecutionUnit executionUnit) {
         final Path path = Paths.get(executionUnit.getScriptTargetPath());
         /* Create the root workflow template. This defines:
          * the initial inputs and final outputs
@@ -165,7 +165,7 @@ public class CWLExecutor extends Executor<Object>
         writeToFile(path, cwlTemplate.save());
     }
 
-    private void updateCWL (ExecutionTask task, ExecutionUnit executionUnit) {
+    private void updateCWL(ExecutionTask task, ExecutionUnit executionUnit) {
         final Path path = Paths.get(executionUnit.getScriptTargetPath());
         Object graphElements = RootLoader.loadDocument(path);
         cwlTemplate.getCwlMainGraphObject().get(CWL_GRAPH_ID).addAll((Collection<?>) graphElements);
@@ -176,7 +176,7 @@ public class CWLExecutor extends Executor<Object>
     /**
      * Create or update the YAML file associated with the current job CWL file
      */
-    private void createOrUpdateYamlFile (String key, Object yamlObj) {
+    private void createOrUpdateYamlFile(String key, Object yamlObj) {
         Map<Object, Object> tempList = new LinkedHashMap<>();
 
         final Path path = Paths.get(executionUnit.getScriptTargetPath());
@@ -228,7 +228,7 @@ public class CWLExecutor extends Executor<Object>
         }
     }
 
-    private void parseNodes (WorkflowDescriptor workflowDesc) {
+    private void parseNodes(WorkflowDescriptor workflowDesc) {
         List<WorkflowNodeDescriptor> orderedWfNodeDescList = orderWfDescNodes(workflowDesc);
         List<WorkflowNodeDescriptor> roots = workflowDesc.findRoots(orderedWfNodeDescList);
         List<WorkflowNodeDescriptor> leaves = workflowDesc.findLeaves(orderedWfNodeDescList);
@@ -258,7 +258,7 @@ public class CWLExecutor extends Executor<Object>
         System.out.println("Other workflow descriptor");
     }
 
-    private void setupWorkflowInfoFromRootNode (TaoComponent wfComponent, SourceDescriptor sourceDescriptor, Long workflowId) {
+    private void setupWorkflowInfoFromRootNode(TaoComponent wfComponent, SourceDescriptor sourceDescriptor, Long workflowId) {
         if (DataSourceComponent.QUERY_PARAMETER.equals(sourceDescriptor.getName())) {
             Workflow mainWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, MAIN_WF_ID);
             Workflow cwlWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, cwlWorkflowId);
@@ -287,7 +287,7 @@ public class CWLExecutor extends Executor<Object>
         }
     }
 
-    private void setupWorkflowInfoFromLeavesNode (TargetDescriptor targetDescriptor, Long workflowId) {
+    private void setupWorkflowInfoFromLeavesNode(TargetDescriptor targetDescriptor, Long workflowId) {
         Workflow mainWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, MAIN_WF_ID);
         Workflow cwlWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, cwlWorkflowId);
         String outParamId = targetDescriptor.getName() + "_" + workflowId;
@@ -317,7 +317,7 @@ public class CWLExecutor extends Executor<Object>
         mainWorkflow.getStep(mainWfStepId).getOut().add(stepOut);
     }
 
-    private void describeWorkflowSteps (WorkflowNodeDescriptor wf) {
+    private void describeWorkflowSteps(WorkflowNodeDescriptor wf) {
         Workflow cwlWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, cwlWorkflowId);
         WorkflowStep step = new WorkflowStepImpl();
         String stepId = wf.getComponentId().toLowerCase() + "_" + wf.getId();
@@ -349,7 +349,7 @@ public class CWLExecutor extends Executor<Object>
         cwlWorkflow.getSteps().add(step);
     }
 
-    private List<Object> createCommandArray (List<String> bashArguments) {
+    private List<Object> createCommandArray(List<String> bashArguments) {
         List<Object> baseCommandArray = new ArrayList<>();
         // first bash argument is always added
         baseCommandArray.add("/bin/bash");
@@ -365,7 +365,7 @@ public class CWLExecutor extends Executor<Object>
         return baseCommandArray;
     }
 
-    private List<Object> createReqListForCommandToolSteps () {
+    private List<Object> createReqListForCommandToolSteps() {
         List<Object> requirementsList = new ArrayList<>();
         if (this.executionUnit.getMinDisk() != null || this.executionUnit.getMinMemory() != null) {
             ResourceRequirement requirement = new ResourceRequirementImpl();
@@ -391,7 +391,7 @@ public class CWLExecutor extends Executor<Object>
         return requirement;
     }
 
-    private void createStepFromTask (ExecutionTask task) {
+    private void createStepFromTask(ExecutionTask task) {
         String stepCWLFileId = this.executionUnit.getMetadata().get("name").toString().toLowerCase().replaceAll("[^a-zA-Z0-9]","")  + "_" + task.getWorkflowNodeId();
         TaoComponent wfComponent = TaskUtilities.getComponentFor(task);
         CommandLineTool commandLineTool = new CommandLineToolImpl();
@@ -426,7 +426,7 @@ public class CWLExecutor extends Executor<Object>
     /**
      * Add input information to workflow template
      */
-    private void addInputsComponentFromSources (TaoComponent wfComponent, List<String> bashArguments, String stepCWLFileId, ExecutionTask task) {
+    private void addInputsComponentFromSources(TaoComponent wfComponent, List<String> bashArguments, String stepCWLFileId, ExecutionTask task) {
         Workflow cwlWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, cwlWorkflowId);
         // get current steps form Workflow
         Object currentStep = cwlWorkflow.getSteps().stream().filter(s->((WorkflowStep)s).getId().get().contains(wfComponent.getId().toLowerCase() + "_" + task.getWorkflowNodeId())).findFirst().orElse(null);
@@ -497,7 +497,7 @@ public class CWLExecutor extends Executor<Object>
     /**
      * Add the parameters to job CWL file, inputs section and YAML file
      */
-    private void addInputsFromParams (TaoComponent wfComponent, List<String> bashArguments, String stepCWLFileId, ExecutionTask task) {
+    private void addInputsFromParams(TaoComponent wfComponent, List<String> bashArguments, String stepCWLFileId, ExecutionTask task) {
         Workflow cwlWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, cwlWorkflowId);
         Workflow mainWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, MAIN_WF_ID);
         // get current steps form Workflow
@@ -580,7 +580,7 @@ public class CWLExecutor extends Executor<Object>
     /**
      * Add output information to workflow template
      */
-    private void addOutputsToWf (TaoComponent wfComponent, List<Object> baseCommandArray, List<String> bashArguments, String stepCWLFileId, ExecutionTask task) {
+    private void addOutputsToWf(TaoComponent wfComponent, List<Object> baseCommandArray, List<String> bashArguments, String stepCWLFileId, ExecutionTask task) {
         // arguments associated with the outputs
         int argumentPosition = baseCommandArray.size();
         // create task outputs and arguments based on Component targets
