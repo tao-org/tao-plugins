@@ -12,7 +12,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY shiro.ini /opt/zeppelin/conf/shiro.ini
 COPY zeppelin-site.xml /opt/zeppelin/conf/zeppelin-site.xml
 COPY requirements.txt .
 RUN pip install -r requirements.txt

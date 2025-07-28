@@ -66,7 +66,7 @@ public class ZeppelinContainer extends BaseImageInstaller implements SingletonCo
     @Override
     protected String[] additionalResources() {
         return new String[]{
-                "requirements.txt", "shiro.ini", "zeppelin-site.xml"
+                "requirements.txt", "zeppelin-site.xml"
         };
     }
 

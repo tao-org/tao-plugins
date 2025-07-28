@@ -17,16 +17,15 @@
         <value>/opt/zeppelin/notebook</value>
     </property>
 
-    <!-- Enable authentication -->
-    <property>
-        <name>zeppelin.anonymous.allowed</name>
-        <value>false</value>
-    </property>
-
     <!-- Use Shiro authentication -->
     <property>
         <name>zeppelin.server.authentication</name>
-        <value>shiro</value>
+        <value>none</value>
+    </property>
+
+    <property>
+        <name>zeppelin.anonymous.allowed</name>
+        <value>true</value>
     </property>
 
     <property>
@@ -49,11 +48,6 @@
         <value>false</value>
     </property>
 
-    <!-- No Shiro login UI -->
-    <property>
-        <name>zeppelin.server.authentication</name>
-        <value>none</value>
-    </property>
 
     <!-- Log directory -->
     <property>
