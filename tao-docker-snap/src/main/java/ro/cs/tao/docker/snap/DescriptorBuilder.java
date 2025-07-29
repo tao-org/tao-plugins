@@ -14,6 +14,7 @@ import ro.cs.tao.component.ParameterDescriptor;
 import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.SourceDescriptor;
 import ro.cs.tao.component.TargetDescriptor;
+import ro.cs.tao.component.enums.ComponentCategory;
 import ro.cs.tao.component.enums.ParameterType;
 import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.component.enums.ProcessingComponentVisibility;
@@ -146,6 +147,17 @@ public class DescriptorBuilder {
             List<ProcessingComponent> sources = componentSerializer.deserialize(ProcessingComponent.class, Files.readString(Paths.get(args[0])));
             List<ProcessingComponent> targets = componentSerializer.deserialize(ProcessingComponent.class, Files.readString(Paths.get(args[1])));
             mergeDescriptors(sources, targets);
+            for (ProcessingComponent component : targets) {
+                component.setTemplateType(TemplateType.VELOCITY);
+                if (component.getCategory() == null) {
+                    component.setCategory(ComponentCategory.MISC);
+                }
+                for (ParameterDescriptor descriptor : component.getParameterDescriptors()) {
+                    if (descriptor.getName() == null) {
+                        descriptor.setName(descriptor.getId());
+                    }
+                }
+            }
             String serialized = componentSerializer.serialize(targets, "components");
             List<JavaType> arrayTypes = Arrays.stream(JavaType.values()).filter(t -> t.isArrayType()).collect(Collectors.toList());
             List<JavaType> simpleTypes = Arrays.stream(JavaType.values()).filter(t -> !t.isArrayType()).collect(Collectors.toList());
@@ -175,9 +187,21 @@ public class DescriptorBuilder {
                 target.setTemplateContents(source.getTemplateContents().substring(0, source.getTemplateContents().indexOf("\n") + 1) + target.getTemplateContents());
                 for (SourceDescriptor descriptor : target.getSources()) {
                     descriptor.setParentId(target.getId());
+                    SourceDescriptor sourceDescriptor = source.getSources().stream()
+                                                              .filter(s -> s.getId() != null &&  (s.equals(descriptor.getId()) || s.getName().equals(descriptor.getName())))
+                                                              .findFirst().orElse(null);
+                    if (sourceDescriptor != null) {
+                        descriptor.setId(sourceDescriptor.getId());
+                    }
                 }
                 for (TargetDescriptor descriptor : target.getTargets()) {
                     descriptor.setParentId(target.getId());
+                    TargetDescriptor sourceDescriptor = source.getTargets().stream()
+                                                              .filter(t -> t.getId() != null && (t.getId().equals(descriptor.getId()) || t.getName().equals(descriptor.getName())))
+                                                              .findFirst().orElse(null);
+                    if (sourceDescriptor != null) {
+                        descriptor.setId(sourceDescriptor.getId());
+                    }
                 }
             } else {
                 System.err.println(source.getId() + " not found in target descriptors");
