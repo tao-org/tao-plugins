@@ -250,6 +250,11 @@
             <artifactId>tao-functions</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-drmaa-simpipe</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!--<dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-dunia-session</artifactId>
