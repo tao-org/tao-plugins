@@ -21,15 +21,15 @@ import ro.cs.tao.topology.docker.BaseImageInstaller;
 
 import java.nio.file.Path;
 
-public class OTBImageInstaller extends BaseImageInstaller {
+public class OTB9ImageInstaller extends BaseImageInstaller {
     @Override
-    public String getContainerName() { return "otb-7-3-0"; }
+    public String getContainerName() { return "otb-9-1-1"; }
 
     @Override
     protected String getDescription() { return "OTB"; }
 
     @Override
-    protected String getPathInContainer() { return "/opt/OTB-7.3.0-Linux64/bin"; }
+    protected String getPathInContainer() { return "/opt/OTB-9.1.1-Linux64/bin"; }
 
     @Override
     protected String getPathInSystem() {
@@ -39,10 +39,10 @@ public class OTBImageInstaller extends BaseImageInstaller {
     }
 
     @Override
-    protected String getContainerDescriptorFileName() { return "otb_container.json"; }
+    protected String getContainerDescriptorFileName() { return "otb9_container.json"; }
 
     @Override
-    protected String getComponentDescriptorFileName() { return "otb_applications.json"; }
+    protected String getComponentDescriptorFileName() { return "otb9_applications.json"; }
 
     @Override
     protected String getLogoFileName() { return "otb_logo.png"; }

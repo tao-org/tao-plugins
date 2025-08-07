@@ -1,0 +1,470 @@
+{
+  "id" : "otb-9-1-1",
+  "name" : "Orfeo Toolbox 9.1.1",
+  "description" : "Orfeo Toolbox 9.1.1 container",
+  "type" : "DOCKER",
+  "applicationPath" : "/opt/OTB-9.1.1-Linux64/bin",
+  "applications" : [ {
+    "path" : "otbcli_Aggregate.ps1",
+    "name" : "otb911_Aggregate",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_BandMath.ps1",
+    "name" : "otb911_BandMath",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_BandMathX.ps1",
+    "name" : "otb911_BandMathX",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_BinaryMorphologicalOperation.ps1",
+    "name" : "otb911_BinaryMorphologicalOperation",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_BlockMatching.ps1",
+    "name" : "otb911_BlockMatching",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_BundleToPerfectSensor.ps1",
+    "name" : "otb911_BundleToPerfectSensor",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ClassificationMapRegularization.ps1",
+    "name" : "otb911_ClassificationMapRegularization",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ColorMapping.ps1",
+    "name" : "otb911_ColorMapping",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_CompareImages.ps1",
+    "name" : "otb911_CompareImages",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ComputeConfusionMatrix.ps1",
+    "name" : "otb911_ComputeConfusionMatrix",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ComputeImagesStatistics.ps1",
+    "name" : "otb911_ComputeImagesStatistics",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ComputeModulusAndPhase.ps1",
+    "name" : "otb911_ComputeModulusAndPhase",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ComputeOGRLayersFeaturesStatistics.ps1",
+    "name" : "otb911_ComputeOGRLayersFeaturesStatistics",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ConcatenateImages.ps1",
+    "name" : "otb911_ConcatenateImages",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ConcatenateVectorData.ps1",
+    "name" : "otb911_ConcatenateVectorData",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ConnectedComponentSegmentation.ps1",
+    "name" : "otb911_ConnectedComponentSegmentation",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ContrastEnhancement.ps1",
+    "name" : "otb911_ContrastEnhancement",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ConvertCartoToGeoPoint.ps1",
+    "name" : "otb911_ConvertCartoToGeoPoint",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ConvertSensorToGeoPoint.ps1",
+    "name" : "otb911_ConvertSensorToGeoPoint",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_Despeckle.ps1",
+    "name" : "otb911_Despeckle",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_DimensionalityReduction.ps1",
+    "name" : "otb911_DimensionalityReduction",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_DisparityMapToElevationMap.ps1",
+    "name" : "otb911_DisparityMapToElevationMap",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_DomainTransform.ps1",
+    "name" : "otb911_DomainTransform",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_DynamicConvert.ps1",
+    "name" : "otb911_DynamicConvert",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_EdgeExtraction.ps1",
+    "name" : "otb911_EdgeExtraction",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_EndmemberNumberEstimation.ps1",
+    "name" : "otb911_EndmemberNumberEstimation",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ExtractROI.ps1",
+    "name" : "otb911_ExtractROI",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_FastNLMeans.ps1",
+    "name" : "otb911_FastNLMeans",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_FineRegistration.ps1",
+    "name" : "otb911_FineRegistration",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_FusionOfClassifications.ps1",
+    "name" : "otb911_FusionOfClassifications",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_GeneratePlyFile.ps1",
+    "name" : "otb911_GeneratePlyFile",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_GenericRegionMerging.ps1",
+    "name" : "otb911_GenericRegionMerging",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_GrayScaleMorphologicalOperation.ps1",
+    "name" : "otb911_GrayScaleMorphologicalOperation",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_GridBasedImageResampling.ps1",
+    "name" : "otb911_GridBasedImageResampling",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_HaralickTextureExtraction.ps1",
+    "name" : "otb911_HaralickTextureExtraction",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_HomologousPointsExtraction.ps1",
+    "name" : "otb911_HomologousPointsExtraction",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_HooverCompareSegmentation.ps1",
+    "name" : "otb911_HooverCompareSegmentation",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_HyperspectralUnmixing.ps1",
+    "name" : "otb911_HyperspectralUnmixing",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ImageClassifier.ps1",
+    "name" : "otb911_ImageClassifier",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ImageDimensionalityReduction.ps1",
+    "name" : "otb911_ImageDimensionalityReduction",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ImageEnvelope.ps1",
+    "name" : "otb911_ImageEnvelope",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ImageRegression.ps1",
+    "name" : "otb911_ImageRegression",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ImageTimeSeriesGapFilling.ps1",
+    "name" : "otb911_ImageTimeSeriesGapFilling",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_KMeansClassification.ps1",
+    "name" : "otb911_KMeansClassification",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_LargeScaleMeanShift.ps1",
+    "name" : "otb911_LargeScaleMeanShift",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_LineSegmentDetection.ps1",
+    "name" : "otb911_LineSegmentDetection",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_LocalRxDetection.ps1",
+    "name" : "otb911_LocalRxDetection",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_LocalStatisticExtraction.ps1",
+    "name" : "otb911_LocalStatisticExtraction",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_LSMSSegmentation.ps1",
+    "name" : "otb911_LSMSSegmentation",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_LSMSSmallRegionsMerging.ps1",
+    "name" : "otb911_LSMSSmallRegionsMerging",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_LSMSVectorization.ps1",
+    "name" : "otb911_LSMSVectorization",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ManageNoData.ps1",
+    "name" : "otb911_ManageNoData",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_MeanShiftSmoothing.ps1",
+    "name" : "otb911_MeanShiftSmoothing",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_MorphologicalClassification.ps1",
+    "name" : "otb911_MorphologicalClassification",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_MorphologicalMultiScaleDecomposition.ps1",
+    "name" : "otb911_MorphologicalMultiScaleDecomposition",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_MorphologicalProfilesAnalysis.ps1",
+    "name" : "otb911_MorphologicalProfilesAnalysis",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_Mosaic.ps1",
+    "name" : "otb911_Mosaic",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_MultiImageSamplingRate.ps1",
+    "name" : "otb911_MultiImageSamplingRate",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_MultiResolutionPyramid.ps1",
+    "name" : "otb911_MultiResolutionPyramid",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_MultitempFilteringFilter.ps1",
+    "name" : "otb911_MultitempFilteringFilter",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_MultitempFilteringOutcore.ps1",
+    "name" : "otb911_MultitempFilteringOutcore",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_MultivariateAlterationDetector.ps1",
+    "name" : "otb911_MultivariateAlterationDetector",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ObjectsRadiometricStatistics.ps1",
+    "name" : "otb911_ObjectsRadiometricStatistics",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ObtainUTMZoneFromGeoPoint.ps1",
+    "name" : "otb911_ObtainUTMZoneFromGeoPoint",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_OGRLayerClassifier.ps1",
+    "name" : "otb911_OGRLayerClassifier",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_OpticalCalibration.ps1",
+    "name" : "otb911_OpticalCalibration",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_OrthoRectification.ps1",
+    "name" : "otb911_OrthoRectification",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_Pansharpening.ps1",
+    "name" : "otb911_Pansharpening",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_PantexTextureExtraction.ps1",
+    "name" : "otb911_PantexTextureExtraction",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_PixelValue.ps1",
+    "name" : "otb911_PixelValue",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_PolygonClassStatistics.ps1",
+    "name" : "otb911_PolygonClassStatistics",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_Quicklook.ps1",
+    "name" : "otb911_Quicklook",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_RadiometricIndices.ps1",
+    "name" : "otb911_RadiometricIndices",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_Rasterization.ps1",
+    "name" : "otb911_Rasterization",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ReadImageInfo.ps1",
+    "name" : "otb911_ReadImageInfo",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_RefineSensorModel.ps1",
+    "name" : "otb911_RefineSensorModel",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ResetMargin.ps1",
+    "name" : "otb911_ResetMargin",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_RigidTransformResample.ps1",
+    "name" : "otb911_RigidTransformResample",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SampleAugmentation.ps1",
+    "name" : "otb911_SampleAugmentation",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SampleExtraction.ps1",
+    "name" : "otb911_SampleExtraction",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SampleSelection.ps1",
+    "name" : "otb911_SampleSelection",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SARBurstExtraction.ps1",
+    "name" : "otb911_SARBurstExtraction",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SARCalibration.ps1",
+    "name" : "otb911_SARCalibration",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SARConcatenateBursts.ps1",
+    "name" : "otb911_SARConcatenateBursts",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SARDeburst.ps1",
+    "name" : "otb911_SARDeburst",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SARDecompositions.ps1",
+    "name" : "otb911_SARDecompositions",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SARPolarMatrixConvert.ps1",
+    "name" : "otb911_SARPolarMatrixConvert",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SARPolarSynth.ps1",
+    "name" : "otb911_SARPolarSynth",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_Segmentation.ps1",
+    "name" : "otb911_Segmentation",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SFSTextureExtraction.ps1",
+    "name" : "otb911_SFSTextureExtraction",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SmallRegionsMerging.ps1",
+    "name" : "otb911_SmallRegionsMerging",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_Smoothing.ps1",
+    "name" : "otb911_Smoothing",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SOMClassification.ps1",
+    "name" : "otb911_SOMClassification",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SpectralAngleClassification.ps1",
+    "name" : "otb911_SpectralAngleClassification",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_SplitImage.ps1",
+    "name" : "otb911_SplitImage",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_StereoFramework.ps1",
+    "name" : "otb911_StereoFramework",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_StereoRectificationGridGenerator.ps1",
+    "name" : "otb911_StereoRectificationGridGenerator",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_Superimpose.ps1",
+    "name" : "otb911_Superimpose",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_Synthetize.ps1",
+    "name" : "otb911_Synthetize",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_TileFusion.ps1",
+    "name" : "otb911_TileFusion",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_TrainDimensionalityReduction.ps1",
+    "name" : "otb911_TrainDimensionalityReduction",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_TrainImagesClassifier.ps1",
+    "name" : "otb911_TrainImagesClassifier",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_TrainImagesRegression.ps1",
+    "name" : "otb911_TrainImagesRegression",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_TrainRegression.ps1",
+    "name" : "otb911_TrainRegression",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_TrainVectorClassifier.ps1",
+    "name" : "otb911_TrainVectorClassifier",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_TrainVectorRegression.ps1",
+    "name" : "otb911_TrainVectorRegression",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_VectorClassifier.ps1",
+    "name" : "otb911_VectorClassifier",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_VectorDataExtractROI.ps1",
+    "name" : "otb911_VectorDataExtractROI",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_VectorDataReprojection.ps1",
+    "name" : "otb911_VectorDataReprojection",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_VectorDataSetField.ps1",
+    "name" : "otb911_VectorDataSetField",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_VectorDataTransform.ps1",
+    "name" : "otb911_VectorDataTransform",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_VectorDimensionalityReduction.ps1",
+    "name" : "otb911_VectorDimensionalityReduction",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_VectorRegression.ps1",
+    "name" : "otb911_VectorRegression",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_VertexComponentAnalysis.ps1",
+    "name" : "otb911_VertexComponentAnalysis",
+    "memoryRequirements" : 4096
+  }, {
+    "path" : "otbcli_ZonalStatistics.ps1",
+    "name" : "otb911_ZonalStatistics",
+    "memoryRequirements" : 4096
+  } ],
+  "format" : [ ],
+  "visibility" : "PUBLIC"
+}
