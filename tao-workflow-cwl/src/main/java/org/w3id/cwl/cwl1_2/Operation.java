@@ -14,6 +14,7 @@
 
 package org.w3id.cwl.cwl1_2;
 
+import org.w3id.cwl.cwl1_2.utils.CWLGraphElement;
 import org.w3id.cwl.cwl1_2.utils.Saveable;
 
 /**
@@ -27,7 +28,7 @@ import org.w3id.cwl.cwl1_2.utils.Saveable;
  CommandLineTool, or ExpressionTool) with a compatible signature.
   </BLOCKQUOTE>
  */
-public interface Operation extends Process, Saveable {
+public interface Operation extends Process, Saveable, CWLGraphElement {
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#Process/id</I><BR>
    * <BLOCKQUOTE>
@@ -123,8 +124,9 @@ public interface Operation extends Process, Saveable {
    * Getter for property <I>https://w3id.org/cwl/cwl#Process/intent</I><BR>
    * <BLOCKQUOTE>
    * An identifier for the type of computational operation, of this Process.
-   * Especially useful for "class: Operation", but can also be used for
-   * CommandLineTool, Workflow, or ExpressionTool.
+   * Especially useful for [`Operation`](Workflow.html#Operation), but can also be used for
+   * [`CommandLineTool`](CommandLineTool.html#CommandLineTool),
+   * [`Workflow`](Workflow.html#Workflow), or [ExpressionTool](Workflow.html#ExpressionTool).
    * 
    * If provided, then this must be an IRI of a concept node that
    * represents the type of operation, preferably defined within an ontology.

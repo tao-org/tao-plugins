@@ -118,7 +118,9 @@ public class GdalInfo implements MetadataInspector {
         if (gdalDataset.getSpatialRef() != null) {
             gdalMetadata.setCrs(gdalDataset.getSpatialRef().getAuthorityName(null) + ":" + gdalDataset.getSpatialRef().getAuthorityCode(null));
         }
-        if (gdalDataset.getRasterCount() > 0) {
+        int rasterCount = gdalDataset.getRasterCount();
+        gdalMetadata.addAttribute("bandCount", String.valueOf(rasterCount));
+        if (rasterCount > 0) {
             Band gdalBand = gdalDataset.getRasterBand(1);
             int gdalDataType = gdalBand.getDataType();
             if (GDALConstConstants.gdtByte() == gdalDataType) {
@@ -163,7 +165,7 @@ public class GdalInfo implements MetadataInspector {
                     }
                 }
             }
-            for (int i = 1; i <= gdalDataset.getRasterCount(); i++) {
+            for (int i = 1; i <= rasterCount; i++) {
                 gdalMetadata.addControlSum("" + gdalDataset.getRasterBand(i).checksum());
             }
         }

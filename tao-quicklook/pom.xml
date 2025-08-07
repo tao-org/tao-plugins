@@ -38,6 +38,11 @@
         </dependency>
         <dependency>
             <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-service-registry</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-utils</artifactId>
             <version>${project.version}</version>
         </dependency>

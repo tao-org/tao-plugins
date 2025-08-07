@@ -63,12 +63,12 @@
         <module>tao-workflow-argo</module>
         <module>tao-drmaa-kubernetes</module>
         <module>tao-eo-search</module>
-        <module>tao-docker-jupyter</module>
         <module>tao-executor-wms</module>
         <module>tao-functions</module>
         <module>tao-plugins-kit</module>
         <module>tao-github</module>
         <module>tao-docker-zeppelin</module>
+        <module>tao-drmaa-simpipe</module>
         <!--<module>tao-executor-wmts</module>-->
     </modules>
 
