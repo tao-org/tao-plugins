@@ -244,4 +244,10 @@ public class CommandInputArraySchemaImpl extends SaveableImpl implements Command
     this.name = (java.util.Optional<String>) name;
     this.inputBinding = (java.util.Optional<CommandLineBinding>) inputBinding;
   }
+
+  @Override
+  public String toString() {
+    return (this.items != null ? this.items.toString() : "") +
+            ((this.type != null && this.type.toString().equalsIgnoreCase("array") ? "[]" : ""));
+  }
 }
