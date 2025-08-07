@@ -41,6 +41,7 @@ public class KubernetesSession implements Session, JobExitHandler {
     static final String masterURL = "tao.kubernetes.master.url";
     static final String caCertFile = "tao.kubernetes.ca.cert.file";
     static final String pvcMappingsKey = "tao.kubernetes.pvc.mappings";
+    static boolean canConnect = true;
     private final static Logger logger = Logger.getLogger(KubernetesSession.class.getName());
     private Map<String, String> configuration;
     private KubernetesClient client;
@@ -612,7 +613,7 @@ public class KubernetesSession implements Session, JobExitHandler {
     }
 
     static KubernetesClient getClient(Map<String, String> configuration) {
-        if(!KubernetesSession.configurationHasErrors(configuration)) {
+        if (canConnect && (canConnect = !KubernetesSession.configurationHasErrors(configuration))) {
             try {
                 io.fabric8.kubernetes.client.Config builder = new io.fabric8.kubernetes.client.ConfigBuilder()
                         .withMasterUrl(configuration.get(KubernetesSession.masterURL))

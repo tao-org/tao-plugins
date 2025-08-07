@@ -5,6 +5,9 @@ import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
 import ro.cs.tao.eodata.DataHandlingException;
 import ro.cs.tao.eodata.OutputDataHandler;
+import ro.cs.tao.eodata.metadata.DecodeStatus;
+import ro.cs.tao.eodata.metadata.MetadataInspector;
+import ro.cs.tao.spi.ServiceRegistryManager;
 import ro.cs.tao.utils.DockerHelper;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.Executor;
@@ -93,11 +96,12 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
      * If the file extension is not supported, the method returns null.
      *
      * @param productPath the file path of the product to process
+     * @param metadata product metadata, if any
      * @param args an array of strings representing arguments to be passed to the process executor
      * @return an {@link Executor} configured to process the specified product file, or null if the file extension is not supported
      * @throws IOException if an I/O exception occurs during initialization
      */
-    protected Executor<?> initialize(Path productPath, String[] args) throws IOException {
+    protected Executor<?> initialize(Path productPath, MetadataInspector.Metadata metadata, String[] args) throws IOException {
         String extension = FileUtilities.getExtension(productPath);
         if (!extensions.contains(extension.toLowerCase())) {
             return null;
@@ -109,6 +113,18 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
                                         ? FileUtilities.asUnixPath(productPath.getParent(), false)
                                         : productPath.getParent().toAbsolutePath().toString())
                     .replace("$FILE", productPath.getFileName().toString()));
+        }
+        int idx = arguments.indexOf("-b");
+        String bandCount = metadata.getAttribute("bandCount");
+        if (idx > 0 && bandCount != null) {
+            int count = Integer.parseInt(bandCount);
+            if (count > 2) {
+                idx += 2;
+                arguments.add(idx++, "-b");
+                arguments.add(idx++, "2");
+                arguments.add(idx++, "-b");
+                arguments.add(idx, "3");
+            }
         }
         if (this.factory == null) {
             this.factory = FileProcessFactory.createLocal();
@@ -152,6 +168,28 @@ public abstract class BaseQuicklookGenerator<T> implements OutputDataHandler<T> 
                 "docker", "run", "-t", "--rm", "-v", "$FOLDER:/mnt/data", gdalDockerImage,
                 "gdal_translate", "-of", driverMap.get(extension), "-ot", "Byte", "-scale", "-outsize", "512", "0", "-b", "1", "/mnt/data/$FILE", "/mnt/data/$FILE" + extension
         };
+    }
+
+    protected MetadataInspector.Metadata getMetadata(Path productPath) {
+        Set<MetadataInspector> services = ServiceRegistryManager.getInstance()
+                                                                .getServiceRegistry(MetadataInspector.class)
+                                                                .getServices();
+        if (services != null) {
+            MetadataInspector inspector = services.stream()
+                                                  .filter(i -> DecodeStatus.INTENDED == i.decodeQualification(productPath))
+                                                  .findFirst()
+                                                  .orElse(services.stream()
+                                                                  .filter(i -> DecodeStatus.SUITABLE == i.decodeQualification(productPath))
+                                                                  .findFirst().orElse(null));
+            if (inspector != null) {
+                try {
+                    return inspector.getMetadata(productPath);
+                } catch (IOException e) {
+                    return null;
+                }
+            }
+        }
+        return new MetadataInspector.Metadata();
     }
 
     /**

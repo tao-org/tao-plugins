@@ -17,10 +17,7 @@ package org.w3id.cwl.cwl1_2;
 import org.w3id.cwl.cwl1_2.utils.*;
 
 import java.lang.reflect.Field;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#WorkflowStep</I><BR> <BLOCKQUOTE>
@@ -316,8 +313,17 @@ public class WorkflowStepImpl extends SaveableImpl implements WorkflowStep {
     this.scatterMethod = scatterMethod;
   }
 
-  public WorkflowStepImpl(){
+  public WorkflowStepImpl() {
     super();
+    this.in = new LinkedList<>();
+    this.out = new LinkedList<>();
+  }
+
+  public WorkflowStepImpl(String id) {
+    super();
+    setId(Optional.of(id));
+    setIn(new ArrayList<>());
+    setOut(new ArrayList<>());
   }
   /**
    * Used by {@link org.w3id.cwl.cwl1_2.utils.RootLoader} to construct instances of WorkflowStepImpl.
@@ -355,7 +361,7 @@ public class WorkflowStepImpl extends SaveableImpl implements WorkflowStep {
       try {
         id =
             LoaderInstances
-                .uri_optional_StringInstance_True_False_None
+                .uri_optional_StringInstance_True_False_None_None
                 .loadField(__doc.get("id"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         id = null; // won't be used but prevents compiler from complaining.
@@ -429,7 +435,7 @@ public class WorkflowStepImpl extends SaveableImpl implements WorkflowStep {
     try {
       out =
           LoaderInstances
-              .uri_array_of_union_of_StringInstance_or_WorkflowStepOutput_True_False_None
+              .uri_array_of_union_of_StringInstance_or_WorkflowStepOutput_True_False_None_None
               .loadField(__doc.get("out"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       out = null; // won't be used but prevents compiler from complaining.
@@ -474,7 +480,7 @@ public class WorkflowStepImpl extends SaveableImpl implements WorkflowStep {
     try {
       run =
           LoaderInstances
-              .uri_union_of_StringInstance_or_CommandLineTool_or_ExpressionTool_or_Workflow_or_Operation_False_False_None
+              .uri_union_of_StringInstance_or_CommandLineTool_or_ExpressionTool_or_Workflow_or_Operation_False_False_None_None
               .loadField(__doc.get("run"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       run = null; // won't be used but prevents compiler from complaining.
@@ -504,7 +510,7 @@ public class WorkflowStepImpl extends SaveableImpl implements WorkflowStep {
       try {
         scatter =
             LoaderInstances
-                .uri_union_of_NullInstance_or_StringInstance_or_array_of_StringInstance_False_False_0
+                .uri_union_of_NullInstance_or_StringInstance_or_array_of_StringInstance_False_False_0_None
                 .loadField(__doc.get("scatter"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         scatter = null; // won't be used but prevents compiler from complaining.
@@ -521,7 +527,7 @@ public class WorkflowStepImpl extends SaveableImpl implements WorkflowStep {
       try {
         scatterMethod =
             LoaderInstances
-                .uri_optional_ScatterMethod_False_True_None
+                .uri_optional_ScatterMethod_False_True_None_None
                 .loadField(__doc.get("scatterMethod"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         scatterMethod = null; // won't be used but prevents compiler from complaining.

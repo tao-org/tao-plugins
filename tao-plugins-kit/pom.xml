@@ -77,11 +77,6 @@
         </dependency>
         <dependency>
             <groupId>ro.c-s.tao</groupId>
-            <artifactId>tao-docker-jupyter</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-docker-zeppelin</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -253,6 +248,11 @@
         <dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-functions</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-drmaa-simpipe</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!--<dependency>

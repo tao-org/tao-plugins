@@ -1,6 +1,7 @@
 package ro.cs.tao.eodata.quicklook;
 
 import ro.cs.tao.eodata.DataHandlingException;
+import ro.cs.tao.eodata.metadata.MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.Executor;
@@ -78,7 +79,8 @@ public class Sentinel2L2AQuicklookGenerator extends BaseQuicklookGenerator<Path>
                     }
                     productFile = productFile.resolve("QI_DATA")
                                              .resolve("T" + helper.getTileIdentifier() + "_" + helper.getSensingDate() + "_PVI.jp2");
-                    Executor<?> executor = initialize(productFile, useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
+                    Executor<?> executor = initialize(productFile, new MetadataInspector.Metadata(),
+                                                      useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
                     if (executor != null) {
                         executor.setOutputConsumer(consumer);
                         int code;

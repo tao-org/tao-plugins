@@ -174,9 +174,9 @@ public interface CommandInputParameter extends InputParameter, Saveable {
    *    * </BLOCKQUOTE>
    */
 
-  Object getDefault();
+  java.util.Optional<Object> getDefault();
 
-  void setDefault(Object default_);
+  void setDefault(java.util.Optional<Object> default_);
   /**
    * Getter for property <I>https://w3id.org/cwl/salad#type</I><BR>
    * <BLOCKQUOTE>
