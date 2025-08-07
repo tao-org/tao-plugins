@@ -1,6 +1,7 @@
 [
 {
 	"id": "otb911_Aggregate",
+	"label": "otb911_Aggregate",
 	"version": "9.1.1",
 	"description": "This application assign a class on each object of a segmentation by majority voting on a pixel-based classification.\nTags: Segmentation Learning \nThe aim of this application is to merge the result of a segmentation with a pixel-based image classification in order to produce an object-oriented image classification. The input segmentation is a labeled image, typically the result provided by the OTB application LSMSSegmentation. The output is a vector dataset containing objects and the corresponding class in the attribute table. Connected regions belonging to the same class are merged. This application could be used at the last step of the LSMS pipeline in replacement of the application LSMSVectorization.\n",
 	"authors": "CNES",
@@ -77,6 +78,7 @@
 }, 
 {
 	"id": "otb911_BandMath",
+	"label": "otb911_BandMath",
 	"version": "9.1.1",
 	"description": "Outputs a monoband image which is the result of a mathematical operation on several multi-band images.\nTags: Image Manipulation \nThis application performs a mathematical operation on several multi-band images and outputs the result into a monoband image. The given expression is computed at each pixel position. Evaluation of the mathematical formula is done by the muParser library.\nThe formula can be written using:\n* numerical values ( 2.3, -5, 3.1e4, ...)\n* variables containing pixel values (e.g. ``im2b3`` is the pixel value in 2nd image, 3rd band)\n* binary operators:\n  * ``+`` addition, ``-`` subtraction, ``*`` multiplication, ``/`` division\n  * ``^`` raise x to the power of y\n  * ``<`` less than, ``>`` greater than, ``<=`` less or equal, ``>=`` greater or equal\n  * ``==`` equal, ``!=`` not equal\n  * ``||`` logical or, ``&&`` logical and\n  * if-then-else operator: ``(condition ? value_true : value_false)``\n* functions: ``exp()``, ``log()``, ``sin()``, ``cos()``, ``min()``, ``max()``, ...\nThe full list of features and operators is available on the muParser website [1].\n",
 	"authors": "CNES",
@@ -139,6 +141,7 @@
 }, 
 {
 	"id": "otb911_BandMathX",
+	"label": "otb911_BandMathX",
 	"version": "9.1.1",
 	"description": "This application performs mathematical operations on several multiband images.\nTags: Image Manipulation \nThis application performs a mathematical operation on several multi-band images and outputs the result into an image (multi- or mono-band, as opposed to the BandMath OTB-application). The mathematical formula is done by the muParserX library.\nThe list of features and the syntax of muParserX is available at [1].\nAs opposed to muParser (and thus the BandMath OTB-application [2]), muParserX supports vector expressions which allows outputting multi-band images.\nHereafter is a brief reference of the muParserX syntax\nFundamentals\n------------\nThe formula can be written using:\n* numerical values ( 2.3, -5, 3.1e4, ...)\n* variables containing pixel values (please, note the indexing of inputs from 1 to N). Examples for the first input image:\n  * ``im1`` a pixel from 1st input, made of n components (n bands)\n  * ``im1b2`` the 2nd component of a pixel from 1st input (band index is 1-based)\n  * ``im1b2N3x4`` a 3x4 pixels Neighbourhood of a pixel the 2nd component of a pixel from the 1st input\n  * ``im1PhyX`` horizontal (X-axis) spacing of the 1st input.\n  * ``im1PhyY`` vertical (Y-axis) spacing of the 1st input input.\n  * ``im1b2Mean`` mean of the 2nd component of the 1st input (global statistics)\n  * ``im1b2Mini`` minimum of the 2nd component of the 1st input (global statistics)\n  * ``im1b2Maxi`` maximum of the 2nd component of the 1st input (global statistics)\n  * ``im1b2Sum`` sum of the 2nd component of the 1st input (global statistics)\n  * ``im1b2Var`` variance of the 2nd component of the 1st input (global statistics)\n  * ``idxX`` and ``idxY`` are the indices of the current pixel (generic variables)\n* binary operators:\n  * ``+`` addition, ``-`` subtraction, ``*`` multiplication, ``/`` division\n  * ``^`` raise x to the power of y\n  * ``<`` less than, ``>`` greater than, ``<=`` less or equal, ``>=`` greater or equal\n  * ``==`` equal, ``!=`` not equal\n  * logical operators: ``or``, ``and``, ``xor``\n  * bit manipulation: ``&`` (and), ``|`` (or), ``<<``(left shift) and ``>>`` (right shift)* if-then-else operator: ``(condition ? value_true : value_false)``\n* functions: abs(), exp(), log(), sin(), cos(), min(), max(), ...\nAlways keep in mind that this application only addresses mathematically well-defined formulas. For instance, it is not possible to add vectors of different dimensions (e.g. addition of a row vector with a column vector), or a scalar to a vector or matrix, or divide two vectors, etc.\nThus, it is important to remember that a pixel of n components is always represented as a row vector.\nExample:\n  ``im1 + im2``\n  represents the addition of pixels from the 1st and 2nd inputs. This expression is consistent only if both inputs have the same number of bands.\nPlease note that it is also possible to use the following expressions to obtain the same result:\n  * ``im1b1 + im2b1``\n  * ``im1b2 + im2b2``\n  * ...\nNevertheless, the first expression is by far much pleaseant. We call this new functionality the 'batch mode' (performing the same operation in a band-to-band fashion).\nOperations involving neighborhoods of pixels\n--------------------------------------------\nAnother new feature is the possibility to perform operations that involve neighborhoods of pixels. Variables related to such neighborhoods are always defined following the ``imIbJNKxP`` pattern, where:\n  - ``I`` is an number identifying the image input (remember, input #0 = im1, and so on)\n  - ``J`` is an number identifying the band (remember, first band is indexed by 1)\n  - ``KxP`` are two numbers that represent the size of the neighborhood (first one is related to the horizontal direction)\nNB: All neighborhood are centered, thus ``K`` and ``P`` must be odd numbers.\nMany operators come with this new functionality:\n  - dotpr\n  - mean\n  - var\n  - median\n  - vmin\n  - vmax\n  - etc.\nFor instance, if ``im1`` represents the pixel of a 3 bands image::\n  im1 - mean( im1b1N5x5, im1b2N5x5, im1b3N5x5 )\ncould represent a high pass filter (note that by implying three neighborhoods, the operator mean returns a row vector of three components. It is a typical behaviour for many operators of this application).\nIn addition to the previous operators, other operators are available:\n  - existing operators/functions from muParserX, that were not originally defined for vectors and matrices (e.g. cos, sin). These new operators/functions keep the original names to which we added the prefix ``v`` for vector (``vcos``, ``vsin``, etc.)\n  - ``mult``, ``div`` and ``pow`` operators, that perform element-wise multiplication, division or exponentiation of vector/matrices (e.g. ``im1 div im2``).\n  - ``mlt``, ``dv`` and ``pw`` operators, that perform multiplication, division or exponentiation of vector/matrices by a scalar (e.g. ``im1 dv 2.0``).\n  - ``bands``, which is a very useful operator. It allows selecting specific bands from an image, or to rearrange them in a new vector (e.g.``bands( im1, { 1, 2, 1, 1 } )`` produces a vector of 4 components made of band 1, band 2, band 1 and band 1 values from the first input.\nNote that curly brackets must be used in order to select the desired bandindices.\nThe application itself\n----------------------\nThe application can use an expression supplied with the ``-exp`` parameter. It can also use an input context file, that defines variables and expressions. An example of context file is given below::\n  #F expo 1.1\n  #M kernel1 { 0.1 , 0.2 , 0.3; 0.4 , 0.5 , 0.6; 0.7 , 0.8 , 0.9; 1 , 1.1, 1.2; 1.3 , 1.4 , 1.5 }\n  #E $dotpr( kernel1, im1b1N3x5 ); im2b1^expo$\nAs we can see, #I/#F allows the definition of an integer/float constant, whereas #M allows the definition of a vector/matrix. In the latter case, elements of a row must be separated by commas, and rows must be separated by semicolons. It is also possible to define expressions within the same txt file, with #E <expr> (see limitations, below).\n",
 	"authors": "CNES",
@@ -217,6 +220,7 @@
 }, 
 {
 	"id": "otb911_BinaryMorphologicalOperation",
+	"label": "otb911_BinaryMorphologicalOperation",
 	"version": "9.1.1",
 	"description": "Performs morphological operations on an input image channel\nTags: Feature Extraction Morphology \nThis application performs binary morphological operations on a mono band image or a channel of the input.\n",
 	"authors": "CNES",
@@ -345,6 +349,7 @@
 }, 
 {
 	"id": "otb911_BlockMatching",
+	"label": "otb911_BlockMatching",
 	"version": "9.1.1",
 	"description": "Performs block-matching to estimate pixel-wise disparities between two images.\nTags: Stereo \nThis application allows one to performs block-matching to estimate pixel-wise disparities for a pair of images in epipolar geometry.\nThis application is part of the stereovision pipeline. It can be used after having computed epipolar grids (with StereoRectificationGridGenerator) and resampled each input image into epipolar geometry (with GridBasedImageResampling).\nThe application searches locally for the displacement between a reference image and a secondary image. The correspondence is evaluated for each pixel, based on a pair of local neighborhood windows. The displacement evaluated can be 1D (along lines) or 2D. Parameters allow setting the minimum and maximum disparities to search (both for horizontal and vertical directions). A winner-take-all approach is used to select the best match. There are different metrics implemented to evaluate the match between two local windows:\n* SSD: Sum of Squared Distances\n* NCC: Normalized Cross-Correlation\n* Lp: Lp pseudo norm\nOnce the best integer disparity is found, an optional step of sub-pixel disparity estimation can be performed, with various algorithms (triangular interpolation, parabollic interpolation, dichotimic search). As post-processing, there is an optional step of median filtering on the disparities. One can chose input masks (related to the left and right input image) of pixels for which the disparity should be investigated. Additionally, two criteria can be optionally used to disable disparity investigation for some pixel: a no-data value, and a threshold on the local variance. This allows one to speed-up computation by avoiding to investigate disparities that will not be reliable anyway. For efficiency reasons, if the image of optimal metric values is desired, it will be concatenated to the output image (which will then have three bands: horizontal disparity, vertical disparity and metric value). One can split these images afterward.\n",
 	"authors": "CNES",
@@ -678,6 +683,7 @@
 }, 
 {
 	"id": "otb911_BundleToPerfectSensor",
+	"label": "otb911_BundleToPerfectSensor",
 	"version": "9.1.1",
 	"description": "Perform P+XS pansharpening\nTags: Geometry Pansharpening \nThis application performs P+XS pansharpening. The default mode use Pan and XS sensor models to estimate the transformation to superimpose XS over Pan before the fusion (\"default mode\"). The application provides also a PHR mode for Pleiades images which does not use sensor models as Pan and XS products are already coregistered but only estimate an affine transformation to superimpose XS over the Pan.Note that this option is automatically activated in case Pleiades images are detected as input.\n",
 	"authors": "CNES",
@@ -872,6 +878,7 @@
 }, 
 {
 	"id": "otb911_ClassificationMapRegularization",
+	"label": "otb911_ClassificationMapRegularization",
 	"version": "9.1.1",
 	"description": "Filters the input labeled image using Majority Voting in a ball shaped neighbordhood\nTags: Learning Image Analysis \nThis application filters the input labeled image (with a maximal class label = 65535) using Majority Voting in a ball shaped neighbordhood.Majority Voting takes the more representative value of all the pixels identified by the ball shaped structuring element and then sets the center pixel to this majority label value.\n* NoData is the label of the NOT classified pixels in the input image. These input pixels keep their NoData label in the output image.\n* Pixels with more than 1 majority class are marked as Undecided if the parameter 'ip.suvbool == true', or keep their Original labels otherwise.\n",
 	"authors": "CNES",
@@ -991,6 +998,7 @@
 }, 
 {
 	"id": "otb911_ColorMapping",
+	"label": "otb911_ColorMapping",
 	"version": "9.1.1",
 	"description": "Map a label image to 8-bits RGB using look-up tables.\nTags: Image Manipulation Image MetaData Learning Utilities \nMap a label image to a 8-bits RGB image (both ways) using different methods:\n* **Custom**: use a custom look-up table. The look-up table is loaded from a text file where each line describes an entry. The typical use of this method is to colorise a classification map.\n* **Continuous**: Map a range of values in a scalar input image to a colored image using continuous look-up table, in order to enhance image interpretation. Several look-up tables can been chosen with different color ranges.\n* **Optimal**: Compute an optimal look-up table. When processing a segmentation label image (label to color), the color difference between adjacent segmented regions is maximized. When processing an unknown color image (color to label), all the present colors are mapped to a continuous label list.\n* **Support image**: Use a color support image to associate an average color to each region.\n",
 	"authors": "CNES",
@@ -1150,6 +1158,7 @@
 }, 
 {
 	"id": "otb911_CompareImages",
+	"label": "otb911_CompareImages",
 	"version": "9.1.1",
 	"description": "Estimator between 2 images.\nTags: Image Manipulation \nCompute MSE (Mean Squared Error), MAE (Mean Absolute Error) and PSNR (Peak Signal to Noise Ratio) between two image bands (reference and measurement). The user has to set the used channel and can specify a ROI.\n",
 	"authors": "CNES",
@@ -1255,6 +1264,7 @@
 }, 
 {
 	"id": "otb911_ComputeConfusionMatrix",
+	"label": "otb911_ComputeConfusionMatrix",
 	"version": "9.1.1",
 	"description": "Computes the confusion matrix of a classification\nTags: Learning \nThis application computes the confusion matrix of a classification map relative to a ground truth dataset. The ground truth can be provided as either a raster or a vector data. Only reference and produced pixels with values different from NoData are handled in the calculation of the confusion matrix. The confusion matrix is organized the following way: rows = reference labels, columns = produced labels. In the header of the output file, the reference and produced class labels are ordered according to the rows/columns of the confusion matrix.\n",
 	"authors": "CNES",
@@ -1378,6 +1388,7 @@
 }, 
 {
 	"id": "otb911_ComputeImagesStatistics",
+	"label": "otb911_ComputeImagesStatistics",
 	"version": "9.1.1",
 	"description": "Computes global mean and standard deviation for each band from a set of images and optionally saves the results in an XML file.\nTags: Learning Image Analysis \nThis application computes a global mean and standard deviation for each band of a set of images and optionally saves the results in an XML file. The output XML is intended to be used as an input for the TrainImagesClassifier application to normalize samples before learning. You can also normalize the image with the XML file in the ImageClassifier application.\n",
 	"authors": "CNES",
@@ -1439,6 +1450,7 @@
 }, 
 {
 	"id": "otb911_ComputeModulusAndPhase",
+	"label": "otb911_ComputeModulusAndPhase",
 	"version": "9.1.1",
 	"description": "This application computes the modulus and the phase of a complex SAR image or an image with 2 components (real and imaginary parts).\nTags: SAR Image Manipulation \nThis application computes the modulus and the phase of a complex SAR image. The input should be a single band image with complex pixels or a 2 bands image (real and imaginary components in separate bands).\n",
 	"authors": "CNES",
@@ -1527,6 +1539,7 @@
 }, 
 {
 	"id": "otb911_ComputeOGRLayersFeaturesStatistics",
+	"label": "otb911_ComputeOGRLayersFeaturesStatistics",
 	"version": "9.1.1",
 	"description": "Compute statistics of the features in a set of OGR Layers\nTags: Segmentation \nCompute statistics (mean and standard deviation) of the features in a set of OGR Layers, and write them in an XML file. The resulting XML file can then be used by the training application.\n",
 	"authors": "CNES",
@@ -1569,6 +1582,7 @@
 }, 
 {
 	"id": "otb911_ConcatenateImages",
+	"label": "otb911_ConcatenateImages",
 	"version": "9.1.1",
 	"description": "Concatenate a list of images of the same size into a single multi-channel image.\nTags: Image Manipulation Concatenation Multi-channel \nConcatenate a list of images of the same size into a single multi-channel image. It reads the input image list (single or multi-channel) and generates a single multi-channel image. The channel order is the same as the list.\n",
 	"authors": "CNES",
@@ -1614,6 +1628,7 @@
 }, 
 {
 	"id": "otb911_ConcatenateVectorData",
+	"label": "otb911_ConcatenateVectorData",
 	"version": "9.1.1",
 	"description": "Concatenate vector data files\nTags: Vector Data Manipulation \nThis application concatenates a list of vector data files to produce a unique vector data output file.\nThis application will gather all the geometries from the input files and write them into an output vector data file. Any format supported by OGR can be used. Ideally, all inputs should have the same set of fields and the same spatial reference system.\n",
 	"authors": "CNES",
@@ -1649,6 +1664,7 @@
 }, 
 {
 	"id": "otb911_ConnectedComponentSegmentation",
+	"label": "otb911_ConnectedComponentSegmentation",
 	"version": "9.1.1",
 	"description": "Connected component segmentation and object based image filtering of the input image according to user-defined criterions.\nTags: Segmentation Image Analysis \nThis application allows one to perform a masking, connected components segmentation and object based image filtering. First and optionally, a mask can be built based on user-defined criterions to select pixels of the image which will be segmented. Then a connected component segmentation is performed with a user defined criterion to decide whether two neighbouring pixels belong to the same segment or not. After this segmentation step, an object based image filtering is applied using another user-defined criterion reasoning on segment properties, like shape or radiometric attributes. Criterions are mathematical expressions analysed by the MuParser library (http://muparser.sourceforge.net/). For instance, expression \"((b1>80) and intensity>95)\" will merge two neighbouring pixel in a single segment if their intensity is more than 95 and their value in the first image band is more than 80. See parameters documentation for a list of available attributes. The output of the object based image filtering is vectorized and can be written in shapefile or KML format. If the input image is in raw geometry, resulting polygons will be transformed to WGS84 using sensor modelling before writing, to ensure consistency with GIS software. For this purpose, a Digital Elevation Model can be provided to the application. The whole processing is done on a per-tile basis for large images, so this application can handle images of arbitrary size.\n",
 	"authors": "CNES",
@@ -1761,6 +1777,7 @@
 }, 
 {
 	"id": "otb911_ContrastEnhancement",
+	"label": "otb911_ContrastEnhancement",
 	"version": "9.1.1",
 	"description": "This application is the implementation of the histogram equalization algorithm. It can be used to enhance contrast in an image or to reduce the dynamic of the image without losing too much contrast. It offers several options as a nodata value, a contrast limitation factor, a local version of the algorithm and also a mode to equalize the luminance of the image.\nTags: Image Filtering \nThis application is the implementation of the histogram equalization algorithm. The idea of the algorithm is to use the whole available dynamic. In order to do so it computes a histogram over the image and then use the whole dynamic: meaning flattening the histogram. That gives us gain for each bin that transform the original histogram into the flat one. This gain is then apply on the original image.\nThe application proposes several options to allow a finer result:\n* There is an option to limit contrast. We choose to limit the contrast by modifying the original histogram. To do so, we clip the histogram at a given height and redistribute equally among the bins the clipped population. Then we add a local version of the algorithm.\n* It is possible to apply the algorithm on tiles of the image, instead of on the whole image. That gives us gain depending on the value of the pixel and its position in the image. In order to smoothen the result we interpolate the gain between tiles.\n",
 	"authors": "CNES",
@@ -1968,6 +1985,7 @@
 }, 
 {
 	"id": "otb911_ConvertCartoToGeoPoint",
+	"label": "otb911_ConvertCartoToGeoPoint",
 	"version": "9.1.1",
 	"description": "Convert cartographic coordinates to geographic ones.\nTags: Geometry Coordinates \nThis application computes the geographic coordinates from cartographic ones. User has to give the X and Y coordinate and the cartographic projection (see mapproj parameter for details).\n",
 	"authors": "CNES",
@@ -2046,6 +2064,7 @@
 }, 
 {
 	"id": "otb911_ConvertSensorToGeoPoint",
+	"label": "otb911_ConvertSensorToGeoPoint",
 	"version": "9.1.1",
 	"description": "Sensor to geographic coordinates conversion.\nTags: Geometry \nThis Application converts a sensor point of an input image to a geographic point using the Forward Sensor Model of the input image.\n",
 	"authors": "CNES",
@@ -2099,6 +2118,7 @@
 }, 
 {
 	"id": "otb911_Despeckle",
+	"label": "otb911_Despeckle",
 	"version": "9.1.1",
 	"description": "Perform speckle noise reduction on SAR image.\nTags: Image Filtering SAR \nSAR images are affected by speckle noise that inherently exists in and which degrades the image quality. It is caused by the coherent nature of back-scattered waves from multiple distributed targets. It is locally strong and it increases the mean Grey level of a local area. \nReducing the speckle noise enhances radiometric resolution but tend to decrease the spatial resolution.Several different methods are used to eliminate speckle noise, based upon different mathematical models of the phenomenon. The application includes four methods: Lee [1], Frost [2], GammaMAP [3] and Kuan [4]. \nWe sum up below the basic principle of this four methods:\n* Lee: Estimate the signal by mean square error minimization (MMSE) on a sliding window.\n* Frost: Also derived from the MMSE criteria with a weighted sum of the values within the window. The weighting factors decrease with distance from the pixel of interest.\n* GammaMAP: Derived under the assumption of the image follows a Gamma distribution.\n* Kuan: Also derived from the MMSE criteria under the assumption of non stationary mean and variance. It is quite similar to Lee filter in form.\n",
 	"authors": "CNES",
@@ -2232,6 +2252,7 @@
 }, 
 {
 	"id": "otb911_DimensionalityReduction",
+	"label": "otb911_DimensionalityReduction",
 	"version": "9.1.1",
 	"description": "Perform Dimension reduction of the input image.\nTags: Image Filtering Dimensionality Reduction \nPerforms dimensionality reduction on input image. PCA,NA-PCA,MAF,ICA methods are available. It is also possible to compute the inverse transform to reconstruct the image and to optionally export the transformation matrix to a text file.\n",
 	"authors": "CNES",
@@ -2440,6 +2461,7 @@
 }, 
 {
 	"id": "otb911_DisparityMapToElevationMap",
+	"label": "otb911_DisparityMapToElevationMap",
 	"version": "9.1.1",
 	"description": "Projects a disparity map into a regular elevation map.\nTags: Stereo \nThis application uses a disparity map computed from a stereo image pair to produce an elevation map on the ground area covered by the stereo pair.\nThis application is part of the stereo reconstruction pipeline. It can be used after having computed the disparity map with BlockMatching.\nThe needed inputs are: the disparity map, the stereo pair (in original geometry) and the epipolar deformation grids. These grids (computed by StereoRectificationGridGenerator) have to contain the transform between the original geometry (stereo pair) and the epipolar geometry (disparity map). The algorithm for each disparity is the following:\n* skip if position is discarded by the disparity mask\n* compute left ray: transform the current position from epipolar geometry to left sensor geometry (left rectification grid)\n* compute right ray: shift the current position with current disparity and transform from epipolar geometry to right sensor (right rectification grid)\n* estimate best 3D intersection between left and right rays\n* for the ground cell of the obtained 3D point, keep its elevation if greater than current elevation (keeps the maximum of elevations of all 3D points in each cell)\nMinimum and maximum elevations settings are here to bound the reconstructed DEM.\n",
 	"authors": "CNES",
@@ -2597,6 +2619,7 @@
 }, 
 {
 	"id": "otb911_DomainTransform",
+	"label": "otb911_DomainTransform",
 	"version": "9.1.1",
 	"description": "Domain Transform application for wavelet and fourier\nTags: Image Filtering \nDomain Transform application for wavelet and fourier.\n",
 	"authors": "CNES",
@@ -2696,6 +2719,7 @@
 }, 
 {
 	"id": "otb911_DynamicConvert",
+	"label": "otb911_DynamicConvert",
 	"version": "9.1.1",
 	"description": "Change the pixel type and rescale the image's dynamic\nTags: Image Manipulation Conversion Image Dynamic \nThis application performs an image pixel type conversion (short, ushort, uchar, int, uint, float and double types are handled). The output image is written in the specified format (ie. that corresponds to the given extension).\nThe conversion can include a rescale of the data range, by default it's set between the 2nd to the 98th percentile. The rescale can be linear or log2. \nThe choice of the output channels can be done with the extended filename, but less easy to handle. To do this, a 'channels' parameter allows you to select the desired bands at the output. There are 3 modes, the available choices are: \n* **All**: keep all bands.\n* **Grayscale**: to display mono image as standard color image \n* **RGB**: select 3 bands in the input image (multi-bands)\n",
 	"authors": "CNES",
@@ -2859,6 +2883,7 @@
 }, 
 {
 	"id": "otb911_EdgeExtraction",
+	"label": "otb911_EdgeExtraction",
 	"version": "9.1.1",
 	"description": "This application computes edge features on every pixel of the input image selected channel\nTags: Feature Extraction Edge \nThis application computes edge features on a selected channel of the input.It uses different filters such as gradient, Sobel and Touzi\n",
 	"authors": "CNES",
@@ -2954,6 +2979,7 @@
 }, 
 {
 	"id": "otb911_EndmemberNumberEstimation",
+	"label": "otb911_EndmemberNumberEstimation",
 	"version": "9.1.1",
 	"description": "Estimate the number of endmembers in a hyperspectral image\nTags: Hyperspectral \nEstimate the number of endmembers in a hyperspectral image. First, compute statistics on the image and then apply an endmember number estimation algorithm using these statistics. Two algorithms are available:\n1. Virtual Dimensionality (HFC-VD) [1][2]\n2. Eigenvalue Likelihood Maximization (ELM) [3][4]\nThe application then returns the estimated number of endmembers.\n[1] C.-I. Chang and Q. Du, Estimation of number of spectrally distinct signal sources in hyperspectral imagery, IEEE Transactions on Geoscience and Remote Sensing, vol. 43, no. 3, mar 2004.\n[2] J. Wang and C.-I. Chang, Applications of independent component analysis in endmember extraction and abundance quantification for hyperspectral imagery, IEEE Transactions on Geoscience and Remote Sensing, vol. 44, no. 9, pp. 2601-1616, sep 2006.\n[3] Unsupervised Endmember Extraction of Martian Hyperspectral Images, B.Luo, J. Chanussot, S. Dout'e and X. Ceamanos, IEEE Whispers 2009, Grenoble France, 2009\n[4] Unsupervised classification of hyperspectral images by using linear unmixing algorithm Luo, B. and Chanussot, J., IEEE Int. Conf. On ImageProcessing(ICIP) 2009, Cairo, Egypte, 2009\n",
 	"authors": "CNES",
@@ -3016,6 +3042,7 @@
 }, 
 {
 	"id": "otb911_ExtractROI",
+	"label": "otb911_ExtractROI",
 	"version": "9.1.1",
 	"description": "Extract a ROI defined by the user.\nTags: Image Manipulation \nThis application extracts a Region Of Interest with user parameters. There are four mode of extraction. The standard mode allows the user to enter one point (upper left corner of the region to extract) and a size. The extent mode needs two points (upper left corner and lower right) and the radius mode need the center of the region and the radius: it will extract the rectangle containing the circle defined and limited by the image dimension. The fit mode needs a reference image or vector and the dimension of the extracted region will be the same as the extent of the reference. Different units are available such as pixel, image physical space or longitude and latitude.\n",
 	"authors": "CNES",
@@ -3246,6 +3273,7 @@
 }, 
 {
 	"id": "otb911_FastNLMeans",
+	"label": "otb911_FastNLMeans",
 	"version": "9.1.1",
 	"description": "Apply NL Means filter to an image.\nTags: Image Filtering \nImplementation is an approximation of NL Means, which is faster.\n",
 	"authors": "CNES",
@@ -3336,6 +3364,7 @@
 }, 
 {
 	"id": "otb911_FineRegistration",
+	"label": "otb911_FineRegistration",
 	"version": "9.1.1",
 	"description": "Estimate disparity map between two images.\nTags: Stereo \nThis application computes a disparity map between two images that correspond to the same scene. It is intended for case where small misregistration between images should be estimated and fixed. The search is performed in 2D.\nThe algorithm uses an iterative approach to estimate a best match between local patches. The typical use case is registration betwween similar bands, or between two acquisitions. The output image contains X and Y offsets, as well as the metric value. A sub-pixel accuracy can be expected. The input images should have the same size and same physical space.\n",
 	"authors": "CNES",
@@ -3567,6 +3596,7 @@
 }, 
 {
 	"id": "otb911_FusionOfClassifications",
+	"label": "otb911_FusionOfClassifications",
 	"version": "9.1.1",
 	"description": "Fuses several classifications maps of the same image on the basis of class labels.\nTags: Learning Image Analysis \nThis application allows you to fuse several classification maps and produces a single more robust classification map. Fusion is done either by mean of Majority Voting, or with the Dempster Shafer combination method on class labels.\n  - MAJORITY VOTING: for each pixel, the class with the highest number of votes is selected.\n  - DEMPSTER SHAFER: for each pixel, the class label for which the Belief Function is maximal is selected. This Belief Function is calculated by mean of the Dempster Shafer combination of Masses of Belief, and indicates the belief that each input classification map presents for each label value. Moreover, the Masses of Belief are based on the input confusion matrices of each classification map, either by using the PRECISION or RECALL rates, or the OVERALL ACCURACY, or the KAPPA coefficient. Thus, each input classification map needs to be associated with its corresponding input confusion matrix file for the Dempster Shafer fusion.\n  - Input pixels with the NODATA label are not handled in the fusion of classification maps. Moreover, pixels for which all the input classifiers are set to NODATA keep this value in the output fused image.\n  - In case of number of votes equality, the UNDECIDED label is attributed to the pixel.\n",
 	"authors": "CNES",
@@ -3649,6 +3679,7 @@
 }, 
 {
 	"id": "otb911_GeneratePlyFile",
+	"label": "otb911_GeneratePlyFile",
 	"version": "9.1.1",
 	"description": "Generate a 3D Ply file from a DEM and a color image.\nTags: Geometry \nThe application converts an image containing elevations into a PLY file, which is a file format to store 3D models. This format is adpated for visualization on software such as MeshLab [2] or CloudCompare [3]\nThis application is part of the stereo reconstruction framework. The input data can be produced by the application DisparityMapToElevationMap.\nThere are two types of supported input images:\n* A DEM image, with a ground projection, containing elevation values. Each elevation value can be considered as a 3D point.\n* A 3D grid image, containing 5 bands (the first 3 are the 3D coordinates of each point, the 5th is a validity mask where valid values are larger or equal to 1)\nThe user shall also give a support image that contains color values for each 3D point. The color values will be embedded in the PLY file.\n",
 	"authors": "CNES",
@@ -3746,6 +3777,7 @@
 }, 
 {
 	"id": "otb911_GenericRegionMerging",
+	"label": "otb911_GenericRegionMerging",
 	"version": "9.1.1",
 	"description": "Segmentation using region merging algorithm\nTags: Segmentation \nThis application allows to use the Generic Region Merging library (GRM).\n It provides currently 3 homogeneity criteria: Euclidean Distance, Full Lambda Schedule and Baatz & Schape criterion.\n",
 	"authors": "CNES",
@@ -3849,6 +3881,7 @@
 }, 
 {
 	"id": "otb911_GrayScaleMorphologicalOperation",
+	"label": "otb911_GrayScaleMorphologicalOperation",
 	"version": "9.1.1",
 	"description": "Performs morphological operations on a grayscale input image\nTags: Feature Extraction Morphology \nThis application performs grayscale morphological operations on a mono band image\n",
 	"authors": "CNES",
@@ -3959,6 +3992,7 @@
 }, 
 {
 	"id": "otb911_GridBasedImageResampling",
+	"label": "otb911_GridBasedImageResampling",
 	"version": "9.1.1",
 	"description": "Resamples an image according to a resampling grid\nTags: Geometry \nThis application allows performing image resampling from an input resampling grid.\n",
 	"authors": "CNES",
@@ -4139,6 +4173,7 @@
 }, 
 {
 	"id": "otb911_HaralickTextureExtraction",
+	"label": "otb911_HaralickTextureExtraction",
 	"version": "9.1.1",
 	"description": "Computes Haralick textural features on the selected channel of the input image\nTags: Feature Extraction Textures \nThis application computes three sets of Haralick features [1][2].\n* simple: a set of 8 local Haralick features: Energy (texture uniformity) , Entropy (measure of randomness of intensity image), Correlation (how correlated a pixel is to its neighborhood), Inverse Difference Moment (measures the texture homogeneity), Inertia (intensity contrast between a pixel and its neighborhood), Cluster Shade, Cluster Prominence, Haralick Correlation;\n* advanced: a set of 10 advanced Haralick features: Mean, Variance (measures the texture heterogeneity), Dissimilarity, Sum Average, Sum Variance, Sum Entropy, Difference of Entropies, Difference of Variances, IC1, IC2;\n* higher: a set of 11 higher Haralick features: Short Run Emphasis (measures the texture sharpness), Long Run Emphasis (measures the texture roughness), Grey-Level Nonuniformity, Run Length Nonuniformity, Run Percentage (measures the texture sharpness homogeneity), Low Grey-Level Run Emphasis, High Grey-Level Run Emphasis, Short Run Low Grey-Level Emphasis, Short Run High Grey-Level Emphasis, Long Run Low Grey-Level Emphasis and Long Run High Grey-Level Emphasis.\nThe documentation of textures (description are formulas) are available in the OTB CookBook (section Textures) and also in corresponding doxygen documentation of filters (see section *Detailed Description* in doxygen):\n* **simple**: otbScalarImageToTexturesFilter\n* **advanced**: otbScalarImageToAdvancedTexturesFilter\n* **higher**: otbScalarImageToHigherOrderTexturesFilter\n",
 	"authors": "CNES",
@@ -4288,6 +4323,7 @@
 }, 
 {
 	"id": "otb911_HomologousPointsExtraction",
+	"label": "otb911_HomologousPointsExtraction",
 	"version": "9.1.1",
 	"description": "Compute homologous points between images using keypoints\nTags: Feature Extraction \nThis application computes homologous points between images using keypoints.  SIFT or SURF keypoints can be used and the band on which keypoints are computed can be set independently for both images. The application offers two modes: the first is the full mode where keypoints are extracted from the full extent of both images (please note that in this mode large image file are not supported). The second mode, called geobins, allows one to set-up spatial binning to get fewer points spread across the entire image. In this mode, the corresponding spatial bin in the second image is estimated using geographical transform or sensor modelling, and is padded according to the user defined precision. Last, in both modes the application can filter matches whose colocalisation in first image exceed this precision. The elevation parameters are to deal more precisely with sensor modelling in case of sensor geometry data. The outvector option allows creating a vector file with segments corresponding to the localisation error between the matches. It can be useful to assess the precision of a registration for instance. The vector file is always reprojected to EPSG:4326 so that it can be displayed in a GIS. This is done via reprojection or by applying the image sensor models.\n",
 	"authors": "CNES",
@@ -4504,6 +4540,7 @@
 }, 
 {
 	"id": "otb911_HooverCompareSegmentation",
+	"label": "otb911_HooverCompareSegmentation",
 	"version": "9.1.1",
 	"description": "Compare two segmentations with Hoover metrics\nTags: Segmentation \nThis application compares a machine segmentation (MS) with a partial ground truth segmentation (GT). The Hoover metrics are used to estimate scores for correct detection, over-segmentation, under-segmentation and missed detection.\nThe application can output the overall Hoover scores along with coloredimages of the MS and GT segmentation showing the state of each region (correct detection, over-segmentation, under-segmentation, missed).\nThe legend for the colored images is as follow:\n- **white**:   background\n- **green**:   correct detection\n- **magenta**: over-segmentation\n- **cyan**:    under-segmentation\n- **red**:     missed detection (only for GT)\nThe Hoover metrics are described in: Hoover et al., \"An experimental comparison of range image segmentation algorithms\", IEEE PAMI vol. 18, no. 7, July 1996.\n",
 	"authors": "CNES",
@@ -4608,6 +4645,7 @@
 }, 
 {
 	"id": "otb911_HyperspectralUnmixing",
+	"label": "otb911_HyperspectralUnmixing",
 	"version": "9.1.1",
 	"description": "Estimate abundance maps from an hyperspectral image and a set of endmembers.\nTags: Hyperspectral \nThe application applies a linear unmixing algorithm to an hyperspectral data cube. This method supposes that the mixture between aterials in the scene is macroscopic and simulates a linear mixing model of spectra.\nThe Linear Mixing Model (LMM) acknowledges that reflectance spectrum associated with each pixel is a linear combination of pure materials in the recovery area, commonly known as endmembers. Endmembers can be estimated using the VertexComponentAnalysis application.\nThe application allows estimating the abundance maps with several algorithms:\n* Unconstrained Least Square (ucls)\n* Image Space Reconstruction Algorithm (isra)\n* Least Square (ncls)\n* Minimum Dispersion Constrained Non Negative Matrix Factorization (MDMDNMF).\n",
 	"authors": "CNES",
@@ -4675,6 +4713,7 @@
 }, 
 {
 	"id": "otb911_ImageClassifier",
+	"label": "otb911_ImageClassifier",
 	"version": "9.1.1",
 	"description": "Performs a classification of the input image according to a model file.\nTags: Learning \nThis application performs an image classification based on a model file produced by the TrainImagesClassifier application. Pixels of the output image will contain the class labels decided by the classifier (maximal class label = 65535). The input pixels can be optionally centered and reduced according to the statistics file produced by the ComputeImagesStatistics application. An optional input mask can be provided, in which case only input image pixels whose corresponding mask value is greater than 0 will be classified. By default, the remaining pixels will be given the label 0 in the output image.\n",
 	"authors": "CNES",
@@ -4815,6 +4854,7 @@
 }, 
 {
 	"id": "otb911_ImageDimensionalityReduction",
+	"label": "otb911_ImageDimensionalityReduction",
 	"version": "9.1.1",
 	"description": "Performs dimensionality reduction of the input image based on a dimensionality reduction model file.\nTags: Learning \nThis application reduces the dimension of an input image, based on a machine learning model file produced by the TrainDimensionalityReduction application. Pixels of the output image will contain the reduced values fromthe model. The input pixels can be optionally centered and reduced according to the statistics file produced by the ComputeImagesStatistics application.\n",
 	"authors": "CNES",
@@ -4893,6 +4933,7 @@
 }, 
 {
 	"id": "otb911_ImageEnvelope",
+	"label": "otb911_ImageEnvelope",
 	"version": "9.1.1",
 	"description": "Extracts an image envelope.\nTags: Geometry \nBuild a vector data containing the image envelope polygon. Useful for some projection, you can set the polygon with more points with the sr parameter. This filter supports user-specified output projection. If no projection is defined, the standard WGS84 projection will be used.\n",
 	"authors": "CNES",
@@ -4980,6 +5021,7 @@
 }, 
 {
 	"id": "otb911_ImageRegression",
+	"label": "otb911_ImageRegression",
 	"version": "9.1.1",
 	"description": "Performs a prediction of the input image according to a regression model file.\nTags: Learning \nThis application predict output values from an input image, based on a regression model file produced either by TrainVectorRegression or TrainImagesRegression. Pixels of the output image will contain the predicted values from the regression model (single band). The input pixels can be optionally centered and reduced according to the statistics file produced by the ComputeImagesStatistics application. An optional input mask can be provided, in which case only input image pixels whose corresponding mask value is greater than zero will be processed. The remaining of pixels will be given the value zero in the output image.\n",
 	"authors": "CNES",
@@ -5058,6 +5100,7 @@
 }, 
 {
 	"id": "otb911_ImageTimeSeriesGapFilling",
+	"label": "otb911_ImageTimeSeriesGapFilling",
 	"version": "9.1.1",
 	"description": "Time series gapfilling.\nTags: Image Filtering MultiTemporal \nThis application performs a temporal gapfillingof an image time series.\n",
 	"authors": "CNES",
@@ -5156,6 +5199,7 @@
 }, 
 {
 	"id": "otb911_KMeansClassification",
+	"label": "otb911_KMeansClassification",
 	"version": "9.1.1",
 	"description": "Unsupervised KMeans image classification\nTags: Learning Segmentation \nUnsupervised KMeans image classification. This is a composite application, using existing training and classification applications. The SharkKMeans model is used.\nThis application is only available if OTB is compiled with Shark support(CMake option :code:`OTB_USE_SHARK=ON`).\nThe steps of this composite application:\n1) ImageEnvelope: create a shapefile (1 polygon),\n2) PolygonClassStatistics: compute the statistics,\n3) SampleSelection: select the samples by constant strategy in the shapefile (1000000 samples max),\n4) SampleExtraction: extract the samples descriptors (update of SampleSelection output file),\n5) ComputeImagesStatistics: compute images second order statistics,\n6) TrainVectorClassifier: train the SharkKMeans model,\n7) ImageClassifier: perform the classification of the input image according to a model file.\nIt is possible to choose random/periodic modes of the SampleSelection application.\nIf you do not want to keep the temporary files (sample selected, model file, ...), initialize cleanup parameter.\nFor more information on shark KMeans algorithm [1].\n",
 	"authors": "CNES",
@@ -5308,6 +5352,7 @@
 }, 
 {
 	"id": "otb911_LargeScaleMeanShift",
+	"label": "otb911_LargeScaleMeanShift",
 	"version": "9.1.1",
 	"description": "Large-scale segmentation using MeanShift\nTags: Segmentation LSMS \nThis application chains together the 4 steps of the MeanShift framework, that is the MeanShiftSmoothing, the LSMSSegmentation, the LSMSSmallRegionsMerging and the LSMSVectorization.\nThis application can be a preliminary step for an object-based analysis.\nIt generates a vector data file containing the regions extracted with the MeanShift algorithm. The spatial and range radius parameters allow adapting the sensitivity of the algorithm depending on the image dynamic and resolution. There is a step to remove small regions whose size (in pixels) is less than the given 'minsize' parameter. These regions are merged to a similar neighbor region. In the output vectors, there are additional fields to describe each region. In particular the mean and standard deviation (for each band) is computed for each region using the input image as support. If an optional 'imfield' image is given, it will be used as support image instead.\n",
 	"authors": "CNES",
@@ -5455,6 +5500,7 @@
 }, 
 {
 	"id": "otb911_LineSegmentDetection",
+	"label": "otb911_LineSegmentDetection",
 	"version": "9.1.1",
 	"description": "Detect line segments in raster\nTags: Feature Extraction \nThis application detects locally straight contours in a image. It is based on Burns, Hanson, and Riseman method and use an a contrario validation approach (Desolneux, Moisan, and Morel). The algorithm was published by Rafael Gromponevon Gioi, Jérémie Jakubowicz, Jean-Michel Morel and Gregory Randall. The given approach computes gradient and level lines of the image and detects aligned points in line support region. The application allows exporting the detected lines in a vector data.\n",
 	"authors": "CNES",
@@ -5543,6 +5589,7 @@
 }, 
 {
 	"id": "otb911_LocalRxDetection",
+	"label": "otb911_LocalRxDetection",
 	"version": "9.1.1",
 	"description": "Performs local Rx score computation on an hyperspectral image.\nTags: Hyperspectral \nPerforms local Rx score computation on an input hyperspectral image. For each hyperspectral pixel, the Rx score is computed using statistics computed on a dual neighborhood. The dual neighborhood is composed of all pixel that are in between two radiuses around the center pixel. This score can then be used to detect anomalies in the image, this can be done for example by thresholding the result of this application with the BandMath application.\n",
 	"authors": "CNES",
@@ -5615,6 +5662,7 @@
 }, 
 {
 	"id": "otb911_LocalStatisticExtraction",
+	"label": "otb911_LocalStatisticExtraction",
 	"version": "9.1.1",
 	"description": "Computes local statistical moments on every pixel in the selected channel of the input image\nTags: Feature Extraction Statistics \nThis application computes the 4 local statistical moments on every pixel in the selected channel of the input image, over a specified neighborhood. The output image is multi band with one statistical moment (feature) per band. Thus, the 4 output features are the Mean, the Variance, the Skewness and the Kurtosis. They are provided in this exact order in the output image.\n",
 	"authors": "CNES",
@@ -5687,6 +5735,7 @@
 }, 
 {
 	"id": "otb911_LSMSSegmentation",
+	"label": "otb911_LSMSSegmentation",
 	"version": "9.1.1",
 	"description": "This application performs the second step of the exact Large-Scale Mean-Shift segmentation workflow (LSMS) [1].\nTags: Segmentation LSMS \nThis application will produce a labeled image where neighbor pixels whose range distance is below range radius (and optionally spatial distance below spatial radius) will be grouped together into the same cluster. For large images one can use the tilesizex and tilesizey parameters for tile-wise processing, with the guarantees of identical results.\nFiltered range image and spatial image should be created with the MeanShiftSmoothing application outputs (fout and foutpos) [2], with modesearch parameter disabled. If spatial image is not set, the application will only process the range image and spatial radius parameter will not be taken into account.\nPlease note that this application will generate a lot of temporary files (as many as the number of tiles), and will therefore require twice the size of the final result in term of disk space. The cleanup option (activated by default) allows removing all temporary file as soon as they are not needed anymore (if cleanup is activated, tmpdir set and tmpdir does not exists before running the application, it will be removed as well during cleanup). The tmpdir option allows defining a directory where to write the temporary files.\nPlease also note that the output image type should be set to uint32 to ensure that there are enough labels available.\nThe output of this application can be passed to the LSMSSmallRegionsMerging [3] or LSMSVectorization [4] applications to complete the LSMS workflow.\n",
 	"authors": "CNES",
@@ -5800,6 +5849,7 @@
 }, 
 {
 	"id": "otb911_LSMSSmallRegionsMerging",
+	"label": "otb911_LSMSSmallRegionsMerging",
 	"version": "9.1.1",
 	"description": "WARNING: This application is deprecated, it will be removed in a future OTB release.\nThis application performs the third (optional) step of the exact Large-Scale Mean-Shift segmentation workflow [1].\nTags: Segmentation Deprecated LSMS \nGiven a segmentation result (can be the out output parameter of the LSMSSegmentation application [2]) and the original image, it will merge segments whose size in pixels is lower than minsize parameter with the adjacent segments with the adjacent segment with closest radiometry and acceptable size.\nSmall segments will be processed by increasing size: first all segments for which area is equal to 1 pixel will be merged with adjacent segments, then all segments of area equal to 2 pixels will be processed, until segments of area minsize. For large images one can use the tilesizex and tilesizey parameters for tile-wise processing, with the guarantees of identical results.\nThe output of this application can be passed to the LSMSVectorization application [3] to complete the LSMS workflow.\n",
 	"authors": "CNES",
@@ -5887,6 +5937,7 @@
 }, 
 {
 	"id": "otb911_LSMSVectorization",
+	"label": "otb911_LSMSVectorization",
 	"version": "9.1.1",
 	"description": "This application performs the fourth step of the exact Large-Scale Mean-Shift segmentation workflow [1].\nTags: Segmentation LSMS \nGiven a segmentation result (label image), that may come from the LSMSSegmentation [2] application (out parameter) or have been processed for small regions merging [3] (out parameter), it will convert it to a GIS vector file containing one polygon per segment. Each polygon contains additional fields: mean and variance of each channels from input image (in parameter), segmentation image label, number of pixels in the polygon. For large images one can use the tilesizex and tilesizey parameters for tile-wise processing, with the guarantees of identical results.\n",
 	"authors": "CNES",
@@ -5965,6 +6016,7 @@
 }, 
 {
 	"id": "otb911_ManageNoData",
+	"label": "otb911_ManageNoData",
 	"version": "9.1.1",
 	"description": "Manage No-Data\nTags: Image Manipulation Conversion Image Dynamic \nThis application has two modes. The first allows building a mask of no-data pixels from the no-data flags read from the image file. The second allows updating the change the no-data value of an image (pixels value and metadata). This last mode also allows replacing NaN in images with a proper no-data value. To do so, one should activate the NaN is no-data option.\n",
 	"authors": "CNES",
@@ -6078,6 +6130,7 @@
 }, 
 {
 	"id": "otb911_MeanShiftSmoothing",
+	"label": "otb911_MeanShiftSmoothing",
 	"version": "9.1.1",
 	"description": "This application smooths an image using the MeanShift algorithm.\nTags: Image Filtering LSMS \nMeanShift [1,2,3] is an iterative edge-preserving image smoothing algorithm often used in image processing and as a first step for image segmentation. The MeanShift algorithm can be applied to multispectral images.\nAt first iteration, for any given pixel of the input image, the filtered value correspond to the average spectral signature of neighborhood pixels that are both spatially closer than the spatial radius parameter (spatialr) and with spectral signature that have an euclidean distance to the input pixel lower than the range radius (ranger), that is, pixels that are both close in space and in spectral signatures. Subsequent iterations will repeat this process by considering that the pixel signature corresponds to the average spectral signature computed during previous iteration, and that the pixel position corresponds to the average position of pixels used to compute the average signature.The algorithm stops when the maximum number of iterations (maxiter) is reached, or when the position and spectral signature does not change much between iterations, according to the convergence threshold (thres). If the modesearch option is used then convergence will also stops if the spatial position reaches a pixel that has already converged. This will speed-up convergence, at the expense of stability of the result.\nThe application outputs the image of the final averaged spectral signatures (fout), and can also optionally output the 2D displacement field between input pixel position and final pixel position after convergence (foutpos).\nNote that computing an euclidean distance between spectral signatures may be inaccurate and that techniques such as color space transform or image normalisation could be applied before using this application. Also note that most satellite images noise model is not gaussian, since noise variance linearly depends on radiance (the higher the radiance, the higher the noise variance). To account for such noise model, the application provides the range radius ramp option (rangeramp), which will vary the range radius linearly with the central pixel intensity. Default value is 1. (no ramp).\nThis application is the first step of the large scale MeanShift method depicted in [4]. Both outputs (fout and foutpos) can be passed to the large scale MeanShift segmentation application [5]. If the application is used for large scale MeanShift, modesearch option should be off.\n",
 	"authors": "CNES",
@@ -6220,6 +6273,7 @@
 }, 
 {
 	"id": "otb911_MorphologicalClassification",
+	"label": "otb911_MorphologicalClassification",
 	"version": "9.1.1",
 	"description": "Performs morphological convex, concave and flat classification on an input image channel\nTags: Feature Extraction Morphology \nThis algorithm is based on the following publication:\nMartino Pesaresi and Jon Alti Benediktsson, Member, IEEE: A new approach for the morphological segmentation of high resolution satellite imagery.\nIEEE Transactions on geoscience and remote sensing, vol. 39, NO. 2, February 2001, p. 309-320.\nThis application perform the following decision rule to classify a pixel between the three classes Convex, Concave and Flat. Let :math:`f` denote the input image and :math:`\\psi_{N}(f)` the geodesic leveling of :math:`f` with a structuring element of size :math:`N`. One can derive the following decision rule to classify :math:`f` into Convex (label :math:`\\stackrel{\\smile}{k}`), Concave (label :math:`\\stackrel{\\frown}{k}`) and Flat (label :math:`\\bar{k}`):  \n:math:`f(n) = \\begin{cases} \\stackrel{\\smile}{k} & : f-\\psi_{N}(f)>\\sigma \\\\ \\stackrel{\\frown}{k} & : \\psi_{N}(f)-f>\\sigma \\\\ \\bar{k} & : \\mid f - \\psi_{N}(f) \\mid \\leq \\sigma \\end{cases}`\nThe output is a labeled image (0: Flat, 1: Convex, 2: Concave)\n",
 	"authors": "CNES",
@@ -6310,6 +6364,7 @@
 }, 
 {
 	"id": "otb911_MorphologicalMultiScaleDecomposition",
+	"label": "otb911_MorphologicalMultiScaleDecomposition",
 	"version": "9.1.1",
 	"description": "Perform a geodesic morphology based image analysis on an input image channel\nTags: Feature Extraction Morphology \nThis application recursively apply geodesic decomposition. \nThis algorithm is derived from the following publication:\nMartino Pesaresi and Jon Alti Benediktsson, Member, IEEE: A new approach for the morphological segmentation of high resolution satellite imagery.\nIEEE Transactions on geoscience and remote sensing, vol. 39, NO. 2, February 2001, p. 309-320.\nIt provides a geodesic decomposition of the input image, with the following scheme. Let :math:`f_0` denote the input image, :math:`\\stackrel{\\smile}{\\mu}_{N}(f)` denote the convex membership function, :math:`\\stackrel{\\frown}{\\mu}_{N}(f)` denote the concave membership function and :math:`\\psi_{N}(f)` denote the leveling function, for a given radius :math:`N` as defined in the documentation\nof the GeodesicMorphologyDecompositionImageFilter. Let :math:`[N_{1},\\ldots, N_{n}]` denote a range of increasing radius (or scales). The iterative decomposition is defined as follows:\n:math:`f_i` = :math:`\\psi_{N_i}(f_{i-1})` \n:math:`\\stackrel{\\frown}{f}_i` = :math:`\\stackrel{\\frown}{\\mu}_{N_i}(f_i)` \n:math:`\\stackrel{\\smile}{f}_i` = :math:`\\stackrel{\\smile}{\\mu}_{N_i}(f_i)` \nThe :math:`\\stackrel{\\smile}{f}_{i}` and :math:`\\stackrel{\\frown}{f}_{i}` are membership function for the convex\n(resp. concave) objects whose size is comprised between :math:`N_{i-1}` and :math:`N_i`\nOutput convex, concave and leveling images with B bands, where n is the number of levels.\n",
 	"authors": "CNES",
@@ -6465,6 +6520,7 @@
 }, 
 {
 	"id": "otb911_MorphologicalProfilesAnalysis",
+	"label": "otb911_MorphologicalProfilesAnalysis",
 	"version": "9.1.1",
 	"description": "Performs morphological profiles analysis on an input image channel.\nTags: Feature Extraction Morphology \nThis algorithm is derived from the following publication:\nMartino Pesaresi and Jon Alti Benediktsson, Member, IEEE: A new approach\nfor the morphological segmentation of high resolution satellite imagery.\nIEEE Transactions on geoscience and remote sensing, vol. 39, NO. 2,\nFebruary 2001, p. 309-320.\nDepending of the profile selection, the application provides:\n* The multi scale geodesic morphological opening or closing profile of the input image.\n* The multi scale derivative of the opening or closing profile.\n* The parameter (called characteristic) of the maximum derivative value of the multi scale closing or opening profile for which this maxima occurs.\n* The labeled classification of the input image.\nThe behavior of the classification is:\nGiven :math:`x_1` and :math:`x_2` two membership values,\n:math:`L_1, L_2` two labels associated, and :math:`\\sigma` a tolerance\nvalue, the following decision rule is applied:\n:math:`L = \\begin{cases}  L_{1} & : x_{1}>x_{2} \\quad and \\quad x_{1}>\\sigma \\\\ L_{2} & : x_{2}>x_{1} \\quad and \\quad x_{2}>\\sigma \\\\ 0   & : otherwise. \\end{cases}` \nThe output image can be:- A :math:`N` multi band image for the opening/closing normal or derivative profiles.\n- A mono band image for the opening/closing characteristics.\n- A labeled image for the classification.\n",
 	"authors": "CNES",
@@ -6582,6 +6638,7 @@
 }, 
 {
 	"id": "otb911_Mosaic",
+	"label": "otb911_Mosaic",
 	"version": "9.1.1",
 	"description": "Perform a mosaic of input images\nTags: Image Manipulation Raster \nThis application performs a mosaic of the input images\n",
 	"authors": "CNES",
@@ -6750,6 +6807,7 @@
 }, 
 {
 	"id": "otb911_MultiImageSamplingRate",
+	"label": "otb911_MultiImageSamplingRate",
 	"version": "9.1.1",
 	"description": "Compute sampling rate for an input set of images.\nTags: Learning \nThe application computes sampling rates for a set of input images. Before calling this application, each pair of image and training vectors has to be analysed with the application PolygonClassStatistics. The statistics file is then used to compute the sampling rates for each class in each image. Several types of sampling  are implemented. Each one is a combination of a mono-image strategy and a multi-image mode. The mono-image strategies are:\n* smallest (default): select the same number of sample in each class so that the smallest one is fully sampled.\n* constant: select the same number of samples N in each class (with N below or equal to the size of the smallest class).\n* byclass: set the required number for each class manually, with an input CSV file (first column is class name, second one is the required samples number).\nThe multi-image modes (mim) are proportional, equal and custom. The custom mode lets the user choose the distribution of samples among the images. The different behaviours are described below. Ti(c) and Ni(c)  refers respectively to the total number and needed number of samples in image i for class c. Let's call L the total number of images.\n* strategy = all\n    - Same behaviour for all modes: take all samples\n* strategy = constant: let's call M the global number of samples required per class. For each image i and each class c:\n    - if mim = proportional, then Ni( c ) = M * Ti( c ) / sum_k( Tk(c) )\n    - if mim = equal       , then Ni( c ) = M / L\n    - if mim = custom      , then Ni( c ) = Mi where Mi is the custom requested number of samples for image i\n* strategy = byClass : let's call M(c) the global number of samples for class c). For each image i and each class c:\n    - if mim = proportional, then Ni( c ) = M(c) * Ti( c ) / sum_k( Tk(c) )\n    - if mim = equal       , then Ni( c ) = M(c) / L\n    - if mim = custom      , then Ni( c ) = Mi(c) where Mi(c) is the custom requested number of samples for image i and class c\n* strategy = percent : For each image i and each class c:\n    - if mim = proportional, then Ni( c ) = p * Ti( c ) where p is the global percentage of samples\n    - if mim = equal       , then Ni( c ) = p * sum_k(Tk(c)]/L where p is the global percentage of samples\n    - if mim = custom      , then Ni( c ) = p(i) * Ti(c) where p(i) is the percentage of samples for image i. c\n* strategy = total : For each image i and each class c:\n    - if mim = proportional, then Ni( c ) = total * (sum_k(Ti(k))/sum_kl(Tl(k))) * (Ti(c)/sum_k(Ti(k))) where total is the total number of samples specified.\n    - if mim = equal       , then Ni( c ) = (total / L) * (Ti(c)/sum_k(Ti(k))) where total is the total number of samples specified.\n    - if mim = custom      , then Ni( c ) = total(i) * (Ti(c)/sum_k(Ti(k))) where total(i) is the total number of samples specified for image i. \n* strategy = smallest class\n    - if mim = proportional, then the smallest class size (computed globally) is used for the strategy constant+proportional.\n    - if mim = equal       , then the smallest class size (computed globally) is used for the strategy constant+equal.\n    - if mim = custom      , then the smallest class is computed and used for each image separately.\n",
 	"authors": "CNES",
@@ -6827,6 +6885,7 @@
 }, 
 {
 	"id": "otb911_MultiResolutionPyramid",
+	"label": "otb911_MultiResolutionPyramid",
 	"version": "9.1.1",
 	"description": "Build a multi-resolution pyramid of the image.\nTags: Image Manipulation Conversion Image MultiResolution Util \nThis application builds a multi-resolution pyramid of the input image. User can specified the number of levels of the pyramid and the subsampling factor. To speed up the process, you can use the fast scheme option\n",
 	"authors": "CNES",
@@ -6917,6 +6976,7 @@
 }, 
 {
 	"id": "otb911_MultitempFilteringFilter",
+	"label": "otb911_MultitempFilteringFilter",
 	"version": "9.1.1",
 	"description": "This application implements the Quegan speckle filter for SAR images.\nTags: SAR \nThis application implements the Quegan speckle filter for SAR images. It applies the outcore to a list of images. The outcore is genenerated by the MultitempFilteringOutcore application\n",
 	"authors": "CNES",
@@ -6998,6 +7058,7 @@
 }, 
 {
 	"id": "otb911_MultitempFilteringOutcore",
+	"label": "otb911_MultitempFilteringOutcore",
 	"version": "9.1.1",
 	"description": "This application implements the Quegan speckle filter for SAR images. It computes the outcore function of the filter. It must be followed by the MultitempFilteringFilter application to compute the filtered images\nTags: SAR \nThis application implements the Quegan speckle filter for SAR images. It computes the outcore function of the filter. It must be followed by the MultitempFilteringFilter application to compute the filtered images\n",
 	"authors": "CNES",
@@ -7063,6 +7124,7 @@
 }, 
 {
 	"id": "otb911_MultivariateAlterationDetector",
+	"label": "otb911_MultivariateAlterationDetector",
 	"version": "9.1.1",
 	"description": "Change detection by Multivariate Alteration Detector (MAD) algorithm\nTags: Change Detection \nThis application performs change detection between two multispectral images using the Multivariate Alteration Detector (MAD) [1] algorithm.\nThe MAD algorithm produces a set of N change maps (where N is the maximum number of bands in first and second input images), with the following properties:\n* Change maps are differences of a pair of linear combinations of  bands from image 1 and bands from image 2 chosen to maximize the  correlation, \n* Each change map is orthogonal to the others.\nThis is a statistical method which can handle different modalities and even different bands and number of bands between images. \nThe application will output all change maps into a single multiband image. Change maps are sorted by increasing correlation. \nThe application will also print the following information:\n- Mean1 and Mean2 which are the mean values of bands for both input images,\n- V1 and V2 which are the two linear transform that are applied to input image 1 and input image 2 to build the change map,\n- Rho, the vector of correlation associated to each change map.\nThe OTB filter used in this application has been implemented from the Matlab code kindly made available by the authors here [2]. Both cases (same and different number of bands) have been validated by comparing the output image to the output produced by the Matlab  code, and the reference images for testing have been generated from  the Matlab code using Octave.\n",
 	"authors": "CNES",
@@ -7124,6 +7186,7 @@
 }, 
 {
 	"id": "otb911_ObjectsRadiometricStatistics",
+	"label": "otb911_ObjectsRadiometricStatistics",
 	"version": "9.1.1",
 	"description": "Compute features attributes of a vector dataset over an image.\nTags: FeatureExtraction Radiometry \nThis application computes radiometric and shapes attributes on a vector dataset, using an image. The results are stored in the attribute table. Shape attributes are : number of pixels, flatness, roundness, elongation, perimeter. Radiometric attributes are for each band of the input image : mean, standard-deviation, median, variance, kurtosis, skewness.\n",
 	"authors": "CNES",
@@ -7185,6 +7248,7 @@
 }, 
 {
 	"id": "otb911_ObtainUTMZoneFromGeoPoint",
+	"label": "otb911_ObtainUTMZoneFromGeoPoint",
 	"version": "9.1.1",
 	"description": "UTM zone determination from a geographic point.\nTags: Geometry \nThis application returns the UTM zone of an input geographic point.\n",
 	"authors": "CNES",
@@ -7227,6 +7291,7 @@
 }, 
 {
 	"id": "otb911_OGRLayerClassifier",
+	"label": "otb911_OGRLayerClassifier",
 	"version": "9.1.1",
 	"description": "Classify an OGR layer based on a machine learning model and a list of features to consider.\nTags: Segmentation \nThis application will apply a trained machine learning model on the selected feature to get a classification of each geometry contained in an OGR layer. The list of feature must match the list used for training. The predicted label is written in the user defined field for each geometry.\n",
 	"authors": "CNES",
@@ -7286,6 +7351,7 @@
 }, 
 {
 	"id": "otb911_OpticalCalibration",
+	"label": "otb911_OpticalCalibration",
 	"version": "9.1.1",
 	"description": "Perform optical calibration TOA/TOC (Top Of Atmosphere/Top Of Canopy). Supported sensors: QuickBird, Ikonos, WorldView2, Formosat, Spot5, Pleiades, Spot6, Spot7. For other sensors the application also allows providing calibration parameters manually.\nTags: Calibration \nThe application allows converting pixel values from DN (for Digital Numbers) to reflectance. Calibrated values are called surface reflectivity and its values lie in the range [0, 1].\nThe first level is called Top Of Atmosphere (TOA) reflectivity. It takes into account the sensor gain, sensor spectral response and the solar illuminations.\nThe second level is called Top Of Canopy (TOC) reflectivity. In addition to sensor gain and solar illuminations, it takes into account the optical thickness of the atmosphere, the atmospheric pressure, the water vapor amount, the ozone amount, as well as the composition and amount of aerosol gasses.\nIt is also possible to indicate an AERONET file which contains atmospheric parameters (version 1 and version 2 of Aeronet file are supported. Note that computing TOC reflectivity will internally compute first TOA and then TOC reflectance. \n--------------------------\nIf the sensor is not supported by the metadata interface factory of OTB, users still have the possibility to give the needed parameters to the application.\nFor TOA conversion, these parameters are: \n- day and month of acquisition, or flux normalization coefficient, or solar distance (in AU);\n- sun elevation angle;\n- gains and biases, one pair of values for each band (passed by a file);\n- solar illuminations, one value for each band (passed by a file).\nFor the conversion from DN (for Digital Numbers) to spectral radiance (or 'TOA radiance') L, the following formula is used:\n**(1)\tL(b) = DN(b)/gain(b)+bias(b)\t(in W/m2/steradians/micrometers)**\twith b being a band ID.\nThese values are provided by the user thanks to a simple txt file with two lines, one for the gains and one for the biases.\nEach value must be separated with colons (:), with eventual spaces. Blank lines are not allowed. If a line begins with the '#' symbol, then it is considered as comments.\nNote that sometimes, the values provided by certain metadata files assume the formula L(b) = gain(b)*DC(b)+bias(b).\nIn this case, be sure to provide the inverse gain values so that the application can correctly interpret them.\nIn order to convert TOA radiance to TOA reflectance, the following formula is used:\n**(2)\tR(b) = (pi*L(b)*d*d) / (ESUN(b)*cos(θ))\t(no dimension)**\twhere: \n- L(b) is the spectral radiance for band b \n- pi is the famous mathematical constant (3.14159...) \n- d is the earth-sun distance (in astronomical units) and depends on the acquisition's day and month \n- ESUN(b) is the mean TOA solar irradiance (or solar illumination) in W/m2/micrometers\n- θ is the solar zenith angle in degrees.\nNote that the application asks for the solar elevation angle, and will perform the conversion to the zenith angle itself (zenith_angle = 90 - elevation_angle , units: degrees).\nNote also that ESUN(b) not only depends on the band b, but also on the spectral sensitivity of the sensor in this particular band. In other words, the influence of spectral sensitivities is included within the ESUN different values.\nThese values are provided by the user thanks to a txt file following the same convention as before.\nInstead of providing the date of acquisition, the user can also provide a flux normalization coefficient or a solar distance (in AU) 'fn'. The formula used instead will be the following : \n**(3) \tR(b) = (pi*L(b)) / (ESUN(b)*fn*fn*cos(θ))** \nWhatever the formula used (2 or 3), the user should pay attention to the interpretation of the parameters he will provide to the application, by taking into account the original formula that the metadata files assumes.\nBelow, we give two examples of txt files containing information about gains/biases and solar illuminations :\n- gainbias.txt :\n| # Gain values for each band. Each value must be separated with colons (:), with eventual spaces.\n| # Blank lines not allowed.\n| 10.4416 : 9.529 : 8.5175 : 14.0063\n| # Bias values for each band.\n| 0.0 : 0.0 : 0.0 : 0.0\nImportant Note : For Pleiade image calibration, the band order is important, it should be given as : Red, Green, Blue, NIR (B2,B1,B0,B3).\n- solarillumination.txt : \n| # Solar illumination values in watt/m2/micron ('micron' means actually 'for each band').\n| # Each value must be separated with colons (:), with eventual spaces. Blank lines not allowed.\n| 1540.494123 : 1826.087443 : 1982.671954 : 1094.747446\nFinally, the 'Logs' tab provides useful messages that can help the user in knowing the process different status.\n",
 	"authors": "CNES",
@@ -7558,6 +7624,7 @@
 }, 
 {
 	"id": "otb911_OrthoRectification",
+	"label": "otb911_OrthoRectification",
 	"version": "9.1.1",
 	"description": "This application allows ortho-rectifying optical and radar images from supported sensors.\nTags: Geometry \nThis application uses inverse sensor modelling combined with a choice of interpolation functions to resample a sensor geometry image into a ground geometry regular grid. The ground geometry regular grid is defined with respect to a map projection (see map parameter). The application offers several modes to estimate the output grid parameters (origin and ground sampling distance), including automatic estimation of image size, ground sampling distance, or both, from image metadata, user-defined ROI corners, or another ortho-image.A digital Elevation Model along with a geoid file can be specified to account for terrain deformations.In case of SPOT5 images, the sensor model can be approximated by an RPC model in order to speed-up computation.\n",
 	"authors": "CNES",
@@ -7819,6 +7886,7 @@
 }, 
 {
 	"id": "otb911_Pansharpening",
+	"label": "otb911_Pansharpening",
 	"version": "9.1.1",
 	"description": "Perform P+XS pansharpening\nTags: Geometry Pansharpening \nThis application performs P+XS pansharpening. Pansharpening is a process of merging high-resolution panchromatic and lower resolution multispectral imagery to create a single high-resolution color image. Algorithms available in the applications are: RCS, bayesian fusion and Local Mean and Variance Matching(LMVM).\n",
 	"authors": "CNES",
@@ -7943,6 +8011,7 @@
 }, 
 {
 	"id": "otb911_PantexTextureExtraction",
+	"label": "otb911_PantexTextureExtraction",
 	"version": "9.1.1",
 	"description": "Computes Pantex textural features on the selected channel of the input image\nTags: Feature Extraction Textures \nThis application computes a texture-derived built-up presence index (PanTex) from texturalcharacteristics of scalar images. This is a contrast textural measure based on co-occurance.\n",
 	"authors": "CNES",
@@ -8049,6 +8118,7 @@
 }, 
 {
 	"id": "otb911_PixelValue",
+	"label": "otb911_PixelValue",
 	"version": "9.1.1",
 	"description": "Get the value of a pixel.\nTags: Image Manipulation Coordinates \nThis application gives the value of a selected pixel. There are three ways to designate a pixel, with its index, its physical coordinate (in the physical space attached to the image), and with geographical coordinate system. Coordinates will be interpreted differently depending on which mode is chosen.\n",
 	"authors": "CNES",
@@ -8117,6 +8187,7 @@
 }, 
 {
 	"id": "otb911_PolygonClassStatistics",
+	"label": "otb911_PolygonClassStatistics",
 	"version": "9.1.1",
 	"description": "Computes statistics on a training polygon set.\nTags: Learning \nProcess a set of geometries intended for training (they should have a field giving the associated class). The geometries are analyzed against a support image to compute statistics:\n* Number of samples per class\n* Number of samples per geometry\nAn optional raster mask can be used to discard samples. Different types of geometry are supported: polygons, lines, points. The behaviour is different for each type of geometry:\n* Polygon: select pixels whose center is inside the polygon\n* Lines: select pixels intersecting the line\n* Points: select closest pixel to the point\n",
 	"authors": "CNES",
@@ -8229,6 +8300,7 @@
 }, 
 {
 	"id": "otb911_Quicklook",
+	"label": "otb911_Quicklook",
 	"version": "9.1.1",
 	"description": "Generates a subsampled version of an image extract\nTags: Image Manipulation \nGenerates a subsampled version of an extract of an image defined by ROIStart and ROISize.\nThis extract is subsampled using the ratio OR the output image Size.\n",
 	"authors": "CNES",
@@ -8335,6 +8407,7 @@
 }, 
 {
 	"id": "otb911_RadiometricIndices",
+	"label": "otb911_RadiometricIndices",
 	"version": "9.1.1",
 	"description": "Compute radiometric indices.\nTags: Feature Extraction Radiometric Indices \nThis application computes radiometric indices using the relevant channels of the input image. The output is a multi band image into which each channel is one of the selected indices.\n",
 	"authors": "CNES",
@@ -8434,6 +8507,7 @@
 }, 
 {
 	"id": "otb911_Rasterization",
+	"label": "otb911_Rasterization",
 	"version": "9.1.1",
 	"description": "Reproject and rasterize a vector dataset\nTags: Vector Data Manipulation \nReproject and rasterize a vector dataset. The grid of the rasterized output can be set by using a reference image, or by setting all parameters (origin, size, spacing) by hand. In the latter case, at least the spacing (ground sampling distance) is needed (other parameters are computed automatically). The rasterized output can also be in a different projection reference system than the input dataset.\nThere are two rasterize mode available in the application. The first is the binary mode: it allows rendering all pixels belonging to a geometry of the input dataset in the foreground color, while rendering the other in background color. The second one allows rendering pixels belonging to a geometry with respect to an attribute of this geometry. The field of the attribute to render can be set by the user. In the second mode, the background value is still used for unassociated pixels.\n",
 	"authors": "CNES",
@@ -8588,6 +8662,7 @@
 }, 
 {
 	"id": "otb911_ReadImageInfo",
+	"label": "otb911_ReadImageInfo",
 	"version": "9.1.1",
 	"description": "Get information about the image\nTags: Image Manipulation Utilities Image MetaData \nDisplay information about the input image like: image size, origin, spacing, metadata, projections...\n",
 	"authors": "CNES",
@@ -8640,6 +8715,7 @@
 }, 
 {
 	"id": "otb911_RefineSensorModel",
+	"label": "otb911_RefineSensorModel",
 	"version": "9.1.1",
 	"description": "Perform least-square fit of a sensor model to a set of tie points\nTags: Geometry \nThis application reads an image file containing a sensor model (this model can be passed as a geom as an extended filename) and a text file containing a list of ground control point, and performs a least-square fit of the sensor model adjustable parameters to these tie points. It produces an updated image file as output, as well as an optional ground control points based statistics file and a vector file containing residues. The updated output image file can then be used to ortho-rectify the data more accurately. Plaease note that for a proper use of the application, elevation must be correctly set (including DEM and geoid file). The map parameters allows one to choose a map projection in which the accuracy will be estimated in meters.\n",
 	"authors": "CNES",
@@ -8770,6 +8846,7 @@
 }, 
 {
 	"id": "otb911_ResetMargin",
+	"label": "otb911_ResetMargin",
 	"version": "9.1.1",
 	"description": "This is the ResetMargin application\nTags: Image Manipulation \nThis application is similar to ExtractROI in the sense it extracts a Region of Interest.\nHowever, the region outside of the ROI isn't trimmed, but set to 0.\nThe filter set lines of index < threshold.y, and of index >= threshold.y to 0\nThe filter set columns of index < threshold.x, and of index >= threshold.x to 0\n",
 	"authors": "CNES",
@@ -8941,6 +9018,7 @@
 }, 
 {
 	"id": "otb911_RigidTransformResample",
+	"label": "otb911_RigidTransformResample",
 	"version": "9.1.1",
 	"description": "Resample an image with a rigid transform\nTags: Geometry Conversion \nThis application performs a parametric transform on the input image. Scaling, translation and rotation with scaling factor are handled. Parameters of the transform is expressed in physical units, thus particular attention must be paid on pixel size (value, and sign). Moreover transform is expressed from input space to output space (on the contrary ITK Transforms are expressed form output space to input space). \n",
 	"authors": "CNES",
@@ -9103,6 +9181,7 @@
 }, 
 {
 	"id": "otb911_SampleAugmentation",
+	"label": "otb911_SampleAugmentation",
 	"version": "9.1.1",
 	"description": "Generates synthetic samples from a sample data file.\nTags: Learning \nThe application takes a sample data file as generated by the SampleExtraction application and generates synthetic samples to increase the number of available samples.\n",
 	"authors": "CNES",
@@ -9218,6 +9297,7 @@
 }, 
 {
 	"id": "otb911_SampleExtraction",
+	"label": "otb911_SampleExtraction",
 	"version": "9.1.1",
 	"description": "Extracts samples values from an image.\nTags: Learning \nThe application extracts samples values from animage using positions contained in a vector data file. \n",
 	"authors": "CNES",
@@ -9315,6 +9395,7 @@
 }, 
 {
 	"id": "otb911_SampleSelection",
+	"label": "otb911_SampleSelection",
 	"version": "9.1.1",
 	"description": "Selects samples from a training vector data set.\nTags: Learning \nThe application selects a set of samples from geometries intended for training (they should have a field giving the associated class). \nFirst of all, the geometries must be analyzed by the PolygonClassStatistics application to compute statistics about the geometries, which are summarized in an XML file. \nThen, this XML file must be given as an input to this application (parameter instats).\nThe input support image and the input training vectors shall be given in parameters 'in' and 'vec' respectively. Only the sampling grid (origin, size, spacing)will be read in the input image.\nThere are several strategies to select samples (parameter strategy) : \n  - smallest (default) : select the same number of samples in each class so that the smallest one is fully sampled.\n  - constant : select the same number of samples N in each class (with N below or equal to the size of the smallest class).\n  - byclass : set the required number for each class manually, with an input CSV file (first column is class name, second one is the required samples number).\n  - percent: set a target global percentage of samples to use. Class proportions will be respected. \n  - total: set a target total number of samples to use. Class proportions will be respected. \nThere is also a choice of the sampling type to perform: \n  - periodic : select samples uniformly distributed\n  - random : select samples randomly distributed\nOnce the strategy and type are selected, the application outputs samples positions(parameter out).\nThe other parameters to consider are: \n  - layer : index specifying from which layer to pick geometries.\n  - field : set the field name containing the class.\n  - mask : an optional raster mask can be used to discard samples.\n  - outrates : allows outputting a CSV file that summarizes the sampling rates for each class.\nAs with the PolygonClassStatistics application, different types  of geometry are supported : polygons, lines, points. \nThe behavior of this application is different for each type of geometry : \n  - polygon: select points whose center is inside the polygon\n  - lines  : select points intersecting the line\n  - points : select closest point to the provided point\n",
 	"authors": "CNES",
@@ -9512,6 +9593,7 @@
 },
 {
 	"id": "otb911_SARBurstExtraction",
+	"label": "otb911_SARBurstExtraction",
 	"version": "9.1.1",
 	"description": "This application performs a burst extraction by keeping only lines and samples of a required burst.\nTags: SAR Calibration \nSentinel1 IW SLC products are composed of several burst overlapping in azimuth time for each subswath, separated by black lines [1]. The burst extraction consist in extracting a single burst, by selecting only lines and samples of the wanted burst.\nNote that the output sensor model is updated accordingly. This burst extraction is the perfect preprocessing step for S1 IW SLC product with OTB without suffering from artifacts caused by bursts separation\n.Two modes are available for the output image : with all pixels andwith only valid pixels \n",
 	"authors": "CNES",
@@ -9592,6 +9674,7 @@
 },
 {
 	"id": "otb911_SARCalibration",
+	"label": "otb911_SARCalibration",
 	"version": "9.1.1",
 	"description": "Perform radiometric calibration of SAR images. Following sensors are supported: TerraSAR-X, Sentinel1 and Radarsat-2.Both Single Look Complex(SLC) and detected products are supported as input.\nTags: Calibration SAR \nThe objective of SAR calibration is to provide imagery in which the pixel values can be directly related to the radar backscatter of the scene. This application allows computing Sigma Naught (Radiometric Calibration) for TerraSAR-X, Sentinel1 L1 and Radarsat-2 sensors. Metadata are automatically retrieved from image products.The application supports complex and non-complex images (SLC or detected products).\n",
 	"authors": "CNES",
@@ -9664,6 +9747,7 @@
 }, 
 {
 	"id": "otb911_SARConcatenateBursts",
+	"label": "otb911_SARConcatenateBursts",
 	"version": "9.1.1",
 	"description": "Concatenate a list of Bursts to provide a whole SAR Deburst Image.\nTags: SAR Calibration \nThis application performs a burst concatenation and provides a SAR Deburst Image. It reads the input image list (single bursts) and generates a whole SAR image with deburst operations.\n",
 	"authors": "CNES",
@@ -9726,6 +9810,7 @@
 }, 
 {
 	"id": "otb911_SARDeburst",
+	"label": "otb911_SARDeburst",
 	"version": "9.1.1",
 	"description": "This application performs deburst of Sentinel1 IW SLC images by removing redundant lines.\nTags: SAR Calibration \nSentinel1 IW SLC products are composed of several burst overlapping in azimuth time for each subswath, separated by black lines [1]. The deburst operation consist in generating a continuous image in terms of azimuth time, by removing black separation lines as well as redundant lines between bursts.\nNote that the output sensor model is updated accordingly. This deburst operation is the perfect preprocessing step to orthorectify S1 IW SLC product with OTB [2] without suffering from artifacts caused by bursts separation.\nTwo modes are available for the output image : with all samples andwith only valid samples \n",
 	"authors": "CNES",
@@ -9789,6 +9874,7 @@
 }, 
 {
 	"id": "otb911_SARDecompositions",
+	"label": "otb911_SARDecompositions",
 	"version": "9.1.1",
 	"description": "From one-band complex images (each one related to an element of the Sinclair matrix), returns the selected decomposition.\nTags: SAR \nFrom one-band complex images (HH, HV, VH, VV), returns the selected decomposition.\nAll the decompositions implemented are intended for the mono-static case (transmitter and receiver are co-located).\nThere are two kinds of decomposition: coherent ones and incoherent ones.\nIn the coherent case, only the Pauli decomposition is available.\nIn the incoherent case, there the decompositions available: Huynen, Barnes, and H-alpha-A.\nUser must provide three one-band complex images HH, HV or VH, and VV (mono-static case <=> HV = VH).\nIncoherent decompositions consist in averaging 3x3 complex coherency/covariance matrices; the user must provide the size of the averaging window, thanks to the parameter inco.kernelsize.\n",
 	"authors": "CNES",
@@ -9884,6 +9970,7 @@
 }, 
 {
 	"id": "otb911_SARPolarMatrixConvert",
+	"label": "otb911_SARPolarMatrixConvert",
 	"version": "9.1.1",
 	"description": "This applications allows converting classical polarimetric matrices to each other.\nTags: SAR \nThis application allows converting classical polarimetric matrices to each other.\nFor instance, it is possible to get the coherency matrix from the Sinclar one, or the Mueller matrix from the coherency one.\nThe filters used in this application never handle matrices, but images where each band is related to their elements.\nAs most of the time SAR polarimetry handles symmetric/hermitian matrices, only the relevant elements are stored, so that the images representing them have a minimal number of bands.\nFor instance, the coherency matrix size is 3x3 in the monostatic case, and 4x4 in the bistatic case: it will thus be stored in a 6-band or a 10-band complex image (the diagonal and the upper elements of the matrix).\nThe Sinclair matrix is a special case: it is always represented as 3 or 4 one-band complex images (for mono or bistatic case).\nThe available conversions are listed below:\n--- Monostatic case ---\n1 msinclairtocoherency --> Sinclair matrix to coherency matrix (input: 3 x 1 complex channel (HH, HV or VH, VV) | output:  6 complex channels)\n2 msinclairtocovariance --> Sinclair matrix to covariance matrix (input: 3 x 1 complex channel (HH, HV or VH, VV) | output:  6 complex channels)\n3 msinclairtocircovariance --> Sinclair matrix to circular covariance matrix (input: 3 x 1 complex channel (HH, HV or VH, VV) | output:  6 complex channels)\n4 mcoherencytomueller --> Coherency matrix to Mueller matrix (input: 6 complex channels | 16 real channels)\n5 mcovariancetocoherencydegree --> Covariance matrix to coherency degree (input: 6 complex channels | 3 complex channels)\n6 mcovariancetocoherency --> Covariance matrix to coherency matrix (input: 6 complex channels | 6 complex channels)\n7 mlinearcovariancetocircularcovariance --> Covariance matrix to circular covariance matrix (input: 6 complex channels | output: 6 complex channels)\n--- Bistatic case ---\n8 bsinclairtocoherency --> Sinclair matrix to coherency matrix (input: 4 x 1 complex channel (HH, HV, VH, VV) | 10 complex channels)\n9 bsinclairtocovariance --> Sinclair matrix to covariance matrix (input: 4 x 1 complex channel (HH, HV, VH, VV) | output: 10 complex channels)\n10 bsinclairtocircovariance --> Sinclair matrix to circular covariance matrix (input: 4 x 1 complex channel (HH, HV, VH, VV) | output: 10 complex channels)\n--- Both cases ---\n11 sinclairtomueller --> Sinclair matrix to Mueller matrix (input: 4 x 1 complex channel (HH, HV, VH, VV) | output: 16 real channels)\n12 muellertomcovariance --> Mueller matrix to covariance matrix (input: 16 real channels | output: 6 complex channels)\n13 muellertopoldegandpower --> Mueller matrix to polarization degree and power (input: 16 real channels | output: 4 real channels)\n",
 	"authors": "CNES",
@@ -10020,6 +10107,7 @@
 }, 
 {
 	"id": "otb911_SARPolarSynth",
+	"label": "otb911_SARPolarSynth",
 	"version": "9.1.1",
 	"description": "Gives, for each pixel, the power that would have been received by a SAR system with a basis different from the classical (H,V) one (polarimetric synthetis).\nTags: SAR \nThis application gives, for each pixel, the power that would have been received by a SAR system with a basis different from the classical (H,V) one (polarimetric synthetis).\nThe new basis A and B are indicated through two Jones vectors, defined by the user thanks to orientation (psi) and ellipticity (khi) parameters.\nThese parameters are namely psii, khii, psir and khir. The suffixes (i) and (r) refer to the transmitting antenna and the receiving antenna respectively.\nOrientations and ellipticities are given in degrees, and are between -90/90 degrees and -45/45 degrees respectively.\nFour polarization architectures can be processed: \n1. HH_HV_VH_VV: full polarization, general bistatic case.\n2. HH_HV_VV or HH_VH_VV: full polarization, monostatic case (transmitter and receiver are co-located).\n3. HH_HV: dual polarization.\n4. VH_VV: dual polarization.\nThe application takes a complex vector image as input, where each band correspond to a particular emission/reception polarization scheme.\nUser must comply with the band order given above, since the bands are used to build the Sinclair matrix.\nIn order to determine the architecture, the application first relies on the number of bands of the input image.\n1. Architecture HH_HV_VH_VV is the only one with four bands, there is no possible confusion.\n2. Concerning HH_HV_VV and HH_VH_VV architectures, both correspond to a three channels image. But they are processed in the same way, as the Sinclair matrix is symmetric in the monostatic case.\n3. Finally, the two last architectures (dual polarizations), can't be distinguished only by the number of bands of the input image. User must then use the parameters emissionh and emissionv to indicate the architecture of the system: emissionh=1 and emissionv=0 --> HH_HV,  emissionh=0 and emissionv=1 --> VH_VV.\nNote: if the architecture is HH_HV, khii and psii are automatically both set to 0 degree; if the architecture is VH_VV, khii and psii are automatically set to 0 degree and 90 degrees respectively.\nIt is also possible to force the calculation to co-polar or cross-polar modes.\nIn the co-polar case, values for psir and khir will be ignored and forced to psii and khii; same as the cross-polar mode, where khir and psir will be forced to (psii + 90 degrees) and -khii.\nFinally, the result of the polarimetric synthetis is expressed in the power domain, through a one-band scalar image.\nNote: this application doesn't take into account the terms which do not depend on the polarization of the antennas. \nThe parameter gain can be used for this purpose.\nMore details can be found in the OTB CookBook (SAR processing chapter).\n",
 	"authors": "CNES",
@@ -10137,6 +10225,7 @@
 }, 
 {
 	"id": "otb911_Segmentation",
+	"label": "otb911_Segmentation",
 	"version": "9.1.1",
 	"description": "Performs segmentation of an image, and output either a raster or a vector file. In vector mode, large input datasets are supported.\nTags: Segmentation \nThis application allows one to perform various segmentation algorithms on a multispectral image. Available segmentation algorithms are two different versions of Mean-Shift segmentation algorithm (one being multi-threaded), simple pixel based connected components according to a user-defined criterion, and watershed from the gradient of the intensity (norm of spectral bands vector). The application has two different modes that affects the nature of its output.\nIn raster mode, the output of the application is a classical image of unique labels identifying the segmented regions. The labeled output can be passed to the ColorMapping application to render regions with contrasted colours. Please note that this mode loads the whole input image into memory, and as such can not handle large images.\nTo segment large data, one can use the vector mode. In this case, the output of the application is a vector file or database. The input image is split into tiles (whose size can be set using the tilesize parameter), and each tile is loaded, segmented with the chosen algorithm, vectorized, and written into the output file or database. This piece-wise behavior ensure that memory will never get overloaded, and that images of any size can be processed. There are few more options in the vector mode. The simplify option allows simplifying the geometry (i.e. remove nodes in polygons) according to a user-defined tolerance. The stitch option tries to stitch together the polygons corresponding to segmented region that may have been split by the tiling scheme. \n",
 	"authors": "CNES",
@@ -10415,6 +10504,7 @@
 }, 
 {
 	"id": "otb911_SFSTextureExtraction",
+	"label": "otb911_SFSTextureExtraction",
 	"version": "9.1.1",
 	"description": "Computes Structural Feature Set textures on every pixel of the input image selected channel\nTags: Feature Extraction Textures \nStructural Feature Set [1] are based on the histograms of the pixels in multiple directions of the image. The SFSTextureExtraction application computes the  6 following features: SFS'Length, SFS'Width, SFS'PSI, SFS'W-Mean, SFS'Ratio and SFS'SD (Standard Deviation). The texture indices are computed from the neighborhood of each pixel. It is possible to change the length of the calculation line (spatial threshold), as well as the maximum difference between a pixel of the line and the pixel at the center of the neighborhood (spectral threshold) [2].\n",
 	"authors": "CNES",
@@ -10523,6 +10613,7 @@
 }, 
 {
 	"id": "otb911_SmallRegionsMerging",
+	"label": "otb911_SmallRegionsMerging",
 	"version": "9.1.1",
 	"description": "This application merges small regions of a segmentation result.\nTags: Segmentation \nGiven a segmentation result and the original image, it will merge segments whose size in pixels is lower than minsize parameter with the adjacent segments with the adjacent segment with closest radiometry and acceptable size. \nSmall segments will be processed by increasing size: first all segments for which area is equal to 1 pixel will be merged with adjacent segments, then all segments of area equal to 2 pixels will be processed, until segments of area minsize.\n",
 	"authors": "CNES",
@@ -10594,6 +10685,7 @@
 }, 
 {
 	"id": "otb911_Smoothing",
+	"label": "otb911_Smoothing",
 	"version": "9.1.1",
 	"description": "Apply a smoothing filter to an image\nTags: Image Filtering \nThis application applies a smoothing filter to an image. Three methods can be used: a mean filter, a gaussian filter based on [1], or an anisotropic diffusion using the Perona-Malik algorithm [2].\n",
 	"authors": "CNES",
@@ -10720,6 +10812,7 @@
 }, 
 {
 	"id": "otb911_SOMClassification",
+	"label": "otb911_SOMClassification",
 	"version": "9.1.1",
 	"description": "SOM image classification.\nTags: Learning Segmentation \nUnsupervised Self Organizing Map image classification.\n",
 	"authors": "CNES",
@@ -10901,6 +10994,7 @@
 }, 
 {
 	"id": "otb911_SpectralAngleClassification",
+	"label": "otb911_SpectralAngleClassification",
 	"version": "9.1.1",
 	"description": "Classifies an image using a spectral measure.\nTags: Hyperspectral \nThis application computes a spectral measure on a hyperspectral data cube using a set of reference pixels. The image is then classified by finding for each pixel the index of its closest endmember, i.e. the endmember corresponding to the lowest measurement value. The output classification is labeled from 1 to L, L being the number of endmembers. A threshold can be set for the classification step, only measurement values lower than this threshold will be considered, other will be classified as `background values` (default value of 0). \nTwo measures are available : the spectral angle mapper and the spectral information divergence. See [1] for details\n",
 	"authors": "CNES",
@@ -11011,6 +11105,7 @@
 }, 
 {
 	"id": "otb911_SplitImage",
+	"label": "otb911_SplitImage",
 	"version": "9.1.1",
 	"description": "Split a N multiband image into N images.\nTags: Image Manipulation \nThis application splits a N-bands image into N mono-band images. The output images filename will be generated from the output parameter. Thus, if the input image has 2 channels, and the user has set as output parameter, outimage.tif, the generated images will be outimage_0.tif and outimage_1.tif.\n",
 	"authors": "CNES",
@@ -11065,6 +11160,7 @@
 },
 {
 	"id": "otb911_StereoFramework",
+	"label": "otb911_StereoFramework",
 	"version": "9.1.1",
 	"description": "Compute the ground elevation based on one or multiple stereo pair(s)\nTags: Stereo \nCompute the ground elevation with a stereo block matching algorithm between one or multiple stereo pair in sensor geometry. The output is projected in desired geographic or cartographic map projection (WGS84 by default).\nThis application is chaining different processing steps. Some of them are also performed by other applications in the stereo-reconstruction framework:\n* StereoRectificationGridGenerator: for the generation of deformation grids\n* GridBasedImageResampling: resampling into epipolar geometry\n* BlockMatching: estimation of dense disparity maps\nThe pipeline executes the following steps on each stereo pair:\n* compute the epipolar displacement grids from the stereo pair (direct and inverse)\n* resample the stereo pair into epipolar geometry using BCO interpolation\n* create masks for each epipolar image: remove black borders and resample input masks\n* compute horizontal disparities with a block matching algorithm\n* refine disparities to sub-pixel precision with a dichotomy algorithm\n* apply an optional median filter\n* filter disparities based on the correlation score and exploration bounds\n* translate disparities in sensor geometry\n* convert disparity to 3D Map.\nThen all 3D maps are fused to produce DSM. The fusion method in each DEM cell can be chosen between maximum, minimum and average.\n",
 	"authors": "CNES",
@@ -11392,6 +11488,7 @@
 },
 {
 	"id": "otb911_StereoRectificationGridGenerator",
+	"label": "otb911_StereoRectificationGridGenerator",
 	"version": "9.1.1",
 	"description": "Generates two deformation fields to resample in epipolar geometry, a pair of stereo images up to the sensor model precision\nTags: Stereo \nThis application generates a pair of deformation grid to stereo-rectify a pair of stereo images according to sensor modelling and a mean elevation hypothesis.\nThis application is the first part of the stereo reconstruction framework. The output deformation grids can be passed to the GridBasedImageResampling application for actual resampling into epipolar geometry.\nThere are several ways to set the elevation source:\n* An arbitrary constant elevation\n* A DEM directory\n* Compute an average elevation from a DEM\nIf needed, the application can compute inverse resampling grids (from epipolar to original sensor geometry). Don't forget to check the other outputs from the application. For instance, the application gives the X and Y size of the rectified images, along with an estimated baseline ratio.\n",
 	"authors": "CNES",
@@ -11590,6 +11687,7 @@
 }, 
 {
 	"id": "otb911_Superimpose",
+	"label": "otb911_Superimpose",
 	"version": "9.1.1",
 	"description": "Using available image metadata, project one image onto another one\nTags: Geometry Superimposition \nThis application performs the projection of an image into the geometry of another one.\n",
 	"authors": "CNES",
@@ -11721,6 +11819,7 @@
 }, 
 {
 	"id": "otb911_Synthetize",
+	"label": "otb911_Synthetize",
 	"version": "9.1.1",
 	"description": "This is the Synthetize application\nTags: Image Manipulation \nConcatenate a list of images of the same size into a single single-channel image.\n        It keeps the first non-null pixel value found in the input list.\n",
 	"authors": "CNES",
@@ -11766,6 +11865,7 @@
 }, 
 {
 	"id": "otb911_TileFusion",
+	"label": "otb911_TileFusion",
 	"version": "9.1.1",
 	"description": "Fusion of an image made of several tile files.\nTags: Image Manipulation \nAutomatically mosaic a set of non overlapping tile files into a single image. Images must have a matching number of bands and they must be listed in lexicographic order.\n",
 	"authors": "CNES",
@@ -11818,6 +11918,7 @@
 }, 
 {
 	"id": "otb911_TrainDimensionalityReduction",
+	"label": "otb911_TrainDimensionalityReduction",
 	"version": "9.1.1",
 	"description": "Train a dimensionality reduction model\nTags: Learning \nTrainer for dimensionality reduction algorithms (autoencoders, PCA, SOM). All input samples are used to compute the model, like other machine learning models.\nThe model can be used in the ImageDimensionalityReduction and VectorDimensionalityReduction applications.\n",
 	"authors": "CNES",
@@ -11975,6 +12076,7 @@
 }, 
 {
 	"id": "otb911_TrainImagesClassifier",
+	"label": "otb911_TrainImagesClassifier",
 	"version": "9.1.1",
 	"description": "Train a classifier from multiple pairs of images and training vector data.\nTags: Learning \nTrain a classifier from multiple pairs of images and training vector data. Samples are composed of pixel values in each band optionally centered and reduced using an XML statistics file produced by the ComputeImagesStatistics application.\nThe training vector data must contain polygons with a positive integer field representing the class label. The name of this field can be set using the *Class label field* parameter.\nTraining and validation sample lists are built such that each class is equally represented in both lists. One parameter controls the ratio between the number of samples in training and validation sets. Two parameters manage the size of the training and validation sets per class and per image.\nIn the validation process, the confusion matrix is organized the following way:\n* Rows: reference labels,\n* Columns: produced labels.\nIn the header of the optional confusion matrix output file, the validation (reference) and predicted (produced) class labels are ordered according to the rows/columns of the confusion matrix.\nThis application is based on LibSVM, OpenCV Machine Learning, and Shark ML. The output of this application is a text model file, whose format corresponds to the ML model type chosen. There is no image or vector data output.\n",
 	"authors": "CNES",
@@ -12547,6 +12649,7 @@
 }, 
 {
 	"id": "otb911_TrainImagesRegression",
+	"label": "otb911_TrainImagesRegression",
 	"version": "9.1.1",
 	"description": "Train a regression model from multiple triplets of feature images, predictor images and training vector data.\nTags: Learning \nTrain a classifier from multiple triplets of predictor images, label images and training vector data. \nThe training vector data must contain polygons corresponding to the input sampling positions. This data is used to extract samples using pixel values in each band of the predictor image and the corresponding ground truth extracted from the lagel image. If no training vector data is provided, the samples will be extracted on the full image extent.\nAt the end of the application, the mean square error between groundtruth and predicted values is computed using the output model and the validation vector data. Note that if no validation data is given, the training data will be used for validation.\nThe number of training and validation samples can be specified with parameters. If no size is given, all samples will be used. \nThis application is based on LibSVM, OpenCV Machine Learning, and Shark ML. The output of this application is a text model file, whose format corresponds to the ML model type chosen. There is no image nor vector data output.\n",
 	"authors": "CNES",
@@ -13050,6 +13153,7 @@
 }, 
 {
 	"id": "otb911_TrainRegression",
+	"label": "otb911_TrainRegression",
 	"version": "9.1.1",
 	"description": "WARNING: This application is deprecated, it will be removed in a future OTB release.\nTrain a classifier from multiple images to perform regression.\nTags: Deprecated Learning \nThis application trains a classifier from multiple input images or a CSV file, in order to perform regression. Predictors are composed of pixel values in each band optionally centered and reduced using an XML statistics file produced by the ComputeImagesStatistics application.\nThe output value for each predictor is assumed to be the last band (or the last column for CSV files). Training and validation predictor lists are built such that their size is inferior to maximum bounds given by the user, and the proportion corresponds to the balance parameter. Several classifier parameters can be set depending on the chosen classifier. In the validation process, the mean square error is computed between the ground truth and the estimated model.\nThis application is based on LibSVM and on OpenCV Machine Learning classifiers, and is compatible with OpenCV 2.3.1 and later.\n",
 	"authors": "CNES",
@@ -13502,6 +13606,7 @@
 }, 
 {
 	"id": "otb911_TrainVectorClassifier",
+	"label": "otb911_TrainVectorClassifier",
 	"version": "9.1.1",
 	"description": "Train a classifier based on labeled geometries and a list of features to consider.\nTags: Learning \nThis application trains a classifier based on labeled geometries and a list of features to consider for classification.\nThis application is based on LibSVM, OpenCV Machine Learning (2.3.1 and later), and Shark ML The output of this application is a text model file, whose format corresponds to the ML model type chosen. There are no image or vector data outputs created.\n",
 	"authors": "CNES",
@@ -14022,6 +14127,7 @@
 }, 
 {
 	"id": "otb911_TrainVectorRegression",
+	"label": "otb911_TrainVectorRegression",
 	"version": "9.1.1",
 	"description": "Train a regression algorithm based on geometries with list of predictor to consider and a label (dependent variable).\nTags: Learning \nThis application trains a regression algorithm based on geometries containing list of predictors to consider for regression as well as groundtruth labels.\nThis application is based on LibSVM, OpenCV Machine Learning (2.3.1 and later), and Shark ML The output of this application is a text model file, whose format corresponds to the ML model type chosen. There is no image or vector data output.\n",
 	"authors": "CNES",
@@ -14474,6 +14580,7 @@
 }, 
 {
 	"id": "otb911_VectorClassifier",
+	"label": "otb911_VectorClassifier",
 	"version": "9.1.1",
 	"description": "Performs a classification of the input vector data according to a model file.\nTags: Learning \nThis application performs a vector data classification based on a model file produced by the TrainVectorClassifier application.Features of the vector data output will contain the class labels decided by the classifier (maximal class label = 65535). \nThere are two modes: \n1) Update mode: add of the 'cfield' field containing the predicted class in the input file. \n2) Write mode: copies the existing fields of the input file to the output file  and add the 'cfield' field containing the predicted class. \nIf you have declared the output file, the write mode applies. Otherwise, the input file update mode will be applied.\n",
 	"authors": "CNES",
@@ -14553,6 +14660,7 @@
 }, 
 {
 	"id": "otb911_VectorDataExtractROI",
+	"label": "otb911_VectorDataExtractROI",
 	"version": "9.1.1",
 	"description": "Perform an extract ROI on the input vector data according to the input image extent\nTags: Vector Data Manipulation \nThis application extracts the vector data features belonging to a region specified by the support image envelope. Any features intersecting the support region is copied to output. The output geometries are NOT cropped.\n",
 	"authors": "CNES",
@@ -14628,6 +14736,7 @@
 }, 
 {
 	"id": "otb911_VectorDataReprojection",
+	"label": "otb911_VectorDataReprojection",
 	"version": "9.1.1",
 	"description": "Reproject a vector data using support image projection reference, or a user specified map projection\nTags: Vector Data Manipulation Geometry Coordinates \nReproject vector data using a support image as projection reference or to a user given map projection.  If given an image keywordlist can be added to the reprojected vectordata.\n",
 	"authors": "CNES",
@@ -14775,6 +14884,7 @@
 }, 
 {
 	"id": "otb911_VectorDataSetField",
+	"label": "otb911_VectorDataSetField",
 	"version": "9.1.1",
 	"description": "Set a field in vector data.\nTags: Vector Data Manipulation \nSet a specified field to a specified value on all features of a vector data.\n",
 	"authors": "CNES",
@@ -14836,6 +14946,7 @@
 }, 
 {
 	"id": "otb911_VectorDataTransform",
+	"label": "otb911_VectorDataTransform",
 	"version": "9.1.1",
 	"description": "Apply a transform to each vertex of the input VectorData\nTags: Vector Data Manipulation \nThis application iterates over each vertex in the input vector data file and performs a transformation on this vertex.\nIt is the equivalent of [1] that transforms images. For instance, if you extract the envelope of an image with [2], and you transform this image with [1], you may want to use this application to operate the same transform on the envelope.\nThe applied transformation is a 2D similarity. It manages translation, rotation, scaling, and can be centered or not. Note that the support image is used to define the reference coordinate system in which the transform is applied. For instance the input vector data can have WGS84 coordinates, the support image is in UTM, so a translation of 1 pixel along X corresponds to the X pixel size of the input image along the X axis of the UTM coordinates frame. This image can also be in sensor geometry.\n",
 	"authors": "CNES",
@@ -14943,6 +15054,7 @@
 }, 
 {
 	"id": "otb911_VectorDimensionalityReduction",
+	"label": "otb911_VectorDimensionalityReduction",
 	"version": "9.1.1",
 	"description": "Performs dimensionality reduction of the input vector data according to a model file.\nTags: Learning \nThis application performs a vector data dimensionality reduction based on a model file produced by the TrainDimensionalityReduction application.\n",
 	"authors": "CNES",
@@ -15039,6 +15151,7 @@
 }, 
 {
 	"id": "otb911_VectorRegression",
+	"label": "otb911_VectorRegression",
 	"version": "9.1.1",
 	"description": "Performs regression on the input vector data according to a model file.\nTags: Learning \nThis application performs a vector data regression based on a model file produced by the TrainVectorRegression application.Features of the vector data output will contain the values predicted by the classifier. \nThere are two modes: \n1) Update mode: add of the 'cfield' field containing the predicted value in the input file. \n2) Write mode: copies the existing fields of the input file to the output file  and add the 'cfield' field containing the predicted value. \nIf you have declared the output file, the write mode applies. Otherwise, the input file update mode will be applied.\n",
 	"authors": "CNES",
@@ -15109,6 +15222,7 @@
 }, 
 {
 	"id": "otb911_VertexComponentAnalysis",
+	"label": "otb911_VertexComponentAnalysis",
 	"version": "9.1.1",
 	"description": "Given a set of mixed spectral vectors, estimate reference substances also known as endmembers using the Vertex Component Analysis algorithm.\nTags: Hyperspectral Dimensionality Reduction \nApply the Vertex Component Analysis [1] to an hyperspectral image to extract endmembers. Given a set of mixed spectral vectors (multispectral or hyperspectral), the application estimates the spectral signature of reference substances also known as endmembers.\n",
 	"authors": "CNES",
@@ -15183,6 +15297,7 @@
 }, 
 {
 	"id": "otb911_ZonalStatistics",
+	"label": "otb911_ZonalStatistics",
 	"version": "9.1.1",
 	"description": "This application computes zonal statistics\nTags: Image Manipulation Image Analysis \nThis application computes zonal statistics from label image, or vector data. The application inputs one input multiband image, and another input for zones definition. Zones can be defined with a label image (inzone.labelimage.in) or a vector data layer (inzone.vector.in). The following statistics are computed over each zones: mean, min, max, and standard deviation. Statistics can be exported in a vector layer (if the input zone definition is a label image, it will be vectorized) or in a XML file\n",
 	"authors": "CNES",
