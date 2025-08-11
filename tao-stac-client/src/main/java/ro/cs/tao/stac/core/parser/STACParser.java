@@ -3,6 +3,7 @@ package ro.cs.tao.stac.core.parser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ro.cs.tao.stac.core.model.*;
@@ -30,6 +31,7 @@ public class STACParser {
         module.addDeserializer(TemporalExtent.class, new TemporalDeserializer());
         module.addDeserializer(Item.class, new ItemDeserializer());
         mapper.registerModule(module);
+        mapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.configure(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES, false);
     }
