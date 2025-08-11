@@ -7,10 +7,18 @@ import ro.cs.tao.eodata.DataHandlingException;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.OutputDataHandler;
 import ro.cs.tao.serialization.GeometryAdapter;
+import ro.cs.tao.serialization.JsonMapper;
 import ro.cs.tao.stac.core.model.*;
 import ro.cs.tao.stac.core.model.extensions.Extension;
 import ro.cs.tao.stac.core.model.extensions.ExtensionType;
+import ro.cs.tao.stac.core.model.extensions.fileinfo.FileInfoExtension;
+import ro.cs.tao.stac.core.model.extensions.processing.Expression;
+import ro.cs.tao.stac.core.model.extensions.processing.Level;
+import ro.cs.tao.stac.core.model.extensions.processing.ProcessingExtension;
+import ro.cs.tao.stac.core.model.extensions.processing.ProcessingFields;
 import ro.cs.tao.stac.core.model.extensions.projection.ProjExtension;
+import ro.cs.tao.stac.core.parser.STACParser;
+import ro.cs.tao.utils.DateUtils;
 
 import java.io.IOException;
 import java.net.URI;
@@ -71,7 +79,7 @@ public class ProductMetadataWriter implements OutputDataHandler<EOProduct> {
                 item.setDatetime(product.getAcquisitionDate());
                 final String crs = product.getCrs();
                 if (crs != null) {
-                    final Extension<?> extension = item.getExtension(ExtensionType.PROJ);
+                    final Extension<?> extension = item.registerExtension(ExtensionType.PROJ);
                     if (extension != null) {
                         ProjExtension<?> proj = ((ProjExtension<?>) extension);
                         proj.setEpsg(Integer.parseInt(crs.substring(crs.indexOf(':') + 1)));
@@ -81,7 +89,7 @@ public class ProductMetadataWriter implements OutputDataHandler<EOProduct> {
                 map.put("name", product.getName());
                 map.put("sensor", product.getSatelliteName());
                 map.put("type", product.getProductType());
-                final List<Attribute> attributes = product.getAttributes();
+                final List<Attribute> attributes = product.excludeAttributes("processing:");
                 if (attributes != null) {
                     attributes.sort(Comparator.comparing(Attribute::getName));
                     for (Attribute attr : attributes) {
@@ -89,6 +97,43 @@ public class ProductMetadataWriter implements OutputDataHandler<EOProduct> {
                     }
                 }
                 item.setFields(map);
+                final List<Attribute> processingAttributes = product.filterAttributes("processing:");
+                if (processingAttributes != null) {
+                    processingAttributes.sort(Comparator.comparing(Attribute::getName));
+                    final Extension<?> extension = item.registerExtension(ExtensionType.PROCESSING);
+                    for (Attribute attr : processingAttributes) {
+                        try {
+                            ProcessingExtension<?> processing = ((ProcessingExtension<?>) extension);
+                            switch (attr.getName()) {
+                                case ProcessingFields.PROCESSING_EXPRESSION:
+                                    processing.setExpression(new STACParser().parse(attr.getValue(), Expression.class));
+                                    break;
+                                case ProcessingFields.PROCESSING_LINEAGE:
+                                    processing.setLineage(attr.getValue());
+                                    break;
+                                case ProcessingFields.PROCESSING_LEVEL:
+                                    processing.setLevel(Level.valueOf(attr.getValue()));
+                                    break;
+                                case ProcessingFields.PROCESSING_FACILITY:
+                                    processing.setFacility(attr.getValue());
+                                    break;
+                                case ProcessingFields.PROCESSING_DATETIME:
+                                    processing.setDateTime(DateUtils.parseDateTime(attr.getValue()));
+                                    break;
+                                case ProcessingFields.PROCESSING_VERSION:
+                                    processing.setVersion(attr.getValue());
+                                    break;
+                                case ProcessingFields.PROCESSING_SOFTWARE:
+                                    processing.setSoftware(JsonMapper.instance()
+                                                                     .readerFor(LinkedHashMap.class)
+                                                                     .readValue(attr.getValue()));
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            logger.warning(e.getMessage());
+                        }
+                    }
+                }
                 final List<Link> links = new ArrayList<>();
                 final String location = product.getLocation();
                 Path path;
@@ -97,20 +142,14 @@ public class ProductMetadataWriter implements OutputDataHandler<EOProduct> {
                 } catch (Exception e) {
                     path = Paths.get(location);
                 }
+                Extension<?> extension = item.registerExtension(ExtensionType.FILE);
+                FileInfoExtension<?> fileInfo = ((FileInfoExtension<?>) extension);
+                fileInfo.setSize(product.getApproximateSize());
+                fileInfo.setLocalPath(location);
                 Path metadataPath = (Files.isDirectory(path) ? path : path.getParent()).resolve(product.getName() + ".json");
-                Link link = new Link();
-                link.setRel("self");
-                link.setHref(path.toUri().toString());
-                links.add(link);
-                link = new Link();
-                link.setRel("canonical");
-                link.setType("application/json");
-                link.setHref(metadataPath.toUri().toString());
-                links.add(link);
-                link = new Link();
-                link.setRel("parent");
-                link.setHref(path.getParent().toUri().toString());
-                links.add(link);
+                links.add(createLink(path.toUri().toString(), "self"));
+                links.add(createLink(metadataPath.toUri().toString(), "cannonical", "application/json"));
+                links.add(createLink(path.getParent().toUri().toString(), "parent"));
                 item.setLinks(links);
                 final Map<String, Asset> assets = new LinkedHashMap<>();
                 Asset asset = new Asset();
@@ -135,5 +174,20 @@ public class ProductMetadataWriter implements OutputDataHandler<EOProduct> {
             }
         }
         return list;
+    }
+
+    private Link createLink(String href, String rel) {
+        final Link link = new Link();
+        link.setRel(rel);
+        link.setHref(href);
+        return link;
+    }
+
+    private Link createLink(String href, String rel, String type) {
+        final Link link = new Link();
+        link.setRel(rel);
+        link.setHref(href);
+        link.setType(type);
+        return link;
     }
 }
