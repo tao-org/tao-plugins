@@ -66,6 +66,9 @@ public class OGCProcessExecutor extends Executor<OGCProcessExecutionTask> {
     }
 
     @Override
+    public String defaultId() { return "OGCProcessExecutor"; }
+
+    @Override
     public void execute(OGCProcessExecutionTask task) throws ExecutionException {
         try {
             final OGCProcessClient client = getClient(task);
