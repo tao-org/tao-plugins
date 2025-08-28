@@ -110,4 +110,10 @@ public class CWLArraySchemaImpl extends SaveableImpl implements CWLArraySchema {
     this.items = (Object) items;
     this.type = (Array_name) type;
   }
+
+  @Override
+  public String toString() {
+    return (this.items != null ? this.items.toString() : "") +
+            ((this.type != null && this.type.toString().equalsIgnoreCase("array") ? "[]" : ""));
+  }
 }

@@ -39,7 +39,9 @@
         <module>tao-docker-zarr</module>
         <module>tao-drmaa-slurm</module>
         <module>tao-drmaa-torque</module>
+        <module>tao-executor-wms</module>
         <module>tao-executor-wps</module>
+        <module>tao-executor-ogc-process</module>
         <module>tao-gdalinfo</module>
         <module>tao-keycloak</module>
         <module>tao-ldap</module>
@@ -63,7 +65,6 @@
         <module>tao-workflow-argo</module>
         <module>tao-drmaa-kubernetes</module>
         <module>tao-eo-search</module>
-        <module>tao-executor-wms</module>
         <module>tao-functions</module>
         <module>tao-plugins-kit</module>
         <module>tao-github</module>

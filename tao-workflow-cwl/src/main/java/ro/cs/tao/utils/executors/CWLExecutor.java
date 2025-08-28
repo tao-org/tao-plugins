@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.gs.collections.impl.utility.ListIterate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3id.cwl.cwl1_2.*;
 import org.w3id.cwl.cwl1_2.utils.RootLoader;
 import ro.cs.tao.component.*;
 import ro.cs.tao.datasource.DataSourceComponent;
 import ro.cs.tao.datasource.param.JavaType;
-import ro.cs.tao.docker.ExecutionConfiguration;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.execution.model.ExecutionTask;
 import ro.cs.tao.execution.persistence.ExecutionTaskProvider;
@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 public class CWLExecutor extends Executor<Object>
         implements ExecutionDescriptorConverter {
 
+    private static final Logger log = LoggerFactory.getLogger(CWLExecutor.class);
     private ExecutionUnit executionUnit;
     private final ExecutionTaskProvider taskProvider;
     private final WorkflowProvider workflowProvider;
@@ -42,8 +43,7 @@ public class CWLExecutor extends Executor<Object>
 
     private final static String CWL_GRAPH_ID = "$graph";
     private final static String YAML_FILE_NAME = "inputs.yaml";
-    private final static String MAIN_WF_INPUT_ID_PREFIX = "wf_in_";
-    private final static String MAIN_WF_OUTPUT_ID_PREFIX = "wf_out_";
+    private final static String WF_OUTPUT_NAME_SUFFIX = "_output_name";
     private final static String MAIN_WF_OUTPUT_SOURCE_PREFIX = "workflow_";
     private final static String MAIN_WF_ID = "workflow_start";
 
@@ -125,10 +125,7 @@ public class CWLExecutor extends Executor<Object>
         SubworkflowFeatureRequirement subWfFeatureReq = new SubworkflowFeatureRequirementImpl();
         subWfFeatureReq.setClass_(SubworkflowFeatureRequirement_class.SUBWORKFLOWFEATUREREQUIREMENT);
 
-        ScatterFeatureRequirement scatterFeatureReq = new ScatterFeatureRequirementImpl();
-        scatterFeatureReq.setClass_(ScatterFeatureRequirement_class.SCATTERFEATUREREQUIREMENT);
-
-        mainWorkflow.setRequirements(Optional.of(new LinkedList<>(Arrays.asList(subWfFeatureReq, scatterFeatureReq))));
+        mainWorkflow.setRequirements(Optional.of(new LinkedList<>(List.of(subWfFeatureReq))));
         mainWorkflow.setSteps(new LinkedList<>(List.of(new WorkflowStepImpl(mainWfStepId))));
 
         /* Create workflow template (called by the root workflow).
@@ -142,23 +139,18 @@ public class CWLExecutor extends Executor<Object>
         MultipleInputFeatureRequirement multipleInputFeatureReq = new MultipleInputFeatureRequirementImpl();
         multipleInputFeatureReq.setClass_(MultipleInputFeatureRequirement_class.MULTIPLEINPUTFEATUREREQUIREMENT);
 
-        cwlWorkflow.setRequirements(Optional.of(new LinkedList<>(Arrays.asList(scatterFeatureReq, multipleInputFeatureReq))));
+        cwlWorkflow.setRequirements(Optional.of(new LinkedList<>(List.of(multipleInputFeatureReq))));
 
         cwlTemplate.getCwlMainGraphObject().get(CWL_GRAPH_ID).add(mainWorkflow);
         cwlTemplate.getCwlMainGraphObject(CWL_GRAPH_ID).add(cwlWorkflow);
 
         parseNodes(workflowDesc);
 
-        /*
-         * Update root workflow step
-         */
+        // Update root workflow step
         WorkflowStep mainWorkflowStep = mainWorkflow.getStep(mainWfStepId);
 
         // set run parameter for step found in main workflow
         mainWorkflowStep.setRun(cwlWorkflow.getId().get());
-        // set scatter and scatterMethod for step found in main workflow
-        mainWorkflowStep.setScatter(mainWorkflowStep.getIn().stream().map(s -> ((WorkflowStepInput)s).getId().get()).collect(Collectors.toList()));
-        mainWorkflowStep.setScatterMethod(Optional.of(ScatterMethod.DOTPRODUCT));
 
         createStepFromTask(task);
 
@@ -201,7 +193,7 @@ public class CWLExecutor extends Executor<Object>
                 }
 
                 if (yamlObj instanceof SourceDescriptor yamlObjTemp) {
-                    String inputType = getInOutType(yamlObjTemp.getDataDescriptor().getFormatType(), yamlObjTemp.getDataDescriptor().getLocation());
+                    String inputType = getInOutType(yamlObjTemp.getDataDescriptor().getFormatType(), yamlObjTemp.getDataDescriptor().getLocation(), true);
                     if (yamlObjTemp.getDataDescriptor().getLocation().contains(",")) {
                         String[] strings = yamlObjTemp.getDataDescriptor().getLocation().split(",");
                         List<Object> locationList = new ArrayList<>();
@@ -253,9 +245,7 @@ public class CWLExecutor extends Executor<Object>
             if (!wf.getIncomingLinks().isEmpty()) {
                 describeWorkflowSteps(wf);
             }
-            System.out.println("Other node");
         }
-        System.out.println("Other workflow descriptor");
     }
 
     private void setupWorkflowInfoFromRootNode(TaoComponent wfComponent, SourceDescriptor sourceDescriptor, Long workflowId) {
@@ -264,11 +254,10 @@ public class CWLExecutor extends Executor<Object>
             Workflow cwlWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, cwlWorkflowId);
             String inputType = getInOutType(sourceDescriptor.getDataDescriptor().getFormatType(), sourceDescriptor.getDataDescriptor().getLocation());
             String inputId = wfComponent.getTargets().getFirst().getName() + "_" + workflowId;
-            String mainWfInputId = MAIN_WF_INPUT_ID_PREFIX + inputId;
 
             WorkflowInputParameter mainWfInput = new WorkflowInputParameterImpl();
-            mainWfInput.setId(Optional.of(mainWfInputId));
-            mainWfInput.setType(inputType + "[]");
+            mainWfInput.setId(Optional.of(inputId));
+            mainWfInput.setType(inputType);
 
             mainWorkflow.getInputs().add(mainWfInput);
 
@@ -280,10 +269,10 @@ public class CWLExecutor extends Executor<Object>
             // add input to main workflow step
             WorkflowStepInput stepIn = new WorkflowStepInputImpl();
             stepIn.setId(Optional.of(inputId));
-            stepIn.setDefault(Optional.of(mainWfInputId));
+            stepIn.setDefault(Optional.of(inputId));
             mainWorkflow.getStep(mainWfStepId).getIn().add(stepIn);
 
-            createOrUpdateYamlFile(mainWfInputId, sourceDescriptor);
+            createOrUpdateYamlFile(inputId, sourceDescriptor);
         }
     }
 
@@ -293,15 +282,13 @@ public class CWLExecutor extends Executor<Object>
         String outParamId = targetDescriptor.getName() + "_" + workflowId;
         String outputType = getInOutType(targetDescriptor.getDataDescriptor().getFormatType(), targetDescriptor.getDataDescriptor().getLocation());
         String outputId = targetDescriptor.getParentId().toLowerCase() + "_" + outParamId;
-
         String outputSource = targetDescriptor.getParentId().toLowerCase() + "_" + workflowId + "/" + outParamId;
 
-        String mainWfOutputId = MAIN_WF_OUTPUT_ID_PREFIX + outputId;
         String mainOutputSource = MAIN_WF_OUTPUT_SOURCE_PREFIX + cwlWorkflowId + "/" + outputId;
 
         WorkflowOutputParameter mainWfOutput = new WorkflowOutputParameterImpl();
-        mainWfOutput.setId(Optional.of(mainWfOutputId));
-        mainWfOutput.setType(outputType + "[]");
+        mainWfOutput.setId(Optional.of(outputId));
+        mainWfOutput.setType(outputType);
         mainWfOutput.setOutputSource(mainOutputSource);
         mainWorkflow.getOutputs().add(mainWfOutput);
 
@@ -349,22 +336,6 @@ public class CWLExecutor extends Executor<Object>
         cwlWorkflow.getSteps().add(step);
     }
 
-    private List<Object> createCommandArray(List<String> bashArguments) {
-        List<Object> baseCommandArray = new ArrayList<>();
-        // first bash argument is always added
-        baseCommandArray.add("/bin/bash");
-        baseCommandArray.add(bashArguments.get(0).replaceAll("\"", ""));
-        int bashArgsLastNonParamPosition = ListIterate.detectIndex(bashArguments, b -> b.startsWith("-") && !b.equals("-c"));
-        if (bashArguments.get(1).startsWith(" \\")) {
-            baseCommandArray.add(bashArguments.get(1).replaceAll("\"","").replaceAll("\\\\","/"));
-        } else if (bashArguments.get(1).equals("-c")) {
-            for(int i = 1 ; i < bashArgsLastNonParamPosition ; i++) {
-                baseCommandArray.add(bashArguments.get(i));
-            }
-        }
-        return baseCommandArray;
-    }
-
     private List<Object> createReqListForCommandToolSteps() {
         List<Object> requirementsList = new ArrayList<>();
         if (this.executionUnit.getMinDisk() != null || this.executionUnit.getMinMemory() != null) {
@@ -383,273 +354,284 @@ public class CWLExecutor extends Executor<Object>
     private DockerRequirement getDockerRequirement() {
         DockerRequirement requirement = new DockerRequirementImpl();
         requirement.setClass_(DockerRequirement_class.DOCKERREQUIREMENT);
-        if (ExecutionConfiguration.getDockerRegistry().equals(this.executionUnit.getContainerUnit().getContainerRegistry())) {
-            requirement.setDockerImageId(Optional.of(this.executionUnit.getContainerUnit().getContainerName()));
-        } else {
-            requirement.setDockerPull(Optional.of(this.executionUnit.getContainerUnit().getContainerRegistry() + "/" + this.executionUnit.getContainerUnit().getContainerName()));
-        }
+        requirement.setDockerPull(Optional.of(this.executionUnit.getContainerUnit().getContainerRegistry() + "/" + this.executionUnit.getContainerUnit().getContainerName()));
         return requirement;
     }
 
     private void createStepFromTask(ExecutionTask task) {
-        String stepCWLFileId = this.executionUnit.getMetadata().get("name").toString().toLowerCase().replaceAll("[^a-zA-Z0-9]","")  + "_" + task.getWorkflowNodeId();
+        String stepCWLFileId = this.executionUnit.getMetadata().get("name").toString().toLowerCase().replaceAll("[^a-zA-Z0-9\\-]","")  + "_" + task.getWorkflowNodeId();
         TaoComponent wfComponent = TaskUtilities.getComponentFor(task);
         CommandLineTool commandLineTool = new CommandLineToolImpl();
 
-        List<String> bashArguments;
-        final boolean isBash = this.executionUnit.getArguments().get(0).equals("/bin/bash");
-        if (isBash) {
-            bashArguments = Arrays.asList(this.executionUnit.getArguments().get(2).split(" "));
+        if (this.executionUnit.getArguments().stream().anyMatch(f -> f.equals("/bin/bash"))) {
+            List<String> baseCommandArray = new ArrayList<>();
+            for (String execUnitArg : this.executionUnit.getArguments()) {
+                if (execUnitArg.equals("/bin/bash") || execUnitArg.equals("-c")) {
+                    baseCommandArray.add(execUnitArg);
+                } else {
+                    if (execUnitArg.contains("cp")) {
+                        logger.info("CP is needed");
+                    }
+                    if (execUnitArg.contains("rm -r")) {
+                        logger.info("RM -R is needed");
+                    }
+                }
+            }
+            commandLineTool.setBaseCommand(baseCommandArray);
         } else {
-            bashArguments = this.executionUnit.getArguments();
+            logger.info("Unhandled execution command for " + task.getWorkflowNodeId());
         }
-
-        List<Object> baseCommandArray = createCommandArray(bashArguments);
         List<Object> commandToolReqList = createReqListForCommandToolSteps();
 
         commandLineTool.setRequirements(Optional.of(commandToolReqList));
-        commandLineTool.setBaseCommand(baseCommandArray);
-
         commandLineTool.setClass_(CommandLineTool_class.COMMANDLINETOOL);
         commandLineTool.setId(Optional.of(stepCWLFileId));
 
         cwlTemplate.getCwlMainGraphObject().get(CWL_GRAPH_ID).add(commandLineTool);
 
-        // create task inputs based on Component sources
-        addInputsComponentFromSources(wfComponent, bashArguments, stepCWLFileId, task);
-        if (wfComponent instanceof ProcessingComponent && !((ProcessingComponent) wfComponent).getParameterDescriptors().isEmpty()) {
-            addInputsFromParams(wfComponent, bashArguments, stepCWLFileId ,task);
-        }
-        addOutputsToWf(wfComponent, baseCommandArray, bashArguments, stepCWLFileId, task);
-    }
-
-    /**
-     * Add input information to workflow template
-     */
-    private void addInputsComponentFromSources(TaoComponent wfComponent, List<String> bashArguments, String stepCWLFileId, ExecutionTask task) {
-        Workflow cwlWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, cwlWorkflowId);
-        // get current steps form Workflow
-        Object currentStep = cwlWorkflow.getSteps().stream().filter(s->((WorkflowStep)s).getId().get().contains(wfComponent.getId().toLowerCase() + "_" + task.getWorkflowNodeId())).findFirst().orElse(null);
-        for (SourceDescriptor sourceDescriptor : wfComponent.getSources()) {
-            String inputId = sourceDescriptor.getName() + "_" + task.getWorkflowNodeId();
-            CommandInputParameter input = new CommandInputParameterImpl();
-            input.setId(Optional.of(inputId));
-            Object associatedInput = null;
-
-            if (currentStep != null) {
-                Object currentStepIn = ((WorkflowStep) currentStep).getIn().stream().filter(in -> {
-                    if (((WorkflowStepInput) in).getId().get().contains("#")) {
-                        int chIdx = ((WorkflowStepInput) in).getId().get().indexOf("#");
-                        return ((WorkflowStepInput) in).getId().get().substring(chIdx + 1).endsWith("/" + inputId);
-                    } else {
-                        return ((WorkflowStepInput) in).getId().get().equals(inputId);
-                    }
-                }).findFirst().orElse(null);
-                String currentStepInVal;
-                if (currentStepIn != null) {
-                    if (((WorkflowStepInput) currentStepIn).getDefault() != null && ((WorkflowStepInput) currentStepIn).getDefault().isPresent()) {
-                        currentStepInVal = ((WorkflowStepInput) currentStepIn).getDefault().get().toString();
-                    } else if (((WorkflowStepInput) currentStepIn).getSource() != null) {
-                        String tmpValue = ((WorkflowStepInput) currentStepIn).getSource().toString();
-                        if (tmpValue.contains("#")) {
-                            int chIdx = tmpValue.lastIndexOf("/");
-                            currentStepInVal = tmpValue.substring(chIdx + 1);
-                        } else {
-                            currentStepInVal = tmpValue;
-                        }
-                    } else {
-                        currentStepInVal = null;
-                    }
-                } else {
-                    currentStepInVal = null;
-                }
-
-                associatedInput = cwlWorkflow.getInputs().stream().filter(in -> {
-                    if (((WorkflowInputParameter) in).getId().get().contains("#")) {
-                        return ((WorkflowInputParameter) in).getId().get().endsWith("/" + currentStepInVal);
-                    } else {
-                        return ((WorkflowInputParameter) in).getId().get().equals(currentStepInVal);
-                    }
-                }).findFirst().orElse(null);
-            }
-            Object type = associatedInput != null ? ((WorkflowInputParameter)associatedInput).getType() : Any.ANY.toString();
-            input.setType(type);
-            CommandLineBinding inputBinding = new CommandLineBindingImpl();
-            // check if source name is found in bash arguments
-            String foundPrefix = bashArguments.stream().filter(arg -> arg.matches("-?" + sourceDescriptor.getName() + "(=.*)?")).findFirst().orElse(null);
-            if (foundPrefix != null) {
-                int chIndex = foundPrefix.indexOf("=");
-                // if source name is found containing equal sign, add only the first part; else add the found prefix
-                if (chIndex > -1) {
-                    inputBinding.setPrefix(Optional.of(foundPrefix.substring(0,chIndex + 1 )));
-                } else {
-                    inputBinding.setPrefix(Optional.of(foundPrefix));
-                }
-            } else {
-                inputBinding.setPrefix(Optional.of("-" + sourceDescriptor.getName()));
-            }
-            inputBinding.setValueFrom("$(self.path)");
-            input.setInputBinding(Optional.of(inputBinding));
-            ((CommandLineTool)this.cwlTemplate.getCwlGraphChild("$graph", stepCWLFileId)).getInputs().add(input);
-        }
-    }
-
-    /**
-     * Add the parameters to job CWL file, inputs section and YAML file
-     */
-    private void addInputsFromParams(TaoComponent wfComponent, List<String> bashArguments, String stepCWLFileId, ExecutionTask task) {
-        Workflow cwlWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, cwlWorkflowId);
-        Workflow mainWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, MAIN_WF_ID);
-        // get current steps form Workflow
-        Object currentStep = cwlWorkflow.getSteps().stream().filter(s->((WorkflowStep)s).getId().get().contains(wfComponent.getId().toLowerCase() + "_" + task.getWorkflowNodeId())).findFirst().orElse(null);
-
-        // get in element from current step
-        List<Object> inList = ((WorkflowStep)currentStep).getIn();
-        // main Workflow file has only 1 step. The one that calls the second Workflow file
-        List<Object> mainWfInList = ((WorkflowStep)mainWorkflow.getSteps().getFirst()).getIn();
-
-        for (ParameterDescriptor desc : ((ProcessingComponent)wfComponent).getParameterDescriptors()) {
-            if (task.getInputParameterValues().stream().anyMatch(t -> t.getKey().equals(desc.getName()))) {
-                // create parameter input for current execution unit cwl file and add it to inputs
-                CommandInputParameter input = new CommandInputParameterImpl();
-                input.setId(Optional.of(desc.getLabel()));
-                input.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
-                input.setLabel(Optional.of(desc.getLabel()));
-                CommandLineBinding inputBinding = new CommandLineBindingImpl();
-                String foundPrefix = bashArguments.stream().filter(arg -> arg.matches("-?" + desc.getLabel() + "(=.*)?")).findFirst().orElse(null);
-                if (foundPrefix != null) {
-                    int chIndex = foundPrefix.indexOf("=");
-                    if (chIndex > -1) {
-                        inputBinding.setPrefix(Optional.of(foundPrefix.substring(0, chIndex + 1)));
-                    } else {
-                        inputBinding.setPrefix(Optional.of(foundPrefix));
-                    }
-                } else {
-                    inputBinding.setPrefix(Optional.of("-" + desc.getLabel()));
-                }
-                input.setInputBinding(Optional.of(inputBinding));
-                ((CommandLineTool) this.cwlTemplate.getCwlGraphChild("$graph", stepCWLFileId)).getInputs().add(input);
-
-                // create parameter input for workflow and add it to inputs
-                WorkflowInputParameter workflowInputParameter = new WorkflowInputParameterImpl();
-                workflowInputParameter.setId(Optional.of(desc.getName() + "_" + task.getWorkflowNodeId()));
-                workflowInputParameter.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
-                workflowInputParameter.setLabel(Optional.of(desc.getDescription()));
-                cwlWorkflow.getInputs().add(workflowInputParameter);
-
-                final String parameterId;
-                String tempParameterId = MAIN_WF_INPUT_ID_PREFIX + desc.getName();
-                long keyOccurrence = mainWorkflow.getInputs().stream().filter(m -> ((WorkflowInputParameter) m).getId().get().matches("^(file:/|file://|file:///).*") ?
-                        ((WorkflowInputParameter) m).getId().get().matches("^(.*/)" + tempParameterId + ".*") :
-                        ((WorkflowInputParameter) m).getId().get().matches("^" + tempParameterId + ".*")).count();
-                if (keyOccurrence > 0) {
-                    parameterId = tempParameterId + "_" + keyOccurrence;
-                } else {
-                    parameterId = tempParameterId;
-                }
-                if (mainWorkflow.getInputs().stream().filter(i ->
-                        ((WorkflowInputParameter) i).getId().get().endsWith("/" + parameterId)).findAny().isEmpty()) {
-                    WorkflowInputParameter mainWorkflowInputParameter = new WorkflowInputParameterImpl();
-                    mainWorkflowInputParameter.setId(Optional.of(parameterId));
-                    mainWorkflowInputParameter.setType(JavaType.fromClass(desc.getDataType()).friendlyName());
-                    mainWorkflowInputParameter.setLabel(Optional.of(desc.getDescription()));
-                    mainWorkflow.getInputs().add(mainWorkflowInputParameter);
-                }
-
-                // create input for step workflow add it to in list
-                if (inList.stream().filter(i ->
-                        ((WorkflowStepInput) i).getId().get().endsWith("/" + desc.getLabel())).findAny().isEmpty()) {
-                    WorkflowStepInput stepInput = new WorkflowStepInputImpl();
-                    stepInput.setId(Optional.of(desc.getLabel()));
-                    stepInput.setDefault(Optional.of(desc.getName() + "_" + task.getWorkflowNodeId()));
-                    inList.add(stepInput);
-
-                    WorkflowStepInput mainStepInput = new WorkflowStepInputImpl();
-                    mainStepInput.setId(Optional.of(desc.getName() + "_" + task.getWorkflowNodeId()));
-                    mainStepInput.setDefault(Optional.of(parameterId));
-                    mainWfInList.add(mainStepInput);
-                }
-
-                Variable parameterValue = task.getInputParameterValues().stream().filter(i -> i.getKey().equals(desc.getName())).findFirst().get();
-                // create parameter input for YAML file
-                createOrUpdateYamlFile(parameterId, JavaType.fromClass(desc.getDataType()).parse(parameterValue.getValue()));
-            }
-        }
+        addInputsFromTask(wfComponent, stepCWLFileId, task);
+        addOutputsToWf(wfComponent, stepCWLFileId, task);
     }
 
     /**
      * Add output information to workflow template
      */
-    private void addOutputsToWf(TaoComponent wfComponent, List<Object> baseCommandArray, List<String> bashArguments, String stepCWLFileId, ExecutionTask task) {
-        // arguments associated with the outputs
-        int argumentPosition = baseCommandArray.size();
+    private void addOutputsToWf(TaoComponent wfComponent, String stepCWLFileId, ExecutionTask task) {
         // create task outputs and arguments based on Component targets
         for (TargetDescriptor targetDescriptor : wfComponent.getTargets()) {
-            argumentPosition++;
             CommandOutputParameter output = new CommandOutputParameterImpl();
-            CommandLineBinding argumentOut = new CommandLineBindingImpl();
-
             String outputId = targetDescriptor.getName() + "_" + task.getWorkflowNodeId();
 
             output.setId(Optional.of(outputId));
-            argumentOut.setValueFrom("outputs." + outputId);
-
             output.setType(getInOutType(targetDescriptor.getDataDescriptor().getFormatType(), targetDescriptor.getDataDescriptor().getLocation()));
             CommandOutputBinding outputBinding = new CommandOutputBindingImpl();
-            String targetLocation = targetDescriptor.getDataDescriptor().getLocation();
-            String targetExtension = targetLocation.substring(targetLocation.lastIndexOf("."));
-            outputBinding.setGlob("*" + targetExtension);
-            output.setOutputBinding(Optional.of(outputBinding));
-
+            String targetName = targetDescriptor.getName();
+            try {
+                // arguments associated with the outputs
+                Variable associatedInputParam = task.getInputParameterValues().stream().filter(t -> t.getKey().endsWith(targetName)).findFirst().get();
+                String associatedInputId = associatedInputParam.getKey() + "_" + task.getWorkflowNodeId() + WF_OUTPUT_NAME_SUFFIX;
+                outputBinding.setGlob("$(inputs." + associatedInputId + ")");
+                output.setOutputBinding(Optional.of(outputBinding));
+            } catch (Exception e) {
+                logger.warning("Associated Input Parameter not found for workflow output: " + targetName);
+            }
             ((CommandLineTool)this.cwlTemplate.getCwlGraphChild("$graph", stepCWLFileId)).getOutputs().add(output);
+        }
+    }
 
-            argumentOut.setPosition(argumentPosition);
-            // set prefix
-            // check if target name is found in bash arguments
-            String foundPrefix = bashArguments.stream().filter(arg -> arg.matches("-" + targetDescriptor.getName() + "(=.*)?")).findFirst().orElse(null);
-            if (foundPrefix != null) {
-                int chIndex = foundPrefix.indexOf("=");
-                // if source name is found containing equal sign, add only the first part; else add the found prefix
-                if (chIndex > -1) {
-                    argumentOut.setPrefix(Optional.of(foundPrefix.substring(0,chIndex + 1 )));
+    private void addInputsFromTask(TaoComponent wfComponent, String stepCWLFileId, ExecutionTask task) {
+        CommandLineTool commandLineToolWf = (CommandLineTool)cwlTemplate.getCwlGraphChild("$graph", stepCWLFileId);
+        Workflow cwlWorkflow = (Workflow)cwlTemplate.getCwlGraphChild("$graph", cwlWorkflowId);
+        Workflow mainWorkflow = (Workflow)cwlTemplate.getCwlGraphChild("$graph", MAIN_WF_ID);
+        List<String> executionCommandArray = Arrays.asList(task.getCommand().split("\\R"));
+        Object currentStep = cwlWorkflow.getStep(stepCWLFileId);
+        for (Variable inputParameter : task.getInputParameterValues()) {
+            String inputId = inputParameter.getKey() + "_" + task.getWorkflowNodeId();
+            CommandInputParameter input = new CommandInputParameterImpl();
+            int commandParamIndex = -1;
+            SourceDescriptor parameterSourceDescriptor = wfComponent.getSources().stream().filter(s -> s.getName().equals(inputParameter.getKey())).findFirst().orElse(null);
+
+            if (parameterSourceDescriptor != null) {
+                Object inheritType = Any.ANY; //default value
+                commandParamIndex = getCommandParamIdx(executionCommandArray, parameterSourceDescriptor.getName());
+                // in this case the input is already added in YAML file when Workflow is created
+                input.setId(Optional.of(inputId));
+                Object associatedElement = getAssociatedElement(currentStep, inputId, task.getWorkflowNodeId());
+                if (associatedElement != null) {
+                    inheritType = ((WorkflowInputParameter)associatedElement).getType();
                 } else {
-                    argumentOut.setPrefix(Optional.of(foundPrefix));
+                    inheritType = getInOutType(parameterSourceDescriptor.getDataDescriptor().getFormatType(), inputParameter.getValue());
+                }
+                input.setType(inheritType);
+                if (commandParamIndex > -1) {
+                    String inputType = getInOutType(parameterSourceDescriptor.getDataDescriptor().getFormatType(), inputParameter.getValue());
+                    // use toString() for inheritType, because it can be string or class org.w3id.cwl.cwl1_2.InputArraySchemaImpl
+                    if (!inputParameter.getValue().startsWith("[") && inheritType.toString().contains("[")) {
+                        input.setType(inheritType.toString().replaceAll("\\[]", ""));
+                        // in this case each input will be input to workflow
+                        ScatterFeatureRequirement scatterFeatureReq = new ScatterFeatureRequirementImpl();
+                        scatterFeatureReq.setClass_(ScatterFeatureRequirement_class.SCATTERFEATUREREQUIREMENT);
+                        mainWorkflow.getRequirements().get().add(scatterFeatureReq);
+                        WorkflowStep mainWorkflowStep = mainWorkflow.getStep(mainWfStepId);
+                        mainWorkflowStep.setScatter(List.of(((WorkflowInputParameter) associatedElement).getId().get()));
+                        mainWorkflowStep.setScatterMethod(Optional.of(ScatterMethod.DOTPRODUCT));
+
+                        mainWorkflow.getOutputs().stream().filter(o -> ((WorkflowOutputParameter)o).getId().get().startsWith(wfComponent.getId()))
+                                .forEach(out -> ((WorkflowOutputParameter) out).setType(((WorkflowOutputParameter) out).getType().toString()+"[]"));
+
+                        cwlWorkflow.getInputs().stream().filter(i -> ((WorkflowInputParameter)i).getId().get().equals(((WorkflowInputParameter) associatedElement).getId().get()))
+                                        .forEach(in -> ((WorkflowInputParameter) in).setType(input.getType().toString()));
+                        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inputType, inputParameter.getValue());
+                    } else {
+                        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inputType, inputParameter.getValue());
+                    }
+                } else {
+                    logger.warning("The execution command is not created correctly.");
                 }
             } else {
-                argumentOut.setPrefix(Optional.of("-" + targetDescriptor.getName()));
-            }
-            ((CommandLineTool)this.cwlTemplate.getCwlGraphChild("$graph", stepCWLFileId)).getArguments().get().add(argumentOut);
-        }
-        int bashArgsLastNonParamPosition = ListIterate.detectIndex(bashArguments, b -> b.startsWith("-") && !b.equals("-c"));
-        for (int i = bashArgsLastNonParamPosition; i < bashArguments.size(); i++) {
-            CommandLineBinding argumentOut = new CommandLineBindingImpl();
-            if (bashArguments.get(i).startsWith("-")) {
-                String argOutPrefix;
-                String argOutValue;
-                if (bashArguments.get(i).matches("-\\w+=(\\w|/|\\.)+")) {
-                    String[] commandList = bashArguments.get(i).split("=");
-                    argOutPrefix = commandList[0] + "=";
-                    argumentOut.setPosition(argumentPosition);
-                    argOutValue = commandList[1];
+                TargetDescriptor parameterTargetDescriptor = wfComponent.getTargets().stream().filter(t -> t.getName().equals(inputParameter.getKey())).findFirst().orElse(null);
+                if (parameterTargetDescriptor != null) {
+                    commandParamIndex = getCommandParamIdx(executionCommandArray, parameterTargetDescriptor.getName());
+                    inputId = inputId + WF_OUTPUT_NAME_SUFFIX;
+                    input.setLabel(Optional.of("Output file for " + inputParameter.getKey() + "found in " + stepCWLFileId));
                 } else {
-                    argOutPrefix = bashArguments.get(i);
-                    argOutValue = bashArguments.get(i + 1);
-                    i++;
+                    ParameterDescriptor wfParamDesc = ((ProcessingComponent)wfComponent).getParameterDescriptors().stream().filter(p -> p.getName().equals(inputParameter.getKey())).findFirst().orElse(null);
+                    if (wfParamDesc!= null) {
+                        input.setLabel(Optional.of(wfParamDesc.getDescription()));
+                        commandParamIndex = getCommandParamIdx(executionCommandArray, wfParamDesc.getLabel());
+                    }
                 }
-                // arguments associated with the outputs
-                List<Object> existingArguments = ((CommandLineTool)this.cwlTemplate.getCwlGraphChild("$graph", stepCWLFileId)).getArguments().get();
-                List<Object> inputs = ((CommandLineTool)this.cwlTemplate.getCwlGraphChild("$graph", stepCWLFileId)).getInputs();
-                boolean alreadyAdded = existingArguments.stream().anyMatch(a -> ((CommandLineBinding)a).getPrefix().get().equals(argOutPrefix)) ||
-                        inputs.stream().anyMatch(in -> ((CommandInputParameter)in).getInputBinding().get().getPrefix().get().equals(argOutPrefix));
-                if (!alreadyAdded) {
-                    argumentPosition++;
-                    argumentOut.setPosition(argumentPosition);
-                    argumentOut.setPrefix(Optional.of(argOutPrefix));
-                    argumentOut.setValueFrom(argOutValue);
-                    ((CommandLineTool)this.cwlTemplate.getCwlGraphChild("$graph", stepCWLFileId)).getArguments().get().add(argumentOut);
+                input.setId(Optional.of(inputId));
+                Class<?> inputClass = inputParameter.getValue().getClass();
+                input.setType(JavaType.fromClass(inputClass).friendlyName());
+
+                cwlWorkflow.getInputs().add(input);
+                mainWorkflow.getInputs().add(input);
+
+                String ymlInputValue = inputParameter.getValue();
+                if (inputParameter.getValue().contains("/")) {
+                    ymlInputValue = ymlInputValue.substring(ymlInputValue.lastIndexOf("/") + 1);
+                }
+                createOrUpdateYamlFile(inputId, JavaType.fromClass(inputClass).parse(ymlInputValue));
+                addInputWfToSteps(stepCWLFileId, input);
+                if (commandParamIndex > -1) {
+                    String regex = "[\\w/\\.-]+";
+                    /*if (inputParameter.getValue().matches("[\\w/\\.-]+")) {
+                        executionCommandArray.set(commandParamIndex + 1, "$(inputs." + inputId + ")");
+                    } else {
+                        executionCommandArray.set(commandParamIndex + 1, "\"$(inputs." + inputId + ")\"");
+                    }*/
+                    updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, regex, inputParameter.getValue());
+                } else {
+                    logger.warning("The execution command is not created correctly.");
                 }
             }
+            commandLineToolWf.getInputs().add(input);
         }
+        CommandLineBinding taskArguments = new CommandLineBindingImpl();
+        taskArguments.setValueFrom(String.join(" \\\n", executionCommandArray));
+        commandLineToolWf.getArguments().get().add(taskArguments);
+    }
+
+    private int getCommandParamIdx(List<String> executionCommandArray, String parameterName) {
+        for(int i = 0; i < executionCommandArray.size(); i++) {
+            if (executionCommandArray.get(i).contains("=")) {
+                if(executionCommandArray.get(i).startsWith("-"+parameterName+"=") || executionCommandArray.get(i).startsWith("-"+parameterName+" =")) {
+                    return i;
+                }
+            } else if (executionCommandArray.get(i).equals("-" + parameterName)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void updateExecutionCommand(List<String> executionCommandArray, String inputId, int commandParamIndex, Object inheritType, Object inputType, String regex, String inputParameterValue) {
+        String tmpCommandPrefix = "";
+        int tmpCommandParamIdx = commandParamIndex + 1;
+        if (executionCommandArray.get(commandParamIndex).contains("=")) {
+            tmpCommandParamIdx = commandParamIndex;
+            int charIdx = executionCommandArray.get(commandParamIndex).indexOf("=");
+            tmpCommandPrefix = executionCommandArray.get(commandParamIndex).substring(0, charIdx + 1);
+        }
+        if (inheritType != null) {
+            if (inputParameterValue != null) {
+                if (inputParameterValue.startsWith("[")) {
+                    String[] paramValues = inputParameterValue.replaceAll("[\\[\\]\"]", "").split("\\s?,\\s?");
+                    int paramNumber = paramValues.length;
+                    for (int idx = 0; idx < paramNumber; idx++) {
+                        if (inputType.toString().equals("File[]") && inheritType.toString().equals("Directory[]")) {
+                            String fileName = paramValues[idx].substring(paramValues[idx].lastIndexOf("/"));
+                            paramValues[idx] = "$(inputs." + inputId + "[" + idx + "].path)" + fileName;
+                        } else {
+                            paramValues[idx] = "$(inputs." + inputId + "[" + idx + "].path)";
+                        }
+                    }
+                    executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + String.join(" ", paramValues));
+                } else {
+                    if (inputType.toString().equals("File") && inheritType.toString().contains("Directory")) {
+                        String fileName = inputParameterValue.substring(inputParameterValue.lastIndexOf("/"));
+                        executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + "$(inputs." + inputId + ".path)" + fileName);
+                    } else {
+                        executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + "$(inputs." + inputId + ".path)");
+                    }
+                }
+            } else if (inheritType.toString().equals("File") || inheritType.toString().equals("Directory")) {
+                executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + "$(inputs." + inputId + ".path)");
+            } else {
+                executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + "$(inputs." + inputId + ")");
+            }
+        }
+        if (regex != null && inputParameterValue != null) {
+            if (inputParameterValue.matches(regex)) {
+                executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + "$(inputs." + inputId + ")");
+            } else {
+                executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + "\"$(inputs." + inputId + ")\"");
+            }
+        }
+    }
+
+    private void updateExecutionCommand(List<String> executionCommandArray, String inputId, int commandParamIndex, Object inheritType, Object inputType, String inputParameterValue) {
+        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inputType, null, inputParameterValue);
+    }
+
+    private void updateExecutionCommand(List<String> executionCommandArray, String inputId, int commandParamIndex, String regex, String inputParameterValue) {
+        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, null, null, regex, inputParameterValue);
+    }
+
+    private void addInputWfToSteps(String stepId, CommandInputParameter input) {
+        Workflow cwlWorkflow = (Workflow)cwlTemplate.getCwlGraphChild("$graph", cwlWorkflowId);
+        Workflow mainWorkflow = (Workflow)cwlTemplate.getCwlGraphChild("$graph", MAIN_WF_ID);
+
+        WorkflowStepInput stepInput = new WorkflowStepInputImpl();
+        stepInput.setId(input.getId());
+        stepInput.setDefault(Optional.of(input.getId().get()));
+
+        WorkflowStep mainWfCurrentStep = mainWorkflow.getStep(mainWfStepId);
+        mainWfCurrentStep.getIn().add(stepInput);
+
+        WorkflowStep cwlWfCurrentStep = cwlWorkflow.getStep(stepId);
+        cwlWfCurrentStep.getIn().add(stepInput);
+    }
+
+    private Object getAssociatedElement(Object currentStep, String inputId, Long wfNodeId) {
+        if (currentStep != null) {
+            Workflow cwlWorkflow = (Workflow) this.cwlTemplate.getCwlGraphChild("$graph", this.cwlWorkflowId);
+            Object currentStepIn = ((WorkflowStep) currentStep).getIn().stream().filter(in -> {
+                if (((WorkflowStepInput) in).getId().get().contains("#")) {
+                    int chIdx = ((WorkflowStepInput) in).getId().get().indexOf("#");
+                    return ((WorkflowStepInput) in).getId().get().substring(chIdx + 1).endsWith("/" + inputId);
+                } else {
+                    return ((WorkflowStepInput) in).getId().get().equals(inputId);
+                }
+            }).findFirst().orElse(null);
+            String currentStepInVal;
+            if (currentStepIn != null) {
+                if (((WorkflowStepInput) currentStepIn).getDefault() != null && ((WorkflowStepInput) currentStepIn).getDefault().isPresent()) {
+                    currentStepInVal = ((WorkflowStepInput) currentStepIn).getDefault().get().toString();
+                } else if (((WorkflowStepInput) currentStepIn).getSource() != null) {
+                    String tmpValue = ((WorkflowStepInput) currentStepIn).getSource().toString();
+                    if (tmpValue.contains("#")) {
+                        int chIdx = tmpValue.indexOf('/', tmpValue.indexOf('#'));
+                        currentStepInVal = tmpValue.substring(chIdx + 1);
+                    } else {
+                        currentStepInVal = tmpValue;
+                    }
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+            return cwlWorkflow.getInputs().stream().filter(in -> {
+                if (((WorkflowInputParameter) in).getId().get().contains("#")) {
+                    return ((WorkflowInputParameter) in).getId().get().endsWith("/" + currentStepInVal);
+                } else {
+                    return ((WorkflowInputParameter) in).getId().get().equals(currentStepInVal);
+                }
+            }).findFirst().orElse(null);
+        }
+        return null;
     }
 
     /**
@@ -663,6 +645,10 @@ public class CWLExecutor extends Executor<Object>
     }
 
     private String getInOutType(DataFormat formatType, String filePath) {
+        return getInOutType(formatType, filePath, false);
+    }
+
+    private String getInOutType(DataFormat formatType, String filePath, boolean forYAML) {
         final String retVal;
         switch (formatType) {
             case FOLDER:
@@ -681,6 +667,9 @@ public class CWLExecutor extends Executor<Object>
                 } else {
                     retVal = File_class.FILE.toString();
                 }
+        }
+        if (!forYAML && filePath != null && filePath.matches(".*?/?\\s?,\\s?/?.*")) {
+            return retVal + "[]";
         }
         return retVal;
     }
@@ -708,6 +697,5 @@ public class CWLExecutor extends Executor<Object>
         } catch (IOException e) {
             this.logger.severe(ExceptionUtils.getStackTrace(this.logger, e));
         }
-
     }
 }
