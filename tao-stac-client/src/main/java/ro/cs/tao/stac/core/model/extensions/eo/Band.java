@@ -3,9 +3,9 @@ package ro.cs.tao.stac.core.model.extensions.eo;
 public class Band {
     private String name;
     private BandType common_name;
-    private double center_wavelength;
-    private double full_width_half_max;
-    private double solar_illumination;
+    private Double center_wavelength;
+    private Double full_width_half_max;
+    private Double solar_illumination;
 
     public String getName() {
         return name;
@@ -23,27 +23,27 @@ public class Band {
         this.common_name = common_name;
     }
 
-    public double getCenter_wavelength() {
+    public Double getCenter_wavelength() {
         return center_wavelength;
     }
 
-    public void setCenter_wavelength(double center_wavelength) {
+    public void setCenter_wavelength(Double center_wavelength) {
         this.center_wavelength = center_wavelength;
     }
 
-    public double getFull_width_half_max() {
+    public Double getFull_width_half_max() {
         return full_width_half_max;
     }
 
-    public void setFull_width_half_max(double full_width_half_max) {
+    public void setFull_width_half_max(Double full_width_half_max) {
         this.full_width_half_max = full_width_half_max;
     }
 
-    public double getSolar_illumination() {
+    public Double getSolar_illumination() {
         return solar_illumination;
     }
 
-    public void setSolar_illumination(double solar_illumination) {
+    public void setSolar_illumination(Double solar_illumination) {
         this.solar_illumination = solar_illumination;
     }
 

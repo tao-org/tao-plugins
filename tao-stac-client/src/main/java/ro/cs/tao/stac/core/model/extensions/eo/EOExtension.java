@@ -23,13 +23,13 @@ public class EOExtension<E extends Extensible> extends Extension<E> {
 
     @Override
     public String getPrefix() {
-        return EoFields.PREFIX;
+        return EOFields.PREFIX;
     }
 
     @Override
     public void extractField(TreeNode node, String name) throws JsonProcessingException {
         switch (name) {
-            case EoFields.BANDS:
+            case EOFields.BANDS:
                 TreeNode arrNode = node.get(name);
                 if (arrNode != null) {
                     for (int i = 0; i < arrNode.size(); i++) {
@@ -37,33 +37,40 @@ public class EOExtension<E extends Extensible> extends Extension<E> {
                     }
                 }
                 break;
-            case EoFields.CLOUD_COVER:
+            case EOFields.CLOUD_COVER:
                 setCloud_cover(Double.parseDouble(node.get(name).toString()));
+                break;
+            case EOFields.SNOW_COVER:
+                setSnow_cover(Double.parseDouble(node.get(name).toString()));
                 break;
         }
     }
 
     public Double getCloud_cover() {
-        return parent.getField(EoFields.CLOUD_COVER);
+        return parent.getField(EOFields.CLOUD_COVER);
     }
 
     public void setCloud_cover(double cloud_cover) {
-        parent.addField(EoFields.CLOUD_COVER, cloud_cover);
+        parent.addField(EOFields.CLOUD_COVER, cloud_cover);
     }
 
+    public Double getSnow_cover() { return parent.getField(EOFields.SNOW_COVER); }
+
+    public void setSnow_cover(double snow_cover) { parent.addField(EOFields.SNOW_COVER, snow_cover); }
+
     public List<Band> getBands() {
-        return parent.getField(EoFields.BANDS);
+        return parent.getField(EOFields.BANDS);
     }
 
     public void setBands(List<Band> bands) {
-        parent.addField(EoFields.BANDS, bands);
+        parent.addField(EOFields.BANDS, bands);
     }
 
     public void addBand(Band band) {
-        List<Band> bands = parent.getField(EoFields.BANDS);
+        List<Band> bands = parent.getField(EOFields.BANDS);
         if (bands == null) {
-            parent.addField(EoFields.BANDS, new ArrayList<>());
-            bands = parent.getField(EoFields.BANDS);
+            parent.addField(EOFields.BANDS, new ArrayList<>());
+            bands = parent.getField(EOFields.BANDS);
         }
         bands.add(band);
     }

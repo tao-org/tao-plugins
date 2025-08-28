@@ -19,6 +19,7 @@ import org.w3id.cwl.cwl1_2.utils.*;
 import java.lang.reflect.Field;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#Workflow</I><BR> <BLOCKQUOTE>
@@ -259,6 +260,11 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
   }
 
   public WorkflowStep getStep(String id) {
+    String IdRegex = "(file:/|file://|file:///).*";
+    long matchRegex = steps.stream().filter((s) -> ((String)((WorkflowStep)s).getId().get()).matches(IdRegex)).count();
+    if (matchRegex > 0) {
+      return (WorkflowStep) this.steps.stream().filter(s -> ((WorkflowStep)s).getId().get().endsWith(id)).findFirst().orElse(null);
+    }
     return (WorkflowStep) this.steps.stream().filter(s -> ((WorkflowStep)s).getId().get().equals(id)).findFirst().orElse(null);
   }
 
