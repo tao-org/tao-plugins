@@ -3,6 +3,13 @@ package ro.cs.tao.execution.ogc.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The ProcessSummary class represents a summarized description of a process.
+ * It encapsulates key details including an identifier, title, description,
+ * version information, associated keywords, and links to additional resources.
+ *
+ * This class provides getter and setter methods to access and modify its attributes.
+ */
 public class ProcessSummary {
     private String id;
     private String title;
