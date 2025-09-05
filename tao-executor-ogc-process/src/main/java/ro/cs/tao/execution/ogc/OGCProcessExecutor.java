@@ -29,6 +29,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
+/**
+ * The OGCProcessExecutor is responsible for orchestrating and managing the execution
+ * of OGC (Open Geospatial Consortium) processes in a synchronous or asynchronous
+ * manner. It interacts with the OGC process service to execute tasks, monitor their
+ * progress, and handle task status updates.
+ *
+ * This class extends the generic Executor class and specializes in handling
+ * OGCProcessExecutionTask instances. It integrates components such as task providers,
+ * authentication providers, and job providers to facilitate task execution and management.
+ */
 public class OGCProcessExecutor extends Executor<OGCProcessExecutionTask> {
 
     public static final String URN_OGC_DEF_ANY_URI = "urn:ogc:def:anyURI";
