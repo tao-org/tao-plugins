@@ -83,13 +83,13 @@ public class Sentinel2L2AQuicklookGenerator extends BaseQuicklookGenerator<Path>
                                                       useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
                     if (executor != null) {
                         executor.setOutputConsumer(consumer);
-                        int code;
-                        if ((code = executor.execute(false)) == 0) {
-                            productFile = Paths.get(productFile + extension);
-                        } else {
+                        final Path finalProductFile = productFile;
+                        executor.onSuccess(() -> {
+                            results.add(Paths.get(finalProductFile + extension));
+                        }).onError(() -> {
                             logger.warning(String.format("Quicklook for %s was not created (return code: %d, output: %s)",
-                                                         productFile.getFileName(), code, consumer.getOutput()));
-                        }
+                                                         finalProductFile.getFileName(), executor.getReturnCode(), consumer.getOutput()));
+                        }).execute(false);
                     } else {
                         logger.warning(String.format("Quicklooks not supported for %s files", FileUtilities.getExtension(productFile)));
                     }
