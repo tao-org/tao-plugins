@@ -41,27 +41,25 @@ public class GenericQuicklookGenerator extends BaseQuicklookGenerator<Path> {
     protected List<Path> handleInner(List<Path> list) throws DataHandlingException {
         final OutputAccumulator consumer = new OutputAccumulator();
         final List<Path> results = new ArrayList<>();
-        for (Path productFile : list) {
+        for (final Path productFile : list) {
             try {
                 MetadataInspector.Metadata metadata = getMetadata(productFile);
                 Executor<?> executor = initialize(productFile, metadata, useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
                 if (executor != null) {
                     executor.setOutputConsumer(consumer);
-                    int code;
-                    logger.fine("Trying to create quicklook for " + productFile);
-                    if ((code = executor.execute(false)) == 0) {
-                        productFile = Paths.get(productFile.toString() + extension);
-                    } else {
+                    executor.onSuccess(() -> {
+                        results.add(Paths.get(productFile.toString() + extension));
+
+                    }).onError(() -> {
                         logger.warning(String.format("Quicklook for %s was not created (return code: %d, output: %s)",
-                                productFile.getFileName(), code, consumer.getOutput()));
-                    }
+                                                     productFile.getFileName(), executor.getReturnCode(), consumer.getOutput()));
+                    }).execute(false);
                 } else {
                     logger.warning(String.format("Quicklooks not supported for %s files", FileUtilities.getExtension(productFile)));
                 }
             } catch (Exception e) {
                 logger.severe(String.format("Cannot create quicklook for %s. Reason: %s", productFile, e.getMessage()));
             }
-            results.add(productFile);
         }
         return results.isEmpty() ? null : results;
     }
