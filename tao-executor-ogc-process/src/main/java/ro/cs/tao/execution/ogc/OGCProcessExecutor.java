@@ -159,7 +159,7 @@ public class OGCProcessExecutor extends Executor<OGCProcessExecutionTask> {
         if(!isInitialized.get()) {
             return;
         }
-        List<ExecutionTask> tasks = taskProvider.listWPSExecuting();
+        List<ExecutionTask> tasks = taskProvider.listOGCProcessesExecuting();
         if (tasks != null) {
             for (ExecutionTask task : tasks) {
                 try {
