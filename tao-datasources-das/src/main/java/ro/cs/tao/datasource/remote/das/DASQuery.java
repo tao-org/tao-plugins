@@ -49,6 +49,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -125,70 +126,75 @@ public class DASQuery extends DataQuery {
                 params.add(new BasicNameValuePair("$skip", String.valueOf((i - 1) * this.pageSize)));
                 params.add(new BasicNameValuePair("$orderby", "ContentDate/Start asc"));
                 final String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
-                final boolean hasProcessingDate = "Sentinel2".equals(this.sensorName) || "Sentinel3".equals(this.sensorName);
-                this.logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
-                try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
-                    final String rawResponse = EntityUtils.toString(response.getEntity());
-                    switch (response.getStatusLine().getStatusCode()) {
-                        case 200:
-                            final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source,
-                                                                                                                         this.coverageFilter));
-                            tmpResults = parser.parse(rawResponse);
-                            if (tmpResults != null) {
-                                if (isS3) {
-                                    filterS3(tmpResults);
-                                }
-                                count = tmpResults.size();
-                                if (count > 0) {
+                if ((tmpResults = getFromCache(queryUrl)) == null) {
+                    final boolean hasProcessingDate = "Sentinel2".equals(this.sensorName) || "Sentinel3".equals(this.sensorName);
+                    this.logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
+                    try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
+                        final String rawResponse = EntityUtils.toString(response.getEntity());
+                        switch (response.getStatusLine().getStatusCode()) {
+                            case 200:
+                                final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source,
+                                                                                                                             this.coverageFilter));
+                                tmpResults = parser.parse(rawResponse);
+                                if (tmpResults != null) {
+                                    if (isS3) {
+                                        filterS3(tmpResults);
+                                    }
+                                    count = tmpResults.size();
+                                    if (count > 0) {
                                     /*if (hasProcessingDate && this.parameters.containsKey(CommonParameterNames.CLOUD_COVER)) {
                                         final double clouds = Double.parseDouble(this.parameters.get(CommonParameterNames.CLOUD_COVER).getValue().toString());
                                         tmpResults = tmpResults.stream()
                                                 .filter(r -> Double.parseDouble(r.getAttributeValue("cloudCover")) <= clouds)
                                                 .collect(Collectors.toList());
                                     }*/
-                                    ProductHelper productHelper = null;
-                                    for (EOProduct result : tmpResults) {
-                                        if (!results.containsKey(result.getName())) {
-                                            try {
-                                                productHelper = SentinelProductHelper.create(result.getName());
-                                            } catch (Exception ex) {
-                                                this.logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
-                                                continue;
-                                            }
-                                            if (isS2) {
-                                                if (result.getAttributeValue("tileId") == null) {
-                                                    result.addAttribute("tiles", ((Sentinel2ProductHelper) productHelper).getTileIdentifier());
-                                                } else {
-                                                    result.addAttribute("tiles", result.getAttributeValue("tileId"));
+                                        ProductHelper productHelper = null;
+                                        for (EOProduct result : tmpResults) {
+                                            if (!results.containsKey(result.getName())) {
+                                                try {
+                                                    productHelper = SentinelProductHelper.create(result.getName());
+                                                } catch (Exception ex) {
+                                                    this.logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
+                                                    continue;
                                                 }
-                                            } else if (isS1 && !isS1Aux) {
-                                                result.addAttribute("relativeOrbit", getRelativeOrbit(result.getName()));
-                                            }
-                                            if (hasProcessingDate) {
-                                                final String dateString = productHelper.getProcessingDate();
-                                                if (dateString != null) {
-                                                    try {
-                                                        result.setProcessingDate(LocalDateTime.parse(dateString, dateFormat));
-                                                    } catch (DateTimeParseException ignored) {
+                                                if (isS2) {
+                                                    if (result.getAttributeValue("tileId") == null) {
+                                                        result.addAttribute("tiles", ((Sentinel2ProductHelper) productHelper).getTileIdentifier());
+                                                    } else {
+                                                        result.addAttribute("tiles", result.getAttributeValue("tileId"));
+                                                    }
+                                                } else if (isS1 && !isS1Aux) {
+                                                    result.addAttribute("relativeOrbit", getRelativeOrbit(result.getName()));
+                                                }
+                                                if (hasProcessingDate) {
+                                                    final String dateString = productHelper.getProcessingDate();
+                                                    if (dateString != null) {
+                                                        try {
+                                                            result.setProcessingDate(LocalDateTime.parse(dateString, dateFormat));
+                                                        } catch (DateTimeParseException ignored) {
+                                                        }
                                                     }
                                                 }
+                                                results.put(result.getName(), result);
                                             }
-                                            results.put(result.getName(), result);
                                         }
+                                        addToCache(queryUrl, tmpResults);
                                     }
+                                    this.logger.info(String.format("Query %s page %d returned %s products", query.getKey(), i, tmpResults.size()));
                                 }
-                                this.logger.info(String.format("Query %s page %d returned %s products", query.getKey(), i, tmpResults.size()));
-                            }
-                            break;
-                        case 401:
-                            throw new QueryException("The supplied credentials are invalid!");
-                        default:
-                            throw new QueryException(String.format("The request was not successful. Reason: %s ('%s')",
-                                                                   response.getStatusLine().getReasonPhrase(),
-                                                                   rawResponse));
+                                break;
+                            case 401:
+                                throw new QueryException("The supplied credentials are invalid!");
+                            default:
+                                throw new QueryException(String.format("The request was not successful. Reason: %s ('%s')",
+                                                                       response.getStatusLine().getReasonPhrase(),
+                                                                       rawResponse));
+                        }
+                    } catch (IOException ex) {
+                        throw new QueryException(ex);
                     }
-                } catch (IOException ex) {
-                    throw new QueryException(ex);
+                } else {
+                    results.putAll(tmpResults.stream().collect(Collectors.toMap(EOProduct::getName, Function.identity())));
                 }
                 i++;
             } while (this.pageNumber == -1 && count > 0 && results.size() < actualLimit);
