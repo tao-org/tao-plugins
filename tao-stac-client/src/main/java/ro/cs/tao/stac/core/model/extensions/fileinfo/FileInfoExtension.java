@@ -60,16 +60,16 @@ public class FileInfoExtension<E extends Extensible> extends Extension<E> {
         parent.addField(FileInfoFields.BYTE_ORDER, checkSum);
     }
 
-    public int getHeaderSize() {
-        return parent.getField(FileInfoFields.HEADER_SIZE);
+    public Integer getHeaderSize() {
+        return parent.getField(FileInfoFields.HEADER_SIZE) != null ? parent.getField(FileInfoFields.HEADER_SIZE) : 0;
     }
 
     public void setHeaderSize(int headerSize) {
         parent.addField(FileInfoFields.HEADER_SIZE, headerSize);
     }
 
-    public long getSize() {
-        return parent.getField(FileInfoFields.SIZE);
+    public Long getSize() {
+        return parent.getField(FileInfoFields.SIZE) != null ? parent.getField(FileInfoFields.SIZE) : -1L;
     }
 
     public void setSize(long size) {
