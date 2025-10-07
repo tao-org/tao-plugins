@@ -147,7 +147,7 @@ public class SwiftService {
         final ObjectStorageService objectStorageService = authenticate();
         try {
             final ObjectStorageContainerService containerService = objectStorageService.containers();
-            final List<? extends SwiftContainer> list = containerService.list();
+            final List<? extends SwiftContainer> list = containerService.list(ContainerListOptions.create().limit(3000));
             return list.stream().collect(Collectors.toMap(SwiftContainer::getName, SwiftContainer::getTotalSize));
         } catch (Exception ex) {
             throw new IOException(String.format("Cannot list containers. Reason: %s", ex.getMessage()));
