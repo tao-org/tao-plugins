@@ -49,8 +49,9 @@ public class DatabaseQuotaManager implements QuotaManager {
 	@Override
 	public boolean checkUserInputQuota(Principal principal, long addedQuota) throws QuotaException {
 		final User user = getUser(principal);
-		final long targetQuota = user.getInputQuota();
-		final long actualQuota = user.getActualInputQuota() + (addedQuota / MemoryUnit.MB.value());
+		final long targetQuota = user.getInputQuota() * MemoryUnit.GB.value();
+		final long actualQuota = user.getActualInputQuota() * MemoryUnit.MB.value()
+                                 + (addedQuota / MemoryUnit.MB.value());
 		return targetQuota == -1 || targetQuota > actualQuota;
 	}
 
