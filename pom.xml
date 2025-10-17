@@ -70,6 +70,8 @@
         <module>tao-github</module>
         <module>tao-docker-zeppelin</module>
         <module>tao-drmaa-simpipe</module>
+        <module>tao-datasources-eumetsat</module>
+        <module>tao-opensearch-client</module>
         <!--<module>tao-executor-wmts</module>-->
     </modules>
 
