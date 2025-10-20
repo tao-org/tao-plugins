@@ -34,7 +34,11 @@ import java.util.logging.Logger;
  */
 public class HttpClient extends SimpleHttpClient {
     private final Logger logger = Logger.getLogger(HttpClient.class.getName());
-    private final WebServiceAuthentication authentication;
+    private WebServiceAuthentication authentication;
+
+    public HttpClient() {
+        super();
+    }
 
     public HttpClient(WebServiceAuthentication authentication) {
         super();

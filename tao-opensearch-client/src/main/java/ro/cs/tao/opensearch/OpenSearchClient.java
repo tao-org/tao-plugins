@@ -7,6 +7,7 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.opensearch.model.Entry;
 import ro.cs.tao.opensearch.model.Link;
 import ro.cs.tao.opensearch.model.OpenSearchDescription;
+import ro.cs.tao.opensearch.parser.PostDownloadAction;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.monitoring.DownloadProgressListener;
 
@@ -17,8 +18,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Client for a STAC web service.
@@ -31,8 +36,15 @@ import java.util.Map;
  */
 public class OpenSearchClient {
     private final String baseUrl;
-    final HttpClient client;
+    private HttpClient client;
+    private WebServiceAuthentication authentication;
     private DownloadProgressListener progressListener;
+    private PostDownloadAction postDownloadAction;
+
+    public OpenSearchClient(String baseURL) {
+        this.baseUrl = baseURL;
+        this.client = new HttpClient();
+    }
 
     /**
      * Initializes a new client for the given URL, with specific authentication instructions.
@@ -42,6 +54,11 @@ public class OpenSearchClient {
     public OpenSearchClient(String baseURL, WebServiceAuthentication authentication) throws MalformedURLException {
         this.baseUrl = baseURL;
         this.client= new HttpClient(authentication);
+    }
+
+    public void setAuthentication(WebServiceAuthentication authentication) {
+        this.authentication = authentication;
+        this.client = new HttpClient(authentication);
     }
 
     /**
@@ -74,7 +91,7 @@ public class OpenSearchClient {
             parameters = Map.of();
         }
         StringBuilder href = new StringBuilder(this.baseUrl + "os?");
-        href.append("pi=").append(collectionName).append("&");
+        //href.append("pi=").append(collectionName).append("&");
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
             href.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
@@ -167,6 +184,44 @@ public class OpenSearchClient {
             }
         }
     }
+
+    public void download(EOProduct product, Path folder) throws IOException {
+        final String href = product.getLocation();
+        String name = folder.toString();
+        final HTTPResponse response = this.client.get(new URL(href));
+        final String header = response.getResponseHeader("Content-Length");
+        long length = 0;
+        if (header != null) {
+            length = Long.parseLong(header);
+        }
+        if (this.progressListener != null) {
+            this.progressListener.subActivityStarted(name);
+        }
+        try (InputStream inStream = response.getResponseStream();
+             OutputStream outStream = Files.newOutputStream(Paths.get(name),StandardOpenOption.CREATE)) {
+            InputStream stream = this.progressListener != null ? new ListenableInputStream(inStream, length, this.progressListener) : inStream;
+            FileUtilities.copyStream(stream, outStream);
+        } finally {
+            if (this.postDownloadAction != null) {
+                try (ZipInputStream stream = new ZipInputStream(Files.newInputStream(Paths.get(name)))) {
+                    ZipEntry nextEntry = null;
+                    while ((nextEntry = stream.getNextEntry()) != null) {
+                        if (nextEntry.getName().equals("EOPMetadata.xml")) {
+                            try {
+                                this.postDownloadAction.execute(stream, product);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            if (this.progressListener != null) {
+                this.progressListener.subActivityEnded(name);
+            }
+        }
+    }
     /**
      * Returns an input stream for an asset
      * @param asset     The asset
@@ -204,5 +259,9 @@ public class OpenSearchClient {
 
     public void setProgressListener(DownloadProgressListener progressListener) {
         this.progressListener = progressListener;
+    }
+
+    public void setPostDownloadAction(PostDownloadAction postDownloadAction) {
+        this.postDownloadAction = postDownloadAction;
     }
 }
