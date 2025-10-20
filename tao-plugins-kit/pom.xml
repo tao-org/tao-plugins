@@ -42,6 +42,11 @@
         </dependency>
         <dependency>
             <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-datasources-eumetsat</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-datasources-fedeo</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -163,6 +168,11 @@
         <dependency>
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-muscate-metadata</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-opensearch-client</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
