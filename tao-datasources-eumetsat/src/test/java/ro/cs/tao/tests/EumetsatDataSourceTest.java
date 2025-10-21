@@ -2,6 +2,7 @@ package ro.cs.tao.tests;
 
 import org.junit.Assert;
 import org.junit.Test;
+import ro.cs.tao.datasource.CollectionDescription;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.DataSource;
 import ro.cs.tao.datasource.ProductFetchStrategy;
@@ -24,10 +25,33 @@ public class EumetsatDataSourceTest extends DataSourceTest<EumetsatDataSource> {
 
     @Test
     public void testOne() {
-        testEOCAT("EO:EUM:DAT:0959", true);
+        testEumetsatCollections();
     }
 
-    private void testEOCAT(String sensor, boolean download, QueryParameter<?>... additionalParams) {
+    @Test
+    public void testTwo() {
+        testEumetsat("EO:EUM:DAT:0959", true);
+    }
+
+    private void testEumetsatCollections() {
+        try {
+            DataSource<?, ?> dataSource = new EumetsatDataSource();
+            dataSource.setCredentials(user, password);
+            String[] sensors = dataSource.getSupportedSensors();
+            System.out.println("Supported sensors (initial call): " + sensors.length);
+            Map<String, CollectionDescription> sensorTypes = dataSource.getSensorTypes();
+            for (Map.Entry<String, CollectionDescription> entry : sensorTypes.entrySet()) {
+                System.out.println("Collection: " + entry.getKey());
+                System.out.println(entry.getValue().getDescription());
+            }
+            sensors = dataSource.getSupportedSensors();
+            System.out.println("Supported sensors (final call): " + sensors.length);
+        } catch (Exception e) {
+            Assert.fail("Exception in testing the data source: " + e.getMessage());
+        }
+    }
+
+    private void testEumetsat(String sensor, boolean download, QueryParameter<?>... additionalParams) {
         try {
             DataSource<?, ?> dataSource = new EumetsatDataSource();
             dataSource.setCredentials(user, password);

@@ -15,6 +15,7 @@ public class EumetsatDataSource extends URLDataSource<EumetsatDataQuery, Void> {
 
     private static String authUrl;
     private static String searchUrl;
+    private static String collectionUrl;
 
     static {
         Properties props = new Properties();
@@ -22,8 +23,13 @@ public class EumetsatDataSource extends URLDataSource<EumetsatDataQuery, Void> {
             props.load(EumetsatDataSource.class.getResourceAsStream("eumetsat.properties"));
             authUrl = props.getProperty("token.endpoint");
             searchUrl = props.getProperty("search.endpoint");
+            collectionUrl = props.getProperty("collection.endpoint");
         } catch (IOException ignored) {
         }
+    }
+
+    public static String getCollectionUrl() {
+        return collectionUrl;
     }
 
     private OpenSearchClient client;
