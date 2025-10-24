@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 
 public class EumetsatParameterProvider extends OpenSearchParameterProvider {
 
-    private static Map<String, ro.cs.tao.datasource.CollectionDescription> sensorTypes;
+    private static Map<String, CollectionDescription> sensorTypes;
     private final EumetsatDataSource source;
     private Map<String, ProductFetchStrategy> productFetchers;
     private final ObjectMapper mapper;
@@ -62,10 +62,10 @@ public class EumetsatParameterProvider extends OpenSearchParameterProvider {
     }
 
     @Override
-    public Map<String, ro.cs.tao.datasource.CollectionDescription> getSensorTypes() {
-        final Map<String, ro.cs.tao.datasource.CollectionDescription> descriptions = new LinkedHashMap<>();
+    public Map<String, CollectionDescription> getSensorTypes() {
+        final Map<String, CollectionDescription> descriptions = new LinkedHashMap<>();
         String[] sensors = getSupportedSensors();
-        ro.cs.tao.datasource.CollectionDescription current;
+        CollectionDescription current;
         for (String sensor : sensors) {
             current = readDescription(sensor);
             if (current == null) {
@@ -78,7 +78,7 @@ public class EumetsatParameterProvider extends OpenSearchParameterProvider {
                         throw new RuntimeException(e);
                     }
                     try (OutputStream stream = Files.newOutputStream(path, StandardOpenOption.CREATE_NEW)) {
-                        new ObjectMapper().writerFor(ro.cs.tao.datasource.CollectionDescription.class).writeValue(stream, current);
+                        new ObjectMapper().writerFor(CollectionDescription.class).writeValue(stream, current);
                         System.out.println("Written " + path.toString());
                     } catch (IOException e) {
                         Logger.getLogger(EumetsatParameterProvider.class.getName()).warning(e.getMessage());
