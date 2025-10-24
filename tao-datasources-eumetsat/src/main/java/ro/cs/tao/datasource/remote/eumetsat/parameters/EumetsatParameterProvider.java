@@ -13,7 +13,8 @@ import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.datasource.remote.eumetsat.EumetsatDataSource;
 import ro.cs.tao.datasource.remote.eumetsat.download.EumetsatDownloadStrategy;
-import ro.cs.tao.datasource.remote.eumetsat.model.Root;
+import ro.cs.tao.datasource.remote.eumetsat.model.Description;
+import ro.cs.tao.datasource.remote.eumetsat.model.Source;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.utils.NetUtils;
@@ -35,9 +36,10 @@ import java.util.logging.Logger;
 
 public class EumetsatParameterProvider extends OpenSearchParameterProvider {
 
-    private static Map<String, CollectionDescription> sensorTypes;
+    private static Map<String, ro.cs.tao.datasource.CollectionDescription> sensorTypes;
     private final EumetsatDataSource source;
     private Map<String, ProductFetchStrategy> productFetchers;
+    private final ObjectMapper mapper;
 
     public EumetsatParameterProvider(EumetsatDataSource source) {
         super(source.getConnectionString() + "osdd");
@@ -49,6 +51,9 @@ public class EumetsatParameterProvider extends OpenSearchParameterProvider {
             this.productFetchers.put(StringUtils.capitalize(sensor.replace("-", "")),
                                      new EumetsatDownloadStrategy(source, targetFolder, new Properties()));
         }
+        this.mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @Override
@@ -57,10 +62,10 @@ public class EumetsatParameterProvider extends OpenSearchParameterProvider {
     }
 
     @Override
-    public Map<String, CollectionDescription> getSensorTypes() {
-        final Map<String, CollectionDescription> descriptions = new LinkedHashMap<>();
+    public Map<String, ro.cs.tao.datasource.CollectionDescription> getSensorTypes() {
+        final Map<String, ro.cs.tao.datasource.CollectionDescription> descriptions = new LinkedHashMap<>();
         String[] sensors = getSupportedSensors();
-        CollectionDescription current;
+        ro.cs.tao.datasource.CollectionDescription current;
         for (String sensor : sensors) {
             current = readDescription(sensor);
             if (current == null) {
@@ -73,7 +78,7 @@ public class EumetsatParameterProvider extends OpenSearchParameterProvider {
                         throw new RuntimeException(e);
                     }
                     try (OutputStream stream = Files.newOutputStream(path, StandardOpenOption.CREATE_NEW)) {
-                        new ObjectMapper().writerFor(CollectionDescription.class).writeValue(stream, current);
+                        new ObjectMapper().writerFor(ro.cs.tao.datasource.CollectionDescription.class).writeValue(stream, current);
                         System.out.println("Written " + path.toString());
                     } catch (IOException e) {
                         Logger.getLogger(EumetsatParameterProvider.class.getName()).warning(e.getMessage());
@@ -125,18 +130,16 @@ public class EumetsatParameterProvider extends OpenSearchParameterProvider {
         try {
             String response = NetUtils.getResponseAsString(EumetsatDataSource.getCollectionUrl() + collectionName);
             if (!StringUtilities.isNullOrEmpty(response) && !response.contains("error")) {
-                final ObjectMapper mapper = new ObjectMapper();
-                mapper.registerModule(new JavaTimeModule());
-                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                final Root root = mapper.readValue(response, Root.class);
+                final Description collectionDescription = this.mapper.readValue(response, Description.class);
                 description = new CollectionDescription();
-                description.setDescription(root._source.myabstract);
-                description.setMission(root._source.satellites.get(0).seriesName);
+                Source src = collectionDescription.get_source();
+                description.setDescription(src.getMyabstract());
+                description.setMission(src.getSatellites().get(0).getSeriesName());
                 description.setSensorType(description.getMission().equals("SENTINEL-6")
                                                   ? SensorType.ALTIMETRIC
                                                   : SensorType.ATMOSPHERIC);
-                description.setSpatialCoverage(root._source.location.toString());
-                description.setTemporalCoverage(root._source.temporalExtent.toString());
+                description.setSpatialCoverage(src.getLocation().toString());
+                description.setTemporalCoverage(src.getTemporalExtent().toString());
                 description.setTokenNeeded(true);
             } else {
                 String[] newSensors = new String[this.sensors.length - 1];
