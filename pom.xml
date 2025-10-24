@@ -76,7 +76,7 @@
     </modules>
 
     <properties>
-        <taoReleasesUrl>${project.deploy.root.path}/tao-plugins</taoReleasesUrl>
+        <taoReleasesUrl>${project.deploy.collectionDescription.path}/tao-plugins</taoReleasesUrl>
     </properties>
 
     <dependencies>

@@ -3,8 +3,24 @@ package ro.cs.tao.datasource.remote.eumetsat.model;
 import ro.cs.tao.utils.StringUtilities;
 
 public class TemporalExtent {
-    public String begin;
-    public String end;
+    private String begin;
+    private String end;
+
+    public String getBegin() {
+        return begin;
+    }
+
+    public void setBegin(String begin) {
+        this.begin = begin;
+    }
+
+    public String getEnd() {
+        return end;
+    }
+
+    public void setEnd(String end) {
+        this.end = end;
+    }
 
     @Override
     public String toString() {
