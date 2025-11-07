@@ -450,9 +450,9 @@
       "remoteName": "dayTime",
       "label": "Time of day",
       "type": "string",
-      "defaultValue": "DAY",
+      "defaultValue": "ANY",
       "required": false,
-      "valueSet": ["DAY","NIGHT"],
+      "valueSet": ["ANY","DAY","NIGHT"],
       "order": 10
     }
   },
