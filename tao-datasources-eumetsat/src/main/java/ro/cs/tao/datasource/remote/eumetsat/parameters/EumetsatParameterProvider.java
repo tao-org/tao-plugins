@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 public class EumetsatParameterProvider extends OpenSearchParameterProvider {
@@ -66,23 +68,30 @@ public class EumetsatParameterProvider extends OpenSearchParameterProvider {
         final Map<String, CollectionDescription> descriptions = new LinkedHashMap<>();
         String[] sensors = getSupportedSensors();
         CollectionDescription current;
+        ExecutorService executorService = null;
         for (String sensor : sensors) {
             current = readDescription(sensor);
             if (current == null) {
                 current = readRemoteDescription(sensor);
                 if (current != null) {
-                    final Path path = Paths.get(SystemVariable.ROOT.value()).resolve("collections").resolve(sensor.replace(":", "-") + ".json");
-                    try {
-                        Files.createDirectories(path.getParent());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    if (executorService == null) {
+                        executorService = Executors.newSingleThreadExecutor();
                     }
-                    try (OutputStream stream = Files.newOutputStream(path, StandardOpenOption.CREATE_NEW)) {
-                        new ObjectMapper().writerFor(CollectionDescription.class).writeValue(stream, current);
-                        System.out.println("Written " + path.toString());
-                    } catch (IOException e) {
-                        Logger.getLogger(EumetsatParameterProvider.class.getName()).warning(e.getMessage());
-                    }
+                    final CollectionDescription contents = current;
+                    executorService.submit(() -> {
+                        final Path path = Paths.get(SystemVariable.ROOT.value()).resolve("collections").resolve(sensor.replace(":", "-") + ".json");
+                        try {
+                            Files.createDirectories(path.getParent());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        try (OutputStream stream = Files.newOutputStream(path, StandardOpenOption.CREATE_NEW)) {
+                            new ObjectMapper().writerFor(CollectionDescription.class).writeValue(stream, contents);
+                            Logger.getLogger(EumetsatParameterProvider.class.getName()).finest("Written " + path);
+                        } catch (IOException e) {
+                            Logger.getLogger(EumetsatParameterProvider.class.getName()).warning(e.getMessage());
+                        }
+                    });
                 }
             }
             if (current != null) {
