@@ -741,7 +741,7 @@
 		}
 	],
 	"containerId": "otb-9-1-1",
-	"category": "RASTER",
+	"category": "OPTICAL",
 	"fileLocation": "otbcli_BundleToPerfectSensor.ps1",
 	"templateType": "VELOCITY",
 	"multiThread": true,
