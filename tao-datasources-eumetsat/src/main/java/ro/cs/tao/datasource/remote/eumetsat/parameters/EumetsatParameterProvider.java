@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 
 public class EumetsatParameterProvider extends OpenSearchParameterProvider {
 
-    private static Map<String, CollectionDescription> sensorTypes;
+    private static Map<String, CollectionDescription> sensorTypes = new LinkedHashMap<>();
     private final EumetsatDataSource source;
     private Map<String, ProductFetchStrategy> productFetchers;
     private final ObjectMapper mapper;
@@ -65,40 +65,42 @@ public class EumetsatParameterProvider extends OpenSearchParameterProvider {
 
     @Override
     public Map<String, CollectionDescription> getSensorTypes() {
-        final Map<String, CollectionDescription> descriptions = new LinkedHashMap<>();
-        String[] sensors = getSupportedSensors();
-        CollectionDescription current;
-        ExecutorService executorService = null;
-        for (String sensor : sensors) {
-            current = readDescription(sensor);
-            if (current == null) {
-                current = readRemoteDescription(sensor);
-                if (current != null) {
-                    if (executorService == null) {
-                        executorService = Executors.newSingleThreadExecutor();
+        if (sensorTypes.isEmpty()) {
+            String[] sensors = getSupportedSensors();
+            CollectionDescription current;
+            ExecutorService executorService = null;
+            for (String sensor : sensors) {
+                current = readDescription(sensor);
+                if (current == null) {
+                    current = readRemoteDescription(sensor);
+                    if (current != null) {
+                        if (executorService == null) {
+                            executorService = Executors.newSingleThreadExecutor();
+                        }
+                        final CollectionDescription contents = current;
+                        executorService.submit(() -> {
+                            final Path path = Paths.get(SystemVariable.ROOT.value()).resolve("collections").resolve(sensor.replace(":", "-") + ".json");
+                            try {
+                                Files.createDirectories(path.getParent());
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            try (OutputStream stream = Files.newOutputStream(path, StandardOpenOption.CREATE_NEW)) {
+                                new ObjectMapper().writerFor(CollectionDescription.class).writeValue(stream, contents);
+                                Logger.getLogger(EumetsatParameterProvider.class.getName()).finest("Written " + path);
+                            } catch (IOException e) {
+                                Logger.getLogger(EumetsatParameterProvider.class.getName()).warning(e.getMessage());
+                            }
+                        });
                     }
-                    final CollectionDescription contents = current;
-                    executorService.submit(() -> {
-                        final Path path = Paths.get(SystemVariable.ROOT.value()).resolve("collections").resolve(sensor.replace(":", "-") + ".json");
-                        try {
-                            Files.createDirectories(path.getParent());
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        try (OutputStream stream = Files.newOutputStream(path, StandardOpenOption.CREATE_NEW)) {
-                            new ObjectMapper().writerFor(CollectionDescription.class).writeValue(stream, contents);
-                            Logger.getLogger(EumetsatParameterProvider.class.getName()).finest("Written " + path);
-                        } catch (IOException e) {
-                            Logger.getLogger(EumetsatParameterProvider.class.getName()).warning(e.getMessage());
-                        }
-                    });
+                }
+                if (current != null) {
+                    sensorTypes.put(sensor, current);
                 }
             }
-            if (current != null) {
-                descriptions.put(sensor, current);
-            }
+            this.sensors = sensorTypes.keySet().toArray(new String[0]);
         }
-        return descriptions;
+        return sensorTypes;
     }
 
     @Override
@@ -150,19 +152,6 @@ public class EumetsatParameterProvider extends OpenSearchParameterProvider {
                 description.setSpatialCoverage(src.getLocation().toString());
                 description.setTemporalCoverage(src.getTemporalExtent().toString());
                 description.setTokenNeeded(true);
-            } else {
-                String[] newSensors = new String[this.sensors.length - 1];
-                for (int i = 0; i < this.sensors.length - 1; i++) {
-                    if (this.sensors[i].equals(collectionName)) {
-                        for (int j = i + 1; j < this.sensors.length; j++) {
-                            newSensors[j - 1] = this.sensors[j];
-                        }
-                        break;
-                    } else {
-                        newSensors[i] = this.sensors[i];
-                    }
-                }
-                this.sensors = newSensors;
             }
         } catch (IOException e) {
             Logger.getLogger(EumetsatParameterProvider.class.getName()).warning(e.getMessage());
