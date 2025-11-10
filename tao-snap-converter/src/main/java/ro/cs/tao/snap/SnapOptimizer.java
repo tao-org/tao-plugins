@@ -106,6 +106,7 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
                                                                  descriptor.getLabel(),
                                                                  descriptor.getUnit(),
                                                                  descriptor.getValueSet(),
+                                                                 descriptor.getValueSetLabels(),
                                                                  descriptor.getFormat(),
                                                                  descriptor.isNotNull(),
                                                                  descriptor.getExpansionRule()));
