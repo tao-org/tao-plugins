@@ -1764,7 +1764,7 @@
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -4329,7 +4329,7 @@
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -5741,7 +5741,7 @@
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -6962,7 +6962,7 @@
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -16482,7 +16482,7 @@
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -17453,7 +17453,7 @@
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -17647,7 +17647,7 @@
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -17776,7 +17776,7 @@
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
