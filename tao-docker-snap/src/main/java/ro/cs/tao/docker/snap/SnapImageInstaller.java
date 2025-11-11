@@ -12,7 +12,7 @@ public abstract class SnapImageInstaller extends BaseImageInstaller {
     protected String getDescription() { return "SNAP"; }
 
     @Override
-    protected String getPathInContainer() { return "/opt/snap/bin"; }
+    protected String getPathInContainer() { return "/opt/esa-snap/bin"; }
 
     @Override
     protected String getPathInSystem() {
