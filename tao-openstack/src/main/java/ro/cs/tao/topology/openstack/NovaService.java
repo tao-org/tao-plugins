@@ -31,6 +31,7 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +44,8 @@ public class NovaService implements NodeProvider {
     private static final Logger logger = Logger.getLogger(NovaService.class.getName());
 
     private static final int WAIT_TIMEOUT_MILLISECONDS = 60 * 1000;
+
+    private static final Pattern bootEndPattern = Pattern.compile("(tao-[a-z0-9-_]+ login:)");
 
     private OpenStackSession session;
 
@@ -230,7 +233,7 @@ public class NovaService implements NodeProvider {
                 String consoleLog = serverService.getConsoleOutput(server.getId(), 5);
                 final int maxWaitTime = 3 * 60 * 1000;
                 int waitTime = 0;
-                while (!consoleLog.contains(node.getId() + " login:") && waitTime < maxWaitTime) {
+                while (!bootEndPattern.matcher(consoleLog).find() && waitTime < maxWaitTime) {
                     try {
                         Thread.sleep(5000);
                         waitTime += 5000;
