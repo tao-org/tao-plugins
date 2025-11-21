@@ -159,7 +159,7 @@
       "defaultValue": "L1C",
       "required": false,
       "valueSet": ["L1C", "L2A"],
-      "valueSet": ["Level 1C", "Level 2A"],
+      "valueSetLabels": ["Level 1C", "Level 2A"],
       "order": 0
     },
     "relativeOrbit": {
@@ -252,7 +252,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": ["A", "B"],
-      "valueSet": ["S3A", "S3B"],
+      "valueSetLabels": ["S3A", "S3B"],
       "order": 0
     },
     "instrument": {
