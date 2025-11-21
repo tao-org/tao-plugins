@@ -142,7 +142,7 @@ public class CWLAppDetector {
      * Creates a mapping of CWL parameter descriptions for a CommandLineTool.
      *
      * @param commandLineTool the CWL object with class commandLineTool
-     * @param argCommands the application command line from CWL file, if define, otherwise null
+     * @param argCommands the application command line from CWL file, if defined, otherwise null
      *
      * @return a map where key is the input/output id and value is a template that describes the parameter metadata
      */
@@ -254,9 +254,7 @@ public class CWLAppDetector {
                 if (matcherIdRegex.find()) {
                     String paramId = matcherIdRegex.group(2);
                     if(applicationTemplates.get(paramId) != null) {
-                        paramDesc.setParamName(applicationTemplates.get(paramId).getParamName());
-                        paramDesc.setDefaultValue(applicationTemplates.get(paramId).getDefaultValue());
-                        paramDesc.setParamPosition(applicationTemplates.get(paramId).getParamPosition());
+                        paramDesc = applicationTemplates.get(paramId);
                         paramDesc.setParamType(OUTPUT_PARAM_POSITION);
                         // remove it from inputs
                         applicationTemplates.remove(paramId);
@@ -361,7 +359,7 @@ public class CWLAppDetector {
     /**
      * Extracts the final path component from a given path.
      *
-     * @param path the string from wich to extract the basename
+     * @param path the string from which to extract the basename
      * @return the basename of the given path
      */
     private static String getBasename(String path) {
