@@ -52,7 +52,7 @@ public class DatabaseQuotaManager implements QuotaManager {
 		final long targetQuota = user.getInputQuota() * MemoryUnit.GB.value();
 		final long actualQuota = user.getActualInputQuota() * MemoryUnit.MB.value()
                                  + (addedQuota / MemoryUnit.MB.value());
-		return targetQuota == -1 || targetQuota > actualQuota;
+		return user.getInputQuota() == -1 || targetQuota > actualQuota;
 	}
 
 	
