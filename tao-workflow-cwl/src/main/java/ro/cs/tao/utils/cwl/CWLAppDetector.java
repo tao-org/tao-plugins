@@ -171,6 +171,7 @@ public class CWLAppDetector {
      */
     private static void addParamInfoToMap(Map<String, CWLParamDescTemplate> applicationTemplates, CommandLineTool commandLineTool) {
         for (Object input : commandLineTool.getInputs()) {
+            boolean canChangeMandatoryParamType = false; //added as workaround for Sen4XRadiometricIndices -list param (it must be mandatory but still parameter)
             CWLParamDescTemplate paramDesc = new CWLParamDescTemplate();
             String paramType = extractParamType(((CommandInputParameter) input).getType());
             paramDesc.setParamType(INPUT_PARAM_POSITION);
@@ -189,9 +190,10 @@ public class CWLAppDetector {
                             .anyMatch(elem -> elem instanceof CWLType && elem.toString().equals("null"));
                     if (findNull) {
                         paramDesc.setMandatory(false);
-                        //paramDesc.setFormatType(paramType);
+                        paramDesc.setFormatType(paramType);
                     } else {
                         paramDesc.setMandatory(true);
+                        canChangeMandatoryParamType = true;
                     }
                 } else {
                     paramDesc.setMandatory(false);
@@ -200,7 +202,7 @@ public class CWLAppDetector {
                 paramDesc.setMandatory(true);
             }
 
-            if (!paramDesc.isMandatory()) {
+            if (canChangeMandatoryParamType || !paramDesc.isMandatory()) {
                 paramDesc.setParamType(PARAMETER_PARAM_POSITION);
             }
 
