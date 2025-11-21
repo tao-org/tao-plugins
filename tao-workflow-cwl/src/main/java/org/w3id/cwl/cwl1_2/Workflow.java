@@ -217,8 +217,4 @@ public interface Workflow extends Process, Saveable, CWLGraphElement {
   void setSteps(java.util.List<Object> steps);
 
   WorkflowStep getStep(String mainWfStepId);
-
-  /*public default Dictionary<Object, Object> save(boolean top, String baseUrl, boolean relativeUris) {
-    return Saveable.save();
-  }*/
 }

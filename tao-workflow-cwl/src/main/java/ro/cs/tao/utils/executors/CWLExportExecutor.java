@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3id.cwl.cwl1_2.*;
 import org.w3id.cwl.cwl1_2.utils.RootLoader;
 import ro.cs.tao.component.*;
@@ -20,6 +18,8 @@ import ro.cs.tao.services.bridge.spring.SpringContextBridge;
 import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.ExecutionUnitFormat;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.cwl.CWLTemplate;
+import ro.cs.tao.utils.yaml.*;
 import ro.cs.tao.workflow.WorkflowDescriptor;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 
@@ -31,33 +31,28 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CWLExecutor extends Executor<Object>
+import static ro.cs.tao.utils.cwl.CWLConstants.*;
+
+public class CWLExportExecutor extends Executor<Object>
         implements ExecutionDescriptorConverter {
 
-    private static final Logger log = LoggerFactory.getLogger(CWLExecutor.class);
     private ExecutionUnit executionUnit;
     private final ExecutionTaskProvider taskProvider;
     private final WorkflowProvider workflowProvider;
     private final CWLTemplate cwlTemplate;
     private final Set<WorkflowNodeDescriptor> visitedNodes;
 
-    private final static String CWL_GRAPH_ID = "$graph";
-    private final static String YAML_FILE_NAME = "inputs.yaml";
-    private final static String WF_OUTPUT_NAME_SUFFIX = "_output_name";
-    private final static String MAIN_WF_OUTPUT_SOURCE_PREFIX = "workflow_";
-    private final static String MAIN_WF_ID = "workflow_start";
-
     private String cwlWorkflowId;
     private String mainWfStepId;
 
-    public CWLExecutor() {
+    public CWLExportExecutor() {
         this.taskProvider = SpringContextBridge.services().getService(ExecutionTaskProvider.class);
         this.workflowProvider = SpringContextBridge.services().getService(WorkflowProvider.class);
         this.cwlTemplate = new CWLTemplate();
         this.visitedNodes = new HashSet<>();
     }
 
-    public CWLExecutor(ExecutionUnit unit) {
+    public CWLExportExecutor(ExecutionUnit unit) {
         super(unit.getHost(), unit.getArguments(), unit.asSuperUser());
         this.executionUnit = unit;
         this.taskProvider = SpringContextBridge.services().getService(ExecutionTaskProvider.class);
@@ -93,7 +88,7 @@ public class CWLExecutor extends Executor<Object>
 
             long workflowId = task.getJob().getWorkflowId();
             WorkflowDescriptor workflowDesc = this.workflowProvider.get(workflowId);
-            cwlTemplate.setCwlVersion(CWLVersion.V1_2.toString());
+            cwlTemplate.setCwlVersion(CWL_VERSION);
             cwlTemplate.setCwlMainGraphObject(CWL_GRAPH_ID);
 
             synchronized (this.workflowProvider) {
@@ -160,6 +155,9 @@ public class CWLExecutor extends Executor<Object>
     private void updateCWL(ExecutionTask task, ExecutionUnit executionUnit) {
         final Path path = Paths.get(executionUnit.getScriptTargetPath());
         Object graphElements = RootLoader.loadDocument(path);
+        if (!(graphElements instanceof Collection<?>)) {
+            throw new IllegalStateException("Loaded CWL graph is not a Collection: " + graphElements.getClass());
+        }
         cwlTemplate.getCwlMainGraphObject().get(CWL_GRAPH_ID).addAll((Collection<?>) graphElements);
         createStepFromTask(task);
         writeToFile(path, cwlTemplate.save());
@@ -175,9 +173,9 @@ public class CWLExecutor extends Executor<Object>
         String yamlPathParent = path.getParent().toString();
         final Path yamlFile =  Paths.get(yamlPathParent + File.separator + YAML_FILE_NAME);
 
-        MyYAMLFactory factory =  new MyYAMLFactory();
-        factory.enable(MyYAMLGenerator.Feature.MINIMIZE_QUOTES);
-        factory.disable(MyYAMLGenerator.Feature.WRITE_DOC_START_MARKER);
+        CWLYAMLFactory factory =  new CWLYAMLFactory();
+        factory.enable(CWLYAMLGenerator.Feature.MINIMIZE_QUOTES);
+        factory.disable(CWLYAMLGenerator.Feature.WRITE_DOC_START_MARKER);
 
         ObjectMapper mapper = new ObjectMapper(factory);
         mapper.registerModule(new Jdk8Module());
@@ -466,6 +464,7 @@ public class CWLExecutor extends Executor<Object>
                         updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inputType, inputParameter.getValue());
                     }
                 } else {
+                    // TODO: if is not found and is not mandatory add it with "?"
                     logger.warning("The execution command is not created correctly.");
                 }
             } else {
@@ -503,6 +502,7 @@ public class CWLExecutor extends Executor<Object>
                     }*/
                     updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, regex, inputParameter.getValue());
                 } else {
+                    // TODO: if is not found and is not mandatory add it with "?"
                     logger.warning("The execution command is not created correctly.");
                 }
             }
@@ -676,7 +676,7 @@ public class CWLExecutor extends Executor<Object>
 
     private void writeToFile(Path path, Map<Object, Object> cwlTemplateObject) {
         Map<Object, Object> tempList = new LinkedHashMap<>();
-        MyYAMLFactory factory = new MyYAMLFactory();
+        CWLYAMLFactory factory = new CWLYAMLFactory();
         factory.enable(YAMLGenerator.Feature.MINIMIZE_QUOTES);
         factory.disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER);
         ObjectMapper mapper = new ObjectMapper(factory);
