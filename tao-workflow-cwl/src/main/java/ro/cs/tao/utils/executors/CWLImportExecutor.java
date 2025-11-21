@@ -291,6 +291,8 @@ public class CWLImportExecutor {
                             }
                             if (location.isEmpty() && entry.getValue().getDefaultValue() != null) {
                                 location = entry.getValue().getDefaultValue().toString();
+                            } else if (location.isEmpty()) {//generate a dummy output file
+                                location = "dummy_" + entry.getKey(); // I do not know the file extension
                             }
                             dataDescriptor.setLocation(location);
                         }
@@ -312,6 +314,7 @@ public class CWLImportExecutor {
                         parameterDescriptor.setId(entryKey);
                         parameterDescriptor.setLabel(entryFoundName);
                         parameterDescriptor.setType(ParameterType.REGULAR);
+                        parameterDescriptor.setNotNull(entry.getValue().isMandatory());
                         String description = getDescForParam(entry.getKey(), mainWfId);
                         if (description != null) {
                             parameterDescriptor.setDescription(description);
@@ -371,13 +374,12 @@ public class CWLImportExecutor {
      * @return the template as a string
      */
     private String createTemplate(Map<String, CWLParamDescTemplate> params) {
-        //StringBuilder template = new StringBuilder();
-        /*String firstDeclaredParamPrefix = params.values().stream()
+        String firstDeclaredParamPrefix = params.values().stream()
                 .filter(p -> p.getParamPrefix() != null)
                 .map(CWLParamDescTemplate::getParamPrefix)
                 .findFirst()
-                .orElse(null);*/
-        //String declaredParamPrefix = CWLUtils.extractDashPrefix(firstDeclaredParamPrefix);
+                .orElse(null);
+        String declaredParamPrefix = CWLUtils.extractDashPrefix(firstDeclaredParamPrefix);
         LinkedList<String> paramTemplateList = new LinkedList<>();
         Map<String, CWLParamDescTemplate> paramWithPositionList = params.entrySet().stream()
                 .filter(p -> p.getValue().getParamPosition() > 0).collect(Collectors.toMap(
@@ -395,6 +397,12 @@ public class CWLImportExecutor {
             if (paramEntry.getValue().getParamPrefix() != null) {
                 param = paramEntry.getValue().getParamPrefix();
                 String paramVal = param.startsWith("-") ? CWLUtils.removeStartDashes(param) : param;
+                paramTemplate = param + "\n$" + paramVal;
+            } else if (paramEntry.getValue().getParamType().equals(OUTPUT_PARAM_POSITION)) {
+                String paramVal = declaredParamPrefix + CWLUtils.removeStartDashes(param);
+                if (!declaredParamPrefix.isEmpty()) {
+                    param = declaredParamPrefix + param;
+                }
                 paramTemplate = param + "\n$" + paramVal;
             }
             if (paramEntry.getValue().getParamPosition() < 0) {
