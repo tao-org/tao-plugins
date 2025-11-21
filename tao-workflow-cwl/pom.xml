@@ -59,7 +59,16 @@
 			<artifactId>commons-collections4</artifactId>
 			<version>4.5.0-M1</version>
 		</dependency>
-	</dependencies>
+    </dependencies>
+	 <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven.dependency.plugin.version}</version>
+            </plugin>
+        </plugins>
+    </build>
     <repositories>
         <repository>
             <id>maven_central</id>

@@ -81,14 +81,14 @@ public interface Loader<T> {
       Map<String, Object> valMap = (Map<String, Object>) val;
       if (valMap.containsKey("$import")) {
         if (loadingOptions.fileUri == null) {
-          throw new ValidationException("Cannot load $import without file uri");
+          throw new ValidationException("Cannot load $import without fileuri");
         }
         return documentLoadByUrl(
             loadingOptions.fetcher.urlJoin(loadingOptions.fileUri, (String) valMap.get("$import")),
             loadingOptions);
       } else if (valMap.containsKey("$include")) {
         if (loadingOptions.fileUri == null) {
-          throw new ValidationException("Cannot load $import without file uri");
+          throw new ValidationException("Cannot load $import without fileuri");
         }
         val =
             loadingOptions.fetcher.fetchText(
