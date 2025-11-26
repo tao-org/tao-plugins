@@ -20,5 +20,6 @@ public class CWLConstants {
                 ".hfz", ".hdr", ".hgt", ".img", ".jp2", ".jpg", ".jpe", ".jpeg", ".jpc", ".jpx", ".nc", ".nsf", ".ntf", ".ovr", ".png", ".raw", ".safe", ".slc", ".tff", ".tif", ".tiff", ".vrt"));
         put("Vector", Arrays.asList(".shp", ".dbf", ".shx", ".geojson", ".json", ".kml", ".kmz", ".gpkg", ".dxf", ".svg"));
     }};
+    public static final Set<String> PARAM_FILE_EXTENSION = new HashSet<>(Arrays.asList(".csv", ".txt"));
     public final static String UNKNOWN_DATA_FORMAT_TYPE = "Unknown";
 }
