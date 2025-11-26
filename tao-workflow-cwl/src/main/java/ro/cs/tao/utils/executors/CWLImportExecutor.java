@@ -255,7 +255,9 @@ public class CWLImportExecutor {
                 String paramType = entry.getValue().getParamType();
                 DataDescriptor dataDescriptor = new DataDescriptor(getDataFormatType(mainWfId, stepId, parameterKey, entry.getValue().getFormatType(), paramType));
                 //workaround for cases where .csv file is mandatory, but it is not an input
-                if (!entry.getValue().getParamName().matches("processor(.\\w+)*") && numberOfInputs > 1 && entry.getValue().getParamType().equals(INPUT_PARAM_POSITION)) {
+                boolean isLinked = checkIfInputIsLinked(entry.getKey());
+                if (!isLinked && !entry.getValue().getParamName().matches("processor(.\\w+)*") && numberOfInputs > 1
+                        && entry.getValue().getParamType().equals(INPUT_PARAM_POSITION)) {
                     Object entryValue = findParamValue(mainWfId, stepId, parameterKey, paramType);
                     String extension = null;
                     if (entryValue != null) {
@@ -1415,5 +1417,23 @@ public class CWLImportExecutor {
                 processingComponent.setCategory(componentCategory);
             }
         }
+    }
+
+    private boolean checkIfInputIsLinked(String inputId) {
+        List<Workflow> workflowList = cwlTemplate.getCwlMainGraphObject(CWL_GRAPH_ID).stream()
+                .filter(g -> g instanceof Workflow).map(g -> (Workflow) g).toList();
+        if (!workflowList.isEmpty()) {
+            for (Workflow workflow: workflowList) {
+                for (Object step : workflow.getSteps()) {
+                    WorkflowStepInput wfInput = ((WorkflowStep) step).getIn().stream()
+                            .filter(in -> ((WorkflowStepInput) in).getId().isPresent() && ((WorkflowStepInput) in).getId().get().equals(inputId))
+                            .map(in -> (WorkflowStepInput) in).findFirst().orElse(null);
+                    if (wfInput != null && wfInput.getSource() != null && wfInput.getSource().toString().contains("/")) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
