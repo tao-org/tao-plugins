@@ -39,6 +39,7 @@ public class CWLImportExecutor {
 
     private final CWLTemplate cwlTemplate = new CWLTemplate();
     private final List<CWLInputDependenciesTemplate> cwlInputDependencies = new ArrayList<>();
+    private final List<String> createdComponentsHistory = new ArrayList<>();
     private final List<Tag> componentTags;
     private final Map<String, Object> yamlInfo = new LinkedHashMap<>();
     private final ComponentService componentService;
@@ -190,6 +191,7 @@ public class CWLImportExecutor {
                 }
             }
         }
+        adjustProcessingComponentsCategory();
         if (!skipContainer) {
             createWorkflowDescriptor(mainWfId);
         }
@@ -220,7 +222,7 @@ public class CWLImportExecutor {
                 componentAlreadyExist = false;
                 //creating processing component
                 processingComponent = new ProcessingComponent();
-                processingComponent.setId(componentId.toLowerCase());
+                processingComponent.setId(componentId);
                 processingComponent.setContainerId(dockerContainer.getId());
                 processingComponent.setLabel(componentLabel);
                 processingComponent.setFileLocation(fileLocation);
@@ -236,17 +238,34 @@ public class CWLImportExecutor {
                 processingComponent.setCategory(componentCategory);
                 // default working directory
                 processingComponent.setWorkingDirectory(".");
+                createdComponentsHistory.add(componentId);
             } else {
                 // if the processing component was updated by another import, it will be updated
                 if (processingComponent.getTemplateContents().equals(componentTemplate)) {
                    processingComponent.setTemplateContents(componentTemplate);
                 }
-                componentCategory = processingComponent.getCategory();
             }
+            //used in the workaround for cases where .csv file is mandatory, but it is not an input
+            long numberOfInputs = application.getApplicationParams().entrySet().stream().filter(e -> e.getValue().getParamType().equals(INPUT_PARAM_POSITION)).count();
+
             for (Map.Entry<String, CWLParamDescTemplate> entry : application.getApplicationParams().entrySet()) {
                 String entryKey = CWLUtils.removeNumericSuffix(entry.getKey());
                 String entryFoundName = CWLUtils.removeStartDashes(entry.getValue().getParamName());
-                DataDescriptor dataDescriptor = new DataDescriptor(getDataFormatType(mainWfId, stepId, entry.getKey(), entry.getValue().getFormatType(), entry.getValue().getParamType()));
+                String parameterKey = entry.getKey();
+                String paramType = entry.getValue().getParamType();
+                DataDescriptor dataDescriptor = new DataDescriptor(getDataFormatType(mainWfId, stepId, parameterKey, entry.getValue().getFormatType(), paramType));
+                //workaround for cases where .csv file is mandatory, but it is not an input
+                if (!entry.getValue().getParamName().matches("processor(.\\w+)*") && numberOfInputs > 1 && entry.getValue().getParamType().equals(INPUT_PARAM_POSITION)) {
+                    Object entryValue = findParamValue(mainWfId, stepId, parameterKey, paramType);
+                    String extension = null;
+                    if (entryValue != null) {
+                        extension = CWLUtils.getFileExtension(entryValue);
+                    }
+                    if ((extension == null || PARAM_FILE_EXTENSION.contains(extension))) {
+                        entry.getValue().setParamType(PARAMETER_PARAM_POSITION);
+                    }
+                }
+                // end of workaround
                 Object defaultValue = entry.getValue().getDefaultValue();
                 boolean descriptorAlreadyExist;
                 if (entry.getValue().getParamType().equals(INPUT_PARAM_POSITION)) {
@@ -292,7 +311,7 @@ public class CWLImportExecutor {
                             if (location.isEmpty() && entry.getValue().getDefaultValue() != null) {
                                 location = entry.getValue().getDefaultValue().toString();
                             } else if (location.isEmpty()) {//generate a dummy output file
-                                location = "dummy_" + entry.getKey(); // I do not know the file extension
+                                location = entry.getKey(); // I do not know the file extension
                             }
                             dataDescriptor.setLocation(location);
                         }
@@ -326,37 +345,10 @@ public class CWLImportExecutor {
             //condition used just to warn about missing sources and targets
             if (processingComponent.getSources().isEmpty() || processingComponent.getSources().isEmpty()) {
                 String message = processingComponent.getSources().isEmpty() ? "sources " : "";
-                if (processingComponent.getSources().isEmpty()) {
+                if (processingComponent.getTargets().isEmpty()) {
                     message = message.isEmpty() ? "targets" : "and targets";
                 }
                 logger.warning(processingComponent.getId() + " component does not have " + message + "!");
-            }
-
-            /* Change processing component category, only for new created components.
-             * First take into account the target type.
-             * If no target has a specific type (different from OTHER), check the sources.
-             */
-            if (!componentAlreadyExist && componentCategory.equals(ComponentCategory.MISC)) {
-                List<String> targetsTypeList = processingComponent.getTargets().stream()
-                        .filter(target -> !target.getDataDescriptor().getFormatType().equals(DataFormat.OTHER))
-                        .map(target -> target.getDataDescriptor().getFormatType().friendlyName().toUpperCase()).toList();
-                if (targetsTypeList != null && !targetsTypeList.isEmpty()) {
-                    String category = targetsTypeList.getFirst();
-                    if (targetsTypeList.stream().allMatch(s -> s.equals(category))) {
-                        componentCategory = ComponentCategory.valueOf(category);
-                    }
-                } else {
-                    List<String> sourcesTypeList = processingComponent.getSources().stream()
-                            .filter(source -> !source.getDataDescriptor().getFormatType().equals(DataFormat.OTHER))
-                            .map(source -> source.getDataDescriptor().getFormatType().friendlyName().toUpperCase()).toList();
-                    if (sourcesTypeList != null && !sourcesTypeList.isEmpty()) {
-                        String category = sourcesTypeList.getFirst();
-                        if (sourcesTypeList.stream().allMatch(s -> s.equals(category))) {
-                            componentCategory = ComponentCategory.valueOf(category);
-                        }
-                    }
-                }
-                processingComponent.setCategory(componentCategory);
             }
 
             if (componentAlreadyExist) {
@@ -639,15 +631,12 @@ public class CWLImportExecutor {
         final DataFormat retVal;
         if (!paramType.equals(PARAMETER_PARAM_POSITION)) {
             String foundFormatType;
-            Object foundValue;
-            foundValue = findParamValue(mainWfId, stepId, parameterKey, paramType);
+            Object foundValue = findParamValue(mainWfId, stepId, parameterKey, paramType);
             if (foundValue != null) {
                 foundFormatType = getFormatTypeFromExtension(foundValue);
                 if (!foundFormatType.equals(UNKNOWN_DATA_FORMAT_TYPE)) {
                     formatType = foundFormatType;
-                }/* else if (stepId != null && hasFileExtension(foundValue)) {
-                    foundFormatType = findLinkedInputFormatType(mainWfId, stepId, parameterKey);
-                }*/
+                }
             }
         }
         switch (formatType) {
@@ -1075,11 +1064,12 @@ public class CWLImportExecutor {
                         ((WorkflowStepInput) in).setSource(stepId + "/" + outputKey);
                         found = true;
                         break;
-                    } else {
-                        logger.info("Input case not treated for step " + ((WorkflowStep)step).getId().get() + " in Workflow " + workflow.getId().get());
                     }
                 }
             }
+        }
+        if (!found) {
+            logger.info("Input case not treated for step " + stepId + " in Workflow " + workflow.getId().get());
         }
     }
 
@@ -1391,5 +1381,39 @@ public class CWLImportExecutor {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Change processing component category, only for new created components.
+     * First take into account the target type.
+     * If no target has a specific type (different from OTHER), check the sources.
+     */
+    private void adjustProcessingComponentsCategory() {
+        for (String componentId : createdComponentsHistory) {
+            ProcessingComponent processingComponent = componentService.findById(componentId);
+            ComponentCategory componentCategory = processingComponent.getCategory();
+            if (componentCategory.equals(ComponentCategory.MISC)) {
+                List<String> targetsTypeList = processingComponent.getTargets().stream()
+                        .filter(target -> !target.getDataDescriptor().getFormatType().equals(DataFormat.OTHER))
+                        .map(target -> target.getDataDescriptor().getFormatType().friendlyName().toUpperCase()).toList();
+                if (!targetsTypeList.isEmpty()) {
+                    String category = targetsTypeList.getFirst();
+                    if (targetsTypeList.stream().allMatch(s -> s.equals(category))) {
+                        componentCategory = ComponentCategory.valueOf(category);
+                    }
+                } else {
+                    List<String> sourcesTypeList = processingComponent.getSources().stream()
+                            .filter(source -> !source.getDataDescriptor().getFormatType().equals(DataFormat.OTHER))
+                            .map(source -> source.getDataDescriptor().getFormatType().friendlyName().toUpperCase()).toList();
+                    if (!sourcesTypeList.isEmpty()) {
+                        String category = sourcesTypeList.getFirst();
+                        if (sourcesTypeList.stream().allMatch(s -> s.equals(category))) {
+                            componentCategory = ComponentCategory.valueOf(category);
+                        }
+                    }
+                }
+                processingComponent.setCategory(componentCategory);
+            }
+        }
     }
 }

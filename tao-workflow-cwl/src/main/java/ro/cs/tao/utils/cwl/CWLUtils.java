@@ -62,12 +62,11 @@ public class CWLUtils {
             int lastDot = name.lastIndexOf('.');
             name = name.substring(0, lastDot);
         }
-        //name = name.replaceAll("[_|\\-|\\.]", " ");
         String[] tokens = name.split("_|\\-|\\.");
         name = Arrays.stream(tokens).map(token -> token.isEmpty() ? token : token.substring(0, 1).toUpperCase() + token.substring(1)).collect(Collectors.joining(""));
-        if (toLowerCase) {
+        /*if (toLowerCase) {
             return name.toLowerCase();
-        }
+        }*/
         return name;
     }
 
@@ -100,6 +99,19 @@ public class CWLUtils {
                 return filePath.substring(lastDot, filePath.length() - 1).toLowerCase();
             }
             return filePath.substring(lastDot).toLowerCase();
+        }
+        return "";
+    }
+
+    public static String getFileExtension(Object yamlObj) {
+        if (yamlObj instanceof Collection<?>) {
+            return "";
+        } if (yamlObj instanceof Map<?, ?> mapObj) {
+            if (mapObj.get("path") instanceof String pathValue) {
+                return CWLUtils.getFileExtension(pathValue);
+            }
+        } else {
+            return CWLUtils.getFileExtension(yamlObj.toString());
         }
         return "";
     }
