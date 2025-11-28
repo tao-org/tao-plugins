@@ -88,9 +88,8 @@ public class CWLAppDetector {
             for (Object in : inputs) {
                 if (((WorkflowStepInput) in).getSource() != null && ((WorkflowStepInput) in).getId() != null
                         && ((WorkflowStepInput) in).getId().isPresent()) {
-                    if (((WorkflowStepInput) in).getSource().toString().matches("^(?:\\w+/\\w+|\\[(\\w+/\\w+(?:,\\s?\\w+/\\w+)*)\\])$")) {
+                    if (((WorkflowStepInput) in).getSource().toString().matches("^(?:[\\w-]+/[\\w-]+|\\[([\\w-]+/[\\w-]+(?:,\\s?[\\w-]+/[\\w-]+)*)\\])$")) {
                         linkedInputsIds.add(((WorkflowStepInput) in).getId().get());
-
                     }
                 }
             }
@@ -209,13 +208,14 @@ public class CWLAppDetector {
             if (((CommandInputParameter) input).getInputBinding() != null
                     && ((CommandInputParameter) input).getInputBinding().isPresent()) {
                 CommandLineBinding inputBinding = ((CommandInputParameter) input).getInputBinding().get();
+                paramDesc.setParamName(((CommandInputParameter) input).getId().get());
                 if (inputBinding.getPrefix() != null && inputBinding.getPrefix().isPresent()) {
                     String prefix = inputBinding.getPrefix().get();
-                    String paramName = prefix.startsWith("-") ? CWLUtils.removeStartDashes(prefix) : prefix;
-                    paramDesc.setParamName(paramName);
+                    /*String paramName = prefix.startsWith("-") ? CWLUtils.removeStartDashes(prefix) : prefix;
+                    paramDesc.setParamName(paramName);*/
                     paramDesc.setParamPrefix(prefix);
                 } else if (inputBinding.getPosition() != null) {
-                    paramDesc.setParamName(((CommandInputParameter) input).getId().get());
+                    //paramDesc.setParamName(((CommandInputParameter) input).getId().get());
                     if (inputBinding.getPosition() instanceof Integer) {
                         paramDesc.setParamPosition((Integer) inputBinding.getPosition());
                     } else {
