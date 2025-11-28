@@ -256,7 +256,8 @@ public class CWLImportExecutor {
                 DataDescriptor dataDescriptor = new DataDescriptor(getDataFormatType(mainWfId, stepId, parameterKey, entry.getValue().getFormatType(), paramType));
                 //workaround for cases where .csv file is mandatory, but it is not an input
                 boolean isLinked = checkIfInputIsLinked(entry.getKey());
-                if (!isLinked && !entry.getValue().getParamName().matches("processor(.\\w+)*") && numberOfInputs > 1
+                if (!isLinked && !entry.getValue().getParamName().matches("processor(.\\w+)*")
+                        && !entry.getValue().getParamName().matches("^input(_\\w+)*") && numberOfInputs > 1
                         && entry.getValue().getParamType().equals(INPUT_PARAM_POSITION)) {
                     Object entryValue = findParamValue(mainWfId, stepId, parameterKey, paramType);
                     String extension = null;
@@ -269,16 +270,16 @@ public class CWLImportExecutor {
                 }
                 // end of workaround
                 Object defaultValue = entry.getValue().getDefaultValue();
-                boolean descriptorAlreadyExist;
+                //boolean descriptorAlreadyExist;
                 if (entry.getValue().getParamType().equals(INPUT_PARAM_POSITION)) {
-                    descriptorAlreadyExist = processingComponent.getSources().stream()
-                            .anyMatch(pc -> pc.getName().equals(entryKey));
-                    if (!descriptorAlreadyExist) {
-                        descriptorAlreadyExist = processingComponent.getSources().stream()
-                                .anyMatch(pc -> pc.getName().equals(entryFoundName));
+                    SourceDescriptor sourceDescriptor = processingComponent.getSources().stream()
+                            .filter(pc -> pc.getName().equals(entryKey)).findFirst().orElse(null);
+                    if (sourceDescriptor == null) {
+                        sourceDescriptor = processingComponent.getSources().stream()
+                                .filter(pc -> pc.getName().equals(entryFoundName)).findFirst().orElse(null);
                     }
-                    if (!descriptorAlreadyExist) {
-                        SourceDescriptor sourceDescriptor = new SourceDescriptor();
+                    if (sourceDescriptor == null) {
+                        sourceDescriptor = new SourceDescriptor();
                         sourceDescriptor.setParentId(componentId);
                         sourceDescriptor.setName(entryFoundName);
                         sourceDescriptor.setCardinality(1);
@@ -287,17 +288,19 @@ public class CWLImportExecutor {
                             sourceDescriptor.setCardinality(0);
                         }
                         processingComponent.addSource(sourceDescriptor);
+                    } else if (sourceDescriptor.getDataDescriptor().getFormatType().equals(DataFormat.OTHER)) {
+                        sourceDescriptor.setDataDescriptor(dataDescriptor);
                     }
                 }
                 if (entry.getValue().getParamType().equals(OUTPUT_PARAM_POSITION)) {
-                    descriptorAlreadyExist = processingComponent.getTargets().stream()
-                            .anyMatch(pc -> pc.getName().equals(entryKey));
-                    if (!descriptorAlreadyExist) {
-                        descriptorAlreadyExist = processingComponent.getTargets().stream()
-                                .anyMatch(pc -> pc.getName().equals(entryFoundName));
+                    TargetDescriptor targetDescriptor = processingComponent.getTargets().stream()
+                            .filter(pc -> pc.getName().equals(entryKey)).findFirst().orElse(null);
+                    if (targetDescriptor == null ) {
+                        targetDescriptor = processingComponent.getTargets().stream()
+                                .filter(pc -> pc.getName().equals(entryFoundName)).findFirst().orElse(null);
                     }
-                    if (!descriptorAlreadyExist) {
-                        TargetDescriptor targetDescriptor = new TargetDescriptor();
+                    if (targetDescriptor == null) {
+                        targetDescriptor = new TargetDescriptor();
                         targetDescriptor.setParentId(componentId);
                         targetDescriptor.setName(entryFoundName);
                         if (!yamlInfo.isEmpty()) {
@@ -319,10 +322,12 @@ public class CWLImportExecutor {
                         }
                         targetDescriptor.setDataDescriptor(dataDescriptor);
                         processingComponent.addTarget(targetDescriptor);
+                    } else if (targetDescriptor.getDataDescriptor().getFormatType().equals(DataFormat.OTHER)) {
+                        targetDescriptor.setDataDescriptor(dataDescriptor);
                     }
                 }
                 if (entry.getValue().getParamType().equals(PARAMETER_PARAM_POSITION)) {
-                    descriptorAlreadyExist = processingComponent.getParameterDescriptors().stream()
+                    boolean descriptorAlreadyExist = processingComponent.getParameterDescriptors().stream()
                             .anyMatch(pc -> pc.getName().equals(entryKey));
                     if (!descriptorAlreadyExist) {
                         descriptorAlreadyExist = processingComponent.getParameterDescriptors().stream()
@@ -386,19 +391,19 @@ public class CWLImportExecutor {
                 Map.Entry::getValue
         ));
         for (Map.Entry<String, CWLParamDescTemplate> paramEntry: paramWithoutPositionList.entrySet()) {
-            String param = paramEntry.getValue().getParamName();
-            String paramTemplate = "$"+param;
+            String paramName = paramEntry.getValue().getParamName();
+            String param = paramName;
+            String paramVal = null;
             if (paramEntry.getValue().getParamPrefix() != null) {
                 param = paramEntry.getValue().getParamPrefix();
-                String paramVal = param.startsWith("-") ? CWLUtils.removeStartDashes(param) : param;
-                paramTemplate = param + "\n$" + paramVal;
+                paramVal = paramName.startsWith("-") ? CWLUtils.removeStartDashes(paramName) : paramName;
             } else if (paramEntry.getValue().getParamType().equals(OUTPUT_PARAM_POSITION)) {
-                String paramVal = declaredParamPrefix + CWLUtils.removeStartDashes(param);
+                paramVal = declaredParamPrefix + CWLUtils.removeStartDashes(param);
                 if (!declaredParamPrefix.isEmpty()) {
                     param = declaredParamPrefix + param;
                 }
-                paramTemplate = param + "\n$" + paramVal;
             }
+            String paramTemplate = paramVal != null ? param + "\n$" + paramVal.replaceAll("-", "_") : "$" + param;
             if (paramEntry.getValue().getParamPosition() < 0) {
                 paramTemplateList.addFirst(paramTemplate);
             } else {
@@ -406,11 +411,13 @@ public class CWLImportExecutor {
             }
         }
         for (Map.Entry<String, CWLParamDescTemplate> paramEntry: paramWithPositionList.entrySet()) {
-            String param = paramEntry.getValue().getParamName();
+            String paramName = paramEntry.getValue().getParamName();
+            String param = paramName;
             String paramTemplate = "$" + param;
             if (paramEntry.getValue().getParamPrefix() != null) {
                 param = paramEntry.getValue().getParamPrefix();
-                String paramVal = param.startsWith("-") ? CWLUtils.removeStartDashes(param) : param;
+                String paramVal = paramName.startsWith("-") ? CWLUtils.removeStartDashes(paramName) : paramName;
+                paramVal = paramVal.replaceAll("-", "_");
                 paramTemplate = param + "\n$" + paramVal;
             }
             if (paramEntry.getValue().getParamPosition() > 0) {
