@@ -189,7 +189,10 @@ public class CWLAppDetector {
             paramDesc.setFormatType(paramType);
             // an input is optional if type is a CWLType, CWLType array or a string that ends with question mark
             if ((((CommandInputParameter) input).getType() instanceof CWLType && ((CommandInputParameter) input).getType().toString().endsWith("?")) ||
-                    ((CommandInputParameter) input).getType() instanceof Collection<?>) {
+                    ((CommandInputParameter) input).getType() instanceof Collection<?> ||
+                    (((CommandInputParameter) input).getDefault() != null
+                            && ((CommandInputParameter) input).getDefault().get() instanceof Collection<?>
+                            && ((Collection<?>) ((CommandInputParameter) input).getDefault().get()).isEmpty())) {
                 // condition for type:string?. The CWL loading library returns it as CWLType array with [null, string]
                 if (((CommandInputParameter) input).getType() instanceof Collection<?>) {
                     boolean findNull = ((Collection<?>) ((CommandInputParameter) input).getType()).stream()
