@@ -1067,10 +1067,27 @@ public class CWLImportExecutor {
         boolean found = false;
         for (Object step : workflow.getSteps()) {
             if (found) {break;}
+            if (((WorkflowStep)step).getId().get().equals(stepId)) {continue;}
             for (Object in : ((WorkflowStep)step).getIn()) {
                 if (((WorkflowStepInput) in).getId() != null && ((WorkflowStepInput) in).getId().isPresent() && ((WorkflowStepInput) in).getId().get().equals(yamlInputId)) {
-                    if (((WorkflowStepInput) in).getSource() != null && ((WorkflowStepInput) in).getSource().toString().equals(yamlInputId)) {
-                        ((WorkflowStepInput) in).setSource(stepId + "/" + outputKey);
+                    if (((WorkflowStepInput) in).getSource() != null) {
+                        Object wfInputType = workflow.getInputs().stream()
+                                .filter(wfIn -> ((WorkflowInputParameter) wfIn).getId().isPresent()
+                                        && ((WorkflowInputParameter) wfIn).getId().equals(((WorkflowStepInput) in).getId()))
+                                .map(wfIn -> ((WorkflowInputParameter) wfIn).getType())
+                                .findFirst().orElse(null);
+                        if (wfInputType != null && wfInputType.toString().contains("[]")) {
+                            List<String> sources = new ArrayList<>();
+                            if (((WorkflowStepInput) in).getSource().toString() != null &&
+                                    !((WorkflowStepInput) in).getSource().toString().isEmpty()
+                                    && !((WorkflowStepInput) in).getSource().toString().equals(((WorkflowStepInput) in).getId().get())) {
+                                sources = (List<String>) ((WorkflowStepInput) in).getSource();
+                            }
+                            sources.add(stepId + "/" + outputKey);
+                            ((WorkflowStepInput) in).setSource(sources);
+                        } else {
+                            ((WorkflowStepInput) in).setSource(stepId + "/" + outputKey);
+                        }
                         found = true;
                         break;
                     }
