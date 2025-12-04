@@ -84,7 +84,7 @@ public class CWLAppDetector {
             }
         }
         if (inputs != null && !inputs.isEmpty()) {
-            List<String> linkedInputsIds =  new ArrayList<String>();
+            List<String> linkedInputsIds =  new ArrayList<>();
             for (Object in : inputs) {
                 if (((WorkflowStepInput) in).getSource() != null && ((WorkflowStepInput) in).getId() != null
                         && ((WorkflowStepInput) in).getId().isPresent()) {
@@ -103,6 +103,13 @@ public class CWLAppDetector {
                             if (isSource) {
                                 entry.getValue().setParamType(INPUT_PARAM_POSITION);
                             }
+                        }
+                    }
+                    if (entry.getValue().getParamType().equals(OUTPUT_PARAM_POSITION) && entry.getValue().getDefaultValue() == null) {
+                        WorkflowStepInput associatedStepIn = inputs.stream().filter(in -> ((WorkflowStepInput) in).getId().isPresent() && ((WorkflowStepInput) in).getId().get().equals(entry.getKey()))
+                                .map(in -> (WorkflowStepInput) in).filter(in -> in.getValueFrom() != null).findFirst().orElse(null);
+                        if (associatedStepIn != null) {
+                            entry.getValue().setDefaultValue(associatedStepIn.getValueFrom());
                         }
                     }
                 }

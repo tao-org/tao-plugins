@@ -117,7 +117,7 @@ public class WorkflowBuild {
                             || app.getName().equals(appSimplifyName) || app.getPath().equalsIgnoreCase(appPathNameSimplyfyMerge));
             if (missingApp) {
                 Application tempApplication = new Application();
-                tempApplication.setMemoryRequirements(4096);
+                //tempApplication.setMemoryRequirements(4096);
                 tempApplication.setName(CWLUtils.simplifyApplicationName(application.getApplicationName(), true));
                 tempApplication.setPath(application.getApplicationName());//the path is the name of the application (as is found)
                 dockerContainer.getApplications().add(tempApplication);
