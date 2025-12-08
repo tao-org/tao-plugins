@@ -1,5 +1,6 @@
 package ro.cs.tao.stac.core.metadata;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.locationtech.jts.geom.Coordinate;
 import ro.cs.tao.eodata.Attribute;
@@ -167,7 +168,9 @@ public class ProductMetadataWriter implements OutputDataHandler<EOProduct> {
                 item.setStac_version("1.0.0");
                 item.setType(ItemType.Feature);
                 try {
-                    Files.write(metadataPath, new ObjectMapper().writerFor(Item.class).writeValueAsBytes(item));
+                    final ObjectMapper mapper = new ObjectMapper();
+                    mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                    Files.write(metadataPath, mapper.writerFor(Item.class).writeValueAsBytes(item));
                 } catch (IOException e) {
                     logger.severe(e.getMessage());
                 }
