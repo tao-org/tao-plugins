@@ -46,7 +46,7 @@ import java.util.zip.ZipOutputStream;
  *
  * Subclasses must implement specific methods to define the protocol and create an FTP environment.
  */
-public abstract class FTPBaseService extends BaseStorageService<byte[], InputStream> {
+public abstract class FTPBaseService extends BaseStorageService<byte[]> {
     protected FileSystem ftpFileSystem;
     protected FTPEnvironment environment;
 
@@ -94,15 +94,17 @@ public abstract class FTPBaseService extends BaseStorageService<byte[], InputStr
     @Override
     public void storeUserFile(byte[] object, String relativeFolder, String description) throws Exception {
         initializeFileSystem();
-        storeFile(new ByteArrayInputStream(object), object.length, relativeFolder, description);
+        storeFile(new ByteArrayInputStream(object), relativeFolder, description);
     }
 
     @Override
-    public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
+    public String storeFile(InputStream stream, String relativeFolder, String description) throws Exception {
         initializeFileSystem();
+        String path = repository().resolve(relativeFolder);
         // create the parent directories.
-        FileUtilities.createDirectories(getPath(repository().resolve(relativeFolder)).getParent());
-        Files.copy(stream, getPath(repository().resolve(relativeFolder)));
+        FileUtilities.createDirectories(getPath(path).getParent());
+        Files.copy(stream, getPath(path));
+        return path;
     }
 
     @Override
