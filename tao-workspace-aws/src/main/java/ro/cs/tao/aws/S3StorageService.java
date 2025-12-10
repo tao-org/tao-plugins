@@ -169,7 +169,7 @@ import java.util.zip.ZipOutputStream;
  *   Determines if an object in the bucket is not a folder placeholder based on the object metadata.
  *   This method is private and used internally.
  */
-public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputStream> {
+public class S3StorageService extends BaseStorageService<byte[]> {
     private static final String PROTOCOL = "s3";
     public static final String AWS_REGION = "aws.region";
     public static final String AWS_ACCESS_KEY = "aws.access.key";
@@ -296,7 +296,7 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
     }
 
     @Override
-    public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
+    public String storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
         if (stream == null) {
             throw new IllegalArgumentException("[stream] Null stream");
         }
@@ -328,6 +328,7 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
         } catch (AmazonServiceException e) {
             throw new IOException(e);
         }
+        return repository.resolve(relativeFolder).toString();
     }
 
     @Override
@@ -591,7 +592,7 @@ public class S3StorageService extends BaseStorageService<byte[], S3ObjectInputSt
     }
 
     @Override
-    public String readAsText(S3ObjectInputStream resource, int lines, int skipLines) throws IOException {
+    public <S extends InputStream> String readAsText(S resource, int lines, int skipLines) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource));
              Stream<String> stream = reader.lines()) {
             return stream.skip(skipLines).limit(lines).collect(Collectors.joining());

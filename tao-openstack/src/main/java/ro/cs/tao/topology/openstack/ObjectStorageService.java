@@ -27,7 +27,7 @@ import java.util.zip.ZipOutputStream;
  * Extends {@code BaseStorageService} to provide specific implementations for managing files and folders
  * in an OpenStack Swift environment.
  */
-public class ObjectStorageService extends BaseStorageService<byte[], InputStream> {
+public class ObjectStorageService extends BaseStorageService<byte[]> {
     private static final String PROTOCOL = "swift";
 
     private final SwiftService swiftService;
@@ -93,7 +93,7 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
     }
 
     @Override
-    public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
+    public String storeFile(InputStream stream, String relativeFolder, String description) throws Exception {
         if (stream == null) {
             throw new IllegalArgumentException("[stream] Null stream");
         }
@@ -107,6 +107,7 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
         try (InputStream toPass = wrapStream(stream)) {
             this.swiftService.upload(relativePath, toPass, bucket, description);
         }
+        return repository.resolve(relativeFolder).toString();
     }
 
     @Override
