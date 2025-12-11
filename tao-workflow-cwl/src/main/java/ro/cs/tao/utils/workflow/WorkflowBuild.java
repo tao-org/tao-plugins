@@ -110,15 +110,15 @@ public class WorkflowBuild {
     public static Container addMissingAppInContainer(Container dockerContainer, List<CWLApplicationTemplate> applicationList) throws PersistenceException {
         List<Application> containerApplications = dockerContainer.getApplications();
         for (CWLApplicationTemplate application : applicationList) {
-            String appSimplifyName = CWLUtils.simplifyApplicationName(application.getApplicationName(), true);
-            String appPathNameSimplyfyMerge = application.getApplicationPath() + "/" + application.getApplicationName();
+            String appSimplifyName = CWLUtils.simplifyApplicationName(application.getApplicationName());
+            String appPathNameSimplifyMerge = application.getApplicationPath() + "/" + application.getApplicationName();
             boolean missingApp = containerApplications.isEmpty() || containerApplications.stream()
                     .noneMatch(app -> app.getPath().equalsIgnoreCase(application.getApplicationName())
-                            || app.getName().equals(appSimplifyName) || app.getPath().equalsIgnoreCase(appPathNameSimplyfyMerge));
+                            || app.getName().equals(appSimplifyName) || app.getPath().equalsIgnoreCase(appPathNameSimplifyMerge));
             if (missingApp) {
                 Application tempApplication = new Application();
-                //tempApplication.setMemoryRequirements(4096);
-                tempApplication.setName(CWLUtils.simplifyApplicationName(application.getApplicationName(), true));
+                tempApplication.setMemoryRequirements(4096);
+                tempApplication.setName(CWLUtils.simplifyApplicationName(application.getApplicationName()));
                 tempApplication.setPath(application.getApplicationName());//the path is the name of the application (as is found)
                 dockerContainer.getApplications().add(tempApplication);
             }
@@ -129,8 +129,8 @@ public class WorkflowBuild {
     /**
      * Connects input/output of tow workflow nodes.
      *
-     * @param parent the parent node from wich the output will be conneted
-     * @param child the child node from wich the input will be conneted
+     * @param parent the parent node from which the output will be connected
+     * @param child the child node from which the input will be connected
      * @param sourceName the source name of the parent note
      * @param targetName the target name of the child node
      * @return the workflow node descriptor
