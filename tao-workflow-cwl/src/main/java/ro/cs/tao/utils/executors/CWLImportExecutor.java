@@ -181,7 +181,6 @@ public class CWLImportExecutor {
                     } else if (!applicationList.isEmpty()) {
                         errorMessage = "CWL with applications: " + applicationList.stream().map(CWLApplicationTemplate::getApplicationName).collect(Collectors.joining(", "));
                     }
-                    //throw new RuntimeException("Container unit is null or can not be created, for " + errorMessage + ".Please check that the docker image is available!");
                     logger.severe("Container unit is null or can not be created, for " + errorMessage + ".Please check that the docker image is available!");
                     skipContainer = true;
                 }
@@ -209,12 +208,13 @@ public class CWLImportExecutor {
      */
     private void createProcessingComponents(List<CWLApplicationTemplate> applicationList, Container dockerContainer, String mainWfId, String stepId) throws PersistenceException {
         for (CWLApplicationTemplate application : applicationList) {
-            String componentLabel = CWLUtils.simplifyApplicationName(application.getApplicationName(), false);
-            String componentId = CWLUtils.simplifyApplicationName(application.getApplicationName(), true);
+            String componentLabel = CWLUtils.simplifyApplicationName(application.getApplicationName());
+            String componentId = CWLUtils.simplifyApplicationName(application.getApplicationName());
             ProcessingComponent processingComponent = findComponent(componentId);
             boolean componentAlreadyExist = true;
             ComponentCategory componentCategory = ComponentCategory.MISC;
             String componentTemplate = createTemplate(application.getApplicationParams());
+            Map<String, CWLParamDescTemplate> paramsToBeAdded = new LinkedHashMap<>();
             if (processingComponent == null) {
                 String fileLocation = dockerContainer.getApplications().stream()
                         .filter(app -> app.getName().equals(componentId))
@@ -239,16 +239,12 @@ public class CWLImportExecutor {
                 // default working directory
                 processingComponent.setWorkingDirectory(".");
                 createdComponentsHistory.add(componentId);
-            } else {
-                // if the processing component was updated by another import, it will be updated
-                if (processingComponent.getTemplateContents().equals(componentTemplate)) {
-                   processingComponent.setTemplateContents(componentTemplate);
-                }
             }
             //used in the workaround for cases where .csv file is mandatory, but it is not an input
             long numberOfInputs = application.getApplicationParams().entrySet().stream().filter(e -> e.getValue().getParamType().equals(INPUT_PARAM_POSITION)).count();
 
             for (Map.Entry<String, CWLParamDescTemplate> entry : application.getApplicationParams().entrySet()) {
+                boolean foundInTemplate = foundInTemplate(processingComponent.getTemplateContents(), entry.getValue());
                 String entryKey = CWLUtils.removeNumericSuffix(entry.getKey());
                 String entryFoundName = CWLUtils.removeStartDashes(entry.getValue().getParamName());
                 String parameterKey = entry.getKey();
@@ -287,7 +283,21 @@ public class CWLImportExecutor {
                         if (defaultValue instanceof Collection<?> || entry.getValue().getFormatType().contains("[]")) {
                             sourceDescriptor.setCardinality(0);
                         }
-                        processingComponent.addSource(sourceDescriptor);
+                        if (!componentAlreadyExist) {
+                            processingComponent.addSource(sourceDescriptor);
+                        } else {
+                            if (!foundInTemplate) {
+                                String foundParam = getParamFromPositionInTemplate(processingComponent.getTemplateContents(), entry.getValue());
+                                DataDescriptor foundDataDescriptor = processingComponent.getSources().stream()
+                                        .filter(pc -> pc.getName().equals(foundParam)).map(SourceDescriptor::getDataDescriptor).findFirst().orElse(null);
+                                if (foundDataDescriptor != null && !dataDescriptor.getFormatType().equals(foundDataDescriptor.getFormatType())) {
+                                    paramsToBeAdded.put(entry.getKey(), entry.getValue());
+                                    processingComponent.addSource(sourceDescriptor);
+                                } else {
+                                    updateInputReference(foundParam, entry.getKey());
+                                }
+                            }
+                        }
                     } else if (sourceDescriptor.getDataDescriptor().getFormatType().equals(DataFormat.OTHER)) {
                         sourceDescriptor.setDataDescriptor(dataDescriptor);
                     }
@@ -321,7 +331,21 @@ public class CWLImportExecutor {
                             dataDescriptor.setLocation(location);
                         }
                         targetDescriptor.setDataDescriptor(dataDescriptor);
-                        processingComponent.addTarget(targetDescriptor);
+                        if (!componentAlreadyExist) {
+                            processingComponent.addTarget(targetDescriptor);
+                        } else {
+                            if (!foundInTemplate) {
+                                String foundParam = getParamFromPositionInTemplate(processingComponent.getTemplateContents(), entry.getValue());
+                                DataDescriptor foundDataDescriptor = processingComponent.getTargets().stream()
+                                        .filter(pc -> pc.getName().equals(foundParam)).map(TargetDescriptor::getDataDescriptor).findFirst().orElse(null);
+                                if (foundDataDescriptor != null && !dataDescriptor.getFormatType().equals(foundDataDescriptor.getFormatType())) {
+                                    paramsToBeAdded.put(entry.getKey(), entry.getValue());
+                                    processingComponent.addTarget(targetDescriptor);
+                                } else {
+                                    updateOutputReference(foundParam, entry.getKey());
+                                }
+                            }
+                        }
                     } else if (targetDescriptor.getDataDescriptor().getFormatType().equals(DataFormat.OTHER)) {
                         targetDescriptor.setDataDescriptor(dataDescriptor);
                     }
@@ -345,7 +369,16 @@ public class CWLImportExecutor {
                         if (description != null) {
                             parameterDescriptor.setDescription(description);
                         }
+                        if (!componentAlreadyExist) {
+                            processingComponent.addParameter(parameterDescriptor);
+                        } else {
+                            if (!foundInTemplate) {
+                                paramsToBeAdded.put(entry.getKey(), entry.getValue());
+                                processingComponent.addParameter(parameterDescriptor);
+                            }
+                        }
                         processingComponent.addParameter(parameterDescriptor);
+                        paramsToBeAdded.put(entry.getKey(), entry.getValue());
                     }
                 }
             }
@@ -356,6 +389,11 @@ public class CWLImportExecutor {
                     message = message.isEmpty() ? "targets" : "and targets";
                 }
                 logger.warning(processingComponent.getId() + " component does not have " + message + "!");
+            }
+
+            if (!paramsToBeAdded.isEmpty()) {
+                componentTemplate = updateTemplate(processingComponent.getTemplateContents(), paramsToBeAdded);
+                processingComponent.setTemplateContents(componentTemplate);
             }
 
             if (componentAlreadyExist) {
@@ -373,23 +411,45 @@ public class CWLImportExecutor {
      * @return the template as a string
      */
     private String createTemplate(Map<String, CWLParamDescTemplate> params) {
+        return composeTemplate(new LinkedList<>(), params);
+    }
+
+    /**
+     * Updates a processing component template based on the provided parameters.
+     *
+     * @param componentTemplate already existing component template
+     * @param params a set of processing component parameters used to build the template
+     * @return the template as a string
+     */
+    private String updateTemplate(String componentTemplate, Map<String, CWLParamDescTemplate> params) {
+        LinkedList<String> paramTemplateList = splitTemplate(componentTemplate);
+        return composeTemplate(paramTemplateList, params);
+    }
+
+    /**
+     * Compose the template content. Is used in update and create methods.
+     *
+     * @param paramTemplateList list with already existing parameters in template (if it comes from update)
+     * @param params a set of processing component parameters used to build the template
+     * @return the template as a string
+     */
+    private String composeTemplate(LinkedList<String> paramTemplateList, Map<String, CWLParamDescTemplate> params) {
         String firstDeclaredParamPrefix = params.values().stream()
-                .filter(p -> p.getParamPrefix() != null)
                 .map(CWLParamDescTemplate::getParamPrefix)
+                .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);
         String declaredParamPrefix = CWLUtils.extractDashPrefix(firstDeclaredParamPrefix);
-        LinkedList<String> paramTemplateList = new LinkedList<>();
         Map<String, CWLParamDescTemplate> paramWithPositionList = params.entrySet().stream()
                 .filter(p -> p.getValue().getParamPosition() > 0).collect(Collectors.toMap(
-                Map.Entry::getKey,
-                Map.Entry::getValue
-        ));
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
         Map<String, CWLParamDescTemplate> paramWithoutPositionList = params.entrySet().stream()
                 .filter(p -> p.getValue().getParamPosition() < 1).collect(Collectors.toMap(
-                Map.Entry::getKey,
-                Map.Entry::getValue
-        ));
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
         for (Map.Entry<String, CWLParamDescTemplate> paramEntry: paramWithoutPositionList.entrySet()) {
             String paramName = paramEntry.getValue().getParamName();
             String param = paramName;
@@ -421,12 +481,144 @@ public class CWLImportExecutor {
                 paramTemplate = param + "\n$" + paramVal;
             }
             if (paramEntry.getValue().getParamPosition() > 0) {
-                paramTemplateList.add(paramEntry.getValue().getParamPosition()-1, paramTemplate);
+                paramTemplateList.add(paramEntry.getValue().getParamPosition() - 1, paramTemplate);
             } else {
                 paramTemplateList.add(paramTemplate);
             }
         }
         return String.join("\n", paramTemplateList);
+    }
+
+    /**
+     * Checks if a parameter was already added in the processing component template.
+     *
+     * @param componentTemplate the already existing template
+     * @param param the parameter to be searched
+     * @return true of false
+     */
+    private boolean foundInTemplate(String componentTemplate, CWLParamDescTemplate param) {
+        if (param.getParamPosition() > 1) {
+            LinkedList<String> template = splitTemplate(componentTemplate);
+            String paramOnPosition = template.get(param.getParamPosition() - 1);
+            return paramOnPosition.equals("$" + param.getParamName()) || componentTemplate.contains("$" + param.getParamName());
+        } else {
+            String paramName = param.getParamName();
+            String paramVal = paramName.startsWith("-") ? CWLUtils.removeStartDashes(paramName) : paramName;
+            paramVal = paramVal.replaceAll("-", "_");
+            String paramTemplate = param + "\n$" + paramVal;
+            return componentTemplate.contains(paramTemplate);
+        }
+    }
+
+    /**
+     * Splits the template in LinkedList by the following pattern: -input1 &input1 is on one position and $input2 on another
+     * @param componentTemplate the already existing template
+     * @return the new list
+     */
+    private LinkedList<String> splitTemplate(String componentTemplate) {
+        LinkedList<String> template = Arrays.stream(componentTemplate.split("\n")).collect(Collectors.toCollection(LinkedList::new));
+        LinkedList<String> newTemplate = new LinkedList<>();
+        for (int idx = 0; idx < template.size(); idx++) {
+            String value = template.get(idx).startsWith("-") ? CWLUtils.removeStartDashes(template.get(idx)) : template.get(idx);
+            if (idx < template.size() - 1 && template.get(idx + 1).equals("$" + value)) {
+                newTemplate.add(template.get(idx) + "\n" + template.get(idx + 1));
+                idx++;
+            } else {
+                newTemplate.add(template.get(idx));
+            }
+        }
+        return newTemplate;
+    }
+
+    /**
+     * Updated the input id in CWL workflow, when it was found with another id in a CWL.
+     *
+     * @param componentInputId the id already defined for the parameter of a component.
+     * @param currentId the new id assigned for the same parameter.
+     */
+    private void updateInputReference(String componentInputId, String currentId) {
+        List<Workflow> workflowList = cwlTemplate.getCwlMainGraphObject(CWL_GRAPH_ID).stream()
+                .filter(g -> g instanceof Workflow).map(g -> (Workflow) g).toList();
+        if (!workflowList.isEmpty()) {
+            for (Workflow workflow : workflowList) {
+                for (Object step : workflow.getSteps()) {
+                    for (Object in : ((WorkflowStep) step).getIn()) {
+                        if (((WorkflowStepInput)in).getId().get().equals(currentId)) {
+                            ((WorkflowStepInput)in).setId(Optional.of(componentInputId));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Updated the output id in CWL workflow, when it was found with another id in a CWL.
+     *
+     * @param componentInputId the id already defined for the parameter of a component.
+     * @param currentId the new id assigned for the same parameter.
+     */
+    private void updateOutputReference(String componentInputId, String currentId) {
+        List<Workflow> workflowList = cwlTemplate.getCwlMainGraphObject(CWL_GRAPH_ID).stream()
+                .filter(g -> g instanceof Workflow).map(g -> (Workflow) g).toList();
+        if (!workflowList.isEmpty()) {
+            for (Workflow workflow : workflowList) {
+                for (Object step : workflow.getSteps()) {
+                    for (Object in : ((WorkflowStep) step).getIn()) {
+                        if (((WorkflowStepInput)in).getSource().toString().contains("/" + currentId)) {
+                            String source = ((WorkflowStepInput)in).getSource().toString();
+                            source = source.replaceAll("\\b" + Pattern.quote(currentId) + "\\b", componentInputId);
+                            ((WorkflowStepInput)in).setSource(source);
+                        }
+                    }
+                    for (Object out : ((WorkflowStep) step).getOut()) {
+                        if (out instanceof WorkflowStepOutput && ((WorkflowStepOutput)out).getId().get().equals(currentId)) {
+                            ((WorkflowStepOutput)out).setId(Optional.of(componentInputId));
+                            updateOutputReferenceInCommandLine(((WorkflowStep) step).getRun().toString(), componentInputId, currentId);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Updated the output id in CWL command line tool, when it was found with another id in a CWL.
+     *
+     * @param commandLineToolId the id of a command line tool.
+     * @param componentInputId the id already defined for the parameter of a component.
+     * @param currentId the new id assigned for the same parameter.
+     */
+    private void updateOutputReferenceInCommandLine(String commandLineToolId, String componentInputId, String currentId) {
+        Object commandLineTool = cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, commandLineToolId);
+        if (commandLineTool instanceof CommandLineTool) {
+            for (Object out : ((CommandLineTool) commandLineTool).getOutputs()) {
+                if (((CommandOutputParameter) out).getId().get().equals(currentId)) {
+                    ((CommandOutputParameter) out).setId(Optional.of(componentInputId));
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Gets the parameter found on the same position in the template, only if the parameter does not match "param $param".
+     *
+     * @param componentTemplate the already existing template.
+     * @param param the parameter to be searched.
+     * @return the already existing parameter or null.
+     */
+    private String getParamFromPositionInTemplate(String componentTemplate, CWLParamDescTemplate param) {
+        if (param.getParamPosition() > 1) {
+            LinkedList<String> template = splitTemplate(componentTemplate);
+            String paramOnPosition = template.get(param.getParamPosition() - 1);
+            if (!paramOnPosition.equals("$" + param.getParamName())) {
+                return paramOnPosition.replaceAll("\\$", "");
+            }
+        }
+        return null;
     }
 
     /**
@@ -512,13 +704,18 @@ public class CWLImportExecutor {
         }
     }
 
+    /**
+     * Creates a workflow node from a CommandLineTool and adds it to the workflow descriptor.
+     *
+     * @param nodeId the id of the CommandLineTool used to create the workflow node
+     */
     private void createWorkflowNode(String nodeId) throws PersistenceException {
         createWorkflowNode(nodeId, null, null);
     }
 
     /**
      * Creates a workflow node from a CommandLineTool and adds it to the workflow descriptor.
-     * <p>
+     *
      * This method performs the following steps:
      * 1. Generates a processing component template from the CommandLineTool.
      * 2. Finds the corresponding component from the database.
@@ -535,7 +732,7 @@ public class CWLImportExecutor {
             throw new RuntimeException("To many arguments for bash -c for CommandLineTool "
                     + (commandLineTool.getId().isPresent() ? commandLineTool.getId().get() : ""));
         } else {
-            String componentId = CWLUtils.simplifyApplicationName(applicationList.getFirst().getApplicationName(), true);
+            String componentId = CWLUtils.simplifyApplicationName(applicationList.getFirst().getApplicationName());
             Map<String, CWLParamDescTemplate> params = applicationList.getFirst().getApplicationParams();
             TaoComponent component = findComponent(componentId);
             if (component == null && componentId.contains("_")) {
@@ -624,7 +821,7 @@ public class CWLImportExecutor {
     }
 
     /**
-     * Gets the {@link DataFormat} type for a given parameter within a CWL workflow.
+     * Gets the DataFormat type for a given parameter within a CWL workflow.
      *
      * In case the parameter is a source or target, the method attempts to find its ancestor id
      * and infer the format type from its file extension.
@@ -941,7 +1138,7 @@ public class CWLImportExecutor {
             Object refRunObject = cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, refRunId);
             String inReference = null;
             if (refRunObject instanceof CommandLineTool) {
-                inReference = ((CommandLineTool) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, refRunId)).getOutputs().stream()
+                inReference = ((CommandLineTool) refRunObject).getOutputs().stream()
                         .filter(out -> ((CommandOutputParameter) out).getId().isPresent() && ((CommandOutputParameter) out).getId().get().equals(paramId))
                         .map(out -> ((CommandOutputParameter) out).getOutputBinding()).filter(Objects::nonNull).filter(Optional::isPresent).map(Optional::get)
                         .map(CommandOutputBinding::getGlob).map(Object::toString).findFirst().orElse(null);
@@ -984,10 +1181,11 @@ public class CWLImportExecutor {
             List<Workflow> workflowList = cwlTemplate.getCwlMainGraphObject(CWL_GRAPH_ID).stream().filter(workflow -> workflow instanceof Workflow).map(obj -> (Workflow) obj).toList();
             String refRunId = findAncestorReferencedId(workflowList, stepId, id, paramType);
             String paramId;
+            String referredStepId;
             if (refRunId != null && refRunId.contains("/")) {
                 refRunId = CWLUtils.getValueFormSource(refRunId);
                 String[] splitVal = refRunId.split("/");
-                String referredStepId = splitVal[0];
+                referredStepId = splitVal[0];
                 paramId = splitVal[1];
                 Object referredStep = workflowList.stream().flatMap(workflow -> workflow.getSteps().stream())
                         .filter(step -> ((WorkflowStep)step).getId().isPresent() && ((WorkflowStep)step).getId().get().equals(referredStepId)).findFirst().orElse(null);
@@ -1004,6 +1202,7 @@ public class CWLImportExecutor {
                     }
                 }
             } else {
+                referredStepId = null;
                 paramId = id;
             }
             if (refRunId == null) {
@@ -1031,7 +1230,7 @@ public class CWLImportExecutor {
                 Object refRunObject = cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, refRunId);
                 String inReference = null;
                 if (refRunObject instanceof CommandLineTool) {
-                    inReference = ((CommandLineTool) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, refRunId)).getOutputs().stream()
+                    inReference = ((CommandLineTool) refRunObject).getOutputs().stream()
                             .filter(out -> ((CommandOutputParameter) out).getId().isPresent() && ((CommandOutputParameter) out).getId().get().equals(paramId))
                             .map(out -> ((CommandOutputParameter) out).getOutputBinding()).filter(Objects::nonNull).filter(Optional::isPresent).map(Optional::get)
                             .map(CommandOutputBinding::getGlob).map(Object::toString).findFirst().orElse(null);
@@ -1040,16 +1239,48 @@ public class CWLImportExecutor {
                     inReference = inReference.replaceAll("\\$\\(inputs\\.(.*?)\\)", "$1");
                 }
                 String inRefParamId = inReference;
-                return ((CommandLineTool) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, refRunId)).getInputs().stream()
-                        .filter(in -> ((CommandInputParameter) in).getId().isPresent() && ((CommandInputParameter) in).getId().get().equals(inRefParamId))
-                        .map(in -> ((CommandInputParameter) in).getDefault()).filter(Objects::nonNull).filter(Optional::isPresent).map(Optional::get).map(Object::toString)
-                        .findFirst().orElse(null);
+                Object referredInput = ((CommandLineTool) refRunObject).getInputs().stream()
+                        .filter(in -> ((CommandInputParameter) in).getId().isPresent() && ((CommandInputParameter) in).getId().get().equals(inRefParamId)).findFirst().orElse(null);
+                if (referredInput != null) {
+                    if (((CommandInputParameter)referredInput).getDefault() != null) {
+                        return ((CommandInputParameter)referredInput).getDefault().get().toString();
+                    } else {
+                        String wfStepId = referredStepId != null ? referredStepId : stepId;
+                        String foundValueFrom = findInputValueFromInWfStep(wfStepId, inRefParamId);
+                        if (foundValueFrom != null) {
+                            return CWLUtils.extractValueFromValueFrom(foundValueFrom);
+                        }
+                    }
+                }
             }
         } else if (mainWf instanceof CommandLineTool) {
             return ((CommandLineTool) mainWf).getInputs().stream()
                     .filter(in -> ((CommandInputParameter) in).getId().isPresent() && ((CommandInputParameter) in).getId().get().equals(id))
                     .map(in -> ((CommandInputParameter) in).getDefault()).filter(Objects::nonNull).filter(Optional::isPresent).map(Optional::get).map(Object::toString)
                     .findFirst().orElse(null);
+        }
+        return null;
+    }
+
+    /**
+     * Retrieves the valueFrom value associated with a specific input of a workflow step within the CWL workflow.
+     *
+     * @param stepId the id of the step where the input is found
+     * @param inputId the id of the input
+     * @return the valueFrom value as a string or null
+     */
+    private String findInputValueFromInWfStep(String stepId, String inputId) {
+        List<Workflow> workflowList = cwlTemplate.getCwlMainGraphObject(CWL_GRAPH_ID).stream()
+                .filter(g -> g instanceof Workflow).map(g -> (Workflow) g).toList();
+        if (!workflowList.isEmpty()) {
+            for (Workflow workflow : workflowList) {
+                WorkflowStep step = workflow.getStep(stepId);
+                if (step != null) {
+                    return step.getIn().stream()
+                            .filter( in -> ((WorkflowStepInput) in).getId().isPresent() && ((WorkflowStepInput) in).getId().get().equals(inputId))
+                            .map(in -> ((WorkflowStepInput) in).getValueFrom()).filter(Objects::nonNull).map(Object::toString).findFirst().orElse(null);
+                }
+            }
         }
         return null;
     }
@@ -1403,10 +1634,7 @@ public class CWLImportExecutor {
         if (inputValue.equals(yamlOutVal)) {
             return true;
         }
-        if (inputValue.contains("/") && inputValue.endsWith(yamlOutVal)) {
-            return true;
-        }
-        return false;
+        return inputValue.contains("/") && inputValue.endsWith(yamlOutVal);
     }
 
     /**
@@ -1443,6 +1671,12 @@ public class CWLImportExecutor {
         }
     }
 
+    /**
+     * Checks if the input of a component is linked with te output of another.
+     *
+     * @param inputId the id of an input
+     * @return true or false
+     */
     private boolean checkIfInputIsLinked(String inputId) {
         List<Workflow> workflowList = cwlTemplate.getCwlMainGraphObject(CWL_GRAPH_ID).stream()
                 .filter(g -> g instanceof Workflow).map(g -> (Workflow) g).toList();

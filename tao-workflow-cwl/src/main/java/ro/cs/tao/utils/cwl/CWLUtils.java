@@ -54,7 +54,7 @@ public class CWLUtils {
         return foundSourceList;
     }
 
-    public static String simplifyApplicationName(String name, boolean toLowerCase) {
+    public static String simplifyApplicationName(String name) {
         if (name.contains("otbcli_")) {
             name = name.replace("otbcli_", "");
         }
@@ -64,9 +64,6 @@ public class CWLUtils {
         }
         String[] tokens = name.split("_|\\-|\\.");
         name = Arrays.stream(tokens).map(token -> token.isEmpty() ? token : token.substring(0, 1).toUpperCase() + token.substring(1)).collect(Collectors.joining(""));
-        /*if (toLowerCase) {
-            return name.toLowerCase();
-        }*/
         return name;
     }
 
@@ -164,8 +161,7 @@ public class CWLUtils {
 
     public static String extractDashPrefix(String value) {
         Matcher m = Pattern.compile("^-+").matcher(value);
-        String prefix = m.find() ? m.group() : "";
-        return prefix;
+        return m.find() ? m.group() : "";
     }
 
     public static String removeStartDashes(String value) {
@@ -199,11 +195,11 @@ public class CWLUtils {
     }
 
     /**
-     * Transforms the component name to component id, keeping the component name sufix if exist.
+     * Transforms the component name to component id, keeping the component name suffix if existed.
      *
      * @param name the component name
      * @param componentId the component id
-     * @return
+     * @return transformed component name
      */
     public static String transformFromNameToCompId(String name, String componentId) {
         String nameSuffix = "";
@@ -211,10 +207,8 @@ public class CWLUtils {
         Matcher nameMatcher = namePattern.matcher(name);
         if (nameMatcher.find()) {
             nameSuffix = nameMatcher.group(1);
-            // transform sufix from _\d+ to \s(_\d+)
+            // transform suffix from _\d+ to \s(_\d+)
             nameSuffix = nameSuffix.replace("_", " (") + ")";
-            // add the new sufix to name in order to transform name from gdal_translate_1 to gdal_translate (1)
-            name = name + nameSuffix;
         }
         return componentId + nameSuffix;
     }
@@ -228,5 +222,15 @@ public class CWLUtils {
             }
         }
         return sourceValue;
+    }
+
+    public static String extractValueFromValueFrom(String valueFrom) {
+        String value = null;
+        Pattern p = Pattern.compile("\\$\\(\\s*(.*?)\\s*\\)");
+        Matcher m = p.matcher(valueFrom);
+        while (m.find()) {
+            value = m.group(1).replaceAll("\"", "");
+        }
+        return value;
     }
 }

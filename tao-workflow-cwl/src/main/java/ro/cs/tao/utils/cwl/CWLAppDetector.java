@@ -105,11 +105,13 @@ public class CWLAppDetector {
                             }
                         }
                     }
-                    if (entry.getValue().getParamType().equals(OUTPUT_PARAM_POSITION) && entry.getValue().getDefaultValue() == null) {
-                        WorkflowStepInput associatedStepIn = inputs.stream().filter(in -> ((WorkflowStepInput) in).getId().isPresent() && ((WorkflowStepInput) in).getId().get().equals(entry.getKey()))
+                    if (entry.getValue().getDefaultValue() == null) {
+                        WorkflowStepInput associatedStepIn = inputs.stream().filter(in -> ((WorkflowStepInput) in).getId().isPresent()
+                                        && (((WorkflowStepInput) in).getId().get().equals(entry.getKey())) || ((WorkflowStepInput) in).getId().get().equals(entry.getValue().getParamName()))
                                 .map(in -> (WorkflowStepInput) in).filter(in -> in.getValueFrom() != null).findFirst().orElse(null);
                         if (associatedStepIn != null) {
-                            entry.getValue().setDefaultValue(associatedStepIn.getValueFrom());
+                            String value = CWLUtils.extractValueFromValueFrom(associatedStepIn.getValueFrom().toString());
+                            entry.getValue().setDefaultValue(value);
                         }
                     }
                 }
@@ -179,14 +181,14 @@ public class CWLAppDetector {
         for (Object input : commandLineTool.getInputs()) {
             boolean canChangeMandatoryParamType = false; //added as workaround for Sen4XRadiometricIndices -list param (it must be mandatory but still parameter)
             CWLParamDescTemplate paramDesc = new CWLParamDescTemplate();
-            String paramType = extractParamType(((CommandInputParameter) input).getType());
+            String paramFormatType = extractParamType(((CommandInputParameter) input).getType());
             paramDesc.setParamType(INPUT_PARAM_POSITION);
             if ((!(((CommandInputParameter)input).getType() instanceof Collection)
                     && !((CommandInputParameter) input).getType().toString().matches("^(File|Directory)(\\[])?\\??$"))
                     || ((CommandInputParameter) input).getId().get().matches(".*_?config_?.*")) {
                 paramDesc.setParamType(PARAMETER_PARAM_POSITION);
             }
-            paramDesc.setFormatType(paramType);
+            paramDesc.setFormatType(paramFormatType);
             // an input is optional if type is a CWLType, CWLType array or a string that ends with question mark
             if ((((CommandInputParameter) input).getType() instanceof CWLType && ((CommandInputParameter) input).getType().toString().endsWith("?")) ||
                     ((CommandInputParameter) input).getType() instanceof Collection<?> ||
@@ -199,7 +201,7 @@ public class CWLAppDetector {
                             .anyMatch(elem -> elem instanceof CWLType && elem.toString().equals("null"));
                     if (findNull) {
                         paramDesc.setMandatory(false);
-                        paramDesc.setFormatType(paramType);
+                        //paramDesc.setFormatType(paramFormatType);
                     } else {
                         paramDesc.setMandatory(true);
                         canChangeMandatoryParamType = true;
@@ -221,11 +223,8 @@ public class CWLAppDetector {
                 paramDesc.setParamName(((CommandInputParameter) input).getId().get());
                 if (inputBinding.getPrefix() != null && inputBinding.getPrefix().isPresent()) {
                     String prefix = inputBinding.getPrefix().get();
-                    /*String paramName = prefix.startsWith("-") ? CWLUtils.removeStartDashes(prefix) : prefix;
-                    paramDesc.setParamName(paramName);*/
                     paramDesc.setParamPrefix(prefix);
                 } else if (inputBinding.getPosition() != null) {
-                    //paramDesc.setParamName(((CommandInputParameter) input).getId().get());
                     if (inputBinding.getPosition() instanceof Integer) {
                         paramDesc.setParamPosition((Integer) inputBinding.getPosition());
                     } else {
@@ -253,9 +252,9 @@ public class CWLAppDetector {
         }
         for (Object output : commandLineTool.getOutputs()) {
             CWLParamDescTemplate paramDesc = new CWLParamDescTemplate();
-            String paramType = extractParamType(((CommandOutputParameter) output).getType());
+            String paramFormatType = extractParamType(((CommandOutputParameter) output).getType());
             paramDesc.setParamType(INPUT_PARAM_POSITION);
-            paramDesc.setFormatType(paramType);
+            paramDesc.setFormatType(paramFormatType);
             if (((CommandOutputParameter) output).getOutputBinding().isPresent() && ((CommandOutputParameter) output).getOutputBinding().get().getGlob() != null) {
                 String glob = ((CommandOutputParameter) output).getOutputBinding().get().getGlob().toString();
                 String paramIdRegex = "^\"?(\\./)?\\$\\(inputs\\.([a-zA-Z0-9_]+)(\\)?/\\*)?\\)?(\\s?\\?.+)?\"?$";
@@ -424,7 +423,7 @@ public class CWLAppDetector {
                 if (nonNull != null) {
                     type = nonNull.toString();
                 } else {
-                    type = ((Collection)typeObject).stream().findFirst().orElse(null).toString();
+                    type = ((Collection<?>)typeObject).stream().findFirst().orElse(null).toString();
                 }
             }
             if (type.endsWith("?")) {
