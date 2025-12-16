@@ -3,7 +3,7 @@
   "name" : "Orfeo Toolbox 9.1.1",
   "description" : "Orfeo Toolbox 9.1.1 container",
   "type" : "DOCKER",
-  "applicationPath" : "/opt/OTB-9.1.1-Linux64/bin",
+  "applicationPath" : null,
   "applications" : [ {
     "path" : "otbcli_Aggregate",
     "name" : "otb911_Aggregate",
