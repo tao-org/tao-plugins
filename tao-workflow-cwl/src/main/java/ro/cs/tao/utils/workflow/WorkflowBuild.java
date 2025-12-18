@@ -37,7 +37,7 @@ public class WorkflowBuild {
     /**
      * Creates a workflow node descriptor from a TaoComponent.
      *
-     * @param component the component used to create the wokflow node
+     * @param component the component used to create the workflow node
      * @param workflowDescriptor the workflow descriptor to which the node will belong
      * @return a workflow node descriptor
      */
@@ -73,10 +73,10 @@ public class WorkflowBuild {
      * @param name the workflow node name
      * @param id the component id
      * @param componentType the component type
-     * @param workflowDescriptor the workflow descriptor to wich this node will belong
+     * @param workflowDescriptor the workflow descriptor to which this node will belong
      * @param relativeTo the node relative to which should be placed, it can be null
      * @param direction the direction in which to place the node, it can be null
-     * @return the workflow nodedescriptor
+     * @return the workflow node descriptor
      */
     public static WorkflowNodeDescriptor createNode(String name, String id, ComponentType componentType, WorkflowDescriptor workflowDescriptor, WorkflowNodeDescriptor relativeTo, Direction direction) throws PersistenceException {
         boolean existNodeId = workflowDescriptor.getNodes().stream().anyMatch(wfNode -> wfNode.getName().equals(name));
@@ -147,7 +147,7 @@ public class WorkflowBuild {
                     return workflowService.addLink(parent.getId(), sourceTarget.get().getId(),
                             child.getId(), targetSource.get().getId());
                 } catch (PersistenceException e) {
-                    logger.warning("Unable to add link! Maybe incompatible formats!");
+                    logger.warning("Unable to add link between source component " + parent.getComponentId() + " - " + sourceName +" and target component " + child.getComponentId() + " - " + targetName + "! Maybe incompatible formats!");
                 }
             }
             return null;
@@ -193,7 +193,7 @@ public class WorkflowBuild {
     }
 
     /**
-     * Updates the canvas position for each workflow node found in an workflow descriptor, base on node level.
+     * Updates the canvas position for each workflow node found in a workflow descriptor, base on node level.
      *
      * @param workflowDescriptor the workflow node descriptor
      */
