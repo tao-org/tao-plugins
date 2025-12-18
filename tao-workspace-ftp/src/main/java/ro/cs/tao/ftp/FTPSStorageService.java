@@ -2,6 +2,7 @@ package ro.cs.tao.ftp;
 
 import com.github.robtimus.filesystems.ftp.FTPEnvironment;
 import com.github.robtimus.filesystems.ftp.FTPSEnvironment;
+import ro.cs.tao.workspaces.RepositoryType;
 
 /**
  * FTPSStorageService is a concrete implementation of FTPBaseService that provides
@@ -21,6 +22,11 @@ import com.github.robtimus.filesystems.ftp.FTPSEnvironment;
  * is passed to FTPBaseService for interaction with FTPS-compliant repositories.
  */
 public class FTPSStorageService extends FTPBaseService {
+
+    @Override
+    public boolean isIntendedFor(RepositoryType repositoryType) {
+        return RepositoryType.FTPS.equals(repositoryType);
+    }
 
     @Override
     protected String protocol() {

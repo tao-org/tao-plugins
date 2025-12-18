@@ -34,6 +34,11 @@
             <artifactId>tao-execution</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ro.c-s.tao</groupId>
+            <artifactId>tao-service-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

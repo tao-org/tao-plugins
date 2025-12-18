@@ -11,6 +11,7 @@ import ro.cs.tao.stac.core.model.extensions.projection.ProjExtension;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workspaces.Repository;
+import ro.cs.tao.workspaces.RepositoryType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,6 +46,11 @@ public class STACStorageService extends BaseStorageService<byte[]> {
     @Override
     public boolean isIntendedFor(String protocol) {
         return PROTOCOL.equalsIgnoreCase(protocol);
+    }
+
+    @Override
+    public boolean isIntendedFor(RepositoryType repositoryType) {
+        return RepositoryType.STAC.equals(repositoryType);
     }
 
     @Override

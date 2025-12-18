@@ -9,6 +9,7 @@ import ro.cs.tao.topology.openstack.commons.Constants;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workspaces.Repository;
+import ro.cs.tao.workspaces.RepositoryType;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -41,6 +42,11 @@ public class ObjectStorageService extends BaseStorageService<byte[]> {
     @Override
     public boolean isIntendedFor(String protocol) {
         return PROTOCOL.equalsIgnoreCase(protocol);
+    }
+
+    @Override
+    public boolean isIntendedFor(RepositoryType repositoryType) {
+        return RepositoryType.SWIFT.equals(repositoryType);
     }
 
     @Override
@@ -233,6 +239,15 @@ public class ObjectStorageService extends BaseStorageService<byte[]> {
         final MessageDigest md5Digest = MessageDigest.getInstance("MD5");
         traverseHash(path, md5Digest);
         return StringUtilities.byteArrayToHexString(md5Digest.digest());
+    }
+
+    @Override
+    public Map<String, Long> getUserStorage() {
+        try {
+            return this.swiftService.getContainerSizes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<FileObject> list(String folderPath, Set<String> exclusions, String lastItem) {
