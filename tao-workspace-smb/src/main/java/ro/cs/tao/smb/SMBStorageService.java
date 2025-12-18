@@ -50,6 +50,11 @@ public class SMBStorageService extends BaseStorageService<byte[]> {
     }
 
     @Override
+    public boolean isIntendedFor(RepositoryType repositoryType) {
+        return RepositoryType.SMB.equals(repositoryType);
+    }
+
+    @Override
     public void associate(Repository repository) {
         if (!isIntendedFor(repository.getType().prefix())) {
             throw new IllegalArgumentException("Wrong repository type");

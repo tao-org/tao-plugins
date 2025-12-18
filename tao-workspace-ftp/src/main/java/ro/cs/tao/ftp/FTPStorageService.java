@@ -1,6 +1,7 @@
 package ro.cs.tao.ftp;
 
 import com.github.robtimus.filesystems.ftp.FTPEnvironment;
+import ro.cs.tao.workspaces.RepositoryType;
 
 /**
  * A service class for handling FTP-based file storage operations. This class extends the
@@ -19,6 +20,11 @@ import com.github.robtimus.filesystems.ftp.FTPEnvironment;
  * - Provide the necessary FTP environment configuration for establishing connections.
  */
 public class FTPStorageService extends FTPBaseService {
+
+    @Override
+    public boolean isIntendedFor(RepositoryType repositoryType) {
+        return RepositoryType.FTP.equals(repositoryType);
+    }
 
     @Override
     protected String protocol() {

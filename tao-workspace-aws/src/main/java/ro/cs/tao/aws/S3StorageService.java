@@ -15,6 +15,7 @@ import ro.cs.tao.services.storage.BaseStorageService;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workspaces.Repository;
+import ro.cs.tao.workspaces.RepositoryType;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -192,6 +193,11 @@ public class S3StorageService extends BaseStorageService<byte[]> {
     @Override
     public boolean isIntendedFor(String protocol) {
         return PROTOCOL.equalsIgnoreCase(protocol);
+    }
+
+    @Override
+    public boolean isIntendedFor(RepositoryType repositoryType) {
+        return RepositoryType.AWS.equals(repositoryType);
     }
 
     @Override
