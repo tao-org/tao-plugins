@@ -7,8 +7,10 @@ public class CWLInputDependenciesTemplate {
     private String targetNodeName;
     private String sourceName;
     private String targetName;
-    private Long SourceWorkflowNodeId;
+    private Long sourceWorkflowNodeId;
     private Long targetWorkflowNodeId;
+    private String sourceApplicationName;
+    private String targetApplicationName;
 
     public String getCommandLineToolSourceId() {
         return commandLineToolSourceId;
@@ -43,11 +45,11 @@ public class CWLInputDependenciesTemplate {
     }
 
     public Long getSourceWorkflowNodeId() {
-        return SourceWorkflowNodeId;
+        return sourceWorkflowNodeId;
     }
 
     public void setSourceWorkflowNodeId(Long sourceWorkflowNodeId) {
-        SourceWorkflowNodeId = sourceWorkflowNodeId;
+        this.sourceWorkflowNodeId = sourceWorkflowNodeId;
     }
 
     public Long getTargetWorkflowNodeId() {
@@ -72,5 +74,21 @@ public class CWLInputDependenciesTemplate {
 
     public void setTargetNodeName(String targetNodeName) {
         this.targetNodeName = targetNodeName;
+    }
+
+    public String getSourceApplicationName() {
+        return sourceApplicationName;
+    }
+
+    public void setSourceApplicationName(String sourceApplicationName) {
+        this.sourceApplicationName = sourceApplicationName;
+    }
+
+    public String getTargetApplicationName() {
+        return targetApplicationName;
+    }
+
+    public void setTargetApplicationName(String targetApplicationName) {
+        this.targetApplicationName = targetApplicationName;
     }
 }
