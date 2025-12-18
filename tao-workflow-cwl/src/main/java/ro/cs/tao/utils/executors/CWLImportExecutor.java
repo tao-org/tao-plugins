@@ -47,6 +47,7 @@ public class CWLImportExecutor {
     private final TagProvider tagProvider;
     private final WorkflowService workflowService;
     private WorkflowDescriptor workflowDescriptor;
+    private final Map<String, List<CWLApplicationTemplate>> applicationListMap = new LinkedHashMap<>();
 
     private static final Logger logger = Logger.getLogger(CWLImportExecutor.class.getName());
 
@@ -150,6 +151,7 @@ public class CWLImportExecutor {
                 logger.warning("Workflow nodes are probably linked manually by using YAML file! If the YAML file is missing the nodes will not be linked!");
             }
         }
+        createWorkflowNodeHierarchy();
         List<CommandLineTool> commandLineToolList = cwlTemplate.getCwlMainGraphObject(CWL_GRAPH_ID).stream()
                 .filter(g -> g instanceof CommandLineTool).map(g -> (CommandLineTool) g).toList();
         List<Workflow> workflowList = cwlTemplate.getCwlMainGraphObject(CWL_GRAPH_ID).stream()
@@ -159,10 +161,14 @@ public class CWLImportExecutor {
         for (CommandLineTool commandLineTool : commandLineToolList) {
             List<Object> wfAssociatedInputs = null;
             String wfAssociatedStepId = null;
+            List<String> wfAssociatedStepIdList = new ArrayList<>();
             if (workflowList != null && !workflowList.isEmpty()) {
                 WorkflowStep wfAssociatedStep = workflowList.stream().flatMap(wf -> wf.getSteps().stream())
                         .filter(step -> ((WorkflowStep) step).getRun().toString().equals(commandLineTool.getId().get()))
                         .map(step -> (WorkflowStep) step).findFirst().orElse(null);
+                wfAssociatedStepIdList = workflowList.stream().flatMap(wf -> wf.getSteps().stream())
+                        .filter(step -> ((WorkflowStep) step).getRun().toString().equals(commandLineTool.getId().get()))
+                        .map(step -> (WorkflowStep) step).map(WorkflowStep::getId).map(Optional::get).toList();
                 if (wfAssociatedStep != null) {
                     wfAssociatedInputs = wfAssociatedStep.getIn();
                     wfAssociatedStepId = wfAssociatedStep.getId().get();
@@ -173,6 +179,7 @@ public class CWLImportExecutor {
             }
             if(!skipCommandLineTool) {
                 List<CWLApplicationTemplate> applicationList = CWLAppDetector.createApplicationTemplate(commandLineTool, wfAssociatedInputs);
+                applicationListMap.put(commandLineTool.getId().get(),applicationList);
                 Container dockerContainer = getAssosiatedContainer(commandLineTool, applicationList);
                 if (dockerContainer == null) {
                     String errorMessage = "one of the CWL classes";
@@ -186,10 +193,11 @@ public class CWLImportExecutor {
                 }
                 if (!skipContainer) {
                     dockerContainer = WorkflowBuild.addMissingAppInContainer(dockerContainer, applicationList);
-                    createProcessingComponents(applicationList, dockerContainer, mainWfId, wfAssociatedStepId);
+                    initializeProcessingComponent(applicationList, dockerContainer, mainWfId, wfAssociatedStepId, wfAssociatedStepIdList);
                 }
             }
         }
+        adjustProcessingComponent();
         adjustProcessingComponentsCategory();
         if (!skipContainer) {
             createWorkflowDescriptor(mainWfId);
@@ -206,7 +214,8 @@ public class CWLImportExecutor {
      * @param mainWfId the id of the Workflow used to start the CWL execution
      * @param stepId the step id where the applications are found
      */
-    private void createProcessingComponents(List<CWLApplicationTemplate> applicationList, Container dockerContainer, String mainWfId, String stepId) throws PersistenceException {
+    private void initializeProcessingComponent(List<CWLApplicationTemplate> applicationList, Container dockerContainer, String mainWfId,
+                                               String stepId, List<String> associatedIdList) throws PersistenceException {
         for (CWLApplicationTemplate application : applicationList) {
             String componentLabel = CWLUtils.simplifyApplicationName(application.getApplicationName());
             String componentId = CWLUtils.simplifyApplicationName(application.getApplicationName());
@@ -221,28 +230,16 @@ public class CWLImportExecutor {
                         .map(Application::getPath).findFirst().orElse(null);
                 componentAlreadyExist = false;
                 //creating processing component
-                processingComponent = new ProcessingComponent();
-                processingComponent.setId(componentId);
-                processingComponent.setContainerId(dockerContainer.getId());
-                processingComponent.setLabel(componentLabel);
-                processingComponent.setFileLocation(fileLocation);
-                processingComponent.setComponentType(ProcessingComponentType.EXECUTABLE);
-                processingComponent.setVisibility(ProcessingComponentVisibility.SYSTEM);
-                processingComponent.setVersion(dockerContainer.getTag());
-                processingComponent.setOwner(SystemPrincipal.instance().getName());
-                processingComponent.setTags(List.of(getOrCreateTag(dockerContainer.getName()).getText()));
-                processingComponent.setTemplateContents(componentTemplate);
-                processingComponent.setDescription("");
-                processingComponent.setAuthors("");
-                processingComponent.setCopyright("");
-                processingComponent.setCategory(componentCategory);
-                // default working directory
-                processingComponent.setWorkingDirectory(".");
+                processingComponent = createProcessingComponents(componentId,componentLabel,fileLocation,componentCategory,componentTemplate,dockerContainer);
                 createdComponentsHistory.add(componentId);
             }
+
             //used in the workaround for cases where .csv file is mandatory, but it is not an input
             long numberOfInputs = application.getApplicationParams().entrySet().stream().filter(e -> e.getValue().getParamType().equals(INPUT_PARAM_POSITION)).count();
-
+            // add source application name to cwl dependencies template
+            cwlInputDependencies.stream().filter(dp -> associatedIdList.contains(dp.getSourceNodeName())).forEach(dp -> dp.setSourceApplicationName(componentId));
+            // add target application name to cwl dependencies template
+            cwlInputDependencies.stream().filter(dp -> associatedIdList.contains(dp.getTargetNodeName())).forEach(dp -> dp.setTargetApplicationName(componentId));
             for (Map.Entry<String, CWLParamDescTemplate> entry : application.getApplicationParams().entrySet()) {
                 boolean foundInTemplate = foundInTemplate(processingComponent.getTemplateContents(), entry.getValue());
                 String entryKey = CWLUtils.removeNumericSuffix(entry.getKey());
@@ -275,14 +272,7 @@ public class CWLImportExecutor {
                                 .filter(pc -> pc.getName().equals(entryFoundName)).findFirst().orElse(null);
                     }
                     if (sourceDescriptor == null) {
-                        sourceDescriptor = new SourceDescriptor();
-                        sourceDescriptor.setParentId(componentId);
-                        sourceDescriptor.setName(entryFoundName);
-                        sourceDescriptor.setCardinality(1);
-                        sourceDescriptor.setDataDescriptor(dataDescriptor);
-                        if (defaultValue instanceof Collection<?> || entry.getValue().getFormatType().contains("[]")) {
-                            sourceDescriptor.setCardinality(0);
-                        }
+                        sourceDescriptor = createSourceDescriptor(componentId,entryFoundName,dataDescriptor,defaultValue,entry.getValue().getFormatType());
                         if (!componentAlreadyExist) {
                             processingComponent.addSource(sourceDescriptor);
                         } else {
@@ -310,27 +300,7 @@ public class CWLImportExecutor {
                                 .filter(pc -> pc.getName().equals(entryFoundName)).findFirst().orElse(null);
                     }
                     if (targetDescriptor == null) {
-                        targetDescriptor = new TargetDescriptor();
-                        targetDescriptor.setParentId(componentId);
-                        targetDescriptor.setName(entryFoundName);
-                        if (!yamlInfo.isEmpty()) {
-                            String location = "";
-                            if (yamlInfo.get(entry.getKey()) instanceof Collection<?>) {
-                                logger.info("Output " + entry.getKey() + " is defined as an array, but array outputs are not currently processed to resolve the target location.");
-                            } else {
-                                String entryIdInYml = findAncestorId(mainWfId, stepId, entry.getKey(), entry.getValue().getParamType());
-                                if (entryIdInYml != null) {
-                                    location = yamlInfo.get(entryIdInYml).toString();
-                                }
-                            }
-                            if (location.isEmpty() && entry.getValue().getDefaultValue() != null) {
-                                location = entry.getValue().getDefaultValue().toString();
-                            } else if (location.isEmpty()) {//generate a dummy output file
-                                location = entry.getKey(); // I do not know the file extension
-                            }
-                            dataDescriptor.setLocation(location);
-                        }
-                        targetDescriptor.setDataDescriptor(dataDescriptor);
+                        targetDescriptor = createTargetDescriptor(componentId,entryFoundName,dataDescriptor,mainWfId,stepId,entry);
                         if (!componentAlreadyExist) {
                             processingComponent.addTarget(targetDescriptor);
                         } else {
@@ -358,17 +328,7 @@ public class CWLImportExecutor {
                                 .anyMatch(pc -> pc.getName().equals(entryFoundName));
                     }
                     if (!descriptorAlreadyExist) {
-                        ParameterDescriptor parameterDescriptor = new ParameterDescriptor();
-                        parameterDescriptor.setDataType(JavaType.fromFriendlyName(entry.getValue().getFormatType()).value());
-                        parameterDescriptor.setName(entryKey);
-                        parameterDescriptor.setId(entryKey);
-                        parameterDescriptor.setLabel(entryFoundName);
-                        parameterDescriptor.setType(ParameterType.REGULAR);
-                        parameterDescriptor.setNotNull(entry.getValue().isMandatory());
-                        String description = getDescForParam(entry.getKey(), mainWfId);
-                        if (description != null) {
-                            parameterDescriptor.setDescription(description);
-                        }
+                        ParameterDescriptor parameterDescriptor = createParameterDescriptor(entryKey,entryFoundName,mainWfId,entry);
                         if (!componentAlreadyExist) {
                             processingComponent.addParameter(parameterDescriptor);
                         } else {
@@ -402,6 +362,124 @@ public class CWLImportExecutor {
                 componentService.save(processingComponent);
             }
         }
+    }
+
+    /**
+     * Creates a new processing component.
+     *
+     * @param componentId the processing component id
+     * @param componentLabel the processing component label
+     * @param fileLocation the location for a processing component
+     * @param componentCategory the processing component category
+     * @param componentTemplate the generated template
+     * @param dockerContainer the docker container defined in the current CommandLineTool
+     * @return a new processing component
+     */
+    private ProcessingComponent createProcessingComponents(String componentId, String componentLabel, String fileLocation, ComponentCategory componentCategory,
+                                                           String componentTemplate, Container dockerContainer) throws PersistenceException {
+        ProcessingComponent processingComponent = new ProcessingComponent();
+        processingComponent.setId(componentId);
+        processingComponent.setContainerId(dockerContainer.getId());
+        processingComponent.setLabel(componentLabel);
+        processingComponent.setFileLocation(fileLocation);
+        processingComponent.setComponentType(ProcessingComponentType.EXECUTABLE);
+        processingComponent.setVisibility(ProcessingComponentVisibility.SYSTEM);
+        processingComponent.setVersion(dockerContainer.getTag());
+        processingComponent.setOwner(SystemPrincipal.instance().getName());
+        processingComponent.setTags(List.of(getOrCreateTag(dockerContainer.getName()).getText()));
+        processingComponent.setTemplateContents(componentTemplate);
+        processingComponent.setDescription("");
+        processingComponent.setAuthors("");
+        processingComponent.setCopyright("");
+        processingComponent.setCategory(componentCategory);
+        // default working directory
+        processingComponent.setWorkingDirectory(".");
+        return processingComponent;
+    }
+
+    /**
+     * Creates a new source descriptor.
+     *
+     * @param componentId the associated processing component id
+     * @param name the source name
+     * @param dataDescriptor the data descriptor found in the CWL
+     * @param defaultValue the source default value, found in the CWL
+     * @param sourceFormatType the format type found in the CWL
+     * @return a new source descriptor
+     */
+    private SourceDescriptor createSourceDescriptor(String componentId, String name, DataDescriptor dataDescriptor,
+                                                    Object defaultValue, String sourceFormatType) {
+        SourceDescriptor sourceDescriptor = new SourceDescriptor();
+        sourceDescriptor.setParentId(componentId);
+        sourceDescriptor.setName(name);
+        sourceDescriptor.setCardinality(1);
+        sourceDescriptor.setDataDescriptor(dataDescriptor);
+        if (defaultValue instanceof Collection<?> || sourceFormatType.contains("[]")) {
+            sourceDescriptor.setCardinality(0);
+        }
+        return sourceDescriptor;
+    }
+
+    /**
+     * Creates a new target descriptor.
+     *
+     * @param componentId the associated processing component id
+     * @param name the target name
+     * @param dataDescriptor the data descriptor found in the CWL
+     * @param mainWfId the id of the Workflow used to start the CWL execution
+     * @param stepId the step id where the applications are found
+     * @param application the component associated application
+     * @return a new target descriptor
+     */
+    private TargetDescriptor createTargetDescriptor(String componentId, String name, DataDescriptor dataDescriptor, String mainWfId,
+                                                    String stepId, Map.Entry<String, CWLParamDescTemplate> application) {
+        TargetDescriptor targetDescriptor = new TargetDescriptor();
+        targetDescriptor.setParentId(componentId);
+        targetDescriptor.setName(name);
+        if (!yamlInfo.isEmpty()) {
+            String location = "";
+            if (yamlInfo.get(application.getKey()) instanceof Collection<?>) {
+                logger.info("Output " + application.getKey() + " is defined as an array, but array outputs are not currently processed to resolve the target location.");
+            } else {
+                String entryIdInYml = findAncestorId(mainWfId, stepId, application.getKey(), application.getValue().getParamType());
+                if (entryIdInYml != null) {
+                    location = yamlInfo.get(entryIdInYml).toString();
+                }
+            }
+            if (location.isEmpty() && application.getValue().getDefaultValue() != null) {
+                location = application.getValue().getDefaultValue().toString();
+            } else if (location.isEmpty()) {//generate a dummy output file
+                location = application.getKey(); // I do not know the file extension
+            }
+            dataDescriptor.setLocation(location);
+        }
+        targetDescriptor.setDataDescriptor(dataDescriptor);
+        return targetDescriptor;
+    }
+
+    /**
+     * Creates a new parameter descriptor.
+     *
+     * @param parameterKey the parameter key
+     * @param parameterName the parameter name
+     * @param mainWfId the id of the Workflow used to start the CWL execution
+     * @param application the component associated application
+     * @return a new parameter descriptor
+     */
+    private ParameterDescriptor createParameterDescriptor(String parameterKey, String parameterName, String mainWfId,
+                                                          Map.Entry<String, CWLParamDescTemplate> application) {
+        ParameterDescriptor parameterDescriptor = new ParameterDescriptor();
+        parameterDescriptor.setDataType(JavaType.fromFriendlyName(application.getValue().getFormatType()).value());
+        parameterDescriptor.setName(parameterKey);
+        parameterDescriptor.setId(parameterKey);
+        parameterDescriptor.setLabel(parameterName);
+        parameterDescriptor.setType(ParameterType.REGULAR);
+        parameterDescriptor.setNotNull(application.getValue().isMandatory());
+        String description = getDescForParam(application.getKey(), mainWfId);
+        if (description != null) {
+            parameterDescriptor.setDescription(description);
+        }
+        return parameterDescriptor;
     }
 
     /**
@@ -630,7 +708,6 @@ public class CWLImportExecutor {
     private void createWorkflowDescriptor(String mainWfId) throws PersistenceException {
         boolean wfAlreadyExist = workflowService.getDescriptor(mainWfId) != null;
         workflowDescriptor = WorkflowBuild.createDescriptor(mainWfId, wfAlreadyExist);
-        createWorkflowNodeHierarchy();
         createWorkflowNodesMap(mainWfId);
         if (!cwlInputDependencies.isEmpty()) {
             linkWorkflowNodes();
@@ -687,7 +764,7 @@ public class CWLImportExecutor {
                 if (object instanceof Workflow && ((Workflow) object).getId().isPresent()) {
                     createWorkflowNodesMap(((Workflow) object).getId().get());
                 } else if (object instanceof CommandLineTool && ((CommandLineTool) object).getId().isPresent()) {
-                    createWorkflowNode(((CommandLineTool) object).getId().get(), ((WorkflowStep) step).getId().get(), ((WorkflowStep) step).getIn());
+                    createWorkflowNode(((CommandLineTool) object).getId().get(), ((WorkflowStep) step).getId().get());
                 }
             }
         } else {
@@ -710,7 +787,7 @@ public class CWLImportExecutor {
      * @param nodeId the id of the CommandLineTool used to create the workflow node
      */
     private void createWorkflowNode(String nodeId) throws PersistenceException {
-        createWorkflowNode(nodeId, null, null);
+        createWorkflowNode(nodeId, null);
     }
 
     /**
@@ -723,11 +800,10 @@ public class CWLImportExecutor {
      * 4. Resolves input/output dependencies and links the node accordingly.
      *
      * @param nodeId the id of the CommandLineTool used to create the workflow node
-     * @param in the current step input list
      */
-    private void createWorkflowNode(String nodeId, String stepId, List<Object> in) throws PersistenceException {
+    private void createWorkflowNode(String nodeId, String stepId) throws PersistenceException {
         CommandLineTool commandLineTool = (CommandLineTool) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, nodeId);
-        List<CWLApplicationTemplate> applicationList = CWLAppDetector.createApplicationTemplate(commandLineTool, in);
+        List<CWLApplicationTemplate> applicationList = applicationListMap.get(commandLineTool.getId().get());
         if (applicationList.size() > 1) {
             throw new RuntimeException("To many arguments for bash -c for CommandLineTool "
                     + (commandLineTool.getId().isPresent() ? commandLineTool.getId().get() : ""));
@@ -1669,6 +1745,123 @@ public class CWLImportExecutor {
                 processingComponent.setCategory(componentCategory);
             }
         }
+    }
+
+    private void adjustProcessingComponent() {
+        List<CommandLineTool> commandLineToolList = cwlTemplate.getCwlMainGraphObject(CWL_GRAPH_ID).stream()
+                .filter(g -> g instanceof CommandLineTool).map(g -> (CommandLineTool) g).toList();
+        List<Workflow> workflowList = cwlTemplate.getCwlMainGraphObject(CWL_GRAPH_ID).stream()
+                .filter(wf -> wf instanceof Workflow).map(wf -> (Workflow) wf).toList();
+        boolean skipCommandLineTool = false;
+        boolean wasUpdated = false;
+        for (CommandLineTool commandLineTool : commandLineToolList) {
+            List<String> wfAssociatedStepIdList = new ArrayList<>();
+            if (workflowList != null && !workflowList.isEmpty()) {
+                wfAssociatedStepIdList = workflowList.stream().flatMap(wf -> wf.getSteps().stream())
+                        .filter(step -> ((WorkflowStep) step).getRun().toString().equals(commandLineTool.getId().get()))
+                        .map(step -> (WorkflowStep) step).map(WorkflowStep::getId).map(Optional::get).toList();
+                if (wfAssociatedStepIdList != null && !wfAssociatedStepIdList.isEmpty()) {
+                    skipCommandLineTool = false;
+                } else {
+                    skipCommandLineTool = true;
+                }
+            }
+            if (!skipCommandLineTool) {
+                List<CWLApplicationTemplate> applicationList = applicationListMap.get(commandLineTool.getId().get());
+                for (CWLApplicationTemplate application : applicationList) {
+                    boolean updatedComponentSources = false;
+                    boolean updatedComponentTargets = false;
+                    String componentId = CWLUtils.simplifyApplicationName(application.getApplicationName());
+                    ProcessingComponent processingComponent = findComponent(componentId);
+                    for (Map.Entry<String, CWLParamDescTemplate> entry : application.getApplicationParams().entrySet()) {
+                        String entryKey = CWLUtils.removeNumericSuffix(entry.getKey());
+                        String entryFoundName = CWLUtils.removeStartDashes(entry.getValue().getParamName());
+                        String parameterKey = entry.getKey();
+                        if (entry.getValue().getParamType().equals(OUTPUT_PARAM_POSITION)) {
+                            updatedComponentTargets = adjustTagetType(processingComponent, entryKey, entryFoundName, parameterKey, wfAssociatedStepIdList, updatedComponentTargets);
+                        }
+                        if (entry.getValue().getParamType().equals(INPUT_PARAM_POSITION)) {
+                            updatedComponentSources = adjustSourceType(processingComponent, entryKey, entryFoundName, parameterKey, wfAssociatedStepIdList, updatedComponentSources);
+                        }
+                    }
+
+                    if (updatedComponentSources || updatedComponentTargets) {
+                        try {
+                            componentService.update(processingComponent);
+                            wasUpdated = true;
+                        } catch (PersistenceException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }
+        if (wasUpdated) {
+            adjustProcessingComponent();
+        }
+    }
+
+    private boolean adjustTagetType(ProcessingComponent processingComponent, String targetName, String targetFoundName, String parameterKey, List<String> stepIdList, boolean targetModified) {
+        TargetDescriptor targetDescriptor = processingComponent.getTargets().stream()
+                .filter(pc -> pc.getName().equals(targetName)).findFirst().orElse(null);
+        if (targetDescriptor == null) {
+            targetDescriptor = processingComponent.getTargets().stream()
+                    .filter(pc -> pc.getName().equals(targetFoundName)).findFirst().orElse(null);
+        }
+        if (targetDescriptor != null && targetDescriptor.getDataDescriptor().getFormatType().equals(DataFormat.OTHER) && !cwlInputDependencies.isEmpty()) {
+            List<CWLInputDependenciesTemplate> associatedTargetsList = cwlInputDependencies.stream()
+                    .filter(dp -> stepIdList.contains(dp.getSourceNodeName()) && dp.getSourceName().equals(parameterKey)).toList();
+            for (CWLInputDependenciesTemplate associatedTarget : associatedTargetsList) {
+                List<CWLInputDependenciesTemplate> sourcesList = cwlInputDependencies.stream()
+                        .filter(dp -> dp.getTargetNodeName().equals(associatedTarget.getTargetNodeName())
+                                && dp.getTargetApplicationName() != null).toList();
+                for (CWLInputDependenciesTemplate template : sourcesList) {
+                    ProcessingComponent associatedComponent = findComponent(template.getTargetApplicationName());
+                    Object sourceCommandLineTool = cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, template.getCommandLineToolTargetId());
+                    if (sourceCommandLineTool instanceof CommandLineTool) {
+                        Map<String, CWLParamDescTemplate> params = applicationListMap.get(((CommandLineTool) sourceCommandLineTool).getId().get()).getFirst().getApplicationParams();
+                        String sourceName = params.get(template.getTargetName()).getParamName();
+                        SourceDescriptor templateSource = associatedComponent.getSources().stream()
+                                .filter(pc -> pc.getName().equals(sourceName)).findFirst().orElse(null);
+                        if (templateSource != null && !templateSource.getDataDescriptor().getFormatType().equals(DataFormat.OTHER)) {
+                            targetDescriptor.setDataDescriptor(templateSource.getDataDescriptor());
+                            targetModified = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return targetModified;
+    }
+
+    private boolean adjustSourceType(ProcessingComponent processingComponent, String sourceName, String sourceFoundName, String parameterKey, List<String> stepIdList, boolean sourceModified) {
+        SourceDescriptor sourceDescriptor = processingComponent.getSources().stream()
+                .filter(pc -> pc.getName().equals(sourceName)).findFirst().orElse(null);
+        if (sourceDescriptor == null) {
+            sourceDescriptor = processingComponent.getSources().stream()
+                    .filter(pc -> pc.getName().equals(sourceFoundName)).findFirst().orElse(null);
+        }
+        if (sourceDescriptor != null && sourceDescriptor.getDataDescriptor().getFormatType().equals(DataFormat.OTHER) && !cwlInputDependencies.isEmpty()) {
+            List<CWLInputDependenciesTemplate> associatedSourcesList = cwlInputDependencies.stream()
+                    .filter(dp -> stepIdList.contains(dp.getTargetNodeName()) && dp.getTargetName().equals(parameterKey)).toList();
+            for (CWLInputDependenciesTemplate associatedSources : associatedSourcesList) {
+                ProcessingComponent associatedComponent = findComponent(associatedSources.getSourceApplicationName());
+                Object targetCommandLineTool = cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, associatedSources.getCommandLineToolSourceId());
+                if (targetCommandLineTool instanceof CommandLineTool) {
+                    Map<String, CWLParamDescTemplate> params = applicationListMap.get(((CommandLineTool) targetCommandLineTool).getId().get()).getFirst().getApplicationParams();
+                    String targetName = params.get(associatedSources.getSourceName()).getParamName();
+                    TargetDescriptor templateTarget = associatedComponent.getTargets().stream()
+                            .filter(pc -> pc.getName().equals(targetName)).findFirst().orElse(null);
+                    if (templateTarget != null && !templateTarget.getDataDescriptor().getFormatType().equals(DataFormat.OTHER)) {
+                        sourceDescriptor.setDataDescriptor(templateTarget.getDataDescriptor());
+                        sourceModified = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return sourceModified;
     }
 
     /**
