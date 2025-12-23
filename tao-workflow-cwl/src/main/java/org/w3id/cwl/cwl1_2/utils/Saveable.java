@@ -1,6 +1,8 @@
 package org.w3id.cwl.cwl1_2.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.w3id.cwl.cwl1_2.CWLType;
+import org.w3id.cwl.cwl1_2.CommandInputParameter;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -64,7 +66,18 @@ public interface Saveable {
                                 wfId = inputId;
                             }
                         } else if (field.getName().equalsIgnoreCase("type")) {
-                            temp.put(field.getName(), field.get(object).toString());
+                            if (field.get(object) instanceof Collection<?>) {
+                                boolean hasNull = ((Collection<?>) field.get(object)).stream().anyMatch(elem -> elem.toString().equals("null"));
+                                String type = ((Collection<?>) field.get(object)).stream()
+                                        .filter(elem -> !elem.toString().equals("null")).map(Object::toString).findFirst().orElse("Any");
+                                if (hasNull) {
+                                    temp.put(field.getName(), type + "?");
+                                } else {
+                                    temp.put(field.getName(), type);
+                                }
+                            } else {
+                                temp.put(field.getName(), field.get(object).toString());
+                            }
                         } else if (field.get(object) != null) {
                             if (field.get(object) instanceof Optional<?> && ((Optional<?>) field.get(object)).get() instanceof Saveable) {
                                 temp.put(field.getName(), ((Saveable) ((Optional<?>) field.get(object)).get()).save());
