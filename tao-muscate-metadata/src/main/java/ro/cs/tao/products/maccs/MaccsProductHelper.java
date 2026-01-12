@@ -4,7 +4,6 @@ import ro.cs.tao.eodata.util.BaseProductHelper;
 
 import java.nio.file.Path;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 /**
  * Abstract helper class for working with product files compatible with the MACCS processing chain.
@@ -46,10 +45,8 @@ public abstract class MaccsProductHelper extends BaseProductHelper {
 
     public abstract String getGranuleFolder(String granuleIdentifier);
 
-    protected abstract Pattern getNamePattern();
-
     @Override
     protected boolean verifyProductName(String name) {
-        return getNamePattern().matcher(name).matches();
+        return getNamePatterns()[0].matcher(name).matches();
     }
 }

@@ -4,7 +4,6 @@ import ro.cs.tao.eodata.util.BaseProductHelper;
 
 import java.nio.file.Path;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 /**
  * An abstract helper class for managing and processing MAJA products.
@@ -40,10 +39,8 @@ public abstract class MajaProductHelper extends BaseProductHelper {
 
     public abstract String getGranuleFolder(String granuleIdentifier);
 
-    protected abstract Pattern getNamePattern();
-
     @Override
     protected boolean verifyProductName(String name) {
-        return getNamePattern().matcher(name).matches();
+        return getNamePatterns()[0].matcher(name).matches();
     }
 }

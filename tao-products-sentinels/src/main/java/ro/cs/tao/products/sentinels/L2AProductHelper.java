@@ -36,6 +36,11 @@ public class L2AProductHelper extends Sentinel2ProductHelper {
     }
 
     @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { ProductV14 };
+    }
+
+    @Override
     public L2AProductHelper duplicate() {
         return new L2AProductHelper(getName());
     }

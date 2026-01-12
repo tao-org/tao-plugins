@@ -35,6 +35,7 @@ import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.util.ProductHelper;
+import ro.cs.tao.products.sentinels.Sentinel1ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
@@ -51,15 +52,12 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
  */
 public class DASQuery extends DataQuery {
-    static final Pattern S1Pattern =
-            Pattern.compile("(S1[A-D])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
 
     private static final DateTimeFormatter dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
     private static final Set<Class<?>> unquotableTypes  = new HashSet<>() {{
@@ -465,7 +463,7 @@ public class DASQuery extends DataQuery {
 
     private String getRelativeOrbit(String productName) {
         final String value;
-        final Matcher matcher = S1Pattern.matcher(productName);
+        final Matcher matcher = new Sentinel1ProductHelper().getNamePatterns()[0].matcher(productName);
         if (matcher.matches()) {
             int absOrbit = Integer.parseInt(matcher.group(10));
             value = String.format("%03d",

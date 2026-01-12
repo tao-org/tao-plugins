@@ -27,6 +27,11 @@ public class MajaSentinel2ProductHelper extends MajaProductHelper {
     }
 
     @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { S2L2Pattern };
+    }
+
+    @Override
     public MajaSentinel2ProductHelper duplicate() {
         return new MajaSentinel2ProductHelper(this.path != null ? this.path : Path.of(this.name));
     }
@@ -66,9 +71,6 @@ public class MajaSentinel2ProductHelper extends MajaProductHelper {
     public String getOrbit() { return getTokens(S2L2Pattern)[3]; }
 
     public String getTileIdentifier() { return getTokens(S2L2Pattern)[4]; }
-
-    @Override
-    protected Pattern getNamePattern() { return S2L2Pattern; }
 
     @Override
     public String getSensingDate() {
