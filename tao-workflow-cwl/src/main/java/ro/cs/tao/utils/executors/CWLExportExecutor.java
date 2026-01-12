@@ -485,8 +485,8 @@ public class CWLExportExecutor extends Executor<Object>
                     inputId = inputId + WF_OUTPUT_NAME_SUFFIX;
                     input.setLabel(Optional.of("Output file for " + inputParameter.getKey() + " found in " + stepCWLFileId));
                 } else {
-                    ParameterDescriptor wfParamDesc = ((ProcessingComponent)wfComponent).getParameterDescriptors().stream().filter(p -> p.getName().equals(inputParameter.getKey())).findFirst().orElse(null);
-                    if (wfParamDesc!= null) {
+                    ParameterDescriptor wfParamDesc = ((ProcessingComponent) wfComponent).getParameterDescriptors().stream().filter(p -> p.getName().equals(inputParameter.getKey())).findFirst().orElse(null);
+                    if (wfParamDesc != null) {
                         if (!wfParamDesc.isNotNull()) {
                             mandatory = false;
                         }
@@ -526,6 +526,35 @@ public class CWLExportExecutor extends Executor<Object>
                 }
             }
             commandLineToolWf.getInputs().add(input);
+        }
+        // add parameters without value. Tose are not found in task parameters
+        Set<ParameterDescriptor> wfParamDescList = ((ProcessingComponent)wfComponent).getParameterDescriptors();
+        boolean mandatory;
+        for (ParameterDescriptor wfParamDesc : wfParamDescList) {
+            String inputId = wfParamDesc.getId() + "_" + task.getWorkflowNodeId();
+            CommandInputParameter input = new CommandInputParameterImpl();
+            mandatory = true;
+            if (!wfParamDesc.isNotNull()) {
+                mandatory = false;
+            }
+            if (wfParamDesc.getDescription() != null && !wfParamDesc.getDescription().isEmpty()) {
+                input.setLabel(Optional.of(wfParamDesc.getDescription()));
+            }
+            input.setId(Optional.of(inputId));
+            Class<?> inputClass = wfParamDesc.getDataType();
+            String inputType = JavaType.fromClass(inputClass).friendlyName();
+            if (inputType.equals("path")) {
+                inputType = "File";
+            }
+            if (!mandatory) {
+                inputType = inputType + "?";
+            }
+            input.setType(inputType);
+            boolean alreadyAdded = commandLineToolWf.getInputs().stream().anyMatch(p -> ((CommandInputParameter)p).getId() != null
+                    && ((CommandInputParameter)p).getId().isPresent() && ((CommandInputParameter)p).getId().get().equals(inputId));
+            if (!alreadyAdded) {
+                commandLineToolWf.getInputs().add(input);
+            }
         }
         CommandLineBinding taskArguments = new CommandLineBindingImpl();
         taskArguments.setValueFrom(String.join(" \\\n", executionCommandArray));
