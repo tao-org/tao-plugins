@@ -51,7 +51,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.function.Function;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 /**
@@ -162,7 +161,7 @@ public class DASQuery extends DataQuery {
                                                         result.addAttribute("tiles", result.getAttributeValue("tileId"));
                                                     }
                                                 } else if (isS1 && !isS1Aux) {
-                                                    result.addAttribute("relativeOrbit", getRelativeOrbit(result.getName()));
+                                                    result.addAttribute("relativeOrbit", new Sentinel1ProductHelper(result.getName()).getOrbit());
                                                 }
                                                 if (hasProcessingDate) {
                                                     final String dateString = productHelper.getProcessingDate();
@@ -459,21 +458,6 @@ public class DASQuery extends DataQuery {
             }
         }
         return queries;
-    }
-
-    private String getRelativeOrbit(String productName) {
-        final String value;
-        final Matcher matcher = new Sentinel1ProductHelper().getNamePatterns()[0].matcher(productName);
-        if (matcher.matches()) {
-            int absOrbit = Integer.parseInt(matcher.group(10));
-            value = String.format("%03d",
-                                  matcher.group(1).endsWith("A")
-                                  ? ((absOrbit - 73) % 175) + 1
-                                  : ((absOrbit - 27) % 175) + 1);
-        } else {
-            value = null;
-        }
-        return value;
     }
 
     private void filterS3(List<EOProduct> results) {
