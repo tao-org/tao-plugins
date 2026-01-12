@@ -64,6 +64,11 @@ public class Landsat8ProductHelper extends BaseProductHelper {
     }
 
     @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { preCollectionNamePattern, collectionNamePattern };
+    }
+
+    @Override
     public int order() {
         return 0;
     }

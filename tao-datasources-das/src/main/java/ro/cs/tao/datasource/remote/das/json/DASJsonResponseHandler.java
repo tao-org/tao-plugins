@@ -22,6 +22,7 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.products.sentinels.Sentinel1ProductHelper;
 import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
@@ -29,14 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Cosmin Cara
  */
 public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
-    static final Pattern S1Pattern =
-            Pattern.compile("(S1[A-D])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
     private final DASDataSource dataSource;
     private final Predicate<EOProduct> filter;
 
@@ -115,7 +113,7 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
 
     private String getRelativeOrbit(String productName) {
         final String value;
-        final Matcher matcher = S1Pattern.matcher(productName);
+        final Matcher matcher = new Sentinel1ProductHelper().getNamePatterns()[0].matcher(productName);
         if (matcher.matches()) {
             int absOrbit = Integer.parseInt(matcher.group(10));
             value = String.format("%03d",

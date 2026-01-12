@@ -20,6 +20,11 @@ public class Sentinel5PProductHelper extends BaseProductHelper {
     Sentinel5PProductHelper(String productName) { super(productName); }
 
     @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { S5PPattern };
+    }
+
+    @Override
     public int order() {
         return 0;
     }

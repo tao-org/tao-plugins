@@ -33,6 +33,11 @@ public class Sentinel3ProductHelper extends BaseProductHelper {
     Sentinel3ProductHelper(String productName) { super(productName); }
 
     @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { S3Pattern };
+    }
+
+    @Override
     public int order() {
         return 0;
     }

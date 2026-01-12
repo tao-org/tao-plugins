@@ -35,6 +35,11 @@ public class Sentinel1OrbitFileHelper extends BaseProductHelper {
     }
 
     @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { S1AuxPattern };
+    }
+
+    @Override
     public int order() {
         return 0;
     }

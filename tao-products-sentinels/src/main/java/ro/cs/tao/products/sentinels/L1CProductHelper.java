@@ -61,6 +61,11 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
     }
 
     @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { ProductV13, ProductV14 };
+    }
+
+    @Override
     public L1CProductHelper duplicate() {
         return new L1CProductHelper(getName());
     }

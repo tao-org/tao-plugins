@@ -26,6 +26,11 @@ public class MajaLandsat8ProductHelper extends MajaProductHelper {
     }
 
     @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { L8L2Pattern };
+    }
+
+    @Override
     public MajaLandsat8ProductHelper duplicate() {
         return new MajaLandsat8ProductHelper(this.path != null ? this.path : Path.of(this.name));
     }
@@ -46,11 +51,6 @@ public class MajaLandsat8ProductHelper extends MajaProductHelper {
             logger.severe(String.format("Cannot list contents of product %s. Reason; %s", this.name, e.getMessage()));
         }
         return folder;
-    }
-
-    @Override
-    protected Pattern getNamePattern() {
-        return L8L2Pattern;
     }
 
     @Override

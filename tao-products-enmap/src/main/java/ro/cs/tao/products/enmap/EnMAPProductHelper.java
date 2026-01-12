@@ -36,6 +36,11 @@ public class EnMAPProductHelper extends BaseProductHelper {
     }
 
     @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { ProductLX2, ProductLX6 };
+    }
+
+    @Override
     public int order() {
         return 0;
     }

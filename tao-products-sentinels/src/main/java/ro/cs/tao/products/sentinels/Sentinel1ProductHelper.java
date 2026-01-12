@@ -47,6 +47,11 @@ public class Sentinel1ProductHelper extends BaseProductHelper {
     public Sentinel1ProductHelper() { super(); }
 
     @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { S1Pattern };
+    }
+
+    @Override
     public int order() {
         return 0;
     }
