@@ -15,11 +15,14 @@
  */
 package ro.cs.tao.datasource.remote.odata.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
@@ -61,6 +64,8 @@ public class Result {
     private List<Attribute> attributes;
     @JsonProperty("Assets")
     private List<Asset> assets;
+    @JsonIgnore
+    private Map<String, Object> attributesMap;
 
     /**
      * No args constructor for use in serialization
@@ -195,6 +200,9 @@ public class Result {
 
     public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
+        if (this.attributes != null) {
+            this.attributesMap = this.attributes.stream().collect(Collectors.toMap(Attribute::getName, Attribute::getValue));
+        }
     }
 
     public List<Asset> getAssets() {
@@ -203,5 +211,9 @@ public class Result {
 
     public void setAssets(List<Asset> assets) {
         this.assets = assets;
+    }
+
+    public Object attributeValue(String name) {
+        return this.attributesMap != null ? this.attributesMap.get(name) : null;
     }
 }
