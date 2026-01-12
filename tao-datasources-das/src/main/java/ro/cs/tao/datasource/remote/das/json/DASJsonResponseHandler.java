@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
 
 /**
  * @author Cosmin Cara
@@ -89,7 +88,7 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     final Attribute orbitNumber = attributes.stream().filter(a -> a.getName().equals("relativeOrbitNumber")).findFirst().orElse(null);
                     product.addAttribute("relativeOrbit", orbitNumber != null
                                                           ? String.valueOf(orbitNumber.getValue())
-                                                          : getRelativeOrbit(product.getName()));
+                                                          : new Sentinel1ProductHelper(product.getName()).getOrbit());
                     product.addAttribute("s3path", r.getS3Path());
                     attributes.forEach(a -> product.addAttribute(a.getName(), String.valueOf(a.getValue())));
                     final List<Asset> assets = r.getAssets();
@@ -109,20 +108,5 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
     private Object getAttributeValue(Result result, String name) {
         Attribute attribute = result.getAttributes().stream().filter(a -> a.getName().equals(name)).findFirst().orElse(null);
         return attribute != null ? attribute.getValue() : null;
-    }
-
-    private String getRelativeOrbit(String productName) {
-        final String value;
-        final Matcher matcher = new Sentinel1ProductHelper().getNamePatterns()[0].matcher(productName);
-        if (matcher.matches()) {
-            int absOrbit = Integer.parseInt(matcher.group(10));
-            value = String.format("%03d",
-                                  matcher.group(1).endsWith("A") ?
-                                        ((absOrbit - 73) % 175) + 1 :
-                                        ((absOrbit - 27) % 175) + 1);
-        } else {
-            value = null;
-        }
-        return value;
     }
 }

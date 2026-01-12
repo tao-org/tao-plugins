@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
 
 import static java.util.Objects.nonNull;
 import static ro.cs.tao.utils.executors.MemoryUnit.MB;
@@ -52,7 +51,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
         AsfSearchResult[][] results = JsonMapper.instance().readValue(content, AsfSearchResult[][].class);
         final List<EOProduct> retVal = new ArrayList<>();
         if (results.length > 0) {
-            final Sentinel1ProductHelper helper = new Sentinel1ProductHelper();
+            Sentinel1ProductHelper helper;
             for (AsfSearchResult r : results[0]) {
                 try {
                     EOProduct product = new EOProduct();
@@ -82,6 +81,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     product.setApproximateSize(MB.value() * (long) Double.parseDouble(r.getSizeMb()));
                     //productType read from sensor property
                     String sensor = r.getSensor().trim();
+                    helper = new Sentinel1ProductHelper(product.getName());
                     if(sensor.contains(" ")){
                         //get the sensor and instrument name
                         String[] sensorAttributes = sensor.split(" ");
@@ -117,7 +117,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     if (value != null) {
                         product.addAttribute("relativeOrbit", value.toString());
                     } else if (product.getName().startsWith("S1")) {
-                        product.addAttribute("relativeOrbit", getRelativeOrbit(helper, product.getName()));
+                        product.addAttribute("relativeOrbit", helper.getOrbit());
                     }
                     retVal.add(product);
                 } catch (Exception ex) {
@@ -126,20 +126,5 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
             }
         }
         return retVal;
-    }
-
-    private String getRelativeOrbit(Sentinel1ProductHelper helper, String productName) {
-        final String value;
-        final Matcher matcher = helper.getNamePatterns()[0].matcher(productName);
-        if (matcher.matches()) {
-            int absOrbit = Integer.parseInt(matcher.group(10));
-            value = String.format("%03d",
-                    matcher.group(1).endsWith("A") ?
-                            ((absOrbit - 73) % 175) + 1 :
-                            ((absOrbit - 27) % 175) + 1);
-        } else {
-            value = null;
-        }
-        return value;
     }
 }

@@ -37,6 +37,7 @@ import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.util.ProductHelper;
+import ro.cs.tao.products.sentinels.Sentinel1ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.utils.CloseableHttpResponse;
@@ -51,7 +52,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.function.Function;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -161,7 +161,7 @@ public class CreoDiasODataQuery extends DataQuery {
                                                         result.addAttribute("tiles", result.getAttributeValue("tileId"));
                                                     }
                                                 } else if (isS1) {
-                                                    result.addAttribute("relativeOrbit", getRelativeOrbit(result.getName()));
+                                                    result.addAttribute("relativeOrbit", new Sentinel1ProductHelper(result.getName()).getOrbit());
                                                 }
                                                 if (hasProcessingDate && productHelper != null) {
                                                     String dateString = productHelper.getProcessingDate();
@@ -422,21 +422,6 @@ public class CreoDiasODataQuery extends DataQuery {
             }
         }
         return queries;
-    }
-
-    private String getRelativeOrbit(String productName) {
-        final String value;
-        final Matcher matcher = S1Pattern.matcher(productName);
-        if (matcher.matches()) {
-            int absOrbit = Integer.parseInt(matcher.group(10));
-            value = String.format("%03d",
-                    matcher.group(1).endsWith("A") ?
-                            ((absOrbit - 73) % 175) + 1 :
-                            ((absOrbit - 27) % 175) + 1);
-        } else {
-            value = null;
-        }
-        return value;
     }
 
     private void filterS3(List<EOProduct> results) {
