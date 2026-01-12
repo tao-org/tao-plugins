@@ -62,7 +62,7 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     product.setName(r.getName());
                     product.setId(r.getId());
                     product.setFormatType(isAux ? DataFormat.OTHER : DataFormat.RASTER);
-                    Object value = getAttributeValue(r, "platformShortName");
+                    Object value = r.attributeValue("platformShortName");
                     if (value != null) {
                         String platform = value.toString();
                         platform = platform.substring(0, 1).toUpperCase() + platform.substring(1).toLowerCase();
@@ -76,7 +76,7 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     product.setPixelType(PixelType.UINT16);
                     product.setWidth(-1);
                     product.setHeight(-1);
-                    value = getAttributeValue(r, "productType");
+                    value = r.attributeValue("productType");
                     if (value != null) {
                         product.setProductType(value.toString());
                     }
@@ -103,10 +103,5 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
             }
         }
         return retVal;
-    }
-
-    private Object getAttributeValue(Result result, String name) {
-        Attribute attribute = result.getAttributes().stream().filter(a -> a.getName().equals(name)).findFirst().orElse(null);
-        return attribute != null ? attribute.getValue() : null;
     }
 }
