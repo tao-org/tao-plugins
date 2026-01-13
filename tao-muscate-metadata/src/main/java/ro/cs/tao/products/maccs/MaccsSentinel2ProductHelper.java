@@ -27,6 +27,11 @@ public class MaccsSentinel2ProductHelper extends MaccsProductHelper {
     }
 
     @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { S2L2Pattern };
+    }
+
+    @Override
     public MaccsSentinel2ProductHelper duplicate() {
         return new MaccsSentinel2ProductHelper(this.path != null ? this.path : Path.of(this.name));
     }
@@ -53,9 +58,6 @@ public class MaccsSentinel2ProductHelper extends MaccsProductHelper {
 
     @Override
     public String getOrbit() { return getTokens(S2L2Pattern)[3]; }
-
-    @Override
-    protected Pattern getNamePattern() { return S2L2Pattern; }
 
     @Override
     public String getSensingDate() {
