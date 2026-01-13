@@ -27,6 +27,7 @@ import ro.cs.tao.datasource.converters.ConverterFactory;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.das.json.DASJsonResponseHandler;
+import ro.cs.tao.datasource.remote.das.json.Result;
 import ro.cs.tao.datasource.remote.das.json.Results;
 import ro.cs.tao.datasource.remote.das.parameters.DASPolygonParameterConverter;
 import ro.cs.tao.datasource.remote.das.parameters.DateTimeParameterConverter;
@@ -51,6 +52,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -130,13 +132,14 @@ public class DASQuery extends DataQuery {
                         final String rawResponse = EntityUtils.toString(response.getEntity());
                         switch (response.getStatusLine().getStatusCode()) {
                             case 200:
+                                final List<Predicate<Result>> s3Filters = isS3 ? buildS3Filters() : new ArrayList<>();
                                 final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source,
-                                                                                                                             this.coverageFilter));
+                                                                                                                             this.coverageFilter, s3Filters));
                                 tmpResults = parser.parse(rawResponse);
                                 if (tmpResults != null) {
-                                    if (isS3) {
+                                    /*if (isS3) {
                                         filterS3(tmpResults);
-                                    }
+                                    }*/
                                     count = tmpResults.size();
                                     if (count > 0) {
                                     /*if (hasProcessingDate && this.parameters.containsKey(CommonParameterNames.CLOUD_COVER)) {
@@ -460,25 +463,47 @@ public class DASQuery extends DataQuery {
         return queries;
     }
 
-    private void filterS3(List<EOProduct> results) {
+    private List<Predicate<Result>> buildS3Filters() {
+        final List<Predicate<Result>> filters = new ArrayList<>();
         if (this.parameters.containsKey("productSize")) {
             String productSize = this.parameters.get("productSize").getValueAsString();
             if ("STRIPE".equalsIgnoreCase(productSize)) {
-                results.removeIf(p -> !p.getName().contains("_____"));
+                filters.add(new Predicate<>() {
+                    @Override
+                    public boolean test(Result result) {
+                        return !result.getName().contains("_____");
+                    }
+                });
             } else if ("FRAME".equalsIgnoreCase(productSize)) {
-                results.removeIf(p -> p.getName().contains("_____"));
+                filters.add(new Predicate<>() {
+                    @Override
+                    public boolean test(Result result) {
+                        return result.getName().contains("_____");
+                    }
+                });
             }
         }
         if (this.parameters.containsKey("dayTime")) {
             String dayTime = this.parameters.get("dayTime").getValueAsString();
             if (!"ANY".equalsIgnoreCase(dayTime)) {
                 if ("DAY".equalsIgnoreCase(dayTime)) {
-                    results.removeIf(p -> p.getAcquisitionDate().getHour() > 16);
+                    filters.add(new Predicate<>() {
+                        @Override
+                        public boolean test(Result result) {
+                            return result.getContentDate().getStart().getHour() > 16;
+                        }
+                    });
                 } else if ("NIGHT".equalsIgnoreCase(dayTime)) {
-                    results.removeIf(p -> p.getAcquisitionDate().getHour() <= 16);
+                    filters.add(new Predicate<>() {
+                        @Override
+                        public boolean test(Result result) {
+                            return result.getContentDate().getStart().getHour() <= 16;
+                        }
+                    });
                 }
             }
         }
+        return filters;
     }
 
     private String buildPropertyFilter(String name, QueryParameter<?> parameter, Condition condition) throws ConversionException {
