@@ -27,6 +27,11 @@ public class MaccsLandsat8ProductHelper extends MaccsProductHelper {
     }
 
     @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { L8L2Pattern };
+    }
+
+    @Override
     public MaccsLandsat8ProductHelper duplicate() {
         return new MaccsLandsat8ProductHelper(this.path != null ? this.path : Path.of(this.name));
     }
@@ -47,11 +52,6 @@ public class MaccsLandsat8ProductHelper extends MaccsProductHelper {
             logger.severe(String.format("Cannot list contents of product %s. Reason; %s", this.name, e.getMessage()));
         }
         return folder;
-    }
-
-    @Override
-    protected Pattern getNamePattern() {
-        return L8L2Pattern;
     }
 
     @Override
