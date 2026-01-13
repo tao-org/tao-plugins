@@ -36,10 +36,12 @@ import java.util.function.Predicate;
 public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
     private final DASDataSource dataSource;
     private final Predicate<EOProduct> filter;
+    private final List<Predicate<Result>> s3Filters;
 
-    public DASJsonResponseHandler(DASDataSource dataSource, Predicate<EOProduct> filter) {
+    public DASJsonResponseHandler(DASDataSource dataSource, Predicate<EOProduct> filter, List<Predicate<Result>> s3Filters) {
         this.dataSource = dataSource;
         this.filter = filter;
+        this.s3Filters = s3Filters;
     }
 
     @Override
@@ -84,6 +86,12 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                                             ? dataSource.getConnectionString("Sentinel1-orbit-files")
                                             : dataSource.getConnectionString("Download")) + "(" + r.getId() + ")/$value");
                     product.setAcquisitionDate(r.getContentDate().getStart());
+                    boolean toExclude = false;
+                    for (int i = 0; i < s3Filters.size(); i++) {
+                        toExclude = s3Filters.get(i).test(r);
+                        if (toExclude) break;
+                    }
+                    if (toExclude) continue;
                     final List<Attribute> attributes = r.getAttributes();
                     final Attribute orbitNumber = attributes.stream().filter(a -> a.getName().equals("relativeOrbitNumber")).findFirst().orElse(null);
                     product.addAttribute("relativeOrbit", orbitNumber != null
