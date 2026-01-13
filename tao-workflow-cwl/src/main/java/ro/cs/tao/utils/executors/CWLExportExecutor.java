@@ -19,7 +19,8 @@ import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.ExecutionUnitFormat;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.cwl.CWLTemplate;
-import ro.cs.tao.utils.yaml.*;
+import ro.cs.tao.utils.yaml.CWLYAMLFactory;
+import ro.cs.tao.utils.yaml.CWLYAMLGenerator;
 import ro.cs.tao.workflow.WorkflowDescriptor;
 import ro.cs.tao.workflow.WorkflowNodeDescriptor;
 
@@ -685,11 +686,11 @@ public class CWLExportExecutor extends Executor<Object>
                 return null;
             }
             return cwlWorkflow.getInputs().stream().filter(in -> {
-                if (((WorkflowInputParameter) in).getId().get().contains("#")) {
-                    return ((WorkflowInputParameter) in).getId().get().endsWith("/" + currentStepInVal);
-                } else {
-                    return ((WorkflowInputParameter) in).getId().get().equals(currentStepInVal);
-                }
+                String id = in instanceof WorkflowInputParameter
+                        ? ((WorkflowInputParameter) in).getId().get()
+                        : ((CommandInputParameter) in).getId().get();
+                return id != null && ((id.contains("#") && id.endsWith("/" + currentStepInVal))
+                                      || (id.equals(currentStepInVal)));
             }).findFirst().orElse(null);
         }
         return null;
