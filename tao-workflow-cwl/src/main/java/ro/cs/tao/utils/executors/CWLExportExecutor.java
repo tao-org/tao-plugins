@@ -500,13 +500,18 @@ public class CWLExportExecutor extends Executor<Object>
                 input.setId(Optional.of(inputId));
                 Class<?> inputClass = inputParameter.getValue().getClass();
                 String inputType = JavaType.fromClass(inputClass).friendlyName();
+                // Workaround for Boolean, in Java type is bool but CWL wants it boolean
+                if (inputType.equals("^bool(\\\\[])?\\\\??$\")")) {
+                    inputType = inputType.replace("bool","boolean");
+                }
                 if (!mandatory) {
                     inputType = inputType + "?";
                 }
                 input.setType(inputType);
 
-                cwlWorkflow.getInputs().add(input);
-                mainWorkflow.getInputs().add(input);
+                WorkflowInputParameter workflowInput = fromCommandInput(input);
+                cwlWorkflow.getInputs().add(workflowInput);
+                mainWorkflow.getInputs().add(workflowInput);
 
                 String ymlInputValue = inputParameter.getValue();
                 if (inputParameter.getValue().contains("/")) {
@@ -544,8 +549,14 @@ public class CWLExportExecutor extends Executor<Object>
             input.setId(Optional.of(inputId));
             Class<?> inputClass = wfParamDesc.getDataType();
             String inputType = JavaType.fromClass(inputClass).friendlyName();
-            if (inputType.equals("path")) {
-                inputType = "File";
+            /* Workaround for Boolean and Path.
+             * In Java type is bool but CWL wants it boolean.
+             * Also in CWL path type does not exist, it can be File, Directory or Any
+             */
+            if (inputType.matches("^path(\\[])?\\??$")) {
+                inputType = inputType.replace("path", "File");
+            } else if (inputType.matches("^bool(\\[])?\\??$")) {
+                inputType = inputType.replace("bool","boolean");
             }
             if (!mandatory) {
                 inputType = inputType + "?";
@@ -734,6 +745,19 @@ public class CWLExportExecutor extends Executor<Object>
             return retVal + "[]";
         }
         return retVal;
+    }
+
+    public static WorkflowInputParameter fromCommandInput(CommandInputParameter input) {
+        WorkflowInputParameter workflowInput = new WorkflowInputParameterImpl();
+        workflowInput.setId(input.getId());
+        workflowInput.setType(input.getType());
+        workflowInput.setLabel(input.getLabel());
+        workflowInput.setDoc(input.getDoc());
+        workflowInput.setDefault(input.getDefault());
+        workflowInput.setSecondaryFiles(input.getSecondaryFiles());
+        workflowInput.setFormat(input.getFormat());
+        workflowInput.setStreamable(input.getStreamable());
+        return workflowInput;
     }
 
     private void writeToFile(Path path, Map<Object, Object> cwlTemplateObject) {
