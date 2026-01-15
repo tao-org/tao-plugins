@@ -1,8 +1,6 @@
 package org.w3id.cwl.cwl1_2.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.w3id.cwl.cwl1_2.CWLType;
-import org.w3id.cwl.cwl1_2.CommandInputParameter;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -70,11 +68,8 @@ public interface Saveable {
                                 boolean hasNull = ((Collection<?>) field.get(object)).stream().anyMatch(elem -> elem.toString().equals("null"));
                                 String type = ((Collection<?>) field.get(object)).stream()
                                         .filter(elem -> !elem.toString().equals("null")).map(Object::toString).findFirst().orElse("Any");
-                                if (hasNull) {
-                                    temp.put(field.getName(), type + "?");
-                                } else {
-                                    temp.put(field.getName(), type);
-                                }
+                                String expr = hasNull ? type + "?" : type;
+                                temp.put(field.getName(), expr);
                             } else {
                                 temp.put(field.getName(), field.get(object).toString());
                             }
