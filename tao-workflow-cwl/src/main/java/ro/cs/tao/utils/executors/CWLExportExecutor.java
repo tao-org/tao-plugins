@@ -480,29 +480,32 @@ public class CWLExportExecutor extends Executor<Object>
                 }
             } else {
                 TargetDescriptor parameterTargetDescriptor = wfComponent.getTargets().stream().filter(t -> t.getName().equals(inputParameter.getKey())).findFirst().orElse(null);
-                boolean mandatory = true;
+                ParameterDescriptor wfParamDesc = ((ProcessingComponent) wfComponent)
+                        .getParameterDescriptors().stream()
+                        .filter(p -> p.getName().equals(inputParameter.getKey()))
+                        .findFirst()
+                        .orElse(null);
+
+                boolean mandatory = wfParamDesc == null || wfParamDesc.isNotNull();
+
                 if (parameterTargetDescriptor != null) {
                     commandParamIndex = getCommandParamIdx(executionCommandArray, parameterTargetDescriptor.getName());
                     inputId = inputId + WF_OUTPUT_NAME_SUFFIX;
                     input.setLabel(Optional.of("Output file for " + inputParameter.getKey() + " found in " + stepCWLFileId));
-                } else {
-                    ParameterDescriptor wfParamDesc = ((ProcessingComponent) wfComponent).getParameterDescriptors().stream().filter(p -> p.getName().equals(inputParameter.getKey())).findFirst().orElse(null);
-                    if (wfParamDesc != null) {
-                        if (!wfParamDesc.isNotNull()) {
-                            mandatory = false;
-                        }
-                        if (wfParamDesc.getDescription() != null) {
-                            input.setLabel(Optional.of(wfParamDesc.getDescription()));
-                        }
-                        commandParamIndex = getCommandParamIdx(executionCommandArray, wfParamDesc.getLabel());
+                } else if (wfParamDesc != null) {
+                    if (wfParamDesc.getDescription() != null && !wfParamDesc.getDescription().isEmpty()) {
+                        input.setLabel(Optional.of(wfParamDesc.getDescription()));
                     }
+                    commandParamIndex = getCommandParamIdx(executionCommandArray, wfParamDesc.getLabel());
                 }
                 input.setId(Optional.of(inputId));
-                Class<?> inputClass = inputParameter.getValue().getClass();
+                Class<?> inputClass = wfParamDesc != null
+                        ? wfParamDesc.getDataType()
+                        : inputParameter.getValue().getClass();
+
                 String inputType = JavaType.fromClass(inputClass).friendlyName();
-                // Workaround for Boolean, in Java type is bool but CWL wants it boolean
-                if (inputType.equals("^bool(\\\\[])?\\\\??$\")")) {
-                    inputType = inputType.replace("bool","boolean");
+                if (inputType.matches("^bool(\\[])?\\??$")) {
+                    inputType = inputType.replace("bool", "boolean");
                 }
                 if (!mandatory) {
                     inputType = inputType + "?";
