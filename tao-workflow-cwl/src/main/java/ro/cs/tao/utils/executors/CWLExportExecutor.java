@@ -578,11 +578,17 @@ public class CWLExportExecutor extends Executor<Object>
 
     private int getCommandParamIdx(List<String> executionCommandArray, String parameterName) {
         for(int i = 0; i < executionCommandArray.size(); i++) {
+            String dottedParameterName = null;
+            if (executionCommandArray.get(i).contains(".") && !executionCommandArray.get(i).trim().endsWith(".py")) {
+                dottedParameterName = parameterName.replaceAll("_", "\\.");
+            }
             if (executionCommandArray.get(i).contains("=")) {
-                if(executionCommandArray.get(i).matches("-+" + Pattern.quote(parameterName) + "\\s*=.*")) {
+                if(executionCommandArray.get(i).matches("-+" + Pattern.quote(parameterName) + "\\s*=.*")
+                        || (dottedParameterName != null && executionCommandArray.get(i).matches("-+" + Pattern.quote(dottedParameterName) + "\\s*=.*"))) {
                     return i;
                 }
-            } else if (executionCommandArray.get(i).equals("-" + parameterName)){
+            } else if (executionCommandArray.get(i).matches("-" + Pattern.quote(parameterName))
+                    || (dottedParameterName != null && executionCommandArray.get(i).matches("-" + Pattern.quote(dottedParameterName)))) {
                 return i;
             }
         }
@@ -744,13 +750,13 @@ public class CWLExportExecutor extends Executor<Object>
                     retVal = File_class.FILE.toString();
                 }
         }
-        if (!forYAML && filePath != null && filePath.matches(".*?/?\\s?,\\s?/?.*")) {
+        if (!forYAML && filePath != null && filePath.matches("^\\[([^\\]]*(?:,[^\\]]*)*)\\]$|^\\[\\]$")) {
             return retVal + "[]";
         }
         return retVal;
     }
 
-    public static WorkflowInputParameter fromCommandInput(CommandInputParameter input) {
+    private WorkflowInputParameter fromCommandInput(CommandInputParameter input) {
         WorkflowInputParameter workflowInput = new WorkflowInputParameterImpl();
         workflowInput.setId(input.getId());
         workflowInput.setType(input.getType());
@@ -765,9 +771,10 @@ public class CWLExportExecutor extends Executor<Object>
 
     private void writeToFile(Path path, Map<Object, Object> cwlTemplateObject) {
         Map<Object, Object> tempList = new LinkedHashMap<>();
-        CWLYAMLFactory factory = new CWLYAMLFactory();
-        factory.enable(YAMLGenerator.Feature.MINIMIZE_QUOTES);
-        factory.disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER);
+        CWLYAMLFactory factory =  new CWLYAMLFactory();
+        factory.enable(CWLYAMLGenerator.Feature.MINIMIZE_QUOTES);
+        factory.disable(CWLYAMLGenerator.Feature.WRITE_DOC_START_MARKER);
+
         ObjectMapper mapper = new ObjectMapper(factory);
         mapper.registerModule(new Jdk8Module());
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);

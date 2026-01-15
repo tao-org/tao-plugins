@@ -160,8 +160,11 @@ public class CWLUtils {
     }
 
     public static String extractDashPrefix(String value) {
-        Matcher m = Pattern.compile("^-+").matcher(value);
-        return m.find() ? m.group() : "";
+        if (value != null) {
+            Matcher m = Pattern.compile("^-+").matcher(value);
+            return m.find() ? m.group() : "";
+        }
+        return "";
     }
 
     public static String removeStartDashes(String value) {
