@@ -520,17 +520,24 @@ public class CWLImportExecutor {
                 .orElse(null);
         String declaredParamPrefix = CWLUtils.extractDashPrefix(firstDeclaredParamPrefix);
         Map<String, CWLParamDescTemplate> paramWithPositionList = params.entrySet().stream()
-                .filter(p -> p.getValue().getParamPosition() > 0).collect(Collectors.toMap(
+                .filter(p -> p.getValue().getParamPosition() > 0)
+                .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue
                 ));
         Map<String, CWLParamDescTemplate> paramWithoutPositionList = params.entrySet().stream()
-                .filter(p -> p.getValue().getParamPosition() < 1).collect(Collectors.toMap(
+                .filter(p -> p.getValue().getParamPosition() < 1)
+                .sorted(Comparator.comparingInt(e -> e.getValue().getParamPosition()))
+                .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue
                 ));
         for (Map.Entry<String, CWLParamDescTemplate> paramEntry: paramWithoutPositionList.entrySet()) {
-            String paramName = paramEntry.getValue().getParamName().replace(suffix, "");
+            String paramName = paramEntry.getValue().getParamName();
+            if (paramName.contains(suffix)) {
+                int suffixIdx = paramName.indexOf(suffix);
+                paramName = paramName.substring(0, suffixIdx);
+            }
             String param = paramName;
             String paramVal = null;
             if (paramEntry.getValue().getParamPrefix() != null) {
@@ -556,8 +563,13 @@ public class CWLImportExecutor {
                 }
             }
         }
+
         for (Map.Entry<String, CWLParamDescTemplate> paramEntry: paramWithPositionList.entrySet()) {
             String paramName = paramEntry.getValue().getParamName();
+            if (paramName.contains(suffix)) {
+                int suffixIdx = paramName.indexOf(suffix);
+                paramName = paramName.substring(0, suffixIdx);
+            }
             String param = paramName;
             String paramTemplate = "$" + param;
             if (paramEntry.getValue().getParamPrefix() != null) {

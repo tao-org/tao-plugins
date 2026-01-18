@@ -454,10 +454,9 @@ public class CWLExportExecutor extends Executor<Object>
                     }*/
                 }
                 input.setType(inheritType);
-                CommandLineBindingImpl inputBinding = new CommandLineBindingImpl();
                 if (commandParamIndex > -1) {
                     String foundPrefix = executionCommandArray.get(commandParamIndex).replace(inputParameter.getKey(), "");
-                    inputBinding.setPrefix(Optional.of(foundPrefix + inputParameter.getKey()));
+                    //inputBinding.setPrefix(Optional.of(foundPrefix + inputParameter.getKey()));
                     // use toString() for inheritType, because it can be string or class org.w3id.cwl.cwl1_2.InputArraySchemaImpl
                     if (!inputParameter.getValue().startsWith("[") && inheritType.toString().contains("[")) {
                         input.setType(inheritType.toString().replaceAll("\\[]", ""));
@@ -481,18 +480,9 @@ public class CWLExportExecutor extends Executor<Object>
                         updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inheritType, inputParameter.getValue());
                     }
                 } else {
-                    int inputPosition = getCommandParamPosition(executionCommandArray, inputParameter.getValue());
-                    if (inputPosition > -1) {
-                        inputBinding.setPosition(inputPosition);
-                    }
                     updateExecutionCommand(executionCommandArray, inputId, inputParameter.getValue(), inheritType.toString(), false);
                 }
-                if (input.getType().toString().contains("[]")) {
-                    inputBinding.setSeparate(Optional.of(true));
-                }
-                input.setInputBinding(Optional.of(inputBinding));
             } else {
-                CommandLineBindingImpl inputBinding = new CommandLineBindingImpl();
                 TargetDescriptor parameterTargetDescriptor = wfComponent.getTargets().stream().filter(t -> t.getName().equals(inputParameter.getKey())).findFirst().orElse(null);
                 ParameterDescriptor wfParamDesc = ((ProcessingComponent) wfComponent)
                         .getParameterDescriptors().stream()
@@ -544,19 +534,11 @@ public class CWLExportExecutor extends Executor<Object>
                         executionCommandArray.set(commandParamIndex + 1, "\"$(inputs." + inputId + ")\"");
                     }*/
                     String foundPrefix = executionCommandArray.get(commandParamIndex).replace(inputParameter.getKey(), "");
-                    inputBinding.setPrefix(Optional.of(foundPrefix + inputParameter.getKey()));
+                    //inputBinding.setPrefix(Optional.of(foundPrefix + inputParameter.getKey()));
                     updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, regex, inputParameter.getValue());
                 } else {
-                    int inputPosition = this.getCommandParamPosition(executionCommandArray, inputParameter.getValue());
-                    if (inputPosition > -1) {
-                        inputBinding.setPosition(inputPosition);
-                    }
                     updateExecutionCommand(executionCommandArray, inputId, inputParameter.getValue(), inputType, true);
                 }
-                if (input.getType().toString().contains("[]")) {
-                    inputBinding.setSeparate(Optional.of(true));
-                }
-                input.setInputBinding(Optional.of(inputBinding));
             }
             commandLineToolWf.getInputs().add(input);
         }
@@ -577,14 +559,7 @@ public class CWLExportExecutor extends Executor<Object>
             input.setId(Optional.of(inputId));
             Class<?> inputClass = wfParamDesc.getDataType();
             String inputType = JavaType.fromClass(inputClass).friendlyName();
-            int commandParamIndex = getCommandParamIdx(templateContent, wfParamDesc.getName());
-            if (commandParamIndex > -1) {
-                CommandLineBindingImpl inputBinding = new CommandLineBindingImpl();
-                String foundPrefix = templateContent.get(commandParamIndex)
-                        .replace(wfParamDesc.getLabel(), "").replace("$", "").trim();
-                inputBinding.setPrefix(Optional.of(foundPrefix + wfParamDesc.getId()));
-                input.setInputBinding(Optional.of(inputBinding));
-            }
+
             /* Workaround for Boolean and Path.
              * In Java type is bool but CWL wants it boolean.
              * Also in CWL path type does not exist, it can be File, Directory or Any
