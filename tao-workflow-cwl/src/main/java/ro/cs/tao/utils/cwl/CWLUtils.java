@@ -76,7 +76,7 @@ public class CWLUtils {
     }
 
     public static String formatDockerName (String name) {
-        if (name.matches("^\\w+:\\d+\\/.+")) {
+        if (name.matches("^[\\w-]+:\\d+\\/.+")) {
             int fistSlashIdx = name.indexOf("/");
             name = name.substring(fistSlashIdx + 1);
         }

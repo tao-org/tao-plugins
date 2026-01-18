@@ -2,7 +2,6 @@ package ro.cs.tao.utils.executors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.w3id.cwl.cwl1_2.*;
 import org.w3id.cwl.cwl1_2.utils.RootLoader;
@@ -429,10 +428,12 @@ public class CWLExportExecutor extends Executor<Object>
         CommandLineTool commandLineToolWf = (CommandLineTool)cwlTemplate.getCwlGraphChild("$graph", stepCWLFileId);
         Workflow cwlWorkflow = (Workflow)cwlTemplate.getCwlGraphChild("$graph", cwlWorkflowId);
         Workflow mainWorkflow = (Workflow)cwlTemplate.getCwlGraphChild("$graph", MAIN_WF_ID);
-        List<String> executionCommandArray = Arrays.asList(task.getCommand().split("\\R"));
+        List<String> executionCommandArray = new ArrayList<>();
+        executionCommandArray = Arrays.asList(task.getCommand().split("\\R"));
         Object currentStep = cwlWorkflow.getStep(stepCWLFileId);
         for (Variable inputParameter : task.getInputParameterValues()) {
             String inputId = inputParameter.getKey() + "_" + task.getWorkflowNodeId();
+
             CommandInputParameter input = new CommandInputParameterImpl();
             int commandParamIndex = -1;
             SourceDescriptor parameterSourceDescriptor = wfComponent.getSources().stream().filter(s -> s.getName().equals(inputParameter.getKey())).findFirst().orElse(null);
@@ -442,6 +443,7 @@ public class CWLExportExecutor extends Executor<Object>
                 commandParamIndex = getCommandParamIdx(executionCommandArray, parameterSourceDescriptor.getName());
                 // in this case the input is already added in YAML file when Workflow is created
                 input.setId(Optional.of(inputId));
+
                 Object associatedElement = getAssociatedElement(currentStep, inputId, task.getWorkflowNodeId());
                 if (associatedElement != null) {
                     inheritType = ((WorkflowInputParameter)associatedElement).getType();
@@ -452,7 +454,10 @@ public class CWLExportExecutor extends Executor<Object>
                     }*/
                 }
                 input.setType(inheritType);
+                CommandLineBindingImpl inputBinding = new CommandLineBindingImpl();
                 if (commandParamIndex > -1) {
+                    String foundPrefix = executionCommandArray.get(commandParamIndex).replace(inputParameter.getKey(), "");
+                    inputBinding.setPrefix(Optional.of(foundPrefix + inputParameter.getKey()));
                     // use toString() for inheritType, because it can be string or class org.w3id.cwl.cwl1_2.InputArraySchemaImpl
                     if (!inputParameter.getValue().startsWith("[") && inheritType.toString().contains("[")) {
                         input.setType(inheritType.toString().replaceAll("\\[]", ""));
@@ -476,9 +481,18 @@ public class CWLExportExecutor extends Executor<Object>
                         updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inheritType, inputParameter.getValue());
                     }
                 } else {
+                    int inputPosition = getCommandParamPosition(executionCommandArray, inputParameter.getValue());
+                    if (inputPosition > -1) {
+                        inputBinding.setPosition(inputPosition);
+                    }
                     updateExecutionCommand(executionCommandArray, inputId, inputParameter.getValue(), inheritType.toString(), false);
                 }
+                if (input.getType().toString().contains("[]")) {
+                    inputBinding.setSeparate(Optional.of(true));
+                }
+                input.setInputBinding(Optional.of(inputBinding));
             } else {
+                CommandLineBindingImpl inputBinding = new CommandLineBindingImpl();
                 TargetDescriptor parameterTargetDescriptor = wfComponent.getTargets().stream().filter(t -> t.getName().equals(inputParameter.getKey())).findFirst().orElse(null);
                 ParameterDescriptor wfParamDesc = ((ProcessingComponent) wfComponent)
                         .getParameterDescriptors().stream()
@@ -499,6 +513,7 @@ public class CWLExportExecutor extends Executor<Object>
                     commandParamIndex = getCommandParamIdx(executionCommandArray, wfParamDesc.getLabel());
                 }
                 input.setId(Optional.of(inputId));
+
                 Class<?> inputClass = wfParamDesc != null
                         ? wfParamDesc.getDataType()
                         : inputParameter.getValue().getClass();
@@ -511,7 +526,6 @@ public class CWLExportExecutor extends Executor<Object>
                     inputType = inputType + "?";
                 }
                 input.setType(inputType);
-
                 WorkflowInputParameter workflowInput = fromCommandInput(input);
                 cwlWorkflow.getInputs().add(workflowInput);
                 mainWorkflow.getInputs().add(workflowInput);
@@ -529,16 +543,27 @@ public class CWLExportExecutor extends Executor<Object>
                     } else {
                         executionCommandArray.set(commandParamIndex + 1, "\"$(inputs." + inputId + ")\"");
                     }*/
+                    String foundPrefix = executionCommandArray.get(commandParamIndex).replace(inputParameter.getKey(), "");
+                    inputBinding.setPrefix(Optional.of(foundPrefix + inputParameter.getKey()));
                     updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, regex, inputParameter.getValue());
                 } else {
+                    int inputPosition = this.getCommandParamPosition(executionCommandArray, inputParameter.getValue());
+                    if (inputPosition > -1) {
+                        inputBinding.setPosition(inputPosition);
+                    }
                     updateExecutionCommand(executionCommandArray, inputId, inputParameter.getValue(), inputType, true);
                 }
+                if (input.getType().toString().contains("[]")) {
+                    inputBinding.setSeparate(Optional.of(true));
+                }
+                input.setInputBinding(Optional.of(inputBinding));
             }
             commandLineToolWf.getInputs().add(input);
         }
         // add parameters without value. Tose are not found in task parameters
         Set<ParameterDescriptor> wfParamDescList = ((ProcessingComponent)wfComponent).getParameterDescriptors();
         boolean mandatory;
+        List<String> templateContent = Arrays.asList(((ProcessingComponent) wfComponent).getTemplateContents().split("\\R"));
         for (ParameterDescriptor wfParamDesc : wfParamDescList) {
             String inputId = wfParamDesc.getId() + "_" + task.getWorkflowNodeId();
             CommandInputParameter input = new CommandInputParameterImpl();
@@ -552,6 +577,14 @@ public class CWLExportExecutor extends Executor<Object>
             input.setId(Optional.of(inputId));
             Class<?> inputClass = wfParamDesc.getDataType();
             String inputType = JavaType.fromClass(inputClass).friendlyName();
+            int commandParamIndex = getCommandParamIdx(templateContent, wfParamDesc.getName());
+            if (commandParamIndex > -1) {
+                CommandLineBindingImpl inputBinding = new CommandLineBindingImpl();
+                String foundPrefix = templateContent.get(commandParamIndex)
+                        .replace(wfParamDesc.getLabel(), "").replace("$", "").trim();
+                inputBinding.setPrefix(Optional.of(foundPrefix + wfParamDesc.getId()));
+                input.setInputBinding(Optional.of(inputBinding));
+            }
             /* Workaround for Boolean and Path.
              * In Java type is bool but CWL wants it boolean.
              * Also in CWL path type does not exist, it can be File, Directory or Any
@@ -564,16 +597,41 @@ public class CWLExportExecutor extends Executor<Object>
             if (!mandatory) {
                 inputType = inputType + "?";
             }
+
             input.setType(inputType);
+
             boolean alreadyAdded = commandLineToolWf.getInputs().stream().anyMatch(p -> ((CommandInputParameter)p).getId() != null
                     && ((CommandInputParameter)p).getId().isPresent() && ((CommandInputParameter)p).getId().get().equals(inputId));
             if (!alreadyAdded) {
                 commandLineToolWf.getInputs().add(input);
             }
         }
+        //remove empty lines (workaround for ProductFormatter)
+        List<String> newExecutionCommandArray = removeEmptyLines(executionCommandArray);
         CommandLineBinding taskArguments = new CommandLineBindingImpl();
-        taskArguments.setValueFrom(String.join(" \\\n", executionCommandArray));
+        taskArguments.setValueFrom(String.join(" \\\n", newExecutionCommandArray));
         commandLineToolWf.getArguments().get().add(taskArguments);
+    }
+
+    private List<String> removeEmptyLines(List<String> executionCommandArray) {
+        List<String> temp = new ArrayList<>();
+        String regex = "-*([a-zA-Z0-9]+\\.)+[a-zA-Z0-9]+\\s\\$([a-zA-Z0-9]+_)+[a-zA-Z0-9]+";
+        for (int i = 0; i < executionCommandArray.size(); i++) {
+            if (executionCommandArray.get(i).contains("$") &&
+                    executionCommandArray.get(i).matches("\"?\\$\\((inputs|outputs)\\.([A-Za-z_]\\w*)([\\w\\[\\].]*)\\)\"?([\\w./]+)?\\s?")) {
+                if (i > 1) {
+                    if (executionCommandArray.get(i).matches("-*" + executionCommandArray.get(i).replaceFirst("$",""))) {
+                        temp.add(executionCommandArray.get(i-1));
+                        temp.add(executionCommandArray.get(i));
+                    }
+                }
+                temp.add(executionCommandArray.get(i));
+            } else if (!executionCommandArray.get(i).matches(regex)
+                    && !temp.contains(executionCommandArray.get(i))) {
+                temp.add(executionCommandArray.get(i));
+            }
+        }
+        return temp;
     }
 
     private int getCommandParamIdx(List<String> executionCommandArray, String parameterName) {
@@ -589,6 +647,18 @@ public class CWLExportExecutor extends Executor<Object>
                 }
             } else if (executionCommandArray.get(i).matches("-" + Pattern.quote(parameterName))
                     || (dottedParameterName != null && executionCommandArray.get(i).matches("-" + Pattern.quote(dottedParameterName)))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int getCommandParamPosition(List<String> executionCommandArray, String parameterValue) {
+        for(int i = 0; i < executionCommandArray.size(); i++) {
+            if(executionCommandArray.get(i).equals(parameterValue)) {
+                return i;
+            } else if (parameterValue.startsWith("[") &&
+                    parameterValue.matches("(?:\\[|,\\s?)" + Pattern.quote(executionCommandArray.get(i)) + "(?:\\s?,|\\])")) {
                 return i;
             }
         }

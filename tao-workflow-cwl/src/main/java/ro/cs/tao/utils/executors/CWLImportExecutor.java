@@ -219,16 +219,17 @@ public class CWLImportExecutor {
         for (CWLApplicationTemplate application : applicationList) {
             String componentLabel = CWLUtils.simplifyApplicationName(application.getApplicationName());
             String componentId = CWLUtils.simplifyApplicationName(application.getApplicationName());
+            String suffix = stepId.matches(".+_\\d+$") ? stepId.substring(stepId.lastIndexOf("_")) : "";
             ProcessingComponent processingComponent = findComponent(componentId);
             boolean componentAlreadyExist = true;
             ComponentCategory componentCategory = ComponentCategory.MISC;
-            String componentTemplate = createTemplate(application.getApplicationParams());
             Map<String, CWLParamDescTemplate> paramsToBeAdded = new LinkedHashMap<>();
             if (processingComponent == null) {
                 String fileLocation = dockerContainer.getApplications().stream()
                         .filter(app -> app.getName().equals(componentId))
                         .map(Application::getPath).findFirst().orElse(null);
                 componentAlreadyExist = false;
+                String componentTemplate = createTemplate(application.getApplicationParams(), suffix);
                 //creating processing component
                 processingComponent = createProcessingComponents(componentId,componentLabel,fileLocation,componentCategory,componentTemplate,dockerContainer);
                 createdComponentsHistory.add(componentId);
@@ -352,7 +353,7 @@ public class CWLImportExecutor {
             }
 
             if (!paramsToBeAdded.isEmpty()) {
-                componentTemplate = updateTemplate(processingComponent.getTemplateContents(), paramsToBeAdded);
+                String componentTemplate = updateTemplate(processingComponent.getTemplateContents(), paramsToBeAdded, suffix);
                 processingComponent.setTemplateContents(componentTemplate);
             }
 
@@ -488,8 +489,8 @@ public class CWLImportExecutor {
      * @param params a set of processing component parameters used to build the template
      * @return the template as a string
      */
-    private String createTemplate(Map<String, CWLParamDescTemplate> params) {
-        return composeTemplate(new LinkedList<>(), params);
+    private String createTemplate(Map<String, CWLParamDescTemplate> params, String suffix) {
+        return composeTemplate(new LinkedList<>(), params, suffix);
     }
 
     /**
@@ -499,9 +500,9 @@ public class CWLImportExecutor {
      * @param params a set of processing component parameters used to build the template
      * @return the template as a string
      */
-    private String updateTemplate(String componentTemplate, Map<String, CWLParamDescTemplate> params) {
+    private String updateTemplate(String componentTemplate, Map<String, CWLParamDescTemplate> params, String suffix) {
         LinkedList<String> paramTemplateList = splitTemplate(componentTemplate);
-        return composeTemplate(paramTemplateList, params);
+        return composeTemplate(paramTemplateList, params, suffix);
     }
 
     /**
@@ -511,7 +512,7 @@ public class CWLImportExecutor {
      * @param params a set of processing component parameters used to build the template
      * @return the template as a string
      */
-    private String composeTemplate(LinkedList<String> paramTemplateList, Map<String, CWLParamDescTemplate> params) {
+    private String composeTemplate(LinkedList<String> paramTemplateList, Map<String, CWLParamDescTemplate> params, String suffix) {
         String firstDeclaredParamPrefix = params.values().stream()
                 .map(CWLParamDescTemplate::getParamPrefix)
                 .filter(Objects::nonNull)
@@ -529,7 +530,7 @@ public class CWLImportExecutor {
                         Map.Entry::getValue
                 ));
         for (Map.Entry<String, CWLParamDescTemplate> paramEntry: paramWithoutPositionList.entrySet()) {
-            String paramName = paramEntry.getValue().getParamName();
+            String paramName = paramEntry.getValue().getParamName().replace(suffix, "");
             String param = paramName;
             String paramVal = null;
             if (paramEntry.getValue().getParamPrefix() != null) {
@@ -541,11 +542,18 @@ public class CWLImportExecutor {
                     param = declaredParamPrefix + param;
                 }
             }
-            String paramTemplate = paramVal != null ? param + "\n$" + paramVal.replaceAll("-", "_") : "$" + param;
-            if (paramEntry.getValue().getParamPosition() < 0) {
-                paramTemplateList.addFirst(paramTemplate);
+            String paramTemplate;
+            if (param.contains(".")) {
+                paramTemplate = paramVal != null ? param + " $" + paramVal.replaceAll("-", "_") : "$" + param;
             } else {
-                paramTemplateList.add(paramTemplate);
+                paramTemplate = paramVal != null ? param + "\n$" + paramVal.replaceAll("-", "_") : "$" + param;
+            }
+            if (!paramTemplateList.contains(paramTemplate)) {
+                if (paramEntry.getValue().getParamPosition() < 0) {
+                    paramTemplateList.addFirst(paramTemplate);
+                } else {
+                    paramTemplateList.add(paramTemplate);
+                }
             }
         }
         for (Map.Entry<String, CWLParamDescTemplate> paramEntry: paramWithPositionList.entrySet()) {
@@ -556,12 +564,18 @@ public class CWLImportExecutor {
                 param = paramEntry.getValue().getParamPrefix();
                 String paramVal = paramName.startsWith("-") ? CWLUtils.removeStartDashes(paramName) : paramName;
                 paramVal = paramVal.replaceAll("-", "_");
-                paramTemplate = param + "\n$" + paramVal;
+                if (param.contains(".")) {
+                    paramTemplate = param + " $" + paramVal;
+                } else {
+                    paramTemplate = param + "\n$" + paramVal;
+                }
             }
-            if (paramEntry.getValue().getParamPosition() > 0) {
-                paramTemplateList.add(paramEntry.getValue().getParamPosition() - 1, paramTemplate);
-            } else {
-                paramTemplateList.add(paramTemplate);
+            if (!paramTemplateList.contains(paramTemplate)) {
+                if (paramEntry.getValue().getParamPosition() > 0) {
+                    paramTemplateList.add(paramEntry.getValue().getParamPosition() - 1, paramTemplate);
+                } else {
+                    paramTemplateList.add(paramTemplate);
+                }
             }
         }
         return String.join("\n", paramTemplateList);
@@ -583,7 +597,12 @@ public class CWLImportExecutor {
             String paramName = param.getParamName();
             String paramVal = paramName.startsWith("-") ? CWLUtils.removeStartDashes(paramName) : paramName;
             paramVal = paramVal.replaceAll("-", "_");
-            String paramTemplate = param + "\n$" + paramVal;
+            String paramTemplate ;
+            if (paramName.contains(".")) {
+                paramTemplate = paramName + " $" + paramVal;
+            } else {
+                paramTemplate = paramName + "\n$" + paramVal;
+            }
             return componentTemplate.contains(paramTemplate);
         }
     }
@@ -689,7 +708,7 @@ public class CWLImportExecutor {
      * @return the already existing parameter or null.
      */
     private String getParamFromPositionInTemplate(String componentTemplate, CWLParamDescTemplate param) {
-        if (param.getParamPosition() > 1) {
+        if (param.getParamPosition() > 0) {
             LinkedList<String> template = splitTemplate(componentTemplate);
             String paramOnPosition = template.get(param.getParamPosition() - 1);
             if (!paramOnPosition.equals("$" + param.getParamName())) {
