@@ -14,12 +14,16 @@
 
 package org.w3id.cwl.cwl1_2;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3id.cwl.cwl1_2.utils.LoaderInstances;
 import org.w3id.cwl.cwl1_2.utils.LoadingOptions;
 import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
 import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
 import org.w3id.cwl.cwl1_2.utils.ValidationException;
 
+import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -381,5 +385,28 @@ public class CommandLineBindingImpl extends SaveableImpl implements CommandLineB
     this.itemSeparator = (java.util.Optional<String>) itemSeparator;
     this.valueFrom = (Object) valueFrom;
     this.shellQuote = (java.util.Optional<Boolean>) shellQuote;
+  }
+
+  public Map<Object, Object> save() {
+    Map<Object, Object> objectList = new LinkedHashMap<>();
+    for (Field f : this.getClass().getDeclaredFields()) {
+      if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
+        f.setAccessible(true);
+        try {
+          if (f.get(this) != null) {
+            if (f.get(this) instanceof Optional<?>) {
+              objectList.put(f.getName(), ((Optional<?>) f.get(this)).get());
+            } else if (f.get(this).equals(f.get(this).toString().toUpperCase())) {
+              objectList.put(f.getName(), StringUtils.capitalize(f.get(this).toString().toLowerCase()));
+            } else {
+              objectList.put(f.getName(), f.get(this));
+            }
+          }
+        } catch (Exception e) {
+          System.out.println(e.getMessage() + ": " + e.getCause() );
+        }
+      }
+    }
+    return objectList;
   }
 }

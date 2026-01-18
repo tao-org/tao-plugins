@@ -159,13 +159,18 @@ public class CWLAppDetector {
         if (argCommands != null) {
             String[] commands = argCommands.split("\\s");
             for (int idx = 1; idx < commands.length; idx++) {
-                if (commands[idx].startsWith("-")) {
+                if (commands[idx].startsWith("$")) {
+                    addParamInfoToMap(applicationTemplates, commandLineTool, commands[idx], commands[idx]);
+                } else if (!commands[idx].endsWith(".py") && !commands[idx].startsWith("$")) {
                     addParamInfoToMap(applicationTemplates, commandLineTool, commands[idx], commands[idx + 1]);
                     idx++;
                 }
             }
+            if (applicationTemplates.size() < commandLineTool.getInputs().size()) {
+                addParamInfoToMap(applicationTemplates, commandLineTool, true);
+            }
         } else {
-            addParamInfoToMap(applicationTemplates, commandLineTool);
+            addParamInfoToMap(applicationTemplates, commandLineTool, false);
         }
         return applicationTemplates;
     }
@@ -177,14 +182,14 @@ public class CWLAppDetector {
      * @param applicationTemplates a map where key is the input/output id and value is a template that describes the parameter metadata
      * @param commandLineTool the CWL object with class commandLineTool
      */
-    private static void addParamInfoToMap(Map<String, CWLParamDescTemplate> applicationTemplates, CommandLineTool commandLineTool) {
+    private static void addParamInfoToMap(Map<String, CWLParamDescTemplate> applicationTemplates, CommandLineTool commandLineTool, boolean hasBashWrapper) {
         for (Object input : commandLineTool.getInputs()) {
             boolean canChangeMandatoryParamType = false; //added as workaround for Sen4XRadiometricIndices -list param (it must be mandatory but still parameter)
             CWLParamDescTemplate paramDesc = new CWLParamDescTemplate();
             String paramFormatType = extractParamType(((CommandInputParameter) input).getType());
             paramDesc.setParamType(INPUT_PARAM_POSITION);
             if ((!(((CommandInputParameter)input).getType() instanceof Collection)
-                    && !((CommandInputParameter) input).getType().toString().matches("^(File|Directory)(\\[])?\\??$"))
+                    && !((CommandInputParameter) input).getType().toString().matches("^(File|Directory|Any)(\\[])?\\??$"))
                     || ((CommandInputParameter) input).getId().get().matches(".*_?config_?.*")) {
                 paramDesc.setParamType(PARAMETER_PARAM_POSITION);
             }
@@ -236,10 +241,15 @@ public class CWLAppDetector {
                     paramDesc.setParamName(((CommandInputParameter) input).getId().get());
                 }
             } else {
-                logger.warning("No input binding found for " + (((CommandInputParameter) input).getId().isPresent() ? ((CommandInputParameter) input).getId().get() : "inputs")
-                        + " in CommandLineTool " + (commandLineTool.getId().isPresent() ? commandLineTool.getId().get() : " without id"));
                 paramDesc.setParamName(((CommandInputParameter) input).getId().get());
-                continue;
+                if (hasBashWrapper) {
+                    paramDesc.setParamType(PARAMETER_PARAM_POSITION);
+                    //paramDesc.setMandatory(false);
+                } else {
+                    logger.warning("No input binding found for " + (((CommandInputParameter) input).getId().isPresent() ? ((CommandInputParameter) input).getId().get() : "inputs")
+                            + " in CommandLineTool " + (commandLineTool.getId().isPresent() ? commandLineTool.getId().get() : " without id"));
+                    continue;
+                }
             }
             if (((CommandInputParameterImpl) input).getDefault() != null && ((CommandInputParameterImpl) input).getDefault().isPresent()) {
                 paramDesc.setDefaultValue(((CommandInputParameterImpl) input).getDefault().get());
@@ -303,13 +313,21 @@ public class CWLAppDetector {
         Matcher matcherIdRegex = patternIdRegex.matcher(paramValue);
         if (matcherIdRegex.find()) {
             paramId = matcherIdRegex.group(2);
+        } else if (paramValue.matches("^\\$([a-zA-Z0-9_]+)$")) {
+            paramId = paramValue.substring(1);
         }
         String tempParamId = paramId;
         if (paramName.startsWith("-")) {
             paramName = CWLUtils.removeStartDashes(paramName);
+        } else if (paramName.startsWith("$")) {
+            Pattern pattern = Pattern.compile("\"?\\$\\(inputs\\.([A-Za-z_]\\w*)([\\w\\[\\].]*)\\)\"?([\\w./]+)?\\s?");
+            Matcher matcher = pattern.matcher(paramName);
+            if (matcher.find()) {
+                paramName = matcher.group(1);
+            }
         }
 
-        if (paramValue.matches("(\"?\\$\\(inputs\\."+paramId+"[\\w\\[\\].]*\\)\"?([\\w./]+)?\\s?)*")) {
+        if (paramValue.matches("(\"?\\$\\(inputs\\."+paramId+"[\\w\\[\\].]*\\)\"?([\\w./]+)?\\s?)*") || paramValue.matches("\"?\\$"+paramId)) {
             Optional<CommandOutputParameter> outParam = commandLineTool.getOutputs().stream()
                     .map(out -> (CommandOutputParameter)out)
                     .filter(out -> {
@@ -330,7 +348,7 @@ public class CWLAppDetector {
                         .filter(in -> in.getId().isPresent() && in.getId().get().equals(tempParamId))
                         .findFirst();
                 definedType = inputParam.isPresent() ? inputParam.get().getType() : "";
-                if (!definedType.toString().matches("^(File|Directory)(\\[])?\\??$")) {
+                if (!definedType.toString().matches("^(File|Directory|Any)(\\[])?\\??$")) {
                     paramPosition = PARAMETER_PARAM_POSITION;
                 }
             }
@@ -429,7 +447,7 @@ public class CWLAppDetector {
             if (type.endsWith("?")) {
                 type = type.substring(0, type.length() - 1);
             }
-            if (type.matches("^(File|Directory)(\\[])?\\??$")) {
+            if (type.matches("^(File|Directory|Any)(\\[])?\\??$")) {
                 return type.replaceAll("(File|Directory)", "Path").toLowerCase();
             }
             return type.toLowerCase();
