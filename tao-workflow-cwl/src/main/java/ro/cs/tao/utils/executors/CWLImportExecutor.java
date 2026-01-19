@@ -534,7 +534,7 @@ public class CWLImportExecutor {
                 ));
         for (Map.Entry<String, CWLParamDescTemplate> paramEntry: paramWithoutPositionList.entrySet()) {
             String paramName = paramEntry.getValue().getParamName();
-            if (paramName.contains(suffix)) {
+            if (suffix != null && !suffix.isEmpty() && paramName.contains(suffix)) {
                 int suffixIdx = paramName.indexOf(suffix);
                 paramName = paramName.substring(0, suffixIdx);
             }
@@ -566,7 +566,7 @@ public class CWLImportExecutor {
 
         for (Map.Entry<String, CWLParamDescTemplate> paramEntry: paramWithPositionList.entrySet()) {
             String paramName = paramEntry.getValue().getParamName();
-            if (paramName.contains(suffix)) {
+            if (suffix != null && !suffix.isEmpty() && paramName.contains(suffix)) {
                 int suffixIdx = paramName.indexOf(suffix);
                 paramName = paramName.substring(0, suffixIdx);
             }
