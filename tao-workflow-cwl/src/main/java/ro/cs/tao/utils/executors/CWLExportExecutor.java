@@ -18,6 +18,7 @@ import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.ExecutionUnitFormat;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.cwl.CWLTemplate;
+import ro.cs.tao.utils.cwl.CWLUtils;
 import ro.cs.tao.utils.yaml.CWLYAMLFactory;
 import ro.cs.tao.utils.yaml.CWLYAMLGenerator;
 import ro.cs.tao.workflow.WorkflowDescriptor;
@@ -84,7 +85,7 @@ public class CWLExportExecutor extends Executor<Object>
             long taskId = (Long) executionUnit.getMetadata().get("id");
             ExecutionTask task = this.taskProvider.get(taskId);
             final Path path = Paths.get(executionUnit.getScriptTargetPath());
-            cwlWorkflowId = path.getFileName().toString().substring(0,path.getFileName().toString().indexOf("."));
+            cwlWorkflowId = transformWorkflowTimestamp(path.getFileName().toString().substring(0,path.getFileName().toString().indexOf(".")));
             mainWfStepId = MAIN_WF_OUTPUT_SOURCE_PREFIX + cwlWorkflowId;
 
             long workflowId = task.getJob().getWorkflowId();
@@ -428,9 +429,11 @@ public class CWLExportExecutor extends Executor<Object>
         CommandLineTool commandLineToolWf = (CommandLineTool)cwlTemplate.getCwlGraphChild("$graph", stepCWLFileId);
         Workflow cwlWorkflow = (Workflow)cwlTemplate.getCwlGraphChild("$graph", cwlWorkflowId);
         Workflow mainWorkflow = (Workflow)cwlTemplate.getCwlGraphChild("$graph", MAIN_WF_ID);
-        List<String> executionCommandArray = new ArrayList<>();
-        executionCommandArray = Arrays.asList(task.getCommand().split("\\R"));
+        //remove empty lines (workaround for ProductFormatter)
+        List<String> executionCommandArray = removeEmptyLines(Arrays.asList(task.getCommand().split("\\R")));
         Object currentStep = cwlWorkflow.getStep(stepCWLFileId);
+        String regex = "[\\w/\\.-]+";
+        String componentTemplate = ((ProcessingComponent) wfComponent).getTemplateContents();
         for (Variable inputParameter : task.getInputParameterValues()) {
             String inputId = inputParameter.getKey() + "_" + task.getWorkflowNodeId();
 
@@ -440,7 +443,7 @@ public class CWLExportExecutor extends Executor<Object>
 
             if (parameterSourceDescriptor != null) {
                 Object inheritType; //default value
-                commandParamIndex = getCommandParamIdx(executionCommandArray, parameterSourceDescriptor.getName());
+                commandParamIndex = getCommandParamIdx(executionCommandArray, parameterSourceDescriptor.getName(), inputParameter.getValue());
                 // in this case the input is already added in YAML file when Workflow is created
                 input.setId(Optional.of(inputId));
 
@@ -455,8 +458,6 @@ public class CWLExportExecutor extends Executor<Object>
                 }
                 input.setType(inheritType);
                 if (commandParamIndex > -1) {
-                    String foundPrefix = executionCommandArray.get(commandParamIndex).replace(inputParameter.getKey(), "");
-                    //inputBinding.setPrefix(Optional.of(foundPrefix + inputParameter.getKey()));
                     // use toString() for inheritType, because it can be string or class org.w3id.cwl.cwl1_2.InputArraySchemaImpl
                     if (!inputParameter.getValue().startsWith("[") && inheritType.toString().contains("[")) {
                         input.setType(inheritType.toString().replaceAll("\\[]", ""));
@@ -475,12 +476,12 @@ public class CWLExportExecutor extends Executor<Object>
 
                         cwlWorkflow.getInputs().stream().filter(i -> associatedElement!= null && ((WorkflowInputParameter)i).getId().get().equals(((WorkflowInputParameter) associatedElement).getId().get()))
                                         .forEach(in -> ((WorkflowInputParameter) in).setType(input.getType().toString()));
-                        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inheritType, inputParameter.getValue());
+                        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inheritType, regex, inputParameter.getValue(), inputParameter.getKey());
                     } else {
-                        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inheritType, inputParameter.getValue());
+                        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inheritType, regex, inputParameter.getValue(), inputParameter.getKey());
                     }
                 } else {
-                    updateExecutionCommand(executionCommandArray, inputId, inputParameter.getValue(), inheritType.toString(), false);
+                    updateExecutionCommand(executionCommandArray, inputId, inputParameter.getValue(), inheritType.toString(), false, inputParameter.getKey(), componentTemplate);
                 }
             } else {
                 TargetDescriptor parameterTargetDescriptor = wfComponent.getTargets().stream().filter(t -> t.getName().equals(inputParameter.getKey())).findFirst().orElse(null);
@@ -527,17 +528,9 @@ public class CWLExportExecutor extends Executor<Object>
                 createOrUpdateYamlFile(inputId, JavaType.fromClass(inputClass).parse(ymlInputValue));
                 addInputWfToSteps(stepCWLFileId, input);
                 if (commandParamIndex > -1) {
-                    String regex = "[\\w/\\.-]+";
-                    /*if (inputParameter.getValue().matches("[\\w/\\.-]+")) {
-                        executionCommandArray.set(commandParamIndex + 1, "$(inputs." + inputId + ")");
-                    } else {
-                        executionCommandArray.set(commandParamIndex + 1, "\"$(inputs." + inputId + ")\"");
-                    }*/
-                    String foundPrefix = executionCommandArray.get(commandParamIndex).replace(inputParameter.getKey(), "");
-                    //inputBinding.setPrefix(Optional.of(foundPrefix + inputParameter.getKey()));
-                    updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, regex, inputParameter.getValue());
+                    updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, regex, inputParameter.getValue(), inputParameter.getKey());
                 } else {
-                    updateExecutionCommand(executionCommandArray, inputId, inputParameter.getValue(), inputType, true);
+                    updateExecutionCommand(executionCommandArray, inputId, inputParameter.getValue(), inputType, true, inputParameter.getKey(), componentTemplate);
                 }
             }
             commandLineToolWf.getInputs().add(input);
@@ -581,28 +574,22 @@ public class CWLExportExecutor extends Executor<Object>
                 commandLineToolWf.getInputs().add(input);
             }
         }
-        //remove empty lines (workaround for ProductFormatter)
-        List<String> newExecutionCommandArray = removeEmptyLines(executionCommandArray);
         CommandLineBinding taskArguments = new CommandLineBindingImpl();
-        taskArguments.setValueFrom(String.join(" \\\n", newExecutionCommandArray));
+        taskArguments.setValueFrom(String.join(" \\\n", executionCommandArray));
         commandLineToolWf.getArguments().get().add(taskArguments);
     }
 
     private List<String> removeEmptyLines(List<String> executionCommandArray) {
         List<String> temp = new ArrayList<>();
-        String regex = "-*([a-zA-Z0-9]+\\.)+[a-zA-Z0-9]+\\s\\$([a-zA-Z0-9]+_)+[a-zA-Z0-9]+";
         for (int i = 0; i < executionCommandArray.size(); i++) {
-            if (executionCommandArray.get(i).contains("$") &&
-                    executionCommandArray.get(i).matches("\"?\\$\\((inputs|outputs)\\.([A-Za-z_]\\w*)([\\w\\[\\].]*)\\)\"?([\\w./]+)?\\s?")) {
-                if (i > 1) {
-                    if (executionCommandArray.get(i).matches("-*" + executionCommandArray.get(i).replaceFirst("$",""))) {
-                        temp.add(executionCommandArray.get(i-1));
-                        temp.add(executionCommandArray.get(i));
-                    }
-                }
+            if (executionCommandArray.get(i).contains("$")) {
+                continue;
+            }
+            if (i == executionCommandArray.size() - 1) {
                 temp.add(executionCommandArray.get(i));
-            } else if (!executionCommandArray.get(i).matches(regex)
-                    && !temp.contains(executionCommandArray.get(i))) {
+            } else if (!executionCommandArray.get(i + 1).contains("$")) {
+                temp.add(executionCommandArray.get(i));
+            } else if (!CWLUtils.removeStartDashes(executionCommandArray.get(i)).equals(executionCommandArray.get(i + 1).replace("\\$", ""))) {
                 temp.add(executionCommandArray.get(i));
             }
         }
@@ -610,43 +597,64 @@ public class CWLExportExecutor extends Executor<Object>
     }
 
     private int getCommandParamIdx(List<String> executionCommandArray, String parameterName) {
+        return getCommandParamIdx(executionCommandArray, parameterName, null);
+    }
+
+    private int getCommandParamIdx(List<String> executionCommandArray, String parameterName, String parameterValue) {
         for(int i = 0; i < executionCommandArray.size(); i++) {
             String dottedParameterName = null;
             if (executionCommandArray.get(i).contains(".") && !executionCommandArray.get(i).trim().endsWith(".py")) {
                 dottedParameterName = parameterName.replaceAll("_", "\\.");
             }
             if (executionCommandArray.get(i).contains("=")) {
-                if(executionCommandArray.get(i).matches("-+" + Pattern.quote(parameterName) + "\\s*=.*")
+                if(executionCommandArray.get(i).matches("-*" + Pattern.quote(parameterName) + "\\s*=.*")
                         || (dottedParameterName != null && executionCommandArray.get(i).matches("-+" + Pattern.quote(dottedParameterName) + "\\s*=.*"))) {
                     return i;
                 }
-            } else if (executionCommandArray.get(i).matches("-" + Pattern.quote(parameterName))
+            } else if (executionCommandArray.get(i).matches("-*" + Pattern.quote(parameterName))
                     || (dottedParameterName != null && executionCommandArray.get(i).matches("-" + Pattern.quote(dottedParameterName)))) {
                 return i;
+            } else if (parameterValue != null && (executionCommandArray.get(i).matches("-*" + Pattern.quote(parameterName) + "\\s.+")
+                        || (dottedParameterName != null && executionCommandArray.get(i).matches("-*" + Pattern.quote(dottedParameterName) + "\\s.+")))) {
+                List<String> parameterValuePaths = extractPathsFromValue(parameterValue);
+                String executionCommandValue = executionCommandArray.get(i).startsWith(parameterValue) ?
+                        executionCommandArray.get(i).substring(parameterName.length() + 1).trim() :
+                        executionCommandArray.get(i).substring(dottedParameterName.length() + 1).trim();
+                List<String> foundCommandPaths = extractPathsFromValue(executionCommandValue);
+                if (parameterValuePaths.stream().anyMatch(foundCommandPaths::contains)) {
+                    return i;
+                }
             }
         }
         return -1;
     }
 
-    private int getCommandParamPosition(List<String> executionCommandArray, String parameterValue) {
-        for(int i = 0; i < executionCommandArray.size(); i++) {
-            if(executionCommandArray.get(i).equals(parameterValue)) {
-                return i;
-            } else if (parameterValue.startsWith("[") &&
-                    parameterValue.matches("(?:\\[|,\\s?)" + Pattern.quote(executionCommandArray.get(i)) + "(?:\\s?,|\\])")) {
-                return i;
-            }
+    private List<String> extractPathsFromValue(String value) {
+        if (value == null || value.isBlank()) {
+            return Collections.emptyList();
         }
-        return -1;
+        value = value.replaceAll("^\\[|\\]$", "");
+
+        return Arrays.stream(value.split("\\s*,\\s*")).map(String::trim).filter(v -> !v.isEmpty()).collect(Collectors.toList());
     }
 
-    private void updateExecutionCommand(List<String> executionCommandArray, String inputId, int commandParamIndex, Object inheritType, Object inputType, String regex, String inputParameterValue) {
+    private void updateExecutionCommand(List<String> executionCommandArray, String inputId, int commandParamIndex, Object inheritType, Object inputType, String regex, String inputParameterValue, String inputParameterId) {
         String tmpCommandPrefix = "";
         int tmpCommandParamIdx = commandParamIndex + 1;
+        boolean hasDottedRef = false;
         if (executionCommandArray.get(commandParamIndex).contains("=")) {
             tmpCommandParamIdx = commandParamIndex;
             int charIdx = executionCommandArray.get(commandParamIndex).indexOf("=");
             tmpCommandPrefix = executionCommandArray.get(commandParamIndex).substring(0, charIdx + 1);
+        } else {
+            String dottedParamId = inputParameterId.replaceAll("_", ".");
+            if (executionCommandArray.get(commandParamIndex).matches("-*" + Pattern.quote(inputParameterId) + "\\s.+")
+                    || executionCommandArray.get(commandParamIndex).matches("-*" + Pattern.quote(dottedParamId) + "\\s.+")) {
+                tmpCommandParamIdx = commandParamIndex;
+                int charIdx = executionCommandArray.get(commandParamIndex).indexOf(" ");
+                tmpCommandPrefix = executionCommandArray.get(commandParamIndex).substring(0, charIdx + 1);
+                hasDottedRef = true;
+            }
         }
         if (inheritType != null) {
             if (inputParameterValue != null) {
@@ -677,7 +685,7 @@ public class CWLExportExecutor extends Executor<Object>
             }
         }
         if (regex != null && inputParameterValue != null) {
-            if (inputParameterValue.matches(regex)) {
+            if (inputParameterValue.matches(regex) || hasDottedRef) {
                 executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + "$(inputs." + inputId + ")");
             } else {
                 executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + "\"$(inputs." + inputId + ")\"");
@@ -685,15 +693,32 @@ public class CWLExportExecutor extends Executor<Object>
         }
     }
 
-    private void updateExecutionCommand(List<String> executionCommandArray, String inputId, int commandParamIndex, Object inheritType, Object inputType, String inputParameterValue) {
-        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inputType, null, inputParameterValue);
+    private void updateExecutionCommand(List<String> executionCommandArray, String inputId, int commandParamIndex, Object inheritType, Object inputType, String inputParameterValue, String inputParameterId) {
+        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inputType, null, inputParameterValue, inputParameterId);
     }
 
-    private void updateExecutionCommand(List<String> executionCommandArray, String inputId, int commandParamIndex, String regex, String inputParameterValue) {
-        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, null, null, regex, inputParameterValue);
+    private void updateExecutionCommand(List<String> executionCommandArray, String inputId, int commandParamIndex, String regex, String inputParameterValue, String inputParameterId) {
+        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, null, null, regex, inputParameterValue, inputParameterId);
     }
 
-    private void updateExecutionCommand(List<String> executionCommandArray, String inputId, String inputParameterValue, String inputType, boolean isOutput) {
+    private void updateExecutionCommand(List<String> executionCommandArray, String inputId, String inputParameterValue, String inputType, boolean isOutput, String inputParameterId, String componentTemplate) {
+        int paramPosition = -1;
+        if (componentTemplate != null && !componentTemplate.isBlank()) {
+            List<String> componentTemplateList =  Arrays.asList(componentTemplate.split("\\R"));
+            paramPosition = componentTemplateList.indexOf("$" + inputParameterId) + 1;
+        }
+        if (paramPosition > 0 && paramPosition < executionCommandArray.size()) {
+            if ((inputType.contains("[]") && inputParameterValue.contains(executionCommandArray.get(paramPosition)))
+                    || executionCommandArray.get(paramPosition).equals(inputParameterValue)) {
+                if (isOutput) {
+                    executionCommandArray.set(paramPosition, "$(inputs." + inputId + ")");
+                    return;
+                } else {
+                    executionCommandArray.set(paramPosition, "$(inputs." + inputId + ".path)");
+                    return;
+                }
+            }
+        }
         for (int idx = 0; idx < executionCommandArray.size(); idx++) {
             if ((inputType.contains("[]") && inputParameterValue.contains(executionCommandArray.get(idx)))
                     || executionCommandArray.get(idx).equals(inputParameterValue)) {
@@ -838,5 +863,9 @@ public class CWLExportExecutor extends Executor<Object>
         } catch (IOException e) {
             this.logger.severe(ExceptionUtils.getStackTrace(this.logger, e));
         }
+    }
+
+    public static String transformWorkflowTimestamp(String id) {
+        return id.replaceAll("_(?!_)", "");
     }
 }

@@ -306,7 +306,8 @@ public class CWLAppDetector {
     private static void addParamInfoToMap(Map<String, CWLParamDescTemplate> applicationTemplates, CommandLineTool commandLineTool, String paramName, String paramValue) {
         CWLParamDescTemplate paramDesc = new CWLParamDescTemplate();
         Object definedType = null;
-        String paramPosition = null;
+        String paramComponentType = null;
+        int paramPosition = -1;
         String paramId = "";
         String paramIdRegex = "\\$\\((inputs|outputs)\\.([a-zA-Z0-9_]+)(([\\[\\]]+)?([\\w./]+)?\\))?\\s?";
         Pattern patternIdRegex = Pattern.compile(paramIdRegex);
@@ -338,18 +339,18 @@ public class CWLAppDetector {
                         }
                     }).findFirst();
             if (outParam.isPresent()) {
-                paramPosition = OUTPUT_PARAM_POSITION;
+                paramComponentType = OUTPUT_PARAM_POSITION;
                 definedType = outParam.get().getType();
                 paramId = outParam.get().getId().isPresent() ? outParam.get().getId().get() : "";
             } else {
-                paramPosition = INPUT_PARAM_POSITION;
+                paramComponentType = INPUT_PARAM_POSITION;
                 Optional<CommandInputParameter> inputParam = commandLineTool.getInputs().stream()
                         .map(in -> (CommandInputParameter) in)
                         .filter(in -> in.getId().isPresent() && in.getId().get().equals(tempParamId))
                         .findFirst();
                 definedType = inputParam.isPresent() ? inputParam.get().getType() : "";
                 if (!definedType.toString().matches("^(File|Directory|Any)(\\[])?\\??$")) {
-                    paramPosition = PARAMETER_PARAM_POSITION;
+                    paramComponentType = PARAMETER_PARAM_POSITION;
                 }
             }
         } else if (paramValue.matches("(\"?\\$\\(outputs\\."+paramId+"[\\w\\[\\].]*\\)\"?([\\w./]+)?\\s?)*")){
@@ -359,9 +360,9 @@ public class CWLAppDetector {
                     .findFirst()
                     .map(CommandOutputParameter::getType)
                     .orElse(null);
-            paramPosition = OUTPUT_PARAM_POSITION;
+            paramComponentType = OUTPUT_PARAM_POSITION;
         }
-        paramDesc.setParamType(paramPosition);
+        paramDesc.setParamType(paramComponentType);
         if (definedType != null && definedType.toString().endsWith("?")) {
             paramDesc.setMandatory(false);
         } else {
