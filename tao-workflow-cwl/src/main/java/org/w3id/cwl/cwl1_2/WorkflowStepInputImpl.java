@@ -14,12 +14,15 @@
 
 package org.w3id.cwl.cwl1_2;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3id.cwl.cwl1_2.utils.LoaderInstances;
 import org.w3id.cwl.cwl1_2.utils.LoadingOptions;
 import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
 import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
 import org.w3id.cwl.cwl1_2.utils.ValidationException;
 
+import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 

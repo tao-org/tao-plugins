@@ -55,8 +55,9 @@ public class CWLAppDetector {
             if (commandLineTool.getArguments().isPresent()) {
                 for (Object arg : commandLineTool.getArguments().get()) {
                     if (arg instanceof CommandLineBinding) {
-                        if (((CommandLineBinding) arg).getValueFrom() != null) {
-                            Map<String ,String> applicationList = extractApplications(String.valueOf(((CommandLineBindingImpl) arg).getValueFrom()));
+                        Object valueFromAttr =  ((CommandLineBinding) arg).getValueFrom();
+                        if (valueFromAttr != null) {
+                            Map<String ,String> applicationList = extractApplications(String.valueOf(valueFromAttr));
                             for (Map.Entry<String, String> app : applicationList.entrySet()) {
                                 CWLApplicationTemplate applicationTemplate = new CWLApplicationTemplate();
                                 extractApplicationInfoToTemplate(applicationTemplate, app.getKey());
@@ -160,9 +161,9 @@ public class CWLAppDetector {
             String[] commands = argCommands.split("\\s");
             for (int idx = 1; idx < commands.length; idx++) {
                 if (commands[idx].startsWith("$")) {
-                    addParamInfoToMap(applicationTemplates, commandLineTool, commands[idx], commands[idx]);
+                    addParamInfoToMap(applicationTemplates, commandLineTool, commands[idx], commands[idx], idx);
                 } else if (!commands[idx].endsWith(".py") && !commands[idx].startsWith("$")) {
-                    addParamInfoToMap(applicationTemplates, commandLineTool, commands[idx], commands[idx + 1]);
+                    addParamInfoToMap(applicationTemplates, commandLineTool, commands[idx], commands[idx + 1], 0);
                     idx++;
                 }
             }
@@ -254,11 +255,11 @@ public class CWLAppDetector {
             if (((CommandInputParameterImpl) input).getDefault() != null && ((CommandInputParameterImpl) input).getDefault().isPresent()) {
                 paramDesc.setDefaultValue(((CommandInputParameterImpl) input).getDefault().get());
             }
-            if (((CommandInputParameter) input).getId().isPresent()) {
+            if (((CommandInputParameter) input).getId().isPresent() && !applicationTemplates.containsKey(((CommandInputParameter) input).getId().get())) {
                 applicationTemplates.put(((CommandInputParameter) input).getId().get(), paramDesc);
-            } else {
+            } /*else {
                 logger.warning("Skipped input in CommandLineTool " + (commandLineTool.getId().isPresent() ? commandLineTool.getId().get() : " (without id)"));
-            }
+            }*/
         }
         for (Object output : commandLineTool.getOutputs()) {
             CWLParamDescTemplate paramDesc = new CWLParamDescTemplate();
@@ -272,7 +273,7 @@ public class CWLAppDetector {
                 Matcher matcherIdRegex = patternIdRegex.matcher(glob);
                 if (matcherIdRegex.find()) {
                     String paramId = matcherIdRegex.group(2);
-                    if(applicationTemplates.get(paramId) != null) {
+                    if(applicationTemplates.containsKey(paramId)) {
                         paramDesc = applicationTemplates.get(paramId);
                         paramDesc.setParamType(OUTPUT_PARAM_POSITION);
                         // remove it from inputs
@@ -287,11 +288,11 @@ public class CWLAppDetector {
                         + " in CommandLineTool " + (commandLineTool.getId().isPresent() ? commandLineTool.getId().get() : " without id"));
                 continue;
             }
-            if (((CommandOutputParameter) output).getId().isPresent()) {
+            if (((CommandOutputParameter) output).getId().isPresent() && !applicationTemplates.containsKey(((CommandOutputParameter) output).getId().get())) {
                 applicationTemplates.put(((CommandOutputParameter) output).getId().get(), paramDesc);
-            } else {
+            } /*else {
                 logger.warning("Skipped input in CommandLineTool " + (commandLineTool.getId().isPresent() ? commandLineTool.getId().get() : " (without id)"));
-            }
+            }*/
         }
     }
 
@@ -303,11 +304,15 @@ public class CWLAppDetector {
      * @param paramName the parameter name
      * @param paramValue the parameter value
      */
-    private static void addParamInfoToMap(Map<String, CWLParamDescTemplate> applicationTemplates, CommandLineTool commandLineTool, String paramName, String paramValue) {
+    private static void addParamInfoToMap(Map<String, CWLParamDescTemplate> applicationTemplates, CommandLineTool commandLineTool, String paramName, String paramValue, int paramPosition) {
         CWLParamDescTemplate paramDesc = new CWLParamDescTemplate();
         Object definedType = null;
         String paramComponentType = null;
-        int paramPosition = -1;
+        if (!paramName.equals(paramValue) && paramPosition <= 0) {
+            paramDesc.setParamPrefix(paramName);
+        } else {
+            paramDesc.setParamPosition(paramPosition);
+        }
         String paramId = "";
         String paramIdRegex = "\\$\\((inputs|outputs)\\.([a-zA-Z0-9_]+)(([\\[\\]]+)?([\\w./]+)?\\))?\\s?";
         Pattern patternIdRegex = Pattern.compile(paramIdRegex);
@@ -449,7 +454,7 @@ public class CWLAppDetector {
                 type = type.substring(0, type.length() - 1);
             }
             if (type.matches("^(File|Directory|Any)(\\[])?\\??$")) {
-                return type.replaceAll("(File|Directory)", "Path").toLowerCase();
+                return type.replaceAll("(File|Directory|Any)", "Path").toLowerCase();
             }
             return type.toLowerCase();
         }

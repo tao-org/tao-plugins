@@ -825,6 +825,15 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
       }
       commandLineTool.put("requirements", reqList);
     }
+    if (this.hints != null) {
+      List<Object> hintsList = new LinkedList<>();
+      for(Object hint : this.hints.get()) {
+        if(hint instanceof Saveable) {
+          hintsList.add(((Saveable) hint).save());
+        }
+      }
+      commandLineTool.put("hints", hintsList);
+    }
     if (this.arguments != null) {
       List<Object> argumentsList = new LinkedList<>();
       for(Object arg : this.arguments.get()) {

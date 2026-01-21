@@ -46,6 +46,14 @@ public class StepInputExpressionRequirementImpl extends SaveableImpl implements 
     return this.class_;
   }
 
+  public void setClass_(StepInputExpressionRequirement_class class_) {
+    this.class_ = class_;
+  }
+
+  public StepInputExpressionRequirementImpl() {
+    super();
+  }
+
   /**
    * Used by {@link org.w3id.cwl.cwl1_2.utils.RootLoader} to construct instances of StepInputExpressionRequirementImpl.
    *

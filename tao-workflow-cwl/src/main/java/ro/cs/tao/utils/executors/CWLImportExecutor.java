@@ -521,16 +521,20 @@ public class CWLImportExecutor {
         String declaredParamPrefix = CWLUtils.extractDashPrefix(firstDeclaredParamPrefix);
         Map<String, CWLParamDescTemplate> paramWithPositionList = params.entrySet().stream()
                 .filter(p -> p.getValue().getParamPosition() > 0)
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue
-                ));
-        Map<String, CWLParamDescTemplate> paramWithoutPositionList = params.entrySet().stream()
-                .filter(p -> p.getValue().getParamPosition() < 1)
                 .sorted(Comparator.comparingInt(e -> e.getValue().getParamPosition()))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        Map.Entry::getValue
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue,
+                        LinkedHashMap::new
+                ));
+        Map<String, CWLParamDescTemplate> paramWithoutPositionList = params.entrySet().stream()
+                .filter(p -> p.getValue().getParamPosition() < 1)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue,
+                        LinkedHashMap::new
                 ));
         for (Map.Entry<String, CWLParamDescTemplate> paramEntry: paramWithoutPositionList.entrySet()) {
             String paramName = paramEntry.getValue().getParamName();
@@ -539,7 +543,7 @@ public class CWLImportExecutor {
                 paramName = paramName.substring(0, suffixIdx);
             }
             String param = paramName;
-            String paramVal = null;
+            String paramVal;
             if (paramEntry.getValue().getParamPrefix() != null) {
                 param = paramEntry.getValue().getParamPrefix();
                 paramVal = paramName.startsWith("-") ? CWLUtils.removeStartDashes(paramName) : paramName;
@@ -548,7 +552,10 @@ public class CWLImportExecutor {
                 if (!declaredParamPrefix.isEmpty()) {
                     param = declaredParamPrefix + param;
                 }
+            } else {
+                paramVal = declaredParamPrefix + paramName;
             }
+
             String paramTemplate;
             if (param.contains(".")) {
                 paramTemplate = paramVal != null ? param + " $" + paramVal.replaceAll("-", "_") : "$" + param;
@@ -556,11 +563,11 @@ public class CWLImportExecutor {
                 paramTemplate = paramVal != null ? param + "\n$" + paramVal.replaceAll("-", "_") : "$" + param;
             }
             if (!paramTemplateList.contains(paramTemplate)) {
-                if (paramEntry.getValue().getParamPosition() < 0) {
-                    paramTemplateList.addFirst(paramTemplate);
-                } else {
+                //if (paramEntry.getValue().getParamPosition() < 0) {
+                 //   paramTemplateList.addFirst(paramTemplate);
+                //} else {
                     paramTemplateList.add(paramTemplate);
-                }
+                //}
             }
         }
 
@@ -1244,6 +1251,9 @@ public class CWLImportExecutor {
         if (refRunId != null) {
             Object refRunObject = cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, refRunId);
             String inReference = null;
+            if (refRunObject == null) {
+                System.out.println("test");
+            }
             if (refRunObject instanceof CommandLineTool) {
                 inReference = ((CommandLineTool) refRunObject).getOutputs().stream()
                         .filter(out -> ((CommandOutputParameter) out).getId().isPresent() && ((CommandOutputParameter) out).getId().get().equals(paramId))
