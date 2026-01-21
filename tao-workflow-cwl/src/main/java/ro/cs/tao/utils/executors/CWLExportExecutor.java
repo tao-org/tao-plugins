@@ -136,7 +136,14 @@ public class CWLExportExecutor extends Executor<Object>
         MultipleInputFeatureRequirement multipleInputFeatureReq = new MultipleInputFeatureRequirementImpl();
         multipleInputFeatureReq.setClass_(MultipleInputFeatureRequirement_class.MULTIPLEINPUTFEATUREREQUIREMENT);
 
-        cwlWorkflow.setRequirements(Optional.of(new LinkedList<>(List.of(multipleInputFeatureReq))));
+        // add requirement needed for step/in valueFrom:$([self])
+        StepInputExpressionRequirement stepInputExpressionRequirement = new StepInputExpressionRequirementImpl();
+        stepInputExpressionRequirement.setClass_(StepInputExpressionRequirement_class.STEPINPUTEXPRESSIONREQUIREMENT);
+
+        InlineJavascriptRequirement inlineJavascriptRequirement = new InlineJavascriptRequirementImpl();
+        inlineJavascriptRequirement.setClass_(InlineJavascriptRequirement_class.INLINEJAVASCRIPTREQUIREMENT);
+
+        cwlWorkflow.setRequirements(Optional.of(new LinkedList<>(List.of(multipleInputFeatureReq, stepInputExpressionRequirement, inlineJavascriptRequirement))));
 
         cwlTemplate.getCwlMainGraphObject().get(CWL_GRAPH_ID).add(mainWorkflow);
         cwlTemplate.getCwlMainGraphObject(CWL_GRAPH_ID).add(cwlWorkflow);
@@ -154,14 +161,15 @@ public class CWLExportExecutor extends Executor<Object>
         writeToFile(path, cwlTemplate.save());
     }
 
-    private void updateCWL(ExecutionTask task, ExecutionUnit executionUnit) {
+    private void updateCWL(ExecutionTask task, ExecutionUnit executionUnit) throws IllegalAccessException {
         final Path path = Paths.get(executionUnit.getScriptTargetPath());
         Object graphElements = RootLoader.loadDocument(path);
         if (!(graphElements instanceof Collection<?>)) {
             throw new IllegalStateException("Loaded CWL graph is not a Collection: " + graphElements.getClass());
         }
-        cwlTemplate.getCwlMainGraphObject().get(CWL_GRAPH_ID).addAll((Collection<?>) graphElements);
+        cwlTemplate.addAllElements((Collection<?>) graphElements, path.getFileName().toString());
         createStepFromTask(task);
+        addInfoToStepInputs();
         writeToFile(path, cwlTemplate.save());
     }
 
@@ -478,7 +486,7 @@ public class CWLExportExecutor extends Executor<Object>
                                         .forEach(in -> ((WorkflowInputParameter) in).setType(input.getType().toString()));
                         updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inheritType, regex, inputParameter.getValue(), inputParameter.getKey());
                     } else {
-                        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inheritType, regex, inputParameter.getValue(), inputParameter.getKey());
+                        updateExecutionCommand(executionCommandArray, inputId, commandParamIndex, inheritType, inheritType, inputParameter.getValue(), inputParameter.getKey());
                     }
                 } else {
                     updateExecutionCommand(executionCommandArray, inputId, inputParameter.getValue(), inheritType.toString(), false, inputParameter.getKey(), componentTemplate);
@@ -538,7 +546,6 @@ public class CWLExportExecutor extends Executor<Object>
         // add parameters without value. Tose are not found in task parameters
         Set<ParameterDescriptor> wfParamDescList = ((ProcessingComponent)wfComponent).getParameterDescriptors();
         boolean mandatory;
-        List<String> templateContent = Arrays.asList(((ProcessingComponent) wfComponent).getTemplateContents().split("\\R"));
         for (ParameterDescriptor wfParamDesc : wfParamDescList) {
             String inputId = wfParamDesc.getId() + "_" + task.getWorkflowNodeId();
             CommandInputParameter input = new CommandInputParameterImpl();
@@ -577,6 +584,45 @@ public class CWLExportExecutor extends Executor<Object>
         CommandLineBinding taskArguments = new CommandLineBindingImpl();
         taskArguments.setValueFrom(String.join(" \\\n", executionCommandArray));
         commandLineToolWf.getArguments().get().add(taskArguments);
+    }
+
+    private void addInfoToStepInputs() {
+        Workflow cwlWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, cwlWorkflowId);
+        for (Object step : cwlWorkflow.getSteps()) {
+            if (step instanceof WorkflowStep) {
+                String foundStepRun = ((WorkflowStep) step).getRun().toString();
+                String runId = ((WorkflowStep) step).getRun().toString().substring(foundStepRun.lastIndexOf("#") + 1);
+                CommandLineTool stepCommandLine = (CommandLineTool) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, runId);
+                if (stepCommandLine != null) {
+                    for (Object in : ((WorkflowStep) step).getIn()) {
+                        if (((WorkflowStepInput) in).getSource() != null && ((WorkflowStepInput) in).getSource().toString().contains("/")) {
+                            String inType = stepCommandLine.getInputs().stream().map(i -> (CommandInputParameter) i)
+                                    .filter(i -> i.getId().isPresent() && i.getId().get().equals(((WorkflowStepInput) in).getId().get()))
+                                    .map(CommandInputParameter::getType).map(Object::toString).findFirst().orElse("");
+                            if (inType.contains("[]")) {
+                                String[] split = ((WorkflowStepInput) in).getSource().toString().split("/");
+                                if (split.length == 2) {
+                                    WorkflowStep associatedStep = cwlWorkflow.getStep(split[0]);
+                                    if (associatedStep != null) {
+                                        String foundAssociatedStepRun = associatedStep.getRun().toString();
+                                        String associatedRunId = associatedStep.getRun().toString().substring(foundAssociatedStepRun.lastIndexOf("#") + 1);
+                                        CommandLineTool associatedStepCommandLine = (CommandLineTool) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, associatedRunId);
+                                        if (associatedStepCommandLine != null) {
+                                            String ouType = associatedStepCommandLine.getOutputs().stream().map(o -> (CommandOutputParameter) o)
+                                                    .filter(o -> o.getId().isPresent() && o.getId().get().equals(split[1]))
+                                                    .map(CommandOutputParameter::getType).map(Object::toString).findFirst().orElse("");
+                                            if (!ouType.contains("[]")) {
+                                                ((WorkflowStepInput) in).setValueFrom("$([self])");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private List<String> removeEmptyLines(List<String> executionCommandArray) {
@@ -662,7 +708,8 @@ public class CWLExportExecutor extends Executor<Object>
                     String[] paramValues = inputParameterValue.replaceAll("[\\[\\]\"]", "").split("\\s?,\\s?");
                     int paramNumber = paramValues.length;
                     for (int idx = 0; idx < paramNumber; idx++) {
-                        if (inputType.toString().equals("File[]") && inheritType.toString().equals("Directory[]")) {
+                        if ((inputType.toString().equals("File[]") && inheritType.toString().equals("Directory[]"))
+                                || (inputType.toString().equals("Any[]") && inheritType.toString().equals("Any[]"))) {
                             String fileName = paramValues[idx].substring(paramValues[idx].lastIndexOf("/"));
                             paramValues[idx] = "$(inputs." + inputId + "[" + idx + "].path)" + fileName;
                         } else {
@@ -671,14 +718,15 @@ public class CWLExportExecutor extends Executor<Object>
                     }
                     executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + String.join(" ", paramValues));
                 } else {
-                    if (inputType.toString().equals("File") && inheritType.toString().contains("Directory")) {
+                    if ((inputType.toString().equals("File") && inheritType.toString().contains("Directory"))
+                            || (inputType.toString().equals("Any") && inheritType.toString().equals("Any"))) {
                         String fileName = inputParameterValue.substring(inputParameterValue.lastIndexOf("/"));
                         executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + "$(inputs." + inputId + ".path)" + fileName);
                     } else {
                         executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + "$(inputs." + inputId + ".path)");
                     }
                 }
-            } else if (inheritType.toString().equals("File") || inheritType.toString().equals("Directory")) {
+            } else if (inheritType.toString().equals("File") || inheritType.toString().equals("Directory") || inheritType.toString().equals("Any")) {
                 executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + "$(inputs." + inputId + ".path)");
             } else {
                 executionCommandArray.set(tmpCommandParamIdx, tmpCommandPrefix + "$(inputs." + inputId + ")");
@@ -807,8 +855,14 @@ public class CWLExportExecutor extends Executor<Object>
                 retVal = Directory_class.DIRECTORY.toString();
                 break;
             case OTHER:
+                String fileExtension = "";
+                if (filePath != null) {
+                    fileExtension = CWLUtils.getFileExtension(filePath);
+                }
                 if (filePath != null && (filePath.endsWith("/") || filePath.endsWith("\\"))) {
                     retVal = Directory_class.DIRECTORY.toString();
+                } else if (!fileExtension.isEmpty() && FILE_EXT.contains(fileExtension)) {
+                    retVal = File_class.FILE.toString();
                 } else {
                     retVal = Any.ANY.toString();
                 }

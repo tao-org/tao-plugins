@@ -598,6 +598,16 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
       workflow.put("requirements", reqList);
     }
 
+    if (hints != null) {
+      List<Object> hintsList = new LinkedList<>();
+      for(Object hint : this.hints.get()) {
+        if(hint instanceof Saveable) {
+          hintsList.add(((Saveable) hint).save());
+        }
+      }
+      workflow.put("hints", hintsList);
+    }
+
     if (inputs != null) {
       workflow.put("inputs", treatInOut(inputs, wfId));
     }
@@ -623,26 +633,33 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
                   stepId = stepId.replaceAll(this.id.get() + "/", "");
                 }
               } else if (field.getName().equalsIgnoreCase("in")) {
-                Map<String,String> inList = new LinkedHashMap<>();
+                Map<String, Object> inList = new LinkedHashMap<>();
                 for (Object in : (ArrayList<?>) field.get(step)) {
-                  if (((WorkflowStepInput) in).getId().get().contains("#")) {
-                    String inId = ((WorkflowStepInput) in).getId().get().replaceAll(generalRegex, "").replace(stepId, "").replaceAll("/", "");
-                    String inValue;
-                    if (((WorkflowStepInput) in).getDefault() != null) {
-                      inValue = ((WorkflowStepInput) in).getDefault().get().toString().replaceAll(generalRegex, "").replace(stepId, "").replaceFirst("/", "");
-                    } else {
-                      inValue = ((WorkflowStepInput) in).getSource().toString().replaceAll(generalRegex, "").replace(stepId, "").replaceFirst("/", "");
-                    }
-                    inList.put(inId, inValue);
-                  } else {
-                    if (((WorkflowStepInput) in).getDefault() != null) {
-                      inList.put(((WorkflowStepInput) in).getId().get(),
-                              ((WorkflowStepInput) in).getDefault().get().toString());
-                    } else {
-                      inList.put(((WorkflowStepInput) in).getId().get(),
-                              ((WorkflowStepInput) in).getSource().toString());
+                  String inId = ((WorkflowStepInput) in).getId().get();
+                  if (inId.contains("#")) {
+                    inId = inId.replaceAll(generalRegex, "").replace(stepId, "").replaceAll("/", "");
+                  }
+                  Object inSource = ((WorkflowStepInput) in).getSource();
+                  if (((WorkflowStepInput) in).getDefault() != null && ((WorkflowStepInput) in).getDefault().isPresent() && inSource == null) {
+                    inSource = ((WorkflowStepInput) in).getDefault().get();
+                  }
+                  Map<String, String> inValue = new LinkedHashMap<>();
+                  for (Field f : in.getClass().getDeclaredFields()) {
+                    f.setAccessible(true);
+                    if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")
+                            && !f.getName().equalsIgnoreCase("default_") && !f.getName().equalsIgnoreCase("id")) {
+                      if (f.get(in) != null) {
+                        if (f.get(in) instanceof Optional<?>) {
+                          inValue.put(f.getName(), ((Optional<?>) f.get(in)).get().toString());
+                        } else {
+                          inValue.put(f.getName(), f.get(in).toString());
+                        }
+                      } else if (f.getName().equalsIgnoreCase("source")) {
+                        inValue.put(f.getName(), inSource.toString());
+                      }
                     }
                   }
+                  inList.put(inId, inValue);
                 }
                 temp.put(field.getName(), inList);
               } else if (field.getName().equalsIgnoreCase("out")) {
@@ -652,7 +669,7 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
                     outList.add(((WorkflowStepOutput) out).getId().get());
                   } else if (out instanceof ArrayList<?>) {
                     for (String outStr: (ArrayList<String>)out) {
-                      outList.add(((String) outStr).replaceAll(generalRegex, "").replace(stepId, "").replaceAll("/", ""));
+                      outList.add(outStr.replaceAll(generalRegex, "").replace(stepId, "").replaceAll("/", ""));
                     }
                   } else {
                     outList.add(((String) out).replaceAll(generalRegex, "").replace(stepId, "").replaceAll("/", ""));
