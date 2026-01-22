@@ -263,7 +263,9 @@ public class CWLExportExecutor extends Executor<Object>
             Workflow cwlWorkflow = (Workflow) cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, cwlWorkflowId);
             String inputType = getInOutType(sourceDescriptor.getDataDescriptor().getFormatType(), sourceDescriptor.getDataDescriptor().getLocation());
             String inputId = wfComponent.getTargets().getFirst().getName() + "_" + workflowId;
-
+            if (inputType.contains("Any")) {
+                inputType = inputType.replace("Any", "File");
+            }
             WorkflowInputParameter mainWfInput = new WorkflowInputParameterImpl();
             mainWfInput.setId(Optional.of(inputId));
             mainWfInput.setType(inputType);
@@ -323,9 +325,6 @@ public class CWLExportExecutor extends Executor<Object>
             WorkflowStepInput in = new WorkflowStepInputImpl();
             in.setId(Optional.of(link.getOutput().getName() + "_" + wf.getId()));
             WorkflowNodeDescriptor linkedNode = visitedNodes.stream().filter(n -> n.getId().equals(link.getSourceNodeId())).findFirst().orElse(null);
-            if (linkedNode == null) {
-                System.out.println("test");
-            }
             if (linkedNode != null && !linkedNode.getIncomingLinks().isEmpty()) {
                 String linkedInput = linkedNode.getComponentId().toLowerCase() + "_" + linkedNode.getId();
                 in.setDefault(Optional.of(linkedInput + "/" + link.getInput().getName() + "_" + link.getSourceNodeId()));
@@ -613,6 +612,16 @@ public class CWLExportExecutor extends Executor<Object>
                                                     .map(CommandOutputParameter::getType).map(Object::toString).findFirst().orElse("");
                                             if (!ouType.contains("[]")) {
                                                 ((WorkflowStepInput) in).setValueFrom("$([self])");
+                                                /*if (stepCommandLine.getArguments() != null && stepCommandLine.getArguments().isPresent()) {
+                                                    Object args = stepCommandLine.getArguments().get().stream().filter(arg -> arg instanceof CommandLineBindingImpl).findFirst().orElse(null);
+                                                    if (args != null) {
+                                                        String id = ((WorkflowStepInput) in).getId().get();
+                                                        String newArg = ((CommandLineBindingImpl) args).getValueFrom().toString().replaceAll(
+                                                                "\\$\\(inputs\\."+ Pattern.quote(id) + "\\.path\\)",
+                                                                "\\$\\(inputs\\." + id + "[0]\\.path\\)");
+                                                        ((CommandLineBindingImpl) args).setValueFrom(newArg);
+                                                    }
+                                                }*/
                                             }
                                         }
                                     }
@@ -762,7 +771,11 @@ public class CWLExportExecutor extends Executor<Object>
                     executionCommandArray.set(paramPosition, "$(inputs." + inputId + ")");
                     return;
                 } else {
-                    executionCommandArray.set(paramPosition, "$(inputs." + inputId + ".path)");
+                    if (inputType.contains("[]")) {
+                        executionCommandArray.set(paramPosition, "$(inputs." + inputId + "[0].path)");
+                    } else {
+                        executionCommandArray.set(paramPosition, "$(inputs." + inputId + ".path)");
+                    }
                     return;
                 }
             }
@@ -773,7 +786,11 @@ public class CWLExportExecutor extends Executor<Object>
                 if (isOutput) {
                     executionCommandArray.set(idx, "$(inputs." + inputId + ")");
                 } else {
-                    executionCommandArray.set(idx, "$(inputs." + inputId + ".path)");
+                    if (inputType.contains("[]")) {
+                        executionCommandArray.set(idx, "$(inputs." + inputId + "[0].path)");
+                    } else {
+                        executionCommandArray.set(idx, "$(inputs." + inputId + ".path)");
+                    }
                 }
             }
         }
