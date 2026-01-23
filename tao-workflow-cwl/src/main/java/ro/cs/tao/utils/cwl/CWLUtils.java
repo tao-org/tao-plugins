@@ -167,6 +167,14 @@ public class CWLUtils {
         return "";
     }
 
+    public static String extractSuffix(String value) {
+        if (value != null) {
+            Matcher m = Pattern.compile("^[\\w_]+(_\\d+)$").matcher(value);
+            return m.find() ? m.group(1) : "";
+        }
+        return "";
+    }
+
     public static String removeStartDashes(String value) {
         if(value.startsWith("-")) {
             String tempVal = value;
@@ -183,6 +191,14 @@ public class CWLUtils {
         Matcher nameMatcher = namePattern.matcher(name);
         if (nameMatcher.find()) {
             return name.replace(nameMatcher.group(0), "");
+        }
+        return name;
+    }
+
+    public static String removeSuffix(String name, String suffix) {
+        if (suffix != null && !suffix.isEmpty() && name.contains(suffix)) {
+            int suffixIdx = name.indexOf(suffix);
+            name = name.substring(0, suffixIdx);
         }
         return name;
     }

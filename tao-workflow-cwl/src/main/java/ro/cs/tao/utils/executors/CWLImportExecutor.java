@@ -243,7 +243,7 @@ public class CWLImportExecutor {
             cwlInputDependencies.stream().filter(dp -> associatedIdList.contains(dp.getTargetNodeName())).forEach(dp -> dp.setTargetApplicationName(componentId));
             for (Map.Entry<String, CWLParamDescTemplate> entry : application.getApplicationParams().entrySet()) {
                 boolean foundInTemplate = foundInTemplate(processingComponent.getTemplateContents(), entry.getValue());
-                String entryKey = CWLUtils.removeNumericSuffix(entry.getKey());
+                String entryKey = CWLUtils.removeSuffix(entry.getKey(), suffix);
                 String entryFoundName = CWLUtils.removeStartDashes(entry.getValue().getParamName());
                 String parameterKey = entry.getKey();
                 String paramType = entry.getValue().getParamType();
@@ -289,7 +289,7 @@ public class CWLImportExecutor {
                                 }
                             }
                         }
-                    } else if (sourceDescriptor.getDataDescriptor().getFormatType().equals(DataFormat.OTHER)) {
+                    } else if (!dataDescriptor.getFormatType().equals(DataFormat.OTHER) && sourceDescriptor.getDataDescriptor().getFormatType().equals(DataFormat.OTHER)) {
                         sourceDescriptor.setDataDescriptor(dataDescriptor);
                     }
                 }
@@ -317,7 +317,7 @@ public class CWLImportExecutor {
                                 }
                             }
                         }
-                    } else if (targetDescriptor.getDataDescriptor().getFormatType().equals(DataFormat.OTHER)) {
+                    } else if (!dataDescriptor.getFormatType().equals(DataFormat.OTHER) && targetDescriptor.getDataDescriptor().getFormatType().equals(DataFormat.OTHER)) {
                         targetDescriptor.setDataDescriptor(dataDescriptor);
                     }
                 }
@@ -573,10 +573,7 @@ public class CWLImportExecutor {
 
         for (Map.Entry<String, CWLParamDescTemplate> paramEntry: paramWithPositionList.entrySet()) {
             String paramName = paramEntry.getValue().getParamName();
-            if (suffix != null && !suffix.isEmpty() && paramName.contains(suffix)) {
-                int suffixIdx = paramName.indexOf(suffix);
-                paramName = paramName.substring(0, suffixIdx);
-            }
+            paramName = CWLUtils.removeSuffix(paramName, suffix);
             String param = paramName;
             String paramTemplate = "$" + param;
             if (paramEntry.getValue().getParamPrefix() != null) {
@@ -1112,7 +1109,6 @@ public class CWLImportExecutor {
                         " Please use dockerPull with a hosted Docker image instead!");
             }
             if (dockerRequirement.getDockerFile() != null && dockerRequirement.getDockerFile().isPresent()) {
-                System.out.println("test");
                 // TODO: Supply the contents of a Dockerfile which will be built using docker build.
             }
             if (dockerRequirement.getDockerLoad() != null && dockerRequirement.getDockerLoad().isPresent()) {
@@ -1251,9 +1247,6 @@ public class CWLImportExecutor {
         if (refRunId != null) {
             Object refRunObject = cwlTemplate.getCwlGraphChild(CWL_GRAPH_ID, refRunId);
             String inReference = null;
-            if (refRunObject == null) {
-                System.out.println("test");
-            }
             if (refRunObject instanceof CommandLineTool) {
                 inReference = ((CommandLineTool) refRunObject).getOutputs().stream()
                         .filter(out -> ((CommandOutputParameter) out).getId().isPresent() && ((CommandOutputParameter) out).getId().get().equals(paramId))
@@ -1797,6 +1790,7 @@ public class CWLImportExecutor {
         boolean wasUpdated = false;
         for (CommandLineTool commandLineTool : commandLineToolList) {
             List<String> wfAssociatedStepIdList = new ArrayList<>();
+            String suffix = CWLUtils.extractSuffix(commandLineTool.getId().get());
             if (workflowList != null && !workflowList.isEmpty()) {
                 wfAssociatedStepIdList = workflowList.stream().flatMap(wf -> wf.getSteps().stream())
                         .filter(step -> ((WorkflowStep) step).getRun().toString().equals(commandLineTool.getId().get()))
@@ -1815,7 +1809,7 @@ public class CWLImportExecutor {
                     String componentId = CWLUtils.simplifyApplicationName(application.getApplicationName());
                     ProcessingComponent processingComponent = findComponent(componentId);
                     for (Map.Entry<String, CWLParamDescTemplate> entry : application.getApplicationParams().entrySet()) {
-                        String entryKey = CWLUtils.removeNumericSuffix(entry.getKey());
+                        String entryKey = CWLUtils.removeSuffix(entry.getKey(), suffix);
                         String entryFoundName = CWLUtils.removeStartDashes(entry.getValue().getParamName());
                         String parameterKey = entry.getKey();
                         if (entry.getValue().getParamType().equals(OUTPUT_PARAM_POSITION)) {
