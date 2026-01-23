@@ -580,6 +580,25 @@ public class CWLExportExecutor extends Executor<Object>
                 commandLineToolWf.getInputs().add(input);
             }
         }
+        // add sources without value (for ProductFormatter). Tose are not found in task parameters
+        for (SourceDescriptor wfSourceDesc : wfComponent.getSources()) {
+            String inputId = wfSourceDesc.getName() + "_" + task.getWorkflowNodeId();
+            CommandInputParameter input = new CommandInputParameterImpl();
+
+            if (wfSourceDesc.getDescription() != null && !wfSourceDesc.getDescription().isEmpty()) {
+                input.setLabel(Optional.of(wfSourceDesc.getDescription()));
+            }
+            input.setId(Optional.of(inputId));
+            String inputType = "File?";
+
+            input.setType(inputType);
+
+            boolean alreadyAdded = commandLineToolWf.getInputs().stream().anyMatch(p -> ((CommandInputParameter)p).getId() != null
+                    && ((CommandInputParameter)p).getId().isPresent() && ((CommandInputParameter)p).getId().get().equals(inputId));
+            if (!alreadyAdded) {
+                commandLineToolWf.getInputs().add(input);
+            }
+        }
         CommandLineBinding taskArguments = new CommandLineBindingImpl();
         taskArguments.setValueFrom(String.join(" \\\n", executionCommandArray));
         commandLineToolWf.getArguments().get().add(taskArguments);
