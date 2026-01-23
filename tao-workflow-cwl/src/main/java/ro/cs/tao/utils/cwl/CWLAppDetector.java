@@ -308,6 +308,7 @@ public class CWLAppDetector {
         CWLParamDescTemplate paramDesc = new CWLParamDescTemplate();
         Object definedType = null;
         String paramComponentType = null;
+        String paramSuffix = CWLUtils.extractSuffix(commandLineTool.getId().get());
         if (!paramName.equals(paramValue) && paramPosition <= 0) {
             paramDesc.setParamPrefix(paramName);
         } else {
@@ -331,6 +332,22 @@ public class CWLAppDetector {
             if (matcher.find()) {
                 paramName = matcher.group(1);
             }
+            if (paramDesc.getParamPosition() > 0) {
+                if (paramName.endsWith(WF_OUTPUT_NAME_SUFFIX)) {
+                    String tmpParamName = paramName;
+                    CommandOutputParameter out = commandLineTool.getOutputs().stream().filter(o -> ((CommandOutputParameter) o).getOutputBinding() != null
+                            && ((CommandOutputParameter) o).getOutputBinding().get().getGlob() != null
+                            && ((CommandOutputParameter) o).getOutputBinding().get().getGlob().toString().matches("\\$\\(inputs\\." + Pattern.quote(tmpParamName) + "\\)"))
+                            .map(o -> (CommandOutputParameter) o).findFirst().orElse(null);
+                    if (out != null) {
+                        paramName = out.getId().get();
+                    }
+                }
+                paramName = CWLUtils.removeSuffix(paramName, paramSuffix);
+            }
+        }
+        if (paramName.matches("(\\w+\\.\\w+)+")) {
+            paramName = paramName.replace(".", "_");
         }
 
         if (paramValue.matches("(\"?\\$\\(inputs\\."+paramId+"[\\w\\[\\].]*\\)\"?([\\w./]+)?\\s?)*") || paramValue.matches("\"?\\$"+paramId)) {
