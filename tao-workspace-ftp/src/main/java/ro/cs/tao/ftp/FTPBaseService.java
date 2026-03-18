@@ -140,6 +140,11 @@ public abstract class FTPBaseService extends BaseStorageService<byte[]> {
         long size;
         LocalDateTime lastModified;
         for (Path realPath : list) {
+            if (cancelRequested()) {
+                fileObjects.clear();
+                resetCancelFlag();
+                break;
+            }
             boolean isFolder;
             lastModified = null;
             size = 0;
@@ -176,6 +181,55 @@ public abstract class FTPBaseService extends BaseStorageService<byte[]> {
     }
 
     @Override
+    public List<FileObject> listLastFiles(String fromPath, int limit) throws IOException {
+        initializeFileSystem();
+        Repository repository = repository();
+        final Path root = getPath(repository.bucketName());
+        final Path startPath = getPath(repository.resolve(fromPath));
+        final List<Path> list = listLast(startPath, 1, limit);
+        final List<FileObject> fileObjects = new ArrayList<>();
+        if (repository.isRoot(fromPath)) {
+            fileObjects.add(repositoryRootNode(repository));
+        }
+        long size;
+        LocalDateTime lastModified;
+        for (Path realPath : list) {
+            if (cancelRequested()) {
+                fileObjects.clear();
+                resetCancelFlag();
+                break;
+            }
+            boolean isFolder;
+            lastModified = null;
+            size = 0;
+            if (realPath.toString().contains(".")) {
+                try {
+                    BasicFileAttributes attributes = Files.readAttributes(realPath, BasicFileAttributes.class);
+                    isFolder = attributes.isDirectory();
+                    size = attributes.size();
+                    lastModified = LocalDateTime.ofInstant(Instant.ofEpochMilli(attributes.lastModifiedTime().toMillis()),
+                                                           ZoneId.systemDefault());
+                } catch (IOException e) {
+                    size = -1;
+                    isFolder = false;
+                }
+            } else {
+                isFolder = true;
+            }
+            final Path path = root.relativize(realPath);
+            String pathToRecord = path.toString().replace("\\", "/");
+            if (isFolder) {
+                pathToRecord += "/";
+            }
+            final FileObject fileObject = new FileObject(protocol(), pathToRecord, isFolder, size);
+            fileObject.setLastModified(lastModified);
+            fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, realPath.toString());
+            fileObjects.add(fileObject);
+        }
+        return fileObjects;
+    }
+
+    @Override
     public List<FileObject> getWorkflowResults(long workflowId) throws IOException {
         return null;
     }
@@ -199,6 +253,10 @@ public abstract class FTPBaseService extends BaseStorageService<byte[]> {
         if (Files.exists(root) && Files.isDirectory(root)) {
             List<Path> paths = FileUtilities.listTree(root);
             for (Path current : paths) {
+                if (cancelRequested()) {
+                    resetCancelFlag();
+                    break;
+                }
                 if (Files.isRegularFile(current)) {
                     String zipPath = root.relativize(current).toString();
                     ZipEntry entry = new ZipEntry(zipPath);
@@ -262,6 +320,20 @@ public abstract class FTPBaseService extends BaseStorageService<byte[]> {
         } else {
             try (Stream<Path> stream = Files.walk(path, depth)) {
                 return stream.filter(p -> !p.equals(path)).sorted().collect(Collectors.toList());
+            }
+        }
+    }
+
+    private List<Path> listLast(Path path, int depth, int limit) throws IOException {
+        if (depth == 1) {
+            try (Stream<Path> stream = Files.list(path)) {
+                return stream.sorted(new PathDescending())
+                             .limit(limit).collect(Collectors.toList());
+            }
+        } else {
+            try (Stream<Path> stream = Files.walk(path, depth)) {
+                return stream.filter(p -> !p.equals(path)).sorted(new PathDescending())
+                             .limit(limit).collect(Collectors.toList());
             }
         }
     }

@@ -690,6 +690,11 @@ public class S3StorageService extends BaseStorageService<byte[]> {
             if (objects.getObjectSummaries() != null) {
                 while (true) {
                     for (S3ObjectSummary summary : objects.getObjectSummaries()) {
+                        if (cancelRequested()) {
+                            files.clear();
+                            resetCancelFlag();
+                            break;
+                        }
                         if (isNotFolderPlaceholder(summary)) {
                             final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(summary.getKey().substring(offset)), false, summary.getSize());
                             if (summary.getLastModified() != null) {
@@ -729,6 +734,11 @@ public class S3StorageService extends BaseStorageService<byte[]> {
             final List<S3ObjectSummary> objectSummaries = objects.getObjectSummaries();
             if (objectSummaries != null) {
                 for (int i = 0; i < objectSummaries.size(); i++) {
+                    if (cancelRequested()) {
+                        results.clear();
+                        resetCancelFlag();
+                        break;
+                    }
                     final S3ObjectSummary summary = objectSummaries.get(i);
                     if (isNotFolderPlaceholder(summary)) {
                         final FileObject fileObject = new FileObject(PROTOCOL, repository.relativizeToRoot(summary.getKey().substring(offset)), false, summary.getSize());
