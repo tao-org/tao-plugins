@@ -16,13 +16,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-bandsdifferenceop.tif"
+					"location": "output_snap-bandsdifferenceop.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -70,13 +70,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-bandmaths.tif"
+					"location": "output_snap-bandmaths.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -250,7 +250,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-bandselect.tif"
+					"location": "output_snap-bandselect.dim"
 				},
 				"cardinality": 1
 			}
@@ -322,13 +322,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-bandsextractorop.tif"
+					"location": "output_snap-bandsextractorop.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -394,7 +394,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-bandmerge.tif"
+					"location": "output_snap-bandmerge.dim"
 				},
 				"cardinality": 1
 			}
@@ -458,7 +458,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-aatsr.ungrid.tif"
+					"location": "output_snap-aatsr.ungrid.dim"
 				},
 				"cardinality": 1
 			}
@@ -542,7 +542,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-addelevation.tif"
+					"location": "output_snap-addelevation.dim"
 				},
 				"cardinality": 1
 			}
@@ -636,7 +636,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-back-geocoding.tif"
+					"location": "output_snap-back-geocoding.dim"
 				},
 				"cardinality": 1
 			}
@@ -770,7 +770,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-addlandcover.tif"
+					"location": "output_snap-addlandcover.dim"
 				},
 				"cardinality": 1
 			}
@@ -844,13 +844,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-adaptivethresholding.tif"
+					"location": "output_snap-adaptivethresholding.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -939,13 +939,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-batchsnaphuunwrapop.tif"
+					"location": "output_snap-batchsnaphuunwrapop.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -1002,7 +1002,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-apply-orbit-file.tif"
+					"location": "output_snap-apply-orbit-file.dim"
 				},
 				"cardinality": 1
 			}
@@ -1077,7 +1077,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-aatsr.sst.tif"
+					"location": "output_snap-aatsr.sst.dim"
 				},
 				"cardinality": 1
 			}
@@ -1192,13 +1192,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-bandpassfilter.tif"
+					"location": "output_snap-bandpassfilter.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -1257,13 +1257,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-azimuthfilter.tif"
+					"location": "output_snap-azimuthfilter.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -1332,7 +1332,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-arviop.tif"
+					"location": "output_snap-arviop.dim"
 				},
 				"cardinality": 1
 			}
@@ -1474,7 +1474,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-arc.sst.tif"
+					"location": "output_snap-arc.sst.dim"
 				},
 				"cardinality": 1
 			}
@@ -1626,7 +1626,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-bi2op.tif"
+					"location": "output_snap-bi2op.dim"
 				},
 				"cardinality": 1
 			}
@@ -1758,7 +1758,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-biophysical10mop.tif"
+					"location": "output_snap-biophysical10mop.dim"
 				},
 				"cardinality": 1
 			}
@@ -1843,13 +1843,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-binning.tif"
+					"location": "output_snap-binning.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -2152,7 +2152,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-change-detection.tif"
+					"location": "output_snap-change-detection.dim"
 				},
 				"cardinality": 1
 			}
@@ -2276,7 +2276,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-collocate.tif"
+					"location": "output_snap-collocate.dim"
 				},
 				"cardinality": 1
 			}
@@ -2427,7 +2427,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-biophysicalop.tif"
+					"location": "output_snap-biophysicalop.dim"
 				},
 				"cardinality": 1
 			}
@@ -2542,7 +2542,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-cp-simulation.tif"
+					"location": "output_snap-cp-simulation.dim"
 				},
 				"cardinality": 1
 			}
@@ -2627,7 +2627,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-calibration.tif"
+					"location": "output_snap-calibration.dim"
 				},
 				"cardinality": 1
 			}
@@ -2779,13 +2779,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-biophysicallandsat8op.tif"
+					"location": "output_snap-biophysicallandsat8op.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -2854,7 +2854,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-biop.tif"
+					"location": "output_snap-biop.dim"
 				},
 				"cardinality": 1
 			}
@@ -2967,13 +2967,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-compute-slope-aspect.tif"
+					"location": "output_snap-compute-slope-aspect.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -3071,7 +3071,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-cp-stokes-parameters.tif"
+					"location": "output_snap-cp-stokes-parameters.dim"
 				},
 				"cardinality": 1
 			}
@@ -3246,7 +3246,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ciop.tif"
+					"location": "output_snap-ciop.dim"
 				},
 				"cardinality": 1
 			}
@@ -3359,7 +3359,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-cloudprob.tif"
+					"location": "output_snap-cloudprob.dim"
 				},
 				"cardinality": 1
 			}
@@ -3403,7 +3403,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-coherence.tif"
+					"location": "output_snap-coherence.dim"
 				},
 				"cardinality": 1
 			}
@@ -3578,7 +3578,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-changevectoranalysisop.tif"
+					"location": "output_snap-changevectoranalysisop.dim"
 				},
 				"cardinality": 1
 			}
@@ -3669,7 +3669,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-cp-decomposition.tif"
+					"location": "output_snap-cp-decomposition.dim"
 				},
 				"cardinality": 1
 			}
@@ -3764,7 +3764,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-convert-datatype.tif"
+					"location": "output_snap-convert-datatype.dim"
 				},
 				"cardinality": 1
 			}
@@ -3848,7 +3848,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-createstack.tif"
+					"location": "output_snap-createstack.dim"
 				},
 				"cardinality": 1
 			}
@@ -3941,13 +3941,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-coregistrationop.tif"
+					"location": "output_snap-coregistrationop.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -4053,13 +4053,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-demodulate.tif"
+					"location": "output_snap-demodulate.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -4097,7 +4097,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-cross-correlation.tif"
+					"location": "output_snap-cross-correlation.dim"
 				},
 				"cardinality": 1
 			}
@@ -4323,7 +4323,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ecostressswath2gridop.tif"
+					"location": "output_snap-ecostressswath2gridop.dim"
 				},
 				"cardinality": 1
 			}
@@ -4416,7 +4416,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-crossresampling.tif"
+					"location": "output_snap-crossresampling.dim"
 				},
 				"cardinality": 1
 			}
@@ -4491,7 +4491,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-eap-phase-correction.tif"
+					"location": "output_snap-eap-phase-correction.dim"
 				},
 				"cardinality": 1
 			}
@@ -4535,7 +4535,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-deburstwss.tif"
+					"location": "output_snap-deburstwss.dim"
 				},
 				"cardinality": 1
 			}
@@ -4610,7 +4610,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-dviop.tif"
+					"location": "output_snap-dviop.dim"
 				},
 				"cardinality": 1
 			}
@@ -4723,7 +4723,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ellipsoid-correction-gg.tif"
+					"location": "output_snap-ellipsoid-correction-gg.dim"
 				},
 				"cardinality": 1
 			}
@@ -4797,7 +4797,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-emclusteranalysis.tif"
+					"location": "output_snap-emclusteranalysis.dim"
 				},
 				"cardinality": 1
 			}
@@ -4900,13 +4900,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-darkobjectsubtraction.tif"
+					"location": "output_snap-darkobjectsubtraction.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -4972,7 +4972,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-fub.water.tif"
+					"location": "output_snap-fub.water.dim"
 				},
 				"cardinality": 1
 			}
@@ -5077,7 +5077,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ellipsoid-correction-rd.tif"
+					"location": "output_snap-ellipsoid-correction-rd.dim"
 				},
 				"cardinality": 1
 			}
@@ -5419,13 +5419,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-flhmci.tif"
+					"location": "output_snap-flhmci.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -5558,7 +5558,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-fill-dem-hole.tif"
+					"location": "output_snap-fill-dem-hole.dim"
 				},
 				"cardinality": 1
 			}
@@ -5622,7 +5622,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-gemiop.tif"
+					"location": "output_snap-gemiop.dim"
 				},
 				"cardinality": 1
 			}
@@ -5735,7 +5735,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-flip.tif"
+					"location": "output_snap-flip.dim"
 				},
 				"cardinality": 1
 			}
@@ -5790,13 +5790,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-forestcoverchangeop.tif"
+					"location": "output_snap-forestcoverchangeop.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -5971,13 +5971,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-fuclassification.tif"
+					"location": "output_snap-fuclassification.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -6084,7 +6084,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-iem-multi-angle-inversion.tif"
+					"location": "output_snap-iem-multi-angle-inversion.dim"
 				},
 				"cardinality": 1
 			}
@@ -6198,7 +6198,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-grd-post.tif"
+					"location": "output_snap-grd-post.dim"
 				},
 				"cardinality": 1
 			}
@@ -6242,7 +6242,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-goldsteinphasefiltering.tif"
+					"location": "output_snap-goldsteinphasefiltering.dim"
 				},
 				"cardinality": 1
 			}
@@ -6337,7 +6337,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-genericregionmergingop.tif"
+					"location": "output_snap-genericregionmergingop.dim"
 				},
 				"cardinality": 1
 			}
@@ -6451,7 +6451,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-glcm.tif"
+					"location": "output_snap-glcm.dim"
 				},
 				"cardinality": 1
 			}
@@ -6665,7 +6665,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-import-vector.tif"
+					"location": "output_snap-import-vector.dim"
 				},
 				"cardinality": 1
 			}
@@ -6729,7 +6729,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-gndviop.tif"
+					"location": "output_snap-gndviop.dim"
 				},
 				"cardinality": 1
 			}
@@ -6842,7 +6842,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-iem-hybrid-inversion.tif"
+					"location": "output_snap-iem-hybrid-inversion.dim"
 				},
 				"cardinality": 1
 			}
@@ -6956,7 +6956,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-horizontalverticalmotion.tif"
+					"location": "output_snap-horizontalverticalmotion.dim"
 				},
 				"cardinality": 1
 			}
@@ -7021,7 +7021,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-image-filter.tif"
+					"location": "output_snap-image-filter.dim"
 				},
 				"cardinality": 1
 			}
@@ -7093,7 +7093,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-iem-multi-pol-inversion.tif"
+					"location": "output_snap-iem-multi-pol-inversion.dim"
 				},
 				"cardinality": 1
 			}
@@ -7197,13 +7197,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-insar-overview.tif"
+					"location": "output_snap-insar-overview.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -7251,7 +7251,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-integerinterferogram.tif"
+					"location": "output_snap-integerinterferogram.dim"
 				},
 				"cardinality": 1
 			}
@@ -7295,7 +7295,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-interferogram.tif"
+					"location": "output_snap-interferogram.dim"
 				},
 				"cardinality": 1
 			}
@@ -7519,7 +7519,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-kdtree-knn-classifier.tif"
+					"location": "output_snap-kdtree-knn-classifier.dim"
 				},
 				"cardinality": 1
 			}
@@ -7728,7 +7728,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ionosphericcorrection.tif"
+					"location": "output_snap-ionosphericcorrection.dim"
 				},
 				"cardinality": 1
 			}
@@ -7803,7 +7803,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-kmeansclusteranalysis.tif"
+					"location": "output_snap-kmeansclusteranalysis.dim"
 				},
 				"cardinality": 1
 			}
@@ -7896,7 +7896,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ireciop.tif"
+					"location": "output_snap-ireciop.dim"
 				},
 				"cardinality": 1
 			}
@@ -8047,7 +8047,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ipviop.tif"
+					"location": "output_snap-ipviop.dim"
 				},
 				"cardinality": 1
 			}
@@ -8160,7 +8160,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-land-sea-mask.tif"
+					"location": "output_snap-land-sea-mask.dim"
 				},
 				"cardinality": 1
 			}
@@ -8263,7 +8263,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-land-cover-mask.tif"
+					"location": "output_snap-land-cover-mask.dim"
 				},
 				"cardinality": 1
 			}
@@ -8354,7 +8354,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-knn-classifier.tif"
+					"location": "output_snap-knn-classifier.dim"
 				},
 				"cardinality": 1
 			}
@@ -8563,7 +8563,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-landwatermask.tif"
+					"location": "output_snap-landwatermask.dim"
 				},
 				"cardinality": 1
 			}
@@ -8638,7 +8638,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-lineartofromdb.tif"
+					"location": "output_snap-lineartofromdb.dim"
 				},
 				"cardinality": 1
 			}
@@ -8692,7 +8692,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-mcariop.tif"
+					"location": "output_snap-mcariop.dim"
 				},
 				"cardinality": 1
 			}
@@ -8824,7 +8824,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-mci.s2.tif"
+					"location": "output_snap-mci.s2.dim"
 				},
 				"cardinality": 1
 			}
@@ -8953,7 +8953,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-meris.correctradiometry.tif"
+					"location": "output_snap-meris.correctradiometry.dim"
 				},
 				"cardinality": 1
 			}
@@ -9066,13 +9066,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-meris.adapt.4to3.tif"
+					"location": "output_snap-meris.adapt.4to3.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -9110,13 +9110,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-merge.tif"
+					"location": "output_snap-merge.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -9201,7 +9201,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-meris.n1patcher.tif"
+					"location": "output_snap-meris.n1patcher.dim"
 				},
 				"cardinality": 1
 			}
@@ -9283,7 +9283,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-mndwiop.tif"
+					"location": "output_snap-mndwiop.dim"
 				},
 				"cardinality": 1
 			}
@@ -9396,7 +9396,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-mphchl.tif"
+					"location": "output_snap-mphchl.dim"
 				},
 				"cardinality": 1
 			}
@@ -9490,13 +9490,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-msavi2op.tif"
+					"location": "output_snap-msavi2op.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -9603,13 +9603,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-mosaic.tif"
+					"location": "output_snap-mosaic.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -9793,13 +9793,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-msaviop.tif"
+					"location": "output_snap-msaviop.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -9916,13 +9916,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-mtciop.tif"
+					"location": "output_snap-mtciop.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -10048,13 +10048,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-multimasterinsar.tif"
+					"location": "output_snap-multimasterinsar.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -10162,13 +10162,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-multitemporal-compositing.tif"
+					"location": "output_snap-multitemporal-compositing.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -10206,13 +10206,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-multi-size mosaic.tif"
+					"location": "output_snap-multi-size mosaic.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -10416,7 +10416,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-multilook.tif"
+					"location": "output_snap-multilook.dim"
 				},
 				"cardinality": 1
 			}
@@ -10510,13 +10510,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-multimasterstackgenerator.tif"
+					"location": "output_snap-multimasterstackgenerator.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -10564,13 +10564,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ndi45op.tif"
+					"location": "output_snap-ndi45op.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -10677,7 +10677,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ndpiop.tif"
+					"location": "output_snap-ndpiop.dim"
 				},
 				"cardinality": 1
 			}
@@ -10790,7 +10790,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ndtiop.tif"
+					"location": "output_snap-ndtiop.dim"
 				},
 				"cardinality": 1
 			}
@@ -10903,13 +10903,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ndviop.tif"
+					"location": "output_snap-ndviop.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -11016,7 +11016,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ndwi2op.tif"
+					"location": "output_snap-ndwi2op.dim"
 				},
 				"cardinality": 1
 			}
@@ -11129,7 +11129,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ndwiop.tif"
+					"location": "output_snap-ndwiop.dim"
 				},
 				"cardinality": 1
 			}
@@ -11242,7 +11242,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-owtclassification.tif"
+					"location": "output_snap-owtclassification.dim"
 				},
 				"cardinality": 1
 			}
@@ -11327,13 +11327,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-object-discrimination.tif"
+					"location": "output_snap-object-discrimination.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -11383,13 +11383,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-olcio2aharmonisation.tif"
+					"location": "output_snap-olcio2aharmonisation.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -11466,7 +11466,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-oil-spill-detection.tif"
+					"location": "output_snap-oil-spill-detection.dim"
 				},
 				"cardinality": 1
 			}
@@ -11540,7 +11540,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-oil-spill-clustering.tif"
+					"location": "output_snap-oil-spill-clustering.dim"
 				},
 				"cardinality": 1
 			}
@@ -11586,13 +11586,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-olcianomalyflagging.tif"
+					"location": "output_snap-olcianomalyflagging.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -11650,7 +11650,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-offset-tracking.tif"
+					"location": "output_snap-offset-tracking.dim"
 				},
 				"cardinality": 1
 			}
@@ -11815,13 +11815,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-olcisensorharmonisation.tif"
+					"location": "output_snap-olcisensorharmonisation.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -11889,7 +11889,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-pca.tif"
+					"location": "output_snap-pca.dim"
 				},
 				"cardinality": 1
 			}
@@ -11972,7 +11972,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-pdustitching.tif"
+					"location": "output_snap-pdustitching.dim"
 				},
 				"cardinality": 1
 			}
@@ -12035,7 +12035,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-oversample.tif"
+					"location": "output_snap-oversample.dim"
 				},
 				"cardinality": 1
 			}
@@ -12169,7 +12169,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-phasetoelevation.tif"
+					"location": "output_snap-phasetoelevation.dim"
 				},
 				"cardinality": 1
 			}
@@ -12253,7 +12253,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-phasetoheight.tif"
+					"location": "output_snap-phasetoheight.dim"
 				},
 				"cardinality": 1
 			}
@@ -12348,7 +12348,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-phasetodisplacement.tif"
+					"location": "output_snap-phasetodisplacement.dim"
 				},
 				"cardinality": 1
 			}
@@ -12392,13 +12392,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-pixex.tif"
+					"location": "output_snap-pixex.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -12712,13 +12712,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-polarimetric-matrices.tif"
+					"location": "output_snap-polarimetric-matrices.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -12767,13 +12767,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-polarimetric-parameters.tif"
+					"location": "output_snap-polarimetric-parameters.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -12952,7 +12952,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-pviop.tif"
+					"location": "output_snap-pviop.dim"
 				},
 				"cardinality": 1
 			}
@@ -13066,7 +13066,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-productset-reader.tif"
+					"location": "output_snap-productset-reader.dim"
 				},
 				"cardinality": 1
 			}
@@ -13120,13 +13120,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ppefiltering.tif"
+					"location": "output_snap-ppefiltering.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -13195,13 +13195,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-rpca-change-detection.tif"
+					"location": "output_snap-rpca-change-detection.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -13279,13 +13279,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-pssraop.tif"
+					"location": "output_snap-pssraop.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -13392,13 +13392,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-principal-components.tif"
+					"location": "output_snap-principal-components.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -13496,13 +13496,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-quantization.tif"
+					"location": "output_snap-quantization.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -13559,13 +13559,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-reactiv-change-detection.tif"
+					"location": "output_snap-reactiv-change-detection.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -13624,7 +13624,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-rad2refl.tif"
+					"location": "output_snap-rad2refl.dim"
 				},
 				"cardinality": 1
 			}
@@ -13719,7 +13719,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-random-forest-classifier.tif"
+					"location": "output_snap-random-forest-classifier.dim"
 				},
 				"cardinality": 1
 			}
@@ -13929,13 +13929,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-raster-to-vector.tif"
+					"location": "output_snap-raster-to-vector.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -13983,13 +13983,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-radar-vegetation-index.tif"
+					"location": "output_snap-radar-vegetation-index.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -14038,7 +14038,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-rangefilter.tif"
+					"location": "output_snap-rangefilter.dim"
 				},
 				"cardinality": 1
 			}
@@ -14143,7 +14143,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-rayleighcorrection.tif"
+					"location": "output_snap-rayleighcorrection.dim"
 				},
 				"cardinality": 1
 			}
@@ -14277,7 +14277,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-reflectancetoradianceop.tif"
+					"location": "output_snap-reflectancetoradianceop.dim"
 				},
 				"cardinality": 1
 			}
@@ -14359,7 +14359,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-read.tif"
+					"location": "output_snap-read.dim"
 				},
 				"cardinality": 1
 			}
@@ -14496,7 +14496,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-reipop.tif"
+					"location": "output_snap-reipop.dim"
 				},
 				"cardinality": 1
 			}
@@ -14647,13 +14647,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-remodulate.tif"
+					"location": "output_snap-remodulate.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -14691,7 +14691,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-removeantennapattern.tif"
+					"location": "output_snap-removeantennapattern.dim"
 				},
 				"cardinality": 1
 			}
@@ -14745,7 +14745,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-remove-grd-border-noise.tif"
+					"location": "output_snap-remove-grd-border-noise.dim"
 				},
 				"cardinality": 1
 			}
@@ -14819,7 +14819,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-reproject.tif"
+					"location": "output_snap-reproject.dim"
 				},
 				"cardinality": 1
 			}
@@ -15049,7 +15049,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-rviop.tif"
+					"location": "output_snap-rviop.dim"
 				},
 				"cardinality": 1
 			}
@@ -15162,13 +15162,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-s1-etad-correction.tif"
+					"location": "output_snap-s1-etad-correction.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -15345,7 +15345,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-resample.tif"
+					"location": "output_snap-resample.dim"
 				},
 				"cardinality": 1
 			}
@@ -15484,7 +15484,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-riop.tif"
+					"location": "output_snap-riop.dim"
 				},
 				"cardinality": 1
 			}
@@ -15597,7 +15597,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-replacemetadata.tif"
+					"location": "output_snap-replacemetadata.dim"
 				},
 				"cardinality": 1
 			}
@@ -15652,7 +15652,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-sarsim-terrain-correction.tif"
+					"location": "output_snap-sarsim-terrain-correction.dim"
 				},
 				"cardinality": 1
 			}
@@ -15945,7 +15945,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-sar-mosaic.tif"
+					"location": "output_snap-sar-mosaic.dim"
 				},
 				"cardinality": 1
 			}
@@ -16099,7 +16099,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-s2resampling.tif"
+					"location": "output_snap-s2resampling.dim"
 				},
 				"cardinality": 1
 			}
@@ -16212,13 +16212,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-s2repop.tif"
+					"location": "output_snap-s2repop.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "OPTICAL",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -16363,7 +16363,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-sar-simulation.tif"
+					"location": "output_snap-sar-simulation.dim"
 				},
 				"cardinality": 1
 			}
@@ -16476,7 +16476,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-sm-dielectric-modeling.tif"
+					"location": "output_snap-sm-dielectric-modeling.dim"
 				},
 				"cardinality": 1
 			}
@@ -16581,7 +16581,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-saviop.tif"
+					"location": "output_snap-saviop.dim"
 				},
 				"cardinality": 1
 			}
@@ -16704,7 +16704,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-srgr.tif"
+					"location": "output_snap-srgr.dim"
 				},
 				"cardinality": 1
 			}
@@ -16778,13 +16778,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-setnodatavalue.tif"
+					"location": "output_snap-setnodatavalue.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -16843,7 +16843,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-smacop.tif"
+					"location": "output_snap-smacop.dim"
 				},
 				"cardinality": 1
 			}
@@ -16985,7 +16985,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-sliceassembly.tif"
+					"location": "output_snap-sliceassembly.dim"
 				},
 				"cardinality": 1
 			}
@@ -17039,7 +17039,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-snaphuexport.tif"
+					"location": "output_snap-snaphuexport.dim"
 				},
 				"cardinality": 1
 			}
@@ -17173,7 +17173,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-snaphuimport.tif"
+					"location": "output_snap-snaphuimport.dim"
 				},
 				"cardinality": 1
 			}
@@ -17228,7 +17228,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-speckle-divergence.tif"
+					"location": "output_snap-speckle-divergence.dim"
 				},
 				"cardinality": 1
 			}
@@ -17292,7 +17292,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-speckle-filter.tif"
+					"location": "output_snap-speckle-filter.dim"
 				},
 				"cardinality": 1
 			}
@@ -17447,7 +17447,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-spectralanglemapperop.tif"
+					"location": "output_snap-spectralanglemapperop.dim"
 				},
 				"cardinality": 1
 			}
@@ -17586,7 +17586,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-stack-averaging.tif"
+					"location": "output_snap-stack-averaging.dim"
 				},
 				"cardinality": 1
 			}
@@ -17641,7 +17641,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-stampsexport.tif"
+					"location": "output_snap-stampsexport.dim"
 				},
 				"cardinality": 1
 			}
@@ -17705,7 +17705,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-stack-split.tif"
+					"location": "output_snap-stack-split.dim"
 				},
 				"cardinality": 1
 			}
@@ -17770,7 +17770,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-statisticsop.tif"
+					"location": "output_snap-statisticsop.dim"
 				},
 				"cardinality": 1
 			}
@@ -17954,7 +17954,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-subgraph.tif"
+					"location": "output_snap-subgraph.dim"
 				},
 				"cardinality": 1
 			}
@@ -18008,7 +18008,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-subset.tif"
+					"location": "output_snap-subset.dim"
 				},
 				"cardinality": 1
 			}
@@ -18156,7 +18156,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-topsar-deburst.tif"
+					"location": "output_snap-topsar-deburst.dim"
 				},
 				"cardinality": 1
 			}
@@ -18210,13 +18210,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-topsar-derampdemod.tif"
+					"location": "output_snap-topsar-derampdemod.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RADAR",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -18265,7 +18265,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-topsar-merge.tif"
+					"location": "output_snap-topsar-merge.dim"
 				},
 				"cardinality": 1
 			}
@@ -18319,7 +18319,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-topsar-split.tif"
+					"location": "output_snap-topsar-split.dim"
 				},
 				"cardinality": 1
 			}
@@ -18411,7 +18411,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-terrain-flattening.tif"
+					"location": "output_snap-terrain-flattening.dim"
 				},
 				"cardinality": 1
 			}
@@ -18564,7 +18564,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-terrain-correction.tif"
+					"location": "output_snap-terrain-correction.dim"
 				},
 				"cardinality": 1
 			}
@@ -18906,7 +18906,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-temporalpercentile.tif"
+					"location": "output_snap-temporalpercentile.dim"
 				},
 				"cardinality": 1
 			}
@@ -19154,7 +19154,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-three-passdinsar.tif"
+					"location": "output_snap-three-passdinsar.dim"
 				},
 				"cardinality": 1
 			}
@@ -19209,7 +19209,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-thermalnoiseremoval.tif"
+					"location": "output_snap-thermalnoiseremoval.dim"
 				},
 				"cardinality": 1
 			}
@@ -19293,7 +19293,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-terrain-mask.tif"
+					"location": "output_snap-terrain-mask.dim"
 				},
 				"cardinality": 1
 			}
@@ -19397,7 +19397,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-tilecache.tif"
+					"location": "output_snap-tilecache.dim"
 				},
 				"cardinality": 1
 			}
@@ -19452,7 +19452,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-tilewriter.tif"
+					"location": "output_snap-tilewriter.dim"
 				},
 				"cardinality": 1
 			}
@@ -19566,7 +19566,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-topophaseremoval.tif"
+					"location": "output_snap-topophaseremoval.dim"
 				},
 				"cardinality": 1
 			}
@@ -19690,7 +19690,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-tndviop.tif"
+					"location": "output_snap-tndviop.dim"
 				},
 				"cardinality": 1
 			}
@@ -19794,7 +19794,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-tooladapterop.tif"
+					"location": "output_snap-tooladapterop.dim"
 				},
 				"cardinality": 1
 			}
@@ -19838,7 +19838,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-undersample.tif"
+					"location": "output_snap-undersample.dim"
 				},
 				"cardinality": 1
 			}
@@ -20002,7 +20002,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-tsaviop.tif"
+					"location": "output_snap-tsaviop.dim"
 				},
 				"cardinality": 1
 			}
@@ -20145,7 +20145,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-unmix.tif"
+					"location": "output_snap-unmix.dim"
 				},
 				"cardinality": 1
 			}
@@ -20276,7 +20276,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-wdviop.tif"
+					"location": "output_snap-wdviop.dim"
 				},
 				"cardinality": 1
 			}
@@ -20399,7 +20399,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-warp.tif"
+					"location": "output_snap-warp.dim"
 				},
 				"cardinality": 1
 			}
@@ -20514,13 +20514,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-update-geo-reference.tif"
+					"location": "output_snap-update-geo-reference.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "0b9cbc08-ccc2-4f3a-84e8-f723ee87fcc3",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -20617,7 +20617,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-wind-field-estimation.tif"
+					"location": "output_snap-wind-field-estimation.dim"
 				},
 				"cardinality": 1
 			}
@@ -20681,7 +20681,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-write.tif"
+					"location": "output_snap-write.dim"
 				},
 				"cardinality": 1
 			}
@@ -20775,7 +20775,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-c2rcc.olci.tif"
+					"location": "output_snap-c2rcc.olci.dim"
 				},
 				"cardinality": 1
 			}
@@ -21143,7 +21143,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-c2rcc.meris4.tif"
+					"location": "output_snap-c2rcc.meris4.dim"
 				},
 				"cardinality": 1
 			}
@@ -21521,7 +21521,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-c2rcc.modis.tif"
+					"location": "output_snap-c2rcc.modis.dim"
 				},
 				"cardinality": 1
 			}
@@ -21691,7 +21691,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-c2rcc.landsat8.tif"
+					"location": "output_snap-c2rcc.landsat8.dim"
 				},
 				"cardinality": 1
 			}
@@ -22069,7 +22069,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-c2rcc.meris.tif"
+					"location": "output_snap-c2rcc.meris.dim"
 				},
 				"cardinality": 1
 			}
@@ -22457,7 +22457,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-c2rcc.msi.tif"
+					"location": "output_snap-c2rcc.msi.dim"
 				},
 				"cardinality": 1
 			}
@@ -22846,7 +22846,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-c2rcc.viirs.tif"
+					"location": "output_snap-c2rcc.viirs.dim"
 				},
 				"cardinality": 1
 			}
@@ -23026,7 +23026,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-c2rcc.seawifs.tif"
+					"location": "output_snap-c2rcc.seawifs.dim"
 				},
 				"cardinality": 1
 			}
@@ -23206,7 +23206,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-idepix.probav.vegetation.tif"
+					"location": "output_snap-idepix.probav.vegetation.dim"
 				},
 				"cardinality": 1
 			}
@@ -23341,7 +23341,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ndi45op.tif"
+					"location": "output_snap-ndi45op.dim"
 				},
 				"cardinality": 1
 			}
@@ -23451,7 +23451,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-idepix.envisat.meris.tif"
+					"location": "output_snap-idepix.envisat.meris.dim"
 				},
 				"cardinality": 1
 			}
@@ -23604,7 +23604,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-phasefilter.tif"
+					"location": "output_snap-phasefilter.dim"
 				},
 				"cardinality": 1
 			}
@@ -23698,7 +23698,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-alos-deskewing.tif"
+					"location": "output_snap-alos-deskewing.dim"
 				},
 				"cardinality": 1
 			}
@@ -23750,7 +23750,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ccicloudshadow.tif"
+					"location": "output_snap-ccicloudshadow.dim"
 				},
 				"cardinality": 1
 			}
@@ -23793,7 +23793,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-idepix.terraaqua.modis.tif"
+					"location": "output_snap-idepix.terraaqua.modis.dim"
 				},
 				"cardinality": 1
 			}
@@ -23920,7 +23920,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-minimum-distance-classifier.tif"
+					"location": "output_snap-minimum-distance-classifier.dim"
 				},
 				"cardinality": 1
 			}
@@ -24103,7 +24103,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-maximum-likelihood-classifier.tif"
+					"location": "output_snap-maximum-likelihood-classifier.dim"
 				},
 				"cardinality": 1
 			}
@@ -24286,7 +24286,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-aerosolretrieval.s2.master.tif"
+					"location": "output_snap-aerosolretrieval.s2.master.dim"
 				},
 				"cardinality": 1
 			}
@@ -24435,13 +24435,13 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-find-image-pair.tif"
+					"location": "output_snap-find-image-pair.dim"
 				},
 				"cardinality": 1
 			}
 		],
 		"containerId": "caefe468-3830-45ba-a7b8-053397460899",
-		"category": "MISC",
+		"category": "RASTER",
 		"fileLocation": "gpt",
 		"workingDirectory": ".",
 		"multiThread": true,
@@ -24497,7 +24497,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-principle-components.tif"
+					"location": "output_snap-principle-components.dim"
 				},
 				"cardinality": 1
 			}
@@ -24596,7 +24596,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-msavi2op.tif"
+					"location": "output_snap-msavi2op.dim"
 				},
 				"cardinality": 1
 			}
@@ -24704,7 +24704,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-idepix.sentinel3.olcislstr.tif"
+					"location": "output_snap-idepix.sentinel3.olcislstr.dim"
 				},
 				"cardinality": 1
 			}
@@ -24812,7 +24812,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-idepix.suominpp.viirs.tif"
+					"location": "output_snap-idepix.suominpp.viirs.dim"
 				},
 				"cardinality": 1
 			}
@@ -24893,7 +24893,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-idepix.orbview2.seawifs.tif"
+					"location": "output_snap-idepix.orbview2.seawifs.dim"
 				},
 				"cardinality": 1
 			}
@@ -25002,7 +25002,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-flood-detection.tif"
+					"location": "output_snap-flood-detection.dim"
 				},
 				"cardinality": 1
 			}
@@ -25045,7 +25045,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-multi-temporal-speckle-filter.tif"
+					"location": "output_snap-multi-temporal-speckle-filter.dim"
 				},
 				"cardinality": 1
 			}
@@ -25196,7 +25196,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-s2.watervapour.tif"
+					"location": "output_snap-s2.watervapour.dim"
 				},
 				"cardinality": 1
 			}
@@ -25239,7 +25239,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-double-difference-interferogram.tif"
+					"location": "output_snap-double-difference-interferogram.dim"
 				},
 				"cardinality": 1
 			}
@@ -25302,7 +25302,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-ndvi.tif"
+					"location": "output_snap-ndvi.dim"
 				},
 				"cardinality": 1
 			}
@@ -25380,7 +25380,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-idepix.sentinel3.olci.tif"
+					"location": "output_snap-idepix.sentinel3.olci.dim"
 				},
 				"cardinality": 1
 			}
@@ -25470,7 +25470,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-enhanced-spectral-diversity.tif"
+					"location": "output_snap-enhanced-spectral-diversity.dim"
 				},
 				"cardinality": 1
 			}
@@ -25610,7 +25610,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-idepix.sentinel2.tif"
+					"location": "output_snap-idepix.sentinel2.dim"
 				},
 				"cardinality": 1
 			}
@@ -25744,7 +25744,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-dem-assisted-coregistration.tif"
+					"location": "output_snap-dem-assisted-coregistration.dim"
 				},
 				"cardinality": 1
 			}
@@ -25859,7 +25859,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-msavi.tif"
+					"location": "output_snap-msavi.dim"
 				},
 				"cardinality": 1
 			}
@@ -25976,7 +25976,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-s2rep.tif"
+					"location": "output_snap-s2rep.dim"
 				},
 				"cardinality": 1
 			}
@@ -26121,7 +26121,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-idepix.landsat8.oli.tif"
+					"location": "output_snap-idepix.landsat8.oli.dim"
 				},
 				"cardinality": 1
 			}
@@ -26311,7 +26311,7 @@
 				"name": "t",
 				"dataDescriptor": {
 					"formatType": "RASTER",
-					"location": "output_snap-mtciop.tif"
+					"location": "output_snap-mtciop.dim"
 				},
 				"cardinality": 1
 			}
