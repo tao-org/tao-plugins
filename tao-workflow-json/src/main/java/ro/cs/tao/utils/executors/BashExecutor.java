@@ -15,10 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BashExecutor extends Executor<Object>
@@ -117,13 +114,19 @@ public class BashExecutor extends Executor<Object>
             Map<String, Integer> inputSet = new LinkedHashMap<>();
             final Path inputsFile = Paths.get(unit.getScriptTargetPath()).getParent().resolve("inputs.txt");
             if (isFirst) {
-                String inputList = (String) metadata.get("inputs");
+                List<Map<String, String>> inputList = (List<Map<String, String>>) metadata.get("inputs");
                 String[] inputs;
                 if (inputList == null) {
                     Map<String, String> outputs = (Map<String, String>) metadata.get("taskOutput");
                     inputs = outputs.values().toArray(new String[0]);
                 } else {
-                    inputs = inputList.split(",");
+                    List<String> tmpList = new ArrayList<>();
+                    for (Map<String, String> input : inputList) {
+                        for  (Map.Entry<String, String> entry : input.entrySet()) {
+                            tmpList.add(entry.getValue());
+                        }
+                    }
+                    inputs = tmpList.toArray(new String[0]);
                 }
                 String hostWorkspaceFolder = map.getHostWorkspaceFolder();
                 if (hostWorkspaceFolder.endsWith("/")) {
