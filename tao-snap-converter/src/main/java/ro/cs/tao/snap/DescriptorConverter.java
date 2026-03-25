@@ -40,6 +40,18 @@ public class DescriptorConverter {
     private static final String TAB_3 = "\t\t\t";
     private static final String TAB_4 = "\t\t\t\t";
     private static final String TAB_5 = "\t\t\t\t\t";
+    private static final String parameterXml = TAB_5 + "<%1$s><xsl:value-of select=\"$%2$s-%1$s\"/></%1$s>\n";
+    private static final String parameterXsl = TAB_1 + "<xsl:variable name=\"%s-%s\">%s</xsl:variable>";
+    private static final String templateHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                                                 "<xsl:stylesheet version=\"1.0\"\n" +
+                                                 "xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\n" +
+                                                 TAB_1 + "<xsl:output method=\"xml\" indent=\"yes\" encoding=\"UTF-8\"/>\n";
+    private static final String templateStart = TAB_1 + "<xsl:template match=\"/\">\n" +
+                                                TAB_2 + "<graph id=\"snap_aggregated_operators\">\n" +
+                                                TAB_3 + "<version>1.0</version>\n";
+    private static final String templateFooter = TAB_2 + "</graph>\n" +
+                                                 TAB_1 + "</xsl:template>\n</xsl:stylesheet>";
+
     /**
      * Converts a SNAP Graph into a collection of linked TAO workflow nodes
      *
@@ -148,10 +160,7 @@ public class DescriptorConverter {
             return toSnapXml(components.get(0), null);
         } else {
             final StringBuilder builder = new StringBuilder();
-            builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-                    .append("<xsl:stylesheet version=\"1.0\"\n")
-                    .append("xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\n")
-                    .append(TAB_1).append("<xsl:output method=\"xml\" indent=\"yes\" encoding=\"UTF-8\"/>\n");
+            builder.append(templateHeader);
             for (ProcessingComponent component : components) {
                 Set<ParameterDescriptor> descriptors = component.getParameterDescriptors();
                 final Map<String, String> overwrittenValues = values.get(component.getId());
@@ -159,15 +168,12 @@ public class DescriptorConverter {
                     builder.append(parameterToXslParam(component.getId(), descriptor, overwrittenValues.get(descriptor.getId())));
                 }
             }
-            builder.append(TAB_1).append("<xsl:template match=\"/\">\n");
-            builder.append(TAB_2).append("<graph id=\"snap_aggregated_operators\">\n")
-                   .append(TAB_3).append("<version>1.0</version>\n");
+            builder.append(templateStart);
             builder.append(toSnapXml(components.get(0), null));
             for (int i = 1; i < components.size(); i++) {
                 builder.append(toSnapXml(components.get(i), components.get(i-1).getId()));
             }
-            builder.append(TAB_2).append("</graph>\n");
-            builder.append(TAB_1).append("</xsl:template>\n").append("</xsl:stylesheet>");
+            builder.append(templateFooter);
             return builder.toString();
         }
     }
@@ -180,9 +186,7 @@ public class DescriptorConverter {
      * @return the XML representation of the parameter as a string
      */
     private static String parameterToXml(String componentId, ParameterDescriptor parameter) {
-        return TAB_5 + "<" + parameter.getName() + ">" +
-               "<xsl:value-of select=\"$" + componentId + "-" + parameter.getName() + "\"/>" +
-                "</" + parameter.getName() + ">\n";
+        return String.format(parameterXml, parameter.getName(), componentId);
     }
 
     /**
@@ -194,19 +198,18 @@ public class DescriptorConverter {
      * @return the XSL parameter representation of the specified parameter as a string
      */
     private static String parameterToXslParam(String componentId, ParameterDescriptor parameter, String value) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(TAB_1).append("<xsl:variable name=\"").append(componentId).append("-").append(parameter.getName()).append("\">");
         String val = value == null ? parameter.getDefaultValue() : value;
         if (val != null) {
-            if ((val.startsWith("'") && val.endsWith("'")) ||
-                (val.startsWith("\"") && val.endsWith("\"")) ||
-                (val.startsWith("{") && val.endsWith("}")) ||
-                (val.startsWith("[") && val.endsWith("]"))) {
-                val = val.substring(1, val.length() - 1);
+            final int length = val.length() - 1;
+            if ((val.charAt(0) == '\'' && val.charAt(length) == '\'') ||
+                (val.charAt(0) == '\"' && val.charAt(length) == '\"') ||
+                (val.charAt(0) == '{' && val.charAt(length) == '}') ||
+                (val.charAt(0) == '[' && val.charAt(length) == ']')) {
+                val = val.substring(1, length);
             }
-            builder.append(val);
+        } else {
+            val = "";
         }
-        builder.append("</xsl:variable>\n");
-        return builder.toString();
+        return String.format(parameterXsl, componentId, parameter.getName(), val);
     }
 }
