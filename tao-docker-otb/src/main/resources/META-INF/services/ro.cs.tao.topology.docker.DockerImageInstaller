@@ -14,4 +14,5 @@
 # with this program; if not, see http://www.gnu.org/licenses/
 #
 
-ro.cs.tao.docker.otb.OTBImageInstaller
+ro.cs.tao.docker.otb.OTB7ImageInstaller
+ro.cs.tao.docker.otb.OTB9ImageInstaller

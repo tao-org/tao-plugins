@@ -9,6 +9,11 @@ import java.nio.file.Path;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+/**
+ * A utility class for handling EnMAP products, designed to retrieve common properties and validate product names.
+ * This class extends the BaseProductHelper abstract class and provides specific implementations for managing
+ * EnMAP data products.
+ */
 public class EnMAPProductHelper extends BaseProductHelper {
 
     public static final String LX_2 = "00.02.00";
@@ -18,7 +23,7 @@ public class EnMAPProductHelper extends BaseProductHelper {
     static final Pattern ProductLX6 = Pattern.compile("(ENMAP01-____L[1-2][A-C]-DT\\d{9,10})_(\\d{8}T\\d{6}Z)_(\\d{3})_(V\\d{6})_(\\d{8}T\\d{6}Z)");
     private static final Pattern Tile = Pattern.compile("(ENMAP01-____L[1-2][A-C]-DT\\d{9,10})_(\\d{8}T\\d{6}Z)_(\\d{3})_(V\\d{6})_(\\d{8}T\\d{6}Z)");
 
-    private static final Pattern Metadata = Pattern.compile(Tile.pattern() + "-METADATA.XML");
+    private static final Pattern Metadata = Pattern.compile("(" + Tile.pattern() + ")-?METADATA.XML");
 
     private boolean demoFormat;
 
@@ -28,6 +33,11 @@ public class EnMAPProductHelper extends BaseProductHelper {
 
     EnMAPProductHelper(Path productPath) {
         super(productPath);
+    }
+
+    @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { ProductLX2, ProductLX6 };
     }
 
     @Override

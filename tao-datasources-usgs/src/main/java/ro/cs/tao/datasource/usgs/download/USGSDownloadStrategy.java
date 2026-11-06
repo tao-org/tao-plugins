@@ -12,12 +12,7 @@ import ro.cs.tao.utils.NetUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
-import java.net.ConnectException;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
@@ -75,8 +70,8 @@ public class USGSDownloadStrategy extends SimpleArchiveDownloadStrategy {
         try {
             connection = NetUtils.openConnection(productDownloadUrl, "");
             connection.setInstanceFollowRedirects(true);
-            connection.setConnectTimeout(10000);
-            connection.setReadTimeout(10000);
+            // Use a timeout greater than NetUtils.DEFAULT_READ_TIMEOUT
+            connection.setReadTimeout(60000);
             connection.connect();
             responseStatus = connection.getResponseCode();
             if (responseStatus == HttpStatus.SC_OK) {
@@ -85,9 +80,12 @@ public class USGSDownloadStrategy extends SimpleArchiveDownloadStrategy {
                 connection.connect();
                 return connection;
             }
-            throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s", connection.getResponseCode(), connection.getResponseMessage()));
-        } catch (InterruptedIOException | ConnectException te){
-            throw new QueryException(String.format("The request was timed out. The download will be ready soon. Try again later. Code:  %d", HttpStatus.SC_ACCEPTED));
+            throw new QueryException(String.format("The request was not successful. Reason: response code: %d: response message: %s",
+                                                   connection.getResponseCode(),
+                                                   connection.getResponseMessage()));
+        } catch (InterruptedIOException | ConnectException te) {
+            throw new QueryException(String.format("The request timed out. The download will be ready soon. Try again later. Code:  %d",
+                                                   HttpStatus.SC_ACCEPTED), te, false, true);
         } catch (IOException e) {
             throw new QueryException(String.format("The request was not successful. Reason: %s", e.getMessage()));
         } finally {

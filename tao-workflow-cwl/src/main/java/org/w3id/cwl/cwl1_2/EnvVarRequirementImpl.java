@@ -30,6 +30,9 @@ public class EnvVarRequirementImpl extends SaveableImpl implements EnvVarRequire
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private EnvVarRequirement_class class_;
 
@@ -89,7 +92,7 @@ public class EnvVarRequirementImpl extends SaveableImpl implements EnvVarRequire
     try {
       class_ =
           LoaderInstances
-              .uri_EnvVarRequirement_class_False_True_None
+              .uri_EnvVarRequirement_class_False_True_None_None
               .loadField(__doc.get("class"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       class_ = null; // won't be used but prevents compiler from complaining.

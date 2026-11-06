@@ -27,6 +27,9 @@ public class RecordSchemaImpl extends SaveableImpl implements RecordSchema {
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private java.util.Optional<java.util.List<Object>> fields;
 
@@ -40,7 +43,7 @@ public class RecordSchemaImpl extends SaveableImpl implements RecordSchema {
     return this.fields;
   }
 
-  private enum_d9cba076fca539106791a4f46d198c7fcfbdb779 type;
+  private Record_name type;
 
   /**
    * Getter for property <I>https://w3id.org/cwl/salad#type</I><BR>
@@ -48,7 +51,7 @@ public class RecordSchemaImpl extends SaveableImpl implements RecordSchema {
    * Must be `record`   * </BLOCKQUOTE>
    */
 
-  public enum_d9cba076fca539106791a4f46d198c7fcfbdb779 getType() {
+  public Record_name getType() {
     return this.type;
   }
 
@@ -99,11 +102,11 @@ public class RecordSchemaImpl extends SaveableImpl implements RecordSchema {
     } else {
       fields = null;
     }
-    enum_d9cba076fca539106791a4f46d198c7fcfbdb779 type;
+    Record_name type;
     try {
       type =
           LoaderInstances
-              .typedsl_enum_d9cba076fca539106791a4f46d198c7fcfbdb779_2
+              .typedsl_Record_name_2
               .loadField(__doc.get("type"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       type = null; // won't be used but prevents compiler from complaining.
@@ -114,6 +117,6 @@ public class RecordSchemaImpl extends SaveableImpl implements RecordSchema {
       throw new ValidationException("Trying 'RecordField'", __errors);
     }
     this.fields = (java.util.Optional<java.util.List<Object>>) fields;
-    this.type = (enum_d9cba076fca539106791a4f46d198c7fcfbdb779) type;
+    this.type = (Record_name) type;
   }
 }

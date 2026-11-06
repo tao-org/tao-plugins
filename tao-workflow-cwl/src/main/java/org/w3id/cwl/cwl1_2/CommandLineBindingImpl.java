@@ -14,12 +14,9 @@
 
 package org.w3id.cwl.cwl1_2;
 
-import org.w3id.cwl.cwl1_2.utils.LoaderInstances;
-import org.w3id.cwl.cwl1_2.utils.LoadingOptions;
-import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
-import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
-import org.w3id.cwl.cwl1_2.utils.ValidationException;
+import org.w3id.cwl.cwl1_2.utils.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -65,6 +62,9 @@ public class CommandLineBindingImpl extends SaveableImpl implements CommandLineB
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private java.util.Optional<Boolean> loadContents;
 
@@ -378,5 +378,9 @@ public class CommandLineBindingImpl extends SaveableImpl implements CommandLineB
     this.itemSeparator = (java.util.Optional<String>) itemSeparator;
     this.valueFrom = (Object) valueFrom;
     this.shellQuote = (java.util.Optional<Boolean>) shellQuote;
+  }
+
+  public Map<Object, Object> save() {
+    return org.w3id.cwl.cwl1_2.utils.CWLSerializer.serialize(this);
   }
 }

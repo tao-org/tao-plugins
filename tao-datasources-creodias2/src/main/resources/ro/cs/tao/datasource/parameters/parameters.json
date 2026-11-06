@@ -106,7 +106,7 @@
       "type": "string",
       "defaultValue": null,
       "required": false,
-      "valueSet": ["VV", "VH", "VV VH"],
+      "valueSet": ["HH", "HV","VH", "VV", "VH&VV", "VV&VH", "HH&HV"],
       "order": 7
     },
     "tileId": {
@@ -423,7 +423,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 9
+      "order": 11
     },
     "productSize": {
       "name": "productSize",
@@ -444,6 +444,16 @@
       "required": false,
       "valueSet": ["S3A", "S3B"],
       "order": 8
+    },
+    "dayTime": {
+      "name": "dayTime",
+      "remoteName": "dayTime",
+      "label": "Time of day",
+      "type": "string",
+      "defaultValue": "ANY",
+      "required": false,
+      "valueSet": ["ANY","DAY","NIGHT"],
+      "order": 10
     }
   },
   "Sentinel5P": {
@@ -562,7 +572,7 @@
       "remoteName": "Collection/Name",
       "label": "Platform",
       "type": "string",
-      "defaultValue": "LANDSAT-8",
+      "defaultValue": "LANDSAT-8-ESA",
       "required": false,
       "valueSet": null,
       "order": 0

@@ -2,15 +2,16 @@ package ro.cs.tao.datasource.remote.das.download;
 
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
-import ro.cs.tao.datasource.ProductHelperFactory;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.FetchMode;
 import ro.cs.tao.datasource.remote.das.DASDataSource;
 import ro.cs.tao.datasource.remote.das.common.Token;
 import ro.cs.tao.eodata.EOProduct;
-import ro.cs.tao.eodata.util.ProductHelper;
-import ro.cs.tao.utils.*;
+import ro.cs.tao.utils.CloseableHttpResponse;
+import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.HttpMethod;
+import ro.cs.tao.utils.NetUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -147,7 +148,7 @@ public class DASDownloadStrategy extends DownloadStrategy<Token> {
                                 outputStream.close();
                                 logger.finest("End reading from input stream");
                                 checkCancelled();
-                                if (Boolean.parseBoolean(this.props.getProperty("auto.uncompress", "true"))) {
+                                /*if (Boolean.parseBoolean(this.props.getProperty("auto.uncompress", "true"))) {
                                     productFile = extract(product, archivePath, computeTarget(archivePath));
                                 } else {
                                     productFile = archivePath;
@@ -162,7 +163,8 @@ public class DASDownloadStrategy extends DownloadStrategy<Token> {
                                     } catch (Exception e) {
                                         logger.severe(e.getMessage());
                                     }
-                                }
+                                }*/
+                                productFile = archivePath;
                             } catch (SocketTimeoutException ex) {
                                 productFile = fetchImpl(product);
                             } finally {
@@ -189,36 +191,6 @@ public class DASDownloadStrategy extends DownloadStrategy<Token> {
             }
         }
         return productFile;
-    }
-
-    protected Path computeTarget(Path archivePath) {
-        return archivePath.getFileName().toString().endsWith(".tar.gz") ?
-                Paths.get(archivePath.toString().replace(".tar.gz", "")) :
-                Paths.get(archivePath.toString().replace(".zip", ""));
-    }
-
-    protected Path extract(EOProduct product, Path archivePath, Path targetPath) throws IOException {
-        String satelliteName = product.getSatelliteName().replace("-", "");
-        final String name = FileUtilities.getFilenameWithoutExtension(archivePath)
-                + (satelliteName.equals("Sentinel1") || satelliteName.equals("Sentinel2")
-                    ? ".SAFE"
-                    : satelliteName.equals("Sentinel3")
-                        ? ".SEN3"
-                        : "");
-        logger.fine(String.format("Begin decompressing %s into %s", name, targetPath));
-        Path result;
-        if (archivePath.toString().endsWith(".tar.gz")) {
-            result = Zipper.decompressTarGz(archivePath, targetPath, true);
-            Files.move(result, result.getParent().resolve(name));
-            result = result.getParent().resolve(name);
-        } else if (archivePath.toString().endsWith(".zip")){
-            result = Zipper.decompressZipMT(archivePath, targetPath, false, true);
-            result = result.getParent().resolve(name);
-        } else {
-            result = targetPath;
-        }
-        logger.fine(String.format("Decompression of %s completed",archivePath.getFileName()));
-        return result;
     }
 
     @Override

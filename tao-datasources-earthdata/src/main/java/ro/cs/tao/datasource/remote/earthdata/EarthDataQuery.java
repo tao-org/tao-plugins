@@ -26,6 +26,34 @@ import java.util.Map;
 
 public class EarthDataQuery extends DataQuery {
 
+    @Override
+    public java.util.Map<String, Object> exportSearchPlan() {
+
+        java.util.Map<String, Object> values = exportParameterValues();
+        QueryParameter<?> start = this.parameters.get(CommonParameterNames.START_DATE);
+        QueryParameter<?> end = this.parameters.get(CommonParameterNames.END_DATE);
+        if (start != null && end != null) {
+            try {
+                values.put(getRemoteName(CommonParameterNames.START_DATE), getParameterValue(start) + "," + getParameterValue(end));
+            } catch (ConversionException e) {
+                throw new QueryException(e.getMessage());
+            }
+        }
+        if (this.parameters.containsKey(CommonParameterNames.TILE)) {
+            String tile = this.parameters.get(CommonParameterNames.TILE).getValueAsString();
+            values.put(getRemoteName("patternTileId"), "true");
+            values.put(getRemoteName(CommonParameterNames.TILE), java.util.Arrays.asList(tile.split(",")));
+        }
+        int size = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, this.pageSize > 0 ? this.pageSize : DEFAULT_PAGE_SIZE);
+        values.put("page_size", size);
+        values.put("page_num", Math.max(1, this.pageNumber));
+        java.util.Map<String, Object> plan = exportHttpPlan(this.source.getConnectionString().replaceAll("/+$", "") + "/granules.json",
+                                                           "POST", values, "form", "cmr");
+        plan.put("paging", java.util.Map.of("parameter", "page_num", "location", "body", "step", 1, "size", size));
+        return plan;
+    }
+
+
     static {
         ConverterFactory factory = new ConverterFactory();
         factory.register(PolygonParameterConverter.class, Polygon2D.class);

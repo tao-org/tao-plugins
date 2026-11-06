@@ -22,27 +22,26 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.products.sentinels.Sentinel1ProductHelper;
 import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Cosmin Cara
  */
 public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
-    static final Pattern S1Pattern =
-            Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
     private final DASDataSource dataSource;
     private final Predicate<EOProduct> filter;
+    private final List<Predicate<Result>> s3Filters;
 
-    public DASJsonResponseHandler(DASDataSource dataSource, Predicate<EOProduct> filter) {
+    public DASJsonResponseHandler(DASDataSource dataSource, Predicate<EOProduct> filter, List<Predicate<Result>> s3Filters) {
         this.dataSource = dataSource;
         this.filter = filter;
+        this.s3Filters = s3Filters;
     }
 
     @Override
@@ -65,7 +64,7 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     product.setName(r.getName());
                     product.setId(r.getId());
                     product.setFormatType(isAux ? DataFormat.OTHER : DataFormat.RASTER);
-                    Object value = getAttributeValue(r, "platformShortName");
+                    Object value = r.attributeValue("platformShortName");
                     if (value != null) {
                         String platform = value.toString();
                         platform = platform.substring(0, 1).toUpperCase() + platform.substring(1).toLowerCase();
@@ -79,7 +78,7 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     product.setPixelType(PixelType.UINT16);
                     product.setWidth(-1);
                     product.setHeight(-1);
-                    value = getAttributeValue(r, "productType");
+                    value = r.attributeValue("productType");
                     if (value != null) {
                         product.setProductType(value.toString());
                     }
@@ -87,11 +86,17 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                                             ? dataSource.getConnectionString("Sentinel1-orbit-files")
                                             : dataSource.getConnectionString("Download")) + "(" + r.getId() + ")/$value");
                     product.setAcquisitionDate(r.getContentDate().getStart());
+                    boolean toExclude = false;
+                    for (int i = 0; i < s3Filters.size(); i++) {
+                        toExclude = s3Filters.get(i).test(r);
+                        if (toExclude) break;
+                    }
+                    if (toExclude) continue;
                     final List<Attribute> attributes = r.getAttributes();
                     final Attribute orbitNumber = attributes.stream().filter(a -> a.getName().equals("relativeOrbitNumber")).findFirst().orElse(null);
                     product.addAttribute("relativeOrbit", orbitNumber != null
                                                           ? String.valueOf(orbitNumber.getValue())
-                                                          : getRelativeOrbit(product.getName()));
+                                                          : new Sentinel1ProductHelper(product.getName()).getOrbit());
                     product.addAttribute("s3path", r.getS3Path());
                     attributes.forEach(a -> product.addAttribute(a.getName(), String.valueOf(a.getValue())));
                     final List<Asset> assets = r.getAssets();
@@ -106,25 +111,5 @@ public class DASJsonResponseHandler implements JSonResponseHandler<EOProduct> {
             }
         }
         return retVal;
-    }
-
-    private Object getAttributeValue(Result result, String name) {
-        Attribute attribute = result.getAttributes().stream().filter(a -> a.getName().equals(name)).findFirst().orElse(null);
-        return attribute != null ? attribute.getValue() : null;
-    }
-
-    private String getRelativeOrbit(String productName) {
-        final String value;
-        final Matcher matcher = S1Pattern.matcher(productName);
-        if (matcher.matches()) {
-            int absOrbit = Integer.parseInt(matcher.group(10));
-            value = String.format("%03d",
-                                  matcher.group(1).endsWith("A") ?
-                                        ((absOrbit - 73) % 175) + 1 :
-                                        ((absOrbit - 27) % 175) + 1);
-        } else {
-            value = null;
-        }
-        return value;
     }
 }

@@ -1,10 +1,10 @@
 package ro.cs.tao.stac.core.model.extensions.view;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
 import ro.cs.tao.stac.core.model.Extensible;
 import ro.cs.tao.stac.core.model.extensions.Extension;
 import ro.cs.tao.stac.core.parser.JsonValueHelper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
 
 /**
  * View Geometry extension
@@ -24,7 +24,7 @@ public class ViewExtension<E extends Extensible> extends Extension<E> {
     }
 
     @Override
-    public void extractField(TreeNode node, String name) throws JsonProcessingException {
+    public void extractField(JsonNode node, String name) throws JacksonException {
         switch (name) {
             case ViewFields.AZIMUTH:
                 setAzimuth(JsonValueHelper.getDouble(node, name));
@@ -99,3 +99,5 @@ public class ViewExtension<E extends Extensible> extends Extension<E> {
         parent.addField(ViewFields.SUN_ELEVATION, value);
     }
 }
+
+

@@ -1,16 +1,16 @@
 package ro.cs.tao.datasource.usgs.json.types;
 
 public class MetadataField {
-    private int id;
+    private String id;
     private String fieldName;
     private String dictionaryLink;
     private String value;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

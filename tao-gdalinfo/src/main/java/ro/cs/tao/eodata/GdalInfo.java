@@ -19,6 +19,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
+/**
+ * Class GdalInfo implements the MetadataInspector interface to provide
+ * functionality for extracting metadata from geospatial raster files
+ * using GDAL (Geospatial Data Abstraction Library).
+ *
+ * This class determines if a given product file can be inspected, retrieves
+ * its metadata, and sets processing parameters for handling the file. It also provides
+ * utilities for inspecting the raster bands and obtaining statistical data and histograms.
+ */
 public class GdalInfo implements MetadataInspector {
     private static final boolean extractStatistics;
     private static final boolean extractHistogram;
@@ -27,6 +36,18 @@ public class GdalInfo implements MetadataInspector {
         final ConfigurationProvider configurationProvider = ConfigurationManager.getInstance();
         extractStatistics = Boolean.parseBoolean(configurationProvider.getValue("extract.statistics", "true"));
         extractHistogram = Boolean.parseBoolean(configurationProvider.getValue("extract.histogram", "false"));
+    }
+
+    private final boolean forceExtractStatistics;
+    private final boolean forceExtractHistogram;
+
+    public GdalInfo() {
+        this(extractStatistics, extractHistogram);
+    }
+
+    public GdalInfo(boolean extractStatistics, boolean extractHistogram) {
+        this.forceExtractStatistics = extractStatistics;
+        this.forceExtractHistogram = extractHistogram;
     }
 
     @Override
@@ -97,7 +118,9 @@ public class GdalInfo implements MetadataInspector {
         if (gdalDataset.getSpatialRef() != null) {
             gdalMetadata.setCrs(gdalDataset.getSpatialRef().getAuthorityName(null) + ":" + gdalDataset.getSpatialRef().getAuthorityCode(null));
         }
-        if (gdalDataset.getRasterCount() > 0) {
+        int rasterCount = gdalDataset.getRasterCount();
+        gdalMetadata.addAttribute("bandCount", String.valueOf(rasterCount));
+        if (rasterCount > 0) {
             Band gdalBand = gdalDataset.getRasterBand(1);
             int gdalDataType = gdalBand.getDataType();
             if (GDALConstConstants.gdtByte() == gdalDataType) {
@@ -115,18 +138,21 @@ public class GdalInfo implements MetadataInspector {
             } else if (GDALConstConstants.gdtFloat64() == gdalDataType || GDALConstConstants.gdtCFloat64() == gdalDataType) {
                 gdalMetadata.setPixelType(PixelType.FLOAT64);
             }
+            Double[] noData = new Double[1];
+            gdalBand.getNoDataValue(noData);
+            gdalMetadata.addAttribute("nodata", noData[0] == null ? "0.0" : noData[0].toString());
             double[] min = new double[1];
             double[] max = new double[1];
             double[] mean = new double[1];
             double[] stddev = new double[1];
-            if (extractStatistics && gdalBand.getStatistics(true, true, min, max, mean, stddev).equals(GDALConstConstants.ceNone())) {
+            if (getStatistics(gdalBand, min, max, mean, stddev)) {
                 gdalMetadata.addStatistic("min", min[0]);
                 gdalMetadata.addStatistic("max", max[0]);
                 gdalMetadata.addStatistic("mean", mean[0]);
                 gdalMetadata.addStatistic("stdDev", stddev[0]);
             }
             int[] buckets = new int[256];
-            if (extractHistogram && gdalBand.getHistogram(buckets).equals(GDALConstConstants.ceNone())) {
+            if (this.forceExtractHistogram && gdalBand.getHistogram(buckets).equals(GDALConstConstants.ceNone())) {
                 gdalMetadata.setHistogram(buckets);
             }
             RasterAttributeTable gdalRasterAttributeTable = gdalBand.getDefaultRAT();
@@ -139,7 +165,7 @@ public class GdalInfo implements MetadataInspector {
                     }
                 }
             }
-            for (int i = 1; i <= gdalDataset.getRasterCount(); i++) {
+            for (int i = 1; i <= rasterCount; i++) {
                 gdalMetadata.addControlSum("" + gdalDataset.getRasterBand(i).checksum());
             }
         }
@@ -158,5 +184,23 @@ public class GdalInfo implements MetadataInspector {
     @Override
     public void setFileProcessFactory(FileProcessFactory factory) {
 
+    }
+
+    private boolean getStatistics(Band gdalBand, double[] min, double[] max, double[] mean, double[] stddev) {
+        boolean ret = false;
+        if (this.forceExtractStatistics && gdalBand.getStatistics(true, true, min, max, mean, stddev).equals(GDALConstConstants.ceNone())) {
+            if ((Double.compare(min[0], 0.0) == 0) &&
+                    (Double.compare(max[0], 0.0) == 0) &&
+                    (Double.compare(mean[0], 0.0) == 0) &&
+                    (Double.compare(stddev[0], 0.0) == 0)) {
+                // fallback to the method without approximations, we might have false results
+                if (gdalBand.getStatistics(false, true, min, max, mean, stddev).equals(GDALConstConstants.ceNone())) {
+                    ret = true;
+                }
+            } else {
+                ret = true;
+            }
+        }
+        return ret;
     }
 }

@@ -21,6 +21,13 @@ public class DateParameterConverter extends DefaultParameterConverter<LocalDateT
 
     @Override
     public String stringValue() {
-        return parameter.getValue().format(dateFormat) + "Z";
+        boolean bothValues = parameter.getMinValue() != null && parameter.getMaxValue() != null;
+        return parameter.getValue() != null
+                ? safeValue(parameter.getValue())
+                : safeValue(parameter.getMinValue()) + (bothValues ? "/" : "") + safeValue(parameter.getMaxValue());
+    }
+
+    private String safeValue(LocalDateTime value) {
+        return value == null ? "" : value.format(dateFormat) + "Z";
     }
 }

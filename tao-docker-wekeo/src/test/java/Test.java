@@ -1,11 +1,10 @@
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.ObjectCodec;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.databind.module.SimpleModule;
 import ro.cs.tao.component.ParameterDescriptor;
 import ro.cs.tao.component.ProcessingComponent;
 import ro.cs.tao.component.TemplateParameterDescriptor;
@@ -26,23 +25,18 @@ public class Test {
             final ObjectMapper mapper = new ObjectMapper();
             final ObjectMapper innerMapper = new ObjectMapper();
             SimpleModule module = new SimpleModule();
-            module.addDeserializer(ParameterDescriptor.class, new JsonDeserializer<>() {
+            module.addDeserializer(ParameterDescriptor.class, new StdDeserializer<>(ParameterDescriptor.class) {
                 @Override
-                public ParameterDescriptor deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+                public ParameterDescriptor deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
                     JsonNode node = p.readValueAsTree();
-                    try (JsonParser parser = innerMapper.createParser(node.toString())) {
-                        final ObjectCodec codec = parser.getCodec();
-                        JsonNode innerNode = parser.readValueAsTree();
-                        if (ParameterType.TEMPLATE.name().equals(innerNode.get("type").textValue())) {
-                            return codec.treeToValue(innerNode, TemplateParameterDescriptor.class);
-                        } else {
-                            return codec.treeToValue(innerNode, ParameterDescriptor.class);
-                        }
+                    if (ParameterType.TEMPLATE.name().equals(node.get("type").textValue())) {
+                        return innerMapper.treeToValue(node, TemplateParameterDescriptor.class);
+                    } else {
+                        return innerMapper.treeToValue(node, ParameterDescriptor.class);
                     }
                 }
             });
-            mapper.registerModule(module);
-            components = mapper.readValue(str, ProcessingComponent[].class);
+            components = mapper.rebuild().addModule(module).build().readValue(str, ProcessingComponent[].class);
         }
         System.exit(0);
     }

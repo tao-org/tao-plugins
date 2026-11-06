@@ -20,7 +20,8 @@ import ro.cs.tao.eodata.util.BaseProductHelper;
 import java.util.regex.Pattern;
 
 /**
- * @author Cosmin Cara
+ * Helper class for Sentinel-1 products, extending the functionality provided by BaseProductHelper.
+ * This class is specifically designed for parsing and handling Sentinel-1 product naming conventions.
  */
 public class Sentinel1ProductHelper extends BaseProductHelper {
 
@@ -41,9 +42,14 @@ public class Sentinel1ProductHelper extends BaseProductHelper {
      * 12: (optional) folder extension
      */
     static final Pattern S1Pattern =
-            Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:_COG)?(?:.SAFE)?");
+            Pattern.compile("(S1[A-D])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:_COG)?(?:.SAFE)?");
 
     public Sentinel1ProductHelper() { super(); }
+
+    @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { S1Pattern };
+    }
 
     @Override
     public int order() {
@@ -78,9 +84,11 @@ public class Sentinel1ProductHelper extends BaseProductHelper {
         String[] tokens = getTokens(S1Pattern, this.name, null);
         int absOrbit = Integer.parseInt(tokens[9]);
         return String.format("%03d",
-                             tokens[0].endsWith("A") ?
-                                     ((absOrbit - 73) % 175) + 1 :
-                                     ((absOrbit - 27) % 175) + 1);
+                             tokens[0].endsWith("A")
+                                     ? (absOrbit - 73) % 175 + 1
+                                     : tokens[0].endsWith("B")
+                                        ? (absOrbit - 27) % 175 + 1
+                                        : (absOrbit - 172) % 175 + 1);
     }
 
     public PolarisationMode getPolarisation() {

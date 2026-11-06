@@ -4,8 +4,14 @@ import ro.cs.tao.eodata.util.BaseProductHelper;
 
 import java.nio.file.Path;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
+/**
+ * An abstract helper class for managing and processing MAJA products.
+ * This class is designed to facilitate product-specific functionality
+ * such as verifying file naming patterns, identifying granule folders,
+ * and retrieving metadata information. It serves as a base class for
+ * product-specific implementations such as Sentinel-2 and Landsat-8 products.
+ */
 public abstract class MajaProductHelper extends BaseProductHelper {
 
     public static MajaProductHelper createHelper(Path productPath) {
@@ -33,10 +39,8 @@ public abstract class MajaProductHelper extends BaseProductHelper {
 
     public abstract String getGranuleFolder(String granuleIdentifier);
 
-    protected abstract Pattern getNamePattern();
-
     @Override
     protected boolean verifyProductName(String name) {
-        return getNamePattern().matcher(name).matches();
+        return getNamePatterns()[0].matcher(name).matches();
     }
 }

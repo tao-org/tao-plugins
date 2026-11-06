@@ -14,64 +14,62 @@
 
 package org.w3id.cwl.cwl1_2;
 
-import com.sun.jna.WString;
-import org.apache.commons.lang3.StringUtils;
 import org.w3id.cwl.cwl1_2.utils.*;
 
-import java.lang.reflect.Field;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#Workflow</I><BR> <BLOCKQUOTE>
  A workflow describes a set of **steps** and the **dependencies** between
  those steps.  When a step produces output that will be consumed by a
  second step, the first step is a dependency of the second step.
-
+ 
  When there is a dependency, the workflow engine must execute the preceding
  step and wait for it to successfully produce output before executing the
  dependent step.  If two steps are defined in the workflow graph that
  are not directly or indirectly dependent, these steps are **independent**,
  and may execute in any order or execute concurrently.  A workflow is
  complete when all steps have been executed.
-
+ 
  Dependencies between parameters are expressed using the `source`
  field on [workflow step input parameters](#WorkflowStepInput) and
  `outputSource` field on [workflow output
  parameters](#WorkflowOutputParameter).
-
+ 
  The `source` field on each workflow step input parameter expresses
  the data links that contribute to the value of the step input
  parameter (the "sink").  A workflow step can only begin execution
  when every data link connected to a step has been fulfilled.
-
+ 
  The `outputSource` field on each workflow step input parameter
  expresses the data links that contribute to the value of the
  workflow output parameter (the "sink").  Workflow execution cannot
  complete successfully until every data link connected to an output
  parameter has been fulfilled.
-
+ 
  ## Workflow success and failure
-
+ 
  A completed step must result in one of `success`, `temporaryFailure` or
  `permanentFailure` states.  An implementation may choose to retry a step
  execution which resulted in `temporaryFailure`.  An implementation may
  choose to either continue running other steps of a workflow, or terminate
  immediately upon `permanentFailure`.
-
+ 
  * If any step of a workflow execution results in `permanentFailure`, then
  the workflow status is `permanentFailure`.
-
+ 
  * If one or more steps result in `temporaryFailure` and all other steps
  complete `success` or are not executed, then the workflow status is
  `temporaryFailure`.
-
+ 
  * If all workflow steps are executed and complete with `success`, then the
  workflow status is `success`.
-
+ 
  # Extensions
-
+ 
  [ScatterFeatureRequirement](#ScatterFeatureRequirement) and
  [SubworkflowFeatureRequirement](#SubworkflowFeatureRequirement) are
  available as standard [extensions](#Extensions_and_Metadata) to core
@@ -82,6 +80,9 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private java.util.Optional<String> id;
 
@@ -225,9 +226,10 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
    * Getter for property <I>https://w3id.org/cwl/cwl#Process/intent</I><BR>
    * <BLOCKQUOTE>
    * An identifier for the type of computational operation, of this Process.
-   * Especially useful for "class: Operation", but can also be used for
-   * CommandLineTool, Workflow, or ExpressionTool.
-   *
+   * Especially useful for [`Operation`](Workflow.html#Operation), but can also be used for
+   * [`CommandLineTool`](CommandLineTool.html#CommandLineTool),
+   * [`Workflow`](Workflow.html#Workflow), or [ExpressionTool](Workflow.html#ExpressionTool).
+   * 
    * If provided, then this must be an IRI of a concept node that
    * represents the type of operation, preferably defined within an ontology.
    *
@@ -258,6 +260,15 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
 
   public java.util.List<Object> getSteps() {
     return this.steps;
+  }
+
+  public WorkflowStep getStep(String id) {
+    String IdRegex = "(file:/|file://|file:///).*";
+    long matchRegex = steps.stream().filter((s) -> ((String)((WorkflowStep)s).getId().get()).matches(IdRegex)).count();
+    if (matchRegex > 0) {
+      return (WorkflowStep) this.steps.stream().filter(s -> ((WorkflowStep)s).getId().get().endsWith(id)).findFirst().orElse(null);
+    }
+    return (WorkflowStep) this.steps.stream().filter(s -> ((WorkflowStep)s).getId().get().equals(id)).findFirst().orElse(null);
   }
 
   public void setLoadingOptions_(LoadingOptions loadingOptions_) {
@@ -317,6 +328,9 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
    */
   public WorkflowImpl(){
     super();
+    this.inputs = new LinkedList<>();
+    this.outputs = new LinkedList<>();
+    this.steps = new LinkedList<>();
   }
 
   /**
@@ -355,7 +369,7 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
       try {
         id =
             LoaderInstances
-                .uri_optional_StringInstance_True_False_None
+                .uri_optional_StringInstance_True_False_None_None
                 .loadField(__doc.get("id"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         id = null; // won't be used but prevents compiler from complaining.
@@ -384,7 +398,7 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
     try {
       class_ =
           LoaderInstances
-              .uri_Workflow_class_False_True_None
+              .uri_Workflow_class_False_True_None_None
               .loadField(__doc.get("class"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       class_ = null; // won't be used but prevents compiler from complaining.
@@ -487,7 +501,7 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
       try {
         cwlVersion =
             LoaderInstances
-                .uri_optional_CWLVersion_False_True_None
+                .uri_optional_CWLVersion_False_True_None_None
                 .loadField(__doc.get("cwlVersion"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         cwlVersion = null; // won't be used but prevents compiler from complaining.
@@ -504,7 +518,7 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
       try {
         intent =
             LoaderInstances
-                .uri_optional_array_of_StringInstance_True_False_None
+                .uri_optional_array_of_StringInstance_True_False_None_None
                 .loadField(__doc.get("intent"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         intent = null; // won't be used but prevents compiler from complaining.
@@ -543,158 +557,7 @@ public class WorkflowImpl extends SaveableImpl implements Workflow {
   }
 
   @Override
-  public  Map<Object, Object> save() {
-    Map<Object, Object> workflow = new LinkedHashMap<>();
-    workflow.put("class", this.class_.toString());
-    String filePath = "";
-    String outputStr = ((WorkflowOutputParameter)outputs.get(0)).getOutputSource().toString();
-    if (outputStr.contains("#")) {
-      int chIdx = outputStr.indexOf("#");
-      filePath = outputStr.substring(0, chIdx).replaceAll("file:/|file://|file:///", "");
-    }
-    String wfId = "";
-    if (this.id != null && this.id.isPresent() && !this.id.isEmpty()) {
-      wfId = this.id.get();
-      if (this.id.get().contains("#")) {
-        int chIdx = this.id.get().indexOf("#");
-        wfId = this.id.get().substring(chIdx + 1);
-      }
-      workflow.put("id", wfId.toString());
-    }
-
-    if (this.cwlVersion != null && this.cwlVersion.isPresent() && !this.cwlVersion.isEmpty()) {
-      workflow.put("cwlVersion",this.cwlVersion.get().toString());
-    }
-    if (this.label != null && this.label.isPresent() && !this.label.isEmpty()) {
-      workflow.put("label",this.label.get());
-    }
-    if (this.doc != null) {
-      workflow.put("doc",this.doc);
-    }
-
-    if (requirements != null) {
-      List<Object> reqList = new LinkedList<>();
-      for(Object req : this.requirements.get()) {
-        if(req instanceof Saveable) {
-          reqList.add(((Saveable) req).save());
-        }
-      }
-      workflow.put("requirements", reqList);
-    }
-
-    if (inputs != null) {
-      workflow.put("inputs", treatInOut(inputs, wfId));
-    }
-
-    if (outputs != null) {
-      workflow.put("outputs", treatInOut(outputs, wfId));
-    }
-
-    if (steps != null) {
-      Map<String, Object> stepList = new LinkedHashMap<>();
-      try {
-        for (Object step: steps) {
-          Map<String, Object> temp = new LinkedHashMap<>();
-          Field[] fields = step.getClass().getDeclaredFields();
-          String stepId = "";
-          for (Field field : fields) {
-            if (!field.getName().equalsIgnoreCase("loadingOptions_") && !field.getName().equalsIgnoreCase("extensionFields_")) {
-              field.setAccessible(true);
-              if (field.getName().equalsIgnoreCase("id")) {
-                stepId = ((Optional)field.get(step)).get().toString();
-                if (stepId.contains("#")) {
-                  stepId = stepId.replaceAll(this.id.get() + "/", "");
-                }
-              } else if (field.getName().equalsIgnoreCase("in")) {
-                Map<String,String> inList = new LinkedHashMap<>();
-                for (Object in : (ArrayList<?>) field.get(step)) {
-                  if (((WorkflowStepInput) in).getId().get().contains("#")) {
-                    if (((WorkflowStepInput) in).getDefault() != null) {
-                      inList.put(((WorkflowStepInput) in).getId().get().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
-                                      .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""),
-                              ((WorkflowStepInput) in).getDefault().toString().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
-                                      .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
-                    } else {
-                      inList.put(((WorkflowStepInput) in).getId().get().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
-                              .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""),
-                              ((WorkflowStepInput) in).getSource().toString().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
-                                      .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
-                    }
-                  } else {
-                    if (((WorkflowStepInput) in).getDefault() != null) {
-                      inList.put(((WorkflowStepInput) in).getId().get(),
-                              ((WorkflowStepInput) in).getDefault().toString());
-                    } else {
-                      inList.put(((WorkflowStepInput) in).getId().get(),
-                              ((WorkflowStepInput) in).getSource().toString());
-                    }
-                  }
-                }
-                temp.put(field.getName(), inList);
-              } else if (field.getName().equalsIgnoreCase("out")) {
-                List<String> outList = new ArrayList<>();
-                for (Object out : (ArrayList<?>) field.get(step)) {
-                  if (out instanceof WorkflowStepOutput) {
-                    outList.add(((WorkflowStepOutput) out).getId().get());
-                  } else if (out instanceof ArrayList<?>) {
-                    for (String outStr: (ArrayList<String>)out) {
-                      outList.add(((String) outStr).replace(filePath, "").replaceAll("file:/|file://|file:///", "")
-                              .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
-                    }
-                  } else {
-                    outList.add(((String) out).replace(filePath, "").replaceAll("file:/|file://|file:///", "")
-                            .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
-                  }
-                }
-                temp.put(field.getName(), outList);
-              } else if (field.getName().equalsIgnoreCase("run") && field.get(step) != null) {
-                if (field.get(step).toString().startsWith("#") || field.get(step).toString().endsWith(".cwl")) {
-                    temp.put(field.getName(), field.get(step).toString());
-                } else if (field.get(step).toString().contains("#")) {
-                    temp.put(field.getName(), field.get(step).toString().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
-                            .replace(wfId, "").replace("/", ""));
-                } else {
-                  temp.put(field.getName(), "#" + field.get(step).toString());
-                }
-              } else if (field.get(step) != null) {
-                if (field.get(step) instanceof Optional<?>) {
-                  if (((Optional<?>)field.get(step)).get().toString().contains("#")) {
-                    temp.put(field.getName(), ((Optional<?>) field.get(step)).get().toString().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
-                            .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
-                  } else {
-                    temp.put(field.getName(), ((Optional<?>) field.get(step)).get().toString());
-                  }
-                } else if (field.get(step) instanceof List<?>) {
-                  List<String> valueList = new LinkedList<>();
-                  for (Object val : (List<?>)field.get(step)) {
-                    if (val.toString().contains("#")) {
-                        valueList.add(val.toString().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
-                                .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
-                    } else {
-                      valueList.add(val.toString());
-                    }
-                  }
-                  temp.put(field.getName(), valueList);
-                } else {
-                  if (field.get(step).toString().contains("#")) {
-                    temp.put(field.getName(), field.get(step).toString().replace(filePath, "").replaceAll("file:/|file://|file:///", "")
-                            .replace("#", "").replace(wfId, "").replace(stepId, "").replace("/", ""));
-                  } else {
-                    temp.put(field.getName(), field.get(step).toString());
-                  }
-                }
-              }
-            }
-          }
-          if (stepId != "") {
-            stepList.put(stepId, temp);
-          }
-        }
-        workflow.put("steps", stepList);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-    return workflow;
+  public Map<Object, Object> save() {
+    return org.w3id.cwl.cwl1_2.utils.CWLSerializer.serialize(this);
   }
 }

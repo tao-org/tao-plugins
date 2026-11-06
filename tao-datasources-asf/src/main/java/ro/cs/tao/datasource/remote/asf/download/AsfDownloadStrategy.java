@@ -17,12 +17,10 @@ package ro.cs.tao.datasource.remote.asf.download;
 
 import org.apache.http.Header;
 import org.apache.http.HttpStatus;
-import ro.cs.tao.datasource.ProductHelperFactory;
 import ro.cs.tao.datasource.QueryException;
 import ro.cs.tao.datasource.remote.DownloadStrategy;
 import ro.cs.tao.datasource.remote.asf.ASFDataSource;
 import ro.cs.tao.eodata.EOProduct;
-import ro.cs.tao.eodata.util.ProductHelper;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.NetUtils;
 import ro.cs.tao.utils.Zipper;
@@ -210,7 +208,7 @@ public class AsfDownloadStrategy extends DownloadStrategy<String> {
                 outputStream.close();
                 logger.finest("End reading from input stream");
                 checkCancelled();
-                if (isArchive && Boolean.parseBoolean(this.props.getProperty("auto.uncompress", "true"))) {
+                /*if (isArchive && Boolean.parseBoolean(this.props.getProperty("auto.uncompress", "true"))) {
                     productFile = extract(archivePath, computeTarget(archivePath));
                 } else {
                     productFile = archivePath;
@@ -225,7 +223,8 @@ public class AsfDownloadStrategy extends DownloadStrategy<String> {
                     } catch (Exception e) {
                         logger.severe(e.getMessage());
                     }
-                }
+                }*/
+                productFile = archivePath;
             } finally {
                 if (outputStream != null && outputStream.isOpen()) outputStream.close();
                 if (this.timeoutTimer != null) {
@@ -242,9 +241,7 @@ public class AsfDownloadStrategy extends DownloadStrategy<String> {
     }
 
     protected Path computeTarget(Path archivePath) {
-        return archivePath.getFileName().toString().endsWith(".tar.gz") ?
-                Paths.get(archivePath.toString().replace(".tar.gz", "")) :
-                Paths.get(archivePath.toString().replace(".zip", ""));
+        return super.computeTarget(archivePath);
     }
 
     protected Path extract(Path archivePath, Path targetPath) throws IOException {

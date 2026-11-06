@@ -1,0 +1,162 @@
+package ro.cs.tao.datasource.remote.eumetsat.parameters;
+
+import org.apache.commons.lang3.StringUtils;
+import ro.cs.tao.component.SystemVariable;
+import ro.cs.tao.configuration.ConfigurationManager;
+import ro.cs.tao.datasource.CollectionDescription;
+import ro.cs.tao.datasource.ProductFetchStrategy;
+import ro.cs.tao.datasource.opensearch.OpenSearchParameterProvider;
+import ro.cs.tao.datasource.param.CommonParameterNames;
+import ro.cs.tao.datasource.param.DataSourceParameter;
+import ro.cs.tao.datasource.remote.eumetsat.EumetsatDataSource;
+import ro.cs.tao.datasource.remote.eumetsat.download.EumetsatDownloadStrategy;
+import ro.cs.tao.datasource.remote.eumetsat.model.Description;
+import ro.cs.tao.datasource.remote.eumetsat.model.Source;
+import ro.cs.tao.eodata.Polygon2D;
+import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.utils.NetUtils;
+import ro.cs.tao.utils.StringUtilities;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Logger;
+
+public class EumetsatParameterProvider extends OpenSearchParameterProvider {
+
+    private static Map<String, CollectionDescription> sensorTypes = new LinkedHashMap<>();
+    private final EumetsatDataSource source;
+    private Map<String, ProductFetchStrategy> productFetchers;
+    private final ObjectMapper mapper;
+
+    public EumetsatParameterProvider(EumetsatDataSource source) {
+        super(source.getConnectionString() + "osdd");
+        this.source = source;
+        final String targetFolder = ConfigurationManager.getInstance().getValue("product.location");
+        this.productFetchers = new HashMap<>();
+        String[] sensors = getSupportedSensors();
+        for (String sensor : sensors) {
+            this.productFetchers.put(StringUtils.capitalize(sensor.replace("-", "")),
+                                     new EumetsatDownloadStrategy(source, targetFolder, new Properties()));
+        }
+        this.mapper = new ObjectMapper().rebuild()
+                                        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                                        .build();
+    }
+
+    @Override
+    protected String sensorParameterName() {
+        return "pi";
+    }
+
+    @Override
+    public Map<String, CollectionDescription> getSensorTypes() {
+        if (sensorTypes.isEmpty()) {
+            String[] sensors = getSupportedSensors();
+            CollectionDescription current;
+            ExecutorService executorService = null;
+            for (String sensor : sensors) {
+                current = readDescription(sensor);
+                if (current == null) {
+                    current = readRemoteDescription(sensor);
+                    if (current != null) {
+                        if (executorService == null) {
+                            executorService = Executors.newSingleThreadExecutor();
+                        }
+                        final CollectionDescription contents = current;
+                        executorService.submit(() -> {
+                            final Path path = Paths.get(SystemVariable.ROOT.value()).resolve("collections").resolve(sensor.replace(":", "-") + ".json");
+                            try {
+                                Files.createDirectories(path.getParent());
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            try (OutputStream stream = Files.newOutputStream(path, StandardOpenOption.CREATE_NEW)) {
+                                new ObjectMapper().writerFor(CollectionDescription.class).writeValue(stream, contents);
+                                Logger.getLogger(EumetsatParameterProvider.class.getName()).finest("Written " + path);
+                            } catch (IOException e) {
+                                Logger.getLogger(EumetsatParameterProvider.class.getName()).warning(e.getMessage());
+                            }
+                        });
+                    }
+                }
+                if (current != null) {
+                    sensorTypes.put(sensor, current);
+                }
+            }
+            this.sensors = sensorTypes.keySet().toArray(new String[0]);
+        }
+        return sensorTypes;
+    }
+
+    @Override
+    public Map<String, ProductFetchStrategy> getRegisteredProductFetchStrategies() {
+        return this.productFetchers;
+    }
+
+    @Override
+    public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
+        Map<String, Map<String, DataSourceParameter>> supportedParameters = super.getSupportedParameters();
+        if (supportedParameters.values().stream().noneMatch(map -> map.containsKey(CommonParameterNames.START_DATE))) {
+            for (Map<String, DataSourceParameter> map : supportedParameters.values()) {
+                map.put(CommonParameterNames.START_DATE,
+                        new DataSourceParameter(CommonParameterNames.START_DATE, "dtstart", LocalDateTime.class, "Start Date"));
+                map.put(CommonParameterNames.END_DATE,
+                        new DataSourceParameter(CommonParameterNames.END_DATE, "dtend", LocalDateTime.class, "End Date"));
+                map.put(CommonParameterNames.FOOTPRINT, new DataSourceParameter(CommonParameterNames.FOOTPRINT, "geo", Polygon2D.class, "Footprint"));
+                map.remove("geo");
+            }
+        }
+        return supportedParameters;
+    }
+
+    private CollectionDescription readDescription(String collectionName) {
+        final Path path = Paths.get(SystemVariable.ROOT.value()).resolve("collections").resolve(collectionName.replace(":", "-") + ".json");
+        if (Files.exists(path)) {
+            try (InputStream stream = Files.newInputStream(path)) {
+                return new ObjectMapper().readerFor(CollectionDescription.class).readValue(stream);
+            } catch (IOException e) {
+                Logger.getLogger(EumetsatParameterProvider.class.getName()).warning(e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    private CollectionDescription readRemoteDescription(String collectionName) {
+        CollectionDescription description = null;
+        try {
+            String response = NetUtils.getResponseAsString(EumetsatDataSource.getCollectionUrl() + collectionName);
+            if (!StringUtilities.isNullOrEmpty(response) && !response.contains("error")) {
+                TypeReference<Description> tRef = new TypeReference<Description>() {};
+                final Description collectionDescription = this.mapper.readValue(response, tRef);
+                description = new CollectionDescription();
+                Source src = collectionDescription.get_source();
+                description.setDescription(src.getMyabstract());
+                description.setMission(src.getSatellites().get(0).getSeriesName());
+                description.setSensorType(description.getMission().equals("SENTINEL-6")
+                                                  ? SensorType.ALTIMETRIC
+                                                  : SensorType.ATMOSPHERIC);
+                description.setSpatialCoverage(src.getLocation().toString());
+                description.setTemporalCoverage(src.getTemporalExtent().toString());
+                description.setTokenNeeded(true);
+            }
+        } catch (IOException e) {
+            Logger.getLogger(EumetsatParameterProvider.class.getName()).warning(e.getMessage());
+        }
+        return description;
+    }
+}

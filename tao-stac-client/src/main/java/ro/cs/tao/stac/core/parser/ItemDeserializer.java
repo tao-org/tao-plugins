@@ -1,16 +1,14 @@
 package ro.cs.tao.stac.core.parser;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import ro.cs.tao.stac.core.model.*;
 import ro.cs.tao.stac.core.model.extensions.Extension;
 import ro.cs.tao.stac.core.model.extensions.ExtensionType;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,11 +25,11 @@ public class ItemDeserializer extends StdDeserializer<Item> {
     }
 
     @Override
-    public Item deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
-        TreeNode root = p.readValueAsTree();
+    public Item deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
+        JsonNode root = p.readValueAsTree();
         final Item item = new Item();
-        final Iterator<String> iterator = root.fieldNames();
-        TreeNode child;
+        final Iterator<String> iterator = root.propertyNames().iterator();
+        JsonNode child;
         List<String> extensions = JsonValueHelper.getStringArray(root, "stac_extensions");
         boolean hasExtensions = false;
         final Map<String, Extension<?>> itemExtensions = new HashMap<>();
@@ -99,7 +97,7 @@ public class ItemDeserializer extends StdDeserializer<Item> {
                     }
                     break;
                 case "properties":
-                    Iterator<String> namesIterator = child.fieldNames();
+                    Iterator<String> namesIterator = child.propertyNames().iterator();
                     while (namesIterator.hasNext()) {
                         final String name = namesIterator.next();
                         if (Item.DATETIME.equals(name)) {
@@ -116,7 +114,7 @@ public class ItemDeserializer extends StdDeserializer<Item> {
                     }
                     break;
                 case "assets":
-                    namesIterator = child.fieldNames();
+                    namesIterator = child.propertyNames().iterator();
                     while (namesIterator.hasNext()) {
                         final String name = namesIterator.next();
                         final Asset asset = new Asset();
@@ -126,13 +124,13 @@ public class ItemDeserializer extends StdDeserializer<Item> {
                                 assetExtensions.put(extension.getPrefix(), extension);
                             });
                         }
-                        TreeNode assetNode = child.get(name);
+                        JsonNode assetNode = child.get(name);
                         asset.setHref(JsonValueHelper.getString(assetNode, "href"));
                         asset.setType(JsonValueHelper.getString(assetNode, "type"));
                         asset.setTitle(JsonValueHelper.getString(assetNode, "title"));
                         asset.setDescription(JsonValueHelper.getString(assetNode, "description"));
                         asset.setRoles(JsonValueHelper.getStringArray(assetNode, "roles"));
-                        Iterator<String> assetFields = assetNode.fieldNames();
+                        Iterator<String> assetFields = assetNode.propertyNames().iterator();
                         while (assetFields.hasNext()) {
                             final String assetField = assetFields.next();
                             if (!Asset.coreFieldNames().contains(assetField)) {
@@ -158,23 +156,21 @@ public class ItemDeserializer extends StdDeserializer<Item> {
         return item;
     }
 
-    private void setUnknownField(TreeNode parent, String name, Extensible target) throws JsonProcessingException {
-        TreeNode node = parent.get(name);
-        if (node.numberType() != null) {
-            switch (node.numberType()) {
-                case INT:
-                    target.addField(name, JsonValueHelper.getInt(parent, name));
-                    break;
-                case LONG:
-                    target.addField(name, JsonValueHelper.getLong(parent, name));
-                    break;
-                case FLOAT:
-                case DOUBLE:
-                    target.addField(name, JsonValueHelper.getDouble(parent, name));
-                    break;
-            }
+    private void setUnknownField(JsonNode parent, String name, Extensible target) throws JacksonException {
+        JsonNode node = parent.get(name);
+        if (node == null) {
+            return;
+        }
+        if (node.isInt()) {
+            target.addField(name, JsonValueHelper.getInt(parent, name));
+        } else if (node.isLong()) {
+            target.addField(name, JsonValueHelper.getLong(parent, name));
+        } else if (node.isFloat() || node.isDouble()) {
+            target.addField(name, JsonValueHelper.getDouble(parent, name));
         } else {
             target.addField(name, JsonValueHelper.tryGuessTypedValue(node));
         }
     }
 }
+
+

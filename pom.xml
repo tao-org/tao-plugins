@@ -7,72 +7,74 @@
     <parent>
         <groupId>ro.c-s.tao</groupId>
         <artifactId>tao-core</artifactId>
-        <version>1.4.3</version>
+        <version>2.0.0</version>
+        <relativePath>../tao-core/pom.xml</relativePath>
     </parent>
 
     <artifactId>tao-plugins</artifactId>
     <packaging>pom</packaging>
-
     <name>TAO Plugin Extensions</name>
 
     <modules>
         <module>tao-datasources-asf</module>
-        <module>tao-datasources-aws</module>
-        <module>tao-datasources-creodias</module>
+        <module>tao-datasources-creodias2</module>
+        <module>tao-datasources-das</module>
         <module>tao-datasources-earthdata</module>
         <module>tao-datasources-eocat</module>
+        <module>tao-datasources-eumetsat</module>
         <module>tao-datasources-fedeo</module>
         <module>tao-datasources-localdb</module>
         <module>tao-datasources-lsa</module>
-        <module>tao-datasources-mundi</module>
-        <module>tao-datasources-peps</module>
-        <module>tao-datasources-scihub</module>
         <module>tao-datasources-stac</module>
-        <module>tao-datasources-theia</module>
         <module>tao-datasources-usgs</module>
-        <module>tao-datasources-creodias2</module>
-        <module>tao-datasources-das</module>
-        <module>tao-docker-console</module>
         <module>tao-docker-enmap</module>
         <module>tao-docker-gdal</module>
+        <module>tao-docker-jupyter</module>
         <module>tao-docker-otb</module>
+        <module>tao-docker-postgresql</module>
         <module>tao-docker-python</module>
-        <module>tao-docker-sen2cor</module>
         <module>tao-docker-senet</module>
         <module>tao-docker-snap</module>
+        <module>tao-docker-wekeo</module>
         <module>tao-docker-zarr</module>
+        <module>tao-docker-zeppelin</module>
+        <module>tao-drmaa-kubernetes</module>
+        <module>tao-drmaa-simpipe</module>
         <module>tao-drmaa-slurm</module>
         <module>tao-drmaa-torque</module>
+        <module>tao-executor-ogc-process</module>
+        <module>tao-executor-wms</module>
         <module>tao-executor-wps</module>
+        <module>tao-functions</module>
         <module>tao-gdalinfo</module>
-        <module>tao-integration-geostorm</module>
-        <module>tao-integration-sen2agri</module>
+        <module>tao-github</module>
         <module>tao-keycloak</module>
         <module>tao-ldap</module>
         <module>tao-muscate-metadata</module>
+        <module>tao-opensearch-client</module>
         <module>tao-openstack</module>
         <module>tao-otb-optimizer</module>
+        <module>tao-products-enmap</module>
         <module>tao-products-landsat</module>
         <module>tao-products-sentinels</module>
         <module>tao-quicklook</module>
         <module>tao-quota-database</module>
         <module>tao-snap-converter</module>
         <module>tao-stac-client</module>
+        <module>tao-workflow-argo</module>
+        <module>tao-workflow-cwl</module>
+        <module>tao-workflow-json</module>
         <module>tao-workspace-aws</module>
         <module>tao-workspace-ftp</module>
         <module>tao-workspace-smb</module>
         <module>tao-workspace-stac</module>
         <module>tao-zarr-metadata</module>
-        <module>tao-products-enmap</module>
-        <module>tao-workflow-json</module>
-		<!--<module>tao-workflow-cwl</module>-->
-        <module>tao-drmaa-kubernetes</module>
-        <module>tao-eo-search</module>
+		<module>tao-eo-search</module>
         <module>tao-plugins-kit</module>
     </modules>
 
     <properties>
-        <taoReleasesUrl>${project.deploy.root.path}/tao-plugins</taoReleasesUrl>
+        <taoReleasesUrl>${project.deploy.collectionDescription.path}/tao-plugins</taoReleasesUrl>
     </properties>
 
     <dependencies>
@@ -80,6 +82,12 @@
             <groupId>ro.c-s.tao</groupId>
             <artifactId>tao-config</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -95,7 +103,10 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven.compiler.plugin.version}</version>
                     <configuration>
-                        <release>11</release>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <debug>true</debug>
+                        <release>${maven.compiler.release}</release>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -142,7 +153,7 @@
                             </goals>
                             <configuration>
                                 <includeScope>runtime</includeScope>
-                                <excludeGroupIds>ro.cs.tao</excludeGroupIds>
+                                <excludeGroupIds>ro.c-s.tao,tools.jackson,tools.jackson.core,tools.jackson.databind,tools.jackson.dataformat,tools.jackson.datatype,tools.jackson.module,tools.jackson.jaxrs,tools.jackson.jakarta.rs</excludeGroupIds>
                                 <overWriteReleases>false</overWriteReleases>
                                 <overWriteSnapshots>true</overWriteSnapshots>
                                 <outputDirectory>../tao-plugins-kit/target/tao-plugins-${project.version}/tao/lib</outputDirectory>

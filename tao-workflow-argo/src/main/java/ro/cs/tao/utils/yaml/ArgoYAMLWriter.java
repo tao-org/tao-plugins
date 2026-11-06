@@ -1,9 +1,8 @@
 package ro.cs.tao.utils.yaml;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import ro.cs.tao.argo.workflow.model.ArgoWorkflow;
 import ro.cs.tao.argo.workflow.model.WorkflowTemplate;
 import ro.cs.tao.component.TaoComponent;
@@ -24,17 +23,15 @@ public class ArgoYAMLWriter {
     public static void createYaml(ArgoWorkflow argoWorkflow, ExecutionUnit executionUnit) throws IOException {
         final Path path = Paths.get(executionUnit.getScriptTargetPath());
         ArgoWorkflowYAMLFactory factory =  new ArgoWorkflowYAMLFactory();
-        factory.enable(ArgoWorkflowYAMLGenerator.Feature.MINIMIZE_QUOTES);
-        factory.disable(ArgoWorkflowYAMLGenerator.Feature.WRITE_DOC_START_MARKER);
 
-        ObjectMapper mapper = new ObjectMapper(factory);
-        mapper.registerModule(new Jdk8Module());
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        ObjectMapper mapper = new ObjectMapper(factory).rebuild()
+                .changeDefaultPropertyInclusion(inclusion -> inclusion.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .build();
         try {
             Map<String, Object> workflowMap = mapper.convertValue(argoWorkflow, new TypeReference<>() {
             });
             mapper.writeValue(path.toFile(), workflowMap);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new IOException(e);
         }
     }
@@ -42,11 +39,9 @@ public class ArgoYAMLWriter {
     public static void updateYaml(ArgoWorkflow argoWorkflow, ExecutionUnit executionUnit, String executionUnitName) throws IOException {
         final Path path = Paths.get(executionUnit.getScriptTargetPath());
         ArgoWorkflowYAMLFactory factory =  new ArgoWorkflowYAMLFactory();
-        factory.enable(ArgoWorkflowYAMLGenerator.Feature.MINIMIZE_QUOTES);
-        factory.disable(ArgoWorkflowYAMLGenerator.Feature.WRITE_DOC_START_MARKER);
-        ObjectMapper mapper = new ObjectMapper(factory);
-        mapper.registerModule(new Jdk8Module());
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        ObjectMapper mapper = new ObjectMapper(factory).rebuild()
+                .changeDefaultPropertyInclusion(inclusion -> inclusion.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .build();
         try {
             Map<String, Object> workflowMap= mapper.readValue(path.toFile(), Map.class);
             if (workflowMap != null && !workflowMap.isEmpty()) {
@@ -70,7 +65,7 @@ public class ArgoYAMLWriter {
                 templateFromFile.put("container", containerMap);
                 mapper.writeValue(path.toFile(), workflowMap);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new IOException(e);
         }
     }

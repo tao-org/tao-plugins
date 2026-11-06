@@ -1,12 +1,12 @@
 package ro.cs.tao.stac.core.parser;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import ro.cs.tao.stac.core.model.SpatialExtent;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
 /**
  * Deserialization from JSON class for a spatial extent.
  *
@@ -19,11 +19,13 @@ public class SpatialDeserializer extends StdDeserializer<SpatialExtent> {
     }
 
     @Override
-    public SpatialExtent deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        TreeNode node = p.readValueAsTree();
+    public SpatialExtent deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
+        JsonNode node = p.readValueAsTree();
         final SpatialExtent extent = new SpatialExtent();
         extent.setBbox(JsonValueHelper.getDoubleArray1(node, "bbox"));
         extent.setCrs(JsonValueHelper.getString(node, "crs"));
         return extent;
     }
 }
+
+

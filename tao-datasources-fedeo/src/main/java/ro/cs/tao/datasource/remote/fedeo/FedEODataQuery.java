@@ -43,6 +43,22 @@ import java.util.Map;
 
 public class FedEODataQuery extends DataQuery {
 
+    @Override
+    public java.util.Map<String, Object> exportSearchPlan() {
+
+        java.util.Map<String, Object> values = exportParameterValues();
+        int size = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, this.pageSize > 0 ? Math.min(this.pageSize, MAXIMUM_RECORDS) : MAXIMUM_RECORDS);
+        values.put("maximumRecords", size);
+        values.put("recordSchema", "om");
+        values.put("httpAccept", "application/atom+xml");
+        values.put("startRecord", (Math.max(1, this.pageNumber) - 1) * size + 1);
+        java.util.Map<String, Object> plan = exportHttpPlan(this.source.getConnectionString().replaceAll("/+$", "") + "/request?" + exportQueryString(values),
+                                                           "GET", null, "json", "atom");
+        plan.put("paging", java.util.Map.of("parameter", "startRecord", "location", "query", "step", size, "size", size));
+        return plan;
+    }
+
+
     private static final int MAXIMUM_RECORDS = 50;
 
     static {

@@ -1,10 +1,10 @@
 package ro.cs.tao.utils.executors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.utils.ExceptionUtils;
 import ro.cs.tao.utils.ExecutionUnitFormat;
 import ro.cs.tao.utils.executors.container.ContainerUnit;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -62,7 +62,7 @@ public class JsonExecutor extends Executor<Object>
                     logger.severe(ExceptionUtils.getStackTrace(logger, e));
                 }
             }
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }

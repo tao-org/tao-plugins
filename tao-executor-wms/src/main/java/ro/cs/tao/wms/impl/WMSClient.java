@@ -27,11 +27,17 @@ import java.util.Map;
 import java.util.Set;
 
 public class WMSClient {
+    private final boolean publicOnly;
     private final String url;
     private final WebServiceAuthentication authentication;
     private final Principal currentPrincipal;
 
     public WMSClient(String url, WebServiceAuthentication authentication, Principal principal) {
+        this(url, authentication, principal, false);
+    }
+
+    public WMSClient(String url, WebServiceAuthentication authentication, Principal principal, boolean publicOnly) {
+        this.publicOnly = publicOnly;
         this.url = url;
         this.authentication = authentication;
         this.currentPrincipal = principal;
@@ -53,6 +59,8 @@ public class WMSClient {
             final List<MetadataURL> metadataURLS = layer.getMetadataURL();
             if (metadataURLS != null && !metadataURLS.isEmpty()) {
                 application.setPath(metadataURLS.get(0).getUrl().toString());
+            } else {
+                application.setPath(layer.getName());
             }
             container.addApplication(application);
         }
@@ -124,7 +132,7 @@ public class WMSClient {
 
     private WebMapServer getService() throws ServiceException, IOException {
         return new WebMapServer(new URL(this.url),
-                                new WMSHttpClient(this.authentication),
+                                publicOnly ? new ro.cs.tao.component.PublicServiceHttpClient(this.authentication, new URL(this.url)) : new WMSHttpClient(this.authentication),
                                 null);
     }
 }

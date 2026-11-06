@@ -2,7 +2,10 @@ package org.w3id.cwl.cwl1_2.utils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SaveableImpl implements Saveable {
@@ -28,7 +31,7 @@ public class SaveableImpl implements Saveable {
 
     if (val instanceof List<?>) {
       List<Object> r = new ArrayList<>();
-      for (Object v : (ArrayList) val) {
+      for (Object v : (List<?>) val) {
         r.add(save(v, false, baseUrl, relativeUris));
       }
       return r;
@@ -58,7 +61,7 @@ public class SaveableImpl implements Saveable {
     if (uri instanceof List)
     {
       List<Object> r = new ArrayList<>();
-      for (Object v : (ArrayList) uri) {
+      for (Object v : (List<?>) uri) {
         r.add(saveRelativeUri(v, scopedId, relativeUris, refScope, baseUrl));
       }
       return r;
@@ -70,7 +73,7 @@ public class SaveableImpl implements Saveable {
           throw new ValidationException("Uri or baseurl need to contain a path");
         }
         if (uriSplit.isAbsolute() && baseSplit.isAbsolute() && uriSplit.getScheme().equals(baseSplit.getScheme())
-                && uriSplit.getHost().equals(baseSplit.getHost())) {
+                && Objects.equals(uriSplit.getHost(), baseSplit.getHost())) {
           if (!uriSplit.getPath().equals(baseSplit.getPath())) {
             String p = baseSplit.relativize(uriSplit).toString();
             if (uriSplit.getFragment().length() > 0) {

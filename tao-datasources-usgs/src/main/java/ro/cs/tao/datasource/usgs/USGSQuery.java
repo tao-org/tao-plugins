@@ -54,6 +54,69 @@ import java.util.stream.Collectors;
  */
 public class USGSQuery extends DataQuery {
 
+    @Override
+    public Map<String, Object> exportSearchPlan() {
+        String dataset = this.parameters.containsKey(CommonParameterNames.PLATFORM)
+                         ? this.parameters.get(CommonParameterNames.PLATFORM).getValueAsString()
+                         : String.valueOf(this.dataSourceParameters.get(CommonParameterNames.PLATFORM).getDefaultValue());
+        SearchRequest request = new SearchRequest().withDataSet(dataset);
+        List<Map<String, Object>> filters = new ArrayList<>();
+        try {
+            for (QueryParameter<?> parameter : this.parameters.values()) {
+                switch (parameter.getName()) {
+                    case CommonParameterNames.PLATFORM:
+                        break;
+                    case CommonParameterNames.FOOTPRINT:
+                        Rectangle2D bounds = ((Polygon2D) parameter.getValue()).getBounds2D();
+                        request.withLowerLeft(bounds.getMinX(), bounds.getMinY())
+                               .withUpperRight(bounds.getMaxX(), bounds.getMaxY());
+                        break;
+                    case CommonParameterNames.START_DATE:
+                        request.withStartDate(getParameterValue(parameter));
+                        break;
+                    case CommonParameterNames.END_DATE:
+                        request.withEndDate(getParameterValue(parameter));
+                        break;
+                    case "minClouds":
+                        request.withMinClouds(parameter.getValueAsInt());
+                        break;
+                    case "maxClouds":
+                        request.withMaxClouds(parameter.getValueAsInt());
+                        break;
+                    case CommonParameterNames.TILE:
+                        String tileValues = parameter.getValueAsString().replace("[", "").replace("]", "");
+                        List<List<Map<String, Object>>> alternatives = new ArrayList<>();
+                        for (String tile : tileValues.split(",")) {
+                            tile = tile.trim();
+                            if (!tile.matches("[0-9]{6}")) {
+                                throw new IllegalArgumentException("Each USGS tile must contain a three-digit path and row");
+                            }
+                            alternatives.add(List.of(Map.of("name", getRemoteName("path"), "value", tile.substring(0, 3)),
+                                                     Map.of("name", getRemoteName("row"), "value", tile.substring(3))));
+                        }
+                        filters.add(Map.of("anyOf", alternatives));
+                        break;
+                    default:
+                        filters.add(Map.of("name", getRemoteName(parameter.getName()), "value", getParameterValue(parameter)));
+                }
+            }
+        } catch (ConversionException e) {
+            throw new QueryException(e.getMessage());
+        }
+        if (this.sensorName.toLowerCase(java.util.Locale.ROOT).startsWith("landsat")) {
+            String number = this.sensorName.replaceAll("[^0-9]", "");
+            filters.add(Map.of("name", SATELLITE_PARAM_REMOTE_NAME, "value", number,
+                               "alternateName", SATELLITE_PARAM_ALT_REMOTE_NAME, "alternateValue", "LANDSAT_" + number));
+        }
+        int size = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, this.pageSize > 0 ? this.pageSize : DEFAULT_PAGE_SIZE);
+        request.withMaxResults(size).startingAtIndex((Math.max(1, this.pageNumber) - 1) * size + 1);
+        Map<String, Object> plan = exportHttpPlan(buildPostRequestURL("scene-search"), "POST", request, "json", "usgs");
+        plan.put("protocol", "usgs");
+        plan.put("baseUrl", this.source.getConnectionString());
+        plan.put("fieldFilters", filters);
+        return plan;
+    }
+
     private static final Map<String, String> fieldIds;
     private static final String C2_LEVEL1_COLLECTION = "landsat_ot_c2_l1";
     private static final String SATELLITE_PARAM_REMOTE_NAME = "Satellite";
@@ -276,12 +339,12 @@ public class USGSQuery extends DataQuery {
                         if (fieldIds.containsKey(rowParameterRemoteName) && fieldIds.containsKey(pathParameterRemoteName)) {
                             String pathRow = parameters.get(CommonParameterNames.TILE).getValueAsString();
                             filter = new SearchFilterValue();
-                            filter.setFilterId(fieldIds.get(rowParameterRemoteName));
+                            filter.setFilterId(fieldIds.get(pathParameterRemoteName));
                             filter.setOperand("=");
                             filter.setValue(pathRow.substring(0, 3));
                             request.withFilter(filter);
                             filter = new SearchFilterValue();
-                            filter.setFilterId(fieldIds.get(pathParameterRemoteName));
+                            filter.setFilterId(fieldIds.get(rowParameterRemoteName));
                             filter.setOperand("=");
                             filter.setValue(pathRow.substring(3, 6));
                             request.withFilter(filter);
@@ -332,44 +395,49 @@ public class USGSQuery extends DataQuery {
             this.apiKey = ((USGSDataSource) this.source).authenticate();
         }
         setupRemoteFields();
-        final List<EOProduct> products = new ArrayList<>();
+        List<EOProduct> products = null;
         final AtomicLong count = new AtomicLong(0);
         final SearchRequest request = buildQuery(start, pageSize);
         final String queryUrl = buildPostRequestURL("scene-search");
-        logger.finest("Executing query " + queryUrl + " with payload " + request);
-        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, queryUrl, "X-Auth-Token", apiKey, request.toString())) {
-            switch (response.getStatusLine().getStatusCode()) {
-                case 200:
-                    final String body = EntityUtils.toString(response.getEntity());
-                    if (body.contains("SERVER_ERROR")) {
-                        throw new QueryException("The request was not successful. Reason: API Server Error");
-                    }
-                    final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(this.sensorName ,this.source.getSensorTypes().get(this.sensorName).getSensorType(), this.coverageFilter),
-                            "totalHits");
-                    final List<EOProduct> parsedProducts = parser.parse(body);
-                    if (parsedProducts != null) {
-                        products.addAll(parsedProducts);
-                    }
-                    count.addAndGet(parser.parseCount(body));
-                    break;
-                case 401:
-                    throw new QueryException("The supplied credentials are invalid!");
-                default:
-                    throw new QueryException(String.format("The request was not successful. Reason: %s",
-                            response.getStatusLine().getReasonPhrase()));
+        if ((products = getFromCache(queryUrl)) == null) {
+            products = new ArrayList<>();
+            logger.finest("Executing query " + queryUrl + " with payload " + request);
+            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, queryUrl, "X-Auth-Token", apiKey, request.toString())) {
+                switch (response.getStatusLine().getStatusCode()) {
+                    case 200:
+                        final String body = EntityUtils.toString(response.getEntity());
+                        if (body.contains("SERVER_ERROR")) {
+                            throw new QueryException("The request was not successful. Reason: API Server Error");
+                        }
+                        final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(this.sensorName, this.source.getSensorTypes().get(this.sensorName).getSensorType(), this.coverageFilter),
+                                                                                          "totalHits");
+                        final List<EOProduct> parsedProducts = parser.parse(body);
+                        if (parsedProducts != null) {
+                            products.addAll(parsedProducts);
+                            addToCache(queryUrl, products);
+                        }
+                        count.addAndGet(parser.parseCount(body));
+                        break;
+                    case 401:
+                        throw new QueryException("The supplied credentials are invalid!");
+                    default:
+                        throw new QueryException(String.format("The request was not successful. Reason: %s",
+                                                               response.getStatusLine().getReasonPhrase()));
+                }
+            } catch (IOException ex) {
+                throw new QueryException(ex);
             }
-        } catch (IOException ex) {
-            throw new QueryException(ex);
-        }
-        final int currentSize = products.size();
-        if (currentSize > 0 && this.limit > 0 && currentSize > this.limit) {
-            products.subList(this.limit, currentSize).clear();
-        }
-        boolean counting = pageSize < 2;
-        if (!products.isEmpty() && !counting) {
-            final List<DownloadInfo> downloadInfos = getDownloadInfos(products);
-            if (downloadInfos != null && !downloadInfos.isEmpty()) {
-                fillDownloadUrls(products, downloadInfos);
+
+            final int currentSize = products.size();
+            if (currentSize > 0 && this.limit > 0 && currentSize > this.limit) {
+                products.subList(this.limit, currentSize).clear();
+            }
+            boolean counting = pageSize < 2;
+            if (!products.isEmpty() && !counting) {
+                final List<DownloadInfo> downloadInfos = getDownloadInfos(products);
+                if (downloadInfos != null && !downloadInfos.isEmpty()) {
+                    fillDownloadUrls(products, downloadInfos);
+                }
             }
         }
         logger.info(String.format("Query returned %s products", products.size()));

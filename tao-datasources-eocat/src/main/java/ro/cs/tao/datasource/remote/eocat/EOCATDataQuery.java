@@ -42,6 +42,31 @@ import java.util.Map;
 
 public class EOCATDataQuery extends DataQuery {
 
+    @Override
+    public java.util.Map<String, Object> exportSearchPlan() {
+
+        java.util.Map<String, Object> values = exportParameterValues();
+        QueryParameter<?> area = this.parameters.get(CommonParameterNames.FOOTPRINT);
+        if (area != null && area.getValue() != null) {
+            values.put(getRemoteName(CommonParameterNames.FOOTPRINT), ((ro.cs.tao.eodata.Polygon2D) area.getValue()).toWKT());
+        }
+        String start = (String) values.remove(getRemoteName(CommonParameterNames.START_DATE));
+        String end = (String) values.remove(getRemoteName(CommonParameterNames.END_DATE));
+        if (start != null || end != null) {
+            values.put("datetime", (start == null ? ".." : start) + "/" + (end == null ? ".." : end));
+        }
+        int size = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, this.pageSize > 0 ? Math.min(this.pageSize, MAXIMUM_RECORDS) : MAXIMUM_RECORDS);
+        values.put("maximumRecords", size);
+        values.put("recordSchema", "om");
+        values.put("httpAccept", "application/atom+xml");
+        values.put("startRecord", (Math.max(1, this.pageNumber) - 1) * size + 1);
+        java.util.Map<String, Object> plan = exportHttpPlan(this.source.getConnectionString().replaceAll("/+$", "") + "/collections/datasets/items?" + exportQueryString(values),
+                                                           "GET", null, "json", "atom");
+        plan.put("paging", java.util.Map.of("parameter", "startRecord", "location", "query", "step", size, "size", size));
+        return plan;
+    }
+
+
     private static final int MAXIMUM_RECORDS = 50;
 
     static {

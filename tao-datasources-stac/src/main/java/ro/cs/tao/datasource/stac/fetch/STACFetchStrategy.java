@@ -9,6 +9,7 @@ import ro.cs.tao.services.factory.StorageServiceFactory;
 import ro.cs.tao.services.interfaces.StorageService;
 import ro.cs.tao.stac.core.STACClient;
 import ro.cs.tao.utils.FileUtilities;
+import ro.cs.tao.utils.Zipper;
 import ro.cs.tao.workspaces.Repository;
 import ro.cs.tao.workspaces.RepositoryType;
 
@@ -20,9 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.LinkedHashMap;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 public class STACFetchStrategy extends DownloadStrategy<STACClient> {
 
@@ -41,17 +40,20 @@ public class STACFetchStrategy extends DownloadStrategy<STACClient> {
 
     @Override
     protected Path fetchImpl(EOProduct product) throws IOException {
-        final Path target;
+        final Path targetFolder;
+        Path productFile = null;
+        final List<Path> downloadedFiles = new ArrayList<>();
         final Set<String> files = product.getFiles();
+        logger.fine(String.format("Start fetching product %s which has %s file(s)", product.getName(),  files.size()));
         if (files != null && !files.isEmpty()) {
-            target = Paths.get(this.destination).resolve(product.getName());
-            FileUtilities.createDirectories(target);
+            targetFolder = Paths.get(this.destination).resolve(product.getName());
+            FileUtilities.createDirectories(targetFolder);
             STACClient client = this.dataSource.authenticate();;
             client.setProgressListener(this.progressListener);
             long size = 0;
             for (String file : files) {
                 checkCancelled();
-                Path filePath = target.resolve(file.substring(file.lastIndexOf('/') + 1));
+                Path filePath = targetFolder.resolve(file.substring(file.lastIndexOf('/') + 1));
                 try {
                     logger.fine(String.format("Begin download for %s", file));
                     subActivityStart(filePath.toString());
@@ -60,11 +62,12 @@ public class STACFetchStrategy extends DownloadStrategy<STACClient> {
                     }
                     checkCancelled();
                     if (file.startsWith("http")) {
-                        client.download(file, target);
+                        productFile = client.download(file, targetFolder);
+                        downloadedFiles.add(productFile);
                     } else {
                         final Repository repository = getRepository();
                         if (repository != null) {
-                            final StorageService<?, ?> service = StorageServiceFactory.getInstance(repository);
+                            final StorageService<?> service = StorageServiceFactory.getInstance(repository);
                             if (service != null) {
                                 String relativePath = file.replace(repository.getUrlPrefix() + "://", "");
                                 relativePath = relativePath.substring(relativePath.indexOf('/') + 1);
@@ -94,9 +97,37 @@ public class STACFetchStrategy extends DownloadStrategy<STACClient> {
                 FileUtilities.ensurePermissions(filePath);
             }
         } else {
-            target = null;
+            targetFolder = null;
         }
-        return target;
+
+        // in case there was just 1 zip, return the full zip path
+        if (downloadedFiles.size() == 1) {
+            return downloadedFiles.getFirst();
+        }
+        return targetFolder;
+    }
+
+    @Override
+    protected Path extract(EOProduct product, Path archivePath, Path targetPath) throws IOException {
+        String satelliteName = product.getSatelliteName();
+        final String name = FileUtilities.getFilenameWithoutExtension(archivePath)
+                + (satelliteName.equals("Sentinel1") || satelliteName.equals("Sentinel2")// || satelliteName.contains("S1")
+                    ? ".SAFE"
+                    : satelliteName.equals("Sentinel3")
+                        ? ".SEN3"
+                        : "");
+        logger.fine(String.format("Begin decompressing %s into %s", name, targetPath));
+        Path result;
+
+        if (archivePath.toString().endsWith(".tar.gz")) {
+            result = Zipper.decompressTarGz(archivePath, targetPath, true);
+            Files.move(result, result.getParent().resolve(name));
+        } else {
+            result = Zipper.decompressZipMT(archivePath, targetPath, false, true);
+        }
+        result = result.getParent().resolve(name);
+        logger.fine(String.format("Decompression of %s completed",archivePath.getFileName()));
+        return result;
     }
 
     @Override

@@ -2,6 +2,7 @@ package ro.cs.tao.utils.initializers;
 
 import io.fabric8.kubernetes.api.model.HostPathVolumeSource;
 import io.fabric8.kubernetes.api.model.Volume;
+import org.apache.commons.lang3.SystemUtils;
 import ro.cs.tao.argo.workflow.model.*;
 import ro.cs.tao.utils.executors.ExecutionUnit;
 
@@ -61,7 +62,7 @@ public class ArgoWorkflowInitializer {
             Volume volume = new Volume();
             volume.setName(getVolumeName(entry.getKey()));
             HostPathVolumeSource hostPath = new HostPathVolumeSource();
-            hostPath.setPath(entry.getValue());
+            hostPath.setPath(getVolumePath(entry.getKey()));
             volume.setHostPath(hostPath);
             volumes.add(volume);
         }
@@ -69,13 +70,27 @@ public class ArgoWorkflowInitializer {
     }
 
     private String getVolumeName(String path) {
-        String[] partsOfPath = path.split("/");
+        String[] partsOfPath = path.split("[/\\\\]");
         for(int i = partsOfPath.length -1 ; i > -1; i--){
             if(partsOfPath[i].matches(".*[a-zA-Z]+"))
                 return partsOfPath[i];
         }
         return path;
     }
+
+    private String getVolumePath(String path) {
+        String[] partsOfPath = path.split("[/\\\\]");
+        if(path.contains("workdir")){
+            for(int i = partsOfPath.length -1 ; i > -1; i--){
+                if(partsOfPath[i].matches(".*[0-9]+")) {
+                    path = path.replaceAll("[0-9]+", "1");
+                    break;
+                }
+            }
+        }
+        return SystemUtils.IS_OS_WINDOWS ? "/mnt" + path : path;
+    }
+
 
     private void initializeSpecTemplates(WorkflowSpec spec) {
         List<WorkflowTemplate> templates = new ArrayList<>();

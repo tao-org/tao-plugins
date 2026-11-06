@@ -1,0 +1,251 @@
+[
+  {
+    "id": "ac4d56ed-c004-40d4-89a7-8e4550754b5a",
+    "label": "Import raster",
+    "version": "3.5",
+    "description": "The raster2pgsql is a raster loader executable that loads GDAL supported raster formats into SQL suitable for loading into a PostGIS raster table. It is capable of loading folders of raster files as well as creating overviews of rasters.",
+    "authors": "PostGIS",
+    "copyright": "(C)PostGIS",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
+    "category": "RASTER",
+    "sources": [
+      {
+        "id": null,
+        "parentId": "ac4d56ed-c004-40d4-89a7-8e4550754b5a",
+        "name": "input",
+        "cardinality": 1,
+        "dataDescriptor": {
+          "formatType": "RASTER"
+        }
+      }
+    ],
+    "targets": [
+      {
+        "id": null,
+        "parentId": "ac4d56ed-c004-40d4-89a7-8e4550754b5a",
+        "name": "connection",
+        "cardinality": 1,
+        "dataDescriptor": {
+          "formatType": "DB_CONNECTION",
+          "location": "jdbc:postgresql://postgres:tao@localhost:8888/postgres?stringtype=unspecified"
+        }
+      }
+    ],
+    "containerId": "0c95867b-3235-419a-8a4a-4a52c1853ee8",
+    "fileLocation": "raster2pgsql",
+    "workingDirectory": ".",
+    "templateType": "VELOCITY",
+    "multiThread": true,
+    "parallelism": 4,
+    "visibility": "SYSTEM",
+    "active": true,
+    "parameterDescriptors": [
+      {
+        "id": "s",
+        "type": "REGULAR",
+        "dataType": "int",
+        "defaultValue": "4326",
+        "description": "ssign output raster with specified SRID. If not provided or is zero, raster's metadata will be checked to determine an appropriate SRID.",
+        "label": "SRID",
+        "notNull": false
+      },
+      {
+        "id": "I",
+        "type": "REGULAR",
+        "dataType": "string",
+        "defaultValue": "",
+        "description": "Create a GiST index on the raster column.",
+        "label": "Create spatial index",
+        "notNull": false,
+        "valueSet": ["", "-I"]
+      },
+      {
+        "id": "C",
+        "type": "REGULAR",
+        "dataType": "string",
+        "defaultValue": "",
+        "description": "Apply raster constraints -- srid, pixelsize etc. to ensure raster is properly registered in raster_columns view.",
+        "label": "Use standard raster constraints",
+        "notNull": false,
+        "valueSet": ["", "-C"]
+      },
+      {
+        "id": "M",
+        "type": "REGULAR",
+        "dataType": "string",
+        "defaultValue": "",
+        "description": "Vacuum analyze the raster table.",
+        "label": "Vacuum analyze after load",
+        "notNull": false,
+        "valueSet": ["", "-M"]
+      },
+      {
+        "id": "F",
+        "type": "REGULAR",
+        "dataType": "string",
+        "defaultValue": "",
+        "description": "Add a column with the name of the file",
+        "label": "Include a filename column",
+        "notNull": false,
+        "valueSet": ["", "-F"]
+      },
+      {
+        "id": "f",
+        "type": "REGULAR",
+        "dataType": "string",
+        "defaultValue": null,
+        "description": "Specify name of destination raster column, default is 'rast'",
+        "label": "Raster column",
+        "notNull": false
+      },
+      {
+        "id": "b",
+        "type": "REGULAR",
+        "dataType": "int[]",
+        "defaultValue": null,
+        "description": "Index (1-based) of band to extract from raster. For more than one band index, separate with comma (,). If unspecified, all bands of raster will be extracted",
+        "label": "Band index",
+        "notNull": false,
+        "expansionRule": {
+          "joinValues": true,
+          "separator": ","
+        }
+      },
+      {
+        "id": "N",
+        "type": "REGULAR",
+        "dataType": "float",
+        "defaultValue": null,
+        "description": "NODATA value to use on bands without a NODATA value.",
+        "label": "NODATA value",
+        "notNull": false
+      },
+      {
+        "id": "table",
+        "type": "REGULAR",
+        "dataType": "string",
+        "defaultValue": "public.data",
+        "description": "Schema and table where to import the raster",
+        "label": "Schema and table ",
+        "notNull": false
+      }
+    ],
+    "templatecontents": "-s\n$s\n$I\n$C\n$M\n-b\n$b\n-N\n$N\n$input\n-f\n$f\n | PGPASSWORD=\"$password\" psql -d $database -U $username -w"
+  },
+  {
+    "id": "98038ee9-2137-455d-8b96-d6eaa67ae3f8",
+    "label": "Import shapefile",
+    "version": "3.5",
+    "description": "The shp2pgsql data loader converts Shapefiles into SQL suitable for insertion into a PostGIS/PostgreSQL database either in geometry or geography format.",
+    "authors": "PostGIS",
+    "copyright": "(C)PostGIS",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
+    "category": "VECTOR",
+    "sources": [
+      {
+        "id": null,
+        "parentId": "98038ee9-2137-455d-8b96-d6eaa67ae3f8",
+        "name": "input",
+        "cardinality": 1,
+        "dataDescriptor": {
+          "formatType": "VECTOR"
+        }
+      }
+    ],
+    "targets": [
+      {
+        "id": null,
+        "parentId": "98038ee9-2137-455d-8b96-d6eaa67ae3f8",
+        "name": "connection",
+        "cardinality": 1,
+        "dataDescriptor": {
+          "formatType": "DB_CONNECTION",
+          "location": "jdbc:postgresql://postgres:tao@localhost:8888/postgres?stringtype=unspecified"
+        }
+      }
+    ],
+    "containerId": "0c95867b-3235-419a-8a4a-4a52c1853ee8",
+    "fileLocation": "shp2pgsql",
+    "workingDirectory": ".",
+    "templateType": "VELOCITY",
+    "multiThread": true,
+    "parallelism": 4,
+    "visibility": "SYSTEM",
+    "active": true,
+    "parameterDescriptors": [
+      {
+        "id": "s",
+        "type": "REGULAR",
+        "dataType": "int",
+        "defaultValue": "4326",
+        "description": "Optionally reprojects from given SRID.",
+        "label": "SRID",
+        "notNull": false
+      },
+      {
+        "id": "I",
+        "type": "REGULAR",
+        "dataType": "string",
+        "defaultValue": "",
+        "description": "Create a GiST index on the raster column.",
+        "label": "Create spatial index",
+        "notNull": false,
+        "valueSet": ["", "-I"]
+      },
+      {
+        "id": "c",
+        "type": "REGULAR",
+        "dataType": "string",
+        "defaultValue": "",
+        "description": "Creates a new table and populates it from the Shapefile.",
+        "label": "Create table",
+        "notNull": false,
+        "valueSet": ["", "-c"]
+      },
+      {
+        "id": "a",
+        "type": "REGULAR",
+        "dataType": "string",
+        "defaultValue": "",
+        "description": "Appends data from the Shapefile into the database table.",
+        "label": "Append to table",
+        "notNull": false,
+        "valueSet": ["", "-a"]
+      },
+      {
+        "id": "S",
+        "type": "REGULAR",
+        "dataType": "string",
+        "defaultValue": "",
+        "description": "Generate simple geometries instead of MULTI geometries.",
+        "label": "Simple geometries",
+        "notNull": false,
+        "valueSet": ["", "-S"]
+      },
+      {
+        "id": "G",
+        "type": "REGULAR",
+        "dataType": "string",
+        "defaultValue": "",
+        "description": "Use geography type instead of geometry (requires lon/lat data) in WGS84 long lat (SRID=4326)",
+        "label": "Use geography type",
+        "notNull": false,
+        "valueSet": ["", "-G"]
+      },
+      {
+        "id": "table",
+        "type": "REGULAR",
+        "dataType": "string",
+        "defaultValue": "public.data",
+        "description": "Schema and table where to import the shape file",
+        "label": "Schema and table ",
+        "notNull": false
+      }
+    ],
+    "templatecontents": "-s\n$s\n$I\n$c\n$a\n$S\n$G\n$input\n$table | PGPASSWORD=\"$password\" psql -d $database -U $username -w"
+  }
+]

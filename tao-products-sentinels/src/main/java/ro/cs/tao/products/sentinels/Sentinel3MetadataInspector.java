@@ -18,6 +18,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The Sentinel3MetadataInspector is a specialized implementation of the
+ * XmlMetadataInspector class for processing metadata associated with Sentinel-3 products.
+ * This class defines specific metadata extraction logic using XPath expressions
+ * tailored for Sentinel-3's metadata structure.
+ *
+ * It enables decoding and interpreting Sentinel-3 product metadata, such as
+ * file type validation, orbit direction, spatial footprint, acquisition date,
+ * and image dimensions (width and height). The class is focused on providing
+ * Sentinel-3-specific functionality while leveraging the underlying capabilities
+ * of the XmlMetadataInspector base class.
+ */
 public class Sentinel3MetadataInspector extends XmlMetadataInspector {
 
     private static final String XPATH_ORBIT_DIRECTION = "/XFDU/metadataSection/metadataObject[@ID='measurementOrbitReference']/metadataWrap/xmlData/orbitReference/passNumber/@groundTrackDirection";

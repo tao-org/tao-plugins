@@ -1,9 +1,8 @@
 package ro.cs.tao.argo.workflow.model;
 
 import io.fabric8.kubernetes.api.model.Container;
-import io.fabric8.kubernetes.api.model.KubernetesResource;
 
-public class WorkflowTemplate implements KubernetesResource {
+public class WorkflowTemplate {
     private DAG dag;
     private String name;
     private TemplateInputs inputs;

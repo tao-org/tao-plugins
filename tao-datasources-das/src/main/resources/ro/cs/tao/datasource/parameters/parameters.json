@@ -7,7 +7,18 @@
       "type": "string",
       "defaultValue": "SENTINEL-1",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-1"],
+      "order": 0
+    },
+    "platformSerialIdentifier": {
+      "name": "platformSerialIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier S1(A/B/C)",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B", "C"],
+      "valueSetLabels": ["S1A", "S1B", "S1C"],
       "order": 0
     },
     "productType": {
@@ -19,6 +30,10 @@
       "required": false,
       "valueSet": ["GRD", "GRD-COG","OCN", "RAW", "SLC",
         "S1_ETA__AX", "S2_ETA__AX", "S3_ETA__AX", "S4_ETA__AX", "S5_ETA__AX", "S6_ETA__AX", "EW_ETA__AX", "IW_ETA__AX"],
+      "valueSetLabels": [ "Ground Range Detected", "Ground Range Detected as COG", "Unprocessed Instrument Source Packets", "Single Look Complex",
+        "Extended Time Annotation Dataset 1", "Extended Time Annotation Dataset 2", "Extended Time Annotation Dataset 3",
+        "Extended Time Annotation Dataset 4", "Extended Time Annotation Dataset 5", "Extended Time Annotation Dataset 6",
+        "Extended Time Annotation Dataset for EW", "Extended Time Annotation Dataset for IW"],
       "order": 0
     },
     "sensorMode": {
@@ -29,6 +44,7 @@
       "defaultValue": "IW",
       "required": false,
       "valueSet": ["EW", "IW", "SM", "WV"],
+      "valueSetLabels": ["Extra-Wide Swath", "Interferometric Wide Swath", "StripMap", "Wave"],
       "order": 0
     },
     "orbitDirection": {
@@ -39,6 +55,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": ["ASCENDING", "DESCENDING"],
+      "valueSetLabels": ["Ascending", "Descending"],
       "order": 0
     },
     "relativeOrbit": {
@@ -120,7 +137,18 @@
       "type": "string",
       "defaultValue": "SENTINEL-2",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-2"],
+      "order": 0
+    },
+    "platformSerialIdentifier": {
+      "name": "platformSerialIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier S2(A/B/C)",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B", "C"],
+      "valueSetLabels": ["S2A", "S2B", "S2C"],
       "order": 0
     },
     "productType": {
@@ -131,6 +159,7 @@
       "defaultValue": "L1C",
       "required": false,
       "valueSet": ["L1C", "L2A"],
+      "valueSetLabels": ["Level 1C", "Level 2A"],
       "order": 0
     },
     "relativeOrbit": {
@@ -212,7 +241,18 @@
       "type": "string",
       "defaultValue": "SENTINEL-3",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-3"],
+      "order": 0
+    },
+    "platformSerialIdentifier": {
+      "name": "platformSerialIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier S3(A/B)",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B"],
+      "valueSetLabels": ["S3A", "S3B"],
       "order": 0
     },
     "instrument": {
@@ -223,6 +263,7 @@
       "defaultValue": "OLCI",
       "required": false,
       "valueSet": ["OLCI", "SRAL", "SLSTR", "SYNERGY"],
+      "valueSetLabels": ["Ocean and Land Colour Instrument", "SAR Altimeter", "Sea and Land Surface Temperature Radiometer", "Synergy Product"],
       "order": 0
     },
     "landCover": {
@@ -276,6 +317,18 @@
         "SL_2_AOD___", "SL_2_FRP___", "SL_2_LST___", "SL_2_WST___", "SR_1_SRA___", "SR_1_SRA_A_", "SR_1_SRA_BS", "SR_2_LAN___",
         "SR_2_LAN_HY", "SR_2_LAN_LI", "SR_2_LAN_SI", "SR_2_WAT___", "SY_2_AOD___", "SY_2_SYN___", "SY_2_V10___", "SY_2_VG1___",
         "SY_2_VGP___" ],
+      "valueSetLabels": [
+        "Level 1 EO mode Full Resolution", "Level 1 EO mode Reduced Resolution",
+        "Level 2 Land Full Resolution", "Level 2 Land Reduced Resolution",
+        "Level 2 Water Full Resolution", "Level 2 Water Reduced Resolution",
+        "Level 1 Radiances and Brightness Temperatures",
+        "Level 2 Aerosol Optical Depth", "Level 2 Fire Radiative Power", "Level 2 Land Surface Temperature", "Level 2 Sea Surface Temperature",
+        "Level 1 Geo-located, Calibrated, Multilooked Power Echoes", "Level 1 Geo-located Bursts of Echoes", "Level 1 Unfocused SAR-processed Complex Echoes",
+        "Level 2 Land Product", "Level 2 Hydrology Thematic Product", "Level 2 Land Ice Thematic Product", "Level 2 Sea Ice Thematic Product", "Level 2 Water Product",
+        "Level 2 Global Aerosol Parameter over Land and Sea", "Level 2 Surface Reflectance and Aerosol parameters over Land",
+        "Level 2 10 Day Synthesis Surface Reflectance and NDVI", "Level 2 1 Day Synthesis Surface Reflectance and NDVI",
+        "Level 2 TOA Reflectance"
+      ],
       "order": 1,
       "dependencies": [
         {
@@ -329,6 +382,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": ["ASCENDING", "DESCENDING"],
+      "valueSetLabels": ["Ascending", "Descending"],
       "order": 7
     },
     "startDate": {
@@ -369,7 +423,7 @@
       "defaultValue": null,
       "required": false,
       "valueSet": null,
-      "order": 9
+      "order": 11
     },
     "productSize": {
       "name": "productSize",
@@ -379,6 +433,7 @@
       "defaultValue": "FRAME",
       "required": false,
       "valueSet": ["ALL","FRAME", "STRIPE"],
+      "valueSetLabels": ["Any","Single Frame", "Full Stripe"],
       "order": 9
     },
     "platform": {
@@ -390,6 +445,17 @@
       "required": false,
       "valueSet": ["S3A", "S3B"],
       "order": 8
+    },
+    "dayTime": {
+      "name": "dayTime",
+      "remoteName": "dayTime",
+      "label": "Time of day",
+      "type": "string",
+      "defaultValue": "ANY",
+      "required": false,
+      "valueSet": ["ANY","DAY","NIGHT"],
+      "valueSetLabels": ["Any","Morning","Evening"],
+      "order": 10
     }
   },
   "Sentinel5P": {
@@ -400,7 +466,7 @@
       "type": "string",
       "defaultValue": "SENTINEL-5P",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-5P"],
       "order": 0
     },
     "instrumentShortName": {
@@ -512,7 +578,17 @@
       "type": "string",
       "defaultValue": "SENTINEL-1",
       "required": false,
-      "valueSet": null,
+      "valueSet": ["SENTINEL-1"],
+      "order": 0
+    },
+    "platformIdentifier": {
+      "name": "platformIdentifier",
+      "remoteName": "platformSerialIdentifier",
+      "label": "Platform Identifier S1(A/B/C)",
+      "type": "string",
+      "defaultValue": null,
+      "required": false,
+      "valueSet": ["A", "B", "C"],
       "order": 0
     },
     "startDate": {
@@ -544,16 +620,6 @@
       "required": false,
       "valueSet": ["AUX_POEORB", "AUX_RESORB", "AUX_PREORB", "AUX_GNSSRD", "AUX_PROQUA"],
       "order": 3
-    },
-    "platformIdentifier": {
-      "name": "platformIdentifier",
-      "remoteName": "platformSerialIdentifier",
-      "label": "Platform Identifier",
-      "type": "string",
-      "defaultValue": null,
-      "required": false,
-      "valueSet": ["A", "B"],
-      "order": 4
     }
   }
 }

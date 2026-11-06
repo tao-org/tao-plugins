@@ -14,14 +14,8 @@
 
 package org.w3id.cwl.cwl1_2;
 
-import org.w3id.cwl.cwl1_2.utils.LoaderInstances;
-import org.w3id.cwl.cwl1_2.utils.LoadingOptions;
-import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
-import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
-import org.w3id.cwl.cwl1_2.utils.ValidationException;
+import org.w3id.cwl.cwl1_2.utils.*;
 
-import java.lang.reflect.Field;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,6 +37,9 @@ public class CommandOutputBindingImpl extends SaveableImpl implements CommandOut
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private java.util.Optional<Boolean> loadContents;
 
@@ -292,22 +289,6 @@ public class CommandOutputBindingImpl extends SaveableImpl implements CommandOut
   }
 
   public Map<Object, Object> save() {
-    Map<Object, Object> outputBinding = new LinkedHashMap<>();
-    for (Field f : this.getClass().getDeclaredFields()) {
-      if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
-        try {
-          if (f.get(this) != null) {
-            if (f.get(this) instanceof Optional<?>) {
-              outputBinding.put(f.getName(), ((Optional<?>) f.get(this)).get());
-            } else {
-              outputBinding.put(f.getName(), f.get(this).toString());
-            }
-          }
-        } catch (Exception e){
-          System.out.println(e.getMessage() + ": " + e.getCause() );
-        }
-      }
-    }
-    return outputBinding;
+    return org.w3id.cwl.cwl1_2.utils.CWLSerializer.serialize(this);
   }
 }

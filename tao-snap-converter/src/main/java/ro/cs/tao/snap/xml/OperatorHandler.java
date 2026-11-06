@@ -22,6 +22,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 import ro.cs.tao.component.*;
 import ro.cs.tao.component.enums.ParameterType;
+import ro.cs.tao.component.enums.ProcessingComponentType;
 import ro.cs.tao.component.enums.ProcessingComponentVisibility;
 import ro.cs.tao.component.template.TemplateType;
 import ro.cs.tao.eodata.enums.DataFormat;
@@ -30,16 +31,69 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * The OperatorHandler class is responsible for parsing XML elements and transforming them into
+ * relevant objects for use in processing components. It extends the DefaultHandler class, enabling
+ * it to act as a SAX XML parser. OperatorHandler is utilized in the context of creating and
+ * managing processing components, where XML input defines configurations, parameters, sources, and
+ * targets.
+ *
+ * This class handles the construction and initialization of a ProcessingComponent object by
+ * interpreting XML data. It uses the SAX callback methods to parse XML documents and convert the
+ * parsed elements into various descriptors such as SourceDescriptor, TargetDescriptor, and
+ * ParameterDescriptor.
+ *
+ * Features include:
+ * - Parsing and creating descriptors based on element names and data.
+ * - Defining a working environment for processing components.
+ * - Handling errors during the parsing process and logging appropriate warnings.
+ * - Automatically setting default targets when none are defined.
+ *
+ * Constructor Details:
+ * - The no-argument constructor allows for creating an OperatorHandler without specifying a container ID.
+ * - The constructor with a containerId argument allows for associating a particular container ID with
+ *   the resulting ProcessingComponent.
+ *
+ * Overridden Methods:
+ * - startDocument(): Initializes logging, creates a new ProcessingComponent, and sets several default
+ *   properties for the component.
+ * - endDocument(): Adds default target descriptors if none are defined in the XML input.
+ * - startElement(): Prepares to process an XML element by resetting the buffer.
+ * - endElement(): Processes the collected characters and modifies descriptors, parameters, or component
+ *   properties based on the element name and content.
+ * - characters(): Collects contiguous character data from within an element.
+ * - error(SAXParseException): Logs non-critical errors during parsing.
+ *
+ * Additional Functionality:
+ * - getResult(): Returns the fully constructed and configured ProcessingComponent object.
+ * - newParameter(): A helper method for creating new ParameterDescriptor instances.
+ */
 public class OperatorHandler extends DefaultHandler {
     private StringBuilder buffer = new StringBuilder(512);
     private List<ParameterDescriptor> parameters;
     private ProcessingComponent result;
     private Logger logger;
+    private String containerId;
 
     public OperatorHandler() {
         super();
     }
 
+    public OperatorHandler(String containerId) {
+        super();
+        this.containerId = containerId;
+    }
+
+    /**
+     * Configures and returns the final {@code ProcessingComponent} object with template type,
+     * sources, parameters, targets, and template contents set up.
+     *
+     * The method processes a list of sources, parameters, and targets to create a template content string.
+     * It updates the internal state of the {@code result} object with information extracted from these lists
+     * before returning it.
+     *
+     * @return the fully configured {@code ProcessingComponent} object
+     */
     public ProcessingComponent getResult() {
         this.result.setTemplateType(TemplateType.VELOCITY);
         final StringBuilder builder = new StringBuilder();
@@ -70,7 +124,9 @@ public class OperatorHandler extends DefaultHandler {
         this.logger = Logger.getLogger(OperatorHandler.class.getName());
         this.result = new ProcessingComponent();
         this.result.setAuthors("SNAP Team");
-        this.result.setContainerId("(C) SNAP Team");
+        this.result.setCopyright("(C) SNAP Team");
+        this.result.setId(UUID.randomUUID().toString());
+        this.result.setContainerId(containerId);
         this.result.setNodeAffinity(NodeAffinity.Any);
         this.result.setFileLocation("gpt");
         this.result.setWorkingDirectory(".");
@@ -78,6 +134,7 @@ public class OperatorHandler extends DefaultHandler {
         this.result.setMultiThread(true);
         this.result.setParallelism(8);
         this.result.setActive(true);
+        this.result.setComponentType(ProcessingComponentType.EXECUTABLE);
     }
 
     @Override
@@ -87,6 +144,7 @@ public class OperatorHandler extends DefaultHandler {
             TargetDescriptor targetDescriptor = new TargetDescriptor();
             targetDescriptor.setId(UUID.randomUUID().toString());
             targetDescriptor.setName("t");
+            targetDescriptor.setParentId(this.result.getId());
             DataDescriptor targetData = new DataDescriptor();
             targetData.setFormatType(DataFormat.RASTER);
             targetData.setLocation("output_" + this.result.getId() + ".tif");
@@ -119,9 +177,10 @@ public class OperatorHandler extends DefaultHandler {
                     TargetDescriptor targetDescriptor = new TargetDescriptor();
                     targetDescriptor.setId(UUID.randomUUID().toString());
                     targetDescriptor.setName("t");
+                    targetDescriptor.setParentId(this.result.getId());
                     DataDescriptor targetData = new DataDescriptor();
                     targetData.setFormatType(DataFormat.RASTER);
-                    targetData.setLocation("output_" + this.result.getId() + ".tif");
+                    targetData.setLocation("output_" + this.result.getId() + ".dim");
                     targetDescriptor.setDataDescriptor(targetData);
                     this.result.addTarget(targetDescriptor);
                     break;
@@ -141,6 +200,7 @@ public class OperatorHandler extends DefaultHandler {
                     SourceDescriptor singleSource = new SourceDescriptor();
                     singleSource.setId(UUID.randomUUID().toString());
                     singleSource.setName("S" + qName);
+                    singleSource.setParentId(this.result.getId());
                     DataDescriptor sourceData = new DataDescriptor();
                     sourceData.setFormatType(DataFormat.RASTER);
                     singleSource.setDataDescriptor(sourceData);
@@ -151,6 +211,7 @@ public class OperatorHandler extends DefaultHandler {
                     SourceDescriptor multiSources = new SourceDescriptor();
                     multiSources.setId(UUID.randomUUID().toString());
                     multiSources.setName("S" + qName);
+                    multiSources.setParentId(this.result.getId());
                     sourceData = new DataDescriptor();
                     sourceData.setFormatType(DataFormat.RASTER);
                     multiSources.setCardinality(0);
@@ -164,13 +225,16 @@ public class OperatorHandler extends DefaultHandler {
                     switch (value) {
                         case "int":
                         case "integer":
-                            parameter = newParameter(qName, "P" + qName, Integer.class, qName);
+                            parameter = newParameter(qName, "P" + qName, int.class, qName);
                             break;
                         case "boolean":
-                            parameter = newParameter(qName, "P" + qName, Boolean.class, qName);
+                            parameter = newParameter(qName, "P" + qName, boolean.class, qName);
                             break;
                         case "float":
-                            parameter = newParameter(qName, "P" + qName, Float.class, qName);
+                            parameter = newParameter(qName, "P" + qName, float.class, qName);
+                            break;
+                        case "double":
+                            parameter = newParameter(qName, "P" + qName, double.class, qName);
                             break;
                         case "string":
                         default:
@@ -178,13 +242,16 @@ public class OperatorHandler extends DefaultHandler {
                                 switch (value.split(",")[0]) {
                                     case "int":
                                     case "integer":
-                                        parameter = newParameter(qName, "P" + qName, Integer[].class, qName);
+                                        parameter = newParameter(qName, "P" + qName, int[].class, qName);
                                         break;
                                     case "boolean":
-                                        parameter = newParameter(qName, "P" + qName, Boolean[].class, qName);
+                                        parameter = newParameter(qName, "P" + qName, boolean[].class, qName);
                                         break;
                                     case "float":
-                                        parameter = newParameter(qName, "P" + qName, Float[].class, qName);
+                                        parameter = newParameter(qName, "P" + qName, float[].class, qName);
+                                        break;
+                                    case "double":
+                                        parameter = newParameter(qName, "P" + qName, double[].class, qName);
                                         break;
                                     case "string":
                                     default:
@@ -215,6 +282,17 @@ public class OperatorHandler extends DefaultHandler {
             logger.warning(e.getMessage());
     }
 
+    /**
+     * Creates a new {@code ParameterDescriptor} object with the specified properties.
+     *
+     * @param <T>       the type of the parameter values
+     * @param name      the name of the parameter
+     * @param label     the display label of the parameter
+     * @param clazz     the class representing the type of the parameter
+     * @param description a description of the parameter
+     * @param values    optional predefined values for the parameter
+     * @return the created {@code ParameterDescriptor} with the specified attributes
+     */
     @SafeVarargs
     private final <T> ParameterDescriptor newParameter(String name, String label, Class<T> clazz, String description, T... values) {
         ParameterDescriptor ret = new ParameterDescriptor(name);

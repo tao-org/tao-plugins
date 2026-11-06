@@ -1,0 +1,19 @@
+{
+  "id": "49263f2a-6244-4017-9afa-714d5d21037c",
+  "name": "postgis-17-3-5",
+  "description": "PostgreSQL 17 with PostGIS 3.5",
+  "tag": "17-3.5-alpine",
+  "applicationPath": "/usr/local/bin",
+  "applications": [
+    {
+      "path": "raster2pgsql",
+      "name": "Import raster",
+      "memoryRequirements": 4096
+    },
+    {
+      "path": "shp2pgsql",
+      "name": "Import shapefile",
+      "memoryRequirements": 4096
+    }
+  ]
+}

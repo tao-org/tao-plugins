@@ -1,17 +1,16 @@
 package ro.cs.tao.datasource.stac;
 
-import org.locationtech.jts.geom.Envelope;
 import ro.cs.tao.datasource.DataQuery;
 import ro.cs.tao.datasource.converters.ConverterFactory;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.stac.parameters.DateParameterConverter;
+import ro.cs.tao.datasource.stac.parameters.GeoJSONConverter;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
-import ro.cs.tao.serialization.GeometryAdapter;
 import ro.cs.tao.stac.core.STACClient;
 import ro.cs.tao.stac.core.model.*;
 import ro.cs.tao.stac.core.model.extensions.Extension;
@@ -19,19 +18,79 @@ import ro.cs.tao.stac.core.model.extensions.ExtensionType;
 import ro.cs.tao.stac.core.model.extensions.projection.ProjExtension;
 
 import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 public class STACQuery extends DataQuery {
+
+    @Override
+    public Map<String, Object> exportSearchPlan() {
+        Map<String, Object> values = new LinkedHashMap<>();
+        try {
+            for (QueryParameter<?> parameter : this.parameters.values()) {
+                if (!CommonParameterNames.START_DATE.equals(parameter.getName()) &&
+                    !CommonParameterNames.END_DATE.equals(parameter.getName())) {
+                    values.put(getRemoteName(parameter.getName()), getParameterValue(parameter));
+                }
+            }
+            QueryParameter<?> start = this.parameters.get(CommonParameterNames.START_DATE);
+            QueryParameter<?> end = this.parameters.get(CommonParameterNames.END_DATE);
+            String date = start == null ? ".." : getParameterValue(start);
+            if (end != null) {
+                date += "/" + getParameterValue(end);
+            }
+            if (start != null || end != null) {
+                values.put("datetime", date);
+            }
+        } catch (ro.cs.tao.datasource.converters.ConversionException e) {
+            throw new ro.cs.tao.datasource.QueryException(e.getMessage());
+        }
+        int size = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, this.pageSize > 0 ? this.pageSize : DEFAULT_PAGE_SIZE);
+        values.put("collections", this.sensorName);
+        values.put("limit", size);
+        String root = this.source.getConnectionString().replaceAll("/+$", "") + "/";
+        Map<String, Object> plan = exportHttpPlan(root + "search?" + exportQueryString(values), "GET", null, "json", "stac");
+        plan.put("discovery", root);
+        plan.put("skipPages", Math.max(0, this.pageNumber - 1));
+        ro.cs.tao.component.WebServiceAuthentication auth = ((STACSource) this.source).getAuthentication();
+        if (auth != null && auth.getType() != null) {
+            Map<String, Object> authentication = new LinkedHashMap<>();
+            authentication.put("type", auth.getType().name().toLowerCase(java.util.Locale.ROOT));
+            authentication.put("header", auth.getAuthHeader() == null ? "Authorization" : auth.getAuthHeader());
+            if (auth.getLoginUrl() != null) {
+                authentication.put("url", auth.getLoginUrl());
+            }
+            plan.put("auth", authentication);
+        }
+        return plan;
+    }
+
+    private static final Map<String, SensorType> sensorTypes;
 
     static {
         final ConverterFactory factory = new ConverterFactory();
         factory.register(DateParameterConverter.class, LocalDateTime.class);
+        factory.register(GeoJSONConverter.class, Polygon2D.class);
         converterFactory.put(STACQuery.class, factory);
+        sensorTypes = new HashMap<>();
+        Properties props = new Properties();
+        try (InputStream stream = STACQuery.class.getResourceAsStream("instruments.properties")) {
+            props.load(stream);
+            props.forEach((k,v)-> {
+                SensorType type = SensorType.valueOf((String) k);
+                String[] values = ((String) v).split(",");
+                for (String value : values) {
+                    sensorTypes.put(value, type);
+                }
+            });
+        } catch (IOException e) {
+            Logger.getLogger(STACQuery.class.getName()).severe(e.getMessage());
+        }
     }
 
     public STACQuery(STACSource source, String sensorName) {
@@ -46,22 +105,24 @@ public class STACQuery extends DataQuery {
             QueryParameter<?> parameter = this.parameters.get(CommonParameterNames.FOOTPRINT);
             if (parameter != null) {
                 String footprint = getParameterValue(parameter);
-                Envelope envelope = new GeometryAdapter().marshal(footprint).getEnvelope().getEnvelopeInternal();
+                /*Envelope envelope = new GeometryAdapter().marshal(footprint).getEnvelope().getEnvelopeInternal();
                 String bbox = envelope.getMinX() + "," + envelope.getMinY() + ","
-                            + envelope.getMaxX() + "," + envelope.getMaxY();
-                params.put(getRemoteName(CommonParameterNames.FOOTPRINT), bbox);
+                            + envelope.getMaxX() + "," + envelope.getMaxY();*/
+                params.put(getRemoteName(CommonParameterNames.FOOTPRINT), footprint);
             }
             String dateValue = null;
             parameter = this.parameters.get(CommonParameterNames.START_DATE);
             if (parameter != null) {
-                // "2022-05-01T00:00:00Z/2022-05-02T23:59:59Z"
-                dateValue = getParameterValue(parameter) + "/";
+                dateValue = getParameterValue(parameter);
             }
             parameter = this.parameters.get(CommonParameterNames.END_DATE);
             if (parameter != null) {
                 dateValue = (dateValue != null ? dateValue : "/") + getParameterValue(parameter);
             }
-            params.put(getRemoteName(CommonParameterNames.START_DATE), dateValue);
+            if (this.parameters.containsKey(CommonParameterNames.START_DATE) ||
+                this.parameters.containsKey(CommonParameterNames.END_DATE)) {
+                params.put(getRemoteName(CommonParameterNames.START_DATE), dateValue);
+            }
             if (this.pageSize > 0) {
                 params.put("limit", this.pageSize);
             }
@@ -129,9 +190,8 @@ public class STACQuery extends DataQuery {
                 EOProduct product = new EOProduct();
                 product.setId(item.getId());
                 product.setName(item.getId());
-                product.setSensorType(SensorType.UNKNOWN);
                 product.setPixelType(PixelType.INT16);
-                product.setProductType("unknown");
+                product.setProductType(getSensorName());
                 Geometry geometry = item.getGeometry();
                 if (geometry != null) {
                     Polygon2D polygon = null;
@@ -209,6 +269,18 @@ public class STACQuery extends DataQuery {
                 for (Asset asset : assets.values()) {
                     product.addFile(asset.getHref());
                 }
+                String instruments = product.getAttributeValue("instruments");
+                SensorType type = SensorType.UNKNOWN;
+                if (instruments != null) {
+                    final String toUpper = instruments.toUpperCase();
+                    for (String key : sensorTypes.keySet()) {
+                       if (!key.isEmpty() && toUpper.contains(key)) {
+                            type = SensorType.valueOf(sensorTypes.get(key).name());
+                            break;
+                        }
+                    }
+                }
+                product.setSensorType(type);
                 results.add(product);
             }
         }
