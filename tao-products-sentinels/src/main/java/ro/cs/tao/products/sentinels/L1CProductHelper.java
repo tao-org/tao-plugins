@@ -26,13 +26,28 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
- * @author Cosmin Cara
+ * L1CProductHelper is a specialized helper class for handling Sentinel-2 Level-1C product metadata
+ * and file structure. It extends the base functionality of the Sentinel2ProductHelper class,
+ * providing methods to accurately parse, retrieve, and manipulate relevant attributes and
+ * information specific to Level-1C products.
+ *
+ * This class supports two formats for product naming:
+ * - Version 1.3
+ * - Version 1.4
+ *
+ * The appropriate format is determined dynamically based on the input product name, and different
+ * parsing logic applies depending on the determined format.
+ *
+ * Key functionalities of the class include:
+ * - Parsing product and tile-level metadata
+ * - Generating file names and relative paths for metadata, bands, granules, and datastrips
+ * - Identifying and extracting key information such as version, orbit, sensing date, and processing date
  */
 public class L1CProductHelper extends Sentinel2ProductHelper {
 
-    static final Pattern ProductV13 = Pattern.compile("(S2[A-B])_(OPER)_(PRD)_(MSIL1C)_(PDMC)_(\\d{8}T\\d{6})_R(\\d{3})_V(\\d{8}T\\d{6})_(\\d{8}T\\d{6})(?:.SAFE)?");
-    static final Pattern ProductV14 = Pattern.compile("(S2[A-B])_(MSIL1C)_(\\d{8}T\\d{6})_(N\\d{4})_R(\\d{3})_T(\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
-    private static final Pattern TileV13 = Pattern.compile("(S2[A-B])_(OPER)_(MSI)_(L1C)_(TL)_(\\w{3})__(\\d{8}T\\d{6})_(A\\d{6})_T(\\d{2}\\w{3})_(N\\d{2}.\\d{2})");
+    static final Pattern ProductV13 = Pattern.compile("(S2[A-D])_(OPER)_(PRD)_(MSIL1C)_(PDMC)_(\\d{8}T\\d{6})_R(\\d{3})_V(\\d{8}T\\d{6})_(\\d{8}T\\d{6})(?:.SAFE)?");
+    static final Pattern ProductV14 = Pattern.compile("(S2[A-D])_(MSIL1C)_(\\d{8}T\\d{6})_(N\\d{4})_R(\\d{3})_T(\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
+    private static final Pattern TileV13 = Pattern.compile("(S2[A-D])_(OPER)_(MSI)_(L1C)_(TL)_(\\w{3})__(\\d{8}T\\d{6})_(A\\d{6})_T(\\d{2}\\w{3})_(N\\d{2}.\\d{2})");
 
     private boolean oldFormat;
 
@@ -43,6 +58,11 @@ public class L1CProductHelper extends Sentinel2ProductHelper {
     L1CProductHelper(String name) {
         super(name);
         this.version = this.oldFormat ? PSD_13 : PSD_14;
+    }
+
+    @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { ProductV13, ProductV14 };
     }
 
     @Override

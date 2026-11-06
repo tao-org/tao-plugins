@@ -14,15 +14,11 @@
 
 package org.w3id.cwl.cwl1_2;
 
-import org.apache.commons.collections4.MultiSet;
-import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-import org.apache.commons.collections4.multiset.HashMultiSet;
-import org.apache.commons.lang3.StringUtils;
 import org.w3id.cwl.cwl1_2.utils.*;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Optional;
 
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#CommandLineTool</I><BR> <BLOCKQUOTE>
@@ -33,6 +29,9 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private java.util.Optional<String> id;
 
@@ -212,8 +211,9 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
    * Getter for property <I>https://w3id.org/cwl/cwl#Process/intent</I><BR>
    * <BLOCKQUOTE>
    * An identifier for the type of computational operation, of this Process.
-   * Especially useful for "class: Operation", but can also be used for
-   * CommandLineTool, Workflow, or ExpressionTool.
+   * Especially useful for [`Operation`](Workflow.html#Operation), but can also be used for
+   * [`CommandLineTool`](CommandLineTool.html#CommandLineTool),
+   * [`Workflow`](Workflow.html#Workflow), or [ExpressionTool](Workflow.html#ExpressionTool).
    * 
    * If provided, then this must be an IRI of a concept node that
    * represents the type of operation, preferably defined within an ontology.
@@ -418,8 +418,11 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
   /**
    * Default constructor
    */
-  public CommandLineToolImpl(){
+  public CommandLineToolImpl() {
     super();
+    this.inputs = new LinkedList<>();
+    this.outputs = new LinkedList<>();
+    this.arguments = Optional.of(new LinkedList<>());
   }
   /**
    * Used by {@link org.w3id.cwl.cwl1_2.utils.RootLoader} to construct instances of CommandLineToolImpl.
@@ -457,7 +460,7 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
       try {
         id =
             LoaderInstances
-                .uri_optional_StringInstance_True_False_None
+                .uri_optional_StringInstance_True_False_None_None
                 .loadField(__doc.get("id"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         id = null; // won't be used but prevents compiler from complaining.
@@ -486,7 +489,7 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
     try {
       class_ =
           LoaderInstances
-              .uri_CommandLineTool_class_False_True_None
+              .uri_CommandLineTool_class_False_True_None_None
               .loadField(__doc.get("class"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       class_ = null; // won't be used but prevents compiler from complaining.
@@ -589,7 +592,7 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
       try {
         cwlVersion =
             LoaderInstances
-                .uri_optional_CWLVersion_False_True_None
+                .uri_optional_CWLVersion_False_True_None_None
                 .loadField(__doc.get("cwlVersion"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         cwlVersion = null; // won't be used but prevents compiler from complaining.
@@ -606,7 +609,7 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
       try {
         intent =
             LoaderInstances
-                .uri_optional_array_of_StringInstance_True_False_None
+                .uri_optional_array_of_StringInstance_True_False_None_None
                 .loadField(__doc.get("intent"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         intent = null; // won't be used but prevents compiler from complaining.
@@ -778,80 +781,6 @@ public class CommandLineToolImpl extends SaveableImpl implements CommandLineTool
 
   @Override
   public Map<Object, Object> save() {
-    Map<Object, Object> commandLineTool = new LinkedHashMap<>();
-    commandLineTool.put("class", this.class_.toString());
-    if (this.id != null && this.id.isPresent() && !this.id.isEmpty()) {
-      if (this.id.get().contains("#")) {
-        int chIdx = this.id.get().indexOf("#");
-        commandLineTool.put("id", this.id.get().substring(chIdx + 1));
-      } else {
-        commandLineTool.put("id", this.id.get());
-      }
-    }
-    if (this.cwlVersion != null && this.cwlVersion.isPresent() && !this.cwlVersion.isEmpty()) {
-      commandLineTool.put("cwlVersion",this.cwlVersion.get().toString());
-    }
-    if (this.label != null && this.label.isPresent() && !this.label.isEmpty()) {
-      commandLineTool.put("label",this.label.get());
-    }
-    if (this.doc != null) {
-      commandLineTool.put("doc",this.doc);
-    }
-    if (this.baseCommand != null) {
-      if (this.baseCommand instanceof ArrayList<?> && !((ArrayList<?>) this.baseCommand).isEmpty()) {
-        List<Object> commandList = new ArrayList<>();
-        for (String command: ((ArrayList<String>) this.baseCommand)) {
-          commandList.add(command);
-        }
-        commandLineTool.put("baseCommand", commandList);
-      } else if (this.baseCommand instanceof String) {
-        //commandLineTool.put("baseCommand", "[\"" + this.baseCommand.toString() + "\"]");
-        commandLineTool.put("baseCommand", this.baseCommand);
-      }
-    }
-    if (this.requirements != null) {
-      List<Object> reqList = new LinkedList<>();
-      for(Object req : this.requirements.get()) {
-        if(req instanceof Saveable) {
-          reqList.add(((Saveable) req).save());
-        }
-      }
-      commandLineTool.put("requirements", reqList);
-    }
-    if (this.arguments != null) {
-      List<Object> argumentsList = new LinkedList<>();
-      for(Object arg : this.arguments.get()) {
-        if(arg instanceof CommandLineBindingImpl) {
-          Map<Object, Object> argList = new LinkedHashMap<>();
-          for (Field f : arg.getClass().getDeclaredFields()) {
-            f.setAccessible(true);
-            if (!f.getName().equalsIgnoreCase("loadingOptions_") && !f.getName().equalsIgnoreCase("extensionFields_")) {
-              try {
-                if ( f.get(arg) != null) {
-                  if (f.get(arg) instanceof Optional<?>) {
-                    argList.put(f.getName(), ((Optional<?>) f.get(arg)).get());
-                  } else {
-                    argList.put(f.getName(), f.get(arg));
-                  }
-                }
-              } catch (Exception e){
-                System.out.println(e.getMessage() + ": " + e.getCause() );
-              }
-            }
-          }
-          argumentsList.add(new TreeMap<>(argList).descendingMap());
-        } else if(arg instanceof Saveable) {
-          argumentsList.add(((Saveable) arg).save());
-        }
-      }
-      commandLineTool.put("arguments", argumentsList);
-    }
-    if (this.inputs != null) {
-      commandLineTool.put("inputs", treatInOut(inputs, null));
-    }
-    if (this.outputs != null) {
-      commandLineTool.put("outputs", treatInOut(outputs, null));
-    }
-    return commandLineTool;
+    return org.w3id.cwl.cwl1_2.utils.CWLSerializer.serialize(this);
   }
 }

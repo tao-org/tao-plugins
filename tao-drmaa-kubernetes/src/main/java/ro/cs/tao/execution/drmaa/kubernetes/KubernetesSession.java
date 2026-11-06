@@ -1,6 +1,5 @@
 package ro.cs.tao.execution.drmaa.kubernetes;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.api.model.batch.v1.JobBuilder;
@@ -25,6 +24,7 @@ import ro.cs.tao.utils.executors.OutputAccumulator;
 import ro.cs.tao.utils.executors.SSHMode;
 import ro.cs.tao.utils.executors.container.ContainerType;
 import ro.cs.tao.utils.executors.container.ContainerUnit;
+import tools.jackson.core.JacksonException;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -41,6 +41,7 @@ public class KubernetesSession implements Session, JobExitHandler {
     static final String masterURL = "tao.kubernetes.master.url";
     static final String caCertFile = "tao.kubernetes.ca.cert.file";
     static final String pvcMappingsKey = "tao.kubernetes.pvc.mappings";
+    static boolean canConnect = true;
     private final static Logger logger = Logger.getLogger(KubernetesSession.class.getName());
     private Map<String, String> configuration;
     private KubernetesClient client;
@@ -216,18 +217,11 @@ public class KubernetesSession implements Session, JobExitHandler {
             args.add(jt.getRemoteCommand());
             args.addAll(jt.getArgs());
 
-            final ExecutionUnit unit = new ExecutionUnit(
-                    ExecutorType.SSH2,
-                    jt.getJobName(),
-                    null,
-                    null,
-                    args,
-                    false,
-                    SSHMode.EXEC,
-                    false,
-                    jt.getJobName() + "_" + System.nanoTime(),
-                    ExecutionUnitFormat.TAO
-            );
+            final ExecutionUnit unit = new ExecutionUnit(ExecutorType.SSH2, jt.getJobName(),
+                                                         null, null, args, false, SSHMode.EXEC,
+                                                         false,
+                                                         jt.getJobName() + "_" + System.nanoTime(),
+                                                         ExecutionUnitFormat.TAO);
             unit.setContainerUnit(containerUnit);
 
             if (memConstraint != null) {
@@ -266,7 +260,7 @@ public class KubernetesSession implements Session, JobExitHandler {
                 if (job == null) {
                     throw new NoActiveSessionException("No active executor for job " + jobId);
                 }
-                if (!"Running".equals(pod.getStatus().getPhase())) {
+                if (pod != null && !"Running".equals(pod.getStatus().getPhase())) {
                     throw new HoldInconsistentStateException();
                 }
                 // TODO: suspend the pod execution
@@ -311,6 +305,9 @@ public class KubernetesSession implements Session, JobExitHandler {
             throw new InvalidJobException();
         }
         Pod pod = getPod(job);
+        if (pod == null) {
+            return QUEUED_ACTIVE;
+        }
         PodStatus status = EnumUtils.getEnumConstantByFriendlyName(PodStatus.class, pod.getStatus().getPhase());
         if (status == null) {
             status = PodStatus.UNKNOWN;
@@ -552,10 +549,10 @@ public class KubernetesSession implements Session, JobExitHandler {
     }
 
     private Pod getPod(Job job) {
-        // Get All pods created by the job
-        PodList podList = client.pods().inNamespace(namespace).withLabel("job-name", job.getMetadata().getName()).list();
-        // Wait for pod to complete
-        return client.pods().inNamespace(namespace).withName(podList.getItems().get(0).getMetadata().getName()).get();
+        final List<Pod> pods = client.pods().inNamespace(namespace)
+                                     .withLabel("job-name", job.getMetadata().getName())
+                                     .list().getItems();
+        return pods.isEmpty() ? null : pods.get(0);
     }
 
     private void stopPods(Job job) {
@@ -612,7 +609,7 @@ public class KubernetesSession implements Session, JobExitHandler {
     }
 
     static KubernetesClient getClient(Map<String, String> configuration) {
-        if(!KubernetesSession.configurationHasErrors(configuration)) {
+        if (canConnect && (canConnect = !KubernetesSession.configurationHasErrors(configuration))) {
             try {
                 io.fabric8.kubernetes.client.Config builder = new io.fabric8.kubernetes.client.ConfigBuilder()
                         .withMasterUrl(configuration.get(KubernetesSession.masterURL))
@@ -638,7 +635,7 @@ public class KubernetesSession implements Session, JobExitHandler {
             pvcMappings = new HashMap<>();
             try {
                 return JsonMapper.instance().readerFor(pvcMappings.getClass()).readValue(this.configuration.get(KubernetesSession.pvcMappingsKey));
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 logger.warning("Invalid PVC mappings for Kubernetes");
                 return null;
             }

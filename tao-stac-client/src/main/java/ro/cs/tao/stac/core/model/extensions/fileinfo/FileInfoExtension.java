@@ -1,10 +1,10 @@
 package ro.cs.tao.stac.core.model.extensions.fileinfo;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
 import ro.cs.tao.stac.core.model.Extensible;
 import ro.cs.tao.stac.core.model.extensions.Extension;
 import ro.cs.tao.stac.core.parser.JsonValueHelper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
 
 import java.util.logging.Logger;
 
@@ -20,7 +20,7 @@ public class FileInfoExtension<E extends Extensible> extends Extension<E> {
     }
 
     @Override
-    public void extractField(TreeNode node, String name) throws JsonProcessingException {
+    public void extractField(JsonNode node, String name) throws JacksonException {
         try {
             switch (name) {
                 case FileInfoFields.BYTE_ORDER:
@@ -60,16 +60,16 @@ public class FileInfoExtension<E extends Extensible> extends Extension<E> {
         parent.addField(FileInfoFields.BYTE_ORDER, checkSum);
     }
 
-    public int getHeaderSize() {
-        return parent.getField(FileInfoFields.HEADER_SIZE);
+    public Integer getHeaderSize() {
+        return parent.getField(FileInfoFields.HEADER_SIZE) != null ? parent.getField(FileInfoFields.HEADER_SIZE) : 0;
     }
 
     public void setHeaderSize(int headerSize) {
         parent.addField(FileInfoFields.HEADER_SIZE, headerSize);
     }
 
-    public long getSize() {
-        return parent.getField(FileInfoFields.SIZE);
+    public Long getSize() {
+        return parent.getField(FileInfoFields.SIZE) != null ? parent.getField(FileInfoFields.SIZE) : -1L;
     }
 
     public void setSize(long size) {
@@ -84,3 +84,5 @@ public class FileInfoExtension<E extends Extensible> extends Extension<E> {
         parent.addField(FileInfoFields.LOCAL_PATH, localPath);
     }
 }
+
+

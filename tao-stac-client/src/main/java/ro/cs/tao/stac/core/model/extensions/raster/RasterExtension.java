@@ -1,10 +1,10 @@
 package ro.cs.tao.stac.core.model.extensions.raster;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
 import ro.cs.tao.stac.core.model.Extensible;
 import ro.cs.tao.stac.core.model.extensions.Extension;
 import ro.cs.tao.stac.core.parser.STACParser;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,13 +22,15 @@ public class RasterExtension<E extends Extensible> extends Extension<E> {
     }
 
     @Override
-    public void extractField(TreeNode node, String name) throws JsonProcessingException {
+    public void extractField(JsonNode node, String name) throws JacksonException {
         if (RasterFields.BANDS.equals(name)) {
-            TreeNode arrNode = node.get(name);
+            JsonNode arrNode = node.get(name);
             if (arrNode != null) {
                 for (int i = 0; i < arrNode.size(); i++) {
                     try {
-                        addBand(new STACParser().parse(arrNode.get(i).toString(), Band.class));
+                        if (arrNode.get(i) != null) {
+                            addBand(new STACParser().parse(arrNode.get(i).toString(), Band.class));
+                        }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -46,3 +48,5 @@ public class RasterExtension<E extends Extensible> extends Extension<E> {
         bands.add(band);
     }
 }
+
+

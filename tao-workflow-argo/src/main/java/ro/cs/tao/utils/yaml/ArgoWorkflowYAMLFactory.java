@@ -1,21 +1,28 @@
 package ro.cs.tao.utils.yaml;
 
-import com.fasterxml.jackson.core.io.IOContext;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.ObjectWriteContext;
+import tools.jackson.core.io.IOContext;
+import tools.jackson.dataformat.yaml.YAMLFactory;
+import tools.jackson.dataformat.yaml.YAMLWriteFeature;
 
-import java.io.IOException;
 import java.io.Writer;
 
 public class ArgoWorkflowYAMLFactory extends YAMLFactory {
     @Override
-    protected ArgoWorkflowYAMLGenerator _createGenerator(Writer out, IOContext ctxt) throws IOException {
-        int feats = _yamlGeneratorFeatures;
-        if (_dumperOptions == null) {
-            return new ArgoWorkflowYAMLGenerator(ctxt, _generatorFeatures, feats,
-                    _quotingChecker, _objectCodec, out, _version);
-        } else {
-            return new ArgoWorkflowYAMLGenerator(ctxt, _generatorFeatures, feats,
-                    _quotingChecker, _objectCodec, out, _dumperOptions);
-        }
+    protected ArgoWorkflowYAMLGenerator _createGenerator(ObjectWriteContext writeContext, IOContext ctxt, Writer out) throws JacksonException {
+        int formatWriteFeatures = writeContext.getFormatWriteFeatures(_formatWriteFeatures);
+        formatWriteFeatures |= YAMLWriteFeature.MINIMIZE_QUOTES.getMask();
+        formatWriteFeatures &= ~YAMLWriteFeature.WRITE_DOC_START_MARKER.getMask();
+        return new ArgoWorkflowYAMLGenerator(
+                writeContext,
+                ctxt,
+                writeContext.getStreamWriteFeatures(_streamWriteFeatures),
+                formatWriteFeatures,
+                _quotingChecker,
+                out,
+                _version,
+                _dumpSettings
+        );
     }
 }

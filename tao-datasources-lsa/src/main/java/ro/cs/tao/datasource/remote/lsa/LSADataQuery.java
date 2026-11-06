@@ -43,6 +43,31 @@ import java.util.Map;
 
 public class LSADataQuery extends DataQuery {
 
+    @Override
+    public java.util.Map<String, Object> exportSearchPlan() {
+
+        java.util.Map<String, Object> values = exportParameterValues();
+        QueryParameter<?> area = this.parameters.get(CommonParameterNames.FOOTPRINT);
+        if (area != null && area.getValue() != null) {
+            values.put(getRemoteName(CommonParameterNames.FOOTPRINT), ((ro.cs.tao.eodata.Polygon2D) area.getValue()).toWKT());
+        }
+        if (parameters.containsKey(CommonParameterNames.PRODUCT)) {
+            String name = getRemoteName(CommonParameterNames.PRODUCT);
+            Object value = values.get(name);
+            values.clear();
+            values.put(name, value);
+        }
+        int size = Math.min(this.limit > 0 ? this.limit : DEFAULT_LIMIT, this.pageSize > 0 ? Math.min(this.pageSize, MAXIMUM_RECORDS) : MAXIMUM_RECORDS);
+        values.put("count", size);
+        values.put("httpAccept", "atom");
+        values.put("startIndex", (Math.max(1, this.pageNumber) - 1) * size + 1);
+        java.util.Map<String, Object> plan = exportHttpPlan(this.source.getConnectionString() + "?" + exportQueryString(values),
+                                                           "GET", null, "json", "atom");
+        plan.put("paging", java.util.Map.of("parameter", "startIndex", "location", "query", "step", size, "size", size));
+        return plan;
+    }
+
+
     private static final int MAXIMUM_RECORDS = 50;
 
     static {
@@ -115,7 +140,7 @@ public class LSADataQuery extends DataQuery {
                             final String downloadUrl = this.source.getConnectionString("Download");
                             tmpResults.forEach(tr -> {
                                 try {
-                                    tr.setLocation(downloadUrl + tr.getLocation());
+                                    tr.setLocation(tr.getLocation());
                                     if(productType != null) {
                                         tr.addAttribute("productType", productType);
                                     }

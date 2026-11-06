@@ -30,6 +30,9 @@ public class StepInputExpressionRequirementImpl extends SaveableImpl implements 
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private StepInputExpressionRequirement_class class_;
 
@@ -41,6 +44,14 @@ public class StepInputExpressionRequirementImpl extends SaveableImpl implements 
 
   public StepInputExpressionRequirement_class getClass_() {
     return this.class_;
+  }
+
+  public void setClass_(StepInputExpressionRequirement_class class_) {
+    this.class_ = class_;
+  }
+
+  public StepInputExpressionRequirementImpl() {
+    super();
   }
 
   /**
@@ -77,7 +88,7 @@ public class StepInputExpressionRequirementImpl extends SaveableImpl implements 
     try {
       class_ =
           LoaderInstances
-              .uri_StepInputExpressionRequirement_class_False_True_None
+              .uri_StepInputExpressionRequirement_class_False_True_None_None
               .loadField(__doc.get("class"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       class_ = null; // won't be used but prevents compiler from complaining.

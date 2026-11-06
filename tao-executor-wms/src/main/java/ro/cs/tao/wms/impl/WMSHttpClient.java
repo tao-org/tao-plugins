@@ -1,12 +1,12 @@
 package ro.cs.tao.wms.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.geotools.http.HTTPResponse;
 import org.geotools.http.SimpleHttpClient;
 import org.geotools.util.Base64;
 import org.geotools.util.factory.GeoTools;
 import ro.cs.tao.component.WebServiceAuthentication;
 import ro.cs.tao.services.commons.ServiceResponse;
+import tools.jackson.databind.ObjectMapper;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;

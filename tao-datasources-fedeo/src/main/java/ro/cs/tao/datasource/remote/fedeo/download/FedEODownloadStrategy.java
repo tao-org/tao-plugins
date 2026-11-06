@@ -236,9 +236,7 @@ public class FedEODownloadStrategy extends DownloadStrategy<Header> {
     }
 
     protected Path computeTarget(Path archivePath) {
-        return archivePath.getFileName().toString().endsWith(".tar.gz") ?
-                Paths.get(archivePath.toString().replace(".tar.gz", "")) :
-                Paths.get(archivePath.toString().replace(".zip", ""));
+        return super.computeTarget(archivePath);
     }
 
     protected Path extract(Path archivePath, Path targetPath) throws IOException {

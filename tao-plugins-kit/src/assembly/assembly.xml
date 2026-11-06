@@ -16,7 +16,10 @@
             </outputFileNameMapping>
             <excludes>
                 <exclude>ro.c-s.tao:tao-*</exclude>
+                <exclude>tools.jackson.*:*:jar:2.*</exclude>
+                <exclude>com.fasterxml.jackson.*:*:jar:2.*</exclude>
                 <!-- Unwanted dependencies -->
+                <exclude>jakarta.activation:jakarta.activation-api:jar:1*</exclude>
                 <exclude>jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.2</exclude>
                 <exclude>javax.activation:javax.activation-api:jar:1.2.0</exclude>
                 <exclude>com.vividsolutions:jts-core:jar:1.14.0</exclude>
@@ -35,7 +38,23 @@
                 <exclude>org.slf4j:slf4j-api:jar:1.7.32</exclude>
                 <exclude>org.slf4j:slf4j-api:jar:1.7.33</exclude>
                 <exclude>org.yaml:snakeyaml:jar:1.30</exclude>
+                <!-- Fat jar bundles old Jackson annotations that conflict with Jackson 3 -->
+                <exclude>com.github.openstack4j.core:openstack4j:jar:withdeps:*</exclude>
             </excludes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <includes>
+                <!-- Required by Spring Boot/Jackson endpoint autoconfiguration -->
+                <include>com.fasterxml.jackson.core:jackson-annotations</include>
+                <include>com.fasterxml.jackson.core:jackson-core</include>
+                <include>com.fasterxml.jackson.core:jackson-databind</include>
+                <include>com.fasterxml.jackson.datatype:jackson-datatype-jsr310</include>
+                <include>com.fasterxml.jackson.datatype:jackson-datatype-jdk8</include>
+                <include>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml</include>
+            </includes>
         </dependencySet>
         <dependencySet>
             <outputDirectory>plugins</outputDirectory>

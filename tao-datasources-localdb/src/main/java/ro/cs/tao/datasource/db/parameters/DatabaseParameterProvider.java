@@ -42,8 +42,25 @@ public class DatabaseParameterProvider implements ParameterProvider {
 
     private final DatabaseSource source;
 
+    private final Map<String, DataSourceParameter> commonParameters;
+
     public DatabaseParameterProvider(DatabaseSource source) {
         this.source = source;
+        this.commonParameters = new LinkedHashMap<String, DataSourceParameter>() {{
+            Tuple<String, DataSourceParameter> parameter =
+                    ParameterProvider.createParameter(CommonParameterNames.PRODUCT, "name", "Product Name", String[].class);
+            put(parameter.getKeyOne(), parameter.getKeyTwo());
+            parameter = ParameterProvider.createParameter("productFormat", "type_id", "Product Format", DataFormat.class);
+            put(parameter.getKeyOne(), parameter.getKeyTwo());
+            parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "geometry", "Region of Interest", Polygon2D.class);
+            put(parameter.getKeyOne(), parameter.getKeyTwo());
+            parameter = ParameterProvider.createParameter("crs", "coordinate_reference_system", "CRS", String.class);
+            put(parameter.getKeyOne(), parameter.getKeyTwo());
+            parameter = ParameterProvider.createParameter("sensorType", "sensor_type_id", "Sensor Type", SensorType.class);
+            put(parameter.getKeyOne(), parameter.getKeyTwo());
+            parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "acquisition_date", "Acquisition Date", LocalDateTime.class);
+            put(parameter.getKeyOne(), parameter.getKeyTwo());
+        }};
     }
 
     @Override
@@ -52,25 +69,22 @@ public class DatabaseParameterProvider implements ParameterProvider {
         return Collections.unmodifiableMap(
                 new HashMap<String, Map<String, DataSourceParameter>>() {{
                     for (String sensor : sensors) {
-                        put(sensor, new LinkedHashMap<String, DataSourceParameter>() {{
-                            Tuple<String, DataSourceParameter> parameter =
-                                    ParameterProvider.createParameter(CommonParameterNames.PRODUCT, "name", "Product Name", String[].class);
-                            put(parameter.getKeyOne(), parameter.getKeyTwo());
-                            parameter = ParameterProvider.createParameter("productFormat", "type_id", "Product Format", DataFormat.class);
-                            put(parameter.getKeyOne(), parameter.getKeyTwo());
-                            parameter = ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "geometry", "Region of Interest", Polygon2D.class);
-                            put(parameter.getKeyOne(), parameter.getKeyTwo());
-                            parameter = ParameterProvider.createParameter("crs", "coordinate_reference_system", "CRS", String.class);
-                            put(parameter.getKeyOne(), parameter.getKeyTwo());
-                            parameter = ParameterProvider.createParameter("sensorType", "sensor_type_id", "Sensor Type", SensorType.class);
-                            put(parameter.getKeyOne(), parameter.getKeyTwo());
-                            parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "acquisition_date", "Acquisition Date", LocalDateTime.class);
-                            put(parameter.getKeyOne(), parameter.getKeyTwo());
-                            parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "product_type", "Satellite", String.class, sensor);
+                        put(sensor, new LinkedHashMap<>() {{
+                            putAll(commonParameters);
+                            Tuple<String, DataSourceParameter> parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "product_type", "Satellite", String.class, sensor);
                             put(parameter.getKeyOne(), parameter.getKeyTwo());
                         }});
                     }
                 }});
+    }
+
+    @Override
+    public Map<String, DataSourceParameter> getSupportedParameters(String sensor) {
+        return new LinkedHashMap<>() {{
+            putAll(commonParameters);
+            Tuple<String, DataSourceParameter> parameter = ParameterProvider.createParameter(CommonParameterNames.PRODUCT_TYPE, "product_type", "Satellite", String.class, sensor);
+            put(parameter.getKeyOne(), parameter.getKeyTwo());
+        }};
     }
 
     @Override

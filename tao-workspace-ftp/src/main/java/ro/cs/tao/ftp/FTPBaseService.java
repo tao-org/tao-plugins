@@ -14,19 +14,40 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.FileSystem;
 import java.nio.file.*;
+import java.nio.file.FileSystem;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public abstract class FTPBaseService extends BaseStorageService<byte[], InputStream> {
+/**
+ * Abstract base class for FTP storage service implementations. This class provides common FTP-based
+ * file operations and initializes a file storage system for the FTP protocol or its derivatives.
+ * Subclasses must define the specific protocol and environment configuration.
+ *
+ * It extends the {@link BaseStorageService} class, utilizing generic type parameters for its
+ * operations, specifically handling files and input streams.
+ *
+ * Common functionalities provided by this class include:
+ * - File and folder manipulation such as creation, deletion, and movement.
+ * - Storing files either as byte arrays or input streams.
+ * - Downloading and listing files or folder structures.
+ * - Streaming files to a zip output stream.
+ * - Reading input streams as text with line control.
+ *
+ * The class maintains a mapping of file system instances, keyed by user and root path combinations,
+ * ensuring a persistent and reusable file system for the duration of service interaction.
+ *
+ * Subclasses must implement specific methods to define the protocol and create an FTP environment.
+ */
+public abstract class FTPBaseService extends BaseStorageService<byte[]> {
     protected FileSystem ftpFileSystem;
     protected FTPEnvironment environment;
 
@@ -74,15 +95,17 @@ public abstract class FTPBaseService extends BaseStorageService<byte[], InputStr
     @Override
     public void storeUserFile(byte[] object, String relativeFolder, String description) throws Exception {
         initializeFileSystem();
-        storeFile(new ByteArrayInputStream(object), object.length, relativeFolder, description);
+        storeFile(new ByteArrayInputStream(object), relativeFolder, description);
     }
 
     @Override
-    public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
+    public String storeFile(InputStream stream, String relativeFolder, String description) throws Exception {
         initializeFileSystem();
+        String path = repository().resolve(relativeFolder);
         // create the parent directories.
-        FileUtilities.createDirectories(getPath(repository().resolve(relativeFolder)).getParent());
-        Files.copy(stream, getPath(repository().resolve(relativeFolder)));
+        FileUtilities.createDirectories(getPath(path).getParent());
+        Files.copy(stream, getPath(path));
+        return path;
     }
 
     @Override
@@ -118,6 +141,11 @@ public abstract class FTPBaseService extends BaseStorageService<byte[], InputStr
         long size;
         LocalDateTime lastModified;
         for (Path realPath : list) {
+            if (cancelRequested()) {
+                fileObjects.clear();
+                resetCancelFlag();
+                break;
+            }
             boolean isFolder;
             lastModified = null;
             size = 0;
@@ -154,6 +182,107 @@ public abstract class FTPBaseService extends BaseStorageService<byte[], InputStr
     }
 
     @Override
+    public List<FileObject> listLastFiles(String fromPath, int limit) throws IOException {
+        initializeFileSystem();
+        Repository repository = repository();
+        final Path root = getPath(repository.bucketName());
+        final Path startPath = getPath(repository.resolve(fromPath));
+        final List<Path> list = listLast(startPath, 1, limit);
+        final List<FileObject> fileObjects = new ArrayList<>();
+        if (repository.isRoot(fromPath)) {
+            fileObjects.add(repositoryRootNode(repository));
+        }
+        long size;
+        LocalDateTime lastModified;
+        for (Path realPath : list) {
+            if (cancelRequested()) {
+                fileObjects.clear();
+                resetCancelFlag();
+                break;
+            }
+            boolean isFolder;
+            lastModified = null;
+            size = 0;
+            if (realPath.toString().contains(".")) {
+                try {
+                    BasicFileAttributes attributes = Files.readAttributes(realPath, BasicFileAttributes.class);
+                    isFolder = attributes.isDirectory();
+                    size = attributes.size();
+                    lastModified = LocalDateTime.ofInstant(Instant.ofEpochMilli(attributes.lastModifiedTime().toMillis()),
+                                                           ZoneId.systemDefault());
+                } catch (IOException e) {
+                    size = -1;
+                    isFolder = false;
+                }
+            } else {
+                isFolder = true;
+            }
+            final Path path = root.relativize(realPath);
+            String pathToRecord = path.toString().replace("\\", "/");
+            if (isFolder) {
+                pathToRecord += "/";
+            }
+            final FileObject fileObject = new FileObject(protocol(), pathToRecord, isFolder, size);
+            fileObject.setLastModified(lastModified);
+            fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, realPath.toString());
+            fileObjects.add(fileObject);
+        }
+        return fileObjects;
+    }
+
+    @Override
+    public List<FileObject> listFiles(String fromPath, String pattern) throws IOException {
+        initializeFileSystem();
+        Repository repository = repository();
+        final Path root = getPath(repository.bucketName());
+        final Path startPath = getPath(repository.resolve(fromPath));
+        final Pattern cPattern = Pattern.compile(pattern);
+        final List<Path> list = list(startPath, 1).stream()
+                                                  .filter(f -> Files.isRegularFile(f) && cPattern.matcher(f.getFileName().toString()).find())
+                                                  .collect(Collectors.toList());
+        final List<FileObject> fileObjects = new ArrayList<>();
+        if (repository.isRoot(fromPath)) {
+            fileObjects.add(repositoryRootNode(repository));
+        }
+        long size;
+        LocalDateTime lastModified;
+        for (Path realPath : list) {
+            if (cancelRequested()) {
+                fileObjects.clear();
+                resetCancelFlag();
+                break;
+            }
+            boolean isFolder;
+            lastModified = null;
+            size = 0;
+            if (realPath.toString().contains(".")) {
+                try {
+                    BasicFileAttributes attributes = Files.readAttributes(realPath, BasicFileAttributes.class);
+                    isFolder = attributes.isDirectory();
+                    size = attributes.size();
+                    lastModified = LocalDateTime.ofInstant(Instant.ofEpochMilli(attributes.lastModifiedTime().toMillis()),
+                                                           ZoneId.systemDefault());
+                } catch (IOException e) {
+                    size = -1;
+                    isFolder = false;
+                }
+            } else {
+                isFolder = true;
+            }
+            final Path path = root.relativize(realPath);
+            String pathToRecord = path.toString().replace("\\", "/");
+            if (isFolder) {
+                pathToRecord += "/";
+            }
+            final FileObject fileObject = new FileObject(protocol(), pathToRecord, isFolder, size);
+            fileObject.setLastModified(lastModified);
+            fileObject.addAttribute(REMOTE_PATH_ATTRIBUTE, realPath.toString());
+            fileObjects.add(fileObject);
+        }
+        return fileObjects;
+    }
+
+    @Override
     public List<FileObject> getWorkflowResults(long workflowId) throws IOException {
         return null;
     }
@@ -177,6 +306,10 @@ public abstract class FTPBaseService extends BaseStorageService<byte[], InputStr
         if (Files.exists(root) && Files.isDirectory(root)) {
             List<Path> paths = FileUtilities.listTree(root);
             for (Path current : paths) {
+                if (cancelRequested()) {
+                    resetCancelFlag();
+                    break;
+                }
                 if (Files.isRegularFile(current)) {
                     String zipPath = root.relativize(current).toString();
                     ZipEntry entry = new ZipEntry(zipPath);
@@ -240,6 +373,20 @@ public abstract class FTPBaseService extends BaseStorageService<byte[], InputStr
         } else {
             try (Stream<Path> stream = Files.walk(path, depth)) {
                 return stream.filter(p -> !p.equals(path)).sorted().collect(Collectors.toList());
+            }
+        }
+    }
+
+    private List<Path> listLast(Path path, int depth, int limit) throws IOException {
+        if (depth == 1) {
+            try (Stream<Path> stream = Files.list(path)) {
+                return stream.sorted(new PathDescending())
+                             .limit(limit).collect(Collectors.toList());
+            }
+        } else {
+            try (Stream<Path> stream = Files.walk(path, depth)) {
+                return stream.filter(p -> !p.equals(path)).sorted(new PathDescending())
+                             .limit(limit).collect(Collectors.toList());
             }
         }
     }

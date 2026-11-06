@@ -1,64 +1,64 @@
 package ro.cs.tao.utils.yaml;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.ObjectCodec;
-import com.fasterxml.jackson.core.io.IOContext;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
-import com.fasterxml.jackson.dataformat.yaml.util.StringQuotingChecker;
-import org.yaml.snakeyaml.DumperOptions;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.ObjectWriteContext;
+import tools.jackson.core.io.IOContext;
+import tools.jackson.dataformat.yaml.YAMLGenerator;
+import tools.jackson.dataformat.yaml.YAMLWriteFeature;
+import tools.jackson.dataformat.yaml.util.StringQuotingChecker;
+import org.snakeyaml.engine.v2.api.DumpSettings;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
+import org.snakeyaml.engine.v2.common.SpecVersion;
 
-import java.io.IOException;
 import java.io.Writer;
 
 public class ArgoWorkflowYAMLGenerator extends YAMLGenerator {
-    public ArgoWorkflowYAMLGenerator(IOContext ctxt, int jsonFeatures, int yamlFeatures, StringQuotingChecker quotingChecker, ObjectCodec codec, Writer out, DumperOptions.Version version) throws IOException {
-        super(ctxt, jsonFeatures, yamlFeatures, quotingChecker, codec, out, version);
-    }
-
-    public ArgoWorkflowYAMLGenerator(IOContext ctxt, int jsonFeatures, int yamlFeatures, StringQuotingChecker quotingChecker, ObjectCodec codec, Writer out, DumperOptions dumperOptions) throws IOException {
-        super(ctxt, jsonFeatures, yamlFeatures, quotingChecker, codec, out, dumperOptions);
+    public ArgoWorkflowYAMLGenerator(ObjectWriteContext writeContext, IOContext ctxt, int jsonFeatures, int yamlFeatures,
+                                     StringQuotingChecker quotingChecker, Writer out, SpecVersion version, DumpSettings dumperOptions) {
+        super(writeContext, ctxt, jsonFeatures, yamlFeatures, quotingChecker, out, version, dumperOptions);
     }
 
     @Override
-    public void writeString(String text) throws IOException, JsonGenerationException
+    public JsonGenerator writeString(String text) throws JacksonException
     {
         if (text == null) {
-            writeNull();
-            return;
+            return writeNull();
         }
         _verifyValueWrite("write String value");
 
         if (text.isEmpty()) {
-            _writeScalar(text, "string", DumperOptions.ScalarStyle.DOUBLE_QUOTED);
-            return;
+            _writeScalar(text, "string", ScalarStyle.DOUBLE_QUOTED);
+            return this;
         }
-        DumperOptions.ScalarStyle style;
-        if (Feature.MINIMIZE_QUOTES.enabledIn(_formatFeatures)) {
+        ScalarStyle style;
+        if (YAMLWriteFeature.MINIMIZE_QUOTES.enabledIn(_formatWriteFeatures)) {
             if (text.indexOf('\n') >= 0) {
-                style = DumperOptions.ScalarStyle.LITERAL;
+                style = ScalarStyle.LITERAL;
                 // If one of reserved values ("true", "null"), or, number, preserve quoting:
             } else if (_quotingChecker.needToQuoteValue(text)
-                    || (Feature.ALWAYS_QUOTE_NUMBERS_AS_STRINGS.enabledIn(_formatFeatures)
+                    || (YAMLWriteFeature.ALWAYS_QUOTE_NUMBERS_AS_STRINGS.enabledIn(_formatWriteFeatures)
                     && PLAIN_NUMBER_P.matcher(text).matches())
             ) {
                 if (_quotingChecker.needToQuoteValue(text) && text.matches("^\\w+\\[\\]$")) {
-                    style = DumperOptions.ScalarStyle.PLAIN;
+                    style = ScalarStyle.PLAIN;
                 } else {
-                    style = DumperOptions.ScalarStyle.DOUBLE_QUOTED;
+                    style = ScalarStyle.DOUBLE_QUOTED;
                 }
             } else if (text.matches("-?\\d+(\\.\\d+)?") || text.startsWith("#")) {
-                style = DumperOptions.ScalarStyle.DOUBLE_QUOTED;
+                style = ScalarStyle.DOUBLE_QUOTED;
             } else {
-                style = DumperOptions.ScalarStyle.PLAIN;
+                style = ScalarStyle.PLAIN;
             }
         } else {
-            if (Feature.LITERAL_BLOCK_STYLE.enabledIn(_formatFeatures)
+            if (YAMLWriteFeature.LITERAL_BLOCK_STYLE.enabledIn(_formatWriteFeatures)
                     && text.indexOf('\n') >= 0) {
-                style = DumperOptions.ScalarStyle.LITERAL;
+                style = ScalarStyle.LITERAL;
             } else {
-                style = DumperOptions.ScalarStyle.DOUBLE_QUOTED;
+                style = ScalarStyle.DOUBLE_QUOTED;
             }
         }
         _writeScalar(text, "string", style);
+        return this;
     }
 }

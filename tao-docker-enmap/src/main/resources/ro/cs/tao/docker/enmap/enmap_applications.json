@@ -6,7 +6,9 @@
     "description": "Rasterize a categorized vector layer into class fractions. Categories are rasterized at a x10 finer resolution and aggregated to class-wise fractions at destination resolution. This approach leads to fractions that are accurate to the percent.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "(C) 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -70,7 +72,9 @@
     "description": "Estimates map accuracy and area proportions for (simple) random sampling. We use the formulars for the stratified random sampling described in Stehman (2014): https://doi.org/10.1080/01431161.2014.930207. Note that (simple) random sampling is a special case of stratified random sampling, with exactly one stratum. Observed and predicted categories are matched by name.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "(C) 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -123,7 +127,9 @@
     "description": "Estimates map accuracy and area proportions for stratified random sampling as described in Stehman (2014): https://doi.org/10.1080/01431161.2014.930207. Observed and predicted categories are matched by name.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -185,7 +191,9 @@
     "description": "Creates classification layer from class probability layer or class fraction layer. Winner class is given by the class with maximum class probabiliy/fraction.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -229,7 +237,9 @@
     "description": "The classification workflow combines classifier fitting, map prediction and accuracy assessment.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -333,7 +343,9 @@
     "description": "Evaluates classifier performance.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -396,7 +408,9 @@
     "description": "Implementation of the scikit-learn API for CatBoost classifier.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -450,7 +464,9 @@
     "description": "Gaussian process classification (GPC) based on Laplace approximation. The implementation is based on Algorithm 3.1, 3.2, and 5.1 of Gaussian Processes for Machine Learning (GPML) by Rasmussen and Williams. Internally, the Laplace approximation is used for approximating the non-Gaussian posterior by a Gaussian. Currently, the implementation is restricted to using the logistic link function. For multi-class classification, several binary one-versus rest classifiers are fitted. Note that this class thus does not implement a true multi-class Laplace approximation. See Gaussian Processes for further information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -504,7 +520,9 @@
     "description": "A generic classifier.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -558,7 +576,9 @@
     "description": "Implementation of the scikit-learn API for LightGBM classifier.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -612,7 +632,9 @@
     "description": "Linear Support Vector Classification. Similar to SVC with parameter kernel=’linear’, but implemented in terms of liblinear rather than libsvm, so it has more flexibility in the choice of penalties and loss functions and should scale better to large numbers of samples. This class supports both dense and sparse input and the multiclass support is handled according to a one-vs-the-rest scheme.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -666,7 +688,9 @@
     "description": "Logistic Regression (aka logit, MaxEnt) classifier. In the multiclass case, the training algorithm uses the one-vs-rest (OvR) scheme if the ‘multi_class’ option is set to ‘ovr’, and uses the cross-entropy loss if the ‘multi_class’ option is set to ‘multinomial’.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -720,7 +744,9 @@
     "description": "A random forest classifier. A random forest is a meta estimator that fits a number of decision tree classifiers on various sub-samples of the dataset and uses averaging to improve the predictive accuracy and control over-fitting. The sub-sample size is controlled with the max_samples parameter if bootstrap=True (default), otherwise the whole dataset is used to build each tree.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -774,7 +800,9 @@
     "description": "from sklearn.ensemble import RandomForestClassifier; classifier = RandomForestClassifier(n_estimators=100, oob_score=True)",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -828,7 +856,9 @@
     "description": "C-Support Vector Classification. The implementation is based on libsvm. The fit time scales at least quadratically with the number of samples and may be impractical beyond tens of thousands of samples. The multiclass support is handled according to a one-vs-one scheme.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -882,7 +912,9 @@
     "description": "C-Support Vector Classification. The implementation is based on libsvm. The fit time scales at least quadratically with the number of samples and may be impractical beyond tens of thousands of samples. The multiclass support is handled according to a one-vs-one scheme.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -936,7 +968,9 @@
     "description": "Implementation of the scikit-learn API for XGBoost classification.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -990,7 +1024,9 @@
     "description": "Implementation of the scikit-learn API for XGBoost random forest classification.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1044,7 +1080,9 @@
     "description": "Uses a fitted classifier to predict class probability layer from a raster layer with features.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1097,7 +1135,9 @@
     "description": "Uses a fitted classifier to predict a classification layer from a raster layer with features. Used in the Cookbook Recipes: Classification, Graphical Modeler for information on different parameters.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1150,7 +1190,9 @@
     "description": "This algorithm reclassifies a raster by assigning new class values based on a class mapping.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1224,7 +1266,9 @@
     "description": "Perform Affinity Propagation Clustering.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1278,7 +1322,9 @@
     "description": "Implements the BIRCH clustering algorithm. It is a memory-efficient, online-learning algorithm provided as an alternative to MiniBatchKMeans. It constructs a tree data structure with the cluster centroids being read off the leaf. These can be either the final cluster centroids or can be provided as input to another clustering algorithm such as AgglomerativeClustering.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1332,7 +1378,9 @@
     "description": "",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1386,7 +1434,9 @@
     "description": "Mean shift clustering using a flat kernel. Mean shift clustering aims to discover 'blobs' in a smooth density of samples. It is a centroid-based algorithm, which works by updating candidates for centroids to be the mean of the points within a given region. These candidates are then filtered in a post-processing stage to eliminate near-duplicates to form the final set of centroids. Seeding is performed using a binning technique for scalability.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1440,7 +1490,9 @@
     "description": "Uses a fitted clusterer to predict an (unsupervised) classification layer from a raster layer with features.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1493,7 +1545,9 @@
     "description": "2D Airy Disk filter. This kernel models the diffraction pattern of a circular aperture. This kernel is normalized to a peak value of 1",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1573,7 +1627,9 @@
     "description": "2D Box filter. The Box filter or running mean is a smoothing filter. It is not isotropic and can produce artifact, when applied repeatedly to the same data.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1653,7 +1709,9 @@
     "description": "Create a spatial 2D filter kernel from list or array.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1733,7 +1791,9 @@
     "description": "2D Gaussian filter. The Gaussian filter is a filter with great smoothing properties. It is isotropic and does not produce artifacts.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1813,7 +1873,9 @@
     "description": "2D Moffat filter. This kernel is a typical model for a seeing limited PSF.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1893,7 +1955,9 @@
     "description": "2D Ricker Wavelet filter kernel (sometimes known as a Mexican Hat kernel). The Ricker Wavelet, or inverted Gaussian-Laplace filter, is a bandpass filter. It smooths the data and removes slowly varying or constant structures (e.g. background). It is useful for peak or multi-scale detection.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -1973,7 +2037,9 @@
     "description": "2D Ring filter. The Ring filter kernel is the difference between two Top-Hat kernels of different width. This kernel is useful for, e.g., background estimation.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2053,7 +2119,9 @@
     "description": "2D Savitsky-Golay filter. See wikipedia for details.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2133,7 +2201,9 @@
     "description": "2D Top-Hat filter. The Top-Hat filter is an isotropic smoothing filter. It can produce artifacts when applied repeatedly on the same data.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2213,7 +2283,9 @@
     "description": "2D Trapezoid filter.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2293,7 +2365,9 @@
     "description": "Spatial Gaussian Gradient Magnitude filter.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2347,7 +2421,9 @@
     "description": "Spatial generic (user-defined) filter.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2401,7 +2477,9 @@
     "description": "Spatial Laplace filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2455,7 +2533,9 @@
     "description": "",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2509,7 +2589,9 @@
     "description": "Spatial Median filter.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2563,7 +2645,9 @@
     "description": "Spatial Minimum filter.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2617,7 +2701,9 @@
     "description": "Spatial morphological Binary Closing filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2671,7 +2757,9 @@
     "description": "Spatial morphological Binary Dilation filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2725,7 +2813,9 @@
     "description": "Spatial morphological Binary Erosion filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2779,7 +2869,9 @@
     "description": "Spatial morphological Binary Fill Holes filter.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2833,7 +2925,9 @@
     "description": "Spatial morphological Binary Opening filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2887,7 +2981,9 @@
     "description": "Spatial morphological Binary Propagation filter.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2941,7 +3037,9 @@
     "description": "Spatial morphological Black Top-Hat filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -2995,7 +3093,9 @@
     "description": "Spatial morphological Gradient filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3049,7 +3149,9 @@
     "description": "Spatial morphological Grey Dilation filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3103,7 +3205,9 @@
     "description": "Spatial morphological Grey Erosion filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3157,7 +3261,9 @@
     "description": "Spatial morphological Grey Opening filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3211,7 +3317,9 @@
     "description": "Spatial morphological Laplace filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3265,7 +3373,9 @@
     "description": "Spatial morphological White Top-Hat filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3319,7 +3429,9 @@
     "description": "Spatial Percentile filter.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3373,7 +3485,9 @@
     "description": "Spatial Prewitt filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3427,7 +3541,9 @@
     "description": "Spatial Sobel filter. See Wikipedia for general information.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3481,7 +3597,9 @@
     "description": "1D Box filter. The Box filter or running mean is a smoothing filter. It is not isotropic and can produce artifacts, when applied repeatedly to the same data.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3561,7 +3679,9 @@
     "description": "1D Gaussian filter. The Gaussian filter is a filter with great smoothing properties. It is isotropic and does not produce artifacts.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3641,7 +3761,9 @@
     "description": "1D Ricker Wavelet filter kernel (sometimes known as a Mexican Hat kernel). The Ricker Wavelet, or inverted Gaussian-Laplace filter, is a bandpass filter. It smooths the data and removes slowly varying or constant structures (e.g. background). It is useful for peak or multi-scale detection.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3721,7 +3843,9 @@
     "description": "1D Savitsky-Golay filter. See wikipedia for details.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3801,7 +3925,9 @@
     "description": "1D Trapezoid filter.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3881,7 +4007,9 @@
     "description": "Create a classification dataset by sampling data for pixels that match the given categories and store the result as a pickle file. If the layer is not categorized, or the band with class values is selected manually, categories are derived from sampled data itself. To be more precise: i) category values are derived from unique raster band values (after excluding no data or zero data pixel), ii) category names are set equal to the category values, and iii) category colors are picked randomly.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -3944,7 +4072,9 @@
     "description": "Create a classification dataset from spectral profiles that matches the given categories and store the result as a pickle file. If the spectral library is not categorized, or the field with class values is selected manually, categories are derived from target data y. To be more precise: i) category values are derived from unique attribute values (after excluding no data or zero data values), ii) category names are set equal to the category values, and iii) category colors are picked randomly.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4008,7 +4138,9 @@
     "description": "Create a classification dataset by sampling data for pixels that match the given categories and store the result as a pickle file. If the layer is not categorized, or the field with class values is selected manually, categories are derived from the sampled target data y. To be more precise: i) category values are derived from unique attribute values (after excluding no data or zero data values), ii) category names are set equal to the category values, and iii) category colors are picked randomly.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4094,7 +4226,9 @@
     "description": "Create a classification dataset from attribute table rows that matches the given categories and store the result as a pickle file. If the layer is not categorized, or the field with class values is selected manually, categories are derived from the target data y. To be more precise: i) category values are derived from unique attribute values (after excluding no data or zero data values), ii) category names are set equal to the category values, and iii) category colors are picked randomly.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4158,7 +4292,9 @@
     "description": "Create a classification dataset from a JSON file and store the result as a pickle file. Example file (classifier.pkl.json) can be found in the EnMAP-Box testdata folder).",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4202,7 +4338,9 @@
     "description": "Create a classification dataset from Python code and store the result as a pickle file.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
     ],
@@ -4247,7 +4385,9 @@
     "description": "Create a classification dataset from attribute table rows that match the given categories and store the result as a pickle file.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4331,7 +4471,9 @@
     "description": "Create a classification dataset from tabulated text files and store the result as a pickle file. The format matches that of the FORCE Higher Level Sampling Submodule. Example files (force_features.csv and force_labels.csv) can be found in the EnMAP-Box testdata folder).",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4384,7 +4526,9 @@
     "description": "Create a regression dataset from attribute table rows that matches the given target variables and store the result as a pickle file.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4448,7 +4592,9 @@
     "description": "Create a regression dataset by sampling data for labeled pixels and store the result as a pickle file.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4511,7 +4657,9 @@
     "description": "Create a regression dataset from spectral profiles that matches the given target variables and store the result as a pickle file.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4575,7 +4723,9 @@
     "description": "Create a regression dataset by sampling data and store the result as a pickle file.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4638,7 +4788,9 @@
     "description": "Create a regression dataset from a JSON file and store the result as a pickle file. Example file (regressor.pkl.json) can be found in the EnMAP-Box testdata folder).",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4682,7 +4834,9 @@
     "description": "Create a regression dataset from Python code and store the result as a pickle file.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
     ],
@@ -4727,7 +4881,9 @@
     "description": "Create a regression dataset from attribute table rows and store the result as a pickle file.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4791,7 +4947,9 @@
     "description": "Create a regression dataset from tabulated text files and store the result as a pickle file. The format matches that of the FORCE Higher Level Sampling Submodule. Example files (force_features.csv and force_labels.csv) can be found in the EnMAP-Box testdata folder).",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4844,7 +5002,9 @@
     "description": "Create synthetically mixed regression datasets, one for each category. Results are stored as <category.name>.pkl files inside the destination folder.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -4954,7 +5114,9 @@
     "description": "Create an unsupervised dataset by sampling data from valid pixels and store the result as a pickle file. A pixel is concidered valid, if the pixel profile is free of no data values, and not excluded by the (optionally) selected mask layer.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -5017,7 +5179,9 @@
     "description": "Create a unsupervised dataset from a JSON file and store the result as a pickle file.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -5061,7 +5225,9 @@
     "description": "Create an unsupervised dataset from Python code and store the result as a pickle file.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
     ],
@@ -5106,7 +5272,9 @@
     "description": "Create an unsupervised dataset from spectral profiles and store the result as a pickle file.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -5160,7 +5328,9 @@
     "description": "Create an unsupervised dataset from a tabulated text file and store the result as a pickle file. The format matches that of the FORCE Higher Level Sampling Submodule. An example file (force_features.csv) can be found in the EnMAP-Box testdata folder).",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -5204,7 +5374,9 @@
     "description": "Create an unsupervised dataset from attribute table and store the result as a pickle file.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -5258,7 +5430,9 @@
     "description": "Merges a list of classification datasets.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -5311,7 +5485,9 @@
     "description": "Split a dataset by randomly drawing samples.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -5411,7 +5587,9 @@
     "description": "Split a dataset by randomly drawing samples.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -5521,7 +5699,9 @@
     "description": "Subset and/or reorder features in feature data X.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -5575,7 +5755,9 @@
     "description": "Save a spectral library as a human-readable GeoJSON text file. All binary profile fields will be converted into human-readable dictionary strings.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -5619,7 +5801,9 @@
     "description": "Permutation feature importance is a model inspection technique that is especially useful for non-linear or opaque estimators. The permutation feature importance is defined to be the decrease in a model score when a single feature value is randomly shuffled. This procedure breaks the relationship between the feature and the target, thus the drop in the model score is indicative of how much the model depends on the feature. This technique benefits from being model agnostic and can be calculated many times with different permutations of the feature.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -5711,7 +5895,9 @@
     "description": "Evaluate feature multicollinearity by performing hierarchical/agglomerative clustering with Ward linkage using squared Spearman rank-order correlation as distance between features. The result report includes i) pairwise squared Spearman rank-order correlation matrix, ii) clustering dendrogram, iii) inter-cluster correlation distribution, iv) intra-cluster correlation distribution, and v) a clustering hierarchy table detailing selected cluster representatives for each cluster size n. For further analysis, all relevant results are also stored as a JSON sidecar file next to the report.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -5768,7 +5954,9 @@
     "description": "Prepare a spectral raster layer from the given product. Wavelength and FWHM information is set and data is scaled according to data gain/offset values.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [],
     "targets": [
@@ -5812,7 +6000,9 @@
     "description": "Prepare a spectral raster layer from the given product. Wavelength and FWHM information is set and data is scaled according to data gain/offset values. Note that the DESIS L1C spectral data file is band interleaved by pixel and compressed, which is very disadvantageous for visualization in QGIS / EnMAP-Box. For faster exploration concider saving the resulting VRT raster layer as GTiff format via the 'Translate raster layer' algorithm.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [],
     "targets": [
@@ -5856,7 +6046,9 @@
     "description": "The metadata XML file associated with the product. Instead of executing this algorithm, you may drag&drop the metadata XML file directly from your system file browser onto the EnMAP-Box map view area.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [],
     "targets": [
@@ -5900,7 +6092,9 @@
     "description": "Prepare VNIR and SWIR spectral raster layer from the given product. Wavelength and FWHM information is set and data is scaled according to data gain/offset values.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [],
     "targets": [
@@ -5954,7 +6148,9 @@
     "description": "Prepare a spectral raster layer from the given product. Wavelength and FWHM information is set and data is scaled according to data gain/offset values.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [],
     "targets": [
@@ -5998,7 +6194,9 @@
     "description": "Prepare a spectral raster layer from the given product. Wavelength and FWHM information is set and data is scaled into the 0 to 10000 range.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [],
     "targets": [
@@ -6042,7 +6240,9 @@
     "description": "Prepare a spectral raster layer from the given product. Wavelength information is set and data is scaled into the 0 to 1 range.Supports Landsat 4 to 9, collection 1 and 2.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [],
     "targets": [
@@ -6086,7 +6286,9 @@
     "description": "Import PRISMA L1 product from HE5 file to QGIS/GDAL conform GTiff/VRT file format.Note that for the spectral cube and error matrix, the interleave is transposed and stored as GTiff to enable proper visualization in QGIS.All other sub-datasets are stored as light-weight VRT files. For further details visit the PRISMA Documentation Area.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [],
     "targets": [
@@ -6220,7 +6422,9 @@
     "description": "Import PRISMA L2B product from HE5 file to QGIS/GDAL conform GTiff/VRT file format.Note that for the spectral cube and error matrix, the interleave is transposed and stored as GTiff to enable proper visualization in QGIS.All other sub-datasets are stored as light-weight VRT files. For further details visit the PRISMA Documentation Area.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [],
     "targets": [
@@ -6334,7 +6538,9 @@
     "description": "Import PRISMA L2C product from HE5 file to QGIS/GDAL conform GTiff/VRT file format.Note that for the spectral cube and error matrix, the interleave is transposed and stored as GTiff to enable proper visualization in QGIS.All other sub-datasets are stored as light-weight VRT files. For further details visit the PRISMA Documentation Area.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [],
     "targets": [
@@ -6448,7 +6654,9 @@
     "description": "Import PRISMA L2D product from HE5 file to QGIS/GDAL conform GTiff/VRT file format with proper coordinate reference system.Note that for the spectral cube and error matrix, the interleave is transposed and stored as GTiff to enable proper visualization in QGIS.All other sub-datasets are stored as light-weight VRT files. For further details visit the PRISMA Documentation Area.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [],
     "targets": [
@@ -6582,7 +6790,9 @@
     "description": "Prepare a spectral raster layer from the given product. Wavelength information is set and data is scaled into the 0 to 10000 range.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [],
     "targets": [
@@ -6636,7 +6846,9 @@
     "description": "Areas where the mask layer evaluates to false are set to the source no data value (0, if undefined).",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -6689,7 +6901,9 @@
     "description": "Create a mask raster layer by applying a user-defined evaluation function band-wise to a source raster layer.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -6743,7 +6957,9 @@
     "description": "",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -6796,7 +7012,9 @@
     "description": "Compute various aggregation functions over all bands, while ignoring no data values.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -6850,7 +7068,9 @@
     "description": "Calculate convex hull and continuum-removed raster layers.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -6914,7 +7134,9 @@
     "description": "Create a stack of Awesome Spectral Indices and/or custom indices. Credits: the Awesome Spectral Indices project provides a ready-to-use curated list of Spectral Indices for Remote Sensing applications, maintained by David Montero Loaiza. Note that the list of available indices was last updated on 2021-11-15. Should you need other indices added after this date, please file an issue.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -7219,7 +7441,9 @@
     "description": "double",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -7272,7 +7496,9 @@
     "description": "Perform mathematical calculations on raster layer and vector layer data. Use any NumPy-based arithmetic, or even arbitrary Python code. See the RasterMath cookbook recipe for detailed usage instructions.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -7572,7 +7798,9 @@
     "description": "Creates a new point layer with the same attributes of the input layer and the raster values corresponding to the pixels covered by polygons or point location. The resulting point vector contains 1) all input attributes from the Locations vector, 2) attributes SAMPLE_{i}, one for each input raster band, 3) two attributes PIXEL_X, PIXEL_Y for storing the raster pixel locations (zero-based),and 4), in case of polygon locations, an attribute COVER for storing the pixel coverage (%). Note that we assume non-overlapping feature geometries! In case of overlapping geometries, split the Locations layer into non-overlapping subsets, perform the sampling for each subset individually, and finally concatenate the results.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -7635,7 +7863,9 @@
     "description": "Create a single-band VRT raster layer specifying a VRT Python Pixel Function. Use any NumPy-based arithmetic, or even arbitrary Python code.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -7739,7 +7969,9 @@
     "description": "Create an RGB image from a class fraction layer or class probability layer.The RGB pixel color of a single pixel is given by the weighted mean of the given category colors.The weights are given by class fractions/probabilities (i.e. values between 0 and 1). For example, pure pixels with cover fractions of 1 appear in its pure category color. A mixed-pixel with a 50% fractions in two categories colored in red and green,appears in a dull yellow ( 0.5 x (255, 0, 0) + 0.5 x (0, 255, 0) = (127, 127, 0) ).",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -7803,7 +8035,9 @@
     "description": "Saves a raster layer as a GeoTiff, ENVI or VRT file. This is a slimmed down version of the more powerful 'Translate raster layer' algorithm.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -7883,7 +8117,9 @@
     "description": "Translates categorized raster layer into target grid. Resampling is done via a two-step majority voting approach. First, the categorized raster layer is resampled at x10 finer resolution, and subsequently aggregated back to the target resolution using majority voting. This approach leads to pixel-wise class decisions that are accurate to the percent.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -7949,7 +8185,9 @@
     "description": "Convert raster data between different formats, potentially performing some operations like spatial subsetting, spatial resampling, reprojection, band subsetting, band reordering, data scaling, no data value specification, and data type conversion.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -8221,7 +8459,9 @@
     "description": "Create an empty raster that can be used as a grid.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
     ],
@@ -8306,7 +8546,9 @@
     "description": "Stack raster layers and store the result as a VRT file.This is a slimmed down version of the more powerful/complicated GDAL 'Build virtual raster' algorithm. If you also want to delete or rearrange individual bands, just use the 'Subset raster layer bands' algorithm afterwards.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -8370,7 +8612,9 @@
     "description": "Subsets raster layer bands and stores the result as a VRT file.This is a slimmed down version of the more powerful 'Translate raster layer' algorithm.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -8437,7 +8681,9 @@
     "description": "Geolocate a raster layer using geolocation arrays. See Geolocation Arrays in the GDAL documentation for details on the concept and parameters.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -8589,7 +8835,9 @@
     "description": "Implementation of the scikit-learn API for CatBoost regressor.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -8643,7 +8891,9 @@
     "description": "Gaussian process regression (GPR).",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -8697,7 +8947,9 @@
     "description": "A generic regressor.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -8751,7 +9003,9 @@
     "description": "Kernel ridge regression. Kernel ridge regression (KRR) combines ridge regression (linear least squares with l2-norm regularization) with the kernel trick. It thus learns a linear function in the space induced by the respective kernel and the data. For non-linear kernels, this corresponds to a non-linear function in the original space. The form of the model learned by KRR is identical to support vector regression (SVR). However, different loss functions are used: KRR uses squared error loss while support vector regression uses epsilon-insensitive loss, both combined with l2 regularization. In contrast to SVR, fitting a KRR model can be done in closed-form and is typically faster for medium-sized datasets. On the other hand, the learned model is non-sparse and thus slower than SVR, which learns a sparse model for epsilon > 0, at prediction-time.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -8805,7 +9059,9 @@
     "description": "Implementation of the scikit-learn API for LightGBM regressor.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -8859,7 +9115,9 @@
     "description": "Ordinary least squares Linear Regression. LinearRegression fits a linear model with coefficients w = (w1, ..., wp) to minimize the residual sum of squares between the observed targets in the dataset, and the targets predicted by the linear approximation.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -8913,7 +9171,9 @@
     "description": "Linear Support Vector Regression. Similar to SVR with parameter kernel=’linear’, but implemented in terms of liblinear rather than libsvm, so it has more flexibility in the choice of penalties and loss functions and should scale better to large numbers of samples.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -8967,7 +9227,9 @@
     "description": "Partial Least Squares regression.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9021,7 +9283,9 @@
     "description": "A random forest regressor. A random forest is a meta estimator that fits a number of classifying decision trees on various sub-samples of the dataset and uses averaging to improve the predictive accuracy and control over-fitting. The sub-sample size is controlled with the max_samples parameter if bootstrap=True (default), otherwise the whole dataset is used to build each tree.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9075,7 +9339,9 @@
     "description": "Epsilon-Support Vector Regression. The free parameters in the model are C and epsilon. The implementation is based on libsvm. The fit time complexity is more than quadratic with the number of samples which makes it hard to scale to datasets with more than a couple of 10000 samples.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9129,7 +9395,9 @@
     "description": "Epsilon-Support Vector Regression. The free parameters in the model are C and epsilon. The implementation is based on libsvm. The fit time complexity is more than quadratic with the number of samples which makes it hard to scale to datasets with more than a couple of 10000 samples.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9183,7 +9451,9 @@
     "description": "Implementation of the scikit-learn API for XGBoost regression.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9237,7 +9507,9 @@
     "description": "Implementation of the scikit-learn API for XGBoost random forest regression.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9291,7 +9563,9 @@
     "description": "Uses a fitted regressor to predict a regression layer from a raster layer with features.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9344,7 +9618,9 @@
     "description": "Compute receiver operating characteristic (ROC) and detection error tradeoff (DET) curves. For more details see the Scikit-Learn user guide: Receiver operating characteristic (ROC) and Detection error tradeoff (DET). Note that observed classes and predicted class probabilities are matched by name.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9397,7 +9673,9 @@
     "description": "Estimates map accuracy.We use the formulars as described in Scikit-Learn Regression metrics user guide. Observed and predicted target variables are matched by name.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9450,7 +9728,9 @@
     "description": "The regression workflow combines regressor fitting and map prediction.Optionally, the cross-validation performance of the regressor can be assessed.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9542,7 +9822,9 @@
     "description": "Evaluates regressor performance.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9605,7 +9887,9 @@
     "description": "This algorithm finds the optimal two-feature index by modelling a target variable via linear regression.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9709,7 +9993,9 @@
     "description": "Spectrally resample a spectral raster layer by applying spectral response function convolution.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9776,7 +10062,9 @@
     "description": "Spectrally resample a spectral raster layer by applying spectral response function convolution. For more information see the DESIS mission website.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9843,7 +10131,9 @@
     "description": "Spectrally resample a spectral raster layer by applying spectral response function convolution. For more information see the EnMAP mission website.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9910,7 +10200,9 @@
     "description": "Spectrally resample a spectral raster layer by applying spectral response function convolution. For more information see the Landsat missions website.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -9977,7 +10269,9 @@
     "description": "Spectrally resample a spectral raster layer by applying spectral response function convolution. For more information see the Landsat missions website.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10044,7 +10338,9 @@
     "description": "Spectrally resample a spectral raster layer by applying spectral response function convolution. For more information see the Landsat missions website.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10111,7 +10407,9 @@
     "description": "Spectrally resample a spectral raster layer by applying spectral response function convolution. For more information see the PRISMA mission website.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10178,7 +10476,9 @@
     "description": "Spectrally resample a spectral raster layer by applying spectral response function convolution, with spectral response function stored inside a spectral library. Each spectral profile defines a destination spectral band.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10241,7 +10541,9 @@
     "description": "Spectrally resample a spectral raster layer by applying spectral response function convolution. For more information see the Sentinel-2 missions website.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10308,7 +10610,9 @@
     "description": "Spectrally resample a spectral raster layer by applying spectral response function convolution, with spectral response function derived from wavelength and FWHM information stored inside a spectral raster layer.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10374,7 +10678,9 @@
     "description": "Factor Analysis. A simple linear generative model with Gaussian latent variables. The observations are assumed to be caused by a linear transformation of lower dimensional latent factors and added Gaussian noise. Without loss of generality the factors are distributed according to a Gaussian with zero mean and unit covariance. The noise is also zero mean and has an arbitrary diagonal covariance matrix. If we would restrict the model further, by assuming that the Gaussian noise is even isotropic (all diagonal entries are the same) we would obtain ProbabilisticPCA. FactorAnalysis performs a maximum likelihood estimate of the so-called loading matrix, the transformation of the latent variables to the observed ones, using SVD based approach.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10448,7 +10754,9 @@
     "description": "FastICA: a fast algorithm for Independent Component Analysis.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10522,7 +10830,9 @@
     "description": "Agglomerate features. Recursively merges pair of clusters of features.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10596,7 +10906,9 @@
     "description": "Kernel Principal component analysis (KPCA). Non-linear dimensionality reduction through the use of kernels",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10670,7 +10982,9 @@
     "description": "Scale each feature by its maximum absolute value. This estimator scales and translates each feature individually such that the maximal absolute value of each feature in the training set will be 1.0.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10744,7 +11058,9 @@
     "description": "Transform features by scaling each feature to a given range. This estimator scales and translates each feature individually such that it is in the given range on the training set, e.g. between zero and one.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10818,7 +11134,9 @@
     "description": "Normalize samples individually to unit norm. Each sample (i.e. each row of the data matrix) with at least one non zero component is rescaled independently of other samples so that its norm (l1, l2 or inf) equals one.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10892,7 +11210,9 @@
     "description": "Principal component analysis (PCA). Linear dimensionality reduction using Singular Value Decomposition of the data to project it to a lower dimensional space. The input data is centered but not scaled for each feature before applying the SVD.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -10966,7 +11286,9 @@
     "description": "Transform features using quantiles information. This method transforms the features to follow a uniform or a normal distribution. Therefore, for a given feature, this transformation tends to spread out the most frequent values. It also reduces the impact of (marginal) outliers: this is therefore a robust preprocessing scheme. The transformation is applied on each feature independently. First an estimate of the cumulative distribution function of a feature is used to map the original values to a uniform distribution. The obtained values are then mapped to the desired output distribution using the associated quantile function. Features values of new/unseen data that fall below or above the fitted range will be mapped to the bounds of the output distribution. Note that this transform is non-linear. It may distort linear correlations between variables measured at the same scale but renders variables measured at different scales more directly comparable.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -11040,7 +11362,9 @@
     "description": "Scale features using statistics that are robust to outliers. This Scaler removes the median and scales the data according to the quantile range (defaults to IQR: Interquartile Range). The IQR is the range between the 1st quartile (25th quantile) and the 3rd quartile (75th quantile). Centering and scaling happen independently on each feature by computing the relevant statistics on the samples in the training set. Median and interquartile range are then stored to be used on later data using the transform method. Standardization of a dataset is a common requirement for many machine learning estimators. Typically this is done by removing the mean and scaling to unit variance. However, outliers can often influence the sample mean / variance in a negative way. In such cases, the median and the interquartile range often give better results.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -11114,7 +11438,9 @@
     "description": "Standardize features by removing the mean and scaling to unit variance. The standard score of a sample x is calculated as: z = (x - u) / s where u is the mean of the training samples or zero if with_mean=False, and s is the standard deviation of the training samples or one if with_std=False. Centering and scaling happen independently on each feature by computing the relevant statistics on the samples in the training set. Mean and standard deviation are then stored to be used on later data using transform. Standardization of a dataset is a common requirement for many machine learning estimators: they might behave badly if the individual features do not more or less look like standard normally distributed data (e.g. Gaussian with 0 mean and unit variance). For instance many elements used in the objective function of a learning algorithm (such as the RBF kernel of Support Vector Machines or the L1 and L2 regularizers of linear models) assume that all features are centered around 0 and have variance in the same order. If a feature has a variance that is orders of magnitude larger that others, it might dominate the objective function and make the estimator unable to learn from other features correctly as expected.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -11188,7 +11514,9 @@
     "description": "Uses a fitted transformer to transform a raster layer.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -11241,7 +11569,9 @@
     "description": "Uses a fitted transformer to inverse transform a raster layer.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -11294,7 +11624,9 @@
     "description": "Implementation of the regression-based unmixing approach 'Ensemble Learning From Synthetically Mixed Training Data for Quantifying Urban Land Cover With Support Vector Regression' in IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing, vol. 10, no. 4, pp. 1640-1650, April 2017.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -11466,7 +11798,9 @@
     "description": "Rasterize a categorized vector layer into a categorized raster layer. Output category names and colors are given by the source layer. Resampling is done via a two-step majority voting approach. First, the categorized raster layer is resampled at x10 finer resolution, and subsequently aggregated back to the target resolution using majority voting. This approach leads to pixel-wise class decisions that are accurate to the percent.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -11542,7 +11876,9 @@
     "description": "Converts vector geometries (points, lines and polygons) into a raster grid.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -11674,7 +12010,9 @@
     "description": "This algorithm creates a new point layer with a given number of random points, all of them within the categories of the given categorized raster layer.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {
@@ -11758,7 +12096,9 @@
     "description": "This algorithm creates a new point layer with a given number of random points, all of them in the area where the given mask evaluates to true.",
     "authors": "Andreas Janz, Benjamin Jakimow, Fabian Thiel, Sebastian van der Linden, Patrick Hostert",
     "copyright": "C 2018-2022",
-    "nodeAffinity": "Any",
+    "nodeAffinity" : {
+      "value" : "Any"
+    },
     "category": "OPTICAL",
     "sources": [
       {

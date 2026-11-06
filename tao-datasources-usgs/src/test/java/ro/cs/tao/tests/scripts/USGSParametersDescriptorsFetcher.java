@@ -1,12 +1,12 @@
 package ro.cs.tao.tests.scripts;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import ro.cs.tao.datasource.CollectionDescription;
 import ro.cs.tao.datasource.param.DataSourceParameter;
 import ro.cs.tao.tests.scripts.internal.MockUSGSDataSource;
+import tools.jackson.databind.ObjectMapper;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

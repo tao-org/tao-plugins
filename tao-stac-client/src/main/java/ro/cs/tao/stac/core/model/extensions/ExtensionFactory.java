@@ -3,6 +3,7 @@ package ro.cs.tao.stac.core.model.extensions;
 import ro.cs.tao.stac.core.model.Extensible;
 import ro.cs.tao.stac.core.model.extensions.eo.EOExtension;
 import ro.cs.tao.stac.core.model.extensions.fileinfo.FileInfoExtension;
+import ro.cs.tao.stac.core.model.extensions.processing.ProcessingExtension;
 import ro.cs.tao.stac.core.model.extensions.product.ProductExtension;
 import ro.cs.tao.stac.core.model.extensions.projection.ProjExtension;
 import ro.cs.tao.stac.core.model.extensions.raster.RasterExtension;
@@ -45,6 +46,10 @@ public class ExtensionFactory {
                 break;
             case RASTER:
                 extension = new RasterExtension<>(parent);
+                break;
+            case PROCESSING:
+                extension = new ProcessingExtension<>(parent);
+                break;
         }
         return extension;
     }

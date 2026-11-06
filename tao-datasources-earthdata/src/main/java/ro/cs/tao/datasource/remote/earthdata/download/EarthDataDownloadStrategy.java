@@ -179,7 +179,7 @@ public class EarthDataDownloadStrategy extends DownloadStrategy<String> {
                 outputStream.close();
                 logger.finest("End reading from input stream");
                 checkCancelled();
-                if (isArchive && Boolean.parseBoolean(this.props.getProperty("auto.uncompress", "true"))) {
+                /*if (isArchive && Boolean.parseBoolean(this.props.getProperty("auto.uncompress", "true"))) {
                     productFile = extract(archivePath, computeTarget(archivePath));
                 } else {
                     productFile = archivePath;
@@ -190,8 +190,8 @@ public class EarthDataDownloadStrategy extends DownloadStrategy<String> {
                     } catch (URISyntaxException e) {
                         logger.severe(e.getMessage());
                     }
-                }
-
+                }*/
+                productFile = archivePath;
             } finally {
                 if (outputStream != null && outputStream.isOpen()) outputStream.close();
                 if (this.timeoutTimer != null) {
@@ -230,9 +230,7 @@ public class EarthDataDownloadStrategy extends DownloadStrategy<String> {
     }
 
     protected Path computeTarget(Path archivePath) {
-        return archivePath.getFileName().toString().endsWith(".tar.gz") ?
-               Paths.get(archivePath.toString().replace(".tar.gz", "")) :
-               Paths.get(archivePath.toString().replace(".zip", ""));
+        return super.computeTarget(archivePath);
     }
 
     protected Path extract(Path archivePath, Path targetPath) throws IOException {

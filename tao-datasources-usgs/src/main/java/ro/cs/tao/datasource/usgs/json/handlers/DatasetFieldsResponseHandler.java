@@ -15,12 +15,12 @@
  */
 package ro.cs.tao.datasource.usgs.json.handlers;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.cs.tao.datasource.remote.result.filters.AttributeFilter;
 import ro.cs.tao.datasource.remote.result.json.JSonResponseHandler;
 import ro.cs.tao.datasource.usgs.json.requests.FieldDescriptor;
 import ro.cs.tao.datasource.usgs.json.responses.DatasetFieldsResponse;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,10 +31,11 @@ import java.util.List;
 public class DatasetFieldsResponseHandler implements JSonResponseHandler<FieldDescriptor> {
     @Override
     public List<FieldDescriptor> readValues(String content, AttributeFilter...filters) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
+        ObjectMapper mapper = new ObjectMapper().rebuild()
+                .configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true)
+                .build();
         DatasetFieldsResponse result = null;
         try {
             result = mapper.readValue(content, DatasetFieldsResponse.class);

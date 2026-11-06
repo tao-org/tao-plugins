@@ -1,12 +1,9 @@
 package org.w3id.cwl.cwl1_2.utils;
 
-import java.io.File;
-import org.snakeyaml.engine.v2.api.Dump;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+
+import java.io.File;
 
 public class Validator {
 	public static void main(final String[] args) throws Exception {
@@ -16,8 +13,10 @@ public class Validator {
 		// TODO: allow URLs and such.
 		final File uri = new File(args[0]);
 		Object doc = RootLoader.loadDocument(uri);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setSerializationInclusion(Include.NON_NULL).writerWithDefaultPrettyPrinter().writeValue(System.out, doc);
+		ObjectMapper mapper = new ObjectMapper().rebuild()
+				.changeDefaultPropertyInclusion(inclusion -> inclusion.withValueInclusion(Include.NON_NULL))
+				.build();
+		mapper.writerWithDefaultPrettyPrinter().writeValue(System.out, doc);
 		System.out.println();
 
 	}

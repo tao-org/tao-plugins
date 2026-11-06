@@ -1,0 +1,50 @@
+/*
+ * Copyright (C) 2018 CS ROMANIA
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 3 of the License, or (at your option)
+ * any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, see http://www.gnu.org/licenses/
+ */
+
+package ro.cs.tao.docker.otb;
+
+import org.apache.commons.lang3.SystemUtils;
+import ro.cs.tao.topology.docker.BaseImageInstaller;
+
+import java.nio.file.Path;
+
+public class OTB9ImageInstaller extends BaseImageInstaller {
+    @Override
+    public String getContainerName() { return "otb-9-1-1"; }
+
+    @Override
+    protected String getDescription() { return "OTB"; }
+
+    @Override
+    protected String getPathInContainer() { return "/opt/OTB-9.1.1-Linux64/bin"; }
+
+    @Override
+    protected String getPathInSystem() {
+        Path path = findInPath(SystemUtils.IS_OS_WINDOWS ?
+                                       "otbcli_BandMath.bat" : "otbcli_BandMath");
+        return path != null ? path.getParent().toString() : null;
+    }
+
+    @Override
+    protected String getContainerDescriptorFileName() { return "otb9_container.json"; }
+
+    @Override
+    protected String getComponentDescriptorFileName() { return "otb9_applications.json"; }
+
+    @Override
+    protected String getLogoFileName() { return "otb_logo.png"; }
+
+}

@@ -67,6 +67,32 @@ public class ASFQuery extends DataQuery {
     @Override
     public boolean supportsPaging() { return false; }
 
+
+    @Override
+    public List<String> exportSearchUrls() {
+        try {
+            if (!this.parameters.containsKey("platformName")) {
+                addParameter("platformName", this.dataSourceParameters.get("platformName").getDefaultValue());
+            }
+            List<NameValuePair> params = new ArrayList<>();
+            for (QueryParameter<?> parameter : this.parameters.values()) {
+                if (parameter.isOptional() && parameter.getValue() == null &&
+                    parameter.getMinValue() == null && parameter.getMaxValue() == null) {
+                    continue;
+                }
+                params.add(new BasicNameValuePair(getRemoteName(parameter.getName()), getParameterValue(parameter)));
+            }
+            params.add(new BasicNameValuePair("maxResults", String.valueOf(this.limit > 0 ? this.limit : DEFAULT_LIMIT)));
+            params.add(new BasicNameValuePair("output", "json"));
+            List<String> urls = new ArrayList<>();
+            urls.add(this.source.getConnectionString(this.sensorName) + "?" +
+                     URLEncodedUtils.format(params, "UTF-8").replace("+", "%20"));
+            return urls;
+        } catch (ConversionException e) {
+            throw new QueryException(e.getMessage());
+        }
+    }
+
     protected List<EOProduct> executeImpl() {
         List<EOProduct> results = new ArrayList<>();
         List<NameValuePair> params = new ArrayList<>();

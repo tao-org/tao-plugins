@@ -1,6 +1,3 @@
-import com.fasterxml.jackson.core.PrettyPrinter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.samstevens.totp.code.CodeGenerator;
 import dev.samstevens.totp.code.DefaultCodeGenerator;
 import dev.samstevens.totp.exceptions.CodeGenerationException;
@@ -20,6 +17,7 @@ import org.openstack4j.openstack.OSFactory;
 import ro.cs.tao.utils.CloseableHttpResponse;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -72,7 +70,6 @@ public class OSTest {
         catalog.sort((Comparator<Service>) (o1, o2) -> o2.getType().compareTo(o1.getType()));
         final List<? extends Server> list = client.compute().servers().list();
         ObjectMapper objectMapper = new ObjectMapper();
-        PrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
 
         /*final List<? extends Server> servers = client.compute().servers().list();
         Files.write(folder.resolve("servers.json"), objectMapper.writer(prettyPrinter).writeValueAsBytes(servers));
@@ -81,7 +78,7 @@ public class OSTest {
         Files.write(folder.resolve("floatingIps.json"), objectMapper.writer(prettyPrinter).writeValueAsBytes(floatingIPS));*/
 
         final List<? extends Image> images = client.images().list();
-        Files.write(folder.resolve("images.json"), objectMapper.writer(prettyPrinter).writeValueAsBytes(images));
+        Files.write(folder.resolve("images.json"), objectMapper.writer().withDefaultPrettyPrinter().writeValueAsBytes(images));
 
         /*final List<? extends Network> networks = client.networking().network().list();
         Files.write(folder.resolve("networks.json"), objectMapper.writer(prettyPrinter).writeValueAsBytes(networks));

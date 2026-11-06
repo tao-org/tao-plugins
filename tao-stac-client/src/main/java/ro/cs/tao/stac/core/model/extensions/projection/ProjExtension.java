@@ -1,10 +1,10 @@
 package ro.cs.tao.stac.core.model.extensions.projection;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
 import ro.cs.tao.stac.core.model.Extensible;
 import ro.cs.tao.stac.core.model.extensions.Extension;
 import ro.cs.tao.stac.core.parser.JsonValueHelper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
 
 import java.util.logging.Logger;
 
@@ -26,11 +26,11 @@ public class ProjExtension<E extends Extensible> extends Extension<E> {
     }
 
     @Override
-    public void extractField(TreeNode node, String name) throws JsonProcessingException {
+    public void extractField(JsonNode node, String name) throws JacksonException {
         try {
             switch (name) {
                 case ProjFields.CENTROID:
-                    TreeNode child = node.get(name);
+                    JsonNode child = node.get(name);
                     Centroid centroid = new Centroid();
                     centroid.setLat(JsonValueHelper.getDouble(child, "lat"));
                     centroid.setLon(JsonValueHelper.getDouble(child, "lon"));
@@ -111,3 +111,5 @@ public class ProjExtension<E extends Extensible> extends Extension<E> {
         parent.addField(ProjFields.TRANSFORM, transform);
     }
 }
+
+

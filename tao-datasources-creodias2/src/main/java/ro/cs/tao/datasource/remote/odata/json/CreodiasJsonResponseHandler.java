@@ -22,21 +22,18 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.products.sentinels.SentinelProductHelper;
 import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Cosmin Cara
  */
 public class CreodiasJsonResponseHandler implements JSonResponseHandler<EOProduct> {
-    static final Pattern S1Pattern =
-            Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
     private final CreoDiasODataSource dataSource;
     private final Predicate<EOProduct> filter;
 
@@ -61,7 +58,7 @@ public class CreodiasJsonResponseHandler implements JSonResponseHandler<EOProduc
                     product.setName(r.getName());
                     product.setId(r.getId());
                     product.setFormatType(DataFormat.RASTER);
-                    Object value = getAttributeValue(r, "platformShortName");
+                    Object value = r.attributeValue("platformShortName");
                     if (value != null) {
                         String platform = value.toString();
                         platform = platform.substring(0, 1).toUpperCase() + platform.substring(1).toLowerCase();
@@ -71,13 +68,13 @@ public class CreodiasJsonResponseHandler implements JSonResponseHandler<EOProduc
                     product.setPixelType(PixelType.UINT16);
                     product.setWidth(-1);
                     product.setHeight(-1);
-                    value = getAttributeValue(r, "productType");
+                    value = r.attributeValue("productType");
                     if (value != null) {
                         product.setProductType(value.toString());
                     }
                     product.setLocation(dataSource.getConnectionString() + "(" + r.getId() + ")/$value");
                     product.setAcquisitionDate(r.getContentDate().getStart());
-                    product.addAttribute("relativeOrbit", getRelativeOrbit(product.getName()));
+                    product.addAttribute("relativeOrbit", SentinelProductHelper.create(product.getName()).getOrbit());
                     product.addAttribute("s3path", r.getS3Path());
                     r.getAttributes().forEach(a -> product.addAttribute(a.getName(), String.valueOf(a.getValue())));
                     final List<Asset> assets = r.getAssets();
@@ -92,25 +89,5 @@ public class CreodiasJsonResponseHandler implements JSonResponseHandler<EOProduc
             }
         }
         return retVal;
-    }
-
-    private Object getAttributeValue(Result result, String name) {
-        Attribute attribute = result.getAttributes().stream().filter(a -> a.getName().equals(name)).findFirst().orElse(null);
-        return attribute != null ? attribute.getValue() : null;
-    }
-
-    private String getRelativeOrbit(String productName) {
-        final String value;
-        final Matcher matcher = S1Pattern.matcher(productName);
-        if (matcher.matches()) {
-            int absOrbit = Integer.parseInt(matcher.group(10));
-            value = String.format("%03d",
-                                  matcher.group(1).endsWith("A") ?
-                                        ((absOrbit - 73) % 175) + 1 :
-                                        ((absOrbit - 27) % 175) + 1);
-        } else {
-            value = null;
-        }
-        return value;
     }
 }

@@ -1,11 +1,11 @@
 package ro.cs.tao.stac.core;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.geotools.http.HTTPResponse;
 import org.geotools.http.SimpleHttpClient;
 import org.geotools.util.Base64;
 import org.geotools.util.factory.GeoTools;
 import ro.cs.tao.component.WebServiceAuthentication;
+import tools.jackson.databind.ObjectMapper;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -23,6 +23,15 @@ import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * {@code HttpClient} is an HTTP client implementation that extends the {@code SimpleHttpClient} and
+ * provides additional behavior for handling authenticated requests and enhanced connection handling.
+ * This class is primarily used for making GET and POST requests to web services that may require
+ * basic or token-based authentication.
+ *
+ * It also includes functionality for handling HTTPS connections with self-signed certificates typically
+ * used in localhost or development environments.
+ */
 public class HttpClient extends SimpleHttpClient {
     private final Logger logger = Logger.getLogger(HttpClient.class.getName());
     private final WebServiceAuthentication authentication;
@@ -105,6 +114,7 @@ public class HttpClient extends SimpleHttpClient {
 
     private URLConnection openAuthConnection(URL finalURL) throws IOException {
         URLConnection connection = openConnection(finalURL);
+        connection.setReadTimeout(60000);    // 60 sec
         final String username = getUser();
         final String password = getPassword();
 

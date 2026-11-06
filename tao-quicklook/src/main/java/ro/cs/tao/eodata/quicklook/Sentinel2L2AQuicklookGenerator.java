@@ -1,6 +1,7 @@
 package ro.cs.tao.eodata.quicklook;
 
 import ro.cs.tao.eodata.DataHandlingException;
+import ro.cs.tao.eodata.metadata.MetadataInspector;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.Executor;
@@ -14,6 +15,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The Sentinel2L2AQuicklookGenerator class is a specific implementation of the BaseQuicklookGenerator
+ * designed to create quicklook images for Sentinel-2 Level-2A product files. It provides the logic
+ * for identifying supported file types, constructing GDAL command-line arguments, and processing
+ * Sentinel-2 data files to generate quicklook images.
+ *
+ * This generator specifically handles files with the extensions ".jp2" and ".JP2" and uses GDAL
+ * either directly or via Docker to perform the necessary transformations for generating quicklooks.
+ */
 public class Sentinel2L2AQuicklookGenerator extends BaseQuicklookGenerator<Path> {
 
     public Sentinel2L2AQuicklookGenerator() {
@@ -69,16 +79,17 @@ public class Sentinel2L2AQuicklookGenerator extends BaseQuicklookGenerator<Path>
                     }
                     productFile = productFile.resolve("QI_DATA")
                                              .resolve("T" + helper.getTileIdentifier() + "_" + helper.getSensingDate() + "_PVI.jp2");
-                    Executor<?> executor = initialize(productFile, useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
+                    Executor<?> executor = initialize(productFile, new MetadataInspector.Metadata(),
+                                                      useDocker ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
                     if (executor != null) {
                         executor.setOutputConsumer(consumer);
-                        int code;
-                        if ((code = executor.execute(false)) == 0) {
-                            productFile = Paths.get(productFile + extension);
-                        } else {
+                        final Path finalProductFile = productFile;
+                        executor.onSuccess(() -> {
+                            results.add(Paths.get(finalProductFile + extension));
+                        }).onError(() -> {
                             logger.warning(String.format("Quicklook for %s was not created (return code: %d, output: %s)",
-                                                         productFile.getFileName(), code, consumer.getOutput()));
-                        }
+                                                         finalProductFile.getFileName(), executor.getReturnCode(), consumer.getOutput()));
+                        }).execute(false);
                     } else {
                         logger.warning(String.format("Quicklooks not supported for %s files", FileUtilities.getExtension(productFile)));
                     }

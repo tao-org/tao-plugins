@@ -133,7 +133,7 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
                         getContainerName(), e.getMessage()));
             }
         }
-        Container dbContainer = this.containerProvider.get(container != null ? container.getId() : getContainerName());
+        Container dbContainer = containerProvider().getByName(getContainerName());
         if (dbContainer == null) {
             logger.info(String.format("Container %s not registered in database, will create one", getContainerName()));
             dbContainer = new Container();
@@ -157,9 +157,16 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
             throw new IOException("This plugin requires Docker to be installed");
         }
         final String containerName = getContainerName();
-        final String id = DockerManager.getInstance(containerName, userName);
+        final String instanceName = instanceName(userName);
+        final String id = DockerManager.getInstance(containerName, instanceName);
         if (id != null) {
-            throw new RuntimeException(String.format("[%s] is already running", containerName));
+            //throw new RuntimeException(String.format("[%s] is already running", containerName));
+            final Container dbContainer = containerProvider().getByName(containerName);
+            if (dbContainer != null) {
+                DockerManager.stopInstance(dbContainer.getId(), userName);
+            } else {
+                DockerManager.removeContainer(id);
+            }
         }
         //final Properties properties = getAdditionalProperties();
         final DockerVolumeMap map = ExecutionConfiguration.getMasterContainerVolumeMap();
@@ -216,18 +223,29 @@ public class JupyterContainer extends BaseImageInstaller implements SingletonCon
         args.add("JUPYTER_TOKEN=" + token);
         args.add("-v");
         Path absolutePath = Paths.get(SystemVariable.ROOT.value()).toAbsolutePath();
-        String mapVolumePath = (absolutePath.endsWith("/")
+        String mapVolumePath = (absolutePath.endsWith("/") || absolutePath.endsWith("\\")
                 ? absolutePath
-                : (absolutePath + "/"))
-                + userName;
+                : SystemUtils.IS_OS_LINUX ? (absolutePath + "/") + userName
+                : (absolutePath + "\\")) + userName;
         File file = new File(mapVolumePath);
         if(!file.exists())
         {
             file.mkdir();
         }
         args.add(mapVolumePath + ":" + getPathInContainer());
-        String instanceId = DockerManager.runDaemon(containerName, userName, portMap, userName, args);
+        if (id == null) {
+            DockerManager.removeContainer(instanceName);
+        }
+        String instanceId = DockerManager.runDaemon(containerName, instanceName, portMap, userName, args);
         return instanceId + ":" + hostPort;
+    }
+
+    private String instanceName(String userName) {
+        String safeUserName = userName != null ? userName.replaceAll("[^a-zA-Z0-9_.-]", "_") : "user";
+        if (safeUserName.isEmpty() || !Character.isLetterOrDigit(safeUserName.charAt(0))) {
+            safeUserName = "user_" + safeUserName;
+        }
+        return getContainerName() + "-" + safeUserName;
     }
 
     @Override

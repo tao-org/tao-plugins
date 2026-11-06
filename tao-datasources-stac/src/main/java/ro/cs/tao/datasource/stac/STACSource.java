@@ -50,6 +50,14 @@ public class STACSource extends AbstractDataSource<STACQuery, STACClient> {
         setParameterProvider(new STACParameterProvider(this));
     }
 
+    /** Creates a source from already resolved metadata without querying the configuration database. */
+    public STACSource(String provider, String url, ParameterProvider parameterProvider, WebServiceAuthentication authentication) {
+        super(url);
+        setId(provider);
+        this.authentication = authentication;
+        setParameterProvider(parameterProvider);
+    }
+
     @Override
     public String defaultId() {
         return NAME;
@@ -81,9 +89,8 @@ public class STACSource extends AbstractDataSource<STACQuery, STACClient> {
         if (parameterProvider == null) {
             throw new QueryException("No parameter provider found for this data source");
         }
-        final Map<String, Map<String, DataSourceParameter>> supportedParameters =
-                parameterProvider.getSupportedParameters();
-        if (supportedParameters == null || !supportedParameters.containsKey(collection)) {
+        final Map<String, DataSourceParameter> supportedParameters = parameterProvider.getSupportedParameters(collection);
+        if (supportedParameters == null) {
             throw new QueryException(String.format("Parameters not defined for this data source and collection %s",
                                                    collection));
         }

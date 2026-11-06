@@ -7,7 +7,9 @@
 		"authors": "Lidia Baciu, Laurentiu Nicola",
 		"copyright": "(C) 2021 CS GROUP ROMANIA",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"sources": [
 			{
 				"id": null,
@@ -104,7 +106,9 @@
 		"authors": "Lidia Baciu, Laurentiu Nicola",
 		"copyright": "(C) 2021 CS GROUP ROMANIA",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"sources": [
 			{
 				"id": null,

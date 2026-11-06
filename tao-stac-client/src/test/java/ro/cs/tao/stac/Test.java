@@ -1,45 +1,47 @@
 package ro.cs.tao.stac;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ro.cs.tao.stac.core.STACClient;
 import ro.cs.tao.stac.core.model.*;
 import ro.cs.tao.stac.core.parser.STACParser;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectWriter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Test {
 
     public static void main(String[] args) throws Exception {
         //testParser();
-        testClient();
+        //testClient();
+        extractInstruments();
         System.exit(0);
     }
 
     private static void testParser() throws IOException {
         STACParser parser = new STACParser();
-        Catalog catalog = parser.parseCatalogResponse(testCatalog());
-        assert(catalog != null);
-        CollectionList collections = parser.parseCollectionsResponse(testCollections());
-        assert (collections != null);
-        Collection collection = parser.parseCollectionResponse(testCollection());
-        assert(collection != null);
+        //Catalog catalog = parser.parseCatalogResponse(testCatalog());
+        //assert(catalog != null);
+        //CollectionList collections = parser.parseCollectionsResponse(testCollections());
+        //assert (collections != null);
+        //Collection collection = parser.parseCollectionResponse(testCollection());
+        //assert(collection != null);
         ItemCollection itemCollection = parser.parseItemCollectionResponse(testItems());
-        assert(itemCollection != null);
+        //assert(itemCollection != null);
     }
 
     private static void testClient() throws IOException {
         STACClient client = new STACClient("https://earth-search.aws.element84.com/v1", null);
         final String collectionName = "sentinel-2-l2a";
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
         Catalog catalog = client.getCatalog();
         assert (catalog != null);
         CollectionList collectionList = client.listCollections();
@@ -471,8 +473,60 @@ public class Test {
     }
 
     private static String testItems() throws IOException {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Test.class.getResourceAsStream("items_1.json")))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Test.class.getResourceAsStream("items_3.json")))) {
             return reader.lines().collect(Collectors.joining("\n"));
         }
+    }
+
+    private static void extractInstruments() throws IOException, InterruptedException {
+
+
+        HttpClient client = HttpClient.newHttpClient();
+        ObjectMapper mapper = new ObjectMapper();
+
+        Set<String> instrumentSet = new HashSet<>();
+        String url = "https://catalogue.dataspace.copernicus.eu/stac/collections";
+
+        while (url != null) {
+            HttpRequest request = HttpRequest.newBuilder()
+                                             .uri(URI.create(url))
+                                             .GET()
+                                             .build();
+
+            HttpResponse<String> response =
+                    client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            JsonNode root = mapper.readTree(response.body());
+
+            // Extract collections
+            JsonNode collections = root.path("collections");
+            if (collections.isArray()) {
+                for (JsonNode collection : collections) {
+                    JsonNode instrumentsNode = collection
+                            .path("summaries")
+                            .path("instruments");
+
+                    if (instrumentsNode.isArray()) {
+                        for (JsonNode instrument : instrumentsNode) {
+                            instrumentSet.add(instrument.asText());
+                        }
+                    }
+                }
+            }
+
+            // Handle pagination
+            url = null;
+            JsonNode links = root.path("links");
+            if (links.isArray()) {
+                for (JsonNode link : links) {
+                    if ("next".equals(link.path("rel").asText())) {
+                        url = link.path("href").asText();
+                        break;
+                    }
+                }
+            }
+        }
+        System.out.println(String.join("\n", instrumentSet.stream().sorted().collect(Collectors.toList())));
+
     }
 }

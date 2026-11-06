@@ -2,9 +2,6 @@ package ro.cs.tao.docker.otb;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import ro.cs.tao.component.*;
 import ro.cs.tao.component.enums.ComponentCategory;
 import ro.cs.tao.component.enums.ProcessingComponentType;
@@ -21,6 +18,8 @@ import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.ExecutorType;
 import ro.cs.tao.utils.executors.OutputAccumulator;
 import ro.cs.tao.utils.executors.ProcessExecutor;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -54,20 +53,21 @@ public class CliParser {
         }
         otbPath = Path.of(args[0]);
         outDir = Path.of(args[1]);
-        final Path containerDescriptorFile = outDir.resolve("otb_container.json");
-        final Path appsDescriptorFile = outDir.resolve("otb_applications.json");
+        final Path containerDescriptorFile = outDir.resolve("otb9_test_container.json");
+        final Path appsDescriptorFile = outDir.resolve("otb9_test_applications.json");
         final List<Path> apps = listApplications(otbPath.resolve("bin"));
-        final ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        objectMapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
-        objectMapper.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.PUBLIC_ONLY);
+        final ObjectMapper objectMapper = new ObjectMapper().rebuild()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .changeDefaultPropertyInclusion(inclusion -> inclusion.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .changeDefaultVisibility(visibility -> visibility.withGetterVisibility(JsonAutoDetect.Visibility.PUBLIC_ONLY))
+                .build();
         Container container = new Container();
-        container.setId("otb-8-1-2");
+        container.setId("otb-9-1-1");
         container.setType(ContainerType.DOCKER);
         container.setName("Orfeo Toolbox");
         container.setVisibility(ContainerVisibility.PUBLIC);
         container.setDescription("Orfeo Toolbox container");
-        container.setApplicationPath("/opt/OTB-8.1.2-Linux64/bin");
+        container.setApplicationPath("/opt/OTB-9.1.1-Linux64/bin");
         final StringBuilder appsJson = new StringBuilder();
         appsJson.append("[\n");
         for (Path app : apps) {
@@ -84,6 +84,7 @@ public class CliParser {
                 component.setContainerId(container.getId());
                 component.setVisibility(ProcessingComponentVisibility.SYSTEM);
                 component.setActive(true);
+                component.setVersion("9.1.1");
                 component.setAuthors("CNES");
                 component.setCopyright("(C)CNES");
                 component.setComponentType(ProcessingComponentType.EXECUTABLE);
@@ -131,8 +132,10 @@ public class CliParser {
     }
 
     private static String[] getProcessOutput(Path app) {
-        final ProcessExecutor executor = (ProcessExecutor) ProcessExecutor.create(ExecutorType.PROCESS, "localhost",
-                new ArrayList<String>() {{ add(app.toString()); }});
+        // Java's ProcessBuilder or Runtime.exec() doesn't know how to execute .ps1 scripts on its own. We need to explicitly launch them using PowerShell.
+        final List<String> arguments = Arrays.asList( "powershell.exe", "-ExecutionPolicy", "Bypass", "-File", app.toString(), "-help");
+        final ProcessExecutor executor = (ProcessExecutor) ProcessExecutor.create(ExecutorType.PROCESS, "localhost", arguments);
+
         final OutputAccumulator accumulator = new OutputAccumulator();
         accumulator.preserveLineSeparator(true);
         executor.setOutputConsumer(accumulator);
@@ -142,6 +145,7 @@ public class CliParser {
             e.printStackTrace();
         }
         final String output = accumulator.getOutput();
+        System.out.println("output: "+ output);
         return output != null ? output.split("\n") : new String[0];
     }
 
@@ -151,7 +155,7 @@ public class CliParser {
         component.setDescription("");
         while (!(line = lines[idx]).startsWith("Parameters")) {
             if (!line.trim().isEmpty()) {
-                if (line.startsWith("This is the ")) {
+                if (line.startsWith("This is the ") && line.contains("version")) {
                     component.setLabel(line.substring(12, line.indexOf(",")));
                     component.setVersion(line.substring(line.indexOf("version") + 8));
                 } else {
@@ -204,7 +208,13 @@ public class CliParser {
                     param.setDescription(descr);
                     if (descr.contains(defaultValueText)) {
                         param.setNotNull(false);
-                        param.setDefaultValue(descr.substring(descr.indexOf(defaultValueText) + defaultValueText.length(), descr.length() - 1));
+                        if (descr.indexOf(defaultValueText) + defaultValueText.length() <= descr.length() - 1) {
+                            param.setDefaultValue(descr.substring(descr.indexOf(defaultValueText) + defaultValueText.length(), descr.length() - 1));
+                        }
+                        else {
+                            param.setDefaultValue("TODO"); // this has to be manually verified (regex should be updated for negative default values)
+                        }
+
                     } else {
                         param.setNotNull(true);
                     }

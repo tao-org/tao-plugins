@@ -1,8 +1,8 @@
 package ro.cs.tao.stac.core.model.extensions;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
 import ro.cs.tao.stac.core.model.Extensible;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
 
 /**
  * Base class for an object extension.
@@ -25,7 +25,9 @@ public abstract class Extension<E extends Extensible> {
      * Deserializes the field value from the JSON node.
      * @param node  The JSON node
      * @param name  The name of the field
-     * @throws JsonProcessingException
+     * @throws JacksonException
      */
-    public abstract void extractField(TreeNode node, String name) throws JsonProcessingException;
+    public abstract void extractField(JsonNode node, String name) throws JacksonException;
 }
+
+

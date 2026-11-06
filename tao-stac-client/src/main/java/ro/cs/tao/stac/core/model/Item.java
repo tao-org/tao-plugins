@@ -1,10 +1,13 @@
 package ro.cs.tao.stac.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Item extends Extensible {
     public static final String DATETIME = "datetime";
     private static final Set<String> declaredFieldNames;

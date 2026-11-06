@@ -7,6 +7,7 @@ import ro.cs.tao.stac.core.model.*;
 import ro.cs.tao.stac.core.parser.STACParser;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.monitoring.DownloadProgressListener;
+import tools.jackson.core.JacksonException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +16,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Client for a STAC web service.
@@ -30,6 +34,7 @@ public class STACClient {
     private final URL stacURL;
     final HttpClient client;
     private DownloadProgressListener progressListener;
+    protected final Logger logger = Logger.getLogger(getClass().getName());
 
     /**
      * Initializes a new client for the given URL, with specific authentication instructions.
@@ -51,13 +56,44 @@ public class STACClient {
         }
     }
     /**
-     * Retrieves the list of collection descriptions from the remote STAC service
+     * Retrieves the list of collection descriptions from the remote STAC service (all pages)
      */
     public CollectionList listCollections() throws IOException {
-        final HTTPResponse response = this.client.get(new URL(this.stacURL + "/collections"));
-        try (InputStream inStream = response.getResponseStream()) {
-            return STACParser.parseCollectionsResponse(inStream);
+        List<Collection> allCollections = new ArrayList<>();
+        String url = this.stacURL + "/collections";
+        CollectionList cumulatedResponse = new CollectionList();
+        CollectionList page;
+
+        while (url != null) {
+            final HTTPResponse response = this.client.get(new URL(url));
+           try (InputStream inStream = response.getResponseStream()) {
+                page = STACParser.parseCollectionsResponse(inStream);
+                // Add current page results
+                allCollections.addAll(page.getCollections());
+                // Find "next" link
+                url = null;
+                if (page.getLinks() != null) {
+                    for (Link link : page.getLinks()) {
+                        if ("next".equals(link.getRel())) {
+                            url = link.getHref();
+                            // Handle relative URLs
+                            if (url != null && !url.startsWith("http")) {
+                                url = this.stacURL + url;
+                            }
+                            break;
+                        }
+                    }
+                }
+            } catch (JacksonException e) {
+                // try to skip this page and continue with the next one
+                logger.severe("Failed to fetch page: " + url + " Error: " + e.getMessage());
+                // avoid infinite loop if nextUrl keeps failing
+                url = null; // or decide a fallback strategy
+                continue;
+            }
         }
+        cumulatedResponse.setCollections(allCollections);
+        return cumulatedResponse;
     }
     /**
      * Retrieves a single collection description from the remote STAC service
@@ -69,6 +105,21 @@ public class STACClient {
             return STACParser.parseCollectionResponse(inStream);
         }
     }
+
+    public QueryableList getGlobalParameters() throws IOException {
+        final HTTPResponse response = this.client.get(new URL(this.stacURL + "/queryables"));
+        try (InputStream inStream = response.getResponseStream()) {
+            return STACParser.parseQueryablesResponse(inStream);
+        }
+    }
+
+    public QueryableList getCollectionParameters(String collectionName) throws IOException {
+        final HTTPResponse response = this.client.get(new URL(this.stacURL + "/collections/" + collectionName + "/queryables"));
+        try (InputStream inStream = response.getResponseStream()) {
+            return STACParser.parseQueryablesResponse(inStream);
+        }
+    }
+
     /**
      * Retrieves the list of items (only the first page) from a given collection
      * @param collectionName The name of the collection
@@ -204,19 +255,27 @@ public class STACClient {
      * Downloads an individual asset given as a URL from an item.
      * @param href     The URL of the asset
      * @param folder   The destination folder
+     * @return the full path for the downloaded asset
      */
-    public void download(String href, Path folder) throws IOException {
-        final String name = href.substring(href.lastIndexOf('/') + 1);
+    public Path download(String href, Path folder) throws IOException {
+        String name = href.substring(href.lastIndexOf('/') + 1);
         final HTTPResponse response = this.client.get(new URL(href));
-        final String header = response.getResponseHeader("Content-Length");
+        String header = response.getResponseHeader("Content-Length");
         long length = 0;
         if (header != null) {
             length = Long.parseLong(header);
         }
+        header = response.getResponseHeader("Content-Disposition");
+        if (header != null && header.startsWith("attachment;")) {
+            name = header.substring(header.indexOf('=') + 1);
+        }
         if (this.progressListener != null) {
             this.progressListener.subActivityStarted(name);
         }
-        try (InputStream inStream = response.getResponseStream();
+       if (name.startsWith("\"") && name.endsWith("\"")) {
+            name = name.substring(1, name.length() - 1);
+        }
+       try (InputStream inStream = response.getResponseStream();
              OutputStream outStream = Files.newOutputStream(folder.resolve(name))) {
             InputStream stream = this.progressListener != null ? new ListenableInputStream(inStream, length, this.progressListener) : inStream;
             FileUtilities.copyStream(stream, outStream);
@@ -225,6 +284,7 @@ public class STACClient {
                 this.progressListener.subActivityEnded(name);
             }
         }
+       return folder.resolve(name);
     }
     /**
      * Returns an input stream for an asset

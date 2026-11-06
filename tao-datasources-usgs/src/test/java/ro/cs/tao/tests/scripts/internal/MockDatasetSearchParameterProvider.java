@@ -1,6 +1,5 @@
 package ro.cs.tao.tests.scripts.internal;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.CollectionDescription;
 import ro.cs.tao.datasource.QueryException;
@@ -11,13 +10,10 @@ import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.utils.HttpMethod;
 import ro.cs.tao.utils.NetUtils;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -43,6 +39,14 @@ public abstract class MockDatasetSearchParameterProvider implements ParameterPro
             initialize();
         }
         return this.datasetsParameters;
+    }
+
+    @Override
+    public Map<String, DataSourceParameter> getSupportedParameters(String sensor) {
+        if (this.datasetsParameters == null) {
+            initialize();
+        }
+        return this.datasetsParameters.get(sensor);
     }
 
     @Override

@@ -1,11 +1,11 @@
 package ro.cs.tao.stac.core.model.extensions.sentinel2;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
 import ro.cs.tao.stac.core.model.Extensible;
 import ro.cs.tao.stac.core.model.extensions.Extension;
 import ro.cs.tao.stac.core.model.extensions.fileinfo.FileInfoExtension;
 import ro.cs.tao.stac.core.parser.JsonValueHelper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
 
 import java.time.LocalDateTime;
 import java.util.logging.Logger;
@@ -23,7 +23,7 @@ public class Sentinel2Extension<E extends Extensible> extends Extension<E> {
     }
 
     @Override
-    public void extractField(TreeNode node, String name) throws JsonProcessingException {
+    public void extractField(JsonNode node, String name) throws JacksonException {
         try {
             switch (name) {
                 case S2Fields.TILE_ID:
@@ -321,3 +321,5 @@ public class Sentinel2Extension<E extends Extensible> extends Extension<E> {
         parent.addField(S2Fields.MEAN_SOLAR_AZIMUTH, meanSolarAzimuth);
     }
 }
+
+

@@ -6,15 +6,15 @@ import ro.cs.tao.datasource.CollectionDescription;
 import ro.cs.tao.datasource.ProductFetchStrategy;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.DataSourceParameter;
+import ro.cs.tao.datasource.param.JavaType;
 import ro.cs.tao.datasource.param.ParameterProvider;
 import ro.cs.tao.datasource.stac.STACSource;
 import ro.cs.tao.datasource.stac.fetch.STACFetchStrategy;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.stac.core.STACClient;
+import ro.cs.tao.stac.core.model.*;
 import ro.cs.tao.stac.core.model.Collection;
-import ro.cs.tao.stac.core.model.CollectionList;
-import ro.cs.tao.stac.core.model.Extent;
 import ro.cs.tao.utils.Tuple;
 
 import java.io.IOException;
@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -33,28 +34,49 @@ public class STACParameterProvider implements ParameterProvider {
     private static Map<String, CollectionDescription> sensorTypes;
     private final STACSource source;
     private Map<String, ProductFetchStrategy> productFetchers;
+    private Map<String, Map<String, DataSourceParameter>> dataSourceParameters;
+    private Map<String, DataSourceParameter> commonParameters;
+
 
     public STACParameterProvider(STACSource source) {
         this.source = source;
     }
 
     @Override
+    public Map<String, DataSourceParameter> getSupportedParameters(String sensor) {
+        if (this.dataSourceParameters == null) {
+            this.dataSourceParameters = new LinkedHashMap<>();
+        }
+        if (!this.dataSourceParameters.containsKey(sensor)) {
+            try {
+                final STACClient client = this.source.authenticate();
+                loadCommonParameters();
+                final Map<String, DataSourceParameter> sensorParams = new LinkedHashMap<>();
+                sensorParams.putAll(this.commonParameters);
+                sensorParams.putAll(loadSensorParameters(sensor));
+                this.dataSourceParameters.put(sensor, sensorParams);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return this.dataSourceParameters.get(sensor);
+    }
+
+    @Override
     public Map<String, Map<String, DataSourceParameter>> getSupportedParameters() {
-        String[] sensors = this.source.getSupportedSensors(); //getSupportedSensors();
-        return Collections.unmodifiableMap(
-                new HashMap<>() {{
-                    for (String sensor : sensors) {
-                        put(sensor, new LinkedHashMap<>() {{
-                            Tuple<String, DataSourceParameter> parameter =
-                                    ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "bbox", "Region of Interest", Polygon2D.class);
-                            put(parameter.getKeyOne(), parameter.getKeyTwo());
-                            parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "datetime", "Begin Date", LocalDateTime.class,null,true, null);
-                            put(parameter.getKeyOne(), parameter.getKeyTwo());
-                            parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "datetime", "End Date", LocalDateTime.class, null, true, null);
-                            put(parameter.getKeyOne(), parameter.getKeyTwo());
-                        }});
-                    }
-                }});
+        if (this.dataSourceParameters == null) {
+            this.dataSourceParameters = new LinkedHashMap<>();
+        }
+        String[] sensors = this.source.getSupportedSensors();
+        loadCommonParameters();
+        for (String sensor : sensors) {
+            if (!this.dataSourceParameters.containsKey(sensor)) {
+                this.dataSourceParameters.put(sensor, new LinkedHashMap<>());
+                this.dataSourceParameters.get(sensor).putAll(this.commonParameters);
+                this.dataSourceParameters.get(sensor).putAll(loadSensorParameters(sensor));
+            }
+        }
+        return this.dataSourceParameters;
     }
 
     @Override
@@ -134,6 +156,49 @@ public class STACParameterProvider implements ParameterProvider {
         return productFetchers;
     }
 
+    private void loadCommonParameters() {
+        if (this.commonParameters == null) {
+            this.commonParameters = new LinkedHashMap<>();
+            try {
+                final STACClient client = this.source.authenticate();
+                final QueryableList globalParameters = client.getGlobalParameters();
+                final Map<String, Queryable> properties = globalParameters.getProperties();
+                if (properties != null) {
+                    for (Map.Entry<String, Queryable> entry : properties.entrySet()) {
+                        DataSourceParameter parameter = toDataSourceParameter(null, entry.getKey(), entry.getValue());
+                        this.commonParameters.put(parameter.getName(), parameter);
+                    }
+                }
+            } catch (Exception e) {
+                Logger.getLogger(STACParameterProvider.class.getName()).warning("Cannot retrieve common parameters:" + e.getMessage());
+                Tuple<String, DataSourceParameter> parameter =
+                        ParameterProvider.createParameter(CommonParameterNames.FOOTPRINT, "bbox", "Region of Interest", Polygon2D.class);
+                this.commonParameters.put(parameter.getKeyOne(), parameter.getKeyTwo());
+                parameter = ParameterProvider.createParameter(CommonParameterNames.START_DATE, "datetime", "Begin Date", LocalDateTime.class, null, true, null);
+                this.commonParameters.put(parameter.getKeyOne(), parameter.getKeyTwo());
+                parameter = ParameterProvider.createParameter(CommonParameterNames.END_DATE, "datetime", "End Date", LocalDateTime.class, null, true, null);
+                this.commonParameters.put(parameter.getKeyOne(), parameter.getKeyTwo());
+            }
+        }
+    }
+
+    private Map<String, DataSourceParameter> loadSensorParameters(String sensor) {
+        final Map<String, DataSourceParameter> sensorParams = new LinkedHashMap<>();
+        try {
+            final STACClient client = this.source.authenticate();
+            final QueryableList parameters = client.getCollectionParameters(sensor);
+            if (parameters != null && parameters.getProperties() != null) {
+                parameters.getProperties().forEach((key, value) -> {
+                    DataSourceParameter parameter = toDataSourceParameter(sensor, key, value);
+                    sensorParams.put(parameter.getName(), parameter);
+                });
+            }
+        } catch (Exception e) {
+            Logger.getLogger(STACParameterProvider.class.getName()).warning("Cannot retrieve collection parameters:" + e.getMessage());
+        }
+        return sensorParams;
+    }
+
     private String getObjectValue(Object object) {
         if (object == null) {
             return null;
@@ -156,5 +221,43 @@ public class STACParameterProvider implements ParameterProvider {
         } else {
             return String.valueOf(object);
         }
+    }
+
+    private DataSourceParameter toDataSourceParameter(String sensor, String name, Queryable object) {
+        String format = object.getFormat();
+        Object type = object.getType();
+        boolean isArray = type instanceof String[] || type instanceof ArrayList;
+        String stringType = isArray
+                ? type instanceof String[]
+                  ? ((String[]) type)[0]
+                  : ((ArrayList) type).get(0).toString()
+                : type != null
+                  ? type.toString()
+                  : null;
+        JavaType javaType = null;
+        String localName = object.getTitle() != null ? object.getTitle() : name;
+        if (format != null && format.startsWith("date")) {
+            javaType = isArray ? JavaType.DATE_ARRAY : JavaType.DATE;
+            boolean hasDateParam = sensor == null
+                    ? this.commonParameters.containsKey(CommonParameterNames.START_DATE)
+                    : (this.dataSourceParameters.get(sensor) != null && this.dataSourceParameters.get(sensor).containsKey(CommonParameterNames.START_DATE));
+            localName = hasDateParam ? CommonParameterNames.END_DATE : CommonParameterNames.START_DATE;
+        } else if (type != null && stringType.equals("number")) {
+            javaType = isArray ? JavaType.DOUBLE_ARRAY : JavaType.DOUBLE;
+        } else if (localName != null && localName.toLowerCase().contains("geometry")) {
+            javaType = JavaType.POLYGON;
+            localName = CommonParameterNames.FOOTPRINT;
+            name = CommonParameterNames.INTERSECTS;
+        }
+        if (javaType == null) {
+            javaType = type != null ? JavaType.fromFriendlyName(stringType) : JavaType.STRING;
+        }
+        final DataSourceParameter parameter = new DataSourceParameter(localName, name,
+                                                                      javaType.value(), object.getDescription());
+        String[] enumValues = object.getEnumValues();
+        if (enumValues != null && enumValues.length > 0) {
+            parameter.setValueSet(enumValues);
+        }
+        return parameter;
     }
 }

@@ -38,16 +38,21 @@ package ro.cs.tao.tests;/*
 
 import org.junit.Test;
 import ro.cs.tao.datasource.param.QueryParameter;
+import ro.cs.tao.datasource.remote.das.DASDataSource;
 import ro.cs.tao.datasource.tests.DataSourceTest;
 
 /**
  * @author Cosmin Cara
  */
-public class DASTest extends DataSourceTest {
+public class DASTest extends DataSourceTest<DASDataSource> {
 
-    public DASTest(Class dsClass) {
-        super(dsClass);
+    public DASTest() {
+        super(DASDataSource.class);
     }
+
+//    public DASTest(Class dsClass) {
+//        super(dsClass);
+//    }
 
     @Test
     public void testSentinel1SLC() {
