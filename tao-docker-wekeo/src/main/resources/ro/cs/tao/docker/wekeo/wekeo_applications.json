@@ -6,7 +6,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "The Normalized Difference Vegetation Index (NDVI) is a widely used, dimensionless index that is indicative for vegetation density and is defined as NDVI=(NIR-Red)/(NIR+Red) where NIR corresponds to the reflectance in the near infrared bands, and Red to the reflectance in the red bands.",
 		"sources": [
 			{
@@ -125,7 +127,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "The Normalized Difference Vegetation Index (NDVI) is a widely used, dimensionless index that is indicative for vegetation density and is defined as NDVI=(NIR-Red)/(NIR+Red) where NIR corresponds to the reflectance in the near infrared bands, and Red to the reflectance in the red bands. The time series of 10-daily NDVI 1km version 3 observations is used to calculate Long Term Statistics (LTS), over the 20-year period 1999-2019, and Short Term Statistics (STS), over the 5-year period (2015-2019), for each of the 36 10-daily periods (dekads) of the year. The calculated statistics include the minimum, median, maximum, mean, standard deviation and the number of observations in the covered time series period. These statistics can be used as a reference for actual NDVI observations, which allows monitoring of anomalous vegetation conditions.",
 		"sources": [
 			{
@@ -244,7 +248,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "The Normalized Difference Vegetation Index (NDVI) is a proxy to quantify the vegetation amount. It is defined as NDVI=(NIR-Red)/(NIR+Red) where NIR corresponds to the reflectance in the near infrared band, and Red to the reflectance in the red band. It is closely related to FAPAR and is little scale dependant.",
 		"sources": [
 			{
@@ -363,7 +369,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "The Normalized Difference Vegetation Index (NDVI) is a proxy to quantify the vegetation amount. It is defined as NDVI=(NIR-Red)/(NIR+Red) where NIR corresponds to the reflectance in the near infrared band, and Red to the reflectance in the red band. The time series of dekadal (10-daily) NDVI 1km version 2 observations over the period 1999-2017 is used to calculate Long Term Statistics (LTS) for each of the 36 10-daily periods (dekads) of the year. The calculated LTS include the minimum, median, maximum, average, standard deviation and the number of observations in the covered time series period. These LTS can be used as a reference for actual NDVI observations, which allows evaluating whether vegetation conditions deviate from a ‘normal’ situation.",
 		"sources": [
 			{
@@ -482,7 +490,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "LAI was defined by CEOS as half the developed area of the convex hull wrapping the green canopy elements per unit horizontal ground. This definition allows accounting for elements which are not flat such as needles or stems. LAI is strongly non linearly related to reflectance. Therefore, its estimation from remote sensing observations will be scale dependant over heterogeneous landscapes. When observing a canopy made of different layers of vegetation, it is therefore mandatory to consider all the green layers. This is particularly important for forest canopies where the understory may represent a very significant contribution to the total canopy LAI. The derived LAI corresponds therefore to the total green LAI, including the contribution of the green elements of the understory. The product at 333m resolution is provided in Near Real Time and consolidated in the next six periods.",
 		"sources": [
 			{
@@ -601,7 +611,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "LAI was defined by CEOS as half the developed area of the convex hull wrapping the green canopy elements per unit horizontal ground. This definition allows accounting for elements which are not flat such as needles or stems. LAI is strongly non linearly related to reflectance. Therefore, its estimation from remote sensing observations will be scale dependant over heterogeneous landscapes. When observing a canopy made of different layers of vegetation, it is mandatory to consider all the green layers. This is particularly important for forest canopies where the understory may represent a very significant contribution to the total canopy LAI. The derived LAI corresponds to the total green LAI, including the contribution of the green elements of the understory.",
 		"sources": [
 			{
@@ -720,7 +732,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "LAI was defined by CEOS as half the developed area of the convex hull wrapping the green canopy elements per unit horizontal ground. This definition allows accounting for elements which are not flat such as needles or stems. LAI is strongly non linearly related to reflectance. Therefore, its estimation from remote sensing observations will be scale dependant over heterogeneous landscapes. When observing a canopy made of different layers of vegetation, it is therefore mandatory to consider all the green layers. This is particularly important for forest canopies where the understory may represent a very significant contribution to the total canopy LAI. The derived LAI corresponds therefore to the total green LAI, including the contribution of the green elements of the understory. The resulting GEOV1 LAI products are relatively consistent with the actual LAI for low LAI values and ‘non-forest’ surfaces; while for forests, particularly for needle leaf types, significant departures with the true LAI are expected.",
 		"sources": [
 			{
@@ -839,7 +853,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "10-day Daily Cycle Land Surface Temperature (LST10-DC) provides a statistical overview of the LST daily cycle over each 10-day compositing for every image pixel. LST10-DC is useful for the scientific community, namely for those dealing with meteorological and climate models. Accurate values of LST are also of special interest in a wide range of areas related to land surface processes, including meteorology, hydrology, agrometeorology, climatology and environmental studies.",
 		"sources": [
 			{
@@ -958,7 +974,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "10-day Daily Cycle Land Surface Temperature (LST10-DC) provides a statistical overview of the LST daily cycle over each 10-day compositing for every image pixel. LST10-DC is useful for the scientific community, namely for those dealing with meteorological and climate models. Accurate values of LST are also of special interest in a wide range of areas related to land surface processes, including meteorology, hydrology, agrometeorology, climatology and environmental studies.",
 		"sources": [
 			{
@@ -1077,7 +1095,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "Dry matter Productivity (DMP) is an indication of the overall growth rate or dry biomass increase of the vegetation and is directly related to ecosystem Net Primary Productivity (NPP), however its units (kilograms of gross dry matter per hectare per day) are customized for agro-statistical purposes. Compared to the Gross DMP (GDMP), or its equivalent Gross Primary Productivity, the main difference lies in the inclusion of the autotrophic respiration. Like the FAPAR products that are used as input for the GDMP estimation, these GDMP products are provided in Near Real Time, with consolidations in the next periods, or as offline product.",
 		"sources": [
 			{
@@ -1196,7 +1216,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "Dry matter Productivity (DMP) is an indication of the overall growth rate or dry biomass increase of the vegetation and is directly related to ecosystem Net Primary Productivity (NPP), however its units (kilograms of gross dry matter per hectare per day) are customized for agro-statistical purposes. Compared to the Gross DMP (GDMP), or its equivalent Gross Primary Productivity, the main difference lies in the inclusion of the autotrophic respiration. Like the FAPAR products that are used as input for the GDMP estimation, these GDMP products are provided in Near Real Time, with consolidations in the next periods, or as offline product.",
 		"sources": [
 			{
@@ -1315,7 +1337,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "The FAPAR quantifies the fraction of the solar radiation absorbed by plants for photosynthesis. It refers only to the green and living elements of the canopy. The FAPAR depends on the canopy structure, vegetation element optical properties, atmospheric conditions and angular configuration. To overcome this latter dependency, a daily integrated FAPAR value is assessed. FAPAR is very useful as input to a number of primary productivity models and is recognized as an Essential Climate Variable (ECV) by the Global Climate Observing System (GCOS). The product at 333m resolution is provided in Near Real Time and consolidated in the next six periods.",
 		"sources": [
 			{
@@ -1434,7 +1458,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "The FAPAR quantifies the fraction of the solar radiation absorbed by plants for photosynthesis. It refers only to the green and living elements of the canopy. The FAPAR depends on the canopy structure, vegetation element optical properties, atmospheric conditions and angular configuration. To overcome this latter dependency, a daily integrated FAPAR value is assessed. FAPAR is very useful as input to a number of primary productivity models and is recognized as an Essential Climate Variable (ECV) by the Global Climate Observing System (GCOS). The product at 333m resolution is provided in Near Real Time and consolidated in the next six periods.",
 		"sources": [
 			{
@@ -1553,7 +1579,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "This data set contains net fluxes at the surface, atmospheric mixing ratios at model levels, and column-mean atmospheric mixing ratios for carbon dioxide (CO2), methane (CH4) and nitrous oxide (N20). Natural and anthropogenic surface fluxes of greenhouse gases are key drivers of the evolution of Earth's climate, so their monitoring is essential. Such information has been used in particular as part of the Assessment Reports of the Intergovernmental Panel on Climate Change (IPCC). Ground-based and satellite remote-sensing observations provide a means to quantifying the net fluxes between the land and ocean on the one hand and the atmosphere on the other hand. This is done through a process called atmospheric inversion, which uses transport models of the atmosphere to link the observed concentrations of CO2, CH4 and N2O to the net fluxes at the Earth's surface. By correctly modelling the winds, vertical diffusion, and convection in the global atmosphere, the observed concentrations of the greenhouse gases are used to infer the surface fluxes for the last few decades. For CH4 and N2O, the flux inversions account also for the chemical loss of these greenhouse gases. The net fluxes include contributions from the natural biosphere (e.g., vegetation, wetlands) as well anthropogenic contributions (e.g., fossil fuel emissions, rice fields). The data sets for the three species are updated once or twice per year adding the most recent year to the data record, while re-processing the original data record for consistency. This is reflected by the different version numbers. In addition, fluxes for methane are available based on surface air samples only or based on a combination of surface air samples and satellite observations (reflected by an 's' in the version number). Variables in the dataset/application are: Carbon dioxide dry mole fraction, Carbon dioxide total column dry mole fraction, Fossile emissions of carbon for the whole grid box, Fossile emissions of carbon for the whole grid box and the whole month, Methane dry mole fraction, Methane total column dry mole fraction, Nitrous oxide dry mole fraction, Posterior land surface upward mass flux of carbon for the whole grid box and the whole month without fossile, Posterior ocean surface upward mass flux of carbon for the whole grid box and the whole month without fossile, Posterior surface upward mass flux of carbon (including fossile), Prior land surface upward mass flux of carbon for the whole grid box and the whole month without fossile, Prior ocean surface upward mass flux of carbon for the whole grid box and the whole month without fossile, Prior surface upward mass flux of carbon (including fossile), Surface upward mass flux of methane, Surface upward mass flux of methane from biomass-burning sources, Surface upward mass flux of methane from other sources, Surface upward mass flux of methane from rice sources, Surface upward mass flux of methane from wetlands sources, Surface upward mass flux of nitrogen for the whole grid box and the whole month.",
 		"sources": [
 			{
@@ -1739,7 +1767,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "This dataset contains 4 Essential Climate Variables (ECV) for the 18 bias adjusted Global Climate Models (GCM) from CMIP5: daily precipitation rate, and daily mean, maximum and minimum temperatures. The data are bias adjusted using the Distribution Based Scaling (DBS) method versus the global reference dataset HydroGFD2.0, both bias adjustment method and global reference dataset developed by the Swedish Meteorological and Hydrological Institute (SMHI). The DBS method is a parametric quantile-mapping variant. This type of methods fit a statistical distribution to the cumulative distribution function and use those fitted distributions to conduct the quantile-mapping. Here, we used a double-gamma distribution (i.e. separate gamma distributions for the bulk and the high tail) for precipitation and the normal distribution for all temperature variables. Temperature corrections were done conditional on the wet/dry state of the corresponding precipitation time series. The seasonal variations in the biases were represented by monthly parameter windows for precipitation and a smoothed seasonal cycle for the temperature distribution parameters. The smoothing was done using twelve harmonic components. There is some post-processing in place for the data set to be suitable for hydrological impact modeling. Bias-adjustment of daily mean, maximum and minimum temperature using quantile mapping can in some cases lead to inconsistencies. For instance, maximum (minimum) temperature could be lower (higher) than mean temperature. If such inconsistencies occur, daily minimum and maximum temperatures are adjusted in such a way that the anomalies with respect to the daily mean temperature are in line with the climatological anomalies for the particular day in the seasonal cycle. This means, for example, that an inconsistency occurring on June 25 will be adjusted using the climatological anomalies for June 25, estimated by a moving window. Also, the adjustment is done conditional on the wet/dry state of the corresponding precipitation series. The climatology of the anomalies was derived from the HydroGFD2.0 dataset. In addition, DBS’s limitations lead to some data not being bias-adjusted or values beyond physically plausible ranges. In those cases, DBS gives missing values as output. Grid cells where the DBS method resulted in such missing values have been interpolated in time or space. If interpolation was not possible, full time series from nearest grid cell was copied to relating grid point. Variables in the dataset/application are: Maximum 2m temperature, Mean 2m temperature, Minimum 2m temperature, Precipitation flux.",
 		"sources": [
 			{
@@ -1881,7 +1911,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "This dataset provides daily surface meteorological data for the period from 1979 to present as input for agriculture and agro-ecological studies. This dataset is based on the hourly ECMWF ERA5 data at surface level and is referred to as AgERA5. Acquisition and pre-processing of the original ERA5 data is a complex and specialized job. By providing the AgERA5 dataset, users are freed from this work and can directly start with meaningful input for their analyses and modelling. To this end, the variables provided in this dataset match the input needs of most agriculture and agro-ecological models. Data were aggregated to daily time steps at the local time zone and corrected towards a finer topography at a 0.1° spatial resolution. The correction to the 0.1° grid was realized by applying grid and variable-specific regression equations to the ERA5 dataset interpolated at 0.1° grid. The equations were trained on ECMWF's operational high-resolution atmospheric model (HRES) at a 0.1° resolution. This way the data is tuned to the finer topography, finer land use pattern and finer land-sea delineation of the ECMWF HRES model. The data was produced on behalf of the Copernicus Climate Change Service. Variables in the dataset/application are: 10m wind speed, 2m dewpoint temperature, 2m relative humidity, 2m temperature, Cloud cover, Liquid precipitation duration fraction, Precipitation flux, Snow thickness, Snow thickness LWE, Solar radiation flux, Solid precipitation duration fraction, Vapour pressure.",
 		"sources": [
 			{
@@ -2066,7 +2098,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "This dataset provides estimates of soil moisture over the globe from a large set of satellite sensors. It is based on the ESA Climate Change Initiative soil moisture version 03.3 and represents the current state-of-the-art for satellite-based soil moisture climate data record production, in line with the “Systematic observation requirements for satellite-based products for climate” as defined by GCOS (Global Climate Observing System). Data are on a regular latitude/longitude grid expectedly with gaps in space and time. When dealing with satellite data it is common to encounter references to Climate Data Records (CDR) and interim-CDR (ICDR). For this dataset, both the ICDR and CDR parts of each product were generated using the same software and algorithms. The CDR is intended to have sufficient length, consistency, and continuity to detect climate variability and change. The ICDR provides a short-delay access to current data where consistency with the CDR baseline is expected but was not extensively checked. The dataset contains the following products: \"active\", \"passive\" and \"combined\". The \"active\" and \"passive\" products were created by using scatterometer and radiometer soil moisture products, respectively. The \"combined\" product results from a blend based on the two previous products. This dataset is produced on behalf of the Copernicus Climate Change Service (C3S). Variables in the dataset/application are: Surface soil moisture, Volumetric soil moisture.",
 		"sources": [
 			{
@@ -2252,7 +2286,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "This dataset contains global modelled daily data of river discharge forced with meteorological forecasts. The data was produced by the Global Flood Awareness System (GloFAS), which is part of the Copernicus Emergency Management Service (CEMS). River discharge, or river flow as it is also known, is defined as the amount of water that flows through a river section at a given time. This dataset is simulated by forcing a hydrological modelling chain with input from ECMWF ensemble forecast combined with the ECMWF extended-range ensemble forecast up to 30 days. Data availability for the GloFAS forecast is from 2019-11-05 up to near real time. Variables in the dataset/application are: River discharge in the last 24 hours Variables in the dataset/application are: Upstream area.",
 		"sources": [
 			{
@@ -2448,7 +2484,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "This data set provides complete historical reconstruction of meteorological conditions favourable to the start, spread and sustainability of fires. The fire danger metrics provided are part of a vast dataset produced by the Copernicus Emergency Management Service for the European Forest Fire Information System (EFFIS). The European Forest Fire Information System incorporates the fire danger indices for three different models developed in Canada, United States and Australia. In this dataset the fire danger indices are calculated using weather forecast from historical simulations provided by ECMWF ERA5 reanalysis. ERA5 by combining model data and a vast set of quality controlled observations provides a globally complete and consistent data-set and is regarded as a good proxy for observed atmospheric conditions. The selected data records in this data set are regularly extended with time as ERA5 forcing data become available. This dataset is produced by ECMWF in its role of the computational centre for fire danger forecast of the CEMS, on behalf of the Joint Research Centre which is the managing entity of the service. Variables in the dataset/application are: Build-up index, Burning index, Danger rating, Drought code, Duff moisture code, Energy release component, Fine fuel moisture code, Fire daily severity index, Fire danger index, Fire weather index, Ignition component, Initial spread index, Keetch-Byram drought index, Spread component.",
 		"sources": [
 			{
@@ -2634,7 +2672,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "This dataset provides annual air quality reanalyses for Europe based on both unvalidated (interim) and validated observations. CAMS produces annual air quality (interim) reanalyses for the European domain at significantly higher spatial resolution (0.1 degrees, approx. 10km) than is available from the global reanalyses. The production is currently based on an ensemble of nine air quality data assimilation systems across Europe. A median ensemble is calculated from individual outputs, since ensemble products yield on average better performance than the individual model products. The spread between the nine models can be used to provide an estimate of the analysis uncertainty. The reanalysis combines model data with observations provided by the European Environment Agency (EEA) into a complete and consistent dataset using various data assimilation techniques depending upon the air-quality forecasting system used. Additional sources of observations can complement the in-situ data assimilation, like satellite data. An interim reanalysis is provided each year for the year before based on the unvalidated near-real-time observation data stream that has not undergone full quality control by the data providers yet. Once the fully quality-controlled observations are available from the data provider, typically with an additional delay of about 1 year, a final validated annual reanalysis is provided. Both reanalyses are available at hourly time steps at height levels.",
 		"sources": [
 			{
@@ -2798,7 +2838,9 @@
 		"authors": "Wekeo Team",
 		"copyright": "(C) 2024 Wekeo MERCATOR OCEAN",
 		"category": "RASTER",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"description": "Emissions of atmospheric pollutants from biomass burning and vegetation fires are key drivers of the evolution of atmospheric composition, with a high degree of spatial and temporal variability, and an accurate representation of them in models is essential. The CAMS Global Fire Assimilation System (GFAS) utilises satellite observations of fire radiative power (FRP) to provide near-real-time information on the location, relative intensity and estimated emissions from biomass burning and vegetation fires. Emissions are estimated by (i) conversion of FRP observations to the dry matter (DM) consumed by the fire, and (ii) application of emission factors to DM for different biomes, based on field and laboratory studies in the scientific literature, to estimate the emissions. Emissions estimates for 40 pyrogenic species are available from GFAS, including aerosols, reactive gases and greenhouse gases, on a regular grid with a spatial resolution of 0.1 degrees longitude by 0.1 degrees latitude. This version of GFAS (v1.2) provides daily averaged data based on a combination of FRP observations from two Moderate Resolution Imaging Spectroradiometer (MODIS) instruments, one on the NASA EOS-Terra satellite and the other on the NASA EOS-Aqua satellite from 1 January 2003 to present. GFAS also provides daily estimates of smoke plume injection heights derived from FRP observations and meteorological information from the operational weather forecasts from ECMWF. GFAS data have been used to provide surface boundary conditions for the CAMS global atmospheric composition and European regional air quality forecasts, and the wider atmospheric chemistry modelling community. Variables in the dataset/application are: Altitude of plume bottom, Altitude of plume top, Injection height (from IS4FIRES), Mean altitude of maximum injection, Wildfire combustion rate, Wildfire flux of acetaldehyde (C2H4O), Wildfire flux of acetone (C3H6O), Wildfire flux of ammonia (NH3), Wildfire flux of benzene (C6H6), Wildfire flux of black carbon, Wildfire flux of butanes (C4H10), Wildfire flux of butenes (C4H8), Wildfire flux of carbon dioxide (CO2), Wildfire flux of carbon monoxide (CO), Wildfire flux of dimethyl sulfide (DMS) (C2H6S), Wildfire flux of ethane (C2H6), Wildfire flux of ethanol (C2H5OH), Wildfire flux of ethene (C2H4), Wildfire flux of formaldehyde (CH2O), Wildfire flux of heptane (C7H16), Wildfire flux of hexanes (C6H14), Wildfire flux of hexene (C6H12), Wildfire flux of higher alkanes (CnH2n+2, c>=4), Wildfire flux of higher alkenes (CnH2n, c>=4), Wildfire flux of hydrogen (H), Wildfire flux of isoprene (C5H8), Wildfire flux of methane (CH4), Wildfire flux of methanol (CH3OH), Wildfire flux of nitrogen oxides (NOx), Wildfire flux of nitrous oxide (N20), Wildfire flux of non-methane hydrocarbons, Wildfire flux of octene (C8H16), Wildfire flux of organic carbon, Wildfire flux of particulate matter d < 2.5 µm (PM2.5), Wildfire flux of pentanes (C5H12), Wildfire flux of pentenes (C5H10), Wildfire flux of propane (C3H8), Wildfire flux of propene (C3H6), Wildfire flux of sulphur dioxide (SO2), Wildfire flux of terpenes ((C5H8)n), Wildfire flux of toluene (C7H8), Wildfire flux of toluene_lump (C7H8+ C6H6 + C8H10), Wildfire flux of total carbon in aerosols, Wildfire flux of total particulate matter, Wildfire flux of xylene (C8H10), Wildfire fraction of area observed, Wildfire overall flux of burnt carbon, Wildfire radiative power.",
 		"sources": [
 			{

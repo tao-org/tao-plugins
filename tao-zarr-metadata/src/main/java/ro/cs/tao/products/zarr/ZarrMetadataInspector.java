@@ -22,6 +22,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
 
+/**
+ * A class for inspecting and extracting metadata from Zarr datasets.
+ *
+ * This class implements the MetadataInspector interface and provides methods
+ * to determine whether a given path corresponds to a Zarr dataset and to extract
+ * metadata from Zarr files. It assumes that metadata is stored in a file named
+ * ".zmetadata" within the Zarr directory.
+ */
 public class ZarrMetadataInspector implements MetadataInspector {
     private final Logger logger = Logger.getLogger(ZarrMetadataInspector.class.getName());
 

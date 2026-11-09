@@ -14,7 +14,8 @@
 
 package org.w3id.cwl.cwl1_2;
 
-import org.w3id.cwl.cwl1_1.utils.Saveable;
+import org.w3id.cwl.cwl1_2.utils.CWLGraphElement;
+import org.w3id.cwl.cwl1_2.utils.Saveable;
 
 import java.util.Dictionary;
 import java.util.Optional;
@@ -74,7 +75,7 @@ import java.util.Optional;
  workflow semantics.
   </BLOCKQUOTE>
  */
-public interface Workflow extends Process, Saveable {
+public interface Workflow extends Process, Saveable, CWLGraphElement {
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#Process/id</I><BR>
    * <BLOCKQUOTE>
@@ -142,6 +143,7 @@ public interface Workflow extends Process, Saveable {
    *    * </BLOCKQUOTE>
    */
 
+  java.util.List<Object> getOutputs();
   void setOutputs(java.util.List<Object> outputs);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#requirements</I><BR>
@@ -155,6 +157,7 @@ public interface Workflow extends Process, Saveable {
    *    * </BLOCKQUOTE>
    */
 
+  java.util.Optional<java.util.List<Object>> getRequirements();
   void setRequirements(java.util.Optional<java.util.List<Object>> requirements);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#hints</I><BR>
@@ -166,6 +169,7 @@ public interface Workflow extends Process, Saveable {
    *    * </BLOCKQUOTE>
    */
 
+  java.util.Optional<java.util.List<Object>> getHints();
   void setHints(java.util.Optional<java.util.List<Object>> hints);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#cwlVersion</I><BR>
@@ -174,14 +178,15 @@ public interface Workflow extends Process, Saveable {
    * required for a Process embedded inside another Process.
    *    * </BLOCKQUOTE>
    */
-
+  java.util.Optional<CWLVersion> getCwlVersion();
   void setCwlVersion(java.util.Optional<CWLVersion> cwlVersion);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#Process/intent</I><BR>
    * <BLOCKQUOTE>
    * An identifier for the type of computational operation, of this Process.
-   * Especially useful for "class: Operation", but can also be used for
-   * CommandLineTool, Workflow, or ExpressionTool.
+   * Especially useful for [`Operation`](Workflow.html#Operation), but can also be used for
+   * [`CommandLineTool`](CommandLineTool.html#CommandLineTool),
+   * [`Workflow`](Workflow.html#Workflow), or [ExpressionTool](Workflow.html#ExpressionTool).
    * 
    * If provided, then this must be an IRI of a concept node that
    * represents the type of operation, preferably defined within an ontology.
@@ -195,6 +200,7 @@ public interface Workflow extends Process, Saveable {
    *    * </BLOCKQUOTE>
    */
 
+  java.util.Optional<java.util.List<String>> getIntent();
   void setIntent(java.util.Optional<java.util.List<String>> intent);
   /**
    * Getter for property <I>https://w3id.org/cwl/cwl#Workflow/steps</I><BR>
@@ -210,7 +216,5 @@ public interface Workflow extends Process, Saveable {
 
   void setSteps(java.util.List<Object> steps);
 
-  /*public default Dictionary<Object, Object> save(boolean top, String baseUrl, boolean relativeUris) {
-    return Saveable.save();
-  }*/
+  WorkflowStep getStep(String mainWfStepId);
 }

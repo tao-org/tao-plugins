@@ -6,6 +6,13 @@ import java.nio.file.Path;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+/**
+ * A helper class for handling MAJA products specific to Landsat 8.
+ * This class extends the functionality of {@link MajaProductHelper}.
+ * It provides methods for working with Landsat 8-specific metadata and file
+ * naming patterns, as well as utilities for identifying granule folders
+ * and product metadata files within a Landsat 8 processing context.
+ */
 public class MajaLandsat8ProductHelper extends MajaProductHelper {
 
     private static final Pattern L8L2Pattern = Pattern.compile("LC08_L2A_(\\d{6})_(\\d{8})_(\\d{8})_(\\d{2})_(T[12]|RT)");
@@ -16,6 +23,11 @@ public class MajaLandsat8ProductHelper extends MajaProductHelper {
 
     MajaLandsat8ProductHelper(Path productPath) {
         super(productPath);
+    }
+
+    @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { L8L2Pattern };
     }
 
     @Override
@@ -39,11 +51,6 @@ public class MajaLandsat8ProductHelper extends MajaProductHelper {
             logger.severe(String.format("Cannot list contents of product %s. Reason; %s", this.name, e.getMessage()));
         }
         return folder;
-    }
-
-    @Override
-    protected Pattern getNamePattern() {
-        return L8L2Pattern;
     }
 
     @Override

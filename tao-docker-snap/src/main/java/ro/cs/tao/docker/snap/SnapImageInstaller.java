@@ -12,7 +12,7 @@ public abstract class SnapImageInstaller extends BaseImageInstaller {
     protected String getDescription() { return "SNAP"; }
 
     @Override
-    protected String getPathInContainer() { return "/opt/snap/bin"; }
+    protected String getPathInContainer() { return "/opt/esa-snap/bin"; }
 
     @Override
     protected String getPathInSystem() {
@@ -30,6 +30,7 @@ public abstract class SnapImageInstaller extends BaseImageInstaller {
 
     @Override
     protected String[] additionalResources() {
-        return new String[] { "update_snap.sh" };
+        // In case of a path, classpath resource paths must always use forward slashes (/), not the system-specific file separator (which can be \ on Windows or / on Unix-like systems)
+        return new String[] { "update_snap.sh", "graphs/grd-tc.xml" };
     }
 }

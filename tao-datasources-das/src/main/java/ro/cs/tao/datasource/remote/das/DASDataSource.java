@@ -16,6 +16,7 @@ package ro.cs.tao.datasource.remote.das;/*
 
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import ro.cs.tao.datasource.QueryException;
@@ -34,6 +35,7 @@ import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -45,6 +47,8 @@ public class DASDataSource extends URLDataSource<DASQuery, Token> {
     private static String SEARCH_URL;
     private static String DOWNLOAD_URL;
 
+    private static Map<UsernamePasswordCredentials, Token> tokens;
+
     static {
         props = new Properties();
         try {
@@ -52,6 +56,7 @@ public class DASDataSource extends URLDataSource<DASQuery, Token> {
             SEARCH_URL = props.getProperty("search.url");
             LOGIN_URL = props.getProperty("login.url");
             DOWNLOAD_URL = props.getProperty("download.url");
+            tokens = new java.util.concurrent.ConcurrentHashMap<>();
         } catch (IOException ignored) {
         }
     }
@@ -91,27 +96,49 @@ public class DASDataSource extends URLDataSource<DASQuery, Token> {
         if (credentials == null) {
             throw new QueryException(String.format("Credentials not set for %s", getId()));
         }
+        Token token = tokens.get(credentials);
+        if (token != null) {
+            // previous token obtained, check for expiration
+            if (token.getCreated().plusSeconds(token.getTokenExpiration()).isBefore(LocalDateTime.now())) {
+                if (!token.getCreated().plusSeconds(token.getRefreshExpiration()).isBefore(LocalDateTime.now())) {
+                    // token expired, re-authenticate
+                    token = reauthenticate(token.getRefreshToken());
+                    tokens.put(credentials, token);
+                    return token;
+                } else {
+                    tokens.remove(credentials);
+                }
+            } else{
+                // token is still valid, return it
+                return token;
+            }
+        }
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("client_id", "cdse-public"));
         params.add(new BasicNameValuePair("username", credentials.getUserName()));
         params.add(new BasicNameValuePair("password", credentials.getPassword()));
         params.add(new BasicNameValuePair("grant_type", "password"));
         try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, LOGIN_URL, (Credentials) null, params)) {
+            final String body = EntityUtils.toString(response.getEntity());
             switch (response.getStatusLine().getStatusCode()) {
                 case 200:
-                    String body = EntityUtils.toString(response.getEntity());
                     if (body == null) {
                         throw new QueryException("Cannot retrieve API key [empty response body]");
                     }
                     ResponseParser<Token> parser = new JsonResponseParser<>(new LoginResponseHandler());
-                    final Token token = parser.parseValue(body);
+                    token = parser.parseValue(body);
                     if (token != null) {
                         token.setCreated(LocalDateTime.now());
+                        tokens.put(credentials, token);
                         return token;
                     } else {
                         throw new QueryException(String.format("Cannot retrieve API key [received: %s]", body));
                     }
                 case 401:
+                    if (body != null && body.contains("maximum number of concurrent sessions")) {
+                        // mark exception as retriable
+                        throw new QueryException("Cannot retrieve API key [401:maximum number of concurrent sessions]", true);
+                    }
                     throw new QueryException("Cannot retrieve API key [401:not authorized]");
                 default:
                     throw new QueryException(String.format("The request was not successful. Reason: %s",

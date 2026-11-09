@@ -28,7 +28,17 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class SMBStorageService extends BaseStorageService<byte[], InputStream> {
+/**
+ * SMBStorageService is a storage service implementation that provides interaction
+ * with SMB (Server Message Block) protocol-based storage systems. It extends the
+ * functionalities defined in the BaseStorageService class and adds SMB-specific
+ * behavior for file and folder management.
+ *
+ * This service handles storing, retrieving, removing, and listing files and directories
+ * in an SMB-based file system. Additionally, it includes functionality for streaming,
+ * zip creation, and progress monitoring via a progress listener.
+ */
+public class SMBStorageService extends BaseStorageService<byte[]> {
     private static final String PROTOCOL = "smb";
 
     public SMBStorageService() {
@@ -37,6 +47,11 @@ public class SMBStorageService extends BaseStorageService<byte[], InputStream> {
     @Override
     public boolean isIntendedFor(String protocol) {
         return PROTOCOL.equalsIgnoreCase(protocol);
+    }
+
+    @Override
+    public boolean isIntendedFor(RepositoryType repositoryType) {
+        return RepositoryType.SMB.equals(repositoryType);
     }
 
     @Override
@@ -79,11 +94,11 @@ public class SMBStorageService extends BaseStorageService<byte[], InputStream> {
 
     @Override
     public void storeUserFile(byte[] object, String relativeFolder, String description) throws Exception {
-        storeFile(new ByteArrayInputStream(object), object.length, relativeFolder, description);
+        storeFile(new ByteArrayInputStream(object), relativeFolder, description);
     }
 
     @Override
-    public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
+    public String storeFile(InputStream stream, String relativeFolder, String description) throws Exception {
         SmbFile smbfile = new SmbFile(repository().resolve(relativeFolder));
     	// make sure that the folder exists.
         try (SmbFile smbParent = new SmbFile(smbfile.getParent())) {
@@ -97,6 +112,7 @@ public class SMBStorageService extends BaseStorageService<byte[], InputStream> {
         } catch (Exception e) {
             throw new IOException(e);
         }
+        return smbfile.getPath();
     }
 
     @Override

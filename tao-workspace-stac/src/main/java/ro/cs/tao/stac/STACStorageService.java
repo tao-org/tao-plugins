@@ -3,14 +3,15 @@ package ro.cs.tao.stac;
 import ro.cs.tao.services.model.FileObject;
 import ro.cs.tao.services.storage.BaseStorageService;
 import ro.cs.tao.stac.core.STACClient;
-import ro.cs.tao.stac.core.model.Collection;
 import ro.cs.tao.stac.core.model.*;
+import ro.cs.tao.stac.core.model.Collection;
 import ro.cs.tao.stac.core.model.extensions.Extension;
 import ro.cs.tao.stac.core.model.extensions.ExtensionType;
 import ro.cs.tao.stac.core.model.extensions.projection.ProjExtension;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workspaces.Repository;
+import ro.cs.tao.workspaces.RepositoryType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,13 +39,18 @@ import java.util.zip.ZipOutputStream;
  * @author  Cosmin Cara
  * @since   1.3.1
  */
-public class STACStorageService extends BaseStorageService<byte[], InputStream> {
+public class STACStorageService extends BaseStorageService<byte[]> {
     private static final String PROTOCOL = "stac";
     private Repository repository;
 
     @Override
     public boolean isIntendedFor(String protocol) {
         return PROTOCOL.equalsIgnoreCase(protocol);
+    }
+
+    @Override
+    public boolean isIntendedFor(RepositoryType repositoryType) {
+        return RepositoryType.STAC.equals(repositoryType);
     }
 
     @Override
@@ -66,7 +72,7 @@ public class STACStorageService extends BaseStorageService<byte[], InputStream> 
     }
 
     @Override
-    public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
+    public String storeFile(InputStream stream, String relativeFolder, String description) throws Exception {
         throw new UnsupportedOperationException();
     }
 

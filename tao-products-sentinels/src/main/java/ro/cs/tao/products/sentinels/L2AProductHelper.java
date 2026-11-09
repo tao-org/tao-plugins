@@ -18,11 +18,13 @@ package ro.cs.tao.products.sentinels;
 import java.util.regex.Pattern;
 
 /**
- * @author Cosmin Cara
+ * Helper class for handling Sentinel-2 Level 2A products. It provides specific methods
+ * to parse and retrieve information from Level 2A product names and metadata.
+ * Extends the functionality of {@code Sentinel2ProductHelper}.
  */
 public class L2AProductHelper extends Sentinel2ProductHelper {
 
-    static final Pattern ProductV14 = Pattern.compile("(S2[A-B])_(MSIL2A)_(\\d{8}T\\d{6})_(N\\d{4})_R(\\d{3})_T(\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
+    static final Pattern ProductV14 = Pattern.compile("(S2[A-D])_(MSIL2A)_(\\d{8}T\\d{6})_(N\\d{4})_R(\\d{3})_T(\\d{2}\\w{3})_(\\d{8}T\\d{6})(?:.SAFE)?");
 
     public L2AProductHelper() {
         super();
@@ -31,6 +33,11 @@ public class L2AProductHelper extends Sentinel2ProductHelper {
     L2AProductHelper(String name) {
         super(name);
         this.version = PSD_14;
+    }
+
+    @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { ProductV14 };
     }
 
     @Override

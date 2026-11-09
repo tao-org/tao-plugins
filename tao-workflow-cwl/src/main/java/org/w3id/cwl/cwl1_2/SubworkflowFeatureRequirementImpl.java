@@ -30,6 +30,9 @@ public class SubworkflowFeatureRequirementImpl extends SaveableImpl implements S
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private SubworkflowFeatureRequirement_class class_;
 
@@ -85,7 +88,7 @@ public class SubworkflowFeatureRequirementImpl extends SaveableImpl implements S
     try {
       class_ =
           LoaderInstances
-              .uri_SubworkflowFeatureRequirement_class_False_True_None
+              .uri_SubworkflowFeatureRequirement_class_False_True_None_None
               .loadField(__doc.get("class"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       class_ = null; // won't be used but prevents compiler from complaining.

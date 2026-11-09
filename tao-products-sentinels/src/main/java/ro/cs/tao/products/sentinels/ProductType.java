@@ -16,7 +16,15 @@
 package ro.cs.tao.products.sentinels;
 
 /**
- * @author Cosmin Cara
+ * Represents the type of a product with corresponding identifiers.
+ * This enum provides predefined constants for different product types:
+ *
+ * L1C - Represents the product type "S2MSI1C".
+ * L2Ap - Represents the product type "S2MSI2Ap".
+ * L2A - Represents the product type "S2MSI2A".
+ *
+ * Each product type is associated with a string value that can be
+ * retrieved or represented via the overridden toString method.
  */
 public enum ProductType {
     L1C("S2MSI1C"),

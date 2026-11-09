@@ -4,6 +4,10 @@ import ro.cs.tao.eodata.util.BaseProductHelper;
 
 import java.util.regex.Pattern;
 
+/**
+ * Helper class specifically designed for handling Sentinel-1 orbit files.
+ * Extends the behavior of {@link BaseProductHelper}.
+ */
 public class Sentinel1OrbitFileHelper extends BaseProductHelper {
     /**
      * Tokens:
@@ -19,7 +23,7 @@ public class Sentinel1OrbitFileHelper extends BaseProductHelper {
      * 8: File extension
      */
     static final Pattern S1AuxPattern =
-            Pattern.compile("(S1[A-B])_(OPER|TEST|REP\\d|TD\\d{2})_([A-Z]{3})_([A-Z0-9_]{6})_(OPOD)_(\\d{8}T\\d{6})_([DV])(\\d{8}T\\d{6}_\\d{8}T\\d{6}|[GDNS_]{3})(.EOF|.eof|.HDR|.hdr|.DBL|.dbl|.ZIP|.zip)");
+            Pattern.compile("(S1[A-D])_(OPER|TEST|REP\\d|TD\\d{2})_([A-Z]{3})_([A-Z0-9_]{6})_(OPOD)_(\\d{8}T\\d{6})_([DV])(\\d{8}T\\d{6}_\\d{8}T\\d{6}|[GDNS_]{3})(.EOF|.eof|.HDR|.hdr|.DBL|.dbl|.ZIP|.zip)");
 
     public Sentinel1OrbitFileHelper() {
         super();
@@ -28,6 +32,11 @@ public class Sentinel1OrbitFileHelper extends BaseProductHelper {
     public Sentinel1OrbitFileHelper(String name) {
         super(name);
         this.processingDate = getTokens(S1AuxPattern, name, null)[5];
+    }
+
+    @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { S1AuxPattern };
     }
 
     @Override

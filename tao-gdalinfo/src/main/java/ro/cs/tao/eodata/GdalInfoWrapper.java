@@ -41,6 +41,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * The {@code GdalInfoWrapper} class provides functionality to inspect and process
+ * metadata using the GDAL (Geospatial Data Abstraction Library) utility.
+ * It uses either a local GDAL installation or a Dockerized instance of GDAL
+ * to extract metadata from geospatial data files. The class implements the
+ * {@link MetadataInspector} interface to allow integration into a broader
+ * metadata inspection framework.
+ *
+ * This class handles the configuration for executing the `gdalinfo` command,
+ * automatically determining whether to use a Docker container or a system-installed
+ * GDAL executable based on the environment and configuration. It also supports
+ * advanced features such as extracting statistics, histograms, and handling
+ * specific file formats like NetCDF.
+ *
+ * Key considerations:
+ * - WKT (Well-Known Text) format support is dynamically checked based on the GDAL version.
+ * - The `decodeQualification` method determines if a given file can be processed.
+ * - The `getMetadata` method extracts and parses metadata from the file, potentially
+ *   using additional metadata inspectors for specific formats (e.g., Sentinel-1, Sentinel-2, Landsat-8).
+ */
 public class GdalInfoWrapper implements MetadataInspector {
     private static final String gdalDockerImage;
     private static final boolean useDocker;

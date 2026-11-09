@@ -84,7 +84,11 @@ public class LSADataSource extends URLDataSource<LSADataQuery, Header> {
         if (authenticationStrategy == null) {
             authenticationStrategy = new LSAAuthentication(this.credentials);
         }
-        return new BasicHeader(authenticationStrategy.getAuthenticationTokenName(), authenticationStrategy.getAuthenticationTokenValue(this.getProperty(LSAAuthentication.DOWNLOAD_URL_PROPERTY_NAME)));
+        String prdUrl = this.getProperty(LSAAuthentication.DOWNLOAD_URL_PROPERTY_NAME);
+        if (prdUrl == null) {
+            return new BasicHeader(authenticationStrategy.getAuthenticationTokenName(), "");
+        }
+        return new BasicHeader(authenticationStrategy.getAuthenticationTokenName(), authenticationStrategy.getAuthenticationTokenValue(prdUrl));
     }
 
     @Override

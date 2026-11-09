@@ -1,0 +1,15 @@
+{
+	"id": "783677a2-0c7b-4368-9e82-77e8153bf5b0",
+	"name": "ba",
+	"description": "BA 22.7.2 Container",
+	"tag": "22.7.2",
+	"applicationPath": null,
+	"formatNameParameter": null,
+	"applications": [
+		{
+			"path": "ba",
+			"name": "ba",
+			"memoryRequirements": 40960
+		}
+	]
+}

@@ -6,7 +6,9 @@
 		"description": "Performs atmospheric corrections and cloud screening on Sentinel-2 L1C products.",
 		"authors": "S2 PDGS MPC Team",
 		"copyright": "(C) S2 PDGS MPC Team",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"sources": [
 			{
 				"id": "e498f83d-673e-459e-bdd8-977b50f91b9a",

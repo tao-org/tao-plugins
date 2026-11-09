@@ -6,7 +6,9 @@
 		"description": "Computes daily evapo-transpiration from S2 L2A and S3 L2 LST products.",
 		"authors": "DHI Gras",
 		"copyright": "(C) DHI Gras",
-		"nodeAffinity": "Any",
+		"nodeAffinity" : {
+      "value" : "Any"
+    },
 		"category": "OPTICAL",
 		"sources": [
 			{

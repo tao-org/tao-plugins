@@ -27,6 +27,9 @@ public class ExpressionToolOutputParameterImpl extends SaveableImpl implements E
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private java.util.Optional<String> id;
 
@@ -157,6 +160,8 @@ public class ExpressionToolOutputParameterImpl extends SaveableImpl implements E
    * Getter for property <I>https://w3id.org/cwl/salad#type</I><BR>
    * <BLOCKQUOTE>
    * Specify valid types of data that may be assigned to this parameter.
+   * Note that this field just acts as a hint, as the outputs of an
+   * ExpressionTool process are always considered valid.
    *    * </BLOCKQUOTE>
    */
 
@@ -200,7 +205,7 @@ public class ExpressionToolOutputParameterImpl extends SaveableImpl implements E
       try {
         id =
             LoaderInstances
-                .uri_optional_StringInstance_True_False_None
+                .uri_optional_StringInstance_True_False_None_None
                 .loadField(__doc.get("id"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         id = null; // won't be used but prevents compiler from complaining.
@@ -299,7 +304,7 @@ public class ExpressionToolOutputParameterImpl extends SaveableImpl implements E
       try {
         format =
             LoaderInstances
-                .uri_union_of_NullInstance_or_StringInstance_or_ExpressionLoader_True_False_None
+                .uri_union_of_NullInstance_or_StringInstance_or_ExpressionLoader_True_False_None_True
                 .loadField(__doc.get("format"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         format = null; // won't be used but prevents compiler from complaining.

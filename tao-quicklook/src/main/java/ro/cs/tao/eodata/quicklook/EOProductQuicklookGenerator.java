@@ -25,6 +25,7 @@ import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.OutputAccumulator;
 
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -58,17 +59,20 @@ public class EOProductQuicklookGenerator extends BaseQuicklookGenerator<EOProduc
                     final String entryPoint = product.getEntryPoint();
                     if (StringUtils.isNotEmpty(entryPoint)) {
                         Path productPath = FileUtilities.toPath(product.getLocation()).resolve(entryPoint);
-                        Executor<?> executor = initialize(productPath, DockerHelper.isDockerFound() ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
+                        Executor<?> executor = initialize(productPath, getMetadata(productPath),
+                                                          DockerHelper.isDockerFound() ? getGDALCommandLineOnDocker() : getGDALCommandLineOnPath());
                         if (executor != null) {
                             executor.setOutputConsumer(consumer);
-                            int code;
-                            logger.fine("Trying to create quicklook for " + product.getLocation() + entryPoint);
-                            if ((code = executor.execute(false)) == 0) {
-                                product.setQuicklookLocation(Paths.get(productPath + extension).toString());
-                            } else {
+                            executor.onSuccess(() -> {
+                                try {
+                                    product.setQuicklookLocation(Paths.get(productPath + extension).toString());
+                                } catch (URISyntaxException e) {
+                                    logger.warning(e.getMessage());
+                                }
+                            }).onError(() -> {
                                 logger.warning(String.format("Quicklook for product %s was not created (return code: %d, output: %s)",
-                                        product.getName(), code, consumer.getOutput()));
-                            }
+                                                             product.getName(), executor.getReturnCode(), consumer.getOutput()));
+                            }).execute(false);
                         } else {
                             logger.warning(String.format("Automated quicklooks not supported for %s products", product.getProductType()));
                         }

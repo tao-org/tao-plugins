@@ -22,14 +22,13 @@ import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.enums.DataFormat;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.products.sentinels.Sentinel1ProductHelper;
 import ro.cs.tao.serialization.JsonMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.util.Objects.nonNull;
 import static ro.cs.tao.utils.executors.MemoryUnit.MB;
@@ -40,8 +39,6 @@ import static ro.cs.tao.utils.executors.MemoryUnit.MB;
  * @author Valentin Netoiu
  */
 public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
-    static final Pattern S1Pattern =
-            Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
 
     private final Predicate<EOProduct> filter;
 
@@ -54,6 +51,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
         AsfSearchResult[][] results = JsonMapper.instance().readValue(content, AsfSearchResult[][].class);
         final List<EOProduct> retVal = new ArrayList<>();
         if (results.length > 0) {
+            Sentinel1ProductHelper helper;
             for (AsfSearchResult r : results[0]) {
                 try {
                     EOProduct product = new EOProduct();
@@ -83,6 +81,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     product.setApproximateSize(MB.value() * (long) Double.parseDouble(r.getSizeMb()));
                     //productType read from sensor property
                     String sensor = r.getSensor().trim();
+                    helper = new Sentinel1ProductHelper(product.getName());
                     if(sensor.contains(" ")){
                         //get the sensor and instrument name
                         String[] sensorAttributes = sensor.split(" ");
@@ -93,7 +92,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                         //add sensor attribute
                         product.addAttribute("instrumentshortname", instrument);
                     } else {
-                        if (S1Pattern.matcher(r.getProductName()).matches()) {
+                        if (helper.getNamePatterns()[0].matcher(r.getProductName()).matches()) {
                             product.setProductType("Sentinel1");
                         }
                         product.addAttribute("instrumentshortname", sensor);
@@ -118,7 +117,7 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
                     if (value != null) {
                         product.addAttribute("relativeOrbit", value.toString());
                     } else if (product.getName().startsWith("S1")) {
-                        product.addAttribute("relativeOrbit", getRelativeOrbit(product.getName()));
+                        product.addAttribute("relativeOrbit", helper.getOrbit());
                     }
                     retVal.add(product);
                 } catch (Exception ex) {
@@ -127,20 +126,5 @@ public class AsfJsonResponseHandler implements JSonResponseHandler<EOProduct> {
             }
         }
         return retVal;
-    }
-
-    private String getRelativeOrbit(String productName) {
-        final String value;
-        final Matcher matcher = S1Pattern.matcher(productName);
-        if (matcher.matches()) {
-            int absOrbit = Integer.parseInt(matcher.group(10));
-            value = String.format("%03d",
-                    matcher.group(1).endsWith("A") ?
-                            ((absOrbit - 73) % 175) + 1 :
-                            ((absOrbit - 27) % 175) + 1);
-        } else {
-            value = null;
-        }
-        return value;
     }
 }

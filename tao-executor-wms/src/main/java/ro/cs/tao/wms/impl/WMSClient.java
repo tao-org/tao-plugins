@@ -53,6 +53,8 @@ public class WMSClient {
             final List<MetadataURL> metadataURLS = layer.getMetadataURL();
             if (metadataURLS != null && !metadataURLS.isEmpty()) {
                 application.setPath(metadataURLS.get(0).getUrl().toString());
+            } else {
+                application.setPath(layer.getName());
             }
             container.addApplication(application);
         }

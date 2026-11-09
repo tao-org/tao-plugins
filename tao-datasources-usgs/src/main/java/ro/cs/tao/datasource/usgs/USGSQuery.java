@@ -276,12 +276,12 @@ public class USGSQuery extends DataQuery {
                         if (fieldIds.containsKey(rowParameterRemoteName) && fieldIds.containsKey(pathParameterRemoteName)) {
                             String pathRow = parameters.get(CommonParameterNames.TILE).getValueAsString();
                             filter = new SearchFilterValue();
-                            filter.setFilterId(fieldIds.get(rowParameterRemoteName));
+                            filter.setFilterId(fieldIds.get(pathParameterRemoteName));
                             filter.setOperand("=");
                             filter.setValue(pathRow.substring(0, 3));
                             request.withFilter(filter);
                             filter = new SearchFilterValue();
-                            filter.setFilterId(fieldIds.get(pathParameterRemoteName));
+                            filter.setFilterId(fieldIds.get(rowParameterRemoteName));
                             filter.setOperand("=");
                             filter.setValue(pathRow.substring(3, 6));
                             request.withFilter(filter);
@@ -332,44 +332,49 @@ public class USGSQuery extends DataQuery {
             this.apiKey = ((USGSDataSource) this.source).authenticate();
         }
         setupRemoteFields();
-        final List<EOProduct> products = new ArrayList<>();
+        List<EOProduct> products = null;
         final AtomicLong count = new AtomicLong(0);
         final SearchRequest request = buildQuery(start, pageSize);
         final String queryUrl = buildPostRequestURL("scene-search");
-        logger.finest("Executing query " + queryUrl + " with payload " + request);
-        try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, queryUrl, "X-Auth-Token", apiKey, request.toString())) {
-            switch (response.getStatusLine().getStatusCode()) {
-                case 200:
-                    final String body = EntityUtils.toString(response.getEntity());
-                    if (body.contains("SERVER_ERROR")) {
-                        throw new QueryException("The request was not successful. Reason: API Server Error");
-                    }
-                    final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(this.sensorName ,this.source.getSensorTypes().get(this.sensorName).getSensorType(), this.coverageFilter),
-                            "totalHits");
-                    final List<EOProduct> parsedProducts = parser.parse(body);
-                    if (parsedProducts != null) {
-                        products.addAll(parsedProducts);
-                    }
-                    count.addAndGet(parser.parseCount(body));
-                    break;
-                case 401:
-                    throw new QueryException("The supplied credentials are invalid!");
-                default:
-                    throw new QueryException(String.format("The request was not successful. Reason: %s",
-                            response.getStatusLine().getReasonPhrase()));
+        if ((products = getFromCache(queryUrl)) == null) {
+            products = new ArrayList<>();
+            logger.finest("Executing query " + queryUrl + " with payload " + request);
+            try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, queryUrl, "X-Auth-Token", apiKey, request.toString())) {
+                switch (response.getStatusLine().getStatusCode()) {
+                    case 200:
+                        final String body = EntityUtils.toString(response.getEntity());
+                        if (body.contains("SERVER_ERROR")) {
+                            throw new QueryException("The request was not successful. Reason: API Server Error");
+                        }
+                        final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new SearchResponseHandler(this.sensorName, this.source.getSensorTypes().get(this.sensorName).getSensorType(), this.coverageFilter),
+                                                                                          "totalHits");
+                        final List<EOProduct> parsedProducts = parser.parse(body);
+                        if (parsedProducts != null) {
+                            products.addAll(parsedProducts);
+                            addToCache(queryUrl, products);
+                        }
+                        count.addAndGet(parser.parseCount(body));
+                        break;
+                    case 401:
+                        throw new QueryException("The supplied credentials are invalid!");
+                    default:
+                        throw new QueryException(String.format("The request was not successful. Reason: %s",
+                                                               response.getStatusLine().getReasonPhrase()));
+                }
+            } catch (IOException ex) {
+                throw new QueryException(ex);
             }
-        } catch (IOException ex) {
-            throw new QueryException(ex);
-        }
-        final int currentSize = products.size();
-        if (currentSize > 0 && this.limit > 0 && currentSize > this.limit) {
-            products.subList(this.limit, currentSize).clear();
-        }
-        boolean counting = pageSize < 2;
-        if (!products.isEmpty() && !counting) {
-            final List<DownloadInfo> downloadInfos = getDownloadInfos(products);
-            if (downloadInfos != null && !downloadInfos.isEmpty()) {
-                fillDownloadUrls(products, downloadInfos);
+
+            final int currentSize = products.size();
+            if (currentSize > 0 && this.limit > 0 && currentSize > this.limit) {
+                products.subList(this.limit, currentSize).clear();
+            }
+            boolean counting = pageSize < 2;
+            if (!products.isEmpty() && !counting) {
+                final List<DownloadInfo> downloadInfos = getDownloadInfos(products);
+                if (downloadInfos != null && !downloadInfos.isEmpty()) {
+                    fillDownloadUrls(products, downloadInfos);
+                }
             }
         }
         logger.info(String.format("Query returned %s products", products.size()));

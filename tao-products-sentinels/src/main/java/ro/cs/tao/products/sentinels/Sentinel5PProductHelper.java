@@ -4,6 +4,12 @@ import ro.cs.tao.eodata.util.BaseProductHelper;
 
 import java.util.regex.Pattern;
 
+/**
+ * Helper class specific to Sentinel-5P products. This class provides
+ * functionality for validating and processing Sentinel-5P product names,
+ * extracting metadata (such as orbit, sensing date, and processing date),
+ * and generating related file paths.
+ */
 public class Sentinel5PProductHelper extends BaseProductHelper {
 
     static final Pattern S5PPattern =
@@ -12,6 +18,11 @@ public class Sentinel5PProductHelper extends BaseProductHelper {
     public Sentinel5PProductHelper() { super(); }
 
     Sentinel5PProductHelper(String productName) { super(productName); }
+
+    @Override
+    public Pattern[] getNamePatterns() {
+        return new Pattern[] { S5PPattern };
+    }
 
     @Override
     public int order() {

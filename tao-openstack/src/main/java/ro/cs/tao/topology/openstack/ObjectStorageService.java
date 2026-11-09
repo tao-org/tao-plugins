@@ -9,6 +9,7 @@ import ro.cs.tao.topology.openstack.commons.Constants;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 import ro.cs.tao.workspaces.Repository;
+import ro.cs.tao.workspaces.RepositoryType;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -22,7 +23,12 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ObjectStorageService extends BaseStorageService<byte[], InputStream> {
+/**
+ * Service class for interacting with an object storage system using the OpenStack Swift protocol.
+ * Extends {@code BaseStorageService} to provide specific implementations for managing files and folders
+ * in an OpenStack Swift environment.
+ */
+public class ObjectStorageService extends BaseStorageService<byte[]> {
     private static final String PROTOCOL = "swift";
 
     private final SwiftService swiftService;
@@ -36,6 +42,11 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
     @Override
     public boolean isIntendedFor(String protocol) {
         return PROTOCOL.equalsIgnoreCase(protocol);
+    }
+
+    @Override
+    public boolean isIntendedFor(RepositoryType repositoryType) {
+        return RepositoryType.SWIFT.equals(repositoryType);
     }
 
     @Override
@@ -88,7 +99,7 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
     }
 
     @Override
-    public void storeFile(InputStream stream, long length, String relativeFolder, String description) throws Exception {
+    public String storeFile(InputStream stream, String relativeFolder, String description) throws Exception {
         if (stream == null) {
             throw new IllegalArgumentException("[stream] Null stream");
         }
@@ -102,6 +113,7 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
         try (InputStream toPass = wrapStream(stream)) {
             this.swiftService.upload(relativePath, toPass, bucket, description);
         }
+        return repository.resolve(relativeFolder).toString();
     }
 
     @Override
@@ -227,6 +239,15 @@ public class ObjectStorageService extends BaseStorageService<byte[], InputStream
         final MessageDigest md5Digest = MessageDigest.getInstance("MD5");
         traverseHash(path, md5Digest);
         return StringUtilities.byteArrayToHexString(md5Digest.digest());
+    }
+
+    @Override
+    public Map<String, Long> getUserStorage() {
+        try {
+            return this.swiftService.getContainerSizes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<FileObject> list(String folderPath, Set<String> exclusions, String lastItem) {
