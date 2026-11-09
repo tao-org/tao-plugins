@@ -212,8 +212,13 @@ public class DASDownloadStrategy extends DownloadStrategy<Token> {
             Files.move(result, result.getParent().resolve(name));
             result = result.getParent().resolve(name);
         } else if (archivePath.toString().endsWith(".zip")){
-            result = Zipper.decompressZipMT(archivePath, targetPath, false, true);
-            result = result.getParent().resolve(name);
+            Path unzipResult = Zipper.decompressZipMT(archivePath, targetPath, false, true);
+            result = unzipResult.getParent().resolve(name);
+            // we may have in the archive another dir than the expected one (ex. without .SAFE)
+            if (!unzipResult.equals(result)) {
+                FileUtilities.deleteTree(result);
+                FileUtilities.rename(unzipResult, name);
+            }
         } else {
             result = targetPath;
         }
