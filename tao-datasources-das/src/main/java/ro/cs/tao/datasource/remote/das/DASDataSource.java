@@ -100,10 +100,14 @@ public class DASDataSource extends URLDataSource<DASQuery, Token> {
         if (token != null) {
             // previous token obtained, check for expiration
             if (token.getCreated().plusSeconds(token.getTokenExpiration()).isBefore(LocalDateTime.now())) {
-                // token expired, re-authenticate
-                token = reauthenticate(token.getRefreshToken());
-                tokens.put(credentials, token);
-                return token;
+                if (!token.getCreated().plusSeconds(token.getRefreshExpiration()).isBefore(LocalDateTime.now())) {
+                    // token expired, re-authenticate
+                    token = reauthenticate(token.getRefreshToken());
+                    tokens.put(credentials, token);
+                    return token;
+                } else {
+                    tokens.remove(credentials);
+                }
             } else{
                 // token is still valid, return it
                 return token;

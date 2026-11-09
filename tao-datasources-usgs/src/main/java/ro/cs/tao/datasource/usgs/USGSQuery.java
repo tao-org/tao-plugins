@@ -276,12 +276,12 @@ public class USGSQuery extends DataQuery {
                         if (fieldIds.containsKey(rowParameterRemoteName) && fieldIds.containsKey(pathParameterRemoteName)) {
                             String pathRow = parameters.get(CommonParameterNames.TILE).getValueAsString();
                             filter = new SearchFilterValue();
-                            filter.setFilterId(fieldIds.get(rowParameterRemoteName));
+                            filter.setFilterId(fieldIds.get(pathParameterRemoteName));
                             filter.setOperand("=");
                             filter.setValue(pathRow.substring(0, 3));
                             request.withFilter(filter);
                             filter = new SearchFilterValue();
-                            filter.setFilterId(fieldIds.get(pathParameterRemoteName));
+                            filter.setFilterId(fieldIds.get(rowParameterRemoteName));
                             filter.setOperand("=");
                             filter.setValue(pathRow.substring(3, 6));
                             request.withFilter(filter);

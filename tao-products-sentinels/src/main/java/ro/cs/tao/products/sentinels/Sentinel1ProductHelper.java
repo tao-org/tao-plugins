@@ -83,12 +83,30 @@ public class Sentinel1ProductHelper extends BaseProductHelper {
     public String getOrbit() {
         String[] tokens = getTokens(S1Pattern, this.name, null);
         int absOrbit = Integer.parseInt(tokens[9]);
-        return String.format("%03d",
-                             tokens[0].endsWith("A")
-                                     ? (absOrbit - 73) % 175 + 1
-                                     : tokens[0].endsWith("B")
-                                        ? (absOrbit - 27) % 175 + 1
-                                        : (absOrbit - 172) % 175 + 5);
+        int relOrbit = -1;
+        char lastChar = tokens[0].isEmpty() ? '\0' : tokens[0].charAt(tokens[0].length() - 1);
+        switch (lastChar) {
+            case 'A':
+                relOrbit = (absOrbit - 73) % 175 + 1;
+                break;
+            case 'B':
+                relOrbit = (absOrbit - 27) % 175 + 1;
+                break;
+            case 'C':
+                String sensingDate = tokens[7];
+                if (sensingDate.compareTo("20260624T000000") < 0) {
+                    relOrbit = (absOrbit - 172) % 175 + 1;
+                } else {
+                    relOrbit = (absOrbit - 99) % 175 + 1;
+                }
+                break;
+            case 'D':
+                relOrbit = (absOrbit - 42) % 175 + 1;
+                break;
+            default:
+                break;
+        }
+        return String.format("%03d",relOrbit);
     }
 
     public PolarisationMode getPolarisation() {

@@ -115,7 +115,7 @@ public class LSADataQuery extends DataQuery {
                             final String downloadUrl = this.source.getConnectionString("Download");
                             tmpResults.forEach(tr -> {
                                 try {
-                                    tr.setLocation(downloadUrl + tr.getLocation());
+                                    tr.setLocation(tr.getLocation());
                                     if(productType != null) {
                                         tr.addAttribute("productType", productType);
                                     }

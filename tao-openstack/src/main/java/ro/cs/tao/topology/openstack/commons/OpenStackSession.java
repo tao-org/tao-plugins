@@ -1,6 +1,5 @@
 package ro.cs.tao.topology.openstack.commons;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.samstevens.totp.code.CodeGenerator;
 import dev.samstevens.totp.code.DefaultCodeGenerator;
 import dev.samstevens.totp.exceptions.CodeGenerationException;
@@ -30,8 +29,10 @@ import ro.cs.tao.utils.NetUtils;
 import ro.cs.tao.utils.executors.Executor;
 import ro.cs.tao.utils.executors.ExecutorType;
 import ro.cs.tao.utils.executors.OutputAccumulator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 /**
@@ -43,6 +44,9 @@ public class OpenStackSession {
     //private static OpenStackSession instance;
     private static final Logger logger = Logger.getLogger(OpenStackSession.class.getName());
     private static final Map<Integer, OpenStackSession> sessions = Collections.synchronizedMap(new HashMap<>());
+    private static final Object AUTH_LOCK = new Object();
+    private static final Object PARAM_AUTH_LOCK = new Object();
+    private static final Map<String, Token> tokenCache = new ConcurrentHashMap<>();
     private static Token authToken;
     private static String region;
     private static Boolean usesImagesV2;
@@ -183,8 +187,6 @@ public class OpenStackSession {
      *         or invalid
      */
     public OSClient.OSClientV3 getService() {
-        OSClient.OSClientV3 client;
-
         final ConfigurationProvider cfgProvider = ConfigurationManager.getInstance();
         this.tenantId = cfgProvider.getValue(Constants.OPENSTACK_TENANT_ID, null);
         if (tenantId == null || tenantId.isEmpty()) {
@@ -192,61 +194,61 @@ public class OpenStackSession {
         }
         region = cfgProvider.getValue(Constants.OPENSTACK_REGION, null);
 
-        if (authToken != null && authToken.getExpires() != null && authToken.getExpires().before(new Date())) {
-            logger.fine("OpenStack system token expired, re-authenticating");
-            authToken = null;
+        synchronized (AUTH_LOCK) {
+            if (authToken != null && authToken.getExpires() != null && authToken.getExpires().before(new Date())) {
+                logger.fine("OpenStack system token expired, re-authenticating");
+                authToken = null;
+            }
+            if (authToken == null) {
+                final String domain = cfgProvider.getValue(Constants.OPENSTACK_DOMAIN, null);
+                if (domain == null || domain.isEmpty()) {
+                    throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_DOMAIN));
+                }
+                final String user = cfgProvider.getValue(Constants.OPENSTACK_USER, null);
+                if (user == null || user.isEmpty()) {
+                    throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_USER));
+                }
+                final String password = cfgProvider.getValue(Constants.OPENSTACK_PASSWORD, null);
+                if (password == null || password.isEmpty()) {
+                    throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_PASSWORD));
+                }
+                final String authUrl = cfgProvider.getValue(Constants.OPENSTACK_AUTH_URL, null);
+                if (authUrl == null || authUrl.isEmpty()) {
+                    throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_AUTH_URL));
+                }
+                final String appClient = cfgProvider.getValue(Constants.OPENSTACK_CLIENT, null);
+                final String appClientSecret = cfgProvider.getValue(Constants.OPENSTACK_CLIENT_SECRET, null);
+                final String userSecret = cfgProvider.getValue(Constants.OPENSTACK_USER_SECRET, null);
+                final String tokenUrl = cfgProvider.getValue(Constants.OPENSTACK_TOKEN_URL, null);
+                final String identityProvider = cfgProvider.getValue(Constants.OPENSTACK_IDENTITY_PROVIDER, null);
+                String token = getToken(appClient, appClientSecret, userSecret, tokenUrl, identityProvider,
+                        authUrl, domain, user, password, tenantId, region);
+                OSClient.OSClientV3 newClient = token == null
+                        ? OSFactory.builderV3()
+                        .endpoint(authUrl)
+                        .credentials(user, password, Identifier.byId(domain))
+                        .scopeToProject(Identifier.byId(tenantId))
+                        .authenticate()
+                        : OSFactory.builderV3()
+                        .token(token)
+                        .endpoint(authUrl)
+                        .scopeToProject(Identifier.byId(tenantId))
+                        .authenticate();
+                if (region != null) {
+                    newClient = newClient.useRegion(region);
+                }
+                if (newClient != null) {
+                    // hack to force the retrieval of newest version of a service
+                    authToken = newClient.getToken();
+                    List<? extends Service> catalog = authToken.getCatalog();
+                    catalog.sort((Comparator<Service>) (o1, o2) -> o2.getType().compareTo(o1.getType()));
+                }
+            }
         }
-        if (authToken == null) {
-            final String domain = cfgProvider.getValue(Constants.OPENSTACK_DOMAIN, null);
-            if (domain == null || domain.isEmpty()) {
-                throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_DOMAIN));
-            }
-            final String user = cfgProvider.getValue(Constants.OPENSTACK_USER, null);
-            if (user == null || user.isEmpty()) {
-                throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_USER));
-            }
-            final String password = cfgProvider.getValue(Constants.OPENSTACK_PASSWORD, null);
-            if (password == null || password.isEmpty()) {
-                throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_PASSWORD));
-            }
-            final String authUrl = cfgProvider.getValue(Constants.OPENSTACK_AUTH_URL, null);
-            if (authUrl == null || authUrl.isEmpty()) {
-                throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_AUTH_URL));
-            }
-            final String appClient = cfgProvider.getValue(Constants.OPENSTACK_CLIENT, null);
-            final String appClientSecret = cfgProvider.getValue(Constants.OPENSTACK_CLIENT_SECRET, null);
-            final String userSecret = cfgProvider.getValue(Constants.OPENSTACK_USER_SECRET, null);
-            final String tokenUrl = cfgProvider.getValue(Constants.OPENSTACK_TOKEN_URL, null);
-            final String identityProvider = cfgProvider.getValue(Constants.OPENSTACK_IDENTITY_PROVIDER, null);
-            String token = getToken(appClient, appClientSecret, userSecret, tokenUrl, identityProvider,
-                                    authUrl, domain, user, password, tenantId, region);
-            client = token == null
-                             ? OSFactory.builderV3()
-                                        .endpoint(authUrl)
-                                        .credentials(user, password, Identifier.byId(domain))
-                                        .scopeToProject(Identifier.byId(tenantId))
-                                        .authenticate()
-                             : OSFactory.builderV3()
-                                        .token(token)
-                                        .endpoint(authUrl)
-                                        .scopeToProject(Identifier.byId(tenantId))
-                                        .authenticate();
-            if (region != null) {
-                client = client.useRegion(region);
-            }
-            //authToken = getAuthToken(authUrl + "/auth/tokens", token, tenantId, domain);
-            //if (authToken != null) {
-            if (client != null) {
-                authToken = client.getToken();
-                // hack to force the retrieval of newest version of a service
-                List<? extends Service> catalog = authToken.getCatalog();
-                catalog.sort((Comparator<Service>) (o1, o2) -> o2.getType().compareTo(o1.getType()));
-            }
-        } else {
-            client = OSFactory.clientFromToken(authToken);
-            if (region != null) {
-                client = client.useRegion(region);
-            }
+
+        OSClient.OSClientV3 client = OSFactory.clientFromToken(authToken);
+        if (region != null) {
+            client = client.useRegion(region);
         }
         return client;
     }
@@ -301,37 +303,48 @@ public class OpenStackSession {
         if (tenantId == null || tenantId.isEmpty()) {
             throw new TopologyException(String.format("Missing configuration key [%s]", Constants.OPENSTACK_TENANT_ID));
         }
-        OSClient.OSClientV3 service;
-        if (this.instanceToken != null && this.instanceToken.getExpires().before(new Date())) {
-            logger.fine("OpenStack token expired, re-authenticating");
-            this.instanceToken = null;
-        }
-        if (this.instanceToken == null) {
-            final String appClient = parameters.getOrDefault(Constants.OPENSTACK_CLIENT, null);
-            final String appClientSecret = parameters.getOrDefault(Constants.OPENSTACK_CLIENT_SECRET, null);
-            final String userSecret = parameters.getOrDefault(Constants.OPENSTACK_USER_SECRET, null);
-            final String tokenUrl = parameters.getOrDefault(Constants.OPENSTACK_TOKEN_URL, null);
-            final String identityProvider = parameters.getOrDefault(Constants.OPENSTACK_IDENTITY_PROVIDER, null);
-            final String region = parameters.getOrDefault(Constants.OPENSTACK_REGION, null);
-            String token = getToken(appClient, appClientSecret, userSecret, tokenUrl, identityProvider,
-                                    authUrl, domain, user, password, tenantId, region);
-            service = token == null
-                     ? OSFactory.builderV3()
-                                .endpoint(authUrl)
-                                .credentials(user, password, Identifier.byId(domain))
-                                .scopeToProject(Identifier.byId(tenantId))
-                                .authenticate()
-                     : OSFactory.builderV3()
-                                .token(token)
-                                .endpoint(authUrl)
-                                .scopeToProject(Identifier.byId(tenantId))
-                                .authenticate();
-            if (region != null) {
-                service = service.useRegion(region);
+
+        final String cacheKey = tenantId + "|" + user + "|" + domain;
+
+        synchronized (PARAM_AUTH_LOCK) {
+            Token cached = tokenCache.get(cacheKey);
+            if (cached != null && cached.getExpires() != null && cached.getExpires().before(new Date())) {
+                logger.fine("OpenStack token expired, re-authenticating");
+                tokenCache.remove(cacheKey);
+                cached = null;
             }
-            this.instanceToken = service.getToken();
-        } else {
-            service = OSFactory.clientFromToken(this.instanceToken);
+            if (cached == null) {
+                final String appClient = parameters.getOrDefault(Constants.OPENSTACK_CLIENT, null);
+                final String appClientSecret = parameters.getOrDefault(Constants.OPENSTACK_CLIENT_SECRET, null);
+                final String userSecret = parameters.getOrDefault(Constants.OPENSTACK_USER_SECRET, null);
+                final String tokenUrl = parameters.getOrDefault(Constants.OPENSTACK_TOKEN_URL, null);
+                final String identityProvider = parameters.getOrDefault(Constants.OPENSTACK_IDENTITY_PROVIDER, null);
+                final String region = parameters.getOrDefault(Constants.OPENSTACK_REGION, null);
+                String token = getToken(appClient, appClientSecret, userSecret, tokenUrl, identityProvider,
+                        authUrl, domain, user, password, tenantId, region);
+                OSClient.OSClientV3 newService = token == null
+                        ? OSFactory.builderV3()
+                        .endpoint(authUrl)
+                        .credentials(user, password, Identifier.byId(domain))
+                        .scopeToProject(Identifier.byId(tenantId))
+                        .authenticate()
+                        : OSFactory.builderV3()
+                        .token(token)
+                        .endpoint(authUrl)
+                        .scopeToProject(Identifier.byId(tenantId))
+                        .authenticate();
+                if (region != null) {
+                    newService = newService.useRegion(region);
+                }
+                cached = newService.getToken();
+                tokenCache.put(cacheKey, cached);
+            }
+        }
+
+        OSClient.OSClientV3 service = OSFactory.clientFromToken(tokenCache.get(cacheKey));
+        final String region = parameters.getOrDefault(Constants.OPENSTACK_REGION, null);
+        if (region != null) {
+            service = service.useRegion(region);
         }
         // hack to force the retrieval of newest version of a service
         service.getToken().getCatalog().sort((Comparator<Service>) (o1, o2) -> o2.getType().compareTo(o1.getType()));
@@ -369,17 +382,21 @@ public class OpenStackSession {
                 params.add(new BasicNameValuePair("client_id", appClient));
                 params.add(new BasicNameValuePair("client_secret", appClientSecret));
                 if (userSecret != null) {
-                    params.add(new BasicNameValuePair("totp", generateOTP(userSecret)));
+                    params.add(new BasicNameValuePair("otp", generateOTP(userSecret)));
                 }
                 try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.POST, tokenUrl, header, params)) {
                     token = EntityUtils.toString(response.getEntity());
                     Map<String, String> map = new LinkedHashMap<>();
                     map.putAll(new ObjectMapper().readValue(token, map.getClass()));
                     token = map.get("access_token");
+                    if (token == null) {
+                        logger.severe("Keycloak token endpoint did not return access_token. Raw response: " + map);
+                        throw new TopologyException("Keycloak authentication failed: " + map);
+                    }
                     token = getOSToken(authUrl, user, region, tenantId, domain, appClient, appClientSecret, identityProvider, token);
                 }
             } catch (Exception e) {
-                logger.severe("Cannot obtain token for OpenStack pre-authentication");
+                logger.severe("Cannot obtain token for OpenStack pre-authentication: " + e);
             }
         }
         return token;
@@ -422,19 +439,19 @@ public class OpenStackSession {
                               String jwtToken) throws Exception {
         final Map<String, String> env = new HashMap<>();
         try {
-            env.put("OS_AUTH_URL", authUrl);
+            putIfNotNull(env, "OS_AUTH_URL", authUrl);
             env.put("OS_INTERFACE", "public");
             env.put("OS_IDENTITY_API_VERSION", "3");
-            env.put("OS_USERNAME", userName);
-            env.put("OS_REGION_NAME", region);
-            env.put("OS_PROJECT_ID", projectId);
-            env.put("OS_PROJECT_DOMAIN_ID", domainId);
-            env.put("OS_CLIENT_ID", clientId);
-            env.put("OS_CLIENT_SECRET", clientSecret);
+            putIfNotNull(env, "OS_USERNAME", userName);
+            putIfNotNull(env, "OS_REGION_NAME", region);
+            putIfNotNull(env, "OS_PROJECT_ID", projectId);
+            putIfNotNull(env, "OS_PROJECT_DOMAIN_ID", domainId);
+            putIfNotNull(env, "OS_CLIENT_ID", clientId);
+            putIfNotNull(env, "OS_CLIENT_SECRET", clientSecret);
             env.put("OS_PROTOCOL", "openid");
-            env.put("OS_IDENTITY_PROVIDER", identityProvider);
+            putIfNotNull(env, "OS_IDENTITY_PROVIDER", identityProvider);
             env.put("OS_AUTH_TYPE", "v3oidcaccesstoken");
-            env.put("OS_ACCESS_TOKEN", jwtToken);
+            putIfNotNull(env, "OS_ACCESS_TOKEN", jwtToken);
             final List<String> args = new ArrayList<>();
             args.add("openstack");
             args.add("token");
@@ -458,6 +475,12 @@ public class OpenStackSession {
             for (String key : keySet) {
                 Executor.getEnvironment().remove(key);
             }
+        }
+    }
+
+    private static void putIfNotNull(Map<String, String> map, String key, String value) {
+        if (value != null) {
+            map.put(key, value);
         }
     }
 }

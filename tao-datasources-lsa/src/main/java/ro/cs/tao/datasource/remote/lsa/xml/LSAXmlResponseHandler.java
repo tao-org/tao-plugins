@@ -16,13 +16,14 @@
 package ro.cs.tao.datasource.remote.lsa.xml;
 
 import org.xml.sax.Attributes;
+import ro.cs.tao.datasource.ProductHelperFactory;
 import ro.cs.tao.datasource.remote.result.xml.XmlResponseHandler;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
+import ro.cs.tao.eodata.util.ProductHelper;
 import ro.cs.tao.serialization.DateAdapter;
-import ro.cs.tao.utils.executors.MemoryUnit;
 
 import java.net.URISyntaxException;
 import java.util.function.Predicate;
@@ -43,18 +44,18 @@ public class LSAXmlResponseHandler extends XmlResponseHandler<EOProduct> {
     protected void handleStartElement(String qName, Attributes attributes) {
         switch (qName) {
             case "link":
-                final String rel = attributes.getValue(0);
+                final String rel = attributes.getValue(1);
                 switch (rel) {
                     case "icon":
                         try {
-                            this.current.setQuicklookLocation(attributes.getValue(1));
+                            this.current.setQuicklookLocation(attributes.getValue(0));
                         } catch (URISyntaxException e) {
                             logger.warning(e.getMessage());
                         }
                         break;
                     case "enclosure":
                         try {
-                            this.current.setLocation(attributes.getValue(1));
+                            this.current.setLocation(attributes.getValue(0));
                         } catch (URISyntaxException e) {
                             logger.warning(e.getMessage());
                         }
@@ -74,17 +75,40 @@ public class LSAXmlResponseHandler extends XmlResponseHandler<EOProduct> {
     protected void handleEndElement(String qName) {
         final String elementValue = buffer.toString();
         switch (qName) {
+            case "date":
+                try {
+                    // for S1 we have date start and date end separated by /
+                    this.current.setAcquisitionDate(new DateAdapter().unmarshal(elementValue.split("/")[0]));
+                } catch (Exception e) {
+                    logger.warning(e.getMessage());
+                }
+                break;
             case "title":
                 if (this.current != null) {
+                    ProductHelper helper = ProductHelperFactory.getHelper(elementValue);
+                    if (helper == null) {
+                        break;
+                    }
                     this.current.setId(elementValue);
                     this.current.setName(elementValue);
                     this.current.setPixelType(PixelType.UINT16);
-                    if (elementValue.startsWith("S1"))
+                    this.current.addAttribute("relativeOrbit", helper.getOrbit());
+
+                    if (elementValue.startsWith("S1")) {
                         this.current.setSensorType(SensorType.RADAR);
-                    else if (elementValue.startsWith("S2"))
+                        this.current.setSatelliteName("Sentinel1");
+                        this.current.setProductType("Sentinel1");
+                    }
+                    else if (elementValue.startsWith("S2")) {
                         this.current.setSensorType(SensorType.OPTICAL);
-                    else
+                        this.current.setSatelliteName("Sentinel2");
+                        this.current.setProductType("Sentinel2");
+                    }
+                    else {
                         this.current.setSensorType(SensorType.UNKNOWN);
+                        this.current.setSatelliteName("UNKNOWN");
+                        this.current.setProductType("UNKNOWN");
+                    }
                 }
                 break;
             case "posList":
@@ -102,46 +126,43 @@ public class LSAXmlResponseHandler extends XmlResponseHandler<EOProduct> {
                 this.current.addAttribute(qName, elementValue);
                 break;
             case "summary":
-                final String content = elementValue.substring(elementValue.indexOf("<table"), elementValue.indexOf("</table>") + 8);
-                int idx = content.indexOf("<td>", content.indexOf("Orbit Number")) + 4;
-                String val = content.substring(idx, content.indexOf("</td>", idx)).trim();
-                this.current.addAttribute("relativeOrbit", val);
-                idx = content.indexOf("<td>", content.indexOf("Orbit Direction")) + 4;
-                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
-                this.current.addAttribute("relativeOrbit", val);
-                idx = content.indexOf("<td>", content.indexOf("Platform Short Name")) + 4;
-                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
-                this.current.setProductType(val);
-                this.current.setSatelliteName(val);
-                idx = content.indexOf("<td>", content.indexOf("Sensing Start Date")) + 4;
-                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
-                try {
-                    this.current.setAcquisitionDate(new DateAdapter().unmarshal(val));
-                } catch (Exception e) {
-                    logger.warning(e.getMessage());
-                }
+// None of the following properties exist in the summary anymore
+
+//                final String content = elementValue.substring(elementValue.indexOf("<table"), elementValue.indexOf("</table>") + 8);
+//                int idx = content.indexOf("<td>", content.indexOf("Orbit Number")) + 4;
+//                String val = content.substring(idx, content.indexOf("</td>", idx)).trim();
+//                this.current.addAttribute("relativeOrbit", val);
+//                idx = content.indexOf("<td>", content.indexOf("Orbit Direction")) + 4;
+//                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
+//                this.current.addAttribute("relativeOrbit", val);
+//                idx = content.indexOf("<td>", content.indexOf("Platform Short Name")) + 4;
+//                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
+//                this.current.setProductType(val);
+//                this.current.setSatelliteName(val);
+//                idx = content.indexOf("<td>", content.indexOf("Sensing Start Date")) + 4;
+//                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
                 // Platform Serial Identifier is returned as "B" which is not very useful (as it would be also Sentinel-2B).
                 // Instead, Platform Short Name is returned as "Sentinel-2", for example, which makes more sense
                 // idx = content.indexOf("<td>", content.indexOf("Platform Serial Identifier")) + 4;
                 // val = content.substring(idx, content.indexOf("</td>", idx)).trim();
                 // this.current.setSatelliteName(val);
-                idx = content.indexOf("<td>", content.indexOf("Instrument Short Name")) + 4;
-                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
-                this.current.addAttribute("instrument", val);
-                idx = content.indexOf("<td>", content.indexOf("Cloud Coverage")) + 4;
-                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
-                this.current.addAttribute("cloudCover", val);
-                idx = content.indexOf("<td>", content.indexOf("Download Size")) + 4;
-                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
-                long size;
-                if (val.endsWith("MB")) {
-                    size = (long) (MemoryUnit.MB.value() * Double.parseDouble(val.substring(0, val.indexOf(" "))));
-                } else if (val.endsWith("GB")) {
-                    size = (long) (MemoryUnit.GB.value() * Double.parseDouble(val.substring(0, val.indexOf(" "))));
-                } else {
-                    size = 0;
-                }
-                this.current.setApproximateSize(size);
+//                idx = content.indexOf("<td>", content.indexOf("Instrument Short Name")) + 4;
+//                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
+//                this.current.addAttribute("instrument", val);
+//                idx = content.indexOf("<td>", content.indexOf("Cloud Coverage")) + 4;
+//                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
+//                this.current.addAttribute("cloudCover", val);
+//                idx = content.indexOf("<td>", content.indexOf("Download Size")) + 4;
+//                val = content.substring(idx, content.indexOf("</td>", idx)).trim();
+//                long size;
+//                if (val.endsWith("MB")) {
+//                    size = (long) (MemoryUnit.MB.value() * Double.parseDouble(val.substring(0, val.indexOf(" "))));
+//                } else if (val.endsWith("GB")) {
+//                    size = (long) (MemoryUnit.GB.value() * Double.parseDouble(val.substring(0, val.indexOf(" "))));
+//                } else {
+//                    size = 0;
+//                }
+//                this.current.setApproximateSize(size);
                 break;
             case "":
                 break;

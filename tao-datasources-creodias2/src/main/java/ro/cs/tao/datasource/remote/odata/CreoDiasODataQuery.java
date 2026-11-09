@@ -88,6 +88,7 @@ public class CreoDiasODataQuery extends DataQuery {
         final boolean isS2 = "Sentinel-2".equalsIgnoreCase(platform);
         final boolean isS1 = "Sentinel-1".equalsIgnoreCase(platform);
         final boolean isS3 = "Sentinel-3".equalsIgnoreCase(platform);
+        final boolean isL8 = "Landsat-8".equalsIgnoreCase(platform);
         StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append(String.format("Query {%s-%s} has %d subqueries: ", this.source.getId(), this.sensorName, queries.size()));
         for (String queryId : queries.keySet()) {
@@ -157,8 +158,15 @@ public class CreoDiasODataQuery extends DataQuery {
                                                     } else {
                                                         result.addAttribute("tiles", result.getAttributeValue("tileId"));
                                                     }
+                                                    result.setSatelliteName("Sentinel2");
+                                                    result.setProductType("Sentinel2");
                                                 } else if (isS1) {
                                                     result.addAttribute("relativeOrbit", new Sentinel1ProductHelper(result.getName()).getOrbit());
+                                                    result.setSatelliteName("Sentinel1");
+                                                    result.setProductType("Sentinel1");
+                                                } else if (isL8) {
+                                                    result.setSatelliteName("Landsat8");
+                                                    result.setProductType("Landsat8");
                                                 }
                                                 if (hasProcessingDate && productHelper != null) {
                                                     String dateString = productHelper.getProcessingDate();
