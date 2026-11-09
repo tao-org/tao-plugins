@@ -28,7 +28,9 @@ public class RasterExtension<E extends Extensible> extends Extension<E> {
             if (arrNode != null) {
                 for (int i = 0; i < arrNode.size(); i++) {
                     try {
-                        addBand(new STACParser().parse(arrNode.get(i).toString(), Band.class));
+                        if (arrNode.get(i) != null) {
+                            addBand(new STACParser().parse(arrNode.get(i).toString(), Band.class));
+                        }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

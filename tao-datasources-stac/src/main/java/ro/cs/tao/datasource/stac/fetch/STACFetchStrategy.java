@@ -64,7 +64,7 @@ public class STACFetchStrategy extends DownloadStrategy<STACClient> {
                     } else {
                         final Repository repository = getRepository();
                         if (repository != null) {
-                            final StorageService<?, ?> service = StorageServiceFactory.getInstance(repository);
+                            final StorageService<?> service = StorageServiceFactory.getInstance(repository);
                             if (service != null) {
                                 String relativePath = file.replace(repository.getUrlPrefix() + "://", "");
                                 relativePath = relativePath.substring(relativePath.indexOf('/') + 1);

@@ -34,6 +34,9 @@ public class InlineJavascriptRequirementImpl extends SaveableImpl implements Inl
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private InlineJavascriptRequirement_class class_;
 
@@ -108,7 +111,7 @@ public class InlineJavascriptRequirementImpl extends SaveableImpl implements Inl
     try {
       class_ =
           LoaderInstances
-              .uri_InlineJavascriptRequirement_class_False_True_None
+              .uri_InlineJavascriptRequirement_class_False_True_None_None
               .loadField(__doc.get("class"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       class_ = null; // won't be used but prevents compiler from complaining.

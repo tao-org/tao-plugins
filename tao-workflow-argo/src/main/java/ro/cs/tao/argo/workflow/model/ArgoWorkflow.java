@@ -1,12 +1,8 @@
 package ro.cs.tao.argo.workflow.model;
 
-import io.fabric8.kubernetes.api.model.KubernetesResource;
-import ro.cs.tao.argo.workflow.model.WorkflowMetadata;
-import ro.cs.tao.argo.workflow.model.WorkflowSpec;
-
 import java.util.Map;
 
-public class ArgoWorkflow implements KubernetesResource {
+public class ArgoWorkflow {
     private String apiVersion;
     private String kind;
     private WorkflowMetadata metadata;

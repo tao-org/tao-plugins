@@ -17,6 +17,7 @@ package ro.cs.tao.ldap;
 
 import ro.cs.tao.configuration.ConfigurationManager;
 import ro.cs.tao.configuration.ConfigurationProvider;
+import ro.cs.tao.security.TokenProvider;
 import ro.cs.tao.user.User;
 
 import javax.naming.AuthenticationException;
@@ -32,7 +33,7 @@ import java.util.logging.Logger;
  *
  * @author Oana H.
  */
-public class TaoLdapClient {
+public class TaoLdapClient implements TokenProvider {
     private static final Logger logger = Logger.getLogger(TaoLdapClient.class.getName());
 
     // LDAP configuration properties
@@ -50,6 +51,15 @@ public class TaoLdapClient {
         securityAuthentication = configurationProvider.getValue("ldap.context.security.authentication");
     }
 
+    /**
+     * Checks the provided login credentials against an LDAP directory to authenticate the user.
+     * If the authentication is successful, a {@link User} object is retrieved and returned.
+     *
+     * @param username the username provided for authentication; may include a domain (e.g., user@domain.com)
+     * @param password the password provided for authentication
+     * @return a {@link User} object corresponding to the authenticated user if authentication is successful;
+     *         null if the credentials are invalid or an error occurs during authentication
+     */
     public User checkLoginCredentials(final String username, final String password){
         final String simpleUserName = username.contains("@") ? username.split("@")[0] : username;
         final String userDomain = (domain == null && username.contains("@")) ? username.split("@")[1] : domain;

@@ -1,9 +1,13 @@
 package ro.cs.tao.products.sentinels;
 
+import ro.cs.tao.datasource.param.JavaType;
+import ro.cs.tao.eodata.naming.ResolverFunction;
 import ro.cs.tao.eodata.naming.TokenResolver;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.StringUtilities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -35,6 +39,19 @@ public class SentinelSubDatasetResolver implements TokenResolver {
         }
         return name;
     };
+
+    @Override
+    public List<ResolverFunction> definedFunctions() {
+        final List<ResolverFunction> functions = new ArrayList<>();
+        ResolverFunction function = new ResolverFunction("SUBDATASET",
+                                                         JavaType.STRING.friendlyName(),
+                                                         "Extracts Sentinel-2 subdatasets required by GDAL/OTB",
+                                                         "Sentinel-2");
+        function.addArgument("name", JavaType.STRING.friendlyName(), "Sentinel-2 product name");
+        function.addArgument("resolution", JavaType.INT.friendlyName(), "resolution (10,20 or 60)");
+        functions.add(function);
+        return functions;
+    }
 
     @Override
     public String resolve(String expression) {

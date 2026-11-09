@@ -20,6 +20,8 @@ import org.w3id.cwl.cwl1_2.utils.LoadingOptionsBuilder;
 import org.w3id.cwl.cwl1_2.utils.SaveableImpl;
 import org.w3id.cwl.cwl1_2.utils.ValidationException;
 
+import java.util.Optional;
+
 /**
 * Auto-generated class implementation for <I>https://w3id.org/cwl/cwl#ExpressionTool</I><BR> <BLOCKQUOTE>
  An ExpressionTool is a type of Process object that can be run by itself
@@ -35,6 +37,9 @@ public class ExpressionToolImpl extends SaveableImpl implements ExpressionTool {
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private java.util.Optional<String> id;
 
@@ -51,6 +56,9 @@ public class ExpressionToolImpl extends SaveableImpl implements ExpressionTool {
   public java.util.Optional<String> getId() {
     return this.id;
   }
+
+  @Override
+  public void setId(Optional<String> id) {}
 
   private ExpressionTool_class class_;
 
@@ -178,8 +186,9 @@ public class ExpressionToolImpl extends SaveableImpl implements ExpressionTool {
    * Getter for property <I>https://w3id.org/cwl/cwl#Process/intent</I><BR>
    * <BLOCKQUOTE>
    * An identifier for the type of computational operation, of this Process.
-   * Especially useful for "class: Operation", but can also be used for
-   * CommandLineTool, Workflow, or ExpressionTool.
+   * Especially useful for [`Operation`](Workflow.html#Operation), but can also be used for
+   * [`CommandLineTool`](CommandLineTool.html#CommandLineTool),
+   * [`Workflow`](Workflow.html#Workflow), or [ExpressionTool](Workflow.html#ExpressionTool).
    * 
    * If provided, then this must be an IRI of a concept node that
    * represents the type of operation, preferably defined within an ontology.
@@ -248,7 +257,7 @@ public class ExpressionToolImpl extends SaveableImpl implements ExpressionTool {
       try {
         id =
             LoaderInstances
-                .uri_optional_StringInstance_True_False_None
+                .uri_optional_StringInstance_True_False_None_None
                 .loadField(__doc.get("id"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         id = null; // won't be used but prevents compiler from complaining.
@@ -277,7 +286,7 @@ public class ExpressionToolImpl extends SaveableImpl implements ExpressionTool {
     try {
       class_ =
           LoaderInstances
-              .uri_ExpressionTool_class_False_True_None
+              .uri_ExpressionTool_class_False_True_None_None
               .loadField(__doc.get("class"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       class_ = null; // won't be used but prevents compiler from complaining.
@@ -380,7 +389,7 @@ public class ExpressionToolImpl extends SaveableImpl implements ExpressionTool {
       try {
         cwlVersion =
             LoaderInstances
-                .uri_optional_CWLVersion_False_True_None
+                .uri_optional_CWLVersion_False_True_None_None
                 .loadField(__doc.get("cwlVersion"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         cwlVersion = null; // won't be used but prevents compiler from complaining.
@@ -397,7 +406,7 @@ public class ExpressionToolImpl extends SaveableImpl implements ExpressionTool {
       try {
         intent =
             LoaderInstances
-                .uri_optional_array_of_StringInstance_True_False_None
+                .uri_optional_array_of_StringInstance_True_False_None_None
                 .loadField(__doc.get("intent"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         intent = null; // won't be used but prevents compiler from complaining.

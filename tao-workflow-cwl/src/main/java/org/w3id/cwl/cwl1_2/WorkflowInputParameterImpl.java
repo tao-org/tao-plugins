@@ -30,6 +30,9 @@ public class WorkflowInputParameterImpl extends SaveableImpl implements Workflow
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private java.util.Optional<String> id;
 
@@ -198,7 +201,7 @@ public class WorkflowInputParameterImpl extends SaveableImpl implements Workflow
     return this.loadListing;
   }
 
-  private Object default_;
+  private java.util.Optional<Object> default_;
 
   /**
    * Getter for property <I>https://w3id.org/cwl/salad#default</I><BR>
@@ -210,7 +213,7 @@ public class WorkflowInputParameterImpl extends SaveableImpl implements Workflow
    *    * </BLOCKQUOTE>
    */
 
-  public Object getDefault() {
+  public java.util.Optional<Object> getDefault() {
     return this.default_;
   }
 
@@ -281,7 +284,7 @@ public class WorkflowInputParameterImpl extends SaveableImpl implements Workflow
     this.loadListing = loadListing;
   }
 
-  public void setDefault(Object default_) {
+  public void setDefault(Optional<Object> default_) {
     this.default_ = default_;
   }
 
@@ -333,7 +336,7 @@ public class WorkflowInputParameterImpl extends SaveableImpl implements Workflow
       try {
         id =
             LoaderInstances
-                .uri_optional_StringInstance_True_False_None
+                .uri_optional_StringInstance_True_False_None_None
                 .loadField(__doc.get("id"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         id = null; // won't be used but prevents compiler from complaining.
@@ -432,7 +435,7 @@ public class WorkflowInputParameterImpl extends SaveableImpl implements Workflow
       try {
         format =
             LoaderInstances
-                .uri_union_of_NullInstance_or_StringInstance_or_array_of_StringInstance_or_ExpressionLoader_True_False_None
+                .uri_union_of_NullInstance_or_StringInstance_or_array_of_StringInstance_or_ExpressionLoader_True_False_None_True
                 .loadField(__doc.get("format"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         format = null; // won't be used but prevents compiler from complaining.
@@ -477,13 +480,13 @@ public class WorkflowInputParameterImpl extends SaveableImpl implements Workflow
     } else {
       loadListing = null;
     }
-    Object default_;
+    java.util.Optional<Object> default_;
 
     if (__doc.containsKey("default")) {
       try {
         default_ =
             LoaderInstances
-                .union_of_NullInstance_or_File_or_Directory_or_AnyInstance
+                .optional_CWLObjectType
                 .loadField(__doc.get("default"), __baseUri, __loadingOptions);
       } catch (ValidationException e) {
         default_ = null; // won't be used but prevents compiler from complaining.
@@ -533,7 +536,7 @@ public class WorkflowInputParameterImpl extends SaveableImpl implements Workflow
     this.format = (Object) format;
     this.loadContents = (java.util.Optional<Boolean>) loadContents;
     this.loadListing = (java.util.Optional<LoadListingEnum>) loadListing;
-    this.default_ = (Object) default_;
+    this.default_ = (java.util.Optional<Object>) default_;
     this.type = (Object) type;
     this.inputBinding = (java.util.Optional<InputBinding>) inputBinding;
   }

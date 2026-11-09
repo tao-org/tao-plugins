@@ -27,6 +27,9 @@ public class ArraySchemaImpl extends SaveableImpl implements ArraySchema {
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private Object items;
 
@@ -40,7 +43,7 @@ public class ArraySchemaImpl extends SaveableImpl implements ArraySchema {
     return this.items;
   }
 
-  private enum_d062602be0b4b8fd33e69e29a841317b6ab665bc type;
+  private Array_name type;
 
   /**
    * Getter for property <I>https://w3id.org/cwl/salad#type</I><BR>
@@ -48,7 +51,7 @@ public class ArraySchemaImpl extends SaveableImpl implements ArraySchema {
    * Must be `array`   * </BLOCKQUOTE>
    */
 
-  public enum_d062602be0b4b8fd33e69e29a841317b6ab665bc getType() {
+  public Array_name getType() {
     return this.type;
   }
 
@@ -86,18 +89,18 @@ public class ArraySchemaImpl extends SaveableImpl implements ArraySchema {
     try {
       items =
           LoaderInstances
-              .typedsl_union_of_PrimitiveType_or_RecordSchema_or_EnumSchema_or_ArraySchema_or_StringInstance_or_array_of_union_of_PrimitiveType_or_RecordSchema_or_EnumSchema_or_ArraySchema_or_StringInstance_2
+              .uri_union_of_PrimitiveType_or_RecordSchema_or_EnumSchema_or_ArraySchema_or_MapSchema_or_UnionSchema_or_StringInstance_or_array_of_union_of_PrimitiveType_or_RecordSchema_or_EnumSchema_or_ArraySchema_or_MapSchema_or_UnionSchema_or_StringInstance_False_True_2_None
               .loadField(__doc.get("items"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       items = null; // won't be used but prevents compiler from complaining.
       final String __message = "the `items` field is not valid because:";
       __errors.add(new ValidationException(__message, e));
     }
-    enum_d062602be0b4b8fd33e69e29a841317b6ab665bc type;
+    Array_name type;
     try {
       type =
           LoaderInstances
-              .typedsl_enum_d062602be0b4b8fd33e69e29a841317b6ab665bc_2
+              .typedsl_Array_name_2
               .loadField(__doc.get("type"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       type = null; // won't be used but prevents compiler from complaining.
@@ -108,6 +111,12 @@ public class ArraySchemaImpl extends SaveableImpl implements ArraySchema {
       throw new ValidationException("Trying 'RecordField'", __errors);
     }
     this.items = (Object) items;
-    this.type = (enum_d062602be0b4b8fd33e69e29a841317b6ab665bc) type;
+    this.type = (Array_name) type;
+  }
+
+  @Override
+  public String toString() {
+    return (this.items != null ? this.items.toString() : "") +
+            ((this.type != null && this.type.toString().equalsIgnoreCase("array") ? "[]" : ""));
   }
 }

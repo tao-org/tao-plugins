@@ -23,7 +23,6 @@ import ro.cs.tao.utils.executors.ExecutionUnit;
 import ro.cs.tao.utils.executors.ExecutorType;
 import ro.cs.tao.utils.executors.OutputAccumulator;
 import ro.cs.tao.utils.executors.SSHMode;
-import ro.cs.tao.utils.executors.container.ContainerType;
 import ro.cs.tao.utils.executors.container.ContainerUnit;
 
 import java.nio.file.Files;
@@ -35,12 +34,14 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class KubernetesSession implements Session, JobExitHandler {
+    private static final String defaultNamespace = "argo";
     static final String configFileName = "kubernetes.config";
     static final String token = "tao.kubernetes.token";
-    static final String namespace = "argo";
+    static final String namespaceCfgKey = "tao.kubernetes.namespace";
     static final String masterURL = "tao.kubernetes.master.url";
     static final String caCertFile = "tao.kubernetes.ca.cert.file";
     static final String pvcMappingsKey = "tao.kubernetes.pvc.mappings";
+    static boolean canConnect = true;
     private final static Logger logger = Logger.getLogger(KubernetesSession.class.getName());
     private Map<String, String> configuration;
     private KubernetesClient client;
@@ -51,6 +52,7 @@ public class KubernetesSession implements Session, JobExitHandler {
     private AtomicInteger nodeCounter;
     private List <LogWatch> jobsLog;
     private Map<String, String> pvcMappings;
+    private String namespace;
 
     public KubernetesSession() {
         this.configuration = KubernetesSession.getConfiguration();
@@ -58,6 +60,7 @@ public class KubernetesSession implements Session, JobExitHandler {
         if (this.client != null) {
             this.pvcMappings = this.parsePvcMappings();
         }
+        this.namespace = this.configuration.get(namespaceCfgKey);
     }
 
     @Override
@@ -148,7 +151,7 @@ public class KubernetesSession implements Session, JobExitHandler {
         int exitCode = -1;
 
         // List the pods with the label selector matching the job
-        PodList podList = client.pods().inNamespace(KubernetesSession.namespace)
+        PodList podList = client.pods().inNamespace(this.namespace)
                 .withLabel("job-name", jobId)
                 .list();
         for (Pod pod : podList.getItems()) {
@@ -323,7 +326,7 @@ public class KubernetesSession implements Session, JobExitHandler {
                 break;
             case RUNNING:
                 statusId = RUNNING;
-                log = client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog();
+                log = client.pods().inNamespace(this.namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog();
                 this.jobOutputs.computeIfAbsent(jobId, new Function<String, OutputAccumulator>() {
                     @Override
                     public OutputAccumulator apply(String s) {
@@ -339,7 +342,7 @@ public class KubernetesSession implements Session, JobExitHandler {
                     lw.close();
                 }
                 logger.finest("Logger closed for jobId / name: " + jobId + " / " + job.getMetadata().getName());
-                log = client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog();
+                log = client.pods().inNamespace(this.namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog();
                 this.jobOutputs.computeIfAbsent(jobId, new Function<String, OutputAccumulator>() {
                     @Override
                     public OutputAccumulator apply(String s) {
@@ -356,7 +359,7 @@ public class KubernetesSession implements Session, JobExitHandler {
                 if (lw != null) {
                     lw.close();
                 }
-                log = client.pods().inNamespace(namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog();
+                log = client.pods().inNamespace(this.namespace).withName(pod.getMetadata().getName()).withPrettyOutput().getLog();
                 this.jobOutputs.computeIfAbsent(jobId, new Function<String, OutputAccumulator>() {
                     @Override
                     public OutputAccumulator apply(String s) {
@@ -444,17 +447,14 @@ public class KubernetesSession implements Session, JobExitHandler {
     }
     private Job execute(String jobName, ExecutionUnit unit) {
         Container container = new Container();
-        ContainerUnit containerUnit = new ContainerUnit(ContainerType.KUBERNETES);
 
         try {
-            containerUnit.setContainerName(unit.getContainerUnit().getContainerName());
-            containerUnit.setContainerRegistry(unit.getContainerUnit().getContainerRegistry());
-            unit.getContainerUnit().getVolumeMap().forEach(containerUnit::addVolumeMapping);
-            containerUnit.setEnvironmentVariables(unit.getContainerUnit().getEnvironmentVariables());
-            containerUnit.setArguments(unit.getContainerUnit().getArguments());
+            String containerName = unit.getContainerUnit().getContainerName().replace('/', '-')
+                    .replace(':', '-')
+                    .replace('.', '-');
 
-            container.setName(containerUnit.getContainerName());
-            container.setImage(containerUnit.getContainerRegistry()+"/"+containerUnit.getContainerName());
+            container.setName(containerName);
+            container.setImage(unit.getContainerUnit().getContainerRegistry() + "/" + unit.getContainerUnit().getContainerName());
             container.setCommand(unit.getArguments());
 
             logger.info("Pod original cmd: " + container.getCommand().toString());
@@ -471,12 +471,12 @@ public class KubernetesSession implements Session, JobExitHandler {
             Map<String, Volume> pvcVolumeMap = new HashMap<>();
 
             List<Volume> volumes = null;
-            if (containerUnit.getVolumeMap() != null) {
+            if (unit.getContainerUnit().getVolumeMap() != null) {
                 final List<VolumeMount> mounts = new ArrayList<>();
                 volumes = new ArrayList<>();
                 int volIdx = 0;
                 // TODO: This is for hostPath mount only ! Implement it for s3 as well
-                for (Map.Entry<String, String> entry : containerUnit.getVolumeMap().entrySet()) {
+                for (Map.Entry<String, String> entry : unit.getContainerUnit().getVolumeMap().entrySet()) {
 
                     for (Map.Entry<String, String> pvcEntry : pvcMappings.entrySet()) {
                         if(entry.getKey().startsWith(pvcEntry.getKey())) {
@@ -506,20 +506,25 @@ public class KubernetesSession implements Session, JobExitHandler {
                 container.setVolumeMounts(mounts);
             }
 
-            if (!containerUnit.getEnvironmentVariables().isEmpty()) {
+            if (!unit.getContainerUnit().getEnvironmentVariables().isEmpty()) {
                 List envVars = new ArrayList();
-                for (Map.Entry<String, String> entry : containerUnit.getEnvironmentVariables().entrySet()) {
+                for (Map.Entry<String, String> entry : unit.getContainerUnit().getEnvironmentVariables().entrySet()) {
                     envVars.add(new EnvVar(entry.getKey(), entry.getValue(), null));
                 }
                 container.setEnv(envVars);
             }
 
             ResourceRequirements resourceRequirements = new ResourceRequirements();
-            resourceRequirements.setRequests(Map.of(
-                    "memory", new Quantity(unit.getMinMemory() + "Mi")
+            Map<String, Quantity> requests = new HashMap<>();
+            if (unit.getMinMemory() != null) {
+                requests.put("memory", new Quantity(unit.getMinMemory() + "Mi"));
+            }
                     // TODO add when available
-                    // "cpu", new Quantity(unit.getMinCpu() + "m")
-            ));
+//            if (unit.getMinCpu() != null) {
+//                requests.put("cpu", new Quantity(unit.getMinCpu() + "m"));
+//            }
+
+            resourceRequirements.setRequests(requests);
             container.setResources(resourceRequirements);
 
             final Job job = new JobBuilder()
@@ -544,7 +549,7 @@ public class KubernetesSession implements Session, JobExitHandler {
                     .endSpec()
                     .build();
 
-            client.batch().v1().jobs().inNamespace(namespace).resource(job).create();
+            client.batch().v1().jobs().inNamespace(this.namespace).resource(job).create();
             return job;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -553,13 +558,13 @@ public class KubernetesSession implements Session, JobExitHandler {
 
     private Pod getPod(Job job) {
         // Get All pods created by the job
-        PodList podList = client.pods().inNamespace(namespace).withLabel("job-name", job.getMetadata().getName()).list();
+        PodList podList = client.pods().inNamespace(this.namespace).withLabel("job-name", job.getMetadata().getName()).list();
         // Wait for pod to complete
-        return client.pods().inNamespace(namespace).withName(podList.getItems().get(0).getMetadata().getName()).get();
+        return client.pods().inNamespace(this.namespace).withName(podList.getItems().get(0).getMetadata().getName()).get();
     }
 
     private void stopPods(Job job) {
-        client.resource(job).inNamespace(namespace).delete();
+        client.resource(job).inNamespace(this.namespace).delete();
     }
 
     static Map<String, String> getConfiguration() {
@@ -576,6 +581,12 @@ public class KubernetesSession implements Session, JobExitHandler {
 
         String pvcMappingsValue = ConfigurationManager.getInstance().getValue(KubernetesSession.pvcMappingsKey);
         configuration.put(KubernetesSession.pvcMappingsKey, pvcMappingsValue);
+
+        String k8sNamespace = ConfigurationManager.getInstance().getValue(KubernetesSession.namespaceCfgKey);
+        if (k8sNamespace == null) {
+            k8sNamespace = defaultNamespace;
+        }
+        configuration.put(KubernetesSession.namespaceCfgKey, k8sNamespace);
 
         return configuration;
     }
@@ -612,11 +623,11 @@ public class KubernetesSession implements Session, JobExitHandler {
     }
 
     static KubernetesClient getClient(Map<String, String> configuration) {
-        if(!KubernetesSession.configurationHasErrors(configuration)) {
+        if (canConnect && (canConnect = !KubernetesSession.configurationHasErrors(configuration))) {
             try {
                 io.fabric8.kubernetes.client.Config builder = new io.fabric8.kubernetes.client.ConfigBuilder()
                         .withMasterUrl(configuration.get(KubernetesSession.masterURL))
-                        .withNamespace(configuration.get(KubernetesSession.namespace))
+                        .withNamespace(configuration.get(KubernetesSession.namespaceCfgKey))
                         .withCaCertFile(configuration.get(KubernetesSession.caCertFile))
                         .withOauthToken(configuration.get(KubernetesSession.token))
                         .build();

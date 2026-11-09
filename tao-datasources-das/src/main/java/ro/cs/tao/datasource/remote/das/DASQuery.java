@@ -27,6 +27,7 @@ import ro.cs.tao.datasource.converters.ConverterFactory;
 import ro.cs.tao.datasource.param.CommonParameterNames;
 import ro.cs.tao.datasource.param.QueryParameter;
 import ro.cs.tao.datasource.remote.das.json.DASJsonResponseHandler;
+import ro.cs.tao.datasource.remote.das.json.Result;
 import ro.cs.tao.datasource.remote.das.json.Results;
 import ro.cs.tao.datasource.remote.das.parameters.DASPolygonParameterConverter;
 import ro.cs.tao.datasource.remote.das.parameters.DateTimeParameterConverter;
@@ -35,6 +36,7 @@ import ro.cs.tao.datasource.remote.result.json.JsonResponseParser;
 import ro.cs.tao.eodata.EOProduct;
 import ro.cs.tao.eodata.Polygon2D;
 import ro.cs.tao.eodata.util.ProductHelper;
+import ro.cs.tao.products.sentinels.Sentinel1ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2ProductHelper;
 import ro.cs.tao.products.sentinels.Sentinel2TileExtent;
 import ro.cs.tao.products.sentinels.SentinelProductHelper;
@@ -49,16 +51,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
  * @author Cosmin Cara
  */
 public class DASQuery extends DataQuery {
-    static final Pattern S1Pattern =
-            Pattern.compile("(S1[A-B])_(SM|IW|EW|WV)_(SLC|GRD|RAW|OCN)([FHM_])_([0-2])([AS])(SH|SV|DH|DV)_(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(\\d{6})_([0-9A-F]{6})_([0-9A-F]{4})(?:.SAFE)?");
 
     private static final DateTimeFormatter dateFormat = DateUtils.getFormatterAtUTC("yyyyMMdd'T'HHmmss");
     private static final Set<Class<?>> unquotableTypes  = new HashSet<>() {{
@@ -125,70 +125,76 @@ public class DASQuery extends DataQuery {
                 params.add(new BasicNameValuePair("$skip", String.valueOf((i - 1) * this.pageSize)));
                 params.add(new BasicNameValuePair("$orderby", "ContentDate/Start asc"));
                 final String queryUrl = this.source.getConnectionString() + "?" + URLEncodedUtils.format(params, "UTF-8").replace("+", "%20");
-                final boolean hasProcessingDate = "Sentinel2".equals(this.sensorName) || "Sentinel3".equals(this.sensorName);
-                this.logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
-                try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
-                    final String rawResponse = EntityUtils.toString(response.getEntity());
-                    switch (response.getStatusLine().getStatusCode()) {
-                        case 200:
-                            final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source,
-                                                                                                                         this.coverageFilter));
-                            tmpResults = parser.parse(rawResponse);
-                            if (tmpResults != null) {
-                                if (isS3) {
-                                    filterS3(tmpResults);
-                                }
-                                count = tmpResults.size();
-                                if (count > 0) {
+                if ((tmpResults = getFromCache(queryUrl)) == null) {
+                    final boolean hasProcessingDate = "Sentinel2".equals(this.sensorName) || "Sentinel3".equals(this.sensorName);
+                    this.logger.fine(String.format("Executing query %s: %s", query.getKey(), queryUrl));
+                    try (CloseableHttpResponse response = NetUtils.openConnection(HttpMethod.GET, queryUrl, this.source.getCredentials())) {
+                        final String rawResponse = EntityUtils.toString(response.getEntity());
+                        switch (response.getStatusLine().getStatusCode()) {
+                            case 200:
+                                final List<Predicate<Result>> s3Filters = isS3 ? buildS3Filters() : new ArrayList<>();
+                                final ResponseParser<EOProduct> parser = new JsonResponseParser<>(new DASJsonResponseHandler((DASDataSource) this.source,
+                                                                                                                             this.coverageFilter, s3Filters));
+                                tmpResults = parser.parse(rawResponse);
+                                if (tmpResults != null) {
+                                    /*if (isS3) {
+                                        filterS3(tmpResults);
+                                    }*/
+                                    count = tmpResults.size();
+                                    if (count > 0) {
                                     /*if (hasProcessingDate && this.parameters.containsKey(CommonParameterNames.CLOUD_COVER)) {
                                         final double clouds = Double.parseDouble(this.parameters.get(CommonParameterNames.CLOUD_COVER).getValue().toString());
                                         tmpResults = tmpResults.stream()
                                                 .filter(r -> Double.parseDouble(r.getAttributeValue("cloudCover")) <= clouds)
                                                 .collect(Collectors.toList());
                                     }*/
-                                    ProductHelper productHelper = null;
-                                    for (EOProduct result : tmpResults) {
-                                        if (!results.containsKey(result.getName())) {
-                                            try {
-                                                productHelper = SentinelProductHelper.create(result.getName());
-                                            } catch (Exception ex) {
-                                                this.logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
-                                                continue;
-                                            }
-                                            if (isS2) {
-                                                if (result.getAttributeValue("tileId") == null) {
-                                                    result.addAttribute("tiles", ((Sentinel2ProductHelper) productHelper).getTileIdentifier());
-                                                } else {
-                                                    result.addAttribute("tiles", result.getAttributeValue("tileId"));
+                                        ProductHelper productHelper = null;
+                                        for (EOProduct result : tmpResults) {
+                                            if (!results.containsKey(result.getName())) {
+                                                try {
+                                                    productHelper = SentinelProductHelper.create(result.getName());
+                                                } catch (Exception ex) {
+                                                    this.logger.warning(String.format("Product %s not supported. Will be ignored", result.getName()));
+                                                    continue;
                                                 }
-                                            } else if (isS1 && !isS1Aux) {
-                                                result.addAttribute("relativeOrbit", getRelativeOrbit(result.getName()));
-                                            }
-                                            if (hasProcessingDate) {
-                                                final String dateString = productHelper.getProcessingDate();
-                                                if (dateString != null) {
-                                                    try {
-                                                        result.setProcessingDate(LocalDateTime.parse(dateString, dateFormat));
-                                                    } catch (DateTimeParseException ignored) {
+                                                if (isS2) {
+                                                    if (result.getAttributeValue("tileId") == null) {
+                                                        result.addAttribute("tiles", ((Sentinel2ProductHelper) productHelper).getTileIdentifier());
+                                                    } else {
+                                                        result.addAttribute("tiles", result.getAttributeValue("tileId"));
+                                                    }
+                                                } else if (isS1 && !isS1Aux) {
+                                                    result.addAttribute("relativeOrbit", new Sentinel1ProductHelper(result.getName()).getOrbit());
+                                                }
+                                                if (hasProcessingDate) {
+                                                    final String dateString = productHelper.getProcessingDate();
+                                                    if (dateString != null) {
+                                                        try {
+                                                            result.setProcessingDate(LocalDateTime.parse(dateString, dateFormat));
+                                                        } catch (DateTimeParseException ignored) {
+                                                        }
                                                     }
                                                 }
+                                                results.put(result.getName(), result);
                                             }
-                                            results.put(result.getName(), result);
                                         }
+                                        addToCache(queryUrl, tmpResults);
                                     }
+                                    this.logger.info(String.format("Query %s page %d returned %s products", query.getKey(), i, tmpResults.size()));
                                 }
-                                this.logger.info(String.format("Query %s page %d returned %s products", query.getKey(), i, tmpResults.size()));
-                            }
-                            break;
-                        case 401:
-                            throw new QueryException("The supplied credentials are invalid!");
-                        default:
-                            throw new QueryException(String.format("The request was not successful. Reason: %s ('%s')",
-                                                                   response.getStatusLine().getReasonPhrase(),
-                                                                   rawResponse));
+                                break;
+                            case 401:
+                                throw new QueryException("The supplied credentials are invalid!");
+                            default:
+                                throw new QueryException(String.format("The request was not successful. Reason: %s ('%s')",
+                                                                       response.getStatusLine().getReasonPhrase(),
+                                                                       rawResponse));
+                        }
+                    } catch (IOException ex) {
+                        throw new QueryException(ex);
                     }
-                } catch (IOException ex) {
-                    throw new QueryException(ex);
+                } else {
+                    results.putAll(tmpResults.stream().collect(Collectors.toMap(EOProduct::getName, Function.identity())));
                 }
                 i++;
             } while (this.pageNumber == -1 && count > 0 && results.size() < actualLimit);
@@ -417,6 +423,10 @@ public class DASQuery extends DataQuery {
                             // productSize filter will be applied after results are returned
                             query.setLength(query.length() - 5);
                             break;
+                        case "dayTime":
+                            // dayTime filter will be applied after results are returned
+                            query.setLength(query.length() - 5);
+                            break;
                         default:
                             if (parameter.getType().isArray()) {
                                 query.append("(");
@@ -453,30 +463,47 @@ public class DASQuery extends DataQuery {
         return queries;
     }
 
-    private String getRelativeOrbit(String productName) {
-        final String value;
-        final Matcher matcher = S1Pattern.matcher(productName);
-        if (matcher.matches()) {
-            int absOrbit = Integer.parseInt(matcher.group(10));
-            value = String.format("%03d",
-                                  matcher.group(1).endsWith("A")
-                                  ? ((absOrbit - 73) % 175) + 1
-                                  : ((absOrbit - 27) % 175) + 1);
-        } else {
-            value = null;
-        }
-        return value;
-    }
-
-    private void filterS3(List<EOProduct> results) {
+    private List<Predicate<Result>> buildS3Filters() {
+        final List<Predicate<Result>> filters = new ArrayList<>();
         if (this.parameters.containsKey("productSize")) {
             String productSize = this.parameters.get("productSize").getValueAsString();
             if ("STRIPE".equalsIgnoreCase(productSize)) {
-                results.removeIf(p -> !p.getName().contains("_____"));
+                filters.add(new Predicate<>() {
+                    @Override
+                    public boolean test(Result result) {
+                        return !result.getName().contains("_____");
+                    }
+                });
             } else if ("FRAME".equalsIgnoreCase(productSize)) {
-                results.removeIf(p -> p.getName().contains("_____"));
+                filters.add(new Predicate<>() {
+                    @Override
+                    public boolean test(Result result) {
+                        return result.getName().contains("_____");
+                    }
+                });
             }
         }
+        if (this.parameters.containsKey("dayTime")) {
+            String dayTime = this.parameters.get("dayTime").getValueAsString();
+            if (!"ANY".equalsIgnoreCase(dayTime)) {
+                if ("DAY".equalsIgnoreCase(dayTime)) {
+                    filters.add(new Predicate<>() {
+                        @Override
+                        public boolean test(Result result) {
+                            return result.getContentDate().getStart().getHour() > 16;
+                        }
+                    });
+                } else if ("NIGHT".equalsIgnoreCase(dayTime)) {
+                    filters.add(new Predicate<>() {
+                        @Override
+                        public boolean test(Result result) {
+                            return result.getContentDate().getStart().getHour() <= 16;
+                        }
+                    });
+                }
+            }
+        }
+        return filters;
     }
 
     private String buildPropertyFilter(String name, QueryParameter<?> parameter, Condition condition) throws ConversionException {

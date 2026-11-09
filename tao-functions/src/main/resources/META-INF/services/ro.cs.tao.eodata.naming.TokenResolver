@@ -1,3 +1,4 @@
 ro.cs.tao.functions.DateTimeResolver
+ro.cs.tao.functions.FolderResolver
 ro.cs.tao.functions.ProjectionResolver
 ro.cs.tao.functions.StringResolver

@@ -1,7 +1,5 @@
 package ro.cs.tao.products.sentinels;
 
-import ro.cs.tao.eodata.Polygon2D;
-import ro.cs.tao.eodata.enums.OrbitDirection;
 import ro.cs.tao.eodata.enums.PixelType;
 import ro.cs.tao.eodata.enums.SensorType;
 import ro.cs.tao.eodata.metadata.DecodeStatus;
@@ -16,6 +14,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
 
+/**
+ * The Sentinel5PMetadataInspector is a class responsible for decoding and extracting
+ * metadata information from Sentinel-5P satellite product files. It implements the
+ * MetadataInspector interface and provides methods to determine whether a product is
+ * supported, retrieve associated metadata, and handle metadata file processing.
+ */
 public class Sentinel5PMetadataInspector implements MetadataInspector {
     protected Logger logger = Logger.getLogger(getClass().getName());
 

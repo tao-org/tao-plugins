@@ -201,10 +201,17 @@ public class CreoDIASDownloadStrategy extends DownloadStrategy<Token> {
         if (archivePath.toString().endsWith(".tar.gz")) {
             result = Zipper.decompressTarGz(archivePath, targetPath, true);
             Files.move(result, result.getParent().resolve(name));
+        } else if (archivePath.toString().endsWith(".zip")){
+            Path unzipResult = Zipper.decompressZipMT(archivePath, targetPath, false, true);
+            result = unzipResult.getParent().resolve(name);
+            // we may have in the archive another dir than the expected one (ex. without .SAFE)
+            if (!unzipResult.equals(result)) {
+                FileUtilities.deleteTree(result);
+                FileUtilities.rename(unzipResult, name);
+            }
         } else {
-            result = Zipper.decompressZipMT(archivePath, targetPath, false, true);
+            result = targetPath;
         }
-        result = result.getParent().resolve(name);
         logger.fine(String.format("Decompression of %s completed",archivePath.getFileName()));
         return result;
     }

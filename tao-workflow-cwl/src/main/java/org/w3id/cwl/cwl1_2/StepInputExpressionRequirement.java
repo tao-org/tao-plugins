@@ -30,4 +30,5 @@ public interface StepInputExpressionRequirement extends ProcessRequirement, Save
    */
 
   StepInputExpressionRequirement_class getClass_();
+  void setClass_(StepInputExpressionRequirement_class class_);
 }

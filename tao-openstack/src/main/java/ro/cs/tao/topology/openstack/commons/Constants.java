@@ -1,5 +1,16 @@
 package ro.cs.tao.topology.openstack.commons;
 
+/**
+ * The Constants class contains a collection of constant string keys used for configuring
+ * and interacting with the OpenStack platform.
+ *
+ * These configuration keys include credentials, endpoints, regions, network settings,
+ * volume types, flavors, and other platform-specific settings. The class provides
+ * centralized and reusable definitions for commonly used constants to avoid hardcoding
+ * throughout the application.
+ *
+ * The class is designed to be used as a utility and does not require instantiation.
+ */
 public class Constants {
     public static final String OPENSTACK_USER = "openstack.user";
     public static final String OPENSTACK_PASSWORD = "openstack.password";

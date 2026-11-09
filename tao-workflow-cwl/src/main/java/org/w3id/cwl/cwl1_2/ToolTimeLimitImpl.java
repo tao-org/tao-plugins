@@ -35,6 +35,9 @@ public class ToolTimeLimitImpl extends SaveableImpl implements ToolTimeLimit {
   private LoadingOptions loadingOptions_ = new LoadingOptionsBuilder().build();
   private java.util.Map<String, Object> extensionFields_ =
       new java.util.HashMap<String, Object>();
+  public java.util.Map<String, Object> getExtensionFields() {
+    return this.extensionFields_;
+  }
 
   private ToolTimeLimit_class class_;
 
@@ -96,7 +99,7 @@ public class ToolTimeLimitImpl extends SaveableImpl implements ToolTimeLimit {
     try {
       class_ =
           LoaderInstances
-              .uri_ToolTimeLimit_class_False_True_None
+              .uri_ToolTimeLimit_class_False_True_None_None
               .loadField(__doc.get("class"), __baseUri, __loadingOptions);
     } catch (ValidationException e) {
       class_ = null; // won't be used but prevents compiler from complaining.

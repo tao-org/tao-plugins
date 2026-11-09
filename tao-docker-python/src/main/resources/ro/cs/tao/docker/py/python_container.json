@@ -1,8 +1,8 @@
 {
   "id": "10c453c1-0cc4-49a1-a65a-6482f43115c1",
-  "name": "python-2-7-15",
-  "description": "Python 2.7.15 Container",
-  "tag": "latest",
+  "name": "python-3-12-9",
+  "description": "Python 3.12.9 Container",
+  "tag": "ubuntu-small-3.10.2",
   "applicationPath": null,
   "applications": [
     {

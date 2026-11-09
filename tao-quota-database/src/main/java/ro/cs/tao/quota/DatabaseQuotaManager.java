@@ -8,14 +8,19 @@ import ro.cs.tao.persistence.EOProductProvider;
 import ro.cs.tao.persistence.PersistenceException;
 import ro.cs.tao.persistence.UserProvider;
 import ro.cs.tao.services.bridge.spring.SpringContextBridge;
+import ro.cs.tao.services.factory.StorageServiceFactory;
+import ro.cs.tao.services.interfaces.StorageService;
 import ro.cs.tao.user.User;
 import ro.cs.tao.utils.FileUtilities;
 import ro.cs.tao.utils.executors.MemoryUnit;
+import ro.cs.tao.workspaces.RepositoryType;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.Principal;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Quota manager implementation based on database stored user quota
@@ -49,9 +54,10 @@ public class DatabaseQuotaManager implements QuotaManager {
 	@Override
 	public boolean checkUserInputQuota(Principal principal, long addedQuota) throws QuotaException {
 		final User user = getUser(principal);
-		final long targetQuota = user.getInputQuota();
-		final long actualQuota = user.getActualInputQuota() + (addedQuota / MemoryUnit.MB.value());
-		return targetQuota == -1 || targetQuota > actualQuota;
+		final long targetQuota = user.getInputQuota() * MemoryUnit.GB.value();
+		final long actualQuota = user.getActualInputQuota() * MemoryUnit.MB.value()
+                                 + (addedQuota / MemoryUnit.MB.value());
+		return user.getInputQuota() == -1 || targetQuota > actualQuota;
 	}
 
 	
@@ -146,7 +152,27 @@ public class DatabaseQuotaManager implements QuotaManager {
 					   Message.create(principal.getName(), "QuotaManager", "CPU usage updated", String.valueOf(cpus), false));
 	}
 
-	/** 
+	@Override
+	public StorageReport getStorageReport(RepositoryType repositoryType) throws QuotaException {
+		final StorageReport report = new StorageReport();
+		if (repositoryType == null || repositoryType == RepositoryType.LOCAL) {
+			final List<User> users = this.userProvider.list();
+			for (User user : users) {
+				report.addUserStorage(user.getId(), Math.max((double) user.getActualInputQuota(), 0d), MemoryUnit.MB);
+			}
+		} else {
+			StorageService storageService = StorageServiceFactory.getInstance(repositoryType);
+			Map<String, Long> userStorage = storageService.getUserStorage();
+			for (Map.Entry<String, Long> entry : userStorage.entrySet()) {
+				report.addUserStorage(entry.getKey(),
+									  Math.max((double) entry.getValue() / MemoryUnit.GB.value(), 0d),
+									  MemoryUnit.GB);
+			}
+		}
+		return report;
+	}
+
+	/**
 	 * Get he user's details from the database
 	 * @param principal the used security data
 	 * @return the user structure

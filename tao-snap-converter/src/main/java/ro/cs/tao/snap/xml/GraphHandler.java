@@ -20,6 +20,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Handles the processing and parsing of a workflow graph in a specific XML format.
+ * Extends the {@link AbstractHandler} class to provide SAX parser support for
+ * reading and constructing {@link WorkflowDescriptor} objects.
+ *
+ * This class is responsible for:
+ * - Reading graph elements and their properties from an XML document.
+ * - Populating and managing {@link WorkflowDescriptor}, {@link WorkflowNodeDescriptor},
+ *   and their relationships.
+ * - Interpreting XML elements such as "graph", "node", "parameters", "source", and others
+ *   based on their specific attributes and values.
+ * - Persisting added nodes and links by invoking the {@link WorkflowService}.
+ */
 public class GraphHandler extends AbstractHandler<WorkflowDescriptor> {
     private WorkflowNodeDescriptor currentNode;
     private List<ParameterValue> currentParameters;

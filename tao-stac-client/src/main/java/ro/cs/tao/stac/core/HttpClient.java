@@ -23,6 +23,15 @@ import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * {@code HttpClient} is an HTTP client implementation that extends the {@code SimpleHttpClient} and
+ * provides additional behavior for handling authenticated requests and enhanced connection handling.
+ * This class is primarily used for making GET and POST requests to web services that may require
+ * basic or token-based authentication.
+ *
+ * It also includes functionality for handling HTTPS connections with self-signed certificates typically
+ * used in localhost or development environments.
+ */
 public class HttpClient extends SimpleHttpClient {
     private final Logger logger = Logger.getLogger(HttpClient.class.getName());
     private final WebServiceAuthentication authentication;

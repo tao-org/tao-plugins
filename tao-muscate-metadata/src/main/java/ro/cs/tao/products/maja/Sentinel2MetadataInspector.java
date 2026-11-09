@@ -15,6 +15,12 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Sentinel2MetadataInspector is responsible for inspecting and decoding
+ * metadata specific to Sentinel-2 products. It extends the XmlMetadataInspector
+ * class to provide Sentinel-2-specific functionalities for metadata extraction
+ * and verification.
+ */
 public class Sentinel2MetadataInspector extends XmlMetadataInspector {
     @Override
     public DecodeStatus decodeQualification(Path productPath) {

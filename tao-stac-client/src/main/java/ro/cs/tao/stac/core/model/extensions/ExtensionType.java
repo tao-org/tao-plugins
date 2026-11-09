@@ -2,9 +2,11 @@ package ro.cs.tao.stac.core.model.extensions;
 
 import ro.cs.tao.TaoEnum;
 import ro.cs.tao.stac.core.model.extensions.eo.EOExtension;
-import ro.cs.tao.stac.core.model.extensions.eo.EoFields;
+import ro.cs.tao.stac.core.model.extensions.eo.EOFields;
 import ro.cs.tao.stac.core.model.extensions.fileinfo.FileInfoExtension;
 import ro.cs.tao.stac.core.model.extensions.fileinfo.FileInfoFields;
+import ro.cs.tao.stac.core.model.extensions.processing.ProcessingExtension;
+import ro.cs.tao.stac.core.model.extensions.processing.ProcessingFields;
 import ro.cs.tao.stac.core.model.extensions.product.ProductExtension;
 import ro.cs.tao.stac.core.model.extensions.product.ProductFields;
 import ro.cs.tao.stac.core.model.extensions.projection.ProjExtension;
@@ -22,7 +24,7 @@ import ro.cs.tao.stac.core.model.extensions.view.ViewFields;
  * @author Cosmin Cara
  */
 public enum ExtensionType implements TaoEnum<String> {
-    EO(EOExtension.class, EoFields.PREFIX,
+    EO(EOExtension.class, EOFields.PREFIX,
        "https://stac-extensions.github.io/eo/v1.0.0/schema.json"),
     PROJ(ProjExtension.class,
          ProjFields.PREFIX,
@@ -41,7 +43,10 @@ public enum ExtensionType implements TaoEnum<String> {
             "https://stac-extensions.github.io/product/v0.1.0/schema.json"),
     RASTER(RasterExtension.class,
            RasterFields.PREFIX,
-           "https://stac-extensions.github.io/raster/v1.1.0/schema.json");
+           "https://stac-extensions.github.io/raster/v1.1.0/schema.json"),
+    PROCESSING(ProcessingExtension.class,
+               ProcessingFields.PREFIX,
+               "https://stac-extensions.github.io/processing/v1.2.0/schema.json");
 
     private final String value;
     private final String description;

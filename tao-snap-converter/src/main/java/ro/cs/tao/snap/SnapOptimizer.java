@@ -106,6 +106,7 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
                                                                  descriptor.getLabel(),
                                                                  descriptor.getUnit(),
                                                                  descriptor.getValueSet(),
+                                                                 descriptor.getValueSetLabels(),
                                                                  descriptor.getFormat(),
                                                                  descriptor.isNotNull(),
                                                                  descriptor.getExpansionRule()));
@@ -118,6 +119,7 @@ public class SnapOptimizer extends BaseRuntimeOptimizer {
         }
         aggregator.setTemplateContents(graph);
         aggregator.setComponentType(ProcessingComponentType.AGGREGATE);
+        aggregator.setCategory(sources.get(sources.size() - 1).getCategory());
         /*try {
             Files.write(graphPath, graph.getBytes());
         } catch (IOException ex) {
